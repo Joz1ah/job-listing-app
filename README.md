@@ -1,93 +1,242 @@
-# Akaza App
+# React Proto - React TypeScript Boilerplate
 
+![node.js@22](https://img.shields.io/badge/node.js-22-339933?style=for-the-badge&logo=nodedotjs) ![typescript@5](https://img.shields.io/badge/typescript-5-3178C6?style=for-the-badge&logo=typescript) ![reactjs@18](https://img.shields.io/badge/Reactjs-18-61DAFB?style=for-the-badge&logo=react) ![webpack@5](https://img.shields.io/badge/webpack-5-8dd6f9?style=for-the-badge&logo=webpack) ![sass@1.7](https://img.shields.io/badge/sass-1.7-CC6699?style=for-the-badge&logo=sass) ![ts-standard](https://img.shields.io/badge/standard-ts-F3DF49?style=for-the-badge&logo=standardjs)
 
+<img align="right" width="100" src="src/assets/images/logo.png">
 
-## Getting started
+**Template React project with full TypeScript and SSR support.**
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+This project is a compilation of different approaches in React development that allows not only to start a new project quickly, but to learn how it works under the hood.
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+You can also check a [React Proto Lite](https://github.com/StopNGo/react-proto-lite) - Template React project for fast SPA prototyping. It contains only everything necessary for Single Page Application projects without any server side parts.
 
-## Add your files
+---
+- [Issue](#issue)
+- [What's Inside](#whats-inside)
+- [The App](#the-app)
+- [How to Use](#how-to-use)
+- [Basic Project Configuration](#basic-project-Configuration)
+- [General Notices](#general-notices)
+- [Documentation](#documentation)
+- [Changes](#changes)
+- [Feedback](#feedback)
+---
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+## Issue
+
+Every new React developer knows that React is a library, not a complete framework. Thus, it provides maximum flexibility. However, a lot of knowledge is required to create a fully functional web application powered with React.
+
+That is why there exist such a famous framework as [Next.js](https://nextjs.org/) as well as a tool [Create React App (CRA)](https://create-react-app.dev/).
+
+Despite the advantages that such tools have, there are some cons that their user may face:
+
+- Lack of understanding how exactly certain solutions work and why they are applied;
+- Lack of flexibility: applied solutions are difficult to fine-tune to your needs;
+- The complexity of the codebase of these tools.
+
+As a result, novice React developers have two options for action:
+
+1. Simply apply these tools and frameworks to get the product without going into the nuances of their implementation;
+2. Independently collect bit by bit information on how to implement certain functions in React ecosystem.
+
+Thus, the goal of this project is to **collect in one place all the most common methods of working with the React ecosystem** without being tied to a specific framework or tool like CRA.
+
+## What's Inside
+
+Core:
+
+- **React** 18+ (**Preact** 10+ as an option, see [comparison](#react-vs-preact) below)
+- **webpack** 5+ (with optional **SWC** support and SSR or static build; [why not Vite?](#why-not-vite))
+- **TypeScript** (with strict rules, including webpack configuration)
+
+SSR:
+
+- **Express** (with render to stream option including helmet data and initial state pushing)
+
+State:
+
+- **Redux** 5 (with custom state persisting middleware; [why not redux-persist package?](#why-not-redux-persist-package))
+
+Router:
+
+- **React Router**
+
+Code Splitting:
+
+- **Loadable Components** (SSR compatible)
+
+API:
+
+- **RTK Query**
+
+i18n (Internationalization):
+
+- **Lightweight custom solution** based on Redux (with async loading and SSR support; [why not any common i18n package?](#why-not-any-common-i18n-package))
+
+Styles:
+
+- **(S)CSS modules** (with TypeScript support)
+
+Linters:
+
+- **TS Standard** (TypeScript Style Guide, with linter and automatic code fixer based on [StandardJS](https://standardjs.com/))
+- **Stylelint** (including rules order)
+- **Prettier**
+
+Tests:
+
+- **Jest** 29+
+- **React Testing Library**
+- Utility for Redux Testing
+- One example of integration test of a component with user event and Redux
+
+Other:
+
+- API request caching (powered by RTK Query)
+- Data prefetching on server side
+- State persisting to Local Storage
+- Hot reload (including state, style and server code hot reloading)
+- HOC for preventing component rendering on the server
+- VSCode support with error highlight and on save fixes
+- Script for fast component creation
+- Optional Service worker and offline status detector
+- Webpack Bundle Analyzer
+
+## The App
+
+This boilerplate includes a simple application with:
+
+- Several screen/pages with their own routes
+- Local counter
+- Global counter
+- One of the components is dynamically loaded
+- API requests
+- Loading spinner
+- Theme switcher (light and dark)
+- Offline detector
+
+Live preview:
+[https://react-proto.onrender.com/](https://react-proto.onrender.com/)
+
+(due to free hosting, a cold start could be slow)
+
+![The App](src/assets/images/app.gif)
+
+## How to Use
+
+### Quick Start (SSR with hot reload)
+
+1. Clone this repo:
+
+   `git clone https://github.com/StopNGo/react-proto`
+
+2. Install all packages:
+
+   `npm i`
+
+3. Run project in a development mode:
+
+   `npm start`
+
+4. Open your browser with the next address:
+
+   `http://localhost:8080/`
+
+### Build and run a server (SSR)
+
+1. Build the project (production bundle will be in the `"dist"` folder):
+
+   `npm run build`
+
+   or with Webpack Bundle Analyzer report server:
+
+   `npm run build:report`
+
+2. Run a server:
+
+   `npm run run`
+
+3. You can test the server locally:
+
+   `http://localhost:3000/`
+
+### Static development mode with hot reload
+
+- Just run the next command and browser will open automatically:
+
+  `npm run start:static`
+
+### Static production
+
+- Run the next command and get a production bundle in the `"dist"` folder:
+
+  `npm run build:static`
+
+  or with Webpack Bundle Analyzer report server:
+
+  `npm run build:static:report`
+
+### Updating packages
+
+All packages in this project are pinned to latest versions at the time of publishing to exclude version-based conflicts and errors and to guarantee proper work of the code in this repository.
+
+If you want to update packages, do next:
 
 ```
-cd existing_repo
-git remote add origin https://git.instance-20240927-104826.com/akaza-dev-team/akaza-app.git
-git branch -M main
-git push -uf origin main
+npm install -g npm-check-updates
+ncu -u
+npm i
 ```
 
-## Integrate with your tools
+## Basic Project Configuration
 
-- [ ] [Set up project integrations](https://git.instance-20240927-104826.com/akaza-dev-team/akaza-app/-/settings/integrations)
+All configuration is available in files with constants:
 
-## Collaborate with your team
+- `webpack\constants.ts` - contains working directories, SWC option and other related to bundling staff
+- `src\constants` - a directory with app files with configuration constants
+- `src\server\constants.ts` - contains a server port and render to stream options
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+## General Notices
+### Why not Vite
 
-## Test and Deploy
+Vite is an excellent new generation bundler that could speed up your development process. However, you can face with some lack of flexibility and compatibility especially in big projects that need a lot of specific configurations. Also, webpack has many good plugins that are not compatible with Vite.
 
-Use the built-in continuous integration in GitLab.
+As for the speed: you can check this article - [Storybook Performance: Vite vs Webpack](https://storybook.js.org/blog/storybook-performance-from-webpack-to-vite/). As you can see - Webpack could still be fast enough. React Proto has such configurations. In `webpack\constants.ts` you can switch on SWC and Lazy Compilation.
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+Also, I'm looking forward to [Turbopack](https://turbo.build/pack) - the Rust-powered successor to Webpack. Now it is available only in Next.js, but I hope the future migration from the Wepback will be smooth because the principle of configuration should be the same.
 
-***
+### React vs Preact
 
-# Editing this README
+In `webpack\constants.ts` you can choose to use [Preact](https://preactjs.com/) library instead React itself (`IS_PREACT` boolean constant).
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+Preact is a fast and compact React-compatible Virtual DOM library. But because its community is much smaller, you can face with some incompatibility with React API and functionality, especially with new ones. Also some tests show some frame drops during moving a lot of elements. Below you can see a bundle size comparison of no-SSR version of the sample application of this repository (according to Webpack Bundle Analyzer):
 
-## Suggestions for a good README
+|         | React     | Preact   |
+| ------- | --------- | -------- |
+| Parsed  | 262.7 KB | 150.5 KB |
+| Gzipped | 86.78 KB  | 52.11 KB |
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+### Why not any common i18n package?
+You can freely integrate any React compatible i18n solution. But if React Proto already uses Redux and RTK, why just not use them for this task? Therefore, I have created a custom internationalization solution with a minimum additional code. It supports translations dynamic loading, server side rendering based on user acceptable languages, strict typing, etc. At the moment it just does not support string processing like pluralization, but it could easily be added later.
 
-## Name
-Choose a self-explaining name for your project.
+### Why not redux-persist package?
+As for me this solution is overcomplicated in most of cases. It definitely has a lot of "storage engines", state version control and etc., but smart using of Redux Middlewares and Listeners can cover all this functionality in a more precise way.
+## Documentation
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+_Coming soon._
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+One of the goals of this project is to provide some common solutions in React development and to clarify why they were chosen and how they work. So, such information will be present in this documentation in an orderly fashion.
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+## Changes
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+Detailed release notes for a given version can be found on [releases page](https://github.com/StopNGo/react-proto/releases).
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+## Feedback
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+I welcome any feedbacks, suggestions and questions related to this project.
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+You can leave them on [issues](https://github.com/StopNGo/react-proto/issues) or [discussions](https://github.com/StopNGo/react-proto/discussions) pages.
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+![Thank you!](https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExMTQ0MXQzcXBtaGhibWdqdW1tMGNnbmg3eTN5dnVuOG8xbGJndHBpOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3L3SEE1rcsO1W/giphy.gif)
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+**Thank you!**
