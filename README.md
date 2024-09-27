@@ -1,4 +1,4 @@
-# React Proto - React TypeScript Boilerplate
+# React Proto - React TypeScript Boilerplate -
 
 ![node.js@22](https://img.shields.io/badge/node.js-22-339933?style=for-the-badge&logo=nodedotjs) ![typescript@5](https://img.shields.io/badge/typescript-5-3178C6?style=for-the-badge&logo=typescript) ![reactjs@18](https://img.shields.io/badge/Reactjs-18-61DAFB?style=for-the-badge&logo=react) ![webpack@5](https://img.shields.io/badge/webpack-5-8dd6f9?style=for-the-badge&logo=webpack) ![sass@1.7](https://img.shields.io/badge/sass-1.7-CC6699?style=for-the-badge&logo=sass) ![ts-standard](https://img.shields.io/badge/standard-ts-F3DF49?style=for-the-badge&logo=standardjs)
 
