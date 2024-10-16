@@ -1,0 +1,72 @@
+stages:
+  - build
+  - docker_build
+  - docker_push
+  - deploy
+
+# Build Stage
+build:
+  stage: build
+  image: node:18-alpine
+  script:
+    - npm install
+    - npm run build
+  only:
+    - main
+
+
+# Docker Build Stage
+docker_build:
+  stage: docker_build
+  before_script:
+    - docker info
+  script:
+    - echo "Building Docker image..."
+    - echo $CI_COMMIT_SHA
+    - docker build --platform linux/amd64 -t gcr.io/$GOOGLE_PROJECT_ID/akaza-app:$CI_COMMIT_SHA .
+  only:
+    - main
+  variables:
+    GOOGLE_APPLICATION_CREDENTIALS: /tmp/sa-key.json 
+
+
+# Docker Push Stage
+docker_push:
+  stage: docker_push
+  image: google/cloud-sdk:latest
+  before_script:
+    - echo "$SERVICE_ACCOUNT_KEYS" > /tmp/key.json
+    - echo "Checking service account key content:"
+    - echo $CI_COMMIT_SHA
+    - head /tmp/key.json    
+    - gcloud auth activate-service-account --key-file=/tmp/key.json
+    - gcloud config set project $GOOGLE_PROJECT_ID
+    - gcloud auth configure-docker gcr.io    
+  script:
+    - echo "Pushing Docker image to Google Container Registry..."
+    - docker push gcr.io/akaza-436904/akaza-app:$CI_COMMIT_SHA
+  only:
+    - main
+  variables:
+    GOOGLE_APPLICATION_CREDENTIALS: /tmp/sa-key.json
+
+deploy:
+  stage: deploy
+  image: google/cloud-sdk:latest  
+  before_script:
+    - echo "Setting up SSH key"
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" | sed 's/\r$//' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa 
+    - ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
+    - echo "$SERVICE_ACCOUNT_KEYS" > /tmp/key.json       
+  script:
+    - echo "Deploying to the remote server..."
+    - |
+      ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST << EOF     
+        /home/sit-deployer/cd.sh $GOOGLE_PROJECT_ID $CI_COMMIT_SHA
+      EOF
+  only:
+    - main
+  variables:
+    GOOGLE_APPLICATION_CREDENTIALS: /tmp/sa-key.json
