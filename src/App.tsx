@@ -3,10 +3,10 @@ import { useRoutes } from 'react-router-dom'
 import cn from 'classnames'
 
 import {
-  ThemeSwitcher,
-  LanguageSelector,
+  //ThemeSwitcher,
+  //LanguageSelector,
   ErrorBoundary,
-  Offline
+  //Offline
 } from 'components'
 import { routes } from 'router/Router'
 
@@ -64,9 +64,6 @@ const App: FC = (): ReactElement => {
           currentTheme === THEME_NAMES.DARK && 'theme-dark'
         )}
       >
-        <LanguageSelector />
-        <ThemeSwitcher />
-        <Offline />
         {content}
       </div>
     </ErrorBoundary>

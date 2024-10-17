@@ -23,16 +23,13 @@ const universalLoader = (isServer: boolean = false): RuleSetRule => ({
           options: {
             modules: {
               mode: 'local',
-              /*
-                This type of naming variant is better for gzip compression -
-                https://github.com/webpack-contrib/css-loader/issues/406
-              */
               localIdentName: '[folder]__[local]--[hash:base64:5]',
               namedExport: false,
               exportLocalsConvention: 'as-is'
             }
           }
         },
+        'postcss-loader', // Add this line
         {
           loader: 'sass-loader'
         }
@@ -47,6 +44,7 @@ const universalLoader = (isServer: boolean = false): RuleSetRule => ({
           }
         },
         'css-loader',
+        'postcss-loader', // Add this line
         'sass-loader'
       ]
     }

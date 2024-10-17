@@ -30,6 +30,7 @@ const ALIAS: Record<string, string> = {
   store: `${SRC_DIR}/store`,
   types: `${SRC_DIR}/types`,
   utils: `${SRC_DIR}/utils`,
+  lib: `${SRC_DIR}/lib`,
   _webpack: path.join(__dirname, '../webpack')
 }
 
