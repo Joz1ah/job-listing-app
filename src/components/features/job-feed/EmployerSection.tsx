@@ -1,5 +1,7 @@
 import { FC } from "react";
 import { Button } from "components";
+import sparkeIcon from "images/sparkle-icon.png";
+import { NavLink } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -16,9 +18,18 @@ import {
   SelectValue,
 } from "components";
 import { Carousel, CarouselContent, CarouselItem } from "components";
-import { MapPin, Bookmark, User, Building, BadgeCheck } from "lucide-react";
+import { MapPin, Bookmark, /* User, */ Building, BadgeCheck } from "lucide-react";
 
 const EmployerSection: FC = () => {
+
+  const navItems = [
+    { name: 'BOOKMARKED APPLICATION CARDS', path: '#' },
+    { name: 'INTERVIEWS', path: '#' },
+    { name: 'BOOKMARKED APPLICATION CARDS', path: '#' },
+    { name: 'REPORTS & ANALYTICS', path: '#' },
+    { name: '-', path: '#'}
+  ];
+
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       <div className="md:flex md:justify-between md:items-center">
@@ -34,38 +45,50 @@ const EmployerSection: FC = () => {
               <Building className="fill-[#D6D6D6] text-[#263238]" size={14} />
               <span>Germany, South Africa and China</span>
             </div>
-            <div className="flex items-center space-x-2 text-[11px] font-light text-white">
+{/*             <div className="flex items-center space-x-2 text-[11px] font-light text-white">
               <User className="fill-[#D6D6D6]" size={14} />
               <span>You have 20 Team members</span>
-            </div>
+            </div> */}
           </div>
         </div>
 
         <div className="mt-4 md:mt-0 flex flex-col sm:flex-row gap-4 items-center">
           <Select>
-            <SelectTrigger className="flex justify-between items-center w-[336px] h-[42px] sm:w-[200px] bg-white text-black rounded-md border-0 shadow-md text-[17px]">
+            <SelectTrigger className="flex justify-between items-center w-[336px] h-[42px] bg-white text-black rounded-md border-0 shadow-md text-[17px]">
               <span></span>
               <SelectValue placeholder="Filter by Job Listings" />
             </SelectTrigger>
-            <SelectContent className="bg-white text-black rounded-md border-0 shadow-md">
+            <SelectContent className="bg-white text-black rounded-md border-0 shadow-md w-[336px]">
               <SelectGroup>
                 <SelectItem
-                  className="flex justify-center items-center text-[17px] pr-10"
+                  className="flex justify-center text-[14px] px-0"
                   value="fulltime"
                 >
                   All Job Listings
                 </SelectItem>
                 <SelectItem
-                  className="flex justify-center items-center text-[17px] pr-10"
+                  className="flex justify-center text-[14px] px-0"
                   value="parttime"
                 >
                   Most Recent Job Listing
                 </SelectItem>
                 <SelectItem
-                  className="flex justify-center items-center text-[17px] pr-10"
+                  className="flex justify-center text-[14px] px-0"
                   value="contractual"
                 >
                   Saved Job Listing
+                </SelectItem>
+                <SelectItem
+                  className="flex justify-center text-[14px] px-0 "
+                  value="saved"
+                >
+                  Sort Job Listing by Team Member
+                </SelectItem>
+                <SelectItem
+                  className="flex justify-center text-[14px] px-0"
+                  value="closed"
+                >
+                  Closed Listings
                 </SelectItem>
               </SelectGroup>
             </SelectContent>
@@ -80,8 +103,13 @@ const EmployerSection: FC = () => {
           }}
           className="w-full"
         >
-          <h3 className="text-[17px] md:text-[17px] text-[#F5722E] text-center font-semibold pb-2">
-            ◆ PERFECT MATCH
+          <h3 className="flex justify-center items-center mt-2 gap-2 text-[17px] text-[#F5722E] text-center font-semibold pb-2">
+            <img
+              src={sparkeIcon}
+              alt="Sparkle Icon"
+              className="w-[22px] h-[24px]"
+            />
+            PERFECT MATCH
           </h3>
 
           <CarouselContent>
@@ -203,40 +231,23 @@ const EmployerSection: FC = () => {
         </Carousel>
       </div>
 
-      {/* Navigation Buttons */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 pb-6">
-        <Button
-          variant="outline"
-          className="w-full bg-black text-white border-gray-700 hover:bg-gray-700"
-        >
-          VIEW SHORTED CANDIDATES
-        </Button>
-        <Button
-          variant="outline"
-          className="w-full bg-black text-white border-gray-700 hover:bg-gray-700"
-        >
-          SCHEDULED INTERVIEWS
-        </Button>
-        <Button
-          variant="outline"
-          className="w-full bg-black text-white border-gray-700 hover:bg-gray-700"
-        >
-          BOOKMARKED APPLICATION CARDS
-        </Button>
-        <Button
-          variant="outline"
-          className="w-full bg-black text-white border-gray-700 hover:bg-gray-700"
-        >
-          JOB LISTING PERFORMANCE
-        </Button>
-        <Button
-          variant="outline"
-          className="w-full bg-black text-white border-gray-700 hover:bg-gray-700"
-        >
-          <span className="text-orange-500 mr-2">◆</span>
-          AKAZA ACADEMY COMING SOON
-        </Button>
-      </div>
+      <nav className="flex flex-col bg-black text-white w-full rounded-t-xl rounded-b-xl overflow-hidden py-2">
+      {navItems.map((item, index) => (
+        <div key={item.path}>
+          <div className="w-full text-center">
+            <NavLink
+              to={item.path}
+              className="hover:text-[#F5722E] py-2 inline-block"
+            >
+              {item.name}
+            </NavLink>
+          </div>
+          {index < navItems.length - 1 && (
+            <hr className="border-t border-white w-full my-0" />
+          )}
+        </div>
+      ))}
+    </nav>
 
       {/* Other Opportunities */}
       <div>

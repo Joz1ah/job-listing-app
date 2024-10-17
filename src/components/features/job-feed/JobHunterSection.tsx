@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Button } from "components";
+import { NavLink } from "react-router-dom";
 import sparkeIcon from "images/sparkle-icon.png";
 
 import {
@@ -21,9 +21,17 @@ import {
 } from "lucide-react";
 
 const JobHunterSection: FC = () => {
+
+  const navItems = [
+    { name: 'SUGGESTED SKILLS', path: '#' },
+    { name: 'YOUR INTERVIEWS', path: '#' },
+    { name: 'RATE EMPLOYER', path: '#' },
+    { name: 'SUBCRIBE TO MORE OPPORTUNITIES', path: '#'}
+  ];
+
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
-      <div className="md:flex md:justify-between md:items-center mb-12">
+      <div className="md:flex md:justify-between md:items-center mb-20">
         <h1 className="text-3xl md:text-3xl text-white font-normal">
           Welcome to your dashboard, Michael!
         </h1>
@@ -95,9 +103,9 @@ const JobHunterSection: FC = () => {
                         <span className="text-sm text-gray-600 font-light">
                           Posted 3 days ago
                         </span>
-                        <Bookmark className="text-[#F5722E]" size={24} />
+                        <Bookmark className="text-[#F5722E]" size={25}/>
                       </div>
-                      <div>
+                      <div className="pl-6">
                         <CardTitle className="text-[17px]">
                           Solutions Architect
                         </CardTitle>
@@ -108,17 +116,17 @@ const JobHunterSection: FC = () => {
                           <MapPin size={9} className="mr-1 text-[#F5722E]" />
                           Remote (Company based in Australia)
                         </p>
-                      </div>
-                      <div className="flex flex-wrap justify-start gap-2">
-                        <span className="bg-white text-[#F5722E] px-2 py-1 rounded-[2px] text-[10px] outline outline-1 outline-[#F5722E]">
-                          PHP 80,000 / month
-                        </span>
-                        <span className="bg-[#F5722E] text-white px-2 py-1 rounded-[2px] text-[10px]">
-                          Full Time
-                        </span>
+                        <div className="flex flex-wrap justify-start gap-2">
+                          <span className="bg-white text-[#F5722E] px-2 py-1 rounded-[2px] text-[10px] outline outline-1 outline-[#F5722E]">
+                            PHP 80,000 / month
+                          </span>
+                          <span className="bg-[#F5722E] text-white px-2 py-1 rounded-[2px] text-[10px]">
+                            Full Time
+                          </span>
+                        </div>
                       </div>
                     </CardHeader>
-                    <CardContent className="p-0 mt-4">
+                    <CardContent className="pl-6 mt-4">
                       <p className="text-[11px]">
                         The Mobile Application Developer develops and tests new
                         hybrid mobile applications using web technologies and
@@ -126,7 +134,7 @@ const JobHunterSection: FC = () => {
                         experiences across multiple mobile platforms.
                       </p>
                     </CardContent>
-                    <CardFooter className="flex flex-wrap gap-2 p-0 mt-4">
+                    <CardFooter className="flex flex-wrap gap-2 pl-6">
                       {[
                         "Angular",
                         "JavaScript",
@@ -153,37 +161,42 @@ const JobHunterSection: FC = () => {
               </CarouselItem>
             ))}
           </CarouselContent>
+          <div className="flex justify-center mt-4 space-x-2">
+            {Array.from({ length: 3 }).map((_, index) => (
+              <button
+                key={index}
+                className={`w-2 h-2 rounded-full ${
+                  index === 0 ? "bg-[#F5722E]" : "bg-gray-400"
+                }`}
+              />
+            ))}
+          </div>
         </Carousel>
       </div>
 
       {/* Navigation Buttons */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 pb-6">
-        <Button
-          variant="outline"
-          className="w-full bg-black text-white border-gray-700 hover:bg-gray-700"
-        >
-          SUGGESTED SKILLS
-        </Button>
-        <Button
-          variant="outline"
-          className="w-full bg-black text-white border-gray-700 hover:bg-gray-700"
-        >
-          YOUR INTERVIEWS
-        </Button>
-        <Button
-          variant="outline"
-          className="w-full bg-black text-white border-gray-700 hover:bg-gray-700"
-        >
-          RATE EMPLOYER
-        </Button>
-        <Button
-          variant="outline"
-          className="w-full bg-black text-white border-gray-700 hover:bg-gray-700"
-        >
-          <span className="text-orange-500 mr-2">◆</span>
-          SUBSCRIBE TO MORE OPPORTUNITIES
-        </Button>
-      </div>
+      <nav className="flex flex-col bg-black text-white w-full rounded-t-xl rounded-b-xl overflow-hidden py-2">
+      {navItems.map((item, index) => (
+        <div key={item.path}>
+          <div className="w-full text-center">
+            <NavLink
+              to={item.path}
+              className="hover:text-[#F5722E] py-2 inline-block"
+            >
+              <div className="flex justify-center items-center gap-2 text-center">
+                {index === navItems.length - 1 && (
+                  <img src={sparkeIcon} alt="Sparkle Icon" className="w-[22px] h-[24px]" />
+                )}
+                {item.name}
+              </div>
+            </NavLink>
+          </div>
+          {index < navItems.length - 1 && (
+            <hr className="border-t border-white w-full my-0" />
+          )}
+        </div>
+      ))}
+    </nav>
 
       {/* Other Opportunities */}
       <div>
@@ -216,7 +229,7 @@ const JobHunterSection: FC = () => {
                         Jr. App Developer
                       </CardTitle>
                       <div>
-                        <CardDescription className="text-[13px] text-black underline">
+                        <CardDescription className="text-[13px] text-black underline font-light">
                           OneTime Pay Digital Corporation
                         </CardDescription>
                         <p className="text-[10px] text-orange-500 flex items-center mb-2">
@@ -253,6 +266,16 @@ const JobHunterSection: FC = () => {
               </CarouselItem>
             ))}
           </CarouselContent>
+          <div className="flex justify-center mt-4 space-x-2">
+            {Array.from({ length: 3 }).map((_, index) => (
+              <button
+                key={index}
+                className={`w-2 h-2 rounded-full ${
+                  index === 0 ? "bg-[#F5722E]" : "bg-gray-400"
+                }`}
+              />
+            ))}
+          </div>
         </Carousel>
       </div>
     </div>

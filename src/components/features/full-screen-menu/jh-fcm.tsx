@@ -1,12 +1,20 @@
 import { FC } from "react";
-import { Button } from "components";
-import { GraduationCap } from "lucide-react";
+import { NavLink } from "react-router-dom";
 
 interface FullScreenMenuProps {
   isOpen: boolean;
 }
 
 const JobHunterFcm: FC<FullScreenMenuProps> = ({ isOpen }) => {
+
+  const navItems = [
+    { name: 'EDIT APPLICATION CARD', path: '#' },
+    { name: 'ACCOUNT SETTINGS', path: '#' },
+    { name: 'BOOKMARKED JOBS', path: '#' },
+    { name: 'INTERVIEWS', path: '#'},
+    { name: 'SIGN OUT', path: '#'}
+  ];
+
   return (
     <div
       className={`fixed inset-0 bg-black text-white z-50 transition-transform duration-500 ease-in-out ${
@@ -14,38 +22,31 @@ const JobHunterFcm: FC<FullScreenMenuProps> = ({ isOpen }) => {
       }`}
       style={{ top: "73px" }}
     >
-      <nav className="p-4">
-        <ul className="space-y-0">
-          <MenuItem>
-            <span className="bg-[#F5722E] w-2 h-2 rounded-full mr-2"></span>
-            NOTIFICATIONS
-          </MenuItem>
-          <MenuItem>EDIT PROFILE</MenuItem>
-          <MenuItem>ACCOUNT SETTINGS</MenuItem>
-          <MenuItem>BOOKMARKED JOBS</MenuItem>
-          <MenuItem>INTERVIEWS</MenuItem>
-          <MenuItem>HELP & SUPPORT</MenuItem>
-          <li className="py-3 border-b border-white">
-            <div className="flex items-center text-[#F5722E] justify-end">
-              <GraduationCap className="mr-2" size={14} />
-              <span className="text-sm font-normal">
-                AKAZA ACADEMY - COMING SOON
-              </span>
+      <nav className="flex flex-col text-white w-full overflow-hidden pt-12">
+      {navItems.map((item, index) => (
+        <div key={item.path}>
+          <div className="w-full text-end pr-4">
+            <NavLink
+              to={item.path}
+              className="hover:text-[#F5722E] py-2 inline-block"
+            >
+                {index === navItems.length - 1 && (
+                  <div className="pt-12"></div>
+                )}
+                {item.name}
+
+            </NavLink>
+          </div>
+          {index < navItems.length && (
+            <div className="flex justify-center w-full">
+              <hr className="border-t border-white w-[95%] my-0" />
             </div>
-          </li>
-          <MenuItem>SIGN OUT</MenuItem>
-        </ul>
-      </nav>
+          )}
+        </div>
+      ))}
+    </nav>
     </div>
   );
 };
-
-const MenuItem: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <li className="border-b border-white">
-    <Button variant="ghost" className="w-full justify-end text-sm font-normal">
-      {children}
-    </Button>
-  </li>
-);
 
 export { JobHunterFcm };
