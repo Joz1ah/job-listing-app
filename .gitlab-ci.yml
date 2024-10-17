@@ -64,7 +64,7 @@ deploy:
     - echo "Deploying to the remote server..."
     - |
       ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST << EOF     
-        /home/sit-deployer/cd.sh $GOOGLE_PROJECT_ID $CI_COMMIT_SHA
+        /home/sit-deployer/sit/akaza-app/cd.sh $GOOGLE_PROJECT_ID $CI_COMMIT_SHA
       EOF
   only:
     - main
