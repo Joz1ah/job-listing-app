@@ -1,4 +1,4 @@
-# React Proto - React TypeScript Boilerplate -
+# React Proto - React TypeScript Boilerplate
 
 ![node.js@22](https://img.shields.io/badge/node.js-22-339933?style=for-the-badge&logo=nodedotjs) ![typescript@5](https://img.shields.io/badge/typescript-5-3178C6?style=for-the-badge&logo=typescript) ![reactjs@18](https://img.shields.io/badge/Reactjs-18-61DAFB?style=for-the-badge&logo=react) ![webpack@5](https://img.shields.io/badge/webpack-5-8dd6f9?style=for-the-badge&logo=webpack) ![sass@1.7](https://img.shields.io/badge/sass-1.7-CC6699?style=for-the-badge&logo=sass) ![ts-standard](https://img.shields.io/badge/standard-ts-F3DF49?style=for-the-badge&logo=standardjs)
 
@@ -213,8 +213,8 @@ Preact is a fast and compact React-compatible Virtual DOM library. But because i
 
 |         | React     | Preact   |
 | ------- | --------- | -------- |
-| Parsed  | 262.7 KB | 150.5 KB |
-| Gzipped | 86.78 KB  | 52.11 KB |
+| Parsed  | 262.9 KB | 150.55 KB |
+| Gzipped | 86.84 KB  | 52.09 KB |
 
 ### Why not any common i18n package?
 You can freely integrate any React compatible i18n solution. But if React Proto already uses Redux and RTK, why just not use them for this task? Therefore, I have created a custom internationalization solution with a minimum additional code. It supports translations dynamic loading, server side rendering based on user acceptable languages, strict typing, etc. At the moment it just does not support string processing like pluralization, but it could easily be added later.
