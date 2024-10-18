@@ -174,14 +174,14 @@ const JobHunterSection: FC = () => {
         </Carousel>
       </div>
 
-      {/* Navigation Buttons */}
+      {/* Navigations */}
       <nav className="flex flex-col bg-black text-white w-full rounded-t-xl rounded-b-xl overflow-hidden py-2">
       {navItems.map((item, index) => (
         <div key={item.path}>
           <div className="w-full text-center">
             <NavLink
               to={item.path}
-              className="hover:text-[#F5722E] py-2 inline-block"
+              className="hover:text-[#F5722E] py-4 inline-block"
             >
               <div className="flex justify-center items-center gap-2 text-center">
                 {index === navItems.length - 1 && (

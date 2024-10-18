@@ -5,7 +5,6 @@ import { NavLink } from "react-router-dom";
 import {
   Card,
   CardContent,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "components";
@@ -18,7 +17,7 @@ import {
   SelectValue,
 } from "components";
 import { Carousel, CarouselContent, CarouselItem } from "components";
-import { MapPin, Bookmark, /* User, */ Building, BadgeCheck } from "lucide-react";
+import { MapPin, Bookmark, User, Building, BadgeCheck, MoreVertical } from "lucide-react";
 
 const EmployerSection: FC = () => {
 
@@ -26,8 +25,7 @@ const EmployerSection: FC = () => {
     { name: 'BOOKMARKED APPLICATION CARDS', path: '#' },
     { name: 'INTERVIEWS', path: '#' },
     { name: 'BOOKMARKED APPLICATION CARDS', path: '#' },
-    { name: 'REPORTS & ANALYTICS', path: '#' },
-    { name: '-', path: '#'}
+    { name: 'REPORTS & ANALYTICS', path: '#' }
   ];
 
   return (
@@ -43,16 +41,16 @@ const EmployerSection: FC = () => {
           <div className="flex flex-col items-start mt-2 space-y-2">
             <div className="flex items-center space-x-2 text-[11px] font-light text-white">
               <Building className="fill-[#D6D6D6] text-[#263238]" size={14} />
-              <span>Germany, South Africa and China</span>
+              <span className="text-[12px]">Germany, South Africa and China</span>
             </div>
-{/*             <div className="flex items-center space-x-2 text-[11px] font-light text-white">
+            <div className="flex items-center space-x-2 text-[11px] font-light text-white">
               <User className="fill-[#D6D6D6]" size={14} />
               <span>You have 20 Team members</span>
-            </div> */}
+            </div>
           </div>
         </div>
 
-        <div className="mt-4 md:mt-0 flex flex-col sm:flex-row gap-4 items-center">
+        <div className="mt-16 md:mt-0 flex flex-col sm:flex-row gap-4 items-center">
           <Select>
             <SelectTrigger className="flex justify-between items-center w-[336px] h-[42px] bg-white text-black rounded-md border-0 shadow-md text-[17px]">
               <span></span>
@@ -119,7 +117,7 @@ const EmployerSection: FC = () => {
                 className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4"
               >
                 <div className="flex items-center justify-center">
-                  <Card className="bg-[#F5F5F7] w-[308px] h-[380px] pl-4 pr-4">
+                  <Card className="bg-[#F5F5F7] w-[308px] h-[380px] pl-4 pr-4 relative">
                     <CardHeader className="flex items-start">
                       <div className="flex flex-col items-end justify-end w-full gap-2 ml-4">
                         <span className="text-sm text-gray-600 font-light">
@@ -139,7 +137,7 @@ const EmployerSection: FC = () => {
                           expressed interest as you Data Analyst
                         </p>
                         <span className="text-[10px] font-light">
-                          Skilled in:
+                          Primary Skills:
                         </span>
                       </div>
                       <div className="flex flex-wrap gap-1">
@@ -210,8 +208,9 @@ const EmployerSection: FC = () => {
                           Schedule Interview
                         </Button>
                       </div>
+                      <MoreVertical size={12} className="text-gray-700 cursor-pointer absolute bottom-2 right-2" />
+                      
                     </CardContent>
-                    <CardFooter></CardFooter>
                   </Card>
                 </div>
               </CarouselItem>
@@ -231,13 +230,14 @@ const EmployerSection: FC = () => {
         </Carousel>
       </div>
 
+      {/*Navigations*/}
       <nav className="flex flex-col bg-black text-white w-full rounded-t-xl rounded-b-xl overflow-hidden py-2">
       {navItems.map((item, index) => (
         <div key={item.path}>
           <div className="w-full text-center">
             <NavLink
               to={item.path}
-              className="hover:text-[#F5722E] py-2 inline-block"
+              className="hover:text-[#F5722E] py-4 inline-block"
             >
               {item.name}
             </NavLink>
@@ -268,9 +268,10 @@ const EmployerSection: FC = () => {
                 className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4"
               >
                 <div className="flex items-center justify-center">
-                  <Card className="bg-[#F5F5F7] w-[308px] h-[243px] pl-4 pr-4">
+                <Card className="bg-[#F5F5F7] w-[308px] h-[243px] pr-4 relative">
                     <CardHeader className="flex justify-between items-start">
                       <div className="flex flex-col items-end justify-end w-full gap-2 ml-4">
+                        <span className="absolute top-7 left-6 text-[#F5722E] text-[10px] font-semibold">☆ NEW</span>
                         <span className="text-[11px] text-gray-600 font-light">
                           Posted 3 days ago
                         </span>
@@ -278,14 +279,14 @@ const EmployerSection: FC = () => {
                       </div>
                       <div>
                         <CardTitle className="text-[17px]">
-                          Olivia Davis
+                          Emma Johnson
                         </CardTitle>
                         <p className="text-[10px] text-[#F5722E] flex items-center ">
                           <MapPin size={9} className="mr-1 text-[#F5722E]" />{" "}
-                          Located in London, United Kingdom
+                          Located in Perth, Australia
                         </p>
                         <p className="text-[10px] font-light">
-                          expressed interest as you Data Analyst
+                          expressed interest as your <span className="underline text-[#F5722E]">Mobile App Developer</span>
                         </p>
                         <span className="text-[10px] font-light">
                           Skilled in:
@@ -309,13 +310,23 @@ const EmployerSection: FC = () => {
                         </span>
                       </div>
                     </CardHeader>
-                    <CardContent></CardContent>
-                    <CardFooter></CardFooter>
+                    
+                    <MoreVertical size={12} className="text-gray-700 cursor-pointer absolute bottom-2 right-2" />
                   </Card>
                 </div>
               </CarouselItem>
             ))}
           </CarouselContent>
+          <div className="flex justify-center mt-4 space-x-2">
+            {Array.from({ length: 3 }).map((_, index) => (
+              <button
+                key={index}
+                className={`w-2 h-2 rounded-full ${
+                  index === 0 ? "bg-[#F5722E]" : "bg-gray-400"
+                }`}
+              />
+            ))}
+          </div>
         </Carousel>
       </div>
     </div>

@@ -1,6 +1,5 @@
 import { FC } from "react";
 import { Button } from "components";
-//import { GraduationCap } from "lucide-react"; 
 import { NavLink, useNavigate } from "react-router-dom";
 
 interface FullScreenMenuProps {
@@ -8,14 +7,15 @@ interface FullScreenMenuProps {
 }
 
 const EmployerFcm: FC<FullScreenMenuProps> = ({ isOpen }) => {
-
   const navItems = [
     { name: 'CREATE JOB LISTING', path: '#' },
     { name: 'MANAGE JOB LISTINGS', path: '#' },
+    { name: 'EDIT COMPANY PROFILE', path: '#' },
     { name: 'REPORTS & ANALYTICS', path: '#' },
     { name: 'INTERVIEWS', path: '#' },
+    { name: '✦ SUBSCRIPTION PLANS', path: '#' },
     { name: 'ACCOUNT SETTINGS', path: '#'},
-    { name: 'SIGN OUT', path: '#'}
+    { name: 'FAQ', path: '#'}
   ];
 
   const navigate = useNavigate();
@@ -27,34 +27,54 @@ const EmployerFcm: FC<FullScreenMenuProps> = ({ isOpen }) => {
       }`}
       style={{ top: "73px" }}
     >
-      <nav className="flex flex-col text-white w-full overflow-hidden pt-6">
-      {navItems.map((item, index) => (
-        <div key={item.path}>
-          <div className="w-full text-end pr-4">
-            {index === 0 ? (
-              <Button
-                onClick={() => navigate(item.path)}
-                className="hover:text-[#F5722E] bg-[#F5722E] text-[12px] py-2 inline-block text-right mb-3 font-semibold"
-              >
-                {item.name}
-              </Button>
-            ) : (
-              <NavLink
-                to={item.path}
-                className="hover:text-[#F5722E] py-2 inline-block"
-              >
-                {item.name}
-              </NavLink>
+      <nav className="flex flex-col text-white w-full h-full overflow-hidden pt-6">
+        {navItems.map((item, index) => (
+          <div key={item.path}>
+            <div className="w-full text-end pr-4">
+              {index === 0 ? (
+                <Button
+                  onClick={() => navigate(item.path)}
+                  className="hover:text-[#F5722E] bg-[#F5722E] text-[12px] py-2 inline-block text-right mb-3 font-semibold"
+                >
+                  {item.name}
+                </Button>
+              ) : (
+                <NavLink
+                  to={item.path}
+                  className="hover:text-[#F5722E] py-2 inline-block text-sm"
+                >
+                  {item.name}
+                </NavLink>
+              )}
+            </div>
+            {index < navItems.length && (
+              <div className="flex justify-center w-full">
+                <hr className="border-t border-white w-[95%] my-0" />
+              </div>
             )}
           </div>
-          {index < navItems.length && (
-            <div className="flex justify-center w-full">
-              <hr className="border-t border-white w-[95%] my-0" />
-            </div>
-          )}
+        ))}
+
+        {/* Bottom section */}
+        <div className="mt-auto mb-20">
+          <div className="flex justify-center space-x-4 mb-4">
+            <NavLink to="/about" className="hover:text-[#F5722E] text-sm">
+              ABOUT US
+            </NavLink>
+            <NavLink to="/contact" className="hover:text-[#F5722E] text-sm">
+              CONTACT US
+            </NavLink>
+          </div>
+          <div className="flex justify-center">
+            <Button
+              className="bg-black text-white text-sm hover:bg-[#F5722E] outline outline-1 outline-white"
+              onClick={() => {/* Add sign out logic here */}}
+            >
+              SIGN OUT
+            </Button>
+          </div>
         </div>
-      ))}
-    </nav>
+      </nav>
     </div>
   );
 };
