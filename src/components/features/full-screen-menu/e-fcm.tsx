@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { Button } from "components";
 import { NavLink, useNavigate } from "react-router-dom";
 
@@ -20,6 +20,19 @@ const EmployerFcm: FC<FullScreenMenuProps> = ({ isOpen }) => {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'visible';
+    }
+
+    return () => {
+      document.body.style.overflow = 'visible';
+    };
+  }, [isOpen]);
+
+
   return (
     <div
       className={`fixed inset-0 bg-black text-white z-50 transition-transform duration-500 ease-in-out ${
@@ -27,7 +40,7 @@ const EmployerFcm: FC<FullScreenMenuProps> = ({ isOpen }) => {
       }`}
       style={{ top: "73px" }}
     >
-      <nav className="flex flex-col text-white w-full h-full overflow-hidden pt-6">
+      <nav className="flex flex-col text-white w-full h-full overflow-y-auto pt-6">
         {navItems.map((item, index) => (
           <div key={item.path}>
             <div className="w-full text-end pr-4">

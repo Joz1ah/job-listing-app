@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { Button } from "components/ui/buttons";
 
@@ -16,6 +16,18 @@ const JobHunterFcm: FC<FullScreenMenuProps> = ({ isOpen }) => {
     { name: 'FAQ', path: '#'}
   ];
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'visible';
+    }
+
+    return () => {
+      document.body.style.overflow = 'visible';
+    };
+  }, [isOpen]);
+
   return (
     <div
       className={`fixed inset-0 bg-black text-white z-50 transition-transform duration-500 ease-in-out ${
@@ -23,7 +35,7 @@ const JobHunterFcm: FC<FullScreenMenuProps> = ({ isOpen }) => {
       }`}
       style={{ top: "73px" }}
     >
-      <nav className="flex flex-col text-white w-full h-full overflow-hidden pt-12">
+      <nav className="flex flex-col text-white w-full h-full overflow-y-auto pt-12">
         {navItems.map((item, index) => (
           <div key={item.path}>
             <div className="w-full text-end pr-4">
