@@ -117,8 +117,8 @@ const EmployerSection: FC = () => {
                 className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4"
               >
                 <div className="flex items-center justify-center">
-                  <Card className="bg-[#F5F5F7] w-[308px] h-[380px] pl-4 pr-4 relative">
-                    <CardHeader className="flex items-start">
+                  <Card className="bg-[#F5F5F7] w-[300px] h-[380px] pr-4 relative">
+                    <CardHeader className="flex items-start pb-3">
                       <div className="flex flex-col items-end justify-end w-full gap-2 ml-4">
                         <span className="text-sm text-gray-600 font-light">
                           Posted 3 days ago
@@ -133,7 +133,7 @@ const EmployerSection: FC = () => {
                           <MapPin size={9} className="mr-1 text-[#F5722E]" />{" "}
                           Located in London, United Kingdom
                         </p>
-                        <p className="text-[10px] font-light">
+                        <p className="text-[10px] font-light pb-2">
                           expressed interest as you Data Analyst
                         </p>
                         <span className="text-[10px] font-light">
@@ -141,19 +141,19 @@ const EmployerSection: FC = () => {
                         </span>
                       </div>
                       <div className="flex flex-wrap gap-1">
-                        <span className="bg-[#3A86FF] text-white px-2 py-1 rounded-[2px] text-[8px] font-semibold">
+                        <span className="bg-[#168AAD] text-white px-2 py-1 rounded-[2px] text-[8px] font-semibold">
                           Data Visualization
                         </span>
-                        <span className="bg-[#3A0CA3] text-white px-2 py-1 rounded-[2px] text-[8px] font-semibold">
+                        <span className="bg-[#184E77] text-white px-2 py-1 rounded-[2px] text-[8px] font-semibold">
                           Tablue
                         </span>
-                        <span className="bg-[#3A86FF] text-white px-2 py-1 rounded-[2px] text-[8px] font-semibold">
+                        <span className="bg-[#168AAD] text-white px-2 py-1 rounded-[2px] text-[8px] font-semibold">
                           Tablue
                         </span>
-                        <span className="bg-[#3A0CA3] text-white px-2 py-1 rounded-[2px] text-[8px] font-semibold">
+                        <span className="bg-[#184E77] text-white px-2 py-1 rounded-[2px] text-[8px] font-semibold">
                           Excel
                         </span>
-                        <span className="bg-[#3A0CA3] text-white px-2 py-1 rounded-[2px] text-[8px] font-semibold">
+                        <span className="bg-[#184E77] text-white px-2 py-1 rounded-[2px] text-[8px] font-semibold">
                           Statistical Analysis
                         </span>
                       </div>
@@ -281,10 +281,10 @@ const EmployerSection: FC = () => {
                         <CardTitle className="text-[17px]">
                           Emma Johnson
                         </CardTitle>
-                        <p className="text-[10px] text-[#F5722E] flex items-center ">
+                        <span className="text-[10px] text-[#F5722E] flex items-center">
                           <MapPin size={9} className="mr-1 text-[#F5722E]" />{" "}
                           Located in Perth, Australia
-                        </p>
+                        </span>
                         <p className="text-[10px] font-light">
                           expressed interest as your <span className="underline text-[#F5722E]">Mobile App Developer</span>
                         </p>

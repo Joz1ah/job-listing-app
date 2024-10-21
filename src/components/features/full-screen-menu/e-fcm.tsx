@@ -13,9 +13,11 @@ const EmployerFcm: FC<FullScreenMenuProps> = ({ isOpen }) => {
     { name: 'EDIT COMPANY PROFILE', path: '#' },
     { name: 'REPORTS & ANALYTICS', path: '#' },
     { name: 'INTERVIEWS', path: '#' },
+    { name: 'ABOUT US', path: '#'},
+    { name: 'CONTACT US', path: '#'},
     { name: '✦ SUBSCRIPTION PLANS', path: '#' },
     { name: 'ACCOUNT SETTINGS', path: '#'},
-    { name: 'FAQ', path: '#'}
+    { name: 'SIGN OUT', path: '#'}
   ];
 
   const navigate = useNavigate();
@@ -67,26 +69,6 @@ const EmployerFcm: FC<FullScreenMenuProps> = ({ isOpen }) => {
             )}
           </div>
         ))}
-
-        {/* Bottom section */}
-        <div className="mt-auto mb-20">
-          <div className="flex justify-center space-x-4 mb-4">
-            <NavLink to="/about" className="hover:text-[#F5722E] text-sm">
-              ABOUT US
-            </NavLink>
-            <NavLink to="/contact" className="hover:text-[#F5722E] text-sm">
-              CONTACT US
-            </NavLink>
-          </div>
-          <div className="flex justify-center">
-            <Button
-              className="bg-black text-white text-sm hover:bg-[#F5722E] outline outline-1 outline-white"
-              onClick={() => {/* Add sign out logic here */}}
-            >
-              SIGN OUT
-            </Button>
-          </div>
-        </div>
       </nav>
     </div>
   );

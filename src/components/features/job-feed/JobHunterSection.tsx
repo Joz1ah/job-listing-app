@@ -29,6 +29,95 @@ const JobHunterSection: FC = () => {
     { name: 'SUBCRIBE TO MORE OPPORTUNITIES', path: '#'}
   ];
 
+  const jobCardData = [
+    {
+      title: "Solutions Architect",
+      company: "Samsung Australia",
+      location: "Remote (Company based in Australia)",
+      postedAgo: "3 days ago",
+      salary: "PHP 80,000 / month",
+      jobType: "Full Time",
+      description: "The Mobile Application Developer develops and tests new hybrid mobile applications using web technologies and the Ionic framework to deliver high-quality application experiences across multiple mobile platforms.",
+      skills: [
+        { name: "Angular", required: true },
+        { name: "JavaScript", required: false },
+        { name: "Flutter", required: true },
+        { name: "React", required: false },
+        { name: "HTML5", required: true },
+        { name: "Golang", required: false },
+        { name: "CSS", required: true }
+      ]
+    },
+    {
+      title: "Frontend Developer",
+      company: "TechCorp Inc.",
+      location: "New York, NY (Hybrid)",
+      postedAgo: "1 day ago",
+      salary: "USD 90,000 - 120,000 / year",
+      jobType: "Full Time",
+      description: "We're seeking a talented Frontend Developer to join our dynamic team. You'll be responsible for building responsive user interface components using React and implementing pixel-perfect designs.",
+      skills: [
+        { name: "React", required: true },
+        { name: "TypeScript", required: true },
+        { name: "CSS-in-JS", required: false },
+        { name: "Redux", required: false },
+        { name: "Jest", required: true },
+        { name: "Webpack", required: false }
+      ]
+    },
+    {
+      title: "Data Scientist",
+      company: "AI Innovations Ltd.",
+      location: "Remote (Global)",
+      postedAgo: "5 days ago",
+      salary: "EUR 70,000 - 100,000 / year",
+      jobType: "Contract",
+      description: "Join our cutting-edge AI team to develop machine learning models for predictive analytics. You'll work on challenging problems and contribute to groundbreaking research in the field of artificial intelligence.",
+      skills: [
+        { name: "Python", required: true },
+        { name: "TensorFlow", required: true },
+        { name: "PyTorch", required: false },
+        { name: "SQL", required: true },
+        { name: "Spark", required: false },
+        { name: "Scikit-learn", required: true }
+      ]
+    },
+    {
+      title: "DevOps Engineer",
+      company: "CloudScale Solutions",
+      location: "Seattle, WA (On-site)",
+      postedAgo: "2 weeks ago",
+      salary: "USD 110,000 - 150,000 / year",
+      jobType: "Full Time",
+      description: "We're looking for a skilled DevOps Engineer to help us build and maintain our cloud infrastructure. You'll be responsible for automating deployment processes, optimizing system performance, and ensuring high availability of our services.",
+      skills: [
+        { name: "AWS", required: true },
+        { name: "Kubernetes", required: true },
+        { name: "Docker", required: true },
+        { name: "Terraform", required: false },
+        { name: "Jenkins", required: false },
+        { name: "Python", required: true }
+      ]
+    },
+    {
+      title: "UX/UI Designer",
+      company: "Creative Minds Agency",
+      location: "London, UK (Flexible)",
+      postedAgo: "4 days ago",
+      salary: "GBP 45,000 - 65,000 / year",
+      jobType: "Full Time",
+      description: "Join our creative team to design intuitive and visually appealing user interfaces for web and mobile applications. You'll collaborate closely with product managers and developers to bring designs to life.",
+      skills: [
+        { name: "Figma", required: true },
+        { name: "Adobe XD", required: false },
+        { name: "Sketch", required: false },
+        { name: "Prototyping", required: true },
+        { name: "User Research", required: true },
+        { name: "Interaction Design", required: true }
+      ]
+    }
+  ];
+
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       <div className="md:flex md:justify-between md:items-center mb-20">
@@ -76,103 +165,90 @@ const JobHunterSection: FC = () => {
         </div>
       </div>
 
-      <div className="w-full max-w-sm mx-auto relative">
-        <Carousel
-          opts={{
-            align: "center",
-            loop: true,
-          }}
-          className="w-full"
-        >
-          <h3 className="flex justify-center items-center mt-2 gap-2 text-[17px] text-[#F5722E] text-center font-semibold pb-2">
-            <img
-              src={sparkeIcon}
-              alt="Sparkle Icon"
-              className="w-[22px] h-[24px]"
-            />
-            PERFECT MATCH
-          </h3>
+      <Carousel
+        opts={{
+          align: "center",
+          loop: false
+        }}
+        className="w-full"
+      >
+        <h3 className="flex justify-center items-center mt-2 gap-2 text-[17px] text-[#F5722E] text-center font-semibold pb-2">
+          <img
+            src={sparkeIcon}
+            alt="Sparkle Icon"
+            className="w-[22px] h-[24px]"
+          />
+          PERFECT MATCH
+        </h3>
 
-          <CarouselContent className="-ml-4">
-            {Array.from({ length: 5 }).map((_, index) => (
-              <CarouselItem key={index} className="pl-4 basis-[320px]">
-                <div className="relative">
-                  <Card className="bg-[#F5F5F7] w-[308px] h-[380px] p-4 transition-all duration-300 hover:shadow-lg">
-                    <CardHeader className="flex items-start p-0">
-                      <div className="flex flex-col items-end justify-end w-full gap-2">
-                        <span className="text-sm text-gray-600 font-light">
-                          Posted 3 days ago
-                        </span>
-                        <Bookmark className="text-[#F5722E]" size={25}/>
-                      </div>
-                      <div className="pl-6">
-                        <CardTitle className="text-[17px]">
-                          Solutions Architect
-                        </CardTitle>
-                        <CardDescription className="text-[13px] text-black underline">
-                          Samsung Australia
-                        </CardDescription>
-                        <p className="text-[10px] text-[#F5722E] flex items-center mb-2">
-                          <MapPin size={9} className="mr-1 text-[#F5722E]" />
-                          Remote (Company based in Australia)
-                        </p>
-                        <div className="flex flex-wrap justify-start gap-2">
-                          <span className="bg-white text-[#F5722E] px-2 py-1 rounded-[2px] text-[10px] outline outline-1 outline-[#F5722E]">
-                            PHP 80,000 / month
-                          </span>
-                          <span className="bg-[#F5722E] text-white px-2 py-1 rounded-[2px] text-[10px]">
-                            Full Time
-                          </span>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="pl-6 mt-4">
-                      <p className="text-[11px]">
-                        The Mobile Application Developer develops and tests new
-                        hybrid mobile applications using web technologies and
-                        the Ionic framework to deliver high-quality application
-                        experiences across multiple mobile platforms.
+        <CarouselContent>
+          {jobCardData.map((job, index) => (
+            <CarouselItem key={index} className="pl-4 basis-[320px]">
+              <div className="relative">
+                <Card className="bg-[#F5F5F7] w-[308px] h-[380px] p-4 transition-all duration-300 hover:shadow-lg">
+                  <CardHeader className="flex items-start p-0">
+                    <div className="flex flex-col items-end justify-end w-full gap-2">
+                      <span className="text-sm text-gray-600 font-light">
+                        Posted {job.postedAgo}
+                      </span>
+                      <Bookmark className="text-[#F5722E]" size={25}/>
+                    </div>
+                    <div className="pl-6">
+                      <CardTitle className="text-[17px]">
+                        {job.title}
+                      </CardTitle>
+                      <CardDescription className="text-[13px] text-black underline">
+                        {job.company}
+                      </CardDescription>
+                      <p className="text-[10px] text-[#F5722E] flex items-center mb-2">
+                        <MapPin size={9} className="mr-1 text-[#F5722E]" />
+                        {job.location}
                       </p>
-                    </CardContent>
-                    <CardFooter className="flex flex-wrap gap-2 pl-6">
-                      {[
-                        "Angular",
-                        "JavaScript",
-                        "Flutter",
-                        "React",
-                        "HTML5",
-                        "Golang",
-                        "CSS",
-                      ].map((skill) => (
-                        <span
-                          key={skill}
-                          className={`px-1 py-0.5 text-[8px] rounded-[2px] font-semibold ${
-                            Math.random() > 0.5
-                              ? "bg-[#2194F3] text-white outline-none"
-                              : "bg-transparent text-[#2194F3] outline outline-1 outline-[#2194F3]"
-                          }`}
-                        >
-                          {skill}
+                      <div className="flex flex-wrap justify-start gap-2">
+                        <span className="bg-white text-[#F5722E] px-2 py-1 rounded-[2px] text-[10px] outline outline-1 outline-[#F5722E]">
+                          {job.salary}
                         </span>
-                      ))}
-                    </CardFooter>
-                  </Card>
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <div className="flex justify-center mt-4 space-x-2">
-            {Array.from({ length: 3 }).map((_, index) => (
-              <button
-                key={index}
-                className={`w-2 h-2 rounded-full ${
-                  index === 0 ? "bg-[#F5722E]" : "bg-gray-400"
-                }`}
-              />
-            ))}
-          </div>
-        </Carousel>
-      </div>
+                        <span className="bg-[#F5722E] text-white px-2 py-1 rounded-[2px] text-[10px]">
+                          {job.jobType}
+                        </span>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pl-6 mt-4">
+                    <p className="text-[11px]">
+                      {job.description}
+                    </p>
+                  </CardContent>
+                  <CardFooter className="flex flex-wrap gap-2 pl-6">
+                    {job.skills.map((skill, skillIndex) => (
+                      <span
+                        key={skillIndex}
+                        className={`px-1 py-0.5 text-[8px] rounded-[2px] font-semibold ${
+                          skill.required
+                            ? "bg-[#2194F3] text-white outline-none"
+                            : "bg-transparent text-[#2194F3] outline outline-1 outline-[#2194F3]"
+                        }`}
+                      >
+                        {skill.name}
+                      </span>
+                    ))}
+                  </CardFooter>
+                </Card>
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <div className="flex justify-center mt-4 space-x-2">
+          {jobCardData.map((_, index) => (
+            <button
+              key={index}
+              className={`w-2 h-2 rounded-full ${
+                index === 0 ? "bg-[#F5722E]" : "bg-gray-400"
+              }`}
+            />
+          ))}
+        </div>
+      </Carousel>
 
       {/* Navigations */}
       <nav className="flex flex-col bg-black text-white w-full rounded-t-xl rounded-b-xl overflow-hidden py-2">

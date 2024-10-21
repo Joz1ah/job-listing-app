@@ -1,6 +1,5 @@
 import { FC, useEffect } from "react";
 import { NavLink } from "react-router-dom";
-import { Button } from "components/ui/buttons";
 
 interface FullScreenMenuProps {
   isOpen: boolean;
@@ -10,10 +9,14 @@ const JobHunterFcm: FC<FullScreenMenuProps> = ({ isOpen }) => {
 
   const navItems = [
     { name: 'EDIT APPLICATION CARD', path: '#' },
-    { name: 'ACCOUNT SETTINGS', path: '#' },
-    { name: 'BOOKMARKED JOBS', path: '#' },
+    { name: 'BOOKMARKED JOBS', path: '#'},
     { name: 'INTERVIEWS', path: '#'},
-    { name: 'FAQ', path: '#'}
+    { name: 'ABOUT US', path: '#'},
+    { name: 'CONTACT US', path: '#' },
+    { name: '✦ SUBSCRIPTION PLANS', path: '#' },
+    { name: 'FAQ', path: '#'},
+    { name: 'ACCOUNT SETTINGS', path: '#'},
+    { name: 'SIGN OUT', path: '#'}
   ];
 
   useEffect(() => {
@@ -54,25 +57,6 @@ const JobHunterFcm: FC<FullScreenMenuProps> = ({ isOpen }) => {
           </div>
         ))}
         
-        {/* Bottom section */}
-        <div className="mt-auto mb-20">
-          <div className="flex justify-center space-x-4 mb-4">
-            <NavLink to="/about" className="hover:text-[#F5722E] text-sm">
-              ABOUT US
-            </NavLink>
-            <NavLink to="/contact" className="hover:text-[#F5722E] text-sm">
-              CONTACT US
-            </NavLink>
-          </div>
-          <div className="flex justify-center">
-            <Button
-              className="bg-black text-white text-sm hover:bg-[#F5722E] outline outline-1 outline-white"
-              onClick={() => {/* Add sign out logic here */}}
-            >
-              SIGN OUT
-            </Button>
-          </div>
-        </div>
       </nav>
     </div>
   );
