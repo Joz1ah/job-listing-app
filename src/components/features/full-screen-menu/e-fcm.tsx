@@ -37,10 +37,9 @@ const EmployerFcm: FC<FullScreenMenuProps> = ({ isOpen }) => {
 
   return (
     <div
-      className={`fixed inset-0 bg-black text-white z-50 transition-transform duration-500 ease-in-out ${
+      className={`fixed top-[73px] inset-0 bg-black text-white z-50 transition-transform duration-500 ease-in-out ${
         isOpen ? "translate-x-0" : "translate-x-full"
       }`}
-      style={{ top: "73px" }}
     >
       <nav className="flex flex-col text-white w-full h-full overflow-y-auto pt-6">
         {navItems.map((item, index) => (
