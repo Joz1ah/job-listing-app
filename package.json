@@ -112,6 +112,7 @@
     "cookie-parser": "1.4.7",
     "cross-fetch": "4.0.0",
     "embla-carousel-react": "^8.3.0",
+    "formik": "^2.4.6",
     "helmet": "8.0.0",
     "identity-obj-proxy": "3.0.0",
     "lucide-react": "^0.452.0",
@@ -125,6 +126,7 @@
     "serialize-javascript": "6.0.2",
     "tailwind-merge": "^2.5.3",
     "tailwindcss-animate": "^1.0.7",
+    "yup": "^1.4.0",
     "zod": "^3.23.8"
   },
   "overrides": {

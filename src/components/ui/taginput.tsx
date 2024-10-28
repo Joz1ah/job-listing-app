@@ -6,13 +6,16 @@ interface TagInputProps {
   onChange: (value: string) => void;
   className?: string;
   tagClassName?: string;
+  name?:string
+  onBlur?: (value: string) => void
 }
 
 const TagInput: React.FC<TagInputProps> = ({ 
   value, 
   onChange, 
   className,
-  tagClassName = "bg-[#184E77] hover:bg-blue-700"
+  tagClassName = "bg-[#184E77] hover:bg-blue-700",
+  onBlur,
 }) => {
   const [inputValue, setInputValue] = useState<string>('');
   
@@ -38,6 +41,12 @@ const TagInput: React.FC<TagInputProps> = ({
     setInputValue(e.target.value);
   };
 
+  const handleInputBlur = () => {
+    if (onBlur) {
+      onBlur(value);
+    }
+  };
+
   const removeTag = (indexToRemove: number) => {
     const newTags = tags.filter((_, index) => index !== indexToRemove);
     onChange(newTags.join(','));
@@ -61,6 +70,7 @@ const TagInput: React.FC<TagInputProps> = ({
             value={inputValue}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
+            onBlur={handleInputBlur}
             className="!w-auto flex-[1_0_120px] border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent h-8 p-0"
           />
         </div>
