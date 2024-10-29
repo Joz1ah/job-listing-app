@@ -12,7 +12,11 @@ import {
   CardTitle,
 } from "components";
 
-const PerfectMatch = () => {
+interface selectedProps {
+  setSelectedTab: (tab: string) => void;
+}
+
+const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
   const perfectMatch = [
     {
       name: "Olivia Davis",
@@ -28,126 +32,110 @@ const PerfectMatch = () => {
       appliedAgo: "3 days ago",
     },
     {
-      name: "Olivia Davis",
-      location: "London, United Kingdom",
-      job: "Junior Front End Developer",
-      skills: [
-        "Data Visualization",
-        "Python",
-        "SQL",
-        "Excel",
-        "Database Analysis",
-      ],
-      appliedAgo: "3 days ago",
+      name: "James Brown",
+      location: "Manchester, United Kingdom",
+      job: "Data Analyst",
+      skills: ["SQL", "Power BI", "Excel", "Python", "Data Modeling"],
+      appliedAgo: "1 week ago",
     },
     {
-      name: "Olivia Davis",
-      location: "London, United Kingdom",
-      job: "Junior Front End Developer",
+      name: "Sophia Martinez",
+      location: "New York, USA",
+      job: "Back End Developer",
       skills: [
-        "Data Visualization",
-        "Python",
+        "Java",
+        "Spring Boot",
+        "REST APIs",
         "SQL",
-        "Excel",
-        "Database Analysis",
+        "Microservices",
+        "Spring Boot",
+        "REST APIs",
+        "SQL",
+        "Microservices",
+        "Java",
+        "Spring Boot",
+        "REST APIs",
+        "SQL",
+        "Microservices",
+        "Spring Boot",
+        "REST APIs",
+        "SQL",
+        "Microservices"
       ],
-      appliedAgo: "3 days ago",
+      appliedAgo: "2 days ago",
     },
     {
-      name: "Olivia Davis",
-      location: "London, United Kingdom",
-      job: "Junior Front End Developer",
-      skills: [
-        "Data Visualization",
-        "Python",
-        "SQL",
-        "Excel",
-        "Database Analysis",
-      ],
-      appliedAgo: "3 days ago",
+      name: "Michael Thompson",
+      location: "Toronto, Canada",
+      job: "Software Engineer",
+      skills: ["JavaScript", "React", "Node.js", "TypeScript", "GraphQL"],
+      appliedAgo: "4 days ago",
     },
     {
-      name: "Olivia Davis",
-      location: "London, United Kingdom",
-      job: "Junior Front End Developer",
+      name: "Emily Chen",
+      location: "Sydney, Australia",
+      job: "Data Scientist",
       skills: [
-        "Data Visualization",
         "Python",
-        "SQL",
-        "Excel",
-        "Database Analysis",
+        "Machine Learning",
+        "Pandas",
+        "R",
+        "Data Visualization",
       ],
-      appliedAgo: "3 days ago",
+      appliedAgo: "5 days ago",
     },
     {
-      name: "Olivia Davis",
-      location: "London, United Kingdom",
-      job: "Junior Front End Developer",
-      skills: [
-        "Data Visualization",
-        "Python",
-        "SQL",
-        "Excel",
-        "Database Analysis",
-      ],
-      appliedAgo: "3 days ago",
+      name: "Alexander Kim",
+      location: "Seoul, South Korea",
+      job: "Full Stack Developer",
+      skills: ["JavaScript", "Vue.js", "Node.js", "MySQL", "AWS"],
+      appliedAgo: "1 day ago",
     },
     {
-      name: "Olivia Davis",
-      location: "London, United Kingdom",
-      job: "Junior Front End Developer",
+      name: "Grace Lee",
+      location: "San Francisco, USA",
+      job: "Product Manager",
       skills: [
-        "Data Visualization",
-        "Python",
+        "Agile",
+        "User Research",
         "SQL",
-        "Excel",
-        "Database Analysis",
+        "Prototyping",
+        "Roadmap Planning",
       ],
-      appliedAgo: "3 days ago",
+      appliedAgo: "3 weeks ago",
     },
     {
-      name: "Olivia Davis",
-      location: "London, United Kingdom",
-      job: "Junior Front End Developer",
+      name: "Daniel Wilson",
+      location: "Berlin, Germany",
+      job: "Mobile Developer",
       skills: [
-        "Data Visualization",
-        "Python",
-        "SQL",
-        "Excel",
-        "Database Analysis",
+        "Swift",
+        "iOS Development",
+        "Kotlin",
+        "React Native",
+        "Firebase",
       ],
-      appliedAgo: "3 days ago",
+      appliedAgo: "2 weeks ago",
     },
     {
-      name: "Olivia Davis",
-      location: "London, United Kingdom",
-      job: "Junior Front End Developer",
-      skills: [
-        "Data Visualization",
-        "Python",
-        "SQL",
-        "Excel",
-        "Database Analysis",
-      ],
-      appliedAgo: "3 days ago",
-    },
-    {
-      name: "Olivia Davis",
-      location: "London, United Kingdom",
-      job: "Junior Front End Developer",
-      skills: [
-        "Data Visualization",
-        "Python",
-        "SQL",
-        "Excel",
-        "Database Analysis",
-      ],
-      appliedAgo: "3 days ago",
+      name: "Isabella Garcia",
+      location: "Barcelona, Spain",
+      job: "UI/UX Designer",
+      skills: ["Sketch", "Adobe XD", "Figma", "User Research", "Wireframing"],
+      appliedAgo: "6 days ago",
     },
   ];
 
   const getRandomColor = () => {
     return Math.random() < 0.5 ? "#184E77" : "#168AAD";
+  };
+
+  const handleClick = () => {
+    setSelectedTab("otherApplications");
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
 
   return (
@@ -162,10 +150,16 @@ const PerfectMatch = () => {
               <span className="text-[13px] text-orange-500 font-semibold">
                 ☆ NEW
               </span>
-              <div className="flex flex-col items-end -mr-2">
-                <span className="text-[11px] font-light text-gray-400">
-                  Applied {match.appliedAgo}
-                </span>
+              <div className="flex flex-col items-end">
+                <div className="flex flex-row items-center">
+                  <span className="text-[11px] font-light text-gray-400 -mr-2">
+                    Applied {match.appliedAgo}
+                  </span>
+                </div>
+                <Bookmark
+                  className="text-orange-500 absolute mt-5 -mr-2"
+                  size={26}
+                />
               </div>
             </div>
             <div>
@@ -173,9 +167,8 @@ const PerfectMatch = () => {
                 <CardTitle className="text-sm font-semibold">
                   {match.name}
                 </CardTitle>
-                <Bookmark className="text-orange-500 -mr-7" size={26} />
               </div>
-              <div className="flex flex-row items-center -mt-2">
+              <div className="flex flex-row items-center">
                 <MapPin size={14} className="text-orange-500" />
                 <p className="text-[13px] font-light mt-0">{match.location}</p>
               </div>
@@ -186,8 +179,9 @@ const PerfectMatch = () => {
             </div>
           </CardHeader>
           <CardContent>
+          <div className="h-[60px]">
             <span className="text-[13px] font-light">Primary Skills:</span>
-            <div className="flex flex-wrap gap-1 mb-4">
+            <div className="flex flex-wrap gap-1 max-h-[43px] overflow-y-hidden">
               {match.skills.map((skill, skillIndex) => (
                 <span
                   key={skillIndex}
@@ -198,8 +192,8 @@ const PerfectMatch = () => {
                 </span>
               ))}
             </div>
-
-            <div className="flex flex-col gap-1">
+          </div>
+            <div className="flex flex-col gap-1 mt-2">
               <div className="flex gap-2">
                 <span className="text-[13px] font-light">
                   Experience: 1 - 3 Years
@@ -236,7 +230,7 @@ const PerfectMatch = () => {
               </div>
             </div>
           </CardContent>
-          <CardFooter className="flex flex-row justify-end -mt-8 -mr-4 space-x-1">
+          <CardFooter className="flex flex-row justify-end -mt-9 -mr-4 space-x-1">
             <Button className="bg-orange-500 text-white text-[12px] font-semibold px-0 w-[133px] h-[27px]">
               Schedule Interview
             </Button>
@@ -244,11 +238,26 @@ const PerfectMatch = () => {
           </CardFooter>
         </Card>
       ))}
+      <div className="bg-transparent border-none w-full md:w-[436px] h-auto md:h-[275px] flex items-center justify-center text-center p-0">
+        <div className="p-10">
+          <p className="text-xl font-semibold text-white">
+            You've reached the end of your perfect matches for now!
+          </p>
+          <span className="text-white text-[20px] font-semibold ml-4">Explore</span>
+          <Button
+            variant="link"
+            className="text-[20px] text-orange-500  font-semibold pl-2 underline pt-0"
+            onClick={handleClick}
+          >
+            other application cards
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };
 
-const OtherApplications = () => {
+const OtherApplications: FC<selectedProps> = ({ setSelectedTab }) => {
   const others = [
     {
       name: "Oliver John",
@@ -308,6 +317,14 @@ const OtherApplications = () => {
     return Math.random() < 0.5 ? "#184E77" : "#168AAD";
   };
 
+  const handleClick = () => {
+    setSelectedTab("perfectMatch");
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
       {others.map((other, index) => (
@@ -320,10 +337,16 @@ const OtherApplications = () => {
               <span className="text-[13px] text-orange-500 font-semibold">
                 ☆ NEW
               </span>
-              <div className="flex flex-col items-end -mr-2">
-                <span className="text-[11px] font-light text-gray-400">
-                  Applied {other.appliedAgo}
-                </span>
+              <div className="flex flex-col items-end">
+                <div className="flex flex-row items-center">
+                  <span className="text-[11px] font-light text-gray-400 -mr-2">
+                    Applied {other.appliedAgo}
+                  </span>
+                </div>
+                <Bookmark
+                  className="text-orange-500 absolute mt-5 -mr-2"
+                  size={26}
+                />
               </div>
             </div>
             <div>
@@ -331,9 +354,8 @@ const OtherApplications = () => {
                 <CardTitle className="text-sm font-semibold">
                   {other.name}
                 </CardTitle>
-                <Bookmark className="text-orange-500 -mr-7" size={26} />
               </div>
-              <div className="flex flex-row items-center -mt-2">
+              <div className="flex flex-row items-center">
                 <MapPin size={14} className="text-orange-500" />
                 <p className="text-[13px] font-light mt-0">{other.location}</p>
               </div>
@@ -344,8 +366,9 @@ const OtherApplications = () => {
             </div>
           </CardHeader>
           <CardContent>
+          <div className="h-[60px] p-0 m-0">
             <span className="text-[13px] font-light">Primary Skills:</span>
-            <div className="flex flex-wrap gap-1 mb-4">
+            <div className="flex flex-wrap gap-1 mt-1 max-h-[52px] overflow-y-auto">
               {other.skills.map((skill, skillIndex) => (
                 <span
                   key={skillIndex}
@@ -356,8 +379,8 @@ const OtherApplications = () => {
                 </span>
               ))}
             </div>
-
-            <div className="flex flex-col gap-1">
+          </div>
+            <div className="flex flex-col gap-1 mt-2">
               <div className="flex gap-2">
                 <span className="text-[13px] font-light">
                   Experience: 1 - 3 Years
@@ -394,7 +417,7 @@ const OtherApplications = () => {
               </div>
             </div>
           </CardContent>
-          <CardFooter className="flex flex-row justify-end -mt-8 -mr-4 space-x-1">
+          <CardFooter className="flex flex-row justify-end -mt-9 -mr-4 space-x-1">
             <Button className="bg-orange-500 text-white text-[12px] font-semibold px-0 w-[133px] h-[27px]">
               Schedule Interview
             </Button>
@@ -402,6 +425,21 @@ const OtherApplications = () => {
           </CardFooter>
         </Card>
       ))}
+      <div className="bg-transparent border-none w-full md:w-[436px] h-auto md:h-[275px] flex items-center justify-center text-center p-0">
+        <div className="p-10">
+          <p className="text-xl font-semibold text-white">
+            You've reached the end of your other application cards for now!
+          </p>
+          <span className="text-white text-[20px] font-semibold ml-4">Explore your</span>
+          <Button
+            variant="link"
+            className="text-[20px] text-orange-500  font-semibold pl-2 underline pt-0"
+            onClick={handleClick}
+          >
+            perfect matches
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };
@@ -412,24 +450,32 @@ const EmployerSectionDesktop: FC = () => {
   return (
     <>
       {/* Application cards */}
-      <div className="flex flex-col items-center pt-8 md:pt-24 mt-8 md:mt-12 px-4 md:pr-24 pb-4 ml-0 pl-0">
+      <div className="flex flex-col items-center pt-8 md:pt-24 mt-8 md:mt-12 px-4 md:pr-24 pb-4 ml-0 pl-0 mb-8">
         <div className="flex mb-8 md:mb-12">
           <button
             className={`font-semibold mr-6 pb-2 text-[17px] inline-flex items-center gap-2 ${
               selectedTab === "perfectMatch"
                 ? "text-orange-500 border-b-2 border-orange-500"
-                : "text-white"
+                : "text-[#AEADAD]"
             }`}
             onClick={() => setSelectedTab("perfectMatch")}
           >
-            <img src={sparkeIcon} alt="Sparkle Icon" className="w-5 h-5" />
+            <img
+              src={sparkeIcon}
+              alt="Sparkle Icon"
+              className={`w-5 h-5 ${
+                selectedTab === "perfectMatch"
+                  ? "filter grayscale-0"
+                  : "filter grayscale"
+              }`}
+            />
             PERFECT MATCH
           </button>
           <button
             className={`font-semibold pb-2 text-[17px] ${
               selectedTab === "otherApplications"
                 ? "text-orange-500 border-b-2 border-orange-500"
-                : "text-white"
+                : "text-[#AEADAD]"
             }`}
             onClick={() => setSelectedTab("otherApplications")}
           >
@@ -439,9 +485,9 @@ const EmployerSectionDesktop: FC = () => {
 
         <div className="w-full">
           {selectedTab === "perfectMatch" ? (
-            <PerfectMatch />
+            <PerfectMatch setSelectedTab={setSelectedTab} />
           ) : (
-            <OtherApplications />
+            <OtherApplications setSelectedTab={setSelectedTab} />
           )}
         </div>
       </div>

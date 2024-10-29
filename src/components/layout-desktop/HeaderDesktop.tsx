@@ -42,7 +42,7 @@ const HeaderDesktop : FC<HeaderProps> = ({onToggleMenu}) => {
           </nav>
         </div>
         <div className="flex items-center space-x-4 flex-shrink-0">
-          <Bell className="w-[22px] h-[25px] text-orange-500" />
+          <Bell className="w-[22px] h-[25px] text-orange-500 [transform:rotate(35deg)]" />
           <div className="flex items-center space-x-2">
             <span className="text-white font-medium text-[18px]">
               ABC Incorporated

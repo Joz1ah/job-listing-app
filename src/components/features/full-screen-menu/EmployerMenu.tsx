@@ -11,7 +11,7 @@ const EmployerMenu: FC<ScreenMenuProps> = ({ isOpen }) => {
     { name: 'EDIT COMPANY PROFILE', path: '#' },
     { name: 'REPORTS & ANALYTICS', path: '#' },
     { name: 'INTERVIEWS', path: '#' },
-    { name: '✦ SUBSCRIPTION PLANS', path: '#' },
+    { name: '✦ SUBSCRIPTION PLANS', path: '#', isSpecial: true },
     { name: 'ACCOUNT SETTINGS', path: '#'},
     { name: 'SIGN OUT', path: '#'}
   ];
@@ -45,7 +45,7 @@ const EmployerMenu: FC<ScreenMenuProps> = ({ isOpen }) => {
                 <div className="w-full text-end pr-4">
                     <NavLink
                       to={item.path}
-                      className="hover:text-[#F5722E] py-2 inline-block text-sm"
+                      className={`${item.isSpecial ? 'text-orange-500 hover:text-orange-600' : 'hover:text-[#F5722E]'} py-2 inline-block text-sm`}
                     >
                       {item.name}
                     </NavLink>

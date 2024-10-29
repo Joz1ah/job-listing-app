@@ -72,3 +72,32 @@ export { MatchCreation } from 'components/features/job-feed-desktop/MatchCreatio
 export { Sidebar } from 'components/layout-desktop/Sidebar'
 export { PageTitle } from 'components/layout-desktop/PageTitle'
 export { TagInput } from 'components/ui/taginput'
+export { Checkbox } from 'components/ui/checkbox'
+export { Popover, PopoverTrigger, PopoverContent } from 'components/ui/popover'
+export {
+  Command,
+  CommandDialog,
+  CommandInput,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+  CommandShortcut,
+  CommandSeparator,
+} from 'components/ui/command'
+
+export {
+  Dialog,
+  DialogPortal,
+  DialogOverlay,
+  DialogClose,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+  DialogDescription,
+} from 'components/ui/dialog'
+
+export { Badge, badgeVariants } from 'components/ui/badge'
+export { Tooltip } from 'components/ui/tooltip'

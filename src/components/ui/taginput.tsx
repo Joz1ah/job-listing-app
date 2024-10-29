@@ -58,8 +58,8 @@ const TagInput: React.FC<TagInputProps> = ({
         <div className="flex flex-wrap items-start gap-1 p-2">
           {tags.map((tag, index) => (
             <div
-              key={index}
-              onClick={() => removeTag(index)}
+            key={index}
+            onClick={() => removeTag(index)}
               className={`px-3 py-1 text-sm text-white text-[12px] font-semibold rounded-[2px] cursor-pointer transition-colors h-[30px] flex items-center ${tagClassName}`}
             >
               {tag}
