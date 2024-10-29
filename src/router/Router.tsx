@@ -1,7 +1,8 @@
 import { RouteObject } from 'react-router-dom'
 
 import { ROUTE_CONSTANTS } from 'constants/routeConstants'
-import { About, Fetch, Home, NotFound, JobHunter, Employer } from 'pages'
+import { About, Fetch, Home, NotFound, JobHunter, Employer, EmployerDesktop, JobHunterDesktop } from 'pages'
+import { EmployerSectionDesktop, MatchCreation } from 'components'
 
 const routes: RouteObject[] = [
   {
@@ -31,6 +32,24 @@ const routes: RouteObject[] = [
   {
     path: '/employer',
     element: <Employer />
+  },
+  {
+    path: '/job-feed-employer',
+    element: <EmployerDesktop />,
+    children: [
+      {
+        path: '/job-feed-employer',
+        element: <EmployerSectionDesktop />
+      },
+      {
+        path: '/job-feed-employer/job-creation',
+        element: <MatchCreation />
+      }
+    ]
+  },
+  {
+    path: '/job-feed-hunter',
+    element: <JobHunterDesktop />
   },
   {
     path: 'sw.js',
