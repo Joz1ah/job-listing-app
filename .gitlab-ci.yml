@@ -63,9 +63,9 @@ deployment:
   script:
     - echo "Please wait deploying to the remote server..."
     - |
-      ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST << EOF     
-        /home/sit-deployer/sit/akaza-app/deploy.sh $GOOGLE_PROJECT_ID $CI_COMMIT_SHA
-      EOF
+      APP_COMMIT_SHA=$(curl --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" "https://git.instance-20240927-104826.com/api/v4/projects/7/pipelines" | jq -r '.[0].sha')
+      echo "Retrieved commit SHA: $APP_COMMIT_SHA"
+      ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "/home/sit-deployer/sit/akaza-app/deploy.sh $GOOGLE_PROJECT_ID $CI_COMMIT_SHA $APP_COMMIT_SHA"
   only:
     - main
   variables:
