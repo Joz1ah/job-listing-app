@@ -2,7 +2,7 @@ stages:
   - build
   - docker_build
   - docker_push
-  - deploy
+  - deployment
 
 # Build Stage
 build:
@@ -50,21 +50,21 @@ docker_push:
   variables:
     GOOGLE_APPLICATION_CREDENTIALS: /tmp/sa-key.json
 
-deploy:
-  stage: deploy
+deployment:
+  stage: deployment
   image: google/cloud-sdk:latest  
   before_script:
-    - echo "Setting up SSH key"
+    - echo "Setting up SSH key for remote access"
     - mkdir -p ~/.ssh
     - echo "$SSH_PRIVATE_KEY" | sed 's/\r$//' > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa 
     - ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
     - echo "$SERVICE_ACCOUNT_KEYS" > /tmp/key.json       
   script:
-    - echo "Deploying to the remote server..."
+    - echo "Please wait deploying to the remote server..."
     - |
       ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST << EOF     
-        /home/sit-deployer/sit/akaza-app/cd.sh $GOOGLE_PROJECT_ID $CI_COMMIT_SHA
+        /home/sit-deployer/sit/akaza-app/deploy.sh $GOOGLE_PROJECT_ID $CI_COMMIT_SHA
       EOF
   only:
     - main
