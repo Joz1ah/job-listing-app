@@ -44,7 +44,7 @@ docker_push:
     - gcloud auth configure-docker gcr.io    
   script:
     - echo "Pushing Docker image to Google Container Registry..."
-    - docker push gcr.io/akaza-436904/akaza-app:$CI_COMMIT_SHA
+    - docker push gcr.io/$GOOGLE_PROJECT_ID/akaza-app:$CI_COMMIT_SHA
   only:
     - main
   variables:
@@ -55,6 +55,7 @@ deployment:
   image: google/cloud-sdk:latest  
   before_script:
     - echo "Setting up SSH key for remote access"
+    - apt-get update && apt-get install -y jq  # Install jq
     - mkdir -p ~/.ssh
     - echo "$SSH_PRIVATE_KEY" | sed 's/\r$//' > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa 
