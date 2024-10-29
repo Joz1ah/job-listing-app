@@ -11,7 +11,7 @@ interface IButton {
   children?: ReactNode
 }
 
-const Button: FC<IButton> = ({
+const Buttons: FC<IButton> = ({
   onClick,
   className,
   disabled = false,
@@ -28,6 +28,6 @@ const Button: FC<IButton> = ({
   </button>
 )
 
-const memorizedButton: FC<IButton> = memo(Button)
+const memorizedButton: FC<IButton> = memo(Buttons)
 
-export { memorizedButton as Button }
+export { memorizedButton as Buttons }
