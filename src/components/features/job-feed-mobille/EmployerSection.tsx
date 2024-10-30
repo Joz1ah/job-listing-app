@@ -61,7 +61,7 @@ const EmployerSection: FC = () => {
           </div>
         </div>
 
-        <div className="mt-16 md:mt-0 flex flex-col sm:flex-row gap-4 items-center">
+        <div className="mt-16 md:mt-0 flex flex-col sm:flex-row gap-4 items-center justify-center">
           <Select>
             <SelectTrigger className="flex justify-between items-center w-[336px] h-[42px] bg-white text-black rounded-md border-0 shadow-md text-[17px]">
               <span></span>

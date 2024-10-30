@@ -61,6 +61,7 @@ export { JobHunterFcm } from "components/features/full-screen-menu/jh-fcm";
 export { EmployerFcm } from "components/features/full-screen-menu/e-fcm";
 export { EmployerMenu } from "components/features/full-screen-menu/EmployerMenu";
 export { HeaderDesktop } from "components/layout-desktop/HeaderDesktop";
+export { HeaderDesktop2 } from "components/layout-desktop/HeaderDesktop2";
 export { FooterDesktop } from "components/layout-desktop/FooterDesktop";
 export { EmployerSectionDesktop } from "components/features/job-feed-desktop/EmployerSectionDesktop";
 export { JobHunterSectionDesktop } from "components/features/job-feed-desktop/JobHunterSectionDesktop";
@@ -101,3 +102,4 @@ export {
 
 export { Badge, badgeVariants } from 'components/ui/badge'
 export { Tooltip } from 'components/ui/tooltip'
+export { ResponsiveLayout} from 'components/responsive-layout/ResponsiveLayout'

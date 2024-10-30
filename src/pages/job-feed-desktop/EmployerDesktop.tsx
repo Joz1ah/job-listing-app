@@ -1,14 +1,16 @@
 import { FC } from "react";
 import { Outlet } from "react-router-dom";
 import { useMenu } from "hooks";
-import { EmployerMenu, HeaderDesktop, FooterDesktop } from "components";
+import { EmployerMenu, HeaderDesktop, FooterDesktop, PageMeta } from "components";
 import { Sidebar, PageTitle } from "components";
 
 const EmployerDesktop: FC = () => {
   const { menuOpen, toggleMenu } = useMenu();
 
   return (
+    
     <div className="flex flex-col min-h-screen bg-gray-900 text-white">
+      <PageMeta title="Employer Dashboard" />
       {/* Full-screen Menu */}
       <EmployerMenu isOpen={menuOpen} />
 
