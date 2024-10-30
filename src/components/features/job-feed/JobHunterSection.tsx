@@ -1,5 +1,4 @@
 import { FC } from "react";
-import { NavLink } from "react-router-dom";
 import sparkeIcon from "images/sparkle-icon.png";
 
 import {
@@ -21,13 +20,6 @@ import {
 } from "lucide-react";
 
 const JobHunterSection: FC = () => {
-
-  const navItems = [
-    { name: 'SUGGESTED SKILLS', path: '#' },
-    { name: 'YOUR INTERVIEWS', path: '#' },
-    { name: 'RATE EMPLOYER', path: '#' },
-    { name: 'SUBCRIBE TO MORE OPPORTUNITIES', path: '#'}
-  ];
 
   const jobCardData = [
     {
@@ -250,109 +242,87 @@ const JobHunterSection: FC = () => {
         </div>
       </Carousel>
 
-      {/* Navigations */}
-      <nav className="flex flex-col bg-black text-white w-full rounded-t-xl rounded-b-xl overflow-hidden py-2">
-      {navItems.map((item, index) => (
-        <div key={item.path}>
-          <div className="w-full text-center">
-            <NavLink
-              to={item.path}
-              className="hover:text-[#F5722E] py-4 inline-block"
-            >
-              <div className="flex justify-center items-center gap-2 text-center">
-                {index === navItems.length - 1 && (
-                  <img src={sparkeIcon} alt="Sparkle Icon" className="w-[22px] h-[24px]" />
-                )}
-                {item.name}
-              </div>
-            </NavLink>
-          </div>
-          {index < navItems.length - 1 && (
-            <hr className="border-t border-white w-full my-0" />
-          )}
-        </div>
-      ))}
-    </nav>
-
       {/* Other Opportunities */}
-      <div>
-        <Carousel
-          opts={{
-            align: "start",
-          }}
-          className="w-full relative"
-        >
-          <h3 className="text-[17px] md:text-[17px] font-semibold text-gray-400 mb-4 text-center pb-4">
-            OTHER OPPORTUNITIES
-          </h3>
+      <div className="pt-10">
+      <Carousel
+        opts={{
+          align: "center",
+          loop: false
+        }}
+        className="w-full"
+      >
+        <h3 className="text-[17px] md:text-[17px] text-gray-400 text-center font-semibold mb-4">
+          OTHER APPLICATION CARDS
+        </h3>
 
-          <CarouselContent>
-            {Array.from({ length: 5 }).map((_, index) => (
-              <CarouselItem
-                key={index}
-                className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4"
-              >
-                <div className="flex items-center justify-center">
-                  <Card className="bg-[#F5F5F7] w-[308px] h-[243px] pl-4 pr-4">
-                    <CardHeader className="flex justify-between items-start">
-                      <div className="flex flex-col items-end justify-end w-full gap-2 ml-4">
-                        <span className="text-[11px] text-gray-600 font-light">
-                          Posted 3 days ago
-                        </span>
-                        <Bookmark className="text-orange-500" size={24} />
-                      </div>
+        <CarouselContent>
+          {jobCardData.map((job, index) => (
+            <CarouselItem key={index} className="pl-4 basis-[320px]">
+              <div className="relative">
+                <Card className="bg-[#F5F5F7] w-[308px] h-[380px] p-4 transition-all duration-300 hover:shadow-lg">
+                  <CardHeader className="flex items-start p-0">
+                    <div className="flex flex-col items-end justify-end w-full gap-2">
+                      <span className="text-sm text-gray-600 font-light">
+                        Posted {job.postedAgo}
+                      </span>
+                      <Bookmark className="text-[#F5722E]" size={25}/>
+                    </div>
+                    <div className="pl-6">
                       <CardTitle className="text-[17px]">
-                        Jr. App Developer
+                        {job.title}
                       </CardTitle>
-                      <div>
-                        <CardDescription className="text-[13px] text-black underline font-light">
-                          OneTime Pay Digital Corporation
-                        </CardDescription>
-                        <p className="text-[10px] text-orange-500 flex items-center mb-2">
-                          <MapPin size={16} className="mr-1 " /> Remote (Company
-                          based in Philippines)
-                        </p>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="flex flex-wrap gap-2">
-                      {[
-                        "Angular",
-                        "JavaScript",
-                        "Flutter",
-                        "React",
-                        "HTML5",
-                        "Golang",
-                        "CSS",
-                      ].map((skill) => (
-                        <span
-                          key={skill}
-                          className={`px-1 py-0.5 text-[8px] rounded-[2px] font-semibold ${
-                            Math.random() > 0.5
-                              ? "bg-[#2194F3] text-white outline-none"
-                              : "bg-transparent text-[#2194F3] outline outline-1 outline-[#2194F3]"
-                          }`}
-                        >
-                          {skill}
+                      <CardDescription className="text-[13px] text-black underline">
+                        {job.company}
+                      </CardDescription>
+                      <p className="text-[10px] text-[#F5722E] flex items-center mb-2">
+                        <MapPin size={9} className="mr-1 text-[#F5722E]" />
+                        {job.location}
+                      </p>
+                      <div className="flex flex-wrap justify-start gap-2">
+                        <span className="bg-white text-[#F5722E] px-2 py-1 rounded-[2px] text-[10px] outline outline-1 outline-[#F5722E]">
+                          {job.salary}
                         </span>
-                      ))}
-                    </CardContent>
-                    <CardFooter></CardFooter>
-                  </Card>
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <div className="flex justify-center mt-4 space-x-2">
-            {Array.from({ length: 3 }).map((_, index) => (
-              <button
-                key={index}
-                className={`w-2 h-2 rounded-full ${
-                  index === 0 ? "bg-[#F5722E]" : "bg-gray-400"
-                }`}
-              />
-            ))}
-          </div>
-        </Carousel>
+                        <span className="bg-[#F5722E] text-white px-2 py-1 rounded-[2px] text-[10px]">
+                          {job.jobType}
+                        </span>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pl-6 mt-4">
+                    <p className="text-[11px]">
+                      {job.description}
+                    </p>
+                  </CardContent>
+                  <CardFooter className="flex flex-wrap gap-2 pl-6">
+                    {job.skills.map((skill, skillIndex) => (
+                      <span
+                        key={skillIndex}
+                        className={`px-1 py-0.5 text-[8px] rounded-[2px] font-semibold ${
+                          skill.required
+                            ? "bg-[#2194F3] text-white outline-none"
+                            : "bg-transparent text-[#2194F3] outline outline-1 outline-[#2194F3]"
+                        }`}
+                      >
+                        {skill.name}
+                      </span>
+                    ))}
+                  </CardFooter>
+                </Card>
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <div className="flex justify-center mt-4 space-x-2">
+          {jobCardData.map((_, index) => (
+            <button
+              key={index}
+              className={`w-2 h-2 rounded-full ${
+                index === 0 ? "bg-[#F5722E]" : "bg-gray-400"
+              }`}
+            />
+          ))}
+        </div>
+      </Carousel>
       </div>
     </div>
   );
