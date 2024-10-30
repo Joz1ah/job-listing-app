@@ -17,7 +17,13 @@ import {
   CardTitle,
 } from "components";
 
-const PerfectMatch = () => {
+import { Button } from "components";
+
+interface selectedProps {
+  setSelectedTab: (tab: string) => void;
+}
+
+const PerfectMatch : FC<selectedProps> = ({ setSelectedTab }) => {
   const perfectMatch = [
     {
       position: "FullStack Developer",
@@ -155,6 +161,14 @@ const PerfectMatch = () => {
     return Math.random() < 0.5 ? "#184E77" : "#168AAD";
   };
 
+  const handleClick = () => {
+    setSelectedTab("otherApplications");
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
       {perfectMatch.map((match, index) => (
@@ -239,11 +253,26 @@ const PerfectMatch = () => {
           </CardFooter>
         </Card>
       ))}
+      <div className="bg-transparent border-none w-full md:w-[436px] h-auto md:h-[275px] flex items-center justify-center text-center p-0">
+        <div className="p-10">
+          <p className="text-xl font-semibold text-white">
+            You've reached the end of your other application cards for now!
+          </p>
+          <span className="text-white text-[20px] font-semibold ml-4">Explore your</span>
+          <Button
+            variant="link"
+            className="text-[20px] text-orange-500  font-semibold pl-2 underline pt-0"
+            onClick={handleClick}
+          >
+            perfect matches
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };
 
-const OtherApplications = () => {
+const OtherApplications : FC<selectedProps> = ({ setSelectedTab }) => {
   const others = [
     {
       position: "UI/UX Designer",
@@ -301,6 +330,14 @@ const OtherApplications = () => {
 
   const getRandomColor = () => {
     return Math.random() < 0.5 ? "#184E77" : "#168AAD";
+  };
+
+  const handleClick = () => {
+    setSelectedTab("perfectMatch");
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
 
   return (
@@ -387,6 +424,21 @@ const OtherApplications = () => {
           </CardFooter>
         </Card>
       ))}
+      <div className="bg-transparent border-none w-full md:w-[436px] h-auto md:h-[275px] flex items-center justify-center text-center p-0">
+        <div className="p-10">
+          <p className="text-xl font-semibold text-white">
+            You've reached the end of your other application cards for now!
+          </p>
+          <span className="text-white text-[20px] font-semibold ml-4">Explore your</span>
+          <Button
+            variant="link"
+            className="text-[20px] text-orange-500  font-semibold pl-2 underline pt-0"
+            onClick={handleClick}
+          >
+            perfect matches
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };
@@ -463,9 +515,9 @@ const JobHunterSectionDesktop: FC = () => {
 
         <div className="w-full">
           {selectedTab === "perfectMatch" ? (
-            <PerfectMatch />
+            <PerfectMatch setSelectedTab={setSelectedTab} />
           ) : (
-            <OtherApplications />
+            <OtherApplications setSelectedTab={setSelectedTab} />
           )}
         </div>
       </div>

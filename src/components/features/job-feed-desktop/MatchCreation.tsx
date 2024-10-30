@@ -106,10 +106,7 @@ FormField.displayName = "FormField";
 
 const validationSchema = Yup.object().shape({
   jobTitle: Yup.string().required("This field is required"),
-  employmentType: Yup.array().min(
-    1,
-    "Please select at least 1 employment type",
-  ),
+  employmentType: Yup.array().min(1, "Please select at least one employment type"),
   salaryRange: Yup.string().required("This field is required"),
   yearsOfExperience: Yup.string().required("This field is required"),
   jobDescription: Yup.string().required("This field is required"),
@@ -307,7 +304,7 @@ const MatchCreation = () => {
                                 newValue.splice(index, 1);
                               }
                               setFieldValue("employmentType", newValue);
-                              setFieldTouched("employmentType", true);
+                              setFieldTouched("employmentType", newValue.length === 0);
                             }}
                             className={cn(
                               "border-b border-black last:border-b-0 rounded-none justify-start px-3 py-3",

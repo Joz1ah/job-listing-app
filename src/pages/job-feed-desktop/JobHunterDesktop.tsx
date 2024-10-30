@@ -9,6 +9,10 @@ const JobHunterDesktop: FC = () => {
 
   const { menuOpen, toggleMenu } = useMenu();
 
+  const handleLogoClick = () => {
+    window.location.reload();
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-900 text-white">
       {/* Full-screen Menu */}
@@ -17,11 +21,13 @@ const JobHunterDesktop: FC = () => {
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 bg-[#2D3A41] h-[72px] pr-4 flex flex-row justify-between items-center flex-nowrap z-50">
         <div className="flex flex-row items-center space-x-8 flex-shrink-0">
+        <NavLink to="/job-feed-hunter" onClick={handleLogoClick}>
           <img
             src={companyLogo}
             alt="Company Logo"
-            className="w-[161px] h-[50px]"
+            className="w-[161px] h-[50px] cursor-pointer"
           />
+        </NavLink>
           <nav className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-[50px]">
             <ul className="space-y-4 md:space-y-0 md:space-x-[50px] text-white text-[16px] font-light flex flex-col md:flex-row items-center">
               <li className="hover:text-orange-500">
@@ -40,13 +46,13 @@ const JobHunterDesktop: FC = () => {
           </nav>
         </div>
         <div className="flex items-center space-x-4 flex-shrink-0">
-          <Bell className="w-[22px] h-[25px] text-orange-500" />
+          <Bell className="w-[22px] h-[25px] text-orange-500 [transform:rotate(35deg)] cursor-pointer" />
           <div className="flex items-center space-x-2">
             <span className="text-white font-medium text-[18px]">
               Michael V
             </span>
             <BadgeCheck className="w-4 h-4 text-[#2D3A41] fill-orange-500" />
-            <ChevronDown onClick={toggleMenu} className="w-4 h-4 text-white" />
+            <ChevronDown onClick={toggleMenu} className="w-4 h-4 text-white cursor-pointer" />
           </div>
         </div>
       </header>
