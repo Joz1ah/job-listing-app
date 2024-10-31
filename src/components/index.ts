@@ -61,6 +61,7 @@ export { JobHunterFcm } from "components/features/full-screen-menu/jh-fcm";
 export { EmployerFcm } from "components/features/full-screen-menu/e-fcm";
 export { EmployerMenu } from "components/features/full-screen-menu/EmployerMenu";
 export { HeaderDesktop } from "components/layout-desktop/HeaderDesktop";
+export { HeaderDesktop2 } from "components/layout-desktop/HeaderDesktop2";
 export { FooterDesktop } from "components/layout-desktop/FooterDesktop";
 export { EmployerSectionDesktop } from "components/features/job-feed-desktop/EmployerSectionDesktop";
 export { JobHunterSectionDesktop } from "components/features/job-feed-desktop/JobHunterSectionDesktop";
@@ -72,3 +73,33 @@ export { MatchCreation } from 'components/features/job-feed-desktop/MatchCreatio
 export { Sidebar } from 'components/layout-desktop/Sidebar'
 export { PageTitle } from 'components/layout-desktop/PageTitle'
 export { TagInput } from 'components/ui/taginput'
+export { Checkbox } from 'components/ui/checkbox'
+export { Popover, PopoverTrigger, PopoverContent } from 'components/ui/popover'
+export {
+  Command,
+  CommandDialog,
+  CommandInput,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+  CommandShortcut,
+  CommandSeparator,
+} from 'components/ui/command'
+
+export {
+  Dialog,
+  DialogPortal,
+  DialogOverlay,
+  DialogClose,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+  DialogDescription,
+} from 'components/ui/dialog'
+
+export { Badge, badgeVariants } from 'components/ui/badge'
+export { Tooltip } from 'components/ui/tooltip'
+export { ResponsiveLayout} from 'components/responsive-layout/ResponsiveLayout'

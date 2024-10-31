@@ -16,7 +16,7 @@ const Sidebar : FC = () => {
       
     return (
 
-        <div className="w-full md:w-[311px] h-auto md:h-[652px] bg-[#2D3A41] rounded mb-12 md:mb-0">
+        <div className="w-full md:w-[311px] h-auto md:h-[652px] bg-[#2D3A41] rounded mb-12 md:mb-12 mt-2">
           <h4 className="font-semibold mb-6 text-center pt-2 text-[16px] text-white">
             All Job Listings
           </h4>

@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { JobHunterSection, JobHunterLayout } from "components";
 
-const JobHunter: FC = () => {
+const JobHunterMobile: FC = () => {
   return (
     <JobHunterLayout>
       <JobHunterSection />
@@ -9,4 +9,4 @@ const JobHunter: FC = () => {
   );
 };
 
-export { JobHunter };
+export { JobHunterMobile };

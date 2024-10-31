@@ -1,13 +1,14 @@
-import { RouteObject } from 'react-router-dom'
+import { RouteObject, Navigate } from 'react-router-dom'
 
 import { ROUTE_CONSTANTS } from 'constants/routeConstants'
-import { About, Fetch, Home, NotFound, JobHunter, Employer, EmployerDesktop, JobHunterDesktop } from 'pages'
+import { About, Fetch, Home, NotFound, JobHunterMobile, EmployerMobile, EmployerDesktop, JobHunterDesktop } from 'pages'
 import { EmployerSectionDesktop, MatchCreation } from 'components'
+import { ResponsiveLayout}  from 'components'
 
 const routes: RouteObject[] = [
   {
-    path: '*',
-    element: <NotFound />
+    path: '',
+    element: <Navigate to={ROUTE_CONSTANTS.EMPLOYER} replace />
   },
   {
     path: ROUTE_CONSTANTS.HOME,
@@ -26,30 +27,32 @@ const routes: RouteObject[] = [
     element: <NotFound />
   },
   {
-    path: '/job-hunter',
-    element: <JobHunter />
-  },
-  {
-    path: '/employer',
-    element: <Employer />
-  },
-  {
-    path: '/job-feed-employer',
-    element: <EmployerDesktop />,
+    path: ROUTE_CONSTANTS.EMPLOYER,
+    element: (
+      <ResponsiveLayout
+        mobileComponent={<EmployerMobile />}
+        desktopComponent={<EmployerDesktop />}
+      />
+    ),
     children: [
       {
-        path: '/job-feed-employer',
+        path: '',
         element: <EmployerSectionDesktop />
       },
       {
-        path: '/job-feed-employer/job-creation',
+        path: ROUTE_CONSTANTS.JOB_LISTING,
         element: <MatchCreation />
       }
     ]
   },
   {
-    path: '/job-feed-hunter',
-    element: <JobHunterDesktop />
+    path: ROUTE_CONSTANTS.JOB_HUNTER,
+    element: (
+      <ResponsiveLayout
+        mobileComponent={<JobHunterMobile />}
+        desktopComponent={<JobHunterDesktop />}
+      />
+    )
   },
   {
     path: 'sw.js',

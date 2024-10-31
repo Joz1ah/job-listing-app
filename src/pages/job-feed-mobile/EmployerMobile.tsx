@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { EmployerSection, EmployerLayout } from "components";
 
-const Employer: FC = () => {
+const EmployerMobile: FC = () => {
   return (
     <EmployerLayout>
       <EmployerSection />
@@ -9,4 +9,4 @@ const Employer: FC = () => {
   );
 };
 
-export { Employer };
+export { EmployerMobile };
