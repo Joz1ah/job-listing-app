@@ -15,7 +15,7 @@ import {
 
 import { isServer } from 'utils'
 
-import 'style/main.scss'
+import 'style/global.scss'
 
 const serverPreloadedState =
   !isServer && window.__PRELOADED_STATE__ != null

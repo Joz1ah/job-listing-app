@@ -1,19 +1,19 @@
 import { FC, ReactElement, useEffect } from 'react'
 import { useRoutes } from 'react-router-dom'
-import cn from 'classnames'
+//import cn from 'classnames'
 
 import {
-  ThemeSwitcher,
-  LanguageSelector,
+  /* ThemeSwitcher,
+  LanguageSelector, */
   ErrorBoundary,
-  Offline
+  //Offline
 } from 'components'
 import { routes } from 'router/Router'
 
-import { useAppSelector, useAppDispatch, RootState } from 'store/store'
+import { /* useAppSelector, */ useAppDispatch, RootState } from 'store/store'
 import { switchToDark } from 'store/theme/themeSlice'
 import {
-  THEME_NAMES,
+  //THEME_NAMES,
   localStorageAppKey,
   reduxHydrationAction
 } from 'constants/commonConstants'
@@ -22,7 +22,7 @@ import { isServer } from 'utils'
 
 const App: FC = (): ReactElement => {
   const content = useRoutes(routes)
-  const currentTheme = useAppSelector((state) => state.theme.theme)
+  //const currentTheme = useAppSelector((state) => state.theme.theme)
   const dispatch = useAppDispatch()
 
   useEffect(() => {
@@ -59,14 +59,14 @@ const App: FC = (): ReactElement => {
   return (
     <ErrorBoundary>
       <div
-        className={cn(
+        /* className={cn(
           'app-wrapper',
           currentTheme === THEME_NAMES.DARK && 'theme-dark'
-        )}
+        )} */
       >
-        <LanguageSelector />
+        {/* <LanguageSelector />
         <ThemeSwitcher />
-        <Offline />
+        <Offline /> */}
         {content}
       </div>
     </ErrorBoundary>
