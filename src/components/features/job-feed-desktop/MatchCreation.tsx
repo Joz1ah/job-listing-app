@@ -65,7 +65,7 @@ const FormField = React.forwardRef<HTMLDivElement, FormFieldProps>(
 
     return (
       <div ref={ref} className={cn("relative", className)}>
-        <div className="absolute -top-3 left-5 z-50 bg-[#2D3A41] px-2">
+        <div className="absolute -top-3 left-5 z-50 bg-[#2D3A41] pl-2">
           <div className="flex items-center">
             <Label className="text-[16px] font-normal text-white">
               {label}
@@ -182,11 +182,14 @@ const MatchCreation = () => {
     },
   });
 
-  const handleRemoveEmploymentType = (valueToRemove: string) => {
-    setFieldValue(
-      "employmentType",
-      values.employmentType.filter((value) => value !== valueToRemove),
-    );
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && e.target instanceof HTMLElement) {
+      if (e.target.tagName === 'TEXTAREA') return;
+      
+      e.preventDefault();
+
+      if (e.target.closest('.tag-input')) return;
+    }
   };
 
   return (
@@ -207,6 +210,7 @@ const MatchCreation = () => {
 
         <form
           onSubmit={handleSubmit}
+          onKeyDown={handleKeyDown}
           className="max-w-[831px] mx-[48px] grid grid-cols-1 md:grid-cols-2 gap-[115px]"
         >
           {/* Left Column */}
@@ -247,7 +251,7 @@ const MatchCreation = () => {
                       "focus-within:border-orange-500 data-[state=open]:border-orange-500",
                     )}
                   >
-                    <div className="flex flex-wrap gap-1 overflow-hidden">
+                    <div className="flex flex-wrap overflow-hidden">
                       {values.employmentType.length === 0 &&
                         "Select Employment Type"}
                       {values.employmentType.map((value) => (
@@ -263,20 +267,6 @@ const MatchCreation = () => {
                           }
                           <button
                             className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                            onKeyDown={(e) => {
-                              if (e.key === "Enter") {
-                                handleRemoveEmploymentType(value);
-                              }
-                            }}
-                            onMouseDown={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                            }}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              handleRemoveEmploymentType(value);
-                            }}
                           ></button>
                         </Badge>
                       ))}
@@ -350,7 +340,7 @@ const MatchCreation = () => {
                   }
                 }}
               >
-                <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2">
+                <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500">
                   <SelectValue placeholder="Select Salary Range" />
                 </SelectTrigger>
                 <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0">
@@ -384,7 +374,7 @@ const MatchCreation = () => {
                   }
                 }}
               >
-                <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2">
+                <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500">
                   <SelectValue placeholder="Select Years of Experience" />
                 </SelectTrigger>
                 <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0">
@@ -480,7 +470,7 @@ const MatchCreation = () => {
                     }
                   }}
                 >
-                  <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2">
+                  <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500">
                     <SelectValue placeholder="Select your Education Level" />
                   </SelectTrigger>
                   <SelectContent className="bg-[#F5F5F7] items-center p-0 [&>*]:p-0">

@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState, useRef, useEffect } from "react";
 import sparkeIcon from "images/sparkle-icon.png";
 
 import { Bookmark, MoreVertical, MapPin } from "lucide-react";
@@ -29,6 +29,44 @@ interface Match {
   appliedAgo: string;
 }
 
+const skillColors = {
+  matched: "#184E77",
+  unmatched: "#168AAD",
+};
+
+const SkillsWithEllipsis: React.FC<{ skills: Skill[] }> = ({ skills }) => {
+  const skillsContainerRef = useRef<HTMLDivElement>(null);
+  const [showEllipsis, setShowEllipsis] = useState(false);
+
+  useEffect(() => {
+    const container = skillsContainerRef.current;
+    if (container && container.scrollHeight > container.clientHeight) {
+      setShowEllipsis(true);
+    }
+  }, []);
+
+  return (
+    <div className="h-[60px]">
+      <span className="text-[13px] font-light">Primary Skills:</span>
+      <div ref={skillsContainerRef} className="flex flex-wrap gap-1 max-h-[43px] overflow-hidden relative">
+        {skills.map((skill, skillIndex) => (
+          <span
+            key={skillIndex}
+            className="text-white text-xs font-semibold px-1 pt-0.5 rounded-[2px]"
+            style={{ backgroundColor: skill.isMatch ? skillColors.matched : skillColors.unmatched }}
+          >
+            {skill.name}
+          </span>
+        ))}
+        {showEllipsis && (
+          <span className="absolute bottom-0 right-0 bg-white px-1">...</span>
+        )}
+      </div>
+    </div>
+  );
+};
+
+
 const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
   const perfectMatch: Match[] = [
     {
@@ -44,6 +82,15 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
             { name: "TypeScript", isMatch: false },
             { name: "Git", isMatch: true },
             { name: "Responsive Design", isMatch: false },
+            { name: "React", isMatch: true },
+            { name: "JavaScript", isMatch: true },
+            { name: "CSS", isMatch: true },
+            { name: "HTML", isMatch: true },
+            { name: "Node.js", isMatch: false },
+            { name: "TypeScript", isMatch: false },
+            { name: "Git", isMatch: true },
+            { name: "Responsive Design", isMatch: false },
+            
         ],
         appliedAgo: "3 days ago",
     },
@@ -185,11 +232,6 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
     });
   };
 
-  const skillColors = {
-    matched: "#184E77",
-    unmatched: "#168AAD",
-  };
-
   const [bookmarkedCards, setBookmarkedCards] = useState(new Set());
 
   const toggleBookmark = (index:number) => {
@@ -248,20 +290,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
             </div>
           </CardHeader>
           <CardContent>
-          <div className="h-[60px]">
-              <span className="text-[13px] font-light">Primary Skills:</span>
-              <div className="flex flex-wrap gap-1 max-h-[43px] overflow-y-hidden">
-                {match.skills.map((skill, skillIndex) => (
-                  <span
-                    key={skillIndex}
-                    className="text-white text-xs text- font-semibold px-1 pt-0.5 rounded-[2px]"
-                    style={{ backgroundColor: skill.isMatch ? skillColors.matched : skillColors.unmatched }}
-                  >
-                    {skill.name}
-                  </span>
-                ))}
-              </div>
-            </div>
+          <SkillsWithEllipsis skills={match.skills} />
             <div className="flex flex-col gap-1 mt-2">
               <div className="flex gap-2">
                 <span className="text-[13px] font-light">
@@ -418,11 +447,6 @@ const OtherApplications: FC<selectedProps> = ({ setSelectedTab }) => {
     });
   };
 
-  const skillColors = {
-    matched: "#184E77",
-    unmatched: "#168AAD",
-  };
-
   const [bookmarkedCards, setBookmarkedCards] = useState(new Set());
 
   const toggleBookmark = (index:number) => {
@@ -481,20 +505,7 @@ const OtherApplications: FC<selectedProps> = ({ setSelectedTab }) => {
             </div>
           </CardHeader>
           <CardContent>
-          <div className="h-[60px] p-0 m-0">
-            <span className="text-[13px] font-light">Primary Skills:</span>
-            <div className="flex flex-wrap gap-1 max-h-[43px] overflow-y-hidden">
-              {other.skills.map((skill, skillIndex) => (
-                <span
-                  key={skillIndex}
-                  className="text-white text-xs text- font-semibold px-1 pt-0.5 rounded-[2px]"
-                  style={{ backgroundColor: skill.isMatch ? skillColors.matched : skillColors.unmatched }}
-                >
-                  {skill.name}
-                </span>
-              ))}
-            </div>
-          </div>
+          <SkillsWithEllipsis skills={other.skills} />
             <div className="flex flex-col gap-1 mt-2">
               <div className="flex gap-2">
                 <span className="text-[13px] font-light">

@@ -15,7 +15,7 @@ import { Carousel, CarouselContent, CarouselItem } from "components";
 import {
   MapPin,
   Bookmark,
-  User,
+  Star,
   Building,
   BadgeCheck,
   MoreVertical,
@@ -40,7 +40,7 @@ const EmployerSection: FC = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       <div className="md:flex md:justify-between md:items-center">
-        <div>
+        <div className="flex flex-col items-center">
           <div className="flex flex-col items-start">
             <div className="flex items-center text-3xl md:text-3xl text-white font-normal">
               <span>ABC Incorporated</span>
@@ -55,49 +55,60 @@ const EmployerSection: FC = () => {
               </span>
             </div>
             <div className="flex items-center space-x-2 text-[11px] font-light text-white">
-              <User className="fill-[#D6D6D6]" size={14} />
-              <span>You have 20 Team members</span>
+              <span className="flex items-center text-[13px] font-light text-white">
+                4.5
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star
+                    key={star}
+                    className="text-[#F5722E] fill-current ml-1 mb-[2px]"
+                    size={16}
+                  />
+                ))}
+              </span>
+              <span className="text-[13px] font-normal text-white">
+                Job Hunter Rating
+              </span>
             </div>
           </div>
         </div>
 
         <div className="mt-16 md:mt-0 flex flex-col sm:flex-row gap-4 items-center justify-center">
           <Select>
-            <SelectTrigger className="flex justify-between items-center w-[336px] h-[42px] bg-white text-black rounded-md border-0 shadow-md text-[17px]">
+            <SelectTrigger className="flex justify-between items-center w-[336px] h-[42px] bg-white text-black rounded-md border-0 shadow-md text-[17px] border-none">
               <span></span>
               <SelectValue placeholder="Filter by Job Listings" />
             </SelectTrigger>
-            <SelectContent className="bg-white text-black rounded-md border-0 shadow-md w-[336px]">
+            <SelectContent className="bg-white p-0 [&>*]:p-0 w-[336px]">
               <SelectGroup>
                 <SelectItem
-                  className="flex justify-center text-[14px] px-0"
+                  className="focus:bg-orange-500 focus:text-white border-b border-black last:border-b-0 rounded-none justify-center p-0"
                   value="fulltime"
                 >
-                  All Job Listings
+                  <div className="py-3 w-full text-center">All Job Listings</div>
                 </SelectItem>
                 <SelectItem
-                  className="flex justify-center text-[14px] px-0"
+                  className="focus:bg-orange-500 focus:text-white border-b border-black last:border-b-0 rounded-none justify-center p-0"
                   value="parttime"
                 >
-                  Most Recent Job Listing
+                  <div className="py-3 w-full text-center">Most Recent Job Listing</div>
                 </SelectItem>
                 <SelectItem
-                  className="flex justify-center text-[14px] px-0"
+                  className="focus:bg-orange-500 focus:text-white border-b border-black last:border-b-0 rounded-none justify-center p-0"
                   value="contractual"
                 >
-                  Saved Job Listing
+                  <div className="py-3 w-full text-center">Saved Job Listing</div>
                 </SelectItem>
                 <SelectItem
-                  className="flex justify-center text-[14px] px-0 "
+                  className="focus:bg-orange-500 focus:text-white border-b border-black last:border-b-0 rounded-none justify-center p-0"
                   value="saved"
                 >
-                  Sort Job Listing by Team Member
+                  <div className="py-3 w-full text-center">Sort Job Listing by Team Member</div>
                 </SelectItem>
                 <SelectItem
-                  className="flex justify-center text-[14px] px-0"
+                  className="focus:bg-orange-500 focus:text-white border-b border-black last:border-b-0 rounded-none justify-center p-0"
                   value="closed"
                 >
-                  Closed Listings
+                  <div className="py-3 w-full text-center">Closed Listings</div>
                 </SelectItem>
               </SelectGroup>
             </SelectContent>

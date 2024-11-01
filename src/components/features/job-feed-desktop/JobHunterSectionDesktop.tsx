@@ -1,4 +1,5 @@
-import { FC, useState } from "react";
+import { FC, useState, useRef, useEffect } from "react";
+import sparkeIcon from "images/sparkle-icon.png";
 
 import {
   Info,
@@ -36,6 +37,43 @@ interface Match {
   appliedAgo: string;
 }
 
+const skillColors = {
+  matched: "#184E77",
+  unmatched: "#168AAD",
+};
+
+const SkillsWithEllipsis: React.FC<{ skills: Skill[] }> = ({ skills }) => {
+  const skillsContainerRef = useRef<HTMLDivElement>(null);
+  const [showEllipsis, setShowEllipsis] = useState(false);
+
+  useEffect(() => {
+    const container = skillsContainerRef.current;
+    if (container && container.scrollHeight > container.clientHeight) {
+      setShowEllipsis(true);
+    }
+  }, []);
+
+  return (
+    <div className="h-[60px]">
+      <span className="text-[13px] font-light">Primary Skills:</span>
+      <div ref={skillsContainerRef} className="flex flex-wrap gap-1 max-h-[43px] overflow-hidden relative">
+        {skills.map((skill, skillIndex) => (
+          <span
+            key={skillIndex}
+            className="text-white text-xs font-semibold px-1 pt-0.5 rounded-[2px]"
+            style={{ backgroundColor: skill.isMatch ? skillColors.matched : skillColors.unmatched }}
+          >
+            {skill.name}
+          </span>
+        ))}
+        {showEllipsis && (
+          <span className="absolute bottom-0 right-0 bg-white px-1">...</span>
+        )}
+      </div>
+    </div>
+  );
+};
+
 const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
   const perfectMatch: Match[] = [
     {
@@ -59,6 +97,13 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
       location: "San Francisco, USA",
       company: "InnovateTech",
       skills: [
+        { name: "JavaScript", isMatch: true },
+        { name: "React", isMatch: true },
+        { name: "Node.js", isMatch: true },
+        { name: "MongoDB", isMatch: false },
+        { name: "TypeScript", isMatch: true },
+        { name: "AWS", isMatch: false },
+        { name: "Docker", isMatch: true },
         { name: "JavaScript", isMatch: true },
         { name: "React", isMatch: true },
         { name: "Node.js", isMatch: true },
@@ -135,11 +180,6 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
     });
   };
 
-  const skillColors = {
-    matched: "#184E77",
-    unmatched: "#168AAD",
-  };
-
   const [bookmarkedCards, setBookmarkedCards] = useState(new Set());
 
   const toggleBookmark = (index: number) => {
@@ -201,24 +241,9 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
             </div>
           </CardHeader>
           <CardContent>
-            <span className="text-[13px] font-light">Primary Skills:</span>
-            <div className="flex flex-wrap gap-1 mb-2 max-h-[43px] overflow-y-hidden">
-              {match.skills.map((skill, skillIndex) => (
-                <span
-                  key={skillIndex}
-                  className="text-white text-xs text- font-semibold px-1 pt-0.5 rounded-[2px]"
-                  style={{
-                    backgroundColor: skill.isMatch
-                      ? skillColors.matched
-                      : skillColors.unmatched,
-                  }}
-                >
-                  {skill.name}
-                </span>
-              ))}
-            </div>
+            <SkillsWithEllipsis skills={match.skills} />
 
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-1 mt-2">
               <div className="flex gap-2">
                 <span className="text-[13px] font-light">Experience:</span>
                 <span className="text-[12px] text-orange-500 font-light outline outline-1 outline-orange-500 rounded-[2px] px-1">
@@ -339,11 +364,6 @@ const OtherApplications: FC<selectedProps> = ({ setSelectedTab }) => {
     });
   };
 
-  const skillColors = {
-    matched: "#184E77",
-    unmatched: "#168AAD",
-  };
-
   const [bookmarkedCards, setBookmarkedCards] = useState(new Set());
 
   const toggleBookmark = (index: number) => {
@@ -405,24 +425,9 @@ const OtherApplications: FC<selectedProps> = ({ setSelectedTab }) => {
             </div>
           </CardHeader>
           <CardContent>
-            <span className="text-[13px] font-light">Primary Skills:</span>
-            <div className="flex flex-wrap gap-1 mb-2 max-h-[43px] overflow-y-hidden">
-              {match.skills.map((skill, skillIndex) => (
-                <span
-                  key={skillIndex}
-                  className="text-white text-xs text- font-semibold px-1 pt-0.5 rounded-[2px]"
-                  style={{
-                    backgroundColor: skill.isMatch
-                      ? skillColors.matched
-                      : skillColors.unmatched,
-                  }}
-                >
-                  {skill.name}
-                </span>
-              ))}
-            </div>
+            <SkillsWithEllipsis skills={match.skills} />
 
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-1 mt-2">
               <div className="flex gap-2">
                 <span className="text-[13px] font-light">Experience:</span>
                 <span className="text-[12px] text-orange-500 font-light outline outline-1 outline-orange-500 rounded-[2px] px-1">
@@ -534,20 +539,29 @@ const JobHunterSectionDesktop: FC = () => {
       <div className="max-w-5xl mx-auto pt-8 md:pt-2 mt-8 md:mt-2 px-4 md:px-6 pb-4">
         <div className="flex justify-center mb-8 md:mb-6">
           <button
-            className={`font-semibold mr-6 pb-2 text-[17px] ${
+            className={`font-semibold mr-6 pb-2 text-[17px] inline-flex items-center gap-2 ${
               selectedTab === "perfectMatch"
                 ? "text-orange-500 border-b-2 border-orange-500"
-                : "text-white"
+                : "text-[#AEADAD]"
             }`}
             onClick={() => setSelectedTab("perfectMatch")}
           >
+            <img
+              src={sparkeIcon}
+              alt="Sparkle Icon"
+              className={`w-5 h-5 ${
+                selectedTab === "perfectMatch"
+                  ? "filter grayscale-0"
+                  : "filter grayscale"
+              }`}
+            />
             PERFECT MATCH
           </button>
           <button
             className={`font-semibold pb-2 text-[17px] ${
               selectedTab === "otherApplications"
                 ? "text-orange-500 border-b-2 border-orange-500"
-                : "text-white"
+                : "text-[#AEADAD]"
             }`}
             onClick={() => setSelectedTab("otherApplications")}
           >
