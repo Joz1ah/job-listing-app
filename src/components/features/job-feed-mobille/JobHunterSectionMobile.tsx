@@ -3,7 +3,7 @@ import sparkeIcon from "images/sparkle-icon.png";
 
 import { Card, CardDescription, CardHeader, CardTitle } from "components";
 
-import { Carousel, CarouselContent, CarouselItem } from "components";
+import { Carousel, CarouselContent, CarouselItem, CarouselApi } from "components";
 import {
   MapPin,
   Bookmark,
@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 
 import { perfectMatch, others } from "matchData/job-hunter-data";
+import { CircularPagination } from "components";
 
 interface Match {
   position: string;
@@ -145,6 +146,9 @@ const JobMatchCard: FC<{ match: Match }> = ({ match }) => (
 );
 
 const JobHunterSectionMobile: FC = () => {
+  const [perfectMatchApi, setPerfectMatchApi] = useState<CarouselApi | null>(null);
+  const [othersApi, setOthersApi] = useState<CarouselApi | null>(null);
+
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       <div className="md:flex md:justify-between md:items-center mb-20">
@@ -203,6 +207,7 @@ const JobHunterSectionMobile: FC = () => {
           loop: false,
         }}
         className="w-full"
+        setApi={setPerfectMatchApi}
       >
         <h3 className="flex justify-center items-center mt-2 gap-2 text-[17px] text-[#F5722E] text-center font-semibold pb-2">
           <img
@@ -222,16 +227,7 @@ const JobHunterSectionMobile: FC = () => {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <div className="flex justify-center mt-4 space-x-2">
-          {perfectMatch.map((_, index) => (
-            <button
-              key={index}
-              className={`w-2 h-2 rounded-full ${
-                index === 0 ? "bg-[#F5722E]" : "bg-gray-400"
-              }`}
-            />
-          ))}
-        </div>
+        <CircularPagination api={perfectMatchApi} />
       </Carousel>
 
       {/* Other Opportunities */}
@@ -242,6 +238,7 @@ const JobHunterSectionMobile: FC = () => {
             loop: false,
           }}
           className="w-full"
+          setApi={setOthersApi}
         >
           <h3 className="text-[17px] md:text-[17px] text-gray-400 text-center font-semibold mb-4">
             OTHER APPLICATION CARDS
@@ -256,16 +253,7 @@ const JobHunterSectionMobile: FC = () => {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <div className="flex justify-center mt-4 space-x-2">
-            {others.map((_, index) => (
-              <button
-                key={index}
-                className={`w-2 h-2 rounded-full ${
-                  index === 0 ? "bg-[#F5722E]" : "bg-gray-400"
-                }`}
-              />
-            ))}
-          </div>
+          <CircularPagination api={othersApi} />
         </Carousel>
       </div>
     </div>

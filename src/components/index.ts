@@ -101,3 +101,4 @@ export {
 export { Badge, badgeVariants } from 'components/ui/badge'
 export { Tooltip } from 'components/ui/tooltip'
 export { ResponsiveLayout} from 'components/responsive-layout/ResponsiveLayout'
+export { CircularPagination } from 'components/ui/circular-pagination'

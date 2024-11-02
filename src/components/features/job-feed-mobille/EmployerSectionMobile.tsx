@@ -10,7 +10,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "components";
-import { Carousel, CarouselContent, CarouselItem } from "components";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselApi,
+} from "components";
 import {
   MapPin,
   Bookmark,
@@ -20,6 +25,8 @@ import {
   MoreVertical,
 } from "lucide-react";
 import { perfectMatch, others } from "matchData/employer-data";
+
+import { CircularPagination } from "components";
 
 interface Skill {
   name: string;
@@ -174,7 +181,8 @@ const MatchCard: FC<{ match: Match }> = ({ match }) => (
 );
 
 const EmployerSectionMobile: FC = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [perfectMatchApi, setPerfectMatchApi] = useState<CarouselApi | null>(null);
+  const [othersApi, setOthersApi] = useState<CarouselApi | null>(null);
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
@@ -274,7 +282,7 @@ const EmployerSectionMobile: FC = () => {
         </div>
       </div>
 
-      <Carousel opts={{ align: "center", loop: false }} className="w-full">
+      <Carousel opts={{ align: "center", loop: false }} className="w-full" setApi={setPerfectMatchApi}>
         <h3 className="flex justify-center items-center mt-2 gap-2 text-[17px] text-[#F5722E] text-center font-semibold pb-2">
           <img
             src={sparkeIcon}
@@ -294,21 +302,11 @@ const EmployerSectionMobile: FC = () => {
           ))}
         </CarouselContent>
 
-        <div className="flex justify-center mt-4 space-x-2">
-          {perfectMatch.map((_, index) => (
-            <button
-              key={index}
-              className={`w-2 h-2 rounded-full ${
-                index === activeIndex ? "bg-[#F5722E]" : "bg-gray-400"
-              }`}
-              onClick={() => setActiveIndex(index)}
-            />
-          ))}
-        </div>
-      </Carousel>
+      <CircularPagination api={perfectMatchApi} />
+    </Carousel>
 
       <div className="pt-4">
-        <Carousel opts={{ align: "center", loop: false }} className="w-full">
+        <Carousel opts={{ align: "center", loop: false }} className="w-full" setApi={setOthersApi}>
           <h3 className="flex justify-center items-center mt-2 gap-2 text-[17px] text-[#AEADAD] text-center font-semibold pb-2">
             OTHER APPLICATION CARDS
           </h3>
@@ -323,17 +321,7 @@ const EmployerSectionMobile: FC = () => {
             ))}
           </CarouselContent>
 
-          <div className="flex justify-center mt-4 space-x-2">
-            {others.map((_, index) => (
-              <button
-                key={index}
-                className={`w-2 h-2 rounded-full ${
-                  index === activeIndex ? "bg-[#F5722E]" : "bg-gray-400"
-                }`}
-                onClick={() => setActiveIndex(index)}
-              />
-            ))}
-          </div>
+          <CircularPagination api={othersApi} />
         </Carousel>
       </div>
     </div>
