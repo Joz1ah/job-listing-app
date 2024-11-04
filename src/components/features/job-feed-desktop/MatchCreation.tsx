@@ -36,11 +36,11 @@ interface FormData {
   salaryRange: string;
   yearsOfExperience: string;
   jobDescription: string;
-  coreSkills: string;
-  interpersonalSkills: string;
+  coreSkills: string[];
+  interpersonalSkills: string[];
   education: string;
   location: string;
-  languages: string;
+  languages: string[];
 }
 
 {
@@ -110,11 +110,17 @@ const validationSchema = Yup.object().shape({
   salaryRange: Yup.string().required("This field is required"),
   yearsOfExperience: Yup.string().required("This field is required"),
   jobDescription: Yup.string().required("This field is required"),
-  coreSkills: Yup.string().required("Atleast 3 Core skills"),
-  interpersonalSkills: Yup.string().required("Atleast 3 Interpersonal skills"),
+  coreSkills: Yup.array()
+    .min(3, "Please add at least 3 core skills")
+    .required("This field is required"),
+  interpersonalSkills: Yup.array()
+    .min(3, "Please add at least 3 interpersonal skills")
+    .required("This field is required"),
   education: Yup.string().required("This field is required"),
   location: Yup.string().required("This field is required"),
-  languages: Yup.string().required("This field is required"),
+  languages: Yup.array()
+  .min(1, "This field is required")
+  .required("This field is required"),
 });
 
 const MatchCreation = () => {
@@ -169,11 +175,11 @@ const MatchCreation = () => {
       salaryRange: "",
       yearsOfExperience: "",
       jobDescription: "",
-      coreSkills: "",
-      interpersonalSkills: "",
+      coreSkills: [],
+      interpersonalSkills: [],
       education: "",
       location: "",
-      languages: "",
+      languages: [],
     },
     validationSchema,
     onSubmit: (values) => {
@@ -412,23 +418,20 @@ const MatchCreation = () => {
           {/* Right Column */}
           <div className="flex flex-col">
             <div className="mb-14">
-              <FormField
-                label="Core Skills"
-                error={errors.coreSkills}
-                touched={touched.coreSkills}
-                showIcon={true}
-                tooltipContent="Job-specific, measurable abilities like software proficiency, coding, or design tools."
-              >
-                <TagInput
-                  value={values.coreSkills}
-                  onChange={(value) => setFieldValue("coreSkills", value)}
-                  onBlur={(value) => {
-                    setFieldValue("coreSkills", value);
-                    setFieldTouched("coreSkills", true);
-                  }}
-                  className="bg-transparent border-[#AEADAD] h-[99px] pt-1 px-4 border-2 focus-within:border-orange-500"
-                />
-              </FormField>
+            <FormField
+            label="Core Skills"
+            error={errors.coreSkills}
+            touched={touched.coreSkills}
+            showIcon={true}
+            tooltipContent="Job-specific, measurable abilities like software proficiency, coding, or design tools."
+          >
+            <TagInput
+              value={values.coreSkills || []}
+              onChange={(value) => setFieldValue("coreSkills", value)}
+              onBlur={() => setFieldTouched("coreSkills", true)}
+              className="bg-transparent border-[#AEADAD] h-[99px] pt-1 px-4 border-2 focus-within:border-orange-500"
+            />
+          </FormField>
             </div>
 
             <div className="mb-14">
@@ -440,7 +443,7 @@ const MatchCreation = () => {
                 tooltipContent="Personal qualities like communication, teamwork, and problem-solving."
               >
                 <TagInput
-                  value={values.interpersonalSkills}
+                  value={values.interpersonalSkills || []}
                   onChange={(value) =>
                     setFieldValue("interpersonalSkills", value)
                   }
@@ -507,7 +510,7 @@ const MatchCreation = () => {
                 tooltipContent="Feel free to enter up to 4 languages in which you are fluent, both in speaking and writing."
               >
                 <TagInput
-                  value={values.languages}
+                  value={values.languages || []}
                   onChange={(value) => setFieldValue("languages", value)}
                   onBlur={(value) => {
                     setFieldValue("languages", value);
