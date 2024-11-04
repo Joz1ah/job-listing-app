@@ -2,7 +2,7 @@ import { FC, useState, useRef, useEffect } from "react";
 import sparkeIcon from "images/sparkle-icon.png";
 import { perfectMatch, others } from "matchData/employer-data";
 import { Card, CardContent, CardHeader, CardFooter, CardTitle } from "components";
-import { Bookmark, MapPin, MoreVertical } from "lucide-react";
+import { Bookmark, MapPin, MoreVertical, Loader2 } from "lucide-react";
 import { Button } from "components";
 
 interface selectedProps {
@@ -249,6 +249,23 @@ const OtherApplications: FC<selectedProps> = ({ setSelectedTab }) => {
 
 const EmployerSectionDesktop: FC = () => {
   const [selectedTab, setSelectedTab] = useState("perfectMatch");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleTabChange = (tab: string) => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+    
+    // First change the tab
+    setSelectedTab(tab);
+    // Then show loading
+    setIsLoading(true);
+    // Hide loading after delay
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+  };
 
   return (
     <>
@@ -260,7 +277,8 @@ const EmployerSectionDesktop: FC = () => {
                 ? "text-orange-500 border-b-2 border-orange-500"
                 : "text-[#AEADAD]"
             }`}
-            onClick={() => setSelectedTab("perfectMatch")}
+            onClick={() => handleTabChange("perfectMatch")}
+            disabled={isLoading}
           >
             <img
               src={sparkeIcon}
@@ -279,19 +297,26 @@ const EmployerSectionDesktop: FC = () => {
                 ? "text-orange-500 border-b-2 border-orange-500"
                 : "text-[#AEADAD]"
             }`}
-            onClick={() => setSelectedTab("otherApplications")}
+            onClick={() => handleTabChange("otherApplications")}
+            disabled={isLoading}
           >
             OTHER APPLICATION CARDS
           </button>
         </div>
 
-        <div className="w-full">
-          {selectedTab === "perfectMatch" ? (
-            <PerfectMatch setSelectedTab={setSelectedTab} />
-          ) : (
-            <OtherApplications setSelectedTab={setSelectedTab} />
-          )}
-        </div>
+        {isLoading ? (
+          <div className="flex justify-center w-full mt-12">
+            <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
+          </div>
+        ) : (
+          <div className="w-full">
+            {selectedTab === "perfectMatch" ? (
+              <PerfectMatch setSelectedTab={handleTabChange} />
+            ) : (
+              <OtherApplications setSelectedTab={handleTabChange} />
+            )}
+          </div>
+        )}
       </div>
     </>
   );

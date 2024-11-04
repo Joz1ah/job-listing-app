@@ -9,6 +9,7 @@ import {
   MapPin,
   DollarSign,
   BriefcaseBusiness,
+  Loader2
 } from "lucide-react";
 
 import {
@@ -202,7 +203,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 mb-8">
       {perfectMatch.map((match, index) => (
         <JobMatchCard
           key={index}
@@ -256,7 +257,7 @@ const OtherApplications: FC<selectedProps> = ({ setSelectedTab }) => {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 mb-8">
       {others.map((match, index) => (
         <JobMatchCard
         key={index}
@@ -288,6 +289,23 @@ const OtherApplications: FC<selectedProps> = ({ setSelectedTab }) => {
 
 const JobHunterSectionDesktop: FC = () => {
   const [selectedTab, setSelectedTab] = useState("perfectMatch");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleTabChange = (tab: string) => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+    
+    // First change the tab
+    setSelectedTab(tab);
+    // Then show loading
+    setIsLoading(true);
+    // Hide loading after delay
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+  };
 
   return (
     <div className="mt-8 md:mt-16 md:ml-16">
@@ -350,7 +368,8 @@ const JobHunterSectionDesktop: FC = () => {
                 ? "text-orange-500 border-b-2 border-orange-500"
                 : "text-[#AEADAD]"
             }`}
-            onClick={() => setSelectedTab("perfectMatch")}
+            onClick={() => handleTabChange("perfectMatch")}
+            disabled={isLoading}
           >
             <img
               src={sparkeIcon}
@@ -369,17 +388,26 @@ const JobHunterSectionDesktop: FC = () => {
                 ? "text-orange-500 border-b-2 border-orange-500"
                 : "text-[#AEADAD]"
             }`}
-            onClick={() => setSelectedTab("otherApplications")}
+            onClick={() => handleTabChange("otherApplications")}
+            disabled={isLoading}
           >
             OTHER APPLICATION CARDS
           </button>
         </div>
 
-        <div className="w-full">
-          {selectedTab === "perfectMatch" ? (
-            <PerfectMatch setSelectedTab={setSelectedTab} />
+        <div className="min-h-[600px]"> {/* Add minimum height container */}
+          {isLoading ? (
+            <div className="flex justify-center items-start w-full mt-12">
+              <Loader2 className="w-8 h-8 text-orange-500 animate-spin mt-10" />
+            </div>
           ) : (
-            <OtherApplications setSelectedTab={setSelectedTab} />
+            <div className="w-full">
+              {selectedTab === "perfectMatch" ? (
+                <PerfectMatch setSelectedTab={handleTabChange} />
+              ) : (
+                <OtherApplications setSelectedTab={handleTabChange} />
+              )}
+            </div>
           )}
         </div>
       </div>
