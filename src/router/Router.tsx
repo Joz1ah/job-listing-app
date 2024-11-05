@@ -1,9 +1,38 @@
 import { RouteObject, Navigate } from 'react-router-dom'
-
+import { lazy, Suspense, ComponentType } from 'react'
 import { ROUTE_CONSTANTS } from 'constants/routeConstants'
-import { About, Fetch, Home, NotFound, JobHunterMobile, EmployerMobile, EmployerDesktop, JobHunterDesktop } from 'pages'
-import { EmployerSectionDesktop, MatchCreation } from 'components'
-import { ResponsiveLayout}  from 'components'
+
+const LoadingFallback = () => (
+  <div className="flex items-center justify-center min-h-screen">
+    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+  </div>
+);
+
+// Adjust imports to match your file structure and add type assertions
+const Home = lazy(() => import('pages').then(module => ({ default: module.Home })))
+const Fetch = lazy(() => import('pages').then(module => ({ default: module.Fetch })))
+const About = lazy(() => import('pages').then(module => ({ default: module.About })))
+const NotFound = lazy(() => import('pages').then(module => ({ default: module.NotFound })))
+const JobHunterMobile = lazy(() => import('pages').then(module => ({ default: module.JobHunterMobile })))
+const EmployerMobile = lazy(() => import('pages').then(module => ({ default: module.EmployerMobile })))
+const EmployerDesktop = lazy(() => import('pages').then(module => ({ default: module.EmployerDesktop })))
+const JobHunterDesktop = lazy(() => import('pages').then(module => ({ default: module.JobHunterDesktop })))
+
+// Components imports
+const EmployerSectionDesktop = lazy(() => import('components').then(module => ({ default: module.EmployerSectionDesktop })))
+const MatchCreation = lazy(() => import('components').then(module => ({ default: module.MatchCreation })))
+const ResponsiveLayout = lazy(() => import('components').then(module => ({ default: module.ResponsiveLayout })))
+
+interface LazyComponentProps {
+  component: ComponentType<any>;
+  [key: string]: any;
+}
+
+const LazyComponent = ({ component: Component, ...props }: LazyComponentProps) => (
+  <Suspense fallback={<LoadingFallback />}>
+    <Component {...props} />
+  </Suspense>
+);
 
 const routes: RouteObject[] = [
   {
@@ -12,46 +41,50 @@ const routes: RouteObject[] = [
   },
   {
     path: ROUTE_CONSTANTS.HOME,
-    element: <Home />
+    element: <LazyComponent component={Home} />
   },
   {
     path: ROUTE_CONSTANTS.FETCH,
-    element: <Fetch />
+    element: <LazyComponent component={Fetch} />
   },
   {
     path: ROUTE_CONSTANTS.ABOUT,
-    element: <About />
+    element: <LazyComponent component={About} />
   },
   {
     path: ROUTE_CONSTANTS.NOT_FOUND,
-    element: <NotFound />
+    element: <LazyComponent component={NotFound} />
   },
   {
     path: ROUTE_CONSTANTS.EMPLOYER,
     element: (
-      <ResponsiveLayout
-        mobileComponent={<EmployerMobile />}
-        desktopComponent={<EmployerDesktop />}
-      />
+      <Suspense fallback={<LoadingFallback />}>
+        <ResponsiveLayout
+          mobileComponent={<LazyComponent component={EmployerMobile} />}
+          desktopComponent={<LazyComponent component={EmployerDesktop} />}
+        />
+      </Suspense>
     ),
     children: [
       {
         path: '',
-        element: <EmployerSectionDesktop />
+        element: <LazyComponent component={EmployerSectionDesktop} />
       },
       {
         path: ROUTE_CONSTANTS.JOB_LISTING,
-        element: <MatchCreation />
+        element: <LazyComponent component={MatchCreation} />
       }
     ]
   },
   {
     path: ROUTE_CONSTANTS.JOB_HUNTER,
     element: (
-      <ResponsiveLayout
-        mobileComponent={<JobHunterMobile />}
-        desktopComponent={<JobHunterDesktop />}
-      />
+      <Suspense fallback={<LoadingFallback />}>
+        <ResponsiveLayout
+          mobileComponent={<LazyComponent component={JobHunterMobile} />}
+          desktopComponent={<LazyComponent component={JobHunterDesktop} />}
+        />
+      </Suspense>
     )
   },
   {
