@@ -14,7 +14,6 @@ build:
   only:
     - main
 
-
 # Docker Build Stage
 docker_build:
   stage: docker_build
