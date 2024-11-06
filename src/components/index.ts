@@ -53,10 +53,8 @@ export {
 } from "components/ui/carousel";
 export { Header } from "components/layout-mobile/Header";
 export { Footer } from "components/layout-mobile/Footer";
-export { JobHunterLayout } from "components/layout-mobile/JobHunterLayout";
-export { EmployerLayout } from "components/layout-mobile/EmployerLayout";
-export { EmployerSection } from "components/features/job-feed-mobille/EmployerSection";
-export { JobHunterSection } from "components/features/job-feed-mobille/JobHunterSection";
+export { EmployerSectionMobile } from "components/features/job-feed-mobille/EmployerSectionMobile";
+export { JobHunterSectionMobile } from "components/features/job-feed-mobille/JobHunterSectionMobile";
 export { JobHunterFcm } from "components/features/full-screen-menu/jh-fcm";
 export { EmployerFcm } from "components/features/full-screen-menu/e-fcm";
 export { EmployerMenu } from "components/features/full-screen-menu/EmployerMenu";
@@ -103,3 +101,5 @@ export {
 export { Badge, badgeVariants } from 'components/ui/badge'
 export { Tooltip } from 'components/ui/tooltip'
 export { ResponsiveLayout} from 'components/responsive-layout/ResponsiveLayout'
+export { CircularPagination } from 'components/ui/circular-pagination'
+export { Skeleton } from 'components/ui/skeleton'

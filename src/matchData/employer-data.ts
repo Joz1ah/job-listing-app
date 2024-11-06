@@ -1,0 +1,287 @@
+interface Skill {
+    name: string;
+    isMatch: boolean;
+  }
+  
+  interface Match {
+    name: string;
+    location: string;
+    job: string;
+    skills: Skill[];
+    appliedAgo: string;
+    experience: string;
+    lookingFor: string[];
+    salaryExpectation: string;
+    language: string[];
+  }
+  
+  export const perfectMatch: Match[] = [
+    {
+      name: "Olivia Davis",
+      location: "London, United Kingdom",
+      job: "Junior Front End Developer",
+      skills: [
+        { name: "React", isMatch: true },
+        { name: "JavaScript", isMatch: true },
+        { name: "CSS", isMatch: true },
+        { name: "HTML", isMatch: true },
+        { name: "Node.js", isMatch: false },
+        { name: "TypeScript", isMatch: false },
+        { name: "Git", isMatch: true },
+        { name: "Responsive Design", isMatch: false },
+        { name: "Jest", isMatch: true },
+        { name: "GraphQL", isMatch: false },
+        { name: "Tailwind CSS", isMatch: false },
+        { name: "SCSS", isMatch: true },
+        { name: "Rest API", isMatch: true },
+      ],
+      appliedAgo: "3 days ago",
+      experience: "under a year",
+      lookingFor: ["Full time"],
+      salaryExpectation: "$51,000-$70,000",
+      language: ["English"]
+    },
+    {
+      name: "Mason Green",
+      location: "Toronto, Canada",
+      job: "Frontend Engineer",
+      skills: [
+        { name: "React", isMatch: true },
+        { name: "JavaScript", isMatch: true },
+        { name: "CSS", isMatch: true },
+        { name: "HTML", isMatch: true },
+        { name: "Webpack", isMatch: true },
+        { name: "TypeScript", isMatch: true },
+        { name: "Jest", isMatch: true },
+        { name: "GraphQL", isMatch: false },
+      ],
+      appliedAgo: "1 week ago",
+      experience: "3-5years",
+      lookingFor: ["Full time", "Contract"],
+      salaryExpectation: "$71,000-$100,000",
+      language: ["English", "French"]
+    },
+    {
+      name: "Ava Martinez",
+      location: "Berlin, Germany",
+      job: "Junior JavaScript Developer",
+      skills: [
+        { name: "JavaScript", isMatch: true },
+        { name: "React", isMatch: true },
+        { name: "Vue.js", isMatch: true },
+        { name: "TypeScript", isMatch: false },
+        { name: "CSS", isMatch: true },
+        { name: "HTML", isMatch: true },
+        { name: "Git", isMatch: true },
+        { name: "REST API", isMatch: false },
+      ],
+      appliedAgo: "4 days ago",
+      experience: "1-3years",
+      lookingFor: ["Full time"],
+      salaryExpectation: "$51,000-$70,000",
+      language: ["English", "Spanish"]
+    },
+    {
+      name: "Ethan Clark",
+      location: "Austin, USA",
+      job: "Frontend Developer",
+      skills: [
+        { name: "React", isMatch: true },
+        { name: "JavaScript", isMatch: true },
+        { name: "SCSS", isMatch: true },
+        { name: "Responsive Design", isMatch: true },
+        { name: "TypeScript", isMatch: false },
+        { name: "Git", isMatch: true },
+        { name: "Redux", isMatch: true },
+        { name: "GraphQL", isMatch: false },
+      ],
+      appliedAgo: "5 days ago",
+      experience: "3-5years",
+      lookingFor: ["Full time"],
+      salaryExpectation: "$71,000-$100,000",
+      language: ["English"]
+    },
+    {
+      name: "Sophia Brown",
+      location: "Sydney, Australia",
+      job: "UI Developer",
+      skills: [
+        { name: "React", isMatch: true },
+        { name: "JavaScript", isMatch: true },
+        { name: "CSS", isMatch: true },
+        { name: "Tailwind CSS", isMatch: true },
+        { name: "TypeScript", isMatch: false },
+        { name: "HTML", isMatch: true },
+        { name: "Git", isMatch: true },
+        { name: "Figma", isMatch: false },
+      ],
+      appliedAgo: "6 days ago",
+      experience: "1-3years",
+      lookingFor: ["Full time", "Part time"],
+      salaryExpectation: "$51,000-$70,000",
+      language: ["English"]
+    },
+    {
+      name: "James Wilson",
+      location: "San Francisco, USA",
+      job: "React Developer",
+      skills: [
+        { name: "React", isMatch: true },
+        { name: "JavaScript", isMatch: true },
+        { name: "Redux", isMatch: true },
+        { name: "TypeScript", isMatch: true },
+        { name: "CSS", isMatch: true },
+        { name: "HTML", isMatch: true },
+        { name: "Node.js", isMatch: false },
+        { name: "GraphQL", isMatch: false },
+      ],
+      appliedAgo: "2 weeks ago",
+      experience: "5-10years",
+      lookingFor: ["Full time"],
+      salaryExpectation: "$100,000-$120,000",
+      language: ["English"]
+    },
+    {
+      name: "Lucas Evans",
+      location: "Madrid, Spain",
+      job: "Junior Web Developer",
+      skills: [
+        { name: "React", isMatch: true },
+        { name: "JavaScript", isMatch: true },
+        { name: "HTML", isMatch: true },
+        { name: "CSS", isMatch: true },
+        { name: "Webpack", isMatch: true },
+        { name: "Git", isMatch: true },
+        { name: "Bootstrap", isMatch: false },
+        { name: "REST API", isMatch: false },
+      ],
+      appliedAgo: "3 weeks ago",
+      experience: "under a year",
+      lookingFor: ["Full time", "Part time"],
+      salaryExpectation: "negotiable",
+      language: ["English", "Spanish"]
+    },
+    {
+      name: "Isabella Hill",
+      location: "Paris, France",
+      job: "Junior Front End Developer",
+      skills: [
+        { name: "React", isMatch: true },
+        { name: "JavaScript", isMatch: true },
+        { name: "CSS", isMatch: true },
+        { name: "HTML", isMatch: true },
+        { name: "Vue.js", isMatch: false },
+        { name: "TypeScript", isMatch: false },
+        { name: "Git", isMatch: true },
+        { name: "SCSS", isMatch: false },
+      ],
+      appliedAgo: "1 month ago",
+      experience: "1-3years",
+      lookingFor: ["Full time"],
+      salaryExpectation: "$51,000-$70,000",
+      language: ["English", "French"]
+    }
+  ];
+  
+  export const others: Match[] = [
+    {
+      name: "Lily Thompson",
+      location: "Los Angeles, USA",
+      job: "Full Stack Developer",
+      skills: [
+        { name: "JavaScript", isMatch: true },
+        { name: "React", isMatch: true },
+        { name: "Node.js", isMatch: false },
+        { name: "GraphQL", isMatch: true },
+        { name: "MongoDB", isMatch: true },
+        { name: "Docker", isMatch: false },
+        { name: "TypeScript", isMatch: true },
+        { name: "REST API", isMatch: true },
+      ],
+      appliedAgo: "2 days ago",
+      experience: "5-10years",
+      lookingFor: ["Full time", "Contract"],
+      salaryExpectation: "$100,000-$120,000",
+      language: ["English"]
+    },
+    {
+      name: "Jack Baker",
+      location: "Chicago, USA",
+      job: "Backend Developer",
+      skills: [
+        { name: "Node.js", isMatch: false },
+        { name: "Express", isMatch: true },
+        { name: "MongoDB", isMatch: true },
+        { name: "JavaScript", isMatch: true },
+        { name: "GraphQL", isMatch: false },
+        { name: "Docker", isMatch: true },
+        { name: "REST API", isMatch: true },
+        { name: "Redis", isMatch: false },
+      ],
+      appliedAgo: "5 days ago",
+      experience: "3-5years",
+      lookingFor: ["Full time"],
+      salaryExpectation: "$71,000-$100,000",
+      language: ["English"]
+    },
+    {
+      name: "Emma Johnson",
+      location: "Dublin, Ireland",
+      job: "Software Engineer",
+      skills: [
+        { name: "JavaScript", isMatch: true },
+        { name: "TypeScript", isMatch: false },
+        { name: "React", isMatch: true },
+        { name: "Node.js", isMatch: false },
+        { name: "GraphQL", isMatch: true },
+        { name: "Docker", isMatch: true },
+        { name: "CSS", isMatch: true },
+        { name: "MySQL", isMatch: true },
+      ],
+      appliedAgo: "1 week ago",
+      experience: "3-5years",
+      lookingFor: ["Full time", "Contract"],
+      salaryExpectation: "$71,000-$100,000",
+      language: ["English"]
+    },
+    {
+      name: "Noah Lee",
+      location: "Seoul, South Korea",
+      job: "Frontend Engineer",
+      skills: [
+        { name: "JavaScript", isMatch: true },
+        { name: "React", isMatch: true },
+        { name: "Vue.js", isMatch: false },
+        { name: "CSS", isMatch: true },
+        { name: "HTML", isMatch: true },
+        { name: "TypeScript", isMatch: true },
+        { name: "Tailwind CSS", isMatch: true },
+        { name: "REST API", isMatch: false },
+      ],
+      appliedAgo: "2 weeks ago",
+      experience: "3-5years",
+      lookingFor: ["full time"],
+      salaryExpectation: "$71,000-$100,000",
+      language: ["English"]
+    },
+    {
+      name: "Amelia Roberts",
+      location: "Tokyo, Japan",
+      job: "Junior Software Developer",
+      skills: [
+        { name: "JavaScript", isMatch: true },
+        { name: "React", isMatch: true },
+        { name: "HTML", isMatch: true },
+        { name: "CSS", isMatch: true },
+        { name: "Node.js", isMatch: false },
+        { name: "TypeScript", isMatch: false },
+        { name: "Git", isMatch: true },
+        { name: "Jest", isMatch: false },
+      ],
+      appliedAgo: "3 weeks ago",
+      experience: "1-3years",
+      lookingFor: ["Full time", "Part time"],
+      salaryExpectation: "negotiable",
+      language: ["English"]
+    }
+  ];
