@@ -29,7 +29,6 @@ docker_build:
   variables:
     GOOGLE_APPLICATION_CREDENTIALS: /tmp/sa-key.json 
 
-
 # Docker Push Stage
 docker_push:
   stage: docker_push
