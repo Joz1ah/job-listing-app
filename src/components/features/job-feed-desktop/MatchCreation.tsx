@@ -220,32 +220,37 @@ const MatchCreation = () => {
   };
 
   return (
-    <div className="flex-1 flex justify-center items-start px-4 mr-16">
+    <div className="flex-1 flex justify-center items-start px-4 md:mr-16 mx-auto mb-6">
       {isLoading ? (
         <div className="flex justify-center items-center h-[600px]">
           <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
         </div>
       ) : (
-        <div className="w-[927px] h-[825px] bg-[#2D3A41] text-white pt-4 pb-12 mt-9 ml-1">
-          <div className="flex items-center relative w-full mb-14">
+        <div className="w-full md:w-[927px] min-h-[825px] bg-[#2D3A41] text-white pt-4 pb-12 mt-9 ml-1">
+          <div className="flex items-center relative w-full mb-8 md:mb-14">
             <NavLink to="/job-feed-employer" className="absolute left-0">
               <ChevronLeft strokeWidth={4} className="h-6 w-6 ml-4" />
             </NavLink>
 
-            <h1 className="flex-1 text-center text-[26px] font-semibold text-orange-500">
+            <h1 className="flex-1 text-center text-xl md:text-[26px] font-semibold text-orange-500">
               <span className="inline-flex items-center gap-2 justify-center">
-                <img src={sparkeIcon} alt="Sparkle icon" className="w-6 h-6" />
+                <img
+                  src={sparkeIcon}
+                  alt="Sparkle icon"
+                  className="w-5 md:w-6 h-5 md:h-6"
+                />
                 PERFECT MATCH CREATION
               </span>
             </h1>
           </div>
+
           <form
             onSubmit={handleSubmit}
             onKeyDown={handleKeyDown}
-            className="max-w-[831px] mx-[48px] grid grid-cols-1 md:grid-cols-2 gap-[115px]"
+            className="w-full px-4 md:max-w-[831px] md:mx-[48px] grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-[115px]"
           >
             {/* Left Column */}
-            <div className="space-y-[40px]">
+            <div className="space-y-6 md:space-y-[40px]">
               <FormField
                 label="Job Title"
                 className="bg-transparent"
@@ -289,14 +294,14 @@ const MatchCreation = () => {
                           <Badge
                             key={value}
                             variant="secondary"
-                            className="mr-1 bg-orange-500 text-white pr-1 font-normal text-[16px] rounded-sm"
+                            className="mr-1 mb-1 bg-orange-500 text-white pr-1 font-normal text-[16px] rounded-sm"
                           >
                             {
                               selectOptions.employmentType.find(
                                 (type) => type.value === value,
                               )?.label
                             }
-                            <button className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"></button>
+                            <button className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2" />
                           </Badge>
                         ))}
                       </div>
@@ -427,13 +432,14 @@ const MatchCreation = () => {
                 label="Job Description"
                 error={errors.jobDescription}
                 touched={touched.jobDescription}
+                className="relative"
               >
                 <Textarea
                   name="jobDescription"
                   value={values.jobDescription}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className="bg-transparent border-[#AEADAD] min-h-[179px] pt-4 resize-none border-2 focus-within:border-orange-500"
+                  className="bg-transparent border-[#AEADAD] min-h-[150px] md:min-h-[179px] pt-4 resize-none border-2 focus-within:border-orange-500"
                 />
                 <span className="flex right-0 italic text-[11px] absolute">
                   Maximum of 500 words
@@ -443,7 +449,7 @@ const MatchCreation = () => {
 
             {/* Right Column */}
             <div className="flex flex-col">
-              <div className="mb-14">
+              <div className="mb-8 md:mb-14">
                 <FormField
                   label="Core Skills"
                   error={errors.coreSkills}
@@ -550,18 +556,18 @@ const MatchCreation = () => {
             </div>
 
             {/* Footer Buttons */}
-            <div className="col-span-full flex justify-end gap-4 -mt-10">
+            <div className="col-span-full flex flex-col md:flex-row justify-end gap-4 mt-8 md:-mt-10">
               <Button
                 type="button"
                 variant="outline"
                 onClick={handleReset}
-                className="border-orange-500 text-orange-500 bg-[#2D3A41] hover:bg-orange-500 hover:text-white"
+                className="w-full md:w-auto border-orange-500 text-orange-500 bg-[#2D3A41] hover:bg-orange-500 hover:text-white"
               >
                 Save Changes
               </Button>
               <Button
                 type="submit"
-                className="bg-orange-500 text-white hover:bg-orange-600"
+                className="w-full md:w-auto bg-orange-500 text-white hover:bg-orange-600"
               >
                 Add Job
               </Button>

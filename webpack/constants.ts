@@ -31,7 +31,7 @@ const ALIAS: Record<string, string> = {
   types: `${SRC_DIR}/types`,
   utils: `${SRC_DIR}/utils`,
   lib: `${SRC_DIR}/lib`,
-  matchData: `${SRC_DIR}/matchData`,
+  mockData: `${SRC_DIR}/mockData`,
   _webpack: path.join(__dirname, '../webpack')
 }
 

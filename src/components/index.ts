@@ -51,15 +51,8 @@ export {
   CarouselPrevious,
   CarouselNext,
 } from "components/ui/carousel";
-export { Header } from "components/layout-mobile/Header";
-export { Footer } from "components/layout-mobile/Footer";
-export { EmployerSectionMobile } from "components/features/job-feed-mobille/EmployerSectionMobile";
-export { JobHunterSectionMobile } from "components/features/job-feed-mobille/JobHunterSectionMobile";
-export { JobHunterFcm } from "components/features/full-screen-menu/jh-fcm";
-export { EmployerFcm } from "components/features/full-screen-menu/e-fcm";
-export { EmployerMenu } from "components/features/full-screen-menu/EmployerMenu";
-export { HeaderDesktop } from "components/layout-desktop/HeaderDesktop";
-export { HeaderDesktop2 } from "components/layout-desktop/HeaderDesktop2";
+export { EmployerMenuHeader } from "components/layout-desktop/EmployerMenuHeader";
+export { JobHunterMenuHeader } from "components/layout-desktop/JobHunterMenuHeader";
 export { FooterDesktop } from "components/layout-desktop/FooterDesktop";
 export { EmployerSectionDesktop } from "components/features/job-feed-desktop/EmployerSectionDesktop";
 export { JobHunterSectionDesktop } from "components/features/job-feed-desktop/JobHunterSectionDesktop";
@@ -69,7 +62,7 @@ export { Input } from 'components/ui/input'
 export { Textarea } from 'components/ui/textarea'
 export { MatchCreation } from 'components/features/job-feed-desktop/MatchCreation'
 export { Sidebar } from 'components/layout-desktop/Sidebar'
-export { PageTitle } from 'components/layout-desktop/PageTitle'
+export { EmployerHeader } from 'components/layout-desktop/EmployerHeader'
 export { TagInput } from 'components/ui/taginput'
 export { Checkbox } from 'components/ui/checkbox'
 export { Popover, PopoverTrigger, PopoverContent } from 'components/ui/popover'
@@ -103,3 +96,8 @@ export { Tooltip } from 'components/ui/tooltip'
 export { ResponsiveLayout} from 'components/responsive-layout/ResponsiveLayout'
 export { CircularPagination } from 'components/ui/circular-pagination'
 export { Skeleton } from 'components/ui/skeleton'
+export { SkillsWithEllipsis } from 'components/skills-ellipsis/SkillsWithEllipsis'
+export { EmployerCardLoading } from 'components/Skeleton-Loading/EmployerCardLoading'
+export { JobHunterCardLoading } from 'components/Skeleton-Loading/JobHunterCardLoading'
+export { JobHunterCardDesktop, JobHunterCardMobile } from 'components/features/job-card/JobHunterCard'
+export { EmployerCardDesktop, EmployerCardMobile } from 'components/features/job-card/EmployerCard'
