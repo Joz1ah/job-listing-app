@@ -184,7 +184,6 @@ const MatchCreation = () => {
     errors,
     touched,
     handleChange,
-    handleBlur,
     setFieldValue,
     setFieldTouched,
     handleSubmit,
@@ -261,7 +260,6 @@ const MatchCreation = () => {
                   name="jobTitle"
                   value={values.jobTitle}
                   onChange={handleChange}
-                  onBlur={handleBlur}
                   className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500"
                 />
               </FormField>
@@ -272,11 +270,6 @@ const MatchCreation = () => {
                 touched={touched.employmentType}
               >
                 <Popover
-                  onOpenChange={(open) => {
-                    if (!open) {
-                      setFieldTouched("employmentType", true);
-                    }
-                  }}
                 >
                   <PopoverTrigger asChild>
                     <Button
@@ -371,11 +364,6 @@ const MatchCreation = () => {
                   name="salaryRange"
                   value={values.salaryRange}
                   onValueChange={(value) => setFieldValue("salaryRange", value)}
-                  onOpenChange={(open) => {
-                    if (!open) {
-                      setFieldTouched("salaryRange", true);
-                    }
-                  }}
                 >
                   <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500">
                     <SelectValue placeholder="Select Salary Range" />
@@ -405,11 +393,6 @@ const MatchCreation = () => {
                   onValueChange={(value) =>
                     setFieldValue("yearsOfExperience", value)
                   }
-                  onOpenChange={(open) => {
-                    if (!open) {
-                      setFieldTouched("yearsOfExperience", true);
-                    }
-                  }}
                 >
                   <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500">
                     <SelectValue placeholder="Select Years of Experience" />
@@ -438,7 +421,6 @@ const MatchCreation = () => {
                   name="jobDescription"
                   value={values.jobDescription}
                   onChange={handleChange}
-                  onBlur={handleBlur}
                   className="bg-transparent border-[#AEADAD] min-h-[150px] md:min-h-[179px] pt-4 resize-none border-2 focus-within:border-orange-500"
                 />
                 <span className="flex right-0 italic text-[11px] absolute">
@@ -460,7 +442,6 @@ const MatchCreation = () => {
                   <TagInput
                     value={values.coreSkills || []}
                     onChange={(value) => setFieldValue("coreSkills", value)}
-                    onBlur={() => setFieldTouched("coreSkills", true)}
                     className="bg-transparent border-[#AEADAD] h-[99px] pt-1 px-4 border-2 focus-within:border-orange-500"
                   />
                 </FormField>
@@ -479,10 +460,6 @@ const MatchCreation = () => {
                     onChange={(value) =>
                       setFieldValue("interpersonalSkills", value)
                     }
-                    onBlur={(value) => {
-                      setFieldValue("interpersonalSkills", value);
-                      setFieldTouched("interpersonalSkills", true);
-                    }}
                     className="bg-transparent border-[#AEADAD] h-[99px] pt-1 px-4 border-2 focus-within:border-orange-500"
                   />
                 </FormField>
@@ -499,11 +476,6 @@ const MatchCreation = () => {
                     name="education"
                     value={values.education}
                     onValueChange={(value) => setFieldValue("education", value)}
-                    onOpenChange={(open) => {
-                      if (!open) {
-                        setFieldTouched("education", true);
-                      }
-                    }}
                   >
                     <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500">
                       <SelectValue placeholder="Select your Education Level" />
@@ -530,7 +502,6 @@ const MatchCreation = () => {
                     name="location"
                     value={values.location}
                     onChange={handleChange}
-                    onBlur={handleBlur}
                     className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus-within:border-orange-500"
                   />
                 </FormField>
@@ -544,10 +515,6 @@ const MatchCreation = () => {
                   <TagInput
                     value={values.languages || []}
                     onChange={(value) => setFieldValue("languages", value)}
-                    onBlur={(value) => {
-                      setFieldValue("languages", value);
-                      setFieldTouched("languages", true);
-                    }}
                     className="bg-transparent border-[#AEADAD] h-[56px] pt-1 px-4 border-2 focus-within:border-orange-500"
                     tagClassName="bg-orange-500"
                   />
