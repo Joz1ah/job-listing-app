@@ -37,6 +37,7 @@ interface FormData {
   salaryRange: string;
   yearsOfExperience: string;
   jobDescription: string;
+  priorityIndicator: string;
   coreSkills: string[];
   interpersonalSkills: string[];
   education: string;
@@ -54,7 +55,7 @@ interface FormFieldProps {
   error?: string | string[];
   touched?: boolean;
   showIcon?: boolean;
-  tooltipContent?: string;
+  tooltipContent?: string | React.ReactNode; // Modified to accept ReactNode
 }
 
 const FormField = React.forwardRef<HTMLDivElement, FormFieldProps>(
@@ -65,36 +66,38 @@ const FormField = React.forwardRef<HTMLDivElement, FormFieldProps>(
     const showError = touched && error;
 
     return (
-      <div ref={ref} className={cn("relative", className)}>
-        <div className="absolute -top-3 left-5 z-50 bg-[#2D3A41] pl-2">
-          <div className="flex items-center">
-            <Label className="text-[16px] font-normal text-white">
-              {label}
-            </Label>
-            {showIcon && tooltipContent && (
-              <Tooltip content={tooltipContent}>
-                <CircleAlert
-                  className="text-[#2D3A41] relative -top-1 fill-gray-400 cursor-pointer"
-                  strokeWidth={1.5}
-                  size={14}
+      <div ref={ref} className={cn("relative pt-4", className)}>
+        <div className="relative">
+          <div className="absolute -top-3 left-5 bg-[#2D3A41] px-1 z-20">
+            <div className="flex items-center">
+              <Label className="text-base font-normal text-white">
+                {label}
+              </Label>
+              {showIcon && tooltipContent && (
+                <Tooltip content={tooltipContent}>
+                  <CircleAlert
+                    className="relative -top-1 cursor-pointer fill-gray-400 text-[#2D3A41]"
+                    strokeWidth={1.5}
+                    size={14}
+                  />
+                </Tooltip>
+              )}
+            </div>
+          </div>
+          <div className="relative">
+            {children}
+            {showError && (
+              <div className="absolute -right-7 top-1/2 -translate-y-1/2">
+                <AlertTriangle
+                  className="fill-red-500 text-[#2D3A41]"
+                  size={20}
                 />
-              </Tooltip>
+              </div>
             )}
           </div>
         </div>
-        <div className="relative">
-          {children}
-          {showError && (
-            <div className="absolute -right-7 top-1/2 -translate-y-1/2">
-              <AlertTriangle
-                className="text-[#2D3A41] fill-red-500"
-                size={20}
-              />
-            </div>
-          )}
-        </div>
         {showError && (
-          <div className="text-red-500 italic text-[13px] absolute">
+          <div className="absolute text-sm italic text-red-500">
             {error}
           </div>
         )}
@@ -147,8 +150,8 @@ const MatchCreation = () => {
 
   const selectOptions = {
     employmentType: [
-      { value: "full-time", label: "Full time" },
-      { value: "part-time", label: "Part time" },
+      { value: "full-time", label: "Full Time" },
+      { value: "part-time", label: "Part Time" },
       { value: "contract", label: "Contract" },
     ],
     salaryRange: [
@@ -158,9 +161,10 @@ const MatchCreation = () => {
       { value: "51-70", label: "$51,000 - $70,000" },
       { value: "71-100", label: "$71,000 - $100,000" },
       { value: "100-120", label: "$100,000 - $120,000" },
-      { value: "121+", label: "121,000 or more" },
+      { value: "121+", label: "$121,000 or more" },
     ],
     yearsOfExperience: [
+      { value: "noExp", label: "No experience" },
       { value: "-1", label: "under a year" },
       { value: "1-3", label: "1-3 years" },
       { value: "3-5", label: "3-5 years" },
@@ -177,6 +181,11 @@ const MatchCreation = () => {
       { value: "phd", label: "Doctorate/PhD" },
       { value: "inc", label: "Incomplete College Degree" },
     ],
+    priorityIndicator: [
+      { value: "location", label: "Location" },
+      { value: "salary", label: "Salary" },
+      { value: "language", label: "Language" },
+    ],
   };
 
   const {
@@ -185,7 +194,6 @@ const MatchCreation = () => {
     touched,
     handleChange,
     setFieldValue,
-    setFieldTouched,
     handleSubmit,
     handleReset,
   } = useFormik<FormData & { employmentType: string[] }>({
@@ -195,6 +203,7 @@ const MatchCreation = () => {
       salaryRange: "",
       yearsOfExperience: "",
       jobDescription: "",
+      priorityIndicator: "",
       coreSkills: [],
       interpersonalSkills: [],
       education: "",
@@ -225,20 +234,15 @@ const MatchCreation = () => {
           <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
         </div>
       ) : (
-        <div className="w-full md:w-[927px] min-h-[825px] bg-[#2D3A41] text-white pt-4 pb-12 mt-9 ml-1">
+        <div className="w-full md:w-[927px] min-h-[825px] bg-[#2D3A41] text-white pt-6 pb-12 mt-9 ml-1">
           <div className="flex items-center relative w-full mb-8 md:mb-14">
             <NavLink to="/job-feed-employer" className="absolute left-0">
               <ChevronLeft strokeWidth={4} className="h-6 w-6 ml-4" />
             </NavLink>
 
-            <h1 className="flex-1 text-center text-xl md:text-[26px] font-semibold text-orange-500">
+            <h1 className="flex-1 text-center text-xl md:text-[32px] font-normal text-orange-500">
               <span className="inline-flex items-center gap-2 justify-center">
-                <img
-                  src={sparkeIcon}
-                  alt="Sparkle icon"
-                  className="w-5 md:w-6 h-5 md:h-6"
-                />
-                PERFECT MATCH CREATION
+                Create Job Listing
               </span>
             </h1>
           </div>
@@ -260,7 +264,8 @@ const MatchCreation = () => {
                   name="jobTitle"
                   value={values.jobTitle}
                   onChange={handleChange}
-                  className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500"
+                  className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
+                  placeholder="Provide a Job Title"
                 />
               </FormField>
 
@@ -269,15 +274,14 @@ const MatchCreation = () => {
                 error={errors.employmentType}
                 touched={touched.employmentType}
               >
-                <Popover
-                >
+                <Popover>
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
                       role="combobox"
                       className={cn(
                         "w-full justify-between bg-transparent border-gray-300 h-[56px] font-normal hover:bg-transparent hover:text-white border-2",
-                        "focus-within:border-orange-500 data-[state=open]:border-orange-500",
+                        "focus-within:border-orange-500 data-[state=open]:border-orange-500 px-3",
                       )}
                     >
                       <div className="flex flex-wrap overflow-hidden">
@@ -287,22 +291,31 @@ const MatchCreation = () => {
                           <Badge
                             key={value}
                             variant="secondary"
-                            className="mr-1 mb-1 bg-orange-500 text-white pr-1 font-normal text-[16px] rounded-sm"
+                            className={cn(
+                              "mr-1 font-normal text-[16px] rounded-sm",
+                              {
+                                // Custom styles for Contract selection
+                                "bg-orange-600 text-white":
+                                  value === "contract",
+                                // Custom styles for Full-time and Part-time
+                                "bg-orange-500 text-white":
+                                  value !== "contract",
+                              },
+                            )}
                           >
                             {
                               selectOptions.employmentType.find(
                                 (type) => type.value === value,
                               )?.label
                             }
-                            <button className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2" />
                           </Badge>
                         ))}
                       </div>
-                      <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
-                    <Command className="border-0">
+                  <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 border-none rounded-none">
+                    <Command className="border-0 rounded-none">
                       <CommandList>
                         <CommandGroup className="p-0 bg-[#F5F5F5]">
                           {selectOptions.employmentType.map((type) => (
@@ -321,14 +334,11 @@ const MatchCreation = () => {
                                   newValue.splice(index, 1);
                                 }
                                 setFieldValue("employmentType", newValue);
-                                setFieldTouched(
-                                  "employmentType",
-                                  newValue.length === 0,
-                                );
                               }}
                               className={cn(
-                                "border-b border-black last:border-b-0 rounded-none justify-start px-3 py-3",
-                                "data-[selected=true]:bg-orange-500 data-[selected=true]:text-white",
+                                "rounded-none justify-start px-2 h-[55px]",
+                                "transition-all duration-500 ease-in-out",
+                                "data-[selected=true]:bg-[#BF532C] data-[selected=true]:text-white",
                               )}
                             >
                               <div className="flex items-center">
@@ -366,13 +376,22 @@ const MatchCreation = () => {
                   onValueChange={(value) => setFieldValue("salaryRange", value)}
                 >
                   <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500">
-                    <SelectValue placeholder="Select Salary Range" />
+                    <SelectValue
+                      placeholder="Select Salary Range"
+                      className=""
+                    />
                   </SelectTrigger>
-                  <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0">
+                  <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none">
                     {selectOptions.salaryRange.map(({ value, label }) => (
                       <SelectItem
                         key={value}
-                        className="focus:bg-orange-500 focus:text-white border-b border-black last:border-b-0 rounded-none justify-center p-0"
+                        className={cn(
+                          "rounded-none justify-start pl-3 h-[55px] transition-all duration-500 ease-in-out",
+                          "focus:bg-[#BF532C] focus:text-white",
+                          "data-[state=checked]:bg-orange-500 data-[state=checked]:text-white data-[state=checked]:font-bold",
+                          "data-[state=checked]:focus:bg-[#BF532C]"
+                        )}
+                        
                         value={value}
                       >
                         <div className="py-3 w-full text-center">{label}</div>
@@ -394,14 +413,19 @@ const MatchCreation = () => {
                     setFieldValue("yearsOfExperience", value)
                   }
                 >
-                  <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500">
+                  <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 ">
                     <SelectValue placeholder="Select Years of Experience" />
                   </SelectTrigger>
-                  <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0">
+                  <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none">
                     {selectOptions.yearsOfExperience.map(({ value, label }) => (
                       <SelectItem
                         key={value}
-                        className="focus:bg-orange-500 focus:text-white border-b border-black last:border-b-0 rounded-none justify-center p-0"
+                        className={cn(
+                          "rounded-none justify-start pl-3 h-[55px] transition-all duration-500 ease-in-out",
+                          "focus:bg-[#BF532C] focus:text-white",
+                          "data-[state=checked]:bg-orange-500 data-[state=checked]:text-white data-[state=checked]:font-bold",
+                          "data-[state=checked]:focus:bg-[#BF532C]"
+                        )}                        
                         value={value}
                       >
                         <div className="py-3 w-full text-center">{label}</div>
@@ -421,7 +445,8 @@ const MatchCreation = () => {
                   name="jobDescription"
                   value={values.jobDescription}
                   onChange={handleChange}
-                  className="bg-transparent border-[#AEADAD] min-h-[150px] md:min-h-[179px] pt-4 resize-none border-2 focus-within:border-orange-500"
+                  className="bg-transparent border-[#AEADAD] min-h-[150px] md:min-h-[179px] pt-4 resize-none border-2 focus-within:border-orange-500 placeholder:text-white"
+                  placeholder="Please provide a job description"
                 />
                 <span className="flex right-0 italic text-[11px] absolute">
                   Maximum of 500 words
@@ -431,6 +456,73 @@ const MatchCreation = () => {
 
             {/* Right Column */}
             <div className="flex flex-col">
+              <FormField
+                label="Priority Indicator"
+                error={errors.priorityIndicator}
+                touched={touched.priorityIndicator}
+                showIcon={true}
+                tooltipContent={
+                  <div className="flex flex-wrap items-center justify-start text-[9px]">
+                    <span>This will sort your</span>
+                    <div className="flex items-center">
+                      <img
+                        src={sparkeIcon}
+                        alt="Spark Icon"
+                        className="w-3 h-3 object-contain"
+                      />
+                      <span className="text-orange-500">Perfect Matches</span>
+                    </div>
+                    <span>based on the criteria you choose.</span>
+                  </div>
+                }
+                className="pb-[40px]"
+              >
+                <Select
+                  name="priorityIndicator"
+                  value={values.priorityIndicator}
+                  onValueChange={(value) =>
+                    setFieldValue("priorityIndicator", value)
+                  }
+                >
+                  <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 ">
+                    <SelectValue
+                      placeholder={
+                        <div className="flex items-center gap-1 text-white">
+                          <span>Select</span>
+                          <div className="flex items-center">
+                            <img
+                              src={sparkeIcon}
+                              className="w-4 h-4 text-orange-500"
+                            />
+                            <span className="text-[#F5722E] ">
+                              Perfect Match
+                            </span>
+                          </div>
+                          <span>Indicator</span>
+                        </div>
+                      }
+                    />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none">
+                    {selectOptions.priorityIndicator.map(({ value, label }) => (
+                      <SelectItem
+                        key={value}
+                        className={cn(
+                          "rounded-none justify-start pl-3 h-[55px] transition-all duration-500 ease-in-out",
+                          "focus:bg-[#BF532C] focus:text-white",
+                          "data-[state=checked]:bg-orange-500 data-[state=checked]:text-white data-[state=checked]:font-bold",
+                          "data-[state=checked]:focus:bg-[#BF532C]"
+                        )}
+                        
+                        value={value}
+                      >
+                        <div className="py-3 w-full text-center">{label}</div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormField>
+
               <div className="mb-8 md:mb-14">
                 <FormField
                   label="Core Skills"
@@ -442,7 +534,8 @@ const MatchCreation = () => {
                   <TagInput
                     value={values.coreSkills || []}
                     onChange={(value) => setFieldValue("coreSkills", value)}
-                    className="bg-transparent border-[#AEADAD] h-[99px] pt-1 px-4 border-2 focus-within:border-orange-500"
+                    className="bg-transparent border-[#AEADAD] h-[99px] pt-1 px-1 border-2 focus-within:border-orange-500"
+                    placeholder="Type and enter to add skills"
                   />
                 </FormField>
               </div>
@@ -460,7 +553,8 @@ const MatchCreation = () => {
                     onChange={(value) =>
                       setFieldValue("interpersonalSkills", value)
                     }
-                    className="bg-transparent border-[#AEADAD] h-[99px] pt-1 px-4 border-2 focus-within:border-orange-500"
+                    className="bg-transparent border-[#AEADAD] h-[99px] pt-1 px-1 border-2 focus-within:border-orange-500 "
+                    placeholder="Type and enter to add skills"
                   />
                 </FormField>
               </div>
@@ -480,11 +574,17 @@ const MatchCreation = () => {
                     <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500">
                       <SelectValue placeholder="Select your Education Level" />
                     </SelectTrigger>
-                    <SelectContent className="bg-[#F5F5F7] items-center p-0 [&>*]:p-0">
+                    <SelectContent className="bg-[#F5F5F7] items-center p-0 [&>*]:p-0 border-none rounded-none">
                       {selectOptions.education.map(({ value, label }) => (
                         <SelectItem
                           key={value}
-                          className="focus:bg-orange-500 focus:text-white border-b border-black last:border-b-0 rounded-none justify-center p-0"
+                          className={cn(
+                            "rounded-none justify-start pl-3 h-[55px] transition-all duration-500 ease-in-out",
+                            "focus:bg-[#BF532C] focus:text-white",
+                            "data-[state=checked]:bg-orange-500 data-[state=checked]:text-white data-[state=checked]:font-bold",
+                            "data-[state=checked]:focus:bg-[#BF532C]"
+                          )}
+                          
                           value={value}
                         >
                           <div className="py-3 w-full text-center">{label}</div>
@@ -502,7 +602,8 @@ const MatchCreation = () => {
                     name="location"
                     value={values.location}
                     onChange={handleChange}
-                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus-within:border-orange-500"
+                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus-within:border-orange-500 placeholder:text-white"
+                    placeholder="Type and enter country"
                   />
                 </FormField>
                 <FormField
@@ -515,8 +616,9 @@ const MatchCreation = () => {
                   <TagInput
                     value={values.languages || []}
                     onChange={(value) => setFieldValue("languages", value)}
-                    className="bg-transparent border-[#AEADAD] h-[56px] pt-1 px-4 border-2 focus-within:border-orange-500"
+                    className="bg-transparent border-[#AEADAD] h-[56px] pt-1 px-1 border-2 focus-within:border-orange-500"
                     tagClassName="bg-orange-500"
+                    placeholder="Type and enter to add languages"
                   />
                 </FormField>
               </div>
@@ -534,7 +636,7 @@ const MatchCreation = () => {
               </Button>
               <Button
                 type="submit"
-                className="w-full md:w-auto bg-orange-500 text-white hover:bg-orange-600"
+                className="w-full md:w-auto bg-[#AEADAD] text-white hover:bg-[#F5722E]"
               >
                 Add Job
               </Button>

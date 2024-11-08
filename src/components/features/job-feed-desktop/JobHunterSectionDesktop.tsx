@@ -203,7 +203,7 @@ const JobHunterSectionDesktop: FC = () => {
               onClick={() => handleTabChange("otherApplications")}
               disabled={isLoading}
             >
-              OTHER APPLICATION CARDS
+              OTHER OPPORTUNITIES
             </button>
           </div>
 
@@ -263,7 +263,7 @@ const JobHunterSectionDesktop: FC = () => {
               setApi={setOthersApi}
             >
               <h3 className="text-[17px] md:text-[17px] text-gray-400 text-center font-semibold mb-4">
-                OTHER APPLICATION CARDS
+                OTHER OPPORTUNITIES
               </h3>
 
               <CarouselContent>
