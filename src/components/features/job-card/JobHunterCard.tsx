@@ -7,6 +7,7 @@ import {
   MoreVertical,
   MapPin,
 } from "lucide-react";
+import { Button } from "components";
 
 import {
   Card,
@@ -113,7 +114,10 @@ interface Match {
             </div>
           </div>
         </CardContent>
-        <CardFooter className="flex flex-row justify-end -mt-2 -mr-4 space-x-1">
+        <CardFooter className="flex flex-row justify-end -mt-5 -mr-4 space-x-1">
+          <Button className="bg-orange-500 text-white text-[12px] font-semibold px-0 w-[133px] h-[27px]">
+            I'm Interested
+          </Button>
           <MoreVertical size={12} className="text-gray-700 cursor-pointer" />
         </CardFooter>
       </Card>
@@ -182,10 +186,18 @@ interface Match {
           </div>
         </div>
       </CardHeader>
+      <CardContent className="flex flex-col items-center">
+      <Button
+        variant="default"
+        className="bg-[#F5722E] text-[12px] font-semibold"
+      >
+        I'm Interested
+      </Button>
       <MoreVertical
         size={12}
-        className="text-gray-700 cursor-pointer absolute bottom-2 right-1"
+        className="text-gray-700 cursor-pointer absolute bottom-3 right-2"
       />
+    </CardContent>
     </Card>
   );
 
