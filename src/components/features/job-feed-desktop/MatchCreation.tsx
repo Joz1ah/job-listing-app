@@ -17,6 +17,8 @@ import { Command, CommandGroup, CommandItem, CommandList } from "components";
 
 import { Popover, PopoverContent, PopoverTrigger } from "components";
 
+import { LanguageTagInput } from "components";
+
 import {
   Select,
   SelectContent,
@@ -97,9 +99,7 @@ const FormField = React.forwardRef<HTMLDivElement, FormFieldProps>(
           </div>
         </div>
         {showError && (
-          <div className="absolute text-sm italic text-red-500">
-            {error}
-          </div>
+          <div className="absolute text-sm italic text-red-500">{error}</div>
         )}
       </div>
     );
@@ -389,9 +389,8 @@ const MatchCreation = () => {
                           "rounded-none justify-start pl-3 h-[55px] transition-all duration-500 ease-in-out",
                           "focus:bg-[#BF532C] focus:text-white",
                           "data-[state=checked]:bg-orange-500 data-[state=checked]:text-white data-[state=checked]:font-bold",
-                          "data-[state=checked]:focus:bg-[#BF532C]"
+                          "data-[state=checked]:focus:bg-[#BF532C]",
                         )}
-                        
                         value={value}
                       >
                         <div className="py-3 w-full text-center">{label}</div>
@@ -424,8 +423,8 @@ const MatchCreation = () => {
                           "rounded-none justify-start pl-3 h-[55px] transition-all duration-500 ease-in-out",
                           "focus:bg-[#BF532C] focus:text-white",
                           "data-[state=checked]:bg-orange-500 data-[state=checked]:text-white data-[state=checked]:font-bold",
-                          "data-[state=checked]:focus:bg-[#BF532C]"
-                        )}                        
+                          "data-[state=checked]:focus:bg-[#BF532C]",
+                        )}
                         value={value}
                       >
                         <div className="py-3 w-full text-center">{label}</div>
@@ -511,9 +510,8 @@ const MatchCreation = () => {
                           "rounded-none justify-start pl-3 h-[55px] transition-all duration-500 ease-in-out",
                           "focus:bg-[#BF532C] focus:text-white",
                           "data-[state=checked]:bg-orange-500 data-[state=checked]:text-white data-[state=checked]:font-bold",
-                          "data-[state=checked]:focus:bg-[#BF532C]"
+                          "data-[state=checked]:focus:bg-[#BF532C]",
                         )}
-                        
                         value={value}
                       >
                         <div className="py-3 w-full text-center">{label}</div>
@@ -582,9 +580,8 @@ const MatchCreation = () => {
                             "rounded-none justify-start pl-3 h-[55px] transition-all duration-500 ease-in-out",
                             "focus:bg-[#BF532C] focus:text-white",
                             "data-[state=checked]:bg-orange-500 data-[state=checked]:text-white data-[state=checked]:font-bold",
-                            "data-[state=checked]:focus:bg-[#BF532C]"
+                            "data-[state=checked]:focus:bg-[#BF532C]",
                           )}
-                          
                           value={value}
                         >
                           <div className="py-3 w-full text-center">{label}</div>
@@ -606,6 +603,7 @@ const MatchCreation = () => {
                     placeholder="Type and enter country"
                   />
                 </FormField>
+
                 <FormField
                   label="Languages"
                   error={errors.languages}
@@ -613,12 +611,12 @@ const MatchCreation = () => {
                   showIcon={true}
                   tooltipContent="Feel free to enter up to 4 languages in which you are fluent, both in speaking and writing."
                 >
-                  <TagInput
+                  <LanguageTagInput
                     value={values.languages || []}
                     onChange={(value) => setFieldValue("languages", value)}
-                    className="bg-transparent border-[#AEADAD] h-[56px] pt-1 px-1 border-2 focus-within:border-orange-500"
+                    className="min-h-[56px] pt-1 px-1"
                     tagClassName="bg-orange-500"
-                    placeholder="Type and enter to add languages"
+                    placeholder="Type and enter to add language"
                   />
                 </FormField>
               </div>

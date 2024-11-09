@@ -101,3 +101,4 @@ export { EmployerCardLoading } from 'components/Skeleton-Loading/EmployerCardLoa
 export { JobHunterCardLoading } from 'components/Skeleton-Loading/JobHunterCardLoading'
 export { JobHunterCardDesktop, JobHunterCardMobile } from 'components/features/job-card/JobHunterCard'
 export { EmployerCardDesktop, EmployerCardMobile } from 'components/features/job-card/EmployerCard'
+export { TagInputs, LanguageTagInput } from 'components/ui/taginputs'
