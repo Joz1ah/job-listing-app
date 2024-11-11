@@ -5,3 +5,4 @@ export { NotFound } from 'pages/not-found/NotFound'
 
 export { EmployerDesktop } from 'pages/job-feed-desktop/EmployerDesktop'
 export { JobHunterDesktop } from 'pages/job-feed-desktop/JobHunterDesktop'
+export { CompleteProfile } from 'pages/complete-profile/CompleteProfile'

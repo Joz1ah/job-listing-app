@@ -15,10 +15,12 @@ const About = lazy(() => import('pages').then(module => ({ default: module.About
 const NotFound = lazy(() => import('pages').then(module => ({ default: module.NotFound })))
 const Employer = lazy(() => import('pages').then(module => ({ default: module.EmployerDesktop })))
 const JobHunter = lazy(() => import('pages').then(module => ({ default: module.JobHunterDesktop })))
+const CompleteProfile = lazy(() => import('pages').then(module => ({ default: module.CompleteProfile })))
 
 // Components imports
 const EmployerSection = lazy(() => import('components').then(module => ({ default: module.EmployerSectionDesktop })))
 const MatchCreation = lazy(() => import('components').then(module => ({ default: module.MatchCreation })))
+
 
 interface LazyComponentProps {
   component: ComponentType<any>;
@@ -68,7 +70,11 @@ const routes: RouteObject[] = [
   },
   {
     path: ROUTE_CONSTANTS.JOB_HUNTER,
-    element: <LazyComponent component={JobHunter} />
+    element: <LazyComponent component={JobHunter} />,
+  },
+  {
+    path: ROUTE_CONSTANTS.COMPLETE_PROFILE,
+    element: <LazyComponent component={CompleteProfile} />,
   },
   {
     path: 'sw.js',
