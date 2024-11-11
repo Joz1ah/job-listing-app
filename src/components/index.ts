@@ -103,7 +103,7 @@ export { JobHunterCardDesktop, JobHunterCardMobile } from 'components/features/j
 export { EmployerCardDesktop, EmployerCardMobile } from 'components/features/job-card/EmployerCard'
 export { TagInputs, LanguageTagInput } from 'components/ui/taginputs'
 export { ProfileCreation } from 'components/features/job-feed-desktop/ProfileCreation'
-export { BirthdayInput } from 'components/ui/birthday'
+export { BirthdayInput } from 'components/ui/birthday-input'
 export { Separator } from 'components/ui/separator'
 export { ScrollArea, ScrollBar } from 'components/ui/scroll-area'
 export { PhoneInput } from 'components/ui/phone-input'
