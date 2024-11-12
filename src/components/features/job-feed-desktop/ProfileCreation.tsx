@@ -15,7 +15,7 @@ import { Command, CommandGroup, CommandItem, CommandList } from "components";
 
 import { Popover, PopoverContent, PopoverTrigger } from "components";
 
-import { LanguageTagInput, BirthdayInput, PhoneInput} from "components";
+import { LanguageTagInput, BirthdayInput, PhoneInput, PreviewCard} from "components";
 
 import {
   Select,
@@ -73,7 +73,7 @@ const FormField = React.forwardRef<HTMLDivElement, FormFieldProps>(
     return (
       <div ref={ref} className={cn("relative pt-4 w-full", className)}>
         <div className="relative">
-          <div className="absolute -top-3 left-5 bg-[#2D3A41] px-1 z-20">
+          <div className="absolute -top-3 left-5 bg-[#242625] md:bg-[#2D3A41] px-1 z-20">
             <div className="flex items-center">
               <Label className="text-sm md:text-base font-normal text-white">
                 {label}
@@ -207,7 +207,19 @@ const ProfileCreation = () => {
       { value: "in", label: "India" },
       { value: "ph", label: "Philippines" },
       { value: "cn", label: "China" },
-    ]
+    ],
+
+     languages :[
+      {value: "en", label: "English"  },
+      { label: "French", value: "fr" },
+      { label: "German", value: "de" },
+      { label: "Spanish", value: "es" },
+      { label: "Portuguese", value: "pt" },
+      { label: "Russian", value: "ru" },
+      { label: "Japanese", value: "ja" },
+      { label: "Korean", value: "ko" },
+      { label: "Chinese", value: "zh" },
+    ] 
   };
 
   const {
@@ -252,13 +264,13 @@ const ProfileCreation = () => {
   };
 
   return (
-    <div className="pt-10">
+    <div className="md:pt-10 md:flex md:flex-row md:gap-10">
       {isLoading ? (
-        <div className="container mx-auto px-4 py-6">
+        <div className="flex justify-center items-center h-[825px] w-[800px]">
           <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
         </div>
       ) : (
-        <div className="w-full md:w-[800px] min-h-[825px] bg-[#2D3A41] text-white pt-6 mt-9">
+        <div className="w-full md:w-[800px] min-h-[825px] bg-[#242625] md:bg-[#2D3A41] text-white mt-4 md:pt-6 md:mt-9">
           <div className="flex items-center relative w-full mb-8 md:mb-14">
             <NavLink to="/job-feed-employer" className="absolute left-0">
               <ChevronLeft strokeWidth={4} className="h-6 w-6 ml-4" />
@@ -266,7 +278,7 @@ const ProfileCreation = () => {
 
             <h1 className="flex-1 text-center text-xl md:text-[32px] font-normal text-orange-500">
               <span className="inline-flex items-center gap-2 justify-center">
-                Complete Your Profile
+                Complete Your Application Card
               </span>
             </h1>
           </div>
@@ -274,10 +286,10 @@ const ProfileCreation = () => {
           <form
             onSubmit={handleSubmit}
             onKeyDown={handleKeyDown}
-            className="grid grid-cols-1 md:grid-cols-2 p-8 gap-y-10 md:gap-x-[65px] "
+            className="grid grid-cols-1 md:grid-cols-2 p-4 md:p-8 md:gap-x-[65px] "
           >
             {/* Left Column */}
-            <div className="md:space-y-[40px]">
+            <div className="space-y-6 md:space-y-[40px]">
               <FormField
                 label="First Name"
                 className="bg-transparent"
@@ -310,8 +322,6 @@ const ProfileCreation = () => {
                 label="Birthday"
                 error={errors.birthday}
                 touched={touched.birthday}
-                showIcon={true}
-                tooltipContent="Put your birthday here."
               >
                 <BirthdayInput 
                   name="birthday"
@@ -420,7 +430,7 @@ const ProfileCreation = () => {
             </div>
 
             {/* Right Column */}
-            <div className="space-y-[40px]">
+            <div className="space-y-6 md:space-y-[40px]">
               <FormField
                 label="Last Name"
                 className="bg-transparent"
@@ -451,7 +461,7 @@ const ProfileCreation = () => {
                 />
               </FormField>
 
-              <FormField
+              {/* <FormField
                 label="Country"
                 error={errors.country}
                 touched={touched.country}
@@ -481,7 +491,7 @@ const ProfileCreation = () => {
                     ))}
                   </SelectContent>
                 </Select>
-              </FormField>
+              </FormField> */}
 
               <FormField
                 label="Email Address"
@@ -501,6 +511,8 @@ const ProfileCreation = () => {
                 label="Employment Type"
                 error={errors.employmentType}
                 touched={touched.employmentType}
+                showIcon={true}
+                tooltipContent="You may select one up to three employment types that you are looking for"
               >
                 <Popover>
                   <PopoverTrigger asChild>
@@ -520,7 +532,7 @@ const ProfileCreation = () => {
                             key={value}
                             variant="secondary"
                             className={cn(
-                              "mr-1 font-normal text-[16px] rounded-sm",
+                              "mr-1 font-normal text-[13px] rounded-sm",
                               {
                                 // Custom styles for Contract selection
                                 "bg-orange-600 text-white":
@@ -658,7 +670,11 @@ const ProfileCreation = () => {
             </div>
           </form>
         </div>
+        
       )}
+      <div className="w-full md:w-auto">
+          <PreviewCard values={values} selectOptions={selectOptions} />
+        </div>
     </div>
   );
 };

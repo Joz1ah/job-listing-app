@@ -13,7 +13,7 @@ interface LanguageTagInputProps {
 }
 
 const languages = [
-  { label: "English", value: "en" },
+  {value: "en", label: "English"  },
   { label: "French", value: "fr" },
   { label: "German", value: "de" },
   { label: "Spanish", value: "es" },
@@ -30,7 +30,7 @@ const LanguageTagInput: React.FC<LanguageTagInputProps> = ({
   className,
   tagClassName = "bg-orange-500",
   placeholder = "Type to search languages",
-  maxTags = 10
+  maxTags = 4
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -151,13 +151,7 @@ const LanguageTagInput: React.FC<LanguageTagInputProps> = ({
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
               disabled={remainingTags === 0}
-              placeholder={
-                remainingTags === 0 
-                  ? "Max tags reached" 
-                  : value.length === 0 
-                    ? placeholder 
-                    : `Add ${remainingTags} more tag${remainingTags > 1 ? 's' : ''}`
-              }
+              placeholder={placeholder}
               className="w-full h-7 py-0 mt-1.5 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent placeholder:text-white disabled:cursor-not-allowed disabled:opacity-50"
             />
           </div>

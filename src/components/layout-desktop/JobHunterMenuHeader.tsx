@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom"; // Add useLocation
 import { Button } from "components/ui/buttons";
 import { BadgeCheck, ChevronDown, Bell } from "lucide-react";
 import companyLogo from "images/company-logo.png";
@@ -26,6 +26,14 @@ const JobHunterMenuHeader: FC<HeaderProps> = ({
   mobileMenuItems 
 }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const location = useLocation(); // Add this hook
+
+  // Close menu when route changes
+  useEffect(() => {
+    if (isMenuOpen) {
+      onToggleMenu();
+    }
+  }, [location.pathname]); // Add this effect
 
   useEffect(() => {
     const handleResize = () => {
@@ -62,12 +70,19 @@ const JobHunterMenuHeader: FC<HeaderProps> = ({
 
   const currentMenuItems = isMobile ? mobileMenuItems : desktopMenuItems;
 
+  // Handler for NavLink clicks
+  const handleNavLinkClick = () => {
+    if (isMenuOpen) {
+      onToggleMenu();
+    }
+  };
+
   return (
     <>
       {/* Desktop Header */}
       <header className="hidden md:flex fixed top-0 left-0 right-0 bg-[#2D3A41] h-[72px] pr-4 justify-between items-center flex-nowrap z-50">
         <div className="flex items-center space-x-8 flex-shrink-0">
-          <NavLink to="/job-feed-employer">
+          <NavLink to="/job-feed-employer" onClick={handleNavLinkClick}>
             <img
               src={companyLogo}
               alt="Company Logo"
@@ -77,16 +92,16 @@ const JobHunterMenuHeader: FC<HeaderProps> = ({
           <nav>
             <ul className="flex space-x-[50px] text-white text-[16px] font-light">
               <li className="hover:text-orange-500">
-                <NavLink to="#">About us</NavLink>
+                <NavLink to="#" onClick={handleNavLinkClick}>About us</NavLink>
               </li>
               <li className="hover:text-orange-500">
-                <NavLink to="#">Contact us</NavLink>
+                <NavLink to="#" onClick={handleNavLinkClick}>Contact us</NavLink>
               </li>
               <li className="hover:text-orange-500">
-                <NavLink to="#">Subscription plans</NavLink>
+                <NavLink to="#" onClick={handleNavLinkClick}>Subscription plans</NavLink>
               </li>
               <li className="hover:text-orange-500">
-                <NavLink to="#">FAQ</NavLink>
+                <NavLink to="#" onClick={handleNavLinkClick}>FAQ</NavLink>
               </li>
             </ul>
           </nav>
@@ -94,7 +109,7 @@ const JobHunterMenuHeader: FC<HeaderProps> = ({
         <div className="flex items-center space-x-4 flex-shrink-0">
           <Bell className="w-[22px] h-[25px] text-orange-500 [transform:rotate(35deg)] cursor-pointer" />
           <div className="flex items-center space-x-2">
-            <NavLink to="/job-feed-employer">
+            <NavLink to="/job-feed-employer" onClick={handleNavLinkClick}>
               <span className="text-white font-medium text-[18px]">
                 Michael V
               </span>
@@ -135,6 +150,7 @@ const JobHunterMenuHeader: FC<HeaderProps> = ({
           className={`fixed top-[72px] left-0 w-full h-full bg-black/50 transition-opacity duration-300 ${
             isMenuOpen ? "opacity-100 z-[998]" : "opacity-0 pointer-events-none -z-10"
           }`}
+          onClick={onToggleMenu} // Add click handler to close menu when clicking overlay
         />
         
         {/* Menu */}
@@ -151,6 +167,7 @@ const JobHunterMenuHeader: FC<HeaderProps> = ({
                   <div className="w-full text-end px-2 sm:pr-4 sm:pl-0">
                     <NavLink
                       to={item.path}
+                      onClick={handleNavLinkClick}
                       className={`${
                         item.isSpecial ? 'text-orange-500 hover:text-orange-600' : 'hover:text-[#F5722E]'
                       } py-3 sm:py-2 inline-block text-sm`}

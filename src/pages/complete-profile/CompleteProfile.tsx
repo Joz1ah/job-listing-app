@@ -18,7 +18,7 @@ const CompleteProfile: FC = () => {
     />
       
       {/* Main content */}
-      <main className="bg-[#242625] p-[60px]">
+      <main className="bg-[#242625] p-4 md:p-[60px]">
         <ProfileCreation />
       </main>
 

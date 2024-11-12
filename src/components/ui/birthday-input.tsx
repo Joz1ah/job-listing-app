@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import React from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'components';
 
@@ -25,12 +26,13 @@ interface BirthdayInputProps {
 const BirthdayInput: React.FC<BirthdayInputProps> = ({ name, value, onChange }) => {
   // Parse the current value into month and day
   const [currentMonth, currentDay] = value?.split('/') || ['', ''];
+  const [isActive, setIsActive] = useState(false);
+  const [isMonthOpen, setIsMonthOpen] = useState(false);
+  const [isDayOpen, setIsDayOpen] = useState(false);
 
   const handleMonthChange = (month: string) => {
     const monthNumber = months.indexOf(month) + 1;
     
-    // If the current day is greater than the days in the newly selected month,
-    // adjust it to the last day of the new month
     if (currentDay) {
       const daysInNewMonth = getDaysInMonth(monthNumber).length;
       const adjustedDay = parseInt(currentDay) > daysInNewMonth ? daysInNewMonth : currentDay;
@@ -46,13 +48,38 @@ const BirthdayInput: React.FC<BirthdayInputProps> = ({ name, value, onChange }) 
     onChange(name, newValue);
   };
 
+  const handleContainerFocus = () => {
+    setIsActive(true);
+  };
+
+  const handleContainerBlur = (e: React.FocusEvent) => {
+    if (!e.currentTarget.contains(e.relatedTarget) && !isMonthOpen && !isDayOpen) {
+      setIsActive(false);
+    }
+  };
+
   return (
-    <div className="flex items-center justify-between h-[56px] px-4 py-2 bg-transparent border-2 border-[#AEADAD] rounded-md focus-within:border-orange-500">
+    <div 
+      className={`flex items-center justify-between h-14 px-4 py-2 bg-transparent border-2 rounded-md cursor-pointer transition-colors ${
+        isActive || isMonthOpen || isDayOpen ? 'border-orange-500' : 'border-[#AEADAD]'
+      }`}
+      onClick={handleContainerFocus}
+      onFocus={handleContainerFocus}
+      onBlur={handleContainerBlur}
+      tabIndex={0}
+    >
       <Select
         onValueChange={handleMonthChange}
         value={currentMonth ? months[parseInt(currentMonth) - 1] : undefined}
+        onOpenChange={(open) => {
+          setIsMonthOpen(open);
+          if (open) setIsActive(true);
+        }}
       >
-        <SelectTrigger className="w-full border-none bg-transparent focus:ring-0 text-[17px]">
+        <SelectTrigger 
+          className="w-full border-none bg-transparent focus:ring-0 text-sm"
+          onFocus={() => setIsActive(true)}
+        >
           <SelectValue placeholder="Month" />
         </SelectTrigger>
         <SelectContent>
@@ -69,8 +96,15 @@ const BirthdayInput: React.FC<BirthdayInputProps> = ({ name, value, onChange }) 
       <Select
         onValueChange={handleDayChange}
         value={currentDay}
+        onOpenChange={(open) => {
+          setIsDayOpen(open);
+          if (open) setIsActive(true);
+        }}
       >
-        <SelectTrigger className="w-full border-none bg-transparent focus:ring-0 text-[17px]">
+        <SelectTrigger 
+          className="w-full border-none bg-transparent focus:ring-0 text-sm"
+          onFocus={() => setIsActive(true)}
+        >
           <SelectValue placeholder="Day" />
         </SelectTrigger>
         <SelectContent>

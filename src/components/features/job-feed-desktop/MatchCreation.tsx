@@ -70,7 +70,7 @@ const FormField = React.forwardRef<HTMLDivElement, FormFieldProps>(
     return (
       <div ref={ref} className={cn("relative pt-4", className)}>
         <div className="relative">
-          <div className="absolute -top-3 left-5 bg-[#2D3A41] px-1 z-20">
+          <div className="absolute -top-3 left-5 bg-[#242625] md:bg-[#2D3A41] px-1 z-20">
             <div className="flex items-center">
               <Label className="text-base font-normal text-white">
                 {label}
@@ -186,6 +186,7 @@ const MatchCreation = () => {
       { value: "location", label: "Location" },
       { value: "salary", label: "Salary" },
       { value: "language", label: "Language" },
+      { value: "none", label: "None" },
     ],
   };
 
@@ -235,7 +236,7 @@ const MatchCreation = () => {
           <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
         </div>
       ) : (
-        <div className="w-full md:w-[927px] min-h-[825px] bg-[#2D3A41] text-white pt-6 pb-12 mt-9 ml-1">
+        <div className="w-full md:w-[927px] min-h-[825px] bg-transparent md:bg-[#2D3A41] text-white md:pt-6 pb-12 md:mt-9 ml-1">
           <div className="flex items-center relative w-full mb-8 md:mb-14">
             <NavLink to="/job-feed-employer" className="absolute left-0">
               <ChevronLeft strokeWidth={4} className="h-6 w-6 ml-4" />
@@ -629,7 +630,7 @@ const MatchCreation = () => {
                 type="button"
                 variant="outline"
                 onClick={handleReset}
-                className="w-full md:w-auto border-orange-500 text-orange-500 bg-[#2D3A41] hover:bg-orange-500 hover:text-white"
+                className="w-full md:w-auto border-orange-500 text-orange-500 bg-[#242625] md:bg-[#2D3A41] hover:bg-orange-500 hover:text-white"
               >
                 Save Changes
               </Button>

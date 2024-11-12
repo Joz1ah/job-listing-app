@@ -25,7 +25,7 @@ const EmployerDesktop: FC = () => {
       {/* Main content */}
       <main className="flex-grow flex flex-col md:flex-row bg-[#242625] md:mt-16">
 
-        <div className="flex flex-col mt-8 md:mt-10 md:ml-16 mb-8">
+        <div className="flex flex-col md:mt-10 md:ml-16 mb-8">
           <EmployerHeader />
           <Sidebar />
         </div>

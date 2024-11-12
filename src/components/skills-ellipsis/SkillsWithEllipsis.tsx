@@ -36,11 +36,11 @@ const skillColors = {
     }, [skills]); // Re-run when skills change
   
     return (
-      <div className="h-[60px] w-full relative">
+      <div className="w-full relative">
         <span className="text-[13px] font-light block mb-1">Primary Skills:</span>
         <div
           ref={skillsContainerRef}
-          className="flex flex-wrap gap-1 h-[40px] overflow-hidden relative w-full"
+          className="flex flex-wrap gap-1 max-h-[40px] overflow-hidden relative w-full"
         >
           {skills.map((skill, skillIndex) => (
             <span

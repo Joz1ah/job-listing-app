@@ -15,7 +15,7 @@ interface NavItem {
   ];
   
   export const employerMobileMenu: NavItem[] = [
-    { name: 'CREATE JOB LISTING', path: '#' },
+    { name: 'CREATE JOB LISTING', path: '/job-feed-employer/job-creation' },
     { name: 'MANAGE JOB LISTINGS', path: '#' },
     { name: 'EDIT COMPANY PROFILE', path: '#' },
     { name: 'REPORTS & ANALYTICS', path: '#' },
@@ -28,7 +28,7 @@ interface NavItem {
   ];
 
   export const jobHunterDesktopMenu: NavItem[] = [
-    { name: 'EDIT APPLICATION CARD', path: '#' },
+    { name: 'EDIT APPLICATION CARD', path: '/complete-profile' },
     { name: 'BOOKMARKED JOBS', path: '#'},
     { name: 'INTERVIEWS', path: '#'},
     { name: '✦ SUBSCRIPTION PLANS', path: '#', isSpecial: true },

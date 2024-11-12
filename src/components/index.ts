@@ -93,7 +93,6 @@ export {
 
 export { Badge, badgeVariants } from 'components/ui/badge'
 export { Tooltip } from 'components/ui/tooltip'
-export { ResponsiveLayout} from 'components/responsive-layout/ResponsiveLayout'
 export { CircularPagination } from 'components/ui/circular-pagination'
 export { Skeleton } from 'components/ui/skeleton'
 export { SkillsWithEllipsis } from 'components/skills-ellipsis/SkillsWithEllipsis'
@@ -107,3 +106,4 @@ export { BirthdayInput } from 'components/ui/birthday-input'
 export { Separator } from 'components/ui/separator'
 export { ScrollArea, ScrollBar } from 'components/ui/scroll-area'
 export { PhoneInput } from 'components/ui/phone-input'
+export { PreviewCard } from 'components/features/job-card/PreviewCard'

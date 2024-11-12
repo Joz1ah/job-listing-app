@@ -28,7 +28,7 @@ const TagInputs: React.FC<TagInputProps> = ({
   className,
   tagClassName = "bg-blue-500",
   placeholder = "Type to search...",
-  maxTags = 10,
+  maxTags = 4,
   searchKeys = ['label'],
   suggestionTitle = "Select Option",
   disabled,
@@ -157,13 +157,7 @@ const TagInputs: React.FC<TagInputProps> = ({
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
               disabled={disabled || remainingTags === 0}
-              placeholder={
-                remainingTags === 0 
-                  ? "Max tags reached" 
-                  : value.length === 0 
-                    ? placeholder 
-                    : `Add ${remainingTags} more tag${remainingTags > 1 ? 's' : ''}`
-              }
+              placeholder={placeholder}
               className="w-full h-7 py-0 mt-1.5 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent placeholder:text-white disabled:cursor-not-allowed disabled:opacity-50"
             />
           </div>
