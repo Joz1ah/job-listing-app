@@ -10,21 +10,19 @@ const JobHunterDesktop: FC = () => {
   return (
     <div className="flex flex-col min-h-screen bg-gray-900 text-white">
       <PageMeta title="Job Hunter Dashboard" />
-      {/* Header */}
       <JobHunterMenuHeader
-      isMenuOpen={menuOpen}
-      onToggleMenu={toggleMenu}
-      desktopMenuItems={jobHunterDesktopMenu}
-      mobileMenuItems={jobHunterMobileMenu}
-    />
+        isMenuOpen={menuOpen}
+        onToggleMenu={toggleMenu}
+        desktopMenuItems={jobHunterDesktopMenu}
+        mobileMenuItems={jobHunterMobileMenu}
+      />
       
-      {/* Main content */}
-      <main className="flex flex-col bg-[#242625]">
+      {/* Add max-width and center the main content */}
+      <main className="flex-1 flex flex-col bg-[#242625] w-full">
         <JobHunterHeader />
         <JobHunterSectionDesktop />
       </main>
 
-      {/* Footer */}
       <FooterDesktop />
     </div>
   );

@@ -7,7 +7,7 @@ const JobHunterHeader: FC = () => {
   const hasHalfStar = rating % 1 !== 0;
 
   return (
-    <div className="w-full px-6 md:pt-12 mt-8 md:mt-16 md:ml-16">
+    <div className="w-full px-6 md:pt-12 mt-8 md:mt-16">
       <div className="flex flex-col items-start">
         <div className="flex items-center text-3xl md:text-3xl text-white font-normal">
           <span>Welcome to your dashboard, Michael!</span>

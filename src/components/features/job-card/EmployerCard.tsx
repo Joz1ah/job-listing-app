@@ -75,7 +75,9 @@ const EmployerCardDesktop: FC<MatchCardProps> = ({
         </div>
       </CardHeader>
       <CardContent>
-        <SkillsWithEllipsis skills={match.skills} />
+        <div className="h-[60px]">
+          <SkillsWithEllipsis skills={match.skills} />
+        </div>
         <div className="flex flex-col gap-1 mt-2">
           <div className="flex gap-2">
             <span className="text-[13px] font-light">Experience:</span>
@@ -122,8 +124,8 @@ const EmployerCardDesktop: FC<MatchCardProps> = ({
 };
 
 const EmployerCardMobile: FC<{ match: Match }> = ({ match }) => (
-  <Card className="bg-[#F5F5F7] w-[300px] h-[380px] p-4 transition-all duration-300 hover:shadow-lg">
-    <CardHeader className="flex items-start p-0 relative">
+  <Card className="bg-[#F5F5F7] w-[300px] h-[380px] p-4 transition-all duration-300 hover:shadow-lg relative flex flex-col">
+    <CardHeader className="flex-1 overflow-y-auto p-0">
       <div className="w-full">
         <div className="flex flex-col items-end justify-end">
           <div className="flex-1">
@@ -131,7 +133,7 @@ const EmployerCardMobile: FC<{ match: Match }> = ({ match }) => (
               Applied {match.appliedAgo}
             </span>
           </div>
-          <div className="absolute top-7">
+          <div className="absolute top-10">
             <Bookmark className="text-[#F5722E]" size={25} />
           </div>
         </div>
@@ -142,12 +144,11 @@ const EmployerCardMobile: FC<{ match: Match }> = ({ match }) => (
             <MapPin size={9} className="mr-1 text-[#F5722E]" />
             {match.location}
           </p>
-          {/* <p className="text-[10px] font-light pb-2">
-              expressed interest as you {match.job}
-            </p> */}
 
           <div className="flex flex-col gap-2">
-            <SkillsWithEllipsis skills={match.skills} />
+            <div className="h-[60px]">
+              <SkillsWithEllipsis skills={match.skills} />
+            </div>
 
             <div className="flex gap-2">
               <span className="text-[10px] font-light">Experience:</span>
@@ -191,7 +192,7 @@ const EmployerCardMobile: FC<{ match: Match }> = ({ match }) => (
       </div>
     </CardHeader>
 
-    <CardContent className="flex flex-col items-center mt-4">
+    <CardContent className="p-0 mt-auto flex flex-col items-center">
       <Button
         variant="default"
         className="bg-[#F5722E] text-[12px] font-semibold"

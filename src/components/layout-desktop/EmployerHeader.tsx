@@ -15,7 +15,7 @@ const EmployerHeader: FC = () => {
   return (
     <>
       {shouldShowMobileView && (
-        <div className="w-full md:pt-8 pb-6">
+        <div className="w-full pt-8 pb-6">
           <div className="flex flex-col items-center md:items-start">
             <div className="flex items-center text-3xl md:text-3xl text-white font-normal ">
               <span>ABC Incorporated</span>
