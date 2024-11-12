@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { cn } from "lib/utils";
 import { Input } from "components";
 import { Label } from "components";
+import { ScrollArea } from "components";
 
 interface Option {
   label: string;
@@ -167,27 +168,95 @@ const TagInputs: React.FC<TagInputProps> = ({
       {showSuggestions && filteredOptions.length > 0 && remainingTags > 0 && (
         <div 
           ref={suggestionsRef}
-          className="absolute left-0 right-0 mt-1 bg-white text-balance border rounded-md shadow-lg z-50 text-black"
+          className="absolute left-0 right-0 mt-1 bg-white border rounded-md shadow-lg z-50 text-black"
         >
           <Label className="px-2 py-1.5 text-xs font-normal text-gray-500">{suggestionTitle}</Label>
-          <ul className="py-1 max-h-60 overflow-auto">
-            {filteredOptions.map((option, index) => (
-              <li
-                key={option.value}
-                onClick={() => handleSelect(option.value)}
-                onMouseEnter={() => setFocusedIndex(index)}
-                className={cn(
-                  "px-2 py-2 cursor-pointer transition-all ease-in-out duration-500",
-                  index === focusedIndex ? "bg-[#BF532C] text-white" : "hover:bg-[#BF532C] hover:text-white"
-                )}
-              >
-                {option.label}
-              </li>
-            ))}
-          </ul>
+          <ScrollArea className="h-[180px]">
+            <ul className="py-1">
+              {filteredOptions.map((option, index) => (
+                <li
+                  key={option.value}
+                  onClick={() => handleSelect(option.value)}
+                  onMouseEnter={() => setFocusedIndex(index)}
+                  className={cn(
+                    "px-2 py-2 cursor-pointer transition-all ease-in-out duration-500",
+                    index === focusedIndex ? "bg-[#BF532C] text-white" : "hover:bg-[#BF532C] hover:text-white"
+                  )}
+                >
+                  {option.label}
+                </li>
+              ))}
+            </ul>
+          </ScrollArea>
         </div>
       )}
     </div>
+  );
+};
+
+const CoreSkillsTagInput: React.FC<Omit<TagInputProps, 'options'>> = (props) => {
+  const coreSkills = [
+    // Technical/Hard Skills
+    { label: "HTML", value: "html" },
+    { label: "CSS", value: "css" },
+    { label: "Bootstrap", value: "bootstrap" },
+    { label: "Tailwind CSS", value: "tailwind-css" },
+    { label: "JavaScript", value: "javascript" },
+    { label: "Python", value: "python" },
+    { label: "React", value: "react" },
+    { label: "Node.js", value: "nodejs" },
+    { label: "SQL", value: "sql" },
+    { label: "Data Analysis", value: "data-analysis" },
+    { label: "Project Management", value: "project-management" },
+    { label: "DevOps", value: "devops" },
+    { label: "UI/UX Design", value: "uiux-design" },
+    { label: "Machine Learning", value: "machine-learning" },
+    { label: "Cloud Computing", value: "cloud-computing" },
+    { label: "Agile Methodologies", value: "agile" },
+    { label: "Quality Assurance", value: "qa" },
+    { label: "Digital Marketing", value: "digital-marketing" },
+    { label: "Content Writing", value: "content-writing" }
+  ];
+
+  return (
+    <TagInputs
+      {...props}
+      options={coreSkills}
+      maxTags={12}
+      suggestionTitle="Select Core Skills"
+      placeholder={props.placeholder || "Type to search core skills"}
+    />
+  );
+};
+
+const InterpersonalSkillsTagInput: React.FC<Omit<TagInputProps, 'options'>> = (props) => {
+  const interpersonalSkills = [
+    // Soft/Interpersonal Skills
+    { label: "Communication", value: "communication" },
+    { label: "Leadership", value: "leadership" },
+    { label: "Team Collaboration", value: "team-collaboration" },
+    { label: "Problem Solving", value: "problem-solving" },
+    { label: "Critical Thinking", value: "critical-thinking" },
+    { label: "Adaptability", value: "adaptability" },
+    { label: "Time Management", value: "time-management" },
+    { label: "Emotional Intelligence", value: "emotional-intelligence" },
+    { label: "Conflict Resolution", value: "conflict-resolution" },
+    { label: "Active Listening", value: "active-listening" },
+    { label: "Negotiation", value: "negotiation" },
+    { label: "Mentoring", value: "mentoring" },
+    { label: "Public Speaking", value: "public-speaking" },
+    { label: "Decision Making", value: "decision-making" },
+    { label: "Cultural Awareness", value: "cultural-awareness" }
+  ];
+
+  return (
+    <TagInputs
+      {...props}
+      options={interpersonalSkills}
+      maxTags={6}
+      suggestionTitle="Select Interpersonal Skills"
+      placeholder={props.placeholder || "Type to search interpersonal skills"}
+    />
   );
 };
 
@@ -208,11 +277,11 @@ const LanguageTagInput: React.FC<Omit<TagInputProps, 'options'>> = (props) => {
     <TagInputs
       {...props}
       options={languages}
-      maxTags={4} // As per your tooltip
+      maxTags={3}
       suggestionTitle="Select Language"
       placeholder={props.placeholder || "Type to search languages"}
     />
   );
 };
 
-export { TagInputs, LanguageTagInput };
+export { TagInputs, CoreSkillsTagInput, InterpersonalSkillsTagInput, LanguageTagInput };

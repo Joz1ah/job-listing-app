@@ -86,9 +86,9 @@ const CountrySelect = ({
           </div>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[300px] p-0 bg-[#2D3A41] border-[#AEADAD]">
-        <Command className="bg-[#2D3A41]">
-          <CommandInput placeholder="Search country..." className="text-white" />
+      <PopoverContent className="w-[300px] p-0 bg-white border-[#AEADAD]">
+        <Command className="bg-white">
+          <CommandInput placeholder="Search country..." className="text-black" />
           <CommandList>
             <ScrollArea className="h-72">
               <CommandEmpty className="text-white">No country found.</CommandEmpty>
@@ -97,7 +97,7 @@ const CountrySelect = ({
                   .filter((x) => x.value)
                   .map((option) => (
                     <CommandItem
-                      className="gap-2 text-white hover:bg-[#3D4A51]"
+                      className="gap-2 text-black"
                       key={option.value}
                       onSelect={() => handleSelect(option.value)}
                     >

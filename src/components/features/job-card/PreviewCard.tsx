@@ -22,6 +22,7 @@ interface SelectOptions {
   education: SelectOption[];
   country: SelectOption[];
   languages: SelectOption[];
+  coreSkills: SelectOption[];
 }
 
 interface Skill {
@@ -69,10 +70,9 @@ const PreviewCard: React.FC<PreviewCardProps> = ({ values, selectOptions }) => {
     return option?.label || value;
   };
 
-  // Convert core skills array to Skill interface format
   const formattedSkills: Skill[] =
-    values.coreSkills?.map((skill) => ({
-      name: skill,
+    values.coreSkills?.map((skillValue) => ({
+      name: (getLabel("coreSkills", skillValue) as string) || skillValue,
       isMatch: false, // Since this is a preview, we set all to unmatched
     })) || [];
 

@@ -7,7 +7,7 @@ import {
   ChevronDown,
   Loader2,
 } from "lucide-react";
-import { Input, TagInput, Button, Label } from "components";
+import { Input, Button, Label } from "components";
 import { NavLink } from "react-router-dom";
 import { Badge } from "components";
 
@@ -15,7 +15,7 @@ import { Command, CommandGroup, CommandItem, CommandList } from "components";
 
 import { Popover, PopoverContent, PopoverTrigger } from "components";
 
-import { LanguageTagInput, BirthdayInput, PhoneInput, PreviewCard} from "components";
+import { LanguageTagInput, BirthdayInput, PhoneInput, PreviewCard, CoreSkillsTagInput, InterpersonalSkillsTagInput} from "components";
 
 import {
   Select,
@@ -219,7 +219,29 @@ const ProfileCreation = () => {
       { label: "Japanese", value: "ja" },
       { label: "Korean", value: "ko" },
       { label: "Chinese", value: "zh" },
-    ] 
+    ] ,
+    coreSkills : [
+      // Technical/Hard Skills
+      { label: "HTML", value: "html" },
+      { label: "CSS", value: "css" },
+      { label: "Bootstrap", value: "bootstrap" },
+      { label: "Tailwind CSS", value: "tailwind-css" },
+      { label: "JavaScript", value: "javascript" },
+      { label: "Python", value: "python" },
+      { label: "React", value: "react" },
+      { label: "Node.js", value: "nodejs" },
+      { label: "SQL", value: "sql" },
+      { label: "Data Analysis", value: "data-analysis" },
+      { label: "Project Management", value: "project-management" },
+      { label: "DevOps", value: "devops" },
+      { label: "UI/UX Design", value: "uiux-design" },
+      { label: "Machine Learning", value: "machine-learning" },
+      { label: "Cloud Computing", value: "cloud-computing" },
+      { label: "Agile Methodologies", value: "agile" },
+      { label: "Quality Assurance", value: "qa" },
+      { label: "Digital Marketing", value: "digital-marketing" },
+      { label: "Content Writing", value: "content-writing" }
+    ]
   };
 
   const {
@@ -377,18 +399,19 @@ const ProfileCreation = () => {
               </FormField>
 
               <div className="mb-8 md:mb-14">
-                <FormField
+              <FormField
                   label="Core Skills"
                   error={errors.coreSkills}
                   touched={touched.coreSkills}
                   showIcon={true}
                   tooltipContent="Job-specific, measurable abilities like software proficiency, coding, or design tools."
                 >
-                  <TagInput
+                  <CoreSkillsTagInput
                     value={values.coreSkills || []}
                     onChange={(value) => setFieldValue("coreSkills", value)}
-                    className="bg-transparent border-[#AEADAD] h-[99px] pt-1 px-1 border-2 focus-within:border-orange-500"
-                    placeholder="Type and enter to add skills"
+                    className="min-h-[99px] pt-1 px-1"
+                    tagClassName="bg-[#168AAD]"
+                    placeholder="Type and enter to add core skill"
                   />
                 </FormField>
               </div>
@@ -640,20 +663,19 @@ const ProfileCreation = () => {
               </FormField>
 
               <div className="mb-14">
-                <FormField
+              <FormField
                   label="Interpersonal Skills"
                   error={errors.interpersonalSkills}
                   touched={touched.interpersonalSkills}
                   showIcon={true}
                   tooltipContent="Personal qualities like communication, teamwork, and problem-solving."
                 >
-                  <TagInput
+                  <InterpersonalSkillsTagInput
                     value={values.interpersonalSkills || []}
-                    onChange={(value) =>
-                      setFieldValue("interpersonalSkills", value)
-                    }
-                    className="bg-transparent border-[#AEADAD] h-[99px] pt-1 px-1 border-2 focus-within:border-orange-500 "
-                    placeholder="Type and enter to add skills"
+                    onChange={(value) => setFieldValue("interpersonalSkills", value)}
+                    className="min-h-[99px] pt-1 px-1"
+                    tagClassName="bg-[#184E77]"
+                    placeholder="Type and enter to add interpersonal skill"
                   />
                 </FormField>
               </div>

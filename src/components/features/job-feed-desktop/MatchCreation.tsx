@@ -7,7 +7,7 @@ import {
   ChevronDown,
   Loader2,
 } from "lucide-react";
-import { Input, TagInput, Button, Textarea, Label } from "components";
+import { Input, Button, Textarea, Label } from "components";
 import { NavLink } from "react-router-dom";
 import sparkeIcon from "images/sparkle-icon.png";
 
@@ -17,7 +17,7 @@ import { Command, CommandGroup, CommandItem, CommandList } from "components";
 
 import { Popover, PopoverContent, PopoverTrigger } from "components";
 
-import { LanguageTagInput } from "components";
+import { CoreSkillsTagInput, InterpersonalSkillsTagInput, LanguageTagInput } from "components";
 
 import {
   Select,
@@ -531,11 +531,12 @@ const MatchCreation = () => {
                   showIcon={true}
                   tooltipContent="Job-specific, measurable abilities like software proficiency, coding, or design tools."
                 >
-                  <TagInput
+                  <CoreSkillsTagInput
                     value={values.coreSkills || []}
                     onChange={(value) => setFieldValue("coreSkills", value)}
-                    className="bg-transparent border-[#AEADAD] h-[99px] pt-1 px-1 border-2 focus-within:border-orange-500"
-                    placeholder="Type and enter to add skills"
+                    className="min-h-[99px] pt-1 px-1"
+                    tagClassName="bg-[#168AAD]"
+                    placeholder="Type and enter to add core skill"
                   />
                 </FormField>
               </div>
@@ -548,13 +549,12 @@ const MatchCreation = () => {
                   showIcon={true}
                   tooltipContent="Personal qualities like communication, teamwork, and problem-solving."
                 >
-                  <TagInput
+                  <InterpersonalSkillsTagInput
                     value={values.interpersonalSkills || []}
-                    onChange={(value) =>
-                      setFieldValue("interpersonalSkills", value)
-                    }
-                    className="bg-transparent border-[#AEADAD] h-[99px] pt-1 px-1 border-2 focus-within:border-orange-500 "
-                    placeholder="Type and enter to add skills"
+                    onChange={(value) => setFieldValue("interpersonalSkills", value)}
+                    className="min-h-[99px] pt-1 px-1"
+                    tagClassName="bg-[#184E77]"
+                    placeholder="Type and enter to add interpersonal skill"
                   />
                 </FormField>
               </div>
