@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom"; // Add useLocation
 import { Button } from "components/ui/buttons";
-import { BadgeCheck, ChevronDown, Bell } from "lucide-react";
+import { BadgeCheck, ChevronDown } from "lucide-react";
 import companyLogo from "images/company-logo.png";
 import akazaLogoWhite from "images/akaza-logo-white.png";
 import menuButton from "images/menu-button.png";
@@ -133,10 +133,7 @@ const EmployerMenuHeader: FC<HeaderProps> = ({
       <header className="md:hidden bg-black py-4 px-2 flex justify-between items-center">
         <img src={akazaLogoWhite} alt="Akaza Logo" className="h-8" />
         <div className="flex items-center">
-          <Bell
-            strokeWidth={2.5}
-            className="w-[24px] h-[30px] text-[#F5722E] mr-2 [transform:rotate(35deg)]"
-          />
+          <NotificationFeed />
           <Button
             variant="custom"
             className="text-[#F5722E] bg-black"

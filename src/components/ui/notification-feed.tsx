@@ -14,101 +14,137 @@ type NotificationItem = {
   message: string;
   timestamp: Date;
   hasMatch?: boolean;
+  unread: boolean;  // Added unread property
 };
 
-// Mock data for new notifications
-const mockNewNotifications: NotificationItem[] = [
+// Updated mock data with unread status
+const initialNewNotifications: NotificationItem[] = [
   {
     id: '1',
     title: 'Welcome to Akaza',
     message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.',
-    timestamp: new Date(Date.now() - 1000 * 20), 
+    timestamp: new Date(Date.now() - 1000 * 20),
+    unread: true,
   },
   {
     id: '2',
     title: 'You have a new Perfect Match',
     message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.',
-    timestamp: new Date(Date.now() - 1000 * 60 * 30), 
-    hasMatch: true
+    timestamp: new Date(Date.now() - 1000 * 60 * 30),
+    hasMatch: true,
+    unread: true,
   },
   {
     id: '3',
     title: 'You have a new Perfect Match',
     message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.',
-    timestamp: new Date(Date.now() - 1000 * 60 * 45), 
-    hasMatch: true
+    timestamp: new Date(Date.now() - 1000 * 60 * 45),
+    hasMatch: true,
+    unread: true,
   },
   {
     id: '4',
     title: 'You have a new Perfect Match',
     message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.',
-    timestamp: new Date(Date.now() - 1000 * 60 * 50), 
-    hasMatch: true
+    timestamp: new Date(Date.now() - 1000 * 60 * 50),
+    hasMatch: true,
+    unread: true,
   },
 ];
 
-// Mock data for earlier/old notifications
-const mockOlderNotifications: NotificationItem[] = [
+const initialOlderNotifications: NotificationItem[] = [
   {
     id: '5',
     title: 'You have a new Perfect Match',
     message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.',
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 4), 
-    hasMatch: true
+    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 4),
+    hasMatch: true,
+    unread: true,
   },
   {
     id: '6',
     title: 'You have a new Perfect Match',
     message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.',
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24), 
-    hasMatch: true
+    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24),
+    hasMatch: true,
+    unread: true,
   },
   {
     id: '7',
     title: 'You have a new Perfect Match',
     message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.',
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 48), 
-    hasMatch: true
+    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 48),
+    hasMatch: true,
+    unread: true,
   },
   {
     id: '8',
     title: 'You have a new Perfect Match',
     message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.',
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 72), 
-    hasMatch: true
+    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 72),
+    hasMatch: true,
+    unread: true,
   },
 ];
 
 const NotificationFeed: FC = () => {
   const [expandedNew, setExpandedNew] = useState(false);
-  const displayedNewNotifications = expandedNew 
-    ? mockNewNotifications 
-    : mockNewNotifications.slice(0, 3);
+  const [newNotifications, setNewNotifications] = useState(initialNewNotifications);
+  const [olderNotifications, setOlderNotifications] = useState(initialOlderNotifications);
 
-    const getTimeLabel = (timestamp: Date) => {
-      const diff = Date.now() - timestamp.getTime();
-      const minutes = diff / (1000 * 60);
-      const hours = minutes / 60;
-      const days = hours / 24;
-      
-      if (minutes <= 60) {
-        return { label: 'New', timeText: 'now' };
-      } else if (minutes < 300) {
-        return { label: 'Earlier', timeText: `${Math.floor(hours)}h` };
-      } else if (hours < 24) {
-        return { label: '', timeText: `${Math.floor(hours)}h` };
-      } else {
-        return { label: '', timeText: `${Math.floor(days)}d` };
-      }
-    };
+  const displayedNewNotifications = expandedNew 
+    ? newNotifications 
+    : newNotifications.slice(0, 3);
+
+  const unreadCount = [...newNotifications, ...olderNotifications].filter(n => n.unread).length;
+
+  const getTimeLabel = (timestamp: Date) => {
+    const diff = Date.now() - timestamp.getTime();
+    const minutes = diff / (1000 * 60);
+    const hours = minutes / 60;
+    const days = hours / 24;
+    
+    if (minutes <= 60) {
+      return { label: 'New', timeText: 'now' };
+    } else if (minutes < 300) {
+      return { label: 'Earlier', timeText: `${Math.floor(hours)}h` };
+    } else if (hours < 24) {
+      return { label: '', timeText: `${Math.floor(hours)}h` };
+    } else {
+      return { label: '', timeText: `${Math.floor(days)}d` };
+    }
+  };
+
+  const markAsRead = (notificationId: string) => {
+    // Update new notifications
+    setNewNotifications(prev => 
+      prev.map(notification => 
+        notification.id === notificationId 
+          ? { ...notification, unread: false }
+          : notification
+      )
+    );
+
+    // Update older notifications
+    setOlderNotifications(prev => 
+      prev.map(notification => 
+        notification.id === notificationId 
+          ? { ...notification, unread: false }
+          : notification
+      )
+    );
+  };
 
   const NotificationItem = ({ notification }: { notification: NotificationItem }) => {
     const { label, timeText } = getTimeLabel(notification.timestamp);
     
     return (
-      <div className="group">
-        <div className="py-4 px-4 hover:bg-[#1E1E1E]">
-          <div className="flex flex-col">
+      <div className="group cursor-pointer" onClick={() => markAsRead(notification.id)}>
+        <div className="py-4 px-4 hover:bg-[#1E1E1E] relative">
+          {notification.unread && (
+            <div className="absolute left-2 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-orange-500" />
+          )}
+          <div className="flex flex-col pl-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-[#FF5E34] text-[13px]">
                 {label}
@@ -135,6 +171,11 @@ const NotificationFeed: FC = () => {
     );
   };
 
+  const handleClearNotifications = () => {
+    setNewNotifications(prev => prev.map(n => ({ ...n, unread: false })));
+    setOlderNotifications(prev => prev.map(n => ({ ...n, unread: false })));
+  };
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -142,25 +183,26 @@ const NotificationFeed: FC = () => {
           <Bell 
             className="w-[22px] h-[25px] text-orange-500 [transform:rotate(35deg)] cursor-pointer"
           />
-          <Badge 
-            className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-red-500"
-            variant="secondary"
-          >
-            {mockNewNotifications.length}
-          </Badge>
+          {unreadCount > 0 && (
+            <Badge 
+              className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-red-500"
+              variant="secondary"
+            >
+              {unreadCount}
+            </Badge>
+          )}
         </button>
       </PopoverTrigger>
       <PopoverContent 
-        className="w-[400px] p-0 bg-[#121212] border-none shadow-xl rounded-none" 
+        className="w-[350px] md:w-[400px] p-0 bg-[#121212] border-none shadow-xl rounded-none" 
         align="end"
       >
-        <div className="flex flex-col max-h-[85vh]">
-          {/* New Notifications Section - First 3 with expand option */}
+        <div className="flex flex-col max-h-[90vh]">
           <div className="flex-none">
             {displayedNewNotifications.map((notification) => (
               <NotificationItem key={notification.id} notification={notification} />
             ))}
-            {mockNewNotifications.length > 3 && (
+            {newNotifications.length > 3 && (
               <button
                 onClick={() => setExpandedNew(!expandedNew)}
                 className="w-full py-2 text-sm text-[#808080] hover:text-gray-400 hover:bg-[#1E1E1E] flex items-center justify-center gap-1"
@@ -171,18 +213,16 @@ const NotificationFeed: FC = () => {
             )}
           </div>
 
-          {/* Divider Line */}
           <div className="h-[2px] bg-white w-full" />
 
-          {/* Earlier/Old Notifications Section - Scrollable */}
           <ScrollArea className="h-[400px]">
-            {mockOlderNotifications.map((notification) => (
+            {olderNotifications.map((notification) => (
               <NotificationItem key={notification.id} notification={notification} />
             ))}
           </ScrollArea>
 
-          {/* Clear Notification Button */}
           <button 
+            onClick={handleClearNotifications}
             className="w-full py-3 text-center text-[13px] text-orange-500 hover:text-gray-400 hover:bg-[#1E1E1E] transition-colors"
           >
             Clear Notification
