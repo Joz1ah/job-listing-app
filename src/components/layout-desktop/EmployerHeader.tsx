@@ -2,15 +2,21 @@ import { FC } from "react";
 import { BadgeCheck, Building, Info, Star } from "lucide-react";
 import { useLocation } from "react-router-dom";
 
-const EmployerHeader: FC = () => {
+interface Props {
+  isFreeTrial?: boolean;
+}
+
+const EmployerHeader: FC<Props> = ({isFreeTrial = false}) => {
   const rating = 4.5;
   const fullStars = Math.floor(rating);
   const hasHalfStar = rating % 1 !== 0;
 
   const location = useLocation();
-  const hideOnPages = ["/job-feed-employer/job-creation"]; // Add any paths where you want to hide the mobile view
+  const hideOnPages = ["/job-feed-employer/job-creation"];
 
   const shouldShowMobileView = !hideOnPages.includes(location.pathname);
+
+  const VerificationIcon = isFreeTrial ? Info : BadgeCheck;
 
   return (
     <>
@@ -19,7 +25,14 @@ const EmployerHeader: FC = () => {
           <div className="flex flex-col items-center md:items-start">
             <div className="flex items-center text-3xl md:text-3xl text-white font-normal ">
               <span>ABC Incorporated</span>
-              <BadgeCheck className="fill-[#F5722E] text-[#263238]" size={34} />
+              <VerificationIcon 
+                className={`${
+                  isFreeTrial 
+                    ? 'fill-[#F5F5F7] text-[#263238]' 
+                    : 'fill-[#F5722E] text-[#263238]'
+                }`} 
+                size={34}
+              />
             </div>
           </div>
           <div className="flex flex-col items-center md:items-start mt-2 justify-between space-y-2 md:space-y-0">
@@ -30,7 +43,7 @@ const EmployerHeader: FC = () => {
               </span>
             </div>
 
-            {/* Mobile view - shown on small screens */}
+            {/* Mobile view */}
             <div className="md:hidden flex items-center text-[13px] text-white">
               <div className="flex items-center">
                 {rating}
@@ -58,7 +71,7 @@ const EmployerHeader: FC = () => {
               <span className="pl-2">Job Hunter Rating</span>
             </div>
 
-            {/* Desktop view - hidden on small screens, shown on md and up */}
+            {/* Desktop view */}
             <div className="hidden md:flex flex-col items-start mt-2">
               <div className="flex items-center space-x-1 text-[11px] font-light text-white">
                 <span className="border-2 border-dotted border-orange-500 text-white text-[15px] px-2 py-1 border-opacity-70">
