@@ -5,6 +5,7 @@ import { BadgeCheck, ChevronDown, Bell } from "lucide-react";
 import companyLogo from "images/company-logo.png";
 import akazaLogoWhite from "images/akaza-logo-white.png";
 import menuButton from "images/menu-button.png";
+import { NotificationFeed } from "components"
 
 interface NavItem {
   name: string;
@@ -112,7 +113,7 @@ const EmployerMenuHeader: FC<HeaderProps> = ({
           </NavLink>
         </div>
         <div className="flex items-center space-x-4 flex-shrink-0">
-          <Bell className="w-[22px] h-[25px] text-orange-500 [transform:rotate(35deg)] cursor-pointer" />
+          <NotificationFeed />
           <div className="flex items-center space-x-2">
             <NavLink to="/job-feed-hunter" onClick={handleNavLinkClick}>
               <span className="text-white font-medium text-[18px]">
