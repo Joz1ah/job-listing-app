@@ -16,6 +16,7 @@ import { JobHunterCardDesktop, JobHunterCardMobile } from "components";
 
 interface selectedProps {
   setSelectedTab: (tab: string) => void;
+  isFreeTrial?: boolean;
 }
 
 const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
@@ -124,6 +125,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
           match={match}
           bookmarked={bookmarkedCards.has(index)}
           onBookmark={() => toggleBookmark(index)}
+          isFreeTrial = {true}
         />
       ))}
 
@@ -266,6 +268,7 @@ const OtherApplications: FC<selectedProps> = ({ setSelectedTab }) => {
           match={match}
           bookmarked={bookmarkedCards.has(index)}
           onBookmark={() => toggleBookmark(index)}
+          isFreeTrial = {true}
         />
       ))}
 
@@ -309,6 +312,20 @@ const JobHunterSectionDesktop: FC = () => {
   );
   const [othersApi, setOthersApi] = useState<CarouselApi | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [bookmarkedCards, setBookmarkedCards] = useState(new Set());
+
+  const toggleBookmark = (section: string, index: number) => {
+    const combinedId = `${section}-${index}`;
+    setBookmarkedCards((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(combinedId)) {
+        newSet.delete(combinedId);
+      } else {
+        newSet.add(combinedId);
+      }
+      return newSet;
+    });
+  };
 
   const handleTabChange = (tab: string) => {
     window.scrollTo({
@@ -417,7 +434,12 @@ const JobHunterSectionDesktop: FC = () => {
             {perfectMatch.map((job, index) => (
               <CarouselItem key={index} className="pl-4 basis-[320px]">
                 <div className="relative">
-                  <JobHunterCardMobile match={job} />
+                <JobHunterCardMobile 
+                    match={job}
+                    bookmarked={bookmarkedCards.has(`perfectMatch-${index}`)}
+                    onBookmark={() => toggleBookmark('perfectMatch', index)}
+                    isFreeTrial={true}
+                  />
                 </div>
               </CarouselItem>
             ))}
@@ -442,7 +464,12 @@ const JobHunterSectionDesktop: FC = () => {
               {others.map((job, index) => (
                 <CarouselItem key={index} className="pl-4 basis-[320px]">
                   <div className="relative">
-                    <JobHunterCardMobile match={job} />
+                  <JobHunterCardMobile 
+                      match={job}
+                      bookmarked={bookmarkedCards.has(`others-${index}`)}
+                      onBookmark={() => toggleBookmark('others', index)}
+                      isFreeTrial={true}
+                    />
                   </div>
                 </CarouselItem>
               ))}

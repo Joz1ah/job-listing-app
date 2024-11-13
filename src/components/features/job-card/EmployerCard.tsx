@@ -35,12 +35,41 @@ interface MatchCardProps {
   match: Match;
   bookmarked: boolean;
   onBookmark: () => void;
+  isFreeTrial?: boolean; // Add this prop
 }
+
+const SecureNameDisplay: FC<{ isFreeTrial: boolean; realName: string }> = ({
+  isFreeTrial,
+  realName,
+}) => {
+  if (isFreeTrial) {
+    return (
+      <div className="relative">
+        {/* Create a blurred background with placeholder text */}
+        <div className="select-none pointer-events-none" aria-hidden="true">
+          {/* Blurred layer */}
+          <div className="relative">
+            {/* Random characters to create blur effect */}
+            <div className="absolute inset-0 blur-[8px] text-sm font-semibold bg-clip-text">
+              {Array(realName.length).fill("X").join("")}
+            </div>
+          </div>
+        </div>
+
+        {/* Spacer to maintain layout */}
+        <div className="h-6" />
+      </div>
+    );
+  }
+
+  return <CardTitle className="text-sm font-semibold">{realName}</CardTitle>;
+};
 
 const EmployerCardDesktop: FC<MatchCardProps> = ({
   match,
   bookmarked,
   onBookmark,
+  isFreeTrial = false, // Default to false
 }) => {
   return (
     <Card className="bg-[#FFFFFF] border-none w-full md:w-[436px] h-auto md:h-[275px]">
@@ -63,15 +92,11 @@ const EmployerCardDesktop: FC<MatchCardProps> = ({
           </div>
         </div>
         <div>
-          <CardTitle className="text-sm font-semibold">{match.name}</CardTitle>
+          <SecureNameDisplay isFreeTrial={isFreeTrial} realName={match.name} />
           <div className="flex flex-row items-center">
             <MapPin size={14} className="text-orange-500" />
             <p className="text-[13px] font-light mt-0">{match.location}</p>
           </div>
-          {/* <p className="text-sm font-light">
-              expressed interest as your{" "}
-              <span className="text-orange-500 underline">{match.job}</span>
-            </p> */}
         </div>
       </CardHeader>
       <CardContent>
@@ -113,17 +138,25 @@ const EmployerCardDesktop: FC<MatchCardProps> = ({
           </div>
         </div>
       </CardContent>
-      <CardFooter className="flex flex-row justify-end -mt-2 -mr-4 space-x-1">
-        {/* <Button className="bg-orange-500 text-white text-[12px] font-semibold px-0 w-[133px] h-[27px]">
-            Schedule Interview
-          </Button> */}
+      <CardFooter className="flex flex-row justify-end -mt-4 -mr-4 space-x-1">
+        <Button
+          className={`text-[12px] font-semibold px-0 w-[133px] h-[27px] ${
+            isFreeTrial ? "bg-gray-400" : "bg-orange-500"
+          }`}
+          disabled={isFreeTrial}
+        >
+          Schedule Interview
+        </Button>
         <MoreVertical size={12} className="text-gray-700 cursor-pointer" />
       </CardFooter>
     </Card>
   );
 };
 
-const EmployerCardMobile: FC<{ match: Match }> = ({ match }) => (
+const EmployerCardMobile: FC<{ match: Match; isFreeTrial?: boolean }> = ({
+  match,
+  isFreeTrial = false,
+}) => (
   <Card className="bg-[#F5F5F7] w-[300px] h-[380px] p-4 transition-all duration-300 hover:shadow-lg relative flex flex-col">
     <CardHeader className="flex-1 overflow-y-auto p-0">
       <div className="w-full">
@@ -139,7 +172,7 @@ const EmployerCardMobile: FC<{ match: Match }> = ({ match }) => (
         </div>
 
         <div className="pt-2 pl-2">
-          <CardTitle className="text-[17px]">{match.name}</CardTitle>
+          <SecureNameDisplay isFreeTrial={isFreeTrial} realName={match.name} />
           <p className="text-[10px] text-[#F5722E] flex items-center mb-2">
             <MapPin size={9} className="mr-1 text-[#F5722E]" />
             {match.location}
@@ -191,11 +224,13 @@ const EmployerCardMobile: FC<{ match: Match }> = ({ match }) => (
         </div>
       </div>
     </CardHeader>
-
     <CardContent className="p-0 mt-auto flex flex-col items-center">
       <Button
         variant="default"
-        className="bg-[#F5722E] text-[12px] font-semibold"
+        className={`text-[12px] font-semibold ${
+          isFreeTrial ? "bg-gray-400" : "bg-[#F5722E]"
+        }`}
+        disabled={isFreeTrial}
       >
         Schedule Interview
       </Button>

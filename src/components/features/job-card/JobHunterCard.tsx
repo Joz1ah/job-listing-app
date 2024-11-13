@@ -35,12 +35,41 @@ interface MatchCardProps {
   match: Match;
   bookmarked: boolean;
   onBookmark: () => void;
+  isFreeTrial?: boolean;
 }
+
+const SecureNameDisplay: FC<{ isFreeTrial: boolean; realName: string }> = ({
+  isFreeTrial,
+  realName,
+}) => {
+  if (isFreeTrial) {
+    return (
+      <div className="relative">
+        {/* Create a blurred background with placeholder text */}
+        <div className="select-none pointer-events-none" aria-hidden="true">
+          {/* Blurred layer */}
+          <div className="relative">
+            {/* Random characters to create blur effect */}
+            <div className="absolute inset-0 blur-[8px] text-sm font-semibold bg-clip-text">
+              {Array(realName.length).fill("X").join("")}
+            </div>
+          </div>
+        </div>
+
+        {/* Spacer to maintain layout */}
+        <div className="h-6" />
+      </div>
+    );
+  }
+
+  return <CardTitle className="text-sm font-semibold">{realName}</CardTitle>;
+};
 
 const JobHunterCardDesktop: FC<MatchCardProps> = ({
   match,
   bookmarked = false,
   onBookmark = () => {},
+  isFreeTrial = false,
 }) => {
   return (
     <Card className="bg-white border-none w-full md:w-[436px] h-auto md:h-[275px]">
@@ -67,9 +96,7 @@ const JobHunterCardDesktop: FC<MatchCardProps> = ({
         <div className="w-full">
           <div className="flex flex-row justify-between items-start">
             <div>
-              <CardTitle className="text-sm font-semibold">
-                {match.position}
-              </CardTitle>
+            <SecureNameDisplay isFreeTrial={isFreeTrial} realName={match.position} />
               <p className="text-[13px] font-light mt-0 underline">
                 {match.company}
               </p>
@@ -113,7 +140,12 @@ const JobHunterCardDesktop: FC<MatchCardProps> = ({
         </div>
       </CardContent>
       <CardFooter className="flex flex-row justify-end -mt-5 -mr-4 space-x-1">
-        <Button className="bg-orange-500 text-white text-[12px] font-semibold px-0 w-[133px] h-[27px]">
+      <Button
+          className={`text-[12px] font-semibold px-0 w-[133px] h-[27px] ${
+            isFreeTrial ? "bg-gray-400" : "bg-orange-500"
+          }`}
+          disabled={isFreeTrial}
+        >
           I'm Interested
         </Button>
         <MoreVertical size={12} className="text-gray-700 cursor-pointer" />
@@ -122,7 +154,12 @@ const JobHunterCardDesktop: FC<MatchCardProps> = ({
   );
 };
 
-const JobHunterCardMobile: FC<{ match: Match }> = ({ match }) => (
+const JobHunterCardMobile: FC<MatchCardProps> = ({
+   match, 
+   bookmarked = false,
+  onBookmark = () => {},
+   isFreeTrial = false 
+  }) => (
   <Card className="bg-[#F5F5F7] w-[308px] h-[395px] p-2 relative flex flex-col">
     <CardHeader className="flex-1 overflow-y-auto p-0">
       <div className="w-full">
@@ -132,14 +169,18 @@ const JobHunterCardMobile: FC<{ match: Match }> = ({ match }) => (
               Posted {match.appliedAgo}
             </span>
           </div>
-          <div className="absolute top-7">
-            <Bookmark className="text-[#F5722E]" size={25} />
-          </div>
+          <Bookmark
+              className={`absolute top-7 ${
+                bookmarked ? "fill-orange-500" : ""
+              } text-orange-500`}
+              size={26}
+              onClick={onBookmark}
+            />
         </div>
 
         <div className="pt-2 pl-2">
           <div className="-space-y-1">
-            <CardTitle className="text-[14px] mb-0">{match.position}</CardTitle>
+          <SecureNameDisplay isFreeTrial={isFreeTrial} realName={match.position} />
             <CardDescription className="text-[13px] text-[#263238] underline mt-0">
               {match.company}
             </CardDescription>
@@ -187,9 +228,12 @@ const JobHunterCardMobile: FC<{ match: Match }> = ({ match }) => (
       </div>
     </CardHeader>
     <CardContent className="p-0 mt-auto flex flex-col items-center">
-      <Button
+    <Button
         variant="default"
-        className="bg-[#F5722E] text-[12px] font-semibold"
+        className={`text-[12px] font-semibold ${
+          isFreeTrial ? "bg-gray-400" : "bg-[#F5722E]"
+        }`}
+        disabled={isFreeTrial}
       >
         I'm Interested
       </Button>
