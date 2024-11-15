@@ -42,7 +42,6 @@ interface FormValues {
   coreSkills: string[];
   interpersonalSkills: string[];
   education: string;
-  location: string;
   languages: string[];
   country: string;
 }
@@ -79,13 +78,13 @@ const PreviewCard: React.FC<PreviewCardProps> = ({ values, selectOptions }) => {
   return (
     <div className="mt-8">
       <div className="flex items-center flex-wrap text-white text-base mb-2">
-      <span>This is how your</span>
-      <div className="flex items-center mx-1">
-        <img src={sparkeIcon} className="w-4 h-4 mr-1" alt="spark icon" />
-        <span className="text-orange-500">Perfect Match</span>
+        <span>This is how your</span>
+        <div className="flex items-center mx-1">
+          <img src={sparkeIcon} className="w-4 h-4 mr-1" alt="spark icon" />
+          <span className="text-orange-500">Perfect Match</span>
+        </div>
+        <span>application card will appear to your future Employers.</span>
       </div>
-      <span>application card will appear to your future Employers.</span>
-    </div>
 
       <Card className="bg-[#FFFFFF] border-none w-full md:w-[436px] h-auto md:h-[275px]">
         <CardHeader className="flex flex-col justify-between items-start pb-0">
@@ -108,11 +107,11 @@ const PreviewCard: React.FC<PreviewCardProps> = ({ values, selectOptions }) => {
               {values.firstName} {values.lastName}
             </CardTitle>
             <div className="flex flex-row items-center h-[16px]">
-              {values.location && (
+              {values.country && (
                 <>
                   <MapPin size={14} className="text-orange-500" />
                   <p className="text-[13px] font-light mt-0">
-                    {values.location}
+                    {getLabel("country", values.country)}
                   </p>
                 </>
               )}

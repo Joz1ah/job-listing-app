@@ -114,7 +114,7 @@ export { EmployerCardLoading } from 'components/Skeleton-Loading/EmployerCardLoa
 export { JobHunterCardLoading } from 'components/Skeleton-Loading/JobHunterCardLoading'
 export { JobHunterCardDesktop, JobHunterCardMobile } from 'components/features/job-card/JobHunterCard'
 export { EmployerCardDesktop, EmployerCardMobile } from 'components/features/job-card/EmployerCard'
-export { TagInputs, LanguageTagInput, CoreSkillsTagInput, InterpersonalSkillsTagInput } from 'components/ui/taginputs'
+export { TagInputs, LanguageTagInput, CoreSkillsTagInput, InterpersonalSkillsTagInput, CertificationTagInput } from 'components/ui/taginputs'
 export { ProfileCreation } from 'components/features/job-feed-desktop/ProfileCreation'
 export { BirthdayInput } from 'components/ui/birthday-input'
 export { Separator } from 'components/ui/separator'

@@ -37,12 +37,14 @@ const InputComponent = React.forwardRef<HTMLInputElement, React.InputHTMLAttribu
 );
 InputComponent.displayName = "InputComponent";
 
-// Flag Component - adjusted size and styling
+// Flag Component - fixed styling
 const FlagComponent = ({ country, countryName }: RPNInput.FlagProps) => {
   const Flag = flags[country];
   return (
-    <span className="flex h-5 w-7 overflow-hidden rounded-sm">
-      {Flag && <Flag title={countryName} />}
+    <span className="flex h-6 w-6 overflow-hidden rounded-full relative">
+      <span className="absolute inset-0 flex items-center justify-center scale-[1.8]">
+        {Flag && <Flag title={countryName} />}
+      </span>
     </span>
   );
 };

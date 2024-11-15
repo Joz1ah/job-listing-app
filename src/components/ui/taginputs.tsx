@@ -20,6 +20,10 @@ interface TagInputProps {
   searchKeys?: string[];
   suggestionTitle?: string;
   disabled?: boolean;
+  alternateColors?: {
+    firstColor?: string;
+    secondColor?: string;
+  };
 }
 
 const TagInputs: React.FC<TagInputProps> = ({
@@ -33,6 +37,7 @@ const TagInputs: React.FC<TagInputProps> = ({
   searchKeys = ['label'],
   suggestionTitle = "Select Option",
   disabled,
+  alternateColors,
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -143,7 +148,9 @@ const TagInputs: React.FC<TagInputProps> = ({
               className={cn(
                 "inline-flex items-center px-2 text-[12px] text-white font-semibold cursor-pointer transition-colors rounded-[2px] shrink-0 ml-1 mt-1",
                 "h-[30px]",
-                tagClassName,
+                alternateColors 
+                  ? `bg-[${index % 2 === 0 ? alternateColors.firstColor : alternateColors.secondColor}]`
+                  : tagClassName,
                 disabled && "cursor-not-allowed"
               )}
             >
@@ -284,4 +291,51 @@ const LanguageTagInput: React.FC<Omit<TagInputProps, 'options'>> = (props) => {
   );
 };
 
-export { TagInputs, CoreSkillsTagInput, InterpersonalSkillsTagInput, LanguageTagInput };
+const CertificationTagInput: React.FC<Omit<TagInputProps, 'options'>> = (props) => {
+  const certifications = [
+    // Technical Certifications
+    { label: "AWS Certified Solutions Architect", value: "aws-solutions-architect" },
+    { label: "CompTIA A+", value: "comptia-a-plus" },
+    { label: "CompTIA Network+", value: "comptia-network-plus" },
+    { label: "CompTIA Security+", value: "comptia-security-plus" },
+    { label: "Cisco CCNA", value: "cisco-ccna" },
+    { label: "Cisco CCNP", value: "cisco-ccnp" },
+    { label: "Microsoft Azure Administrator", value: "azure-administrator" },
+    { label: "Google Cloud Professional", value: "google-cloud-professional" },
+    
+    // Project Management
+    { label: "Project Management Professional (PMP)", value: "pmp" },
+    { label: "PRINCE2 Practitioner", value: "prince2-practitioner" },
+    { label: "Scrum Master", value: "scrum-master" },
+    { label: "PMI Agile Certified Practitioner", value: "pmi-acp" },
+    
+    // Security
+    { label: "Certified Information Systems Security Professional (CISSP)", value: "cissp" },
+    { label: "Certified Ethical Hacker (CEH)", value: "ceh" },
+    { label: "GIAC Security Essentials (GSEC)", value: "gsec" },
+    
+    // Development
+    { label: "Oracle Certified Professional Java", value: "oracle-java" },
+    { label: "Microsoft Certified: Azure Developer", value: "azure-developer" },
+    { label: "Kubernetes Administrator (CKA)", value: "kubernetes-cka" },
+    { label: "Terraform Associate", value: "terraform-associate" },
+    
+    // Data & AI
+    { label: "Google Data Analytics Professional", value: "google-data-analytics" },
+    { label: "AWS Machine Learning Specialty", value: "aws-ml-specialty" },
+    { label: "TensorFlow Developer Certificate", value: "tensorflow-developer" },
+    { label: "Microsoft Azure AI Engineer", value: "azure-ai-engineer" }
+  ];
+
+  return (
+    <TagInputs
+      {...props}
+      options={certifications}
+      maxTags={8}
+      suggestionTitle="Select Certifications"
+      placeholder={props.placeholder || "Type to search certifications"}
+    />
+  );
+};
+
+export { TagInputs, CoreSkillsTagInput, InterpersonalSkillsTagInput, LanguageTagInput, CertificationTagInput };

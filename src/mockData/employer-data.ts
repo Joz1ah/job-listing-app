@@ -446,7 +446,7 @@ interface Skill {
       salaryExpectation: "$51,000-$70,000",
       language: ["English", "French"]
     },
-    {
+    /* {
       "name": "Liam Parker",
       "location": "Toronto, Canada",
       "job": "Full Stack Developer",
@@ -1075,7 +1075,7 @@ interface Skill {
       "lookingFor": ["Full time", "Remote"],
       "salaryExpectation": "$85,000-$100,000",
       "language": ["German", "English"]
-    }                     
+    }       */               
   ];
   
   export const others: Match[] = [

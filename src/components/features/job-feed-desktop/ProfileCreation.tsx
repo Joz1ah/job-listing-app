@@ -14,7 +14,15 @@ import { Command, CommandGroup, CommandItem, CommandList } from "components";
 
 import { Popover, PopoverContent, PopoverTrigger } from "components";
 
-import { LanguageTagInput, BirthdayInput, PhoneInput, PreviewCard, CoreSkillsTagInput, InterpersonalSkillsTagInput} from "components";
+import {
+  LanguageTagInput,
+  BirthdayInput,
+  PhoneInput,
+  PreviewCard,
+  CoreSkillsTagInput,
+  InterpersonalSkillsTagInput,
+  CertificationTagInput,
+} from "components";
 
 import {
   Select,
@@ -44,9 +52,9 @@ interface FormData {
   coreSkills: string[];
   interpersonalSkills: string[];
   education: string;
-  location: string;
   languages: string[];
   country: string;
+  certifications: string[];
 }
 
 {
@@ -92,13 +100,18 @@ const FormField = React.forwardRef<HTMLDivElement, FormFieldProps>(
             {children}
             {showError && (
               <div className="absolute -right-7 top-1/2 -translate-y-1/2">
-                <AlertTriangle className="fill-red-500 text-[#2D3A41]" size={20} />
+                <AlertTriangle
+                  className="fill-red-500 text-[#2D3A41]"
+                  size={20}
+                />
               </div>
             )}
           </div>
         </div>
         {showError && (
-          <div className="absolute text-xs md:text-sm italic text-red-500">{error}</div>
+          <div className="absolute text-xs md:text-sm italic text-red-500">
+            {error}
+          </div>
         )}
       </div>
     );
@@ -111,14 +124,14 @@ const validationSchema = Yup.object().shape({
   firstName: Yup.string().required("This field is required"),
   lastName: Yup.string().required("This field is required"),
   birthday: Yup.string()
-    .matches(/^(1[0-2]|[1-9])\/(3[01]|[12][0-9]|[1-9])$/, 'Invalid date format')
-    .required('Birthday is required'),
-    emailAddress: Yup.string()
+    .matches(/^(1[0-2]|[1-9])\/(3[01]|[12][0-9]|[1-9])$/, "Invalid date format")
+    .required("Birthday is required"),
+  emailAddress: Yup.string()
     .required("This field is required")
     .email("Invalid email address"),
-    mobileNumber: Yup.string()
+  mobileNumber: Yup.string()
     .required("This field is required")
-    .test("phone", "Please enter a valid phone number", function(value) {
+    .test("phone", "Please enter a valid phone number", function (value) {
       return value ? isValidPhoneNumber(value) : false;
     }),
   country: Yup.string().required("This field is required"),
@@ -136,19 +149,17 @@ const validationSchema = Yup.object().shape({
     .min(3, "Please add at least 3 interpersonal skills")
     .required("This field is required"),
   education: Yup.string().required("This field is required"),
-  location: Yup.string().required("This field is required"),
   languages: Yup.array()
     .min(1, "This field is required")
     .required("This field is required"),
 });
 
 const ProfileCreation = () => {
-
   const selectOptions = {
     employmentType: [
       { value: "full-time", label: "Full Time" },
       { value: "part-time", label: "Part Time" },
-      { value: "contract", label: "Contract" },
+      { value: "contract", label: "Contract only" },
     ],
     salaryRange: [
       { value: "nego", label: "Negotiable" },
@@ -192,8 +203,8 @@ const ProfileCreation = () => {
       { value: "cn", label: "China" },
     ],
 
-     languages :[
-      {value: "en", label: "English"  },
+    languages: [
+      { value: "en", label: "English" },
       { label: "French", value: "fr" },
       { label: "German", value: "de" },
       { label: "Spanish", value: "es" },
@@ -202,8 +213,8 @@ const ProfileCreation = () => {
       { label: "Japanese", value: "ja" },
       { label: "Korean", value: "ko" },
       { label: "Chinese", value: "zh" },
-    ] ,
-    coreSkills : [
+    ],
+    coreSkills: [
       // Technical/Hard Skills
       { label: "HTML", value: "html" },
       { label: "CSS", value: "css" },
@@ -223,40 +234,34 @@ const ProfileCreation = () => {
       { label: "Agile Methodologies", value: "agile" },
       { label: "Quality Assurance", value: "qa" },
       { label: "Digital Marketing", value: "digital-marketing" },
-      { label: "Content Writing", value: "content-writing" }
-    ]
+      { label: "Content Writing", value: "content-writing" },
+    ],
   };
 
-  const {
-    values,
-    errors,
-    touched,
-    handleChange,
-    setFieldValue,
-    handleSubmit,
-  } = useFormik<FormData & { employmentType: string[] }>({
-    initialValues: {
-      firstName: "",
-      lastName: "",
-      birthday: "",
-      emailAddress: "",
-      mobileNumber: '',
-      employmentType: [],
-      salaryRange: "",
-      yearsOfExperience: "",
-      coreSkills: [],
-      interpersonalSkills: [],
-      education: "",
-      location: "",
-      languages: [],
-      country: ""
-    },
-    validationSchema,
-    onSubmit: (values) => {
-      // Handle form submission
-      console.log(values);
-    },
-  });
+  const { values, errors, touched, handleChange, setFieldValue, handleSubmit } =
+    useFormik<FormData & { employmentType: string[] }>({
+      initialValues: {
+        firstName: "",
+        lastName: "",
+        birthday: "",
+        emailAddress: "",
+        mobileNumber: "",
+        employmentType: [],
+        salaryRange: "",
+        yearsOfExperience: "",
+        coreSkills: [],
+        interpersonalSkills: [],
+        education: "",
+        languages: [],
+        country: "",
+        certifications: [],
+      },
+      validationSchema,
+      onSubmit: (values) => {
+        // Handle form submission
+        console.log(values);
+      },
+    });
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && e.target instanceof HTMLElement) {
@@ -270,409 +275,420 @@ const ProfileCreation = () => {
 
   return (
     <div className="md:pt-10 md:flex md:flex-row md:gap-10">
-        <div className="w-full md:w-[800px] min-h-[825px] bg-[#242625] md:bg-[#2D3A41] text-white mt-4 md:pt-6 md:mt-9">
-          <div className="flex items-center relative w-full mb-8 md:mb-14">
-            <NavLink to="/job-feed-employer" className="absolute left-0">
-              <ChevronLeft strokeWidth={4} className="h-6 w-6 ml-4" />
-            </NavLink>
+      <div className="w-full md:w-[800px] min-h-[825px] bg-[#242625] md:bg-[#2D3A41] text-white mt-4 md:pt-6 md:mt-9">
+        <div className="flex items-center relative w-full mb-8 md:mb-14">
+          <NavLink to="/job-feed-employer" className="absolute left-0">
+            <ChevronLeft strokeWidth={4} className="h-6 w-6 ml-4" />
+          </NavLink>
 
-            <h1 className="flex-1 text-center text-xl md:text-[32px] font-normal text-orange-500">
-              <span className="inline-flex items-center gap-2 justify-center">
-                Complete Your Application Card
-              </span>
-            </h1>
+          <h1 className="flex-1 text-center text-xl md:text-[32px] font-normal text-orange-500">
+            <span className="inline-flex items-center gap-2 justify-center">
+              Complete Your Application Card
+            </span>
+          </h1>
+        </div>
+
+        <form
+          onSubmit={handleSubmit}
+          onKeyDown={handleKeyDown}
+          className="grid grid-cols-1 md:grid-cols-2 p-4 md:p-8 md:gap-x-[65px] "
+        >
+          {/* Left Column */}
+          <div className="space-y-[24px]">
+            <FormField
+              label="First Name"
+              className="bg-transparent"
+              error={errors.firstName}
+              touched={touched.firstName}
+            >
+              <Input
+                name="firstName"
+                value={values.firstName}
+                onChange={handleChange}
+                className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
+              />
+            </FormField>
+
+            <FormField
+              label="Birthday"
+              error={errors.birthday}
+              touched={touched.birthday}
+            >
+              <BirthdayInput
+                name="birthday"
+                value={values.birthday}
+                onChange={(name, value) => setFieldValue(name, value)}
+              />
+            </FormField>
+
+            <FormField
+              label="Mobile Number"
+              error={errors.mobileNumber}
+              touched={touched.mobileNumber}
+            >
+              <PhoneInput
+                name="mobileNumber"
+                value={values.mobileNumber}
+                onChange={handleChange}
+                className="bg-[#2D3A41] border-2 rounded-md border-[#AEADAD] h-[56px] focus-within:border-orange-500 transition-colors flex justify-between"
+                defaultCountry="CA"
+              />
+            </FormField>
+
+            <FormField
+              label="Education"
+              error={errors.education}
+              touched={touched.education}
+            >
+              <Select
+                name="education"
+                value={values.education}
+                onValueChange={(value) => setFieldValue("education", value)}
+              >
+                <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500">
+                  <SelectValue placeholder="Select your Education Level" />
+                </SelectTrigger>
+                <SelectContent className="bg-[#F5F5F7] items-center p-0 [&>*]:p-0 border-none rounded-none">
+                  {selectOptions.education.map(({ value, label }) => (
+                    <SelectItem
+                      key={value}
+                      className={cn(
+                        "rounded-none justify-start pl-3 h-[55px] transition-all duration-500 ease-in-out",
+                        "focus:bg-orange-500 focus:text-white",
+                        "data-[state=checked]:bg-orange-500 data-[state=checked]:text-white data-[state=checked]:font-bold",
+                        "data-[state=checked]:focus:bg-orange-500",
+                      )}
+                      value={value}
+                    >
+                      <div className="py-3 w-full text-center">{label}</div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </FormField>
+
+            <FormField
+              label="Salary Range"
+              error={errors.salaryRange}
+              touched={touched.salaryRange}
+            >
+              <Select
+                name="salaryRange"
+                value={values.salaryRange}
+                onValueChange={(value) => setFieldValue("salaryRange", value)}
+              >
+                <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500">
+                  <SelectValue placeholder="Select Salary Range" className="" />
+                </SelectTrigger>
+                <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none">
+                  {selectOptions.salaryRange.map(({ value, label }) => (
+                    <SelectItem
+                      key={value}
+                      className={cn(
+                        "rounded-none justify-start pl-3 h-[55px] transition-all duration-500 ease-in-out",
+                        "focus:bg-orange-500 focus:text-white",
+                        "data-[state=checked]:bg-orange-500 data-[state=checked]:text-white data-[state=checked]:font-bold",
+                        "data-[state=checked]:focus:bg-orange-500",
+                      )}
+                      value={value}
+                    >
+                      <div className="py-3 w-full text-center">{label}</div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </FormField>
+
+            <div className="mb-8 md:mb-14">
+              <FormField
+                label="Core Skills"
+                error={errors.coreSkills}
+                touched={touched.coreSkills}
+                showIcon={true}
+                tooltipContent="Job-specific, measurable abilities like software proficiency, coding, or design tools."
+              >
+                <CoreSkillsTagInput
+                  value={values.coreSkills || []}
+                  onChange={(value) => setFieldValue("coreSkills", value)}
+                  className="min-h-[99px] pt-1 px-1"
+                  alternateColors={{
+                    firstColor: "#168AAD",
+                    secondColor: "#184E77",
+                  }}
+                  placeholder="Type and enter to add core skill"
+                />
+              </FormField>
+            </div>
+
+            <FormField
+              label="Certification"
+              error={errors.certifications}
+              touched={touched.certifications}
+              showIcon={true}
+              tooltipContent="Job-specific, measurable abilities like software proficiency, coding, or design tools."
+            >
+              <CertificationTagInput
+                value={values.certifications || []}
+                onChange={(value) => setFieldValue("certifications", value)}
+                className="min-h-[56px] pt-1 px-1"
+                tagClassName="bg-[#168AAD]"
+                placeholder="Type and enter to add certificate"
+              />
+            </FormField>
           </div>
 
-          <form
-            onSubmit={handleSubmit}
-            onKeyDown={handleKeyDown}
-            className="grid grid-cols-1 md:grid-cols-2 p-4 md:p-8 md:gap-x-[65px] "
-          >
-            {/* Left Column */}
-            <div className="space-y-6 md:space-y-[40px]">
-              <FormField
-                label="First Name"
-                className="bg-transparent"
-                error={errors.firstName}
-                touched={touched.firstName}
-              >
-                <Input
-                  name="firstName"
-                  value={values.firstName}
-                  onChange={handleChange}
-                  className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
-                />
-              </FormField>
+          {/* Right Column */}
+          <div className="space-y-[24px]">
+            <FormField
+              label="Last Name"
+              className="bg-transparent"
+              error={errors.lastName}
+              touched={touched.lastName}
+            >
+              <Input
+                name="lastName"
+                value={values.lastName}
+                onChange={handleChange}
+                className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
+              />
+            </FormField>
 
-              <FormField
-                label="Location"
-                error={errors.location}
-                touched={touched.location}
-              >
-                <Input
-                  name="location"
-                  value={values.location}
-                  onChange={handleChange}
-                  className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus-within:border-orange-500 placeholder:text-white"
-                  placeholder="Type and enter country"
-                />
-              </FormField>
+            <FormField
+              label="Languages"
+              error={errors.languages}
+              touched={touched.languages}
+              showIcon={true}
+              tooltipContent="Feel free to enter up to 4 languages in which you are fluent, both in speaking and writing."
+            >
+              <LanguageTagInput
+                value={values.languages || []}
+                onChange={(value) => setFieldValue("languages", value)}
+                className="min-h-[56px] pt-1 px-1"
+                tagClassName="bg-orange-500"
+                placeholder="Type and enter to add language"
+              />
+            </FormField>
 
-              <FormField
-                label="Birthday"
-                error={errors.birthday}
-                touched={touched.birthday}
+            <FormField
+              label="Country of Residence"
+              error={errors.country}
+              touched={touched.country}
+            >
+              <Select
+                name="country"
+                value={values.country}
+                onValueChange={(value) => setFieldValue("country", value)}
               >
-                <BirthdayInput 
-                  name="birthday"
-                  value={values.birthday}
-                  onChange={(name, value) => setFieldValue(name, value)}
-                />
-              </FormField>
-
-              <FormField
-                label="Mobile Number"
-                error={errors.mobileNumber}
-                touched={touched.mobileNumber}
-              >
-                <PhoneInput
-                  name="mobileNumber"
-                  value={values.mobileNumber}
-                  onChange={handleChange}
-                  className="bg-[#2D3A41] border-2 rounded-md border-[#AEADAD] h-[56px] focus-within:border-orange-500 transition-colors flex justify-between"
-                  defaultCountry="CA"
-                />
-              </FormField>
-
-              <FormField
-                label="Education"
-                error={errors.education}
-                touched={touched.education}
-              >
-                <Select
-                  name="education"
-                  value={values.education}
-                  onValueChange={(value) => setFieldValue("education", value)}
-                >
-                  <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500">
-                    <SelectValue placeholder="Select your Education Level" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-[#F5F5F7] items-center p-0 [&>*]:p-0 border-none rounded-none">
-                    {selectOptions.education.map(({ value, label }) => (
-                      <SelectItem
-                        key={value}
-                        className={cn(
-                          "rounded-none justify-start pl-3 h-[55px] transition-all duration-500 ease-in-out",
-                          "focus:bg-[#BF532C] focus:text-white",
-                          "data-[state=checked]:bg-orange-500 data-[state=checked]:text-white data-[state=checked]:font-bold",
-                          "data-[state=checked]:focus:bg-[#BF532C]",
-                        )}
-                        value={value}
-                      >
-                        <div className="py-3 w-full text-center">{label}</div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FormField>
-
-              <div className="mb-8 md:mb-14">
-              <FormField
-                  label="Core Skills"
-                  error={errors.coreSkills}
-                  touched={touched.coreSkills}
-                  showIcon={true}
-                  tooltipContent="Job-specific, measurable abilities like software proficiency, coding, or design tools."
-                >
-                  <CoreSkillsTagInput
-                    value={values.coreSkills || []}
-                    onChange={(value) => setFieldValue("coreSkills", value)}
-                    className="min-h-[99px] pt-1 px-1"
-                    tagClassName="bg-[#168AAD]"
-                    placeholder="Type and enter to add core skill"
-                  />
-                </FormField>
-              </div>
-
-              <FormField
-                label="Salary Range"
-                error={errors.salaryRange}
-                touched={touched.salaryRange}
-              >
-                <Select
-                  name="salaryRange"
-                  value={values.salaryRange}
-                  onValueChange={(value) => setFieldValue("salaryRange", value)}
-                >
-                  <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500">
-                    <SelectValue
-                      placeholder="Select Salary Range"
-                      className=""
-                    />
-                  </SelectTrigger>
-                  <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none">
-                    {selectOptions.salaryRange.map(({ value, label }) => (
-                      <SelectItem
-                        key={value}
-                        className={cn(
-                          "rounded-none justify-start pl-3 h-[55px] transition-all duration-500 ease-in-out",
-                          "focus:bg-[#BF532C] focus:text-white",
-                          "data-[state=checked]:bg-orange-500 data-[state=checked]:text-white data-[state=checked]:font-bold",
-                          "data-[state=checked]:focus:bg-[#BF532C]",
-                        )}
-                        value={value}
-                      >
-                        <div className="py-3 w-full text-center">{label}</div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FormField>
-            </div>
-
-            {/* Right Column */}
-            <div className="space-y-6 md:space-y-[40px]">
-              <FormField
-                label="Last Name"
-                className="bg-transparent"
-                error={errors.lastName}
-                touched={touched.lastName}
-              >
-                <Input
-                  name="lastName"
-                  value={values.lastName}
-                  onChange={handleChange}
-                  className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
-                />
-              </FormField>
-
-              <FormField
-                label="Languages"
-                error={errors.languages}
-                touched={touched.languages}
-                showIcon={true}
-                tooltipContent="Feel free to enter up to 4 languages in which you are fluent, both in speaking and writing."
-              >
-                <LanguageTagInput
-                  value={values.languages || []}
-                  onChange={(value) => setFieldValue("languages", value)}
-                  className="min-h-[56px] pt-1 px-1"
-                  tagClassName="bg-orange-500"
-                  placeholder="Type and enter to add language"
-                />
-              </FormField>
-
-              <FormField
-                label="Country"
-                error={errors.country}
-                touched={touched.country}
-              >
-                <Select
-                  name="country"
-                  value={values.country}
-                  onValueChange={(value) => setFieldValue("country", value)}
-                >
-                  <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500">
-                    <SelectValue placeholder="Select your Country of Residence" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-[#F5F5F7] items-center p-0 [&>*]:p-0 border-none rounded-none">
-                    {selectOptions.country.map(({ value, label }) => (
-                      <SelectItem
-                        key={value}
-                        className={cn(
-                          "rounded-none justify-start pl-3 h-[55px] transition-all duration-500 ease-in-out",
-                          "focus:bg-[#BF532C] focus:text-white",
-                          "data-[state=checked]:bg-orange-500 data-[state=checked]:text-white data-[state=checked]:font-bold",
-                          "data-[state=checked]:focus:bg-[#BF532C]",
-                        )}
-                        value={value}
-                      >
-                        <div className="py-3 w-full text-center">{label}</div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FormField>
-
-              <FormField
-                label="Email Address"
-                className="bg-transparent"
-                error={errors.emailAddress}
-                touched={touched.emailAddress}
-              >
-                <Input
-                  name="emailAddress"
-                  value={values.emailAddress}
-                  onChange={handleChange}
-                  className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
-                />
-              </FormField>
-
-              <FormField
-                label="Employment Type"
-                error={errors.employmentType}
-                touched={touched.employmentType}
-                showIcon={true}
-                tooltipContent="You may select one up to three employment types that you are looking for"
-              >
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      role="combobox"
+                <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500">
+                  <SelectValue placeholder="Select your Country of Residence" />
+                </SelectTrigger>
+                <SelectContent className="bg-[#F5F5F7] items-center p-0 [&>*]:p-0 border-none rounded-none">
+                  {selectOptions.country.map(({ value, label }) => (
+                    <SelectItem
+                      key={value}
                       className={cn(
-                        "w-full justify-between bg-transparent border-gray-300 h-[56px] font-normal hover:bg-transparent hover:text-white border-2",
-                        "focus-within:border-orange-500 data-[state=open]:border-orange-500 px-3",
+                        "rounded-none justify-start pl-3 h-[55px] transition-all duration-500 ease-in-out",
+                        "focus:bg-orange-500 focus:text-white",
+                        "data-[state=checked]:bg-orange-500 data-[state=checked]:text-white data-[state=checked]:font-bold",
+                        "data-[state=checked]:focus:bg-orange-500",
                       )}
+                      value={value}
                     >
-                      <div className="flex flex-wrap overflow-hidden">
-                        {values.employmentType.length === 0 &&
-                          "Select Employment Type"}
-                        {values.employmentType.map((value) => (
-                          <Badge
-                            key={value}
-                            variant="secondary"
-                            className={cn(
-                              "mr-1 font-normal text-[13px] rounded-sm",
-                              {
-                                // Custom styles for Contract selection
-                                "bg-orange-600 text-white":
-                                  value === "contract",
-                                // Custom styles for Full-time and Part-time
-                                "bg-orange-500 text-white":
-                                  value !== "contract",
-                              },
-                            )}
-                          >
-                            {
-                              selectOptions.employmentType.find(
-                                (type) => type.value === value,
-                              )?.label
-                            }
-                          </Badge>
-                        ))}
-                      </div>
-                      <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 border-none rounded-none">
-                    <Command className="border-0 rounded-none">
-                      <CommandList>
-                        <CommandGroup className="p-0 bg-[#F5F5F5]">
-                          {selectOptions.employmentType.map((type) => (
-                            <CommandItem
-                              key={type.value}
-                              value={type.value}
-                              data-selected={values.employmentType.includes(
-                                type.value,
-                              )}
-                              onSelect={(currentValue) => {
-                                const newValue = [...values.employmentType];
-                                const index = newValue.indexOf(currentValue);
-                                if (index === -1) {
-                                  newValue.push(currentValue);
-                                } else {
-                                  newValue.splice(index, 1);
-                                }
-                                setFieldValue("employmentType", newValue);
-                              }}
+                      <div className="py-3 w-full text-center">{label}</div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </FormField>
+
+            <FormField
+              label="Email Address"
+              className="bg-transparent"
+              error={errors.emailAddress}
+              touched={touched.emailAddress}
+            >
+              <Input
+                name="emailAddress"
+                value={values.emailAddress}
+                onChange={handleChange}
+                className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
+              />
+            </FormField>
+
+            <FormField
+              label="Employment Type"
+              error={errors.employmentType}
+              touched={touched.employmentType}
+              showIcon={true}
+              tooltipContent="You may select one up to three employment types that you are looking for"
+            >
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    className={cn(
+                      "w-full justify-between bg-transparent border-gray-300 h-[56px] font-normal hover:bg-transparent hover:text-white border-2",
+                      "focus-within:border-orange-500 data-[state=open]:border-orange-500 px-3 relative",
+                    )}
+                  >
+                    <div className="flex items-center w-[calc(100%-24px)] overflow-hidden">
+                      {values.employmentType.length === 0 ? (
+                        <span className="text-white">
+                          Select Employment Type
+                        </span>
+                      ) : (
+                        <div className="flex flex-nowrap overflow-hidden gap-1">
+                          {values.employmentType.map((value) => (
+                            <Badge
+                              key={value}
+                              variant="secondary"
                               className={cn(
-                                "rounded-none justify-start px-2 h-[55px]",
-                                "transition-all duration-500 ease-in-out",
-                                "data-[selected=true]:bg-[#BF532C] data-[selected=true]:text-white",
+                                "font-normal text-[13px] rounded-sm whitespace-nowrap overflow-hidden text-ellipsis max-w-[120px]",
+                                {
+                                  "bg-orange-600 text-white":
+                                    value === "contract",
+                                  "bg-orange-500 text-white":
+                                    value !== "contract",
+                                },
                               )}
                             >
-                              <div className="flex items-center">
-                                <div
-                                  className={cn(
-                                    "mr-2 h-5 w-5 border rounded flex items-center justify-center cursor-pointer",
-                                    values.employmentType.includes(type.value)
-                                      ? "border-blue-400 bg-blue-400 hover:bg-blue-500"
-                                      : "border-gray-400 bg-white hover:border-gray-500",
-                                  )}
-                                >
-                                  {values.employmentType.includes(
-                                    type.value,
-                                  ) && <Check className="h-3 w-3 text-white" />}
-                                </div>
-                                {type.label}
-                              </div>
-                            </CommandItem>
+                              {
+                                selectOptions.employmentType.find(
+                                  (type) => type.value === value,
+                                )?.label
+                              }
+                            </Badge>
                           ))}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
-              </FormField>
+                        </div>
+                      )}
+                    </div>
+                    <ChevronDown className="h-4 w-4 shrink-0 opacity-50 absolute right-3" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 border-none rounded-none">
+                  <Command className="border-0 rounded-none">
+                    <CommandList>
+                      <CommandGroup className="p-0 bg-[#F5F5F5]">
+                        {selectOptions.employmentType.map((type) => (
+                          <CommandItem
+                            key={type.value}
+                            value={type.value}
+                            data-selected={values.employmentType.includes(
+                              type.value,
+                            )}
+                            onSelect={(currentValue) => {
+                              const newValue = [...values.employmentType];
+                              const index = newValue.indexOf(currentValue);
+                              if (index === -1) {
+                                newValue.push(currentValue);
+                              } else {
+                                newValue.splice(index, 1);
+                              }
+                              setFieldValue("employmentType", newValue);
+                            }}
+                            className={cn(
+                              "rounded-none justify-start px-2 h-[55px]",
+                              "transition-all duration-500 ease-in-out",
+                              "data-[selected=true]:bg-orange-500 data-[selected=true]:text-white",
+                            )}
+                          >
+                            <div className="flex items-center">
+                              <div
+                                className={cn(
+                                  "mr-2 h-5 w-5 border rounded flex items-center justify-center cursor-pointer",
+                                  values.employmentType.includes(type.value)
+                                    ? "border-blue-400 bg-blue-400 hover:bg-blue-500"
+                                    : "border-gray-400 bg-white hover:border-gray-500",
+                                )}
+                              >
+                                {values.employmentType.includes(type.value) && (
+                                  <Check className="h-3 w-3 text-white" />
+                                )}
+                              </div>
+                              {type.label}
+                            </div>
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+            </FormField>
 
-              <FormField
-                label="Years of Experience"
-                error={errors.yearsOfExperience}
-                touched={touched.yearsOfExperience}
+            <FormField
+              label="Years of Experience"
+              error={errors.yearsOfExperience}
+              touched={touched.yearsOfExperience}
+            >
+              <Select
+                name="yearsOfExperience"
+                value={values.yearsOfExperience}
+                onValueChange={(value) =>
+                  setFieldValue("yearsOfExperience", value)
+                }
               >
-                <Select
-                  name="yearsOfExperience"
-                  value={values.yearsOfExperience}
-                  onValueChange={(value) =>
-                    setFieldValue("yearsOfExperience", value)
+                <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 ">
+                  <SelectValue placeholder="Select Years of Experience" />
+                </SelectTrigger>
+                <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none">
+                  {selectOptions.yearsOfExperience.map(({ value, label }) => (
+                    <SelectItem
+                      key={value}
+                      className={cn(
+                        "rounded-none justify-start pl-3 h-[55px] transition-all duration-500 ease-in-out",
+                        "focus:bg-orange-500 focus:text-white",
+                        "data-[state=checked]:bg-orange-500 data-[state=checked]:text-white data-[state=checked]:font-bold",
+                        "data-[state=checked]:focus:bg-orange-500",
+                      )}
+                      value={value}
+                    >
+                      <div className="py-3 w-full text-center">{label}</div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </FormField>
+
+            <div className="mb-14">
+              <FormField
+                label="Interpersonal Skills"
+                error={errors.interpersonalSkills}
+                touched={touched.interpersonalSkills}
+                showIcon={true}
+                tooltipContent="Personal qualities like communication, teamwork, and problem-solving."
+              >
+                <InterpersonalSkillsTagInput
+                  value={values.interpersonalSkills || []}
+                  onChange={(value) =>
+                    setFieldValue("interpersonalSkills", value)
                   }
-                >
-                  <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 ">
-                    <SelectValue placeholder="Select Years of Experience" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none">
-                    {selectOptions.yearsOfExperience.map(({ value, label }) => (
-                      <SelectItem
-                        key={value}
-                        className={cn(
-                          "rounded-none justify-start pl-3 h-[55px] transition-all duration-500 ease-in-out",
-                          "focus:bg-[#BF532C] focus:text-white",
-                          "data-[state=checked]:bg-orange-500 data-[state=checked]:text-white data-[state=checked]:font-bold",
-                          "data-[state=checked]:focus:bg-[#BF532C]",
-                        )}
-                        value={value}
-                      >
-                        <div className="py-3 w-full text-center">{label}</div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  className="min-h-[99px] pt-1 px-1"
+                  alternateColors={{
+                    firstColor: "#168AAD",
+                    secondColor: "#184E77",
+                  }}
+                  placeholder="Type and enter to add interpersonal skill"
+                />
               </FormField>
-
-              <div className="mb-14">
-              <FormField
-                  label="Interpersonal Skills"
-                  error={errors.interpersonalSkills}
-                  touched={touched.interpersonalSkills}
-                  showIcon={true}
-                  tooltipContent="Personal qualities like communication, teamwork, and problem-solving."
-                >
-                  <InterpersonalSkillsTagInput
-                    value={values.interpersonalSkills || []}
-                    onChange={(value) => setFieldValue("interpersonalSkills", value)}
-                    className="min-h-[99px] pt-1 px-1"
-                    tagClassName="bg-[#184E77]"
-                    placeholder="Type and enter to add interpersonal skill"
-                  />
-                </FormField>
-              </div>
             </div>
+          </div>
 
-            {/* Footer Buttons */}
-            <div className="col-span-full flex justify-end mt-8 mb-0">
-              <Button
-                type="submit"
-                className="w-full md:w-auto bg-[#AEADAD] text-white hover:bg-[#F5722E] text-[16px] h-8 rounded-sm mr-2 mb-2 font-normal px-8"
-              >
-                Save Your Profile
-              </Button>
-            </div>
-          </form>
-        </div>
+          {/* Footer Buttons */}
+          <div className="col-span-full flex justify-end mt-[60px] mb-0">
+            <Button
+              type="submit"
+              className="w-full md:w-auto bg-[#AEADAD] text-white hover:bg-[#F5722E] text-[16px] h-8 rounded-sm mr-2 mb-2 font-normal px-8"
+            >
+              Save Your Profile
+            </Button>
+          </div>
+        </form>
+      </div>
       <div className="w-full md:w-auto">
-          <PreviewCard values={values} selectOptions={selectOptions} />
-        </div>
+        <PreviewCard values={values} selectOptions={selectOptions} />
+      </div>
     </div>
   );
 };

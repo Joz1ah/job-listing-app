@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   ChevronLeft,
   AlertTriangle,
@@ -9,6 +10,7 @@ import {
 import { Input, Button, Textarea, Label } from "components";
 import { NavLink } from "react-router-dom";
 import sparkeIcon from "images/sparkle-icon.png";
+import saveChanges from "images/saved.png";
 
 import { Badge } from "components";
 
@@ -20,6 +22,7 @@ import {
   CoreSkillsTagInput,
   InterpersonalSkillsTagInput,
   LanguageTagInput,
+  CertificationTagInput,
 } from "components";
 
 import {
@@ -48,6 +51,7 @@ interface FormData {
   education: string;
   location: string;
   languages: string[];
+  certifications: string[];
 }
 
 {
@@ -119,6 +123,7 @@ const validationSchema = Yup.object().shape({
   ),
   salaryRange: Yup.string().required("This field is required"),
   yearsOfExperience: Yup.string().required("This field is required"),
+  priorityIndicator: Yup.string().required("This field is required"),
   jobDescription: Yup.string().required("This field is required"),
   coreSkills: Yup.array()
     .min(3, "Please add at least 3 core skills")
@@ -133,7 +138,18 @@ const validationSchema = Yup.object().shape({
     .required("This field is required"),
 });
 
+// Loading Overlay Component
+const LoadingOverlay = () => (
+  <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
+    <div className="flex flex-col items-center">
+      <img src={saveChanges} alt="Loading" />
+    </div>
+  </div>
+);
+
 const MatchCreation = () => {
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   const selectOptions = {
     employmentType: [
@@ -183,34 +199,37 @@ const MatchCreation = () => {
     ],
   };
 
-  const {
-    values,
-    errors,
-    touched,
-    handleChange,
-    setFieldValue,
-    handleSubmit,
-    handleReset,
-  } = useFormik<FormData & { employmentType: string[] }>({
-    initialValues: {
-      jobTitle: "",
-      employmentType: [],
-      salaryRange: "",
-      yearsOfExperience: "",
-      jobDescription: "",
-      priorityIndicator: "",
-      coreSkills: [],
-      interpersonalSkills: [],
-      education: "",
-      location: "",
-      languages: [],
-    },
-    validationSchema,
-    onSubmit: (values) => {
-      // Handle form submission
-      console.log(values);
-    },
-  });
+  const handleSaveChanges = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      navigate("/job-feed-employer");
+    }, 1500);
+  };
+
+  const { values, errors, touched, handleChange, setFieldValue, handleSubmit } =
+    useFormik<FormData & { employmentType: string[] }>({
+      initialValues: {
+        jobTitle: "",
+        employmentType: [],
+        salaryRange: "",
+        yearsOfExperience: "",
+        jobDescription: "",
+        priorityIndicator: "",
+        coreSkills: [],
+        interpersonalSkills: [],
+        education: "",
+        location: "",
+        languages: [],
+        certifications: [],
+      },
+      validationSchema,
+      onSubmit: () => {
+        setIsLoading(true);
+        setTimeout(() => {
+          navigate("/job-feed-employer");
+        }, 1500);
+      },
+    });
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && e.target instanceof HTMLElement) {
@@ -223,7 +242,9 @@ const MatchCreation = () => {
   };
 
   return (
-    <div className="flex-1 flex justify-center items-start px-4 md:mr-16 mx-auto mb-6">
+    <>
+      {isLoading && <LoadingOverlay />}
+      <div className="flex-1 flex justify-center items-start px-4 md:mr-16 mx-auto mb-6">
         <div className="w-full md:w-[927px] min-h-[825px] bg-transparent md:bg-[#2D3A41] text-white md:pt-6 pb-12 md:mt-9 ml-1">
           <div className="flex items-center relative w-full mb-8 md:mb-14">
             <NavLink to="/job-feed-employer" className="absolute left-0">
@@ -243,7 +264,7 @@ const MatchCreation = () => {
             className="w-full px-4 md:max-w-[831px] md:mx-[48px] grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-[115px]"
           >
             {/* Left Column */}
-            <div className="space-y-6 md:space-y-[40px]">
+            <div className="space-y-[24px]">
               <FormField
                 label="Job Title"
                 className="bg-transparent"
@@ -328,7 +349,7 @@ const MatchCreation = () => {
                               className={cn(
                                 "rounded-none justify-start px-2 h-[55px]",
                                 "transition-all duration-500 ease-in-out",
-                                "data-[selected=true]:bg-[#BF532C] data-[selected=true]:text-white",
+                                "data-[selected=true]:bg-orange-500 data-[selected=true]:text-white",
                               )}
                             >
                               <div className="flex items-center">
@@ -377,43 +398,9 @@ const MatchCreation = () => {
                         key={value}
                         className={cn(
                           "rounded-none justify-start pl-3 h-[55px] transition-all duration-500 ease-in-out",
-                          "focus:bg-[#BF532C] focus:text-white",
+                          "focus:bg-orange-500 focus:text-white",
                           "data-[state=checked]:bg-orange-500 data-[state=checked]:text-white data-[state=checked]:font-bold",
-                          "data-[state=checked]:focus:bg-[#BF532C]",
-                        )}
-                        value={value}
-                      >
-                        <div className="py-3 w-full text-center">{label}</div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FormField>
-
-              <FormField
-                label="Years of Experience"
-                error={errors.yearsOfExperience}
-                touched={touched.yearsOfExperience}
-              >
-                <Select
-                  name="yearsOfExperience"
-                  value={values.yearsOfExperience}
-                  onValueChange={(value) =>
-                    setFieldValue("yearsOfExperience", value)
-                  }
-                >
-                  <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 ">
-                    <SelectValue placeholder="Select Years of Experience" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none">
-                    {selectOptions.yearsOfExperience.map(({ value, label }) => (
-                      <SelectItem
-                        key={value}
-                        className={cn(
-                          "rounded-none justify-start pl-3 h-[55px] transition-all duration-500 ease-in-out",
-                          "focus:bg-[#BF532C] focus:text-white",
-                          "data-[state=checked]:bg-orange-500 data-[state=checked]:text-white data-[state=checked]:font-bold",
-                          "data-[state=checked]:focus:bg-[#BF532C]",
+                          "data-[state=checked]:focus:bg-orange-500",
                         )}
                         value={value}
                       >
@@ -441,66 +428,31 @@ const MatchCreation = () => {
                   Maximum of 500 words
                 </span>
               </FormField>
-            </div>
 
-            {/* Right Column */}
-            <div className="flex flex-col">
               <FormField
-                label="Priority Indicator"
-                error={errors.priorityIndicator}
-                touched={touched.priorityIndicator}
-                showIcon={true}
-                tooltipContent={
-                  <div className="flex flex-wrap items-center justify-start text-[9px]">
-                    <span>This will sort your</span>
-                    <div className="flex items-center">
-                      <img
-                        src={sparkeIcon}
-                        alt="Spark Icon"
-                        className="w-3 h-3 object-contain"
-                      />
-                      <span className="text-orange-500">Perfect Matches</span>
-                    </div>
-                    <span>based on the criteria you choose.</span>
-                  </div>
-                }
-                className="pb-[40px]"
+                label="Years of Experience"
+                error={errors.yearsOfExperience}
+                touched={touched.yearsOfExperience}
               >
                 <Select
-                  name="priorityIndicator"
-                  value={values.priorityIndicator}
+                  name="yearsOfExperience"
+                  value={values.yearsOfExperience}
                   onValueChange={(value) =>
-                    setFieldValue("priorityIndicator", value)
+                    setFieldValue("yearsOfExperience", value)
                   }
                 >
                   <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 ">
-                    <SelectValue
-                      placeholder={
-                        <div className="flex items-center gap-1 text-white">
-                          <span>Select</span>
-                          <div className="flex items-center">
-                            <img
-                              src={sparkeIcon}
-                              className="w-4 h-4 text-orange-500"
-                            />
-                            <span className="text-[#F5722E] ">
-                              Perfect Match
-                            </span>
-                          </div>
-                          <span>Indicator</span>
-                        </div>
-                      }
-                    />
+                    <SelectValue placeholder="Select Years of Experience" />
                   </SelectTrigger>
                   <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none">
-                    {selectOptions.priorityIndicator.map(({ value, label }) => (
+                    {selectOptions.yearsOfExperience.map(({ value, label }) => (
                       <SelectItem
                         key={value}
                         className={cn(
                           "rounded-none justify-start pl-3 h-[55px] transition-all duration-500 ease-in-out",
-                          "focus:bg-[#BF532C] focus:text-white",
+                          "focus:bg-orange-500 focus:text-white",
                           "data-[state=checked]:bg-orange-500 data-[state=checked]:text-white data-[state=checked]:font-bold",
-                          "data-[state=checked]:focus:bg-[#BF532C]",
+                          "data-[state=checked]:focus:bg-orange-500",
                         )}
                         value={value}
                       >
@@ -511,77 +463,95 @@ const MatchCreation = () => {
                 </Select>
               </FormField>
 
-              <div className="mb-8 md:mb-14">
-                <FormField
-                  label="Core Skills"
-                  error={errors.coreSkills}
-                  touched={touched.coreSkills}
-                  showIcon={true}
-                  tooltipContent="Job-specific, measurable abilities like software proficiency, coding, or design tools."
-                >
-                  <CoreSkillsTagInput
-                    value={values.coreSkills || []}
-                    onChange={(value) => setFieldValue("coreSkills", value)}
-                    className="min-h-[99px] pt-1 px-1"
-                    tagClassName="bg-[#168AAD]"
-                    placeholder="Type and enter to add core skill"
-                  />
-                </FormField>
-              </div>
+              <FormField
+                label="Certification"
+                error={errors.certifications}
+                touched={touched.certifications}
+                showIcon={true}
+                tooltipContent="Job-specific, measurable abilities like software proficiency, coding, or design tools."
+              >
+                <CertificationTagInput
+                  value={values.certifications || []}
+                  onChange={(value) => setFieldValue("certifications", value)}
+                  className="min-h-[56px] pt-1 px-1"
+                  tagClassName="bg-[#168AAD]"
+                  placeholder="Type and enter to add certificate"
+                />
+              </FormField>
+            </div>
 
-              <div className="mb-14">
+            {/* Right Column */}
+            <div className="flex flex-col">
+              <div className="space-y-[24px] mb-[24px]">
                 <FormField
-                  label="Interpersonal Skills"
-                  error={errors.interpersonalSkills}
-                  touched={touched.interpersonalSkills}
+                  label="Priority Indicator"
+                  error={errors.priorityIndicator}
+                  touched={touched.priorityIndicator}
                   showIcon={true}
-                  tooltipContent="Personal qualities like communication, teamwork, and problem-solving."
-                >
-                  <InterpersonalSkillsTagInput
-                    value={values.interpersonalSkills || []}
-                    onChange={(value) =>
-                      setFieldValue("interpersonalSkills", value)
-                    }
-                    className="min-h-[99px] pt-1 px-1"
-                    tagClassName="bg-[#184E77]"
-                    placeholder="Type and enter to add interpersonal skill"
-                  />
-                </FormField>
-              </div>
-
-              <div className="space-y-[40px]">
-                {/* Regular spacing for remaining fields */}
-                <FormField
-                  label="Education"
-                  error={errors.education}
-                  touched={touched.education}
+                  tooltipContent={
+                    <div className="flex flex-wrap items-center justify-start text-[9px]">
+                      <span>This will sort your</span>
+                      <div className="flex items-center">
+                        <img
+                          src={sparkeIcon}
+                          alt="Spark Icon"
+                          className="w-3 h-3 object-contain"
+                        />
+                        <span className="text-orange-500">Perfect Matches</span>
+                      </div>
+                      <span>based on the criteria you choose.</span>
+                    </div>
+                  }
                 >
                   <Select
-                    name="education"
-                    value={values.education}
-                    onValueChange={(value) => setFieldValue("education", value)}
+                    name="priorityIndicator"
+                    value={values.priorityIndicator}
+                    onValueChange={(value) =>
+                      setFieldValue("priorityIndicator", value)
+                    }
                   >
-                    <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500">
-                      <SelectValue placeholder="Select your Education Level" />
+                    <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 ">
+                      <SelectValue
+                        placeholder={
+                          <div className="flex items-center gap-1 text-white">
+                            <span>Select</span>
+                            <div className="flex items-center">
+                              <img
+                                src={sparkeIcon}
+                                className="w-4 h-4 text-orange-500"
+                              />
+                              <span className="text-[#F5722E] ">
+                                Perfect Match
+                              </span>
+                            </div>
+                            <span>Indicator</span>
+                          </div>
+                        }
+                      />
                     </SelectTrigger>
-                    <SelectContent className="bg-[#F5F5F7] items-center p-0 [&>*]:p-0 border-none rounded-none">
-                      {selectOptions.education.map(({ value, label }) => (
-                        <SelectItem
-                          key={value}
-                          className={cn(
-                            "rounded-none justify-start pl-3 h-[55px] transition-all duration-500 ease-in-out",
-                            "focus:bg-[#BF532C] focus:text-white",
-                            "data-[state=checked]:bg-orange-500 data-[state=checked]:text-white data-[state=checked]:font-bold",
-                            "data-[state=checked]:focus:bg-[#BF532C]",
-                          )}
-                          value={value}
-                        >
-                          <div className="py-3 w-full text-center">{label}</div>
-                        </SelectItem>
-                      ))}
+                    <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none">
+                      {selectOptions.priorityIndicator.map(
+                        ({ value, label }) => (
+                          <SelectItem
+                            key={value}
+                            className={cn(
+                              "rounded-none justify-start pl-3 h-[55px] transition-all duration-500 ease-in-out",
+                              "focus:bg-orange-500 focus:text-white",
+                              "data-[state=checked]:bg-orange-500 data-[state=checked]:text-white data-[state=checked]:font-bold",
+                              "data-[state=checked]:focus:bg-orange-500",
+                            )}
+                            value={value}
+                          >
+                            <div className="py-3 w-full text-center">
+                              {label}
+                            </div>
+                          </SelectItem>
+                        ),
+                      )}
                     </SelectContent>
                   </Select>
                 </FormField>
+
                 <FormField
                   label="Location"
                   error={errors.location}
@@ -611,6 +581,76 @@ const MatchCreation = () => {
                     placeholder="Type and enter to add language"
                   />
                 </FormField>
+
+                <FormField
+                  label="Education"
+                  error={errors.education}
+                  touched={touched.education}
+                >
+                  <Select
+                    name="education"
+                    value={values.education}
+                    onValueChange={(value) => setFieldValue("education", value)}
+                  >
+                    <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500">
+                      <SelectValue placeholder="Select your Education Level" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-[#F5F5F7] items-center p-0 [&>*]:p-0 border-none rounded-none">
+                      {selectOptions.education.map(({ value, label }) => (
+                        <SelectItem
+                          key={value}
+                          className={cn(
+                            "rounded-none justify-start pl-3 h-[55px] transition-all duration-500 ease-in-out",
+                            "focus:bg-orange-500 focus:text-white",
+                            "data-[state=checked]:bg-orange-500 data-[state=checked]:text-white data-[state=checked]:font-bold",
+                            "data-[state=checked]:focus:bg-orange-500",
+                          )}
+                          value={value}
+                        >
+                          <div className="py-3 w-full text-center">{label}</div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormField>
+              </div>
+
+              <div className="mb-8 md:mb-14">
+                <FormField
+                  label="Core Skills"
+                  error={errors.coreSkills}
+                  touched={touched.coreSkills}
+                  showIcon={true}
+                  tooltipContent="Job-specific, measurable abilities like software proficiency, coding, or design tools."
+                >
+                  <CoreSkillsTagInput
+                    value={values.coreSkills || []}
+                    onChange={(value) => setFieldValue("coreSkills", value)}
+                    className="min-h-[99px] pt-1 px-1"
+                    tagClassName="bg-[#168AAD]"
+                    placeholder="Type and enter to add core skill"
+                  />
+                </FormField>
+              </div>
+
+              <div className="mb-8 md:mb-14">
+                <FormField
+                  label="Interpersonal Skills"
+                  error={errors.interpersonalSkills}
+                  touched={touched.interpersonalSkills}
+                  showIcon={true}
+                  tooltipContent="Personal qualities like communication, teamwork, and problem-solving."
+                >
+                  <InterpersonalSkillsTagInput
+                    value={values.interpersonalSkills || []}
+                    onChange={(value) =>
+                      setFieldValue("interpersonalSkills", value)
+                    }
+                    className="min-h-[99px] pt-1 px-1"
+                    tagClassName="bg-[#184E77]"
+                    placeholder="Type and enter to add interpersonal skill"
+                  />
+                </FormField>
               </div>
             </div>
 
@@ -619,7 +659,7 @@ const MatchCreation = () => {
               <Button
                 type="button"
                 variant="outline"
-                onClick={handleReset}
+                onClick={handleSaveChanges}
                 className="w-full md:w-auto border-orange-500 text-orange-500 bg-[#242625] md:bg-[#2D3A41] hover:bg-orange-500 hover:text-white"
               >
                 Save Changes
@@ -633,7 +673,8 @@ const MatchCreation = () => {
             </div>
           </form>
         </div>
-    </div>
+      </div>
+    </>
   );
 };
 
