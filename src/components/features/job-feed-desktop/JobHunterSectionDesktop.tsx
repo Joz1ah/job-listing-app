@@ -12,7 +12,11 @@ import { CircularPagination } from "components";
 
 import { Button } from "components";
 import { JobHunterCardLoading } from "components";
-import { JobHunterCardDesktop, JobHunterCardMobile } from "components";
+import {
+  JobHunterCardDesktop,
+  JobHunterCardMobile,
+  BookmarkLimitHandler,
+} from "components";
 
 interface selectedProps {
   setSelectedTab: (tab: string) => void;
@@ -25,7 +29,6 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
   );
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(perfectMatch.length > 6);
-  const [bookmarkedCards, setBookmarkedCards] = useState(new Set());
   const loaderRef = useRef<HTMLDivElement>(null);
 
   const ITEMS_PER_PAGE = 2;
@@ -92,18 +95,6 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
     };
   }, [loading, hasMore]);
 
-  const toggleBookmark = (index: number) => {
-    setBookmarkedCards((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(index)) {
-        newSet.delete(index);
-      } else {
-        newSet.add(index);
-      }
-      return newSet;
-    });
-  };
-
   const handleClick = () => {
     setSelectedTab("otherApplications");
     window.scrollTo({
@@ -119,17 +110,19 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-      {displayedItems.map((match, index) => (
-        <JobHunterCardDesktop
-          key={index}
-          match={match}
-          bookmarked={bookmarkedCards.has(index)}
-          onBookmark={() => toggleBookmark(index)}
-          isFreeTrial = {true}
-        />
-      ))}
+      {/* BookmarkLimitHandler no longer needs className prop */}
+      <BookmarkLimitHandler
+        isFreeTrial={true}
+        maxBookmarks={3}
+        onUpgradeClick={() => {
+          console.log("Upgrade clicked");
+        }}
+      >
+        {displayedItems.map((match, index) => (
+          <JobHunterCardDesktop key={index} match={match} />
+        ))}
+      </BookmarkLimitHandler>
 
-      {/* Dynamic Loading Cards */}
       {showLoadingCards && (
         <>
           <JobHunterCardLoading />
@@ -148,7 +141,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
             </span>
             <Button
               variant="link"
-              className="text-[20px] text-orange-500  font-semibold pl-2 underline pt-0"
+              className="text-[20px] text-orange-500 font-semibold pl-2 underline pt-0"
               onClick={handleClick}
             >
               other application cards
@@ -168,7 +161,6 @@ const OtherApplications: FC<selectedProps> = ({ setSelectedTab }) => {
   );
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(others.length > 6);
-  const [bookmarkedCards, setBookmarkedCards] = useState(new Set());
   const loaderRef = useRef<HTMLDivElement>(null);
 
   const ITEMS_PER_PAGE = 2;
@@ -235,18 +227,6 @@ const OtherApplications: FC<selectedProps> = ({ setSelectedTab }) => {
     };
   }, [loading, hasMore]);
 
-  const toggleBookmark = (index: number) => {
-    setBookmarkedCards((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(index)) {
-        newSet.delete(index);
-      } else {
-        newSet.add(index);
-      }
-      return newSet;
-    });
-  };
-
   const handleClick = () => {
     setSelectedTab("perfectMatch");
     window.scrollTo({
@@ -262,15 +242,18 @@ const OtherApplications: FC<selectedProps> = ({ setSelectedTab }) => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-      {displayedItems.map((match, index) => (
-        <JobHunterCardDesktop
-          key={index}
-          match={match}
-          bookmarked={bookmarkedCards.has(index)}
-          onBookmark={() => toggleBookmark(index)}
-          isFreeTrial = {true}
-        />
-      ))}
+      <BookmarkLimitHandler
+        isFreeTrial={true}
+        maxBookmarks={3}
+        onUpgradeClick={() => {
+          console.log("Upgrade clicked");
+        }}
+      >
+        {displayedItems.map((match, index) => (
+          <JobHunterCardDesktop key={index} match={match} />
+        ))}
+      </BookmarkLimitHandler>
+
 
       {/* Dynamic Loading Cards */}
       {showLoadingCards && (
@@ -434,10 +417,10 @@ const JobHunterSectionDesktop: FC = () => {
             {perfectMatch.map((job, index) => (
               <CarouselItem key={index} className="pl-4 basis-[320px]">
                 <div className="relative">
-                <JobHunterCardMobile 
+                  <JobHunterCardMobile
                     match={job}
                     bookmarked={bookmarkedCards.has(`perfectMatch-${index}`)}
-                    onBookmark={() => toggleBookmark('perfectMatch', index)}
+                    onBookmark={() => toggleBookmark("perfectMatch", index)}
                     isFreeTrial={true}
                   />
                 </div>
@@ -464,10 +447,10 @@ const JobHunterSectionDesktop: FC = () => {
               {others.map((job, index) => (
                 <CarouselItem key={index} className="pl-4 basis-[320px]">
                   <div className="relative">
-                  <JobHunterCardMobile 
+                    <JobHunterCardMobile
                       match={job}
                       bookmarked={bookmarkedCards.has(`others-${index}`)}
-                      onBookmark={() => toggleBookmark('others', index)}
+                      onBookmark={() => toggleBookmark("others", index)}
                       isFreeTrial={true}
                     />
                   </div>

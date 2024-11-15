@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="46" height="48" viewBox="0 0 46 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    <![CDATA[
+      .menu-icon {
+        cursor: pointer;
+      }
+      .menu-line {
+        transition: transform 0.3s ease, opacity 0.3s ease;
+        transform-origin: center;
+      }
+      .menu-icon.active .top-line {
+        transform: translate(0, 10px) rotate(45deg);
+      }
+      .menu-icon.active .middle-line {
+        opacity: 0;
+      }
+      .menu-icon.active .bottom-line {
+        transform: translate(0, -10px) rotate(-45deg);
+      }
+    ]]>
+  </style>
+  
+  <g class="menu-icon">
+    <rect class="menu-line top-line" x="10" y="12.4" width="28" height="3.2" rx="1.6" fill="#F5722E"/>
+    <rect class="menu-line middle-line" x="20" y="22.4" width="18" height="3.2" rx="1.6" fill="#F5722E"/>
+    <rect class="menu-line bottom-line" x="28" y="32.4" width="10" height="3.2" rx="1.6" fill="#F5722E"/>
+  </g>
+
+  <script type="text/javascript">
+    <![CDATA[
+      const menuIcon = document.querySelector('.menu-icon');
+      menuIcon.addEventListener('click', () => {
+        menuIcon.classList.toggle('active');
+      });
+    ]]>
+  </script>
+</svg>

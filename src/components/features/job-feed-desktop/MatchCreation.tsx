@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
   ChevronLeft,
   AlertTriangle,
   CircleAlert,
   Check,
   ChevronDown,
-  Loader2,
 } from "lucide-react";
 import { Input, Button, Textarea, Label } from "components";
 import { NavLink } from "react-router-dom";
@@ -17,7 +16,11 @@ import { Command, CommandGroup, CommandItem, CommandList } from "components";
 
 import { Popover, PopoverContent, PopoverTrigger } from "components";
 
-import { CoreSkillsTagInput, InterpersonalSkillsTagInput, LanguageTagInput } from "components";
+import {
+  CoreSkillsTagInput,
+  InterpersonalSkillsTagInput,
+  LanguageTagInput,
+} from "components";
 
 import {
   Select,
@@ -131,22 +134,6 @@ const validationSchema = Yup.object().shape({
 });
 
 const MatchCreation = () => {
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const loadFormData = async () => {
-      setIsLoading(true);
-      try {
-        await new Promise((resolve) => setTimeout(resolve, 500));
-      } catch (error) {
-        console.error("Error loading form data:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadFormData();
-  }, []);
 
   const selectOptions = {
     employmentType: [
@@ -163,7 +150,7 @@ const MatchCreation = () => {
       { value: "101-120", label: "$101,000 - $120,000" },
       { value: "121-plus", label: "$121,000 or more" },
     ],
-    
+
     yearsOfExperience: [
       { value: "no-exp", label: "No experience" },
       { value: "less-than-1", label: "Under a year" },
@@ -171,17 +158,23 @@ const MatchCreation = () => {
       { value: "3-5-years", label: "3-5 years" },
       { value: "5-10-years", label: "5-10 years" },
       { value: "10-plus-years", label: "10+ years" },
-    ],       
+    ],
     education: [
       { value: "bachelors-degree", label: "Bachelor's Degree" },
       { value: "high-school-diploma", label: "High School Diploma" },
       { value: "masters-degree", label: "Master's Degree" },
       { value: "associate-degree", label: "Associate Degree" },
-      { value: "professional-certification", label: "Professional Certification only" },
-      { value: "vocational-training", label: "Vocational/Technical Training only" },
+      {
+        value: "professional-certification",
+        label: "Professional Certification only",
+      },
+      {
+        value: "vocational-training",
+        label: "Vocational/Technical Training only",
+      },
       { value: "phd-doctorate", label: "Doctorate/PhD" },
       { value: "incomplete-college", label: "Incomplete College Degree" },
-    ],    
+    ],
     priorityIndicator: [
       { value: "location", label: "Location" },
       { value: "salary", label: "Salary" },
@@ -231,11 +224,6 @@ const MatchCreation = () => {
 
   return (
     <div className="flex-1 flex justify-center items-start px-4 md:mr-16 mx-auto mb-6">
-      {isLoading ? (
-        <div className="flex justify-center items-center h-[600px]">
-          <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
-        </div>
-      ) : (
         <div className="w-full md:w-[927px] min-h-[825px] bg-transparent md:bg-[#2D3A41] text-white md:pt-6 pb-12 md:mt-9 ml-1">
           <div className="flex items-center relative w-full mb-8 md:mb-14">
             <NavLink to="/job-feed-employer" className="absolute left-0">
@@ -551,7 +539,9 @@ const MatchCreation = () => {
                 >
                   <InterpersonalSkillsTagInput
                     value={values.interpersonalSkills || []}
-                    onChange={(value) => setFieldValue("interpersonalSkills", value)}
+                    onChange={(value) =>
+                      setFieldValue("interpersonalSkills", value)
+                    }
                     className="min-h-[99px] pt-1 px-1"
                     tagClassName="bg-[#184E77]"
                     placeholder="Type and enter to add interpersonal skill"
@@ -643,7 +633,6 @@ const MatchCreation = () => {
             </div>
           </form>
         </div>
-      )}
     </div>
   );
 };

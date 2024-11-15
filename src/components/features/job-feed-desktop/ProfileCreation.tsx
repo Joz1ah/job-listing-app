@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
   ChevronLeft,
   AlertTriangle,
   CircleAlert,
   Check,
   ChevronDown,
-  Loader2,
 } from "lucide-react";
 import { Input, Button, Label } from "components";
 import { NavLink } from "react-router-dom";
@@ -144,22 +143,6 @@ const validationSchema = Yup.object().shape({
 });
 
 const ProfileCreation = () => {
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const loadFormData = async () => {
-      setIsLoading(true);
-      try {
-        await new Promise((resolve) => setTimeout(resolve, 500));
-      } catch (error) {
-        console.error("Error loading form data:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadFormData();
-  }, []);
 
   const selectOptions = {
     employmentType: [
@@ -287,11 +270,6 @@ const ProfileCreation = () => {
 
   return (
     <div className="md:pt-10 md:flex md:flex-row md:gap-10">
-      {isLoading ? (
-        <div className="flex justify-center items-center h-[825px] w-[800px]">
-          <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
-        </div>
-      ) : (
         <div className="w-full md:w-[800px] min-h-[825px] bg-[#242625] md:bg-[#2D3A41] text-white mt-4 md:pt-6 md:mt-9">
           <div className="flex items-center relative w-full mb-8 md:mb-14">
             <NavLink to="/job-feed-employer" className="absolute left-0">
@@ -484,7 +462,7 @@ const ProfileCreation = () => {
                 />
               </FormField>
 
-              {/* <FormField
+              <FormField
                 label="Country"
                 error={errors.country}
                 touched={touched.country}
@@ -514,7 +492,7 @@ const ProfileCreation = () => {
                     ))}
                   </SelectContent>
                 </Select>
-              </FormField> */}
+              </FormField>
 
               <FormField
                 label="Email Address"
@@ -692,8 +670,6 @@ const ProfileCreation = () => {
             </div>
           </form>
         </div>
-        
-      )}
       <div className="w-full md:w-auto">
           <PreviewCard values={values} selectOptions={selectOptions} />
         </div>

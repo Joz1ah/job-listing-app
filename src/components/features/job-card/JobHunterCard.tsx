@@ -33,8 +33,8 @@ interface Match {
 
 interface MatchCardProps {
   match: Match;
-  bookmarked: boolean;
-  onBookmark: () => void;
+  bookmarked?: boolean;
+  onBookmark?: () => void;
   isFreeTrial?: boolean;
 }
 
