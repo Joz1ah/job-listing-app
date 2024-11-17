@@ -141,22 +141,26 @@ const TagInputs: React.FC<TagInputProps> = ({
         )}
       >
         <div className="flex flex-wrap items-center mt-0.5 mb-2">
-          {value.map((tag, index) => (
-            <div
-              key={index}
-              onClick={() => !disabled && removeTag(index)}
-              className={cn(
-                "inline-flex items-center px-2 text-[12px] text-white font-semibold cursor-pointer transition-colors rounded-[2px] shrink-0 ml-1 mt-1",
-                "h-[30px]",
-                alternateColors 
-                  ? `bg-[${index % 2 === 0 ? alternateColors.firstColor : alternateColors.secondColor}]`
-                  : tagClassName,
-                disabled && "cursor-not-allowed"
-              )}
-            >
-              {options.find(opt => opt.value === tag)?.label || tag}
-            </div>
-          ))}
+          {value.map((tag, index) => {
+            const tagLabel = options.find(opt => opt.value === tag)?.label || tag;
+            return (
+              <div
+                key={index}
+                className={cn(
+                  "inline-flex items-center px-2 text-[12px] text-white font-semibold rounded-[2px] shrink-0 ml-1 mt-1",
+                  "h-[30px] max-w-[calc(100%-8px)]",
+                  "transition-all duration-200",
+                  alternateColors 
+                    ? `bg-[${index % 2 === 0 ? alternateColors.firstColor : alternateColors.secondColor}]`
+                    : tagClassName,
+                  disabled ? "cursor-not-allowed" : "cursor-pointer hover:opacity-80"
+                )}
+                onClick={() => !disabled && removeTag(index)}
+              >
+                <span className="truncate">{tagLabel}</span>
+              </div>
+            );
+          })}
           <div className="flex-1 min-w-[120px] flex items-center">
             <Input
               ref={inputRef}
@@ -165,7 +169,7 @@ const TagInputs: React.FC<TagInputProps> = ({
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
               disabled={disabled || remainingTags === 0}
-              placeholder={placeholder}
+              placeholder={value.length === 0 ? placeholder : ""}
               className="w-full h-7 py-0 mt-1.5 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent placeholder:text-white disabled:cursor-not-allowed disabled:opacity-50"
             />
           </div>
@@ -177,7 +181,9 @@ const TagInputs: React.FC<TagInputProps> = ({
           ref={suggestionsRef}
           className="absolute left-0 right-0 mt-1 bg-white border rounded-md shadow-lg z-50 text-black"
         >
-          <Label className="px-2 py-1.5 text-xs font-normal text-gray-500">{suggestionTitle}</Label>
+          <Label className="px-2 py-1.5 text-xs font-normal text-gray-500">
+            {suggestionTitle}
+          </Label>
           <ScrollArea className="h-[180px]">
             <ul className="py-1">
               {filteredOptions.map((option, index) => (

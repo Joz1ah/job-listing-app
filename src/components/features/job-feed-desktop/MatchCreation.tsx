@@ -10,7 +10,7 @@ import {
 import { Input, Button, Textarea, Label } from "components";
 import { NavLink } from "react-router-dom";
 import sparkeIcon from "images/sparkle-icon.png";
-import saveChanges from "images/saved.png";
+import saveChanges from "images/save-changes.svg?url";
 
 import { Badge } from "components";
 
