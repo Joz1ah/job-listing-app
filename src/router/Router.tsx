@@ -20,6 +20,7 @@ const CompleteProfile = lazy(() => import('pages').then(module => ({ default: mo
 // Components imports
 const EmployerSection = lazy(() => import('components').then(module => ({ default: module.EmployerSectionDesktop })))
 const MatchCreation = lazy(() => import('components').then(module => ({ default: module.MatchCreation })))
+const CompanyProfile = lazy(() => import('components').then(module => ({ default: module.CompanyProfile })))
 
 
 interface LazyComponentProps {
@@ -65,7 +66,11 @@ const routes: RouteObject[] = [
       {
         path: ROUTE_CONSTANTS.JOB_LISTING,
         element: <LazyComponent component={MatchCreation} />
-      }
+      },
+      {
+        path: ROUTE_CONSTANTS.COMPANY_PROFILE,
+        element: <LazyComponent component={CompanyProfile} />,
+      },
     ]
   },
   {

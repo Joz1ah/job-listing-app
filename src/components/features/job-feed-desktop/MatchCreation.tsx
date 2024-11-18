@@ -245,7 +245,7 @@ const MatchCreation = () => {
     <>
       {isLoading && <LoadingOverlay />}
       <div className="flex-1 flex justify-center items-start px-4 md:mr-16 mx-auto mb-6">
-        <div className="w-full md:w-[927px] min-h-[825px] bg-transparent md:bg-[#2D3A41] text-white md:pt-6 pb-12 md:mt-9 ml-1">
+        <div className="w-full md:max-w-[927px] min-h-[825px] bg-transparent md:bg-[#2D3A41] text-white md:pt-6 pb-12 md:mt-9 ml-1">
           <div className="flex items-center relative w-full mb-8 md:mb-14">
             <NavLink to="/job-feed-employer" className="absolute left-0">
               <ChevronLeft strokeWidth={4} className="h-6 w-6 ml-4" />
@@ -261,7 +261,7 @@ const MatchCreation = () => {
           <form
             onSubmit={handleSubmit}
             onKeyDown={handleKeyDown}
-            className="w-full px-4 md:max-w-[831px] md:mx-[48px] grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-[115px]"
+            className="grid grid-cols-1 md:grid-cols-2 md:gap-[115px] p-8 md:px-[52px]"
           >
             {/* Left Column */}
             <div className="space-y-[24px]">
@@ -281,100 +281,106 @@ const MatchCreation = () => {
               </FormField>
 
               <FormField
-                label="Employment Type"
-                error={errors.employmentType}
-                touched={touched.employmentType}
-              >
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className={cn(
-                        "w-full justify-between bg-transparent border-gray-300 h-[56px] font-normal hover:bg-transparent hover:text-white border-2",
-                        "focus-within:border-orange-500 data-[state=open]:border-orange-500 px-3",
-                      )}
-                    >
-                      <div className="flex flex-wrap overflow-hidden">
-                        {values.employmentType.length === 0 &&
-                          "Select Employment Type"}
-                        {values.employmentType.map((value) => (
-                          <Badge
-                            key={value}
-                            variant="secondary"
-                            className={cn(
-                              "mr-1 font-normal text-[16px] rounded-sm",
-                              {
-                                // Custom styles for Contract selection
-                                "bg-orange-600 text-white":
-                                  value === "contract",
-                                // Custom styles for Full-time and Part-time
-                                "bg-orange-500 text-white":
-                                  value !== "contract",
-                              },
-                            )}
-                          >
-                            {
-                              selectOptions.employmentType.find(
-                                (type) => type.value === value,
-                              )?.label
-                            }
-                          </Badge>
-                        ))}
-                      </div>
-                      <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 border-none rounded-none">
-                    <Command className="border-0 rounded-none">
-                      <CommandList>
-                        <CommandGroup className="p-0 bg-[#F5F5F5]">
-                          {selectOptions.employmentType.map((type) => (
-                            <CommandItem
-                              key={type.value}
-                              value={type.value}
-                              data-selected={values.employmentType.includes(
-                                type.value,
-                              )}
-                              onSelect={(currentValue) => {
-                                const newValue = [...values.employmentType];
-                                const index = newValue.indexOf(currentValue);
-                                if (index === -1) {
-                                  newValue.push(currentValue);
-                                } else {
-                                  newValue.splice(index, 1);
-                                }
-                                setFieldValue("employmentType", newValue);
-                              }}
+              label="Employment Type"
+              error={errors.employmentType}
+              touched={touched.employmentType}
+              showIcon={true}
+              tooltipContent="You may select one up to three employment types that you are looking for"
+            >
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    className={cn(
+                      "w-full justify-between bg-transparent border-gray-300 h-[56px] font-normal hover:bg-transparent hover:text-white border-2",
+                      "focus-within:border-orange-500 data-[state=open]:border-orange-500 px-3 relative",
+                    )}
+                  >
+                    <div className="flex items-center w-[calc(100%-24px)] overflow-hidden">
+                      {values.employmentType.length === 0 ? (
+                        <span className="text-white">
+                          Select Employment Type
+                        </span>
+                      ) : (
+                        <div className="flex flex-nowrap overflow-hidden gap-1">
+                          {values.employmentType.map((value) => (
+                            <Badge
+                              key={value}
+                              variant="secondary"
                               className={cn(
-                                "rounded-none justify-start px-2 h-[55px]",
-                                "transition-all duration-500 ease-in-out",
-                                "data-[selected=true]:bg-orange-500 data-[selected=true]:text-white",
+                                "font-normal text-[16px] rounded-sm whitespace-nowrap overflow-hidden text-ellipsis max-w-[120px]",
+                                {
+                                  "bg-orange-600 text-white":
+                                    value === "contract",
+                                  "bg-orange-500 text-white":
+                                    value !== "contract",
+                                },
                               )}
                             >
-                              <div className="flex items-center">
-                                <div
-                                  className={cn(
-                                    "mr-2 h-5 w-5 border rounded flex items-center justify-center cursor-pointer",
-                                    values.employmentType.includes(type.value)
-                                      ? "border-blue-400 bg-blue-400 hover:bg-blue-500"
-                                      : "border-gray-400 bg-white hover:border-gray-500",
-                                  )}
-                                >
-                                  {values.employmentType.includes(
-                                    type.value,
-                                  ) && <Check className="h-3 w-3 text-white" />}
-                                </div>
-                                {type.label}
-                              </div>
-                            </CommandItem>
+                              {
+                                selectOptions.employmentType.find(
+                                  (type) => type.value === value,
+                                )?.label
+                              }
+                            </Badge>
                           ))}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
-              </FormField>
+                        </div>
+                      )}
+                    </div>
+                    <ChevronDown className="h-4 w-4 shrink-0 opacity-50 absolute right-3" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 border-none rounded-none">
+                  <Command className="border-0 rounded-none">
+                    <CommandList>
+                      <CommandGroup className="p-0 bg-[#F5F5F5]">
+                        {selectOptions.employmentType.map((type) => (
+                          <CommandItem
+                            key={type.value}
+                            value={type.value}
+                            data-selected={values.employmentType.includes(
+                              type.value,
+                            )}
+                            onSelect={(currentValue) => {
+                              const newValue = [...values.employmentType];
+                              const index = newValue.indexOf(currentValue);
+                              if (index === -1) {
+                                newValue.push(currentValue);
+                              } else {
+                                newValue.splice(index, 1);
+                              }
+                              setFieldValue("employmentType", newValue);
+                            }}
+                            className={cn(
+                              "rounded-none justify-start px-2 h-[55px]",
+                              "transition-all duration-500 ease-in-out",
+                              "data-[selected=true]:bg-orange-500 data-[selected=true]:text-white",
+                            )}
+                          >
+                            <div className="flex items-center">
+                              <div
+                                className={cn(
+                                  "mr-2 h-5 w-5 border rounded flex items-center justify-center cursor-pointer",
+                                  values.employmentType.includes(type.value)
+                                    ? "border-blue-400 bg-blue-400 hover:bg-blue-500"
+                                    : "border-gray-400 bg-white hover:border-gray-500",
+                                )}
+                              >
+                                {values.employmentType.includes(type.value) && (
+                                  <Check className="h-3 w-3 text-white" />
+                                )}
+                              </div>
+                              {type.label}
+                            </div>
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+            </FormField>
 
               <FormField
                 label="Salary Range"

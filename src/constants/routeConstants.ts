@@ -6,5 +6,6 @@ export const ROUTE_CONSTANTS = {
   JOB_HUNTER: '/job-feed-hunter',
   EMPLOYER: '/job-feed-employer',
   JOB_LISTING: 'job-creation',
-  COMPLETE_PROFILE: '/complete-profile'
+  COMPLETE_PROFILE: '/complete-profile',
+  COMPANY_PROFILE: 'company-profile'
 }

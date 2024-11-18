@@ -12,9 +12,11 @@ import {
 
 const Sidebar: FC = () => {
   const location = useLocation();
-  const hideOnPages = ['/job-feed-employer/job-creation']; // Add any paths where you want to hide the mobile view
+  const hideOnPagesMobile = ['/job-feed-employer/job-creation']; // Add any paths where you want to hide the mobile view
+  const hideOnPagesDesktop = ['/job-feed-employer/company-profile']; // Add any paths where you want to hide the desktop view
   
-  const shouldShowMobileView = !hideOnPages.includes(location.pathname);
+  const shouldShowMobileView = !hideOnPagesMobile.includes(location.pathname);
+  const shouldShowDesktopView = !hideOnPagesDesktop.includes(location.pathname);
 
   const jobListings = [
     { title: "Project Manager", path: "#" },
@@ -86,6 +88,7 @@ const Sidebar: FC = () => {
       )}
 
       {/* Desktop View */}
+      {shouldShowDesktopView && (
       <div className="hidden md:block">
         <div className="w-[311px] h-[652px] bg-[#2D3A41] rounded mb-12 mt-2">
           <h4 className="font-semibold mb-6 text-center pt-2 text-[16px] text-white">
@@ -112,6 +115,7 @@ const Sidebar: FC = () => {
           </nav>
         </div>
       </div>
+      )}
     </>
   );
 };

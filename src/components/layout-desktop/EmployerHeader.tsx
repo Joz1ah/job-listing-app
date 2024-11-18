@@ -12,15 +12,19 @@ const EmployerHeader: FC<Props> = ({ isFreeTrial = false }) => {
   const hasHalfStar = rating % 1 !== 0;
 
   const location = useLocation();
-  const hideOnPages = ["/job-feed-employer/job-creation"];
+  const hideOnPagesMobile = ["/job-feed-employer/job-creation", "/job-feed-employer/company-profile"];
+  const hideOnPagesDesktop = ["/job-feed-employer/company-profile"];
 
-  const hideOnMobile = hideOnPages.includes(location.pathname);
+  const hideOnMobile = hideOnPagesMobile.includes(location.pathname);
+  const hideOnDesktop = hideOnPagesDesktop.includes(location.pathname);
 
   const VerificationIcon = isFreeTrial ? Info : BadgeCheck;
 
   return (
     <div
-      className={`w-full pt-8 pb-6 ${hideOnMobile ? "hidden md:block" : "block"}`}
+    className={`w-full pt-8 pb-6 ${
+      hideOnMobile ? "hidden md:block" : "block"
+    } ${hideOnDesktop ? "md:hidden" : ""}`}
     >
       <div className="flex flex-col items-center md:items-start">
         <div className="flex items-center text-3xl md:text-3xl text-white font-normal">
