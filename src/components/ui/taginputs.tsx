@@ -24,6 +24,7 @@ interface TagInputProps {
     firstColor?: string;
     secondColor?: string;
   };
+  maxTagLength?: number;
 }
 
 const TagInputs: React.FC<TagInputProps> = ({
@@ -33,11 +34,12 @@ const TagInputs: React.FC<TagInputProps> = ({
   className,
   tagClassName = "bg-blue-500",
   placeholder = "Type to search...",
-  maxTags = 4,
+  maxTags = 5,
   searchKeys = ['label'],
   suggestionTitle = "Select Option",
   disabled,
   alternateColors,
+  maxTagLength = 12,
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -129,11 +131,16 @@ const TagInputs: React.FC<TagInputProps> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const truncateText = (text: string, maxLength: number) => {
+    if (text.length <= maxLength) return text;
+    return `${text.substring(0, maxLength)}...`;
+  };
+
   return (
     <div ref={containerRef} className="relative w-full">
       <div 
         className={cn(
-          "bg-transparent border-2 border-[#AEADAD] rounded-md min-h-[56px] p-1",
+          "bg-transparent border-2 border-[#AEADAD] rounded-md min-h-[56px] overflow-hidden",
           "focus-within:border-orange-500",
           "transition-all duration-200 ease-in-out",
           disabled && "opacity-50 cursor-not-allowed",
@@ -143,12 +150,14 @@ const TagInputs: React.FC<TagInputProps> = ({
         <div className="flex flex-wrap items-center mt-0.5 mb-2">
           {value.map((tag, index) => {
             const tagLabel = options.find(opt => opt.value === tag)?.label || tag;
+            const truncatedLabel = truncateText(tagLabel, maxTagLength);
+            
             return (
               <div
                 key={index}
                 className={cn(
                   "inline-flex items-center px-2 text-[12px] text-white font-semibold rounded-[2px] shrink-0 ml-1 mt-1",
-                  "h-[30px] max-w-[calc(100%-8px)]",
+                  "h-[30px]",
                   "transition-all duration-200",
                   alternateColors 
                     ? `bg-[${index % 2 === 0 ? alternateColors.firstColor : alternateColors.secondColor}]`
@@ -156,8 +165,9 @@ const TagInputs: React.FC<TagInputProps> = ({
                   disabled ? "cursor-not-allowed" : "cursor-pointer hover:opacity-80"
                 )}
                 onClick={() => !disabled && removeTag(index)}
+                title={tagLabel} // Show full text on hover
               >
-                <span className="truncate">{tagLabel}</span>
+                <span>{truncatedLabel}</span>
               </div>
             );
           })}
@@ -175,7 +185,7 @@ const TagInputs: React.FC<TagInputProps> = ({
           </div>
         </div>
       </div>
-
+      
       {showSuggestions && filteredOptions.length > 0 && remainingTags > 0 && (
         <div 
           ref={suggestionsRef}
@@ -235,7 +245,7 @@ const CoreSkillsTagInput: React.FC<Omit<TagInputProps, 'options'>> = (props) => 
     <TagInputs
       {...props}
       options={coreSkills}
-      maxTags={12}
+      maxTags={5}
       suggestionTitle="Select Core Skills"
       placeholder={props.placeholder || "Type to search core skills"}
     />
@@ -266,7 +276,7 @@ const InterpersonalSkillsTagInput: React.FC<Omit<TagInputProps, 'options'>> = (p
     <TagInputs
       {...props}
       options={interpersonalSkills}
-      maxTags={6}
+      maxTags={5}
       suggestionTitle="Select Interpersonal Skills"
       placeholder={props.placeholder || "Type to search interpersonal skills"}
     />
@@ -337,7 +347,7 @@ const CertificationTagInput: React.FC<Omit<TagInputProps, 'options'>> = (props) 
     <TagInputs
       {...props}
       options={certifications}
-      maxTags={8}
+      maxTags={3}
       suggestionTitle="Select Certifications"
       placeholder={props.placeholder || "Type to search certifications"}
     />

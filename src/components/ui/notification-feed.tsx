@@ -14,10 +14,9 @@ type NotificationItem = {
   message: string;
   timestamp: Date;
   hasMatch?: boolean;
-  unread: boolean;  // Added unread property
+  unread: boolean;
 };
 
-// Updated mock data with unread status
 const initialNewNotifications: NotificationItem[] = [
   {
     id: '1',
@@ -91,6 +90,7 @@ const NotificationFeed: FC = () => {
   const [expandedNew, setExpandedNew] = useState(false);
   const [newNotifications, setNewNotifications] = useState(initialNewNotifications);
   const [olderNotifications, setOlderNotifications] = useState(initialOlderNotifications);
+  const [hasBeenViewed, setHasBeenViewed] = useState(false);
 
   const displayedNewNotifications = expandedNew 
     ? newNotifications 
@@ -116,7 +116,6 @@ const NotificationFeed: FC = () => {
   };
 
   const markAsRead = (notificationId: string) => {
-    // Update new notifications
     setNewNotifications(prev => 
       prev.map(notification => 
         notification.id === notificationId 
@@ -125,7 +124,6 @@ const NotificationFeed: FC = () => {
       )
     );
 
-    // Update older notifications
     setOlderNotifications(prev => 
       prev.map(notification => 
         notification.id === notificationId 
@@ -133,6 +131,12 @@ const NotificationFeed: FC = () => {
           : notification
       )
     );
+  };
+
+  const handleOpenChange = (open: boolean) => {
+    if (open) {
+      setHasBeenViewed(true);
+    }
   };
 
   const NotificationItem = ({ notification }: { notification: NotificationItem }) => {
@@ -177,13 +181,13 @@ const NotificationFeed: FC = () => {
   };
 
   return (
-    <Popover>
+    <Popover onOpenChange={handleOpenChange}>
       <PopoverTrigger asChild>
-        <button className="relative p-2 rounded-full hover:bg-gray-100/10">
+        <button className="relative p-2 rounded-full">
           <Bell 
             className="w-[22px] h-[25px] text-orange-500 [transform:rotate(35deg)] cursor-pointer"
           />
-          {unreadCount > 0 && (
+          {unreadCount > 0 && !hasBeenViewed && (
             <Badge 
               className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-red-500"
               variant="secondary"

@@ -112,7 +112,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
       {/* BookmarkLimitHandler no longer needs className prop */}
       <BookmarkLimitHandler
-        isFreeTrial={true}
+        isFreeTrial={false}
         maxBookmarks={3}
         onUpgradeClick={() => {
           console.log("Upgrade clicked");
@@ -243,7 +243,7 @@ const OtherApplications: FC<selectedProps> = ({ setSelectedTab }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
       <BookmarkLimitHandler
-        isFreeTrial={true}
+        isFreeTrial={false}
         maxBookmarks={3}
         onUpgradeClick={() => {
           console.log("Upgrade clicked");
@@ -421,7 +421,7 @@ const JobHunterSectionDesktop: FC = () => {
                     match={job}
                     bookmarked={bookmarkedCards.has(`perfectMatch-${index}`)}
                     onBookmark={() => toggleBookmark("perfectMatch", index)}
-                    isFreeTrial={true}
+                    isFreeTrial={false}
                   />
                 </div>
               </CarouselItem>
@@ -451,7 +451,7 @@ const JobHunterSectionDesktop: FC = () => {
                       match={job}
                       bookmarked={bookmarkedCards.has(`others-${index}`)}
                       onBookmark={() => toggleBookmark("others", index)}
-                      isFreeTrial={true}
+                      isFreeTrial={false}
                     />
                   </div>
                 </CarouselItem>

@@ -192,7 +192,7 @@ const CompanyProfile = () => {
         <form
           onSubmit={handleSubmit}
           onKeyDown={handleKeyDown}
-          className="space-y-6 p-4 md:p-8"
+          className="space-y-6 p-8"
         >
           <FormField
             label="Legal Business Name"

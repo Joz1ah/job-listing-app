@@ -16,7 +16,7 @@ import { Badge } from "components";
 
 import { Command, CommandGroup, CommandItem, CommandList } from "components";
 
-import { Popover, PopoverContent, PopoverTrigger } from "components";
+import { Popover, PopoverContent, PopoverTrigger, PreviewModal} from "components";
 
 import {
   CoreSkillsTagInput,
@@ -150,12 +150,13 @@ const LoadingOverlay = () => (
 const MatchCreation = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [showPreview, setShowPreview] = useState<boolean>(false);
 
   const selectOptions = {
     employmentType: [
       { value: "full-time", label: "Full Time" },
       { value: "part-time", label: "Part Time" },
-      { value: "contract", label: "Contract" },
+      { value: "contract", label: "Contract only" },
     ],
     salaryRange: [
       { value: "negotiable", label: "Negotiable" },
@@ -199,7 +200,12 @@ const MatchCreation = () => {
     ],
   };
 
-  const handleSaveChanges = () => {
+  const handleSaveChanges = (): void => {
+    setShowPreview(true);
+  };
+
+  const handlePreviewConfirm = (): void => {
+    setShowPreview(false);
     setIsLoading(true);
     setTimeout(() => {
       navigate("/job-feed-employer");
@@ -223,11 +229,8 @@ const MatchCreation = () => {
         certifications: [],
       },
       validationSchema,
-      onSubmit: () => {
-        setIsLoading(true);
-        setTimeout(() => {
-          navigate("/job-feed-employer");
-        }, 1500);
+      onSubmit: (): void => {
+        setShowPreview(true);
       },
     });
 
@@ -243,8 +246,14 @@ const MatchCreation = () => {
 
   return (
     <>
+    <PreviewModal
+    isOpen={showPreview}
+    onClose={() => setShowPreview(false)}
+    formData={values}
+    onConfirm={handlePreviewConfirm}
+  />
       {isLoading && <LoadingOverlay />}
-      <div className="flex-1 flex justify-center items-start px-4 md:mr-16 mx-auto mb-6">
+      <div className="flex-1 flex justify-center items-start md:mr-16 mx-auto mb-6">
         <div className="w-full md:max-w-[927px] min-h-[825px] bg-transparent md:bg-[#2D3A41] text-white md:pt-6 pb-12 md:mt-9 ml-1">
           <div className="flex items-center relative w-full mb-8 md:mb-14">
             <NavLink to="/job-feed-employer" className="absolute left-0">
@@ -309,7 +318,7 @@ const MatchCreation = () => {
                               key={value}
                               variant="secondary"
                               className={cn(
-                                "font-normal text-[16px] rounded-sm whitespace-nowrap overflow-hidden text-ellipsis max-w-[120px]",
+                                "font-normal text-[13px] rounded-sm whitespace-nowrap overflow-hidden text-ellipsis max-w-[120px]",
                                 {
                                   "bg-orange-600 text-white":
                                     value === "contract",
@@ -479,8 +488,11 @@ const MatchCreation = () => {
                 <CertificationTagInput
                   value={values.certifications || []}
                   onChange={(value) => setFieldValue("certifications", value)}
-                  className="min-h-[56px] pt-1 px-1"
-                  tagClassName="bg-[#168AAD]"
+                  className="h-[56px] pt-1 px-1"
+                  alternateColors={{
+                    firstColor: "#168AAD",
+                    secondColor: "#184E77",
+                  }}
                   placeholder="Type and enter to add certificate"
                 />
               </FormField>
@@ -632,8 +644,11 @@ const MatchCreation = () => {
                   <CoreSkillsTagInput
                     value={values.coreSkills || []}
                     onChange={(value) => setFieldValue("coreSkills", value)}
-                    className="min-h-[99px] pt-1 px-1"
-                    tagClassName="bg-[#168AAD]"
+                    className="h-[99px] pt-2 px-2"
+                    alternateColors={{
+                      firstColor: "#168AAD",
+                      secondColor: "#184E77",
+                    }}
                     placeholder="Type and enter to add core skill"
                   />
                 </FormField>
@@ -652,8 +667,11 @@ const MatchCreation = () => {
                     onChange={(value) =>
                       setFieldValue("interpersonalSkills", value)
                     }
-                    className="min-h-[99px] pt-1 px-1"
-                    tagClassName="bg-[#184E77]"
+                    className="h-[99px] pt-1 px-1"
+                    alternateColors={{
+                      firstColor: "#168AAD",
+                      secondColor: "#184E77",
+                    }}
                     placeholder="Type and enter to add interpersonal skill"
                   />
                 </FormField>

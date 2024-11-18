@@ -12,7 +12,7 @@ import {
 
 const Sidebar: FC = () => {
   const location = useLocation();
-  const hideOnPagesMobile = ['/job-feed-employer/job-creation']; // Add any paths where you want to hide the mobile view
+  const hideOnPagesMobile = ['/job-feed-employer/job-creation', '/job-feed-employer/company-profile']; // Add any paths where you want to hide the mobile view
   const hideOnPagesDesktop = ['/job-feed-employer/company-profile']; // Add any paths where you want to hide the desktop view
   
   const shouldShowMobileView = !hideOnPagesMobile.includes(location.pathname);

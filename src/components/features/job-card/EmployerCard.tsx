@@ -35,7 +35,7 @@ interface MatchCardProps {
   match: Match;
   bookmarked: boolean;
   onBookmark: () => void;
-  isFreeTrial?: boolean; // Add this prop
+  isFreeTrial?: boolean;
 }
 
 const SecureNameDisplay: FC<{ isFreeTrial: boolean; realName: string }> = ({
@@ -65,11 +65,18 @@ const SecureNameDisplay: FC<{ isFreeTrial: boolean; realName: string }> = ({
   return <CardTitle className="text-sm font-semibold">{realName}</CardTitle>;
 };
 
+const getAvailabilityStyle = (type: string) => {
+  if (type.toLowerCase() === 'part time') {
+    return 'bg-[#BF532C]'; // Darker orange for Part Time
+  }
+  return 'bg-[#F5722E]'; // Default orange for other options
+};
+
 const EmployerCardDesktop: FC<MatchCardProps> = ({
   match,
   bookmarked,
   onBookmark,
-  isFreeTrial = false, // Default to false
+  isFreeTrial = false,
 }) => {
   return (
     <Card className="bg-[#FFFFFF] border-none w-full md:w-[436px] h-auto md:h-[275px]">
@@ -95,7 +102,7 @@ const EmployerCardDesktop: FC<MatchCardProps> = ({
           <SecureNameDisplay isFreeTrial={isFreeTrial} realName={match.name} />
           <div className="flex flex-row items-center">
             <MapPin size={14} className="text-orange-500" />
-            <p className="text-[13px] font-light mt-0">{match.location}</p>
+            <p className="text-[13px] font-light mt-0">Based in {match.location}</p>
           </div>
         </div>
       </CardHeader>
@@ -106,14 +113,16 @@ const EmployerCardDesktop: FC<MatchCardProps> = ({
         <div className="flex flex-col gap-1 mt-2">
           <div className="flex gap-2">
             <span className="text-[13px] font-light">Experience:</span>
-            <span className="text-[13px] font-light">{match.experience}</span>
+            <span className="text-[12px] text-orange-500 font-light border border-orange-500 rounded-[4px] px-1.5">
+              {match.experience}
+            </span>
           </div>
           <div className="flex gap-2">
             <span className="text-[13px] font-light">Looking for:</span>
             {match.lookingFor.map((type, index) => (
               <span
                 key={index}
-                className="bg-[#F5722E] text-white rounded-[4px] text-[12px] px-1 h-[18px] flex justify-center items-center"
+                className={`${getAvailabilityStyle(type)} text-white rounded-[4px] text-[12px] px-1.5 h-[18px] flex justify-center items-center`}
               >
                 {type}
               </span>
@@ -121,7 +130,7 @@ const EmployerCardDesktop: FC<MatchCardProps> = ({
           </div>
           <div className="flex gap-2">
             <span className="text-[13px] font-light">Salary Expectation:</span>
-            <span className="bg-[#F5722E] text-white rounded-[4px] text-[12px] px-1 h-[18px] flex justify-center items-center">
+            <span className="bg-[#F5722E] text-white rounded-[4px] text-[12px] px-1.5 h-[18px] flex justify-center items-center">
               {match.salaryExpectation}
             </span>
           </div>
@@ -130,7 +139,7 @@ const EmployerCardDesktop: FC<MatchCardProps> = ({
             {match.language.map((lang, index) => (
               <span
                 key={index}
-                className="text-[#F5722E] rounded-[4px] text-[12px] px-1 h-[18px] flex justify-center items-center outline outline-1 outline-[#F5722E]"
+                className="text-[#F5722E] rounded-[4px] text-[12px] px-1.5 h-[18px] flex justify-center items-center outline outline-1 outline-[#F5722E]"
               >
                 {lang}
               </span>
@@ -193,7 +202,7 @@ const EmployerCardMobile: FC<{ match: Match; isFreeTrial?: boolean }> = ({
               {match.lookingFor.map((type, index) => (
                 <span
                   key={index}
-                  className="bg-[#F5722E] text-white rounded-[4px] text-[8px] px-1 h-[18px] flex justify-center items-center"
+                  className={`${getAvailabilityStyle(type)} text-white rounded-[4px] text-[8px] px-1 h-[18px] flex justify-center items-center`}
                 >
                   {type}
                 </span>

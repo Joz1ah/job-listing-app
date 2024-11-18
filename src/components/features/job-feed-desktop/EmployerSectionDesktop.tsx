@@ -123,7 +123,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
           match={match}
           bookmarked={bookmarkedCards.has(index)}
           onBookmark={() => toggleBookmark(index)}
-          isFreeTrial={true}
+          isFreeTrial={false}
         />
       ))}
 
@@ -266,7 +266,7 @@ const OtherApplications: FC<selectedProps> = ({ setSelectedTab }) => {
           match={match}
           bookmarked={bookmarkedCards.has(index)}
           onBookmark={() => toggleBookmark(index)}
-          isFreeTrial={true}
+          isFreeTrial={false}
         />
       ))}
 
@@ -413,7 +413,7 @@ const EmployerSectionDesktop: FC = () => {
             {perfectMatch.map((match, index) => (
               <CarouselItem key={index} className="pl-4 basis-[320px]">
                 <div className="relative">
-                  <EmployerCardMobile match={match} isFreeTrial={true} />
+                  <EmployerCardMobile match={match} isFreeTrial={false} />
                 </div>
               </CarouselItem>
             ))}
@@ -434,7 +434,7 @@ const EmployerSectionDesktop: FC = () => {
               {others.map((match, index) => (
                 <CarouselItem key={index} className="pl-4 basis-[320px]">
                   <div className="relative">
-                    <EmployerCardMobile match={match} isFreeTrial={true} />
+                    <EmployerCardMobile match={match} isFreeTrial={false} />
                   </div>
                 </CarouselItem>
               ))}

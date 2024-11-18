@@ -65,6 +65,13 @@ const SecureNameDisplay: FC<{ isFreeTrial: boolean; realName: string }> = ({
   return <CardTitle className="text-sm font-semibold">{realName}</CardTitle>;
 };
 
+const getAvailabilityStyle = (type: string) => {
+  if (type.toLowerCase() === 'part time') {
+    return 'bg-[#BF532C]'; // Darker orange for Part Time
+  }
+  return 'bg-[#F5722E]'; // Default orange for other options
+};
+
 const JobHunterCardDesktop: FC<MatchCardProps> = ({
   match,
   bookmarked = false,
@@ -96,13 +103,13 @@ const JobHunterCardDesktop: FC<MatchCardProps> = ({
         <div className="w-full">
           <div className="flex flex-row justify-between items-start">
             <div>
-            <SecureNameDisplay isFreeTrial={isFreeTrial} realName={match.position} />
+              <SecureNameDisplay isFreeTrial={isFreeTrial} realName={match.position} />
               <p className="text-[13px] font-light mt-0 underline">
                 {match.company}
               </p>
               <div className="flex flex-row items-center gap-1">
                 <MapPin size={14} className="text-orange-500" />
-                <p className="text-[13px] font-light mt-0">{match.location}</p>
+                <p className="text-[13px] font-light mt-0">Based in {match.location}</p>
               </div>
             </div>
           </div>
@@ -116,7 +123,7 @@ const JobHunterCardDesktop: FC<MatchCardProps> = ({
         <div className="flex flex-col gap-1 mt-4">
           <div className="flex gap-2">
             <span className="text-[13px] font-light">Experience:</span>
-            <span className="text-[12px] text-orange-500 font-light outline outline-1 outline-orange-500 rounded-[2px] px-1">
+            <span className="text-[12px] text-orange-500 font-light rounded-[4px] px-1.5 border border-orange-500">
               {match.experience}
             </span>
           </div>
@@ -125,7 +132,7 @@ const JobHunterCardDesktop: FC<MatchCardProps> = ({
             {match.lookingFor.map((type, idx) => (
               <span
                 key={idx}
-                className="bg-[#F5722E] text-white rounded-[4px] text-[12px] px-1 h-[18px] flex justify-center items-center"
+                className={`${getAvailabilityStyle(type)} text-white rounded-[4px] text-[12px] px-1.5 h-[18px] flex justify-center items-center`}
               >
                 {type}
               </span>
@@ -133,14 +140,14 @@ const JobHunterCardDesktop: FC<MatchCardProps> = ({
           </div>
           <div className="flex gap-2">
             <span className="text-[13px] font-light">Salary:</span>
-            <span className="bg-[#F5722E] text-white rounded-[4px] text-[12px] px-1 flex justify-center items-center">
+            <span className="bg-[#F5722E] text-white rounded-[4px] text-[12px] px-1.5 flex justify-center items-center">
               {match.salaryExpectation}
             </span>
           </div>
         </div>
       </CardContent>
       <CardFooter className="flex flex-row justify-end -mt-5 -mr-4 space-x-1">
-      <Button
+        <Button
           className={`text-[12px] font-semibold px-0 w-[133px] h-[27px] ${
             isFreeTrial ? "bg-gray-400" : "bg-orange-500"
           }`}
@@ -157,7 +164,7 @@ const JobHunterCardDesktop: FC<MatchCardProps> = ({
 const JobHunterCardMobile: FC<MatchCardProps> = ({
    match, 
    bookmarked = false,
-  onBookmark = () => {},
+   onBookmark = () => {},
    isFreeTrial = false 
   }) => (
   <Card className="bg-[#F5F5F7] w-[308px] h-[395px] p-2 relative flex flex-col">
@@ -180,7 +187,7 @@ const JobHunterCardMobile: FC<MatchCardProps> = ({
 
         <div className="pt-2 pl-2">
           <div className="-space-y-1">
-          <SecureNameDisplay isFreeTrial={isFreeTrial} realName={match.position} />
+            <SecureNameDisplay isFreeTrial={isFreeTrial} realName={match.position} />
             <CardDescription className="text-[13px] text-[#263238] underline mt-0">
               {match.company}
             </CardDescription>
@@ -204,11 +211,11 @@ const JobHunterCardMobile: FC<MatchCardProps> = ({
             </div>
 
             <div className="flex gap-2 flex-wrap">
-              <span className="text-[13px] font-light">Looking for:</span>
+              <span className="text-[13px] font-light">Available for:</span>
               {match.lookingFor.map((type, index) => (
                 <span
                   key={index}
-                  className="bg-[#F5722E] text-white rounded-[2px] text-[12px] px-1 h-[18px] flex justify-center items-center"
+                  className={`${getAvailabilityStyle(type)} text-white rounded-[2px] text-[12px] px-1 h-[18px] flex justify-center items-center`}
                 >
                   {type}
                 </span>
@@ -228,7 +235,7 @@ const JobHunterCardMobile: FC<MatchCardProps> = ({
       </div>
     </CardHeader>
     <CardContent className="p-0 mt-auto flex flex-col items-center">
-    <Button
+      <Button
         variant="default"
         className={`text-[12px] font-semibold ${
           isFreeTrial ? "bg-gray-400" : "bg-[#F5722E]"
