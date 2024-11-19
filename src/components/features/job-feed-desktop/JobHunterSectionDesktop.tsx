@@ -2,12 +2,13 @@ import { FC, useState, useEffect, useRef } from "react";
 import sparkeIcon from "images/sparkle-icon.png";
 import { perfectMatch, others } from "mockData/job-hunter-data";
 
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselApi,
-} from "components";
+import { Swiper, SwiperSlide } from "swiper/react";
+import type { Swiper as SwiperType } from "swiper";
+
+import "swiper/css";
+import "swiper/css/effect-coverflow";
+import "swiper/css/pagination";
+
 import { CircularPagination } from "components";
 
 import { Button } from "components";
@@ -254,7 +255,6 @@ const OtherApplications: FC<selectedProps> = ({ setSelectedTab }) => {
         ))}
       </BookmarkLimitHandler>
 
-
       {/* Dynamic Loading Cards */}
       {showLoadingCards && (
         <>
@@ -290,10 +290,10 @@ const OtherApplications: FC<selectedProps> = ({ setSelectedTab }) => {
 
 const JobHunterSectionDesktop: FC = () => {
   const [selectedTab, setSelectedTab] = useState("perfectMatch");
-  const [perfectMatchApi, setPerfectMatchApi] = useState<CarouselApi | null>(
-    null,
-  );
-  const [othersApi, setOthersApi] = useState<CarouselApi | null>(null);
+  const [perfectMatchApi, setPerfectMatchApi] = useState<
+    SwiperType | undefined
+  >(undefined);
+  const [othersApi, setOthersApi] = useState<SwiperType | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
   const [bookmarkedCards, setBookmarkedCards] = useState(new Set());
 
@@ -394,16 +394,11 @@ const JobHunterSectionDesktop: FC = () => {
         </div>
       </div>
 
-      {/* Application Cards Section - Mobile View */}
+      
+
+      {/* Mobile Carousel View */}
       <div className="block md:hidden w-full p-6 flex-grow overflow-x-hidden">
-        <Carousel
-          opts={{
-            align: "center",
-            loop: false,
-          }}
-          className="w-full"
-          setApi={setPerfectMatchApi}
-        >
+        <div>
           <h3 className="flex justify-center items-center mt-2 gap-2 text-[17px] text-[#F5722E] text-center font-semibold pb-2">
             <img
               src={sparkeIcon}
@@ -413,52 +408,64 @@ const JobHunterSectionDesktop: FC = () => {
             PERFECT MATCH
           </h3>
 
-          <CarouselContent>
-            {perfectMatch.map((job, index) => (
-              <CarouselItem key={index} className="pl-4 basis-[320px]">
-                <div className="relative">
+          <Swiper
+            grabCursor={true}
+            centeredSlides={true}
+            slidesPerView={"auto"}
+            initialSlide={1}
+            modules={[]} // Remove unnecessary modules
+            onSwiper={setPerfectMatchApi}
+            className="!pt-5 !pb-12 custom-swiper"
+          >
+            {perfectMatch.map((match, index) => (
+              <SwiperSlide
+                key={index}
+                className="!w-[320px] flex justify-center items-center custom-slide"
+              >
+                <div className="relative w-full max-w-[320px]">
                   <JobHunterCardMobile
-                    match={job}
+                    match={match}
+                    isFreeTrial={false}
                     bookmarked={bookmarkedCards.has(`perfectMatch-${index}`)}
                     onBookmark={() => toggleBookmark("perfectMatch", index)}
-                    isFreeTrial={false}
                   />
                 </div>
-              </CarouselItem>
+              </SwiperSlide>
             ))}
-          </CarouselContent>
-          <CircularPagination api={perfectMatchApi} />
-        </Carousel>
+          </Swiper>
+          <CircularPagination api={perfectMatchApi} color="#F5722E" />
+        </div>
 
         <div className="pt-12 pb-6">
-          <Carousel
-            opts={{
-              align: "center",
-              loop: false,
-            }}
-            className="w-full"
-            setApi={setOthersApi}
-          >
-            <h3 className="text-[17px] md:text-[17px] text-gray-400 text-center font-semibold mb-4">
-              OTHER OPPORTUNITIES
-            </h3>
+          <h3 className="flex justify-center items-center mt-2 gap-2 text-[17px] text-[#AEADAD] text-center font-semibold pb-2">
+            OTHER APPLICATION CARDS
+          </h3>
 
-            <CarouselContent>
-              {others.map((job, index) => (
-                <CarouselItem key={index} className="pl-4 basis-[320px]">
-                  <div className="relative">
-                    <JobHunterCardMobile
-                      match={job}
-                      bookmarked={bookmarkedCards.has(`others-${index}`)}
-                      onBookmark={() => toggleBookmark("others", index)}
-                      isFreeTrial={false}
-                    />
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CircularPagination api={othersApi} />
-          </Carousel>
+          <Swiper
+            grabCursor={true}
+            centeredSlides={true}
+            slidesPerView={"auto"}
+            initialSlide={1}
+            modules={[]} // Remove unnecessary modules
+            onSwiper={setOthersApi}
+            className="!pt-5 !pb-12 custom-swiper"
+          >
+            {others.map((other, index) => (
+              <SwiperSlide
+                key={index}
+                className="!w-[320px] flex justify-center items-center custom-slide"
+              >
+                <div className="relative w-full max-w-[320px]">
+                  <JobHunterCardMobile match={other} 
+                  isFreeTrial={false} 
+                  bookmarked={bookmarkedCards.has(`others-${index}`)}
+                  onBookmark={() => toggleBookmark("others", index)}
+                  />
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+          <CircularPagination api={othersApi} color="#F5722E" />
         </div>
       </div>
     </div>

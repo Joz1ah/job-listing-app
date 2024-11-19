@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom"; // Add useLocation
 import { Button } from "components/ui/buttons";
-import { BadgeCheck, ChevronDown } from "lucide-react";
+import { /* BadgeCheck, */ ChevronDown, Info } from "lucide-react";
 import companyLogo from "images/company-logo.png";
 import akazaLogoWhite from "images/akaza-logo-white.png";
 import menuButton from "images/menu-button.png";
@@ -120,7 +120,7 @@ const EmployerMenuHeader: FC<HeaderProps> = ({
                 ABC Incorporated
               </span>
             </NavLink>
-            <BadgeCheck className="w-4 h-4 text-[#2D3A41] fill-orange-500" />
+            <Info className="w-4 h-4 text-[#2D3A41] fill-white" />
             <ChevronDown
               onClick={onToggleMenu}
               className="w-4 h-4 text-white cursor-pointer"

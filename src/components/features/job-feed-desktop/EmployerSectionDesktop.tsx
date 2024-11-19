@@ -3,15 +3,16 @@ import sparkeIcon from "images/sparkle-icon.png";
 import { perfectMatch, others } from "mockData/employer-data";
 import { Button } from "components";
 import { CircularPagination } from "components";
-import { EmployerCardLoading } from "components";
+import { EmployerCardLoading, BookmarkLimitHandler } from "components";
 import { EmployerCardDesktop, EmployerCardMobile } from "components";
 
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselApi,
-} from "components";
+import { Swiper, SwiperSlide } from "swiper/react";
+import type { Swiper as SwiperType } from "swiper";
+
+import "swiper/css";
+import "swiper/css/effect-coverflow";
+import "swiper/css/pagination";
+
 
 interface selectedProps {
   setSelectedTab: (tab: string) => void;
@@ -23,7 +24,6 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
   );
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(perfectMatch.length > 6);
-  const [bookmarkedCards, setBookmarkedCards] = useState(new Set());
   const loaderRef = useRef<HTMLDivElement>(null);
 
   const ITEMS_PER_PAGE = 2;
@@ -90,18 +90,6 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
     };
   }, [loading, hasMore]);
 
-  const toggleBookmark = (index: number) => {
-    setBookmarkedCards((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(index)) {
-        newSet.delete(index);
-      } else {
-        newSet.add(index);
-      }
-      return newSet;
-    });
-  };
-
   const handleClick = () => {
     setSelectedTab("otherApplications");
     window.scrollTo({
@@ -117,15 +105,17 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-      {displayedItems.map((match, index) => (
-        <EmployerCardDesktop
-          key={index}
-          match={match}
-          bookmarked={bookmarkedCards.has(index)}
-          onBookmark={() => toggleBookmark(index)}
-          isFreeTrial={false}
-        />
-      ))}
+      <BookmarkLimitHandler
+        isFreeTrial={true}
+        maxBookmarks={3}
+        onUpgradeClick={() => {
+          console.log("Upgrade clicked");
+        }}
+      >
+        {displayedItems.map((match, index) => (
+          <EmployerCardDesktop key={index} match={match} />
+        ))}
+      </BookmarkLimitHandler>
 
       {/* Dynamic Loading Cards */}
       {showLoadingCards && (
@@ -166,7 +156,6 @@ const OtherApplications: FC<selectedProps> = ({ setSelectedTab }) => {
   );
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(others.length > 6);
-  const [bookmarkedCards, setBookmarkedCards] = useState(new Set());
   const loaderRef = useRef<HTMLDivElement>(null);
 
   const ITEMS_PER_PAGE = 2;
@@ -233,18 +222,6 @@ const OtherApplications: FC<selectedProps> = ({ setSelectedTab }) => {
     };
   }, [loading, hasMore]);
 
-  const toggleBookmark = (index: number) => {
-    setBookmarkedCards((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(index)) {
-        newSet.delete(index);
-      } else {
-        newSet.add(index);
-      }
-      return newSet;
-    });
-  };
-
   const handleClick = () => {
     setSelectedTab("perfectMatch");
     window.scrollTo({
@@ -260,15 +237,17 @@ const OtherApplications: FC<selectedProps> = ({ setSelectedTab }) => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-      {displayedItems.map((match, index) => (
-        <EmployerCardDesktop
-          key={index}
-          match={match}
-          bookmarked={bookmarkedCards.has(index)}
-          onBookmark={() => toggleBookmark(index)}
-          isFreeTrial={false}
-        />
-      ))}
+      <BookmarkLimitHandler
+        isFreeTrial={true}
+        maxBookmarks={3}
+        onUpgradeClick={() => {
+          console.log("Upgrade clicked");
+        }}
+      >
+        {displayedItems.map((match, index) => (
+          <EmployerCardDesktop key={index} match={match} />
+        ))}
+      </BookmarkLimitHandler>
 
       {/* Dynamic Loading Cards */}
       {showLoadingCards && (
@@ -305,11 +284,25 @@ const OtherApplications: FC<selectedProps> = ({ setSelectedTab }) => {
 
 const EmployerSectionDesktop: FC = () => {
   const [selectedTab, setSelectedTab] = useState("perfectMatch");
-  const [perfectMatchApi, setPerfectMatchApi] = useState<CarouselApi | null>(
-    null,
-  );
-  const [othersApi, setOthersApi] = useState<CarouselApi | null>(null);
+  const [perfectMatchApi, setPerfectMatchApi] = useState<
+    SwiperType | undefined
+  >(undefined);
+  const [othersApi, setOthersApi] = useState<SwiperType | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
+  const [bookmarkedCards, setBookmarkedCards] = useState(new Set());
+
+  const toggleBookmark = (section: string, index: number) => {
+    const combinedId = `${section}-${index}`;
+    setBookmarkedCards((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(combinedId)) {
+        newSet.delete(combinedId);
+      } else {
+        newSet.add(combinedId);
+      }
+      return newSet;
+    });
+  };
 
   const handleTabChange = (tab: string) => {
     window.scrollTo({
@@ -396,11 +389,7 @@ const EmployerSectionDesktop: FC = () => {
 
       {/* Mobile Carousel View */}
       <div className="block md:hidden w-full p-6 flex-grow overflow-x-hidden">
-        <Carousel
-          opts={{ align: "center", loop: false }}
-          className="w-full"
-          setApi={setPerfectMatchApi}
-        >
+        <div>
           <h3 className="flex justify-center items-center mt-2 gap-2 text-[17px] text-[#F5722E] text-center font-semibold pb-2">
             <img
               src={sparkeIcon}
@@ -409,38 +398,64 @@ const EmployerSectionDesktop: FC = () => {
             />
             PERFECT MATCH
           </h3>
-          <CarouselContent>
+
+          <Swiper
+            grabCursor={true}
+            centeredSlides={true}
+            slidesPerView={"auto"}
+            initialSlide={1}
+            modules={[]} // Remove unnecessary modules
+            onSwiper={setPerfectMatchApi}
+            className="!pt-5 !pb-12 custom-swiper"
+          >
             {perfectMatch.map((match, index) => (
-              <CarouselItem key={index} className="pl-4 basis-[320px]">
-                <div className="relative">
-                  <EmployerCardMobile match={match} isFreeTrial={false} />
+              <SwiperSlide
+                key={index}
+                className="!w-[320px] flex justify-center items-center custom-slide"
+              >
+                <div className="relative w-full max-w-[320px]">
+                  <EmployerCardMobile match={match} 
+                  isFreeTrial={false}
+                  bookmarked={bookmarkedCards.has(`perfectMatch-${index}`)}
+                  onBookmark={() => toggleBookmark("perfectMatch", index)} 
+                  />
                 </div>
-              </CarouselItem>
+              </SwiperSlide>
             ))}
-          </CarouselContent>
-          <CircularPagination api={perfectMatchApi} />
-        </Carousel>
+          </Swiper>
+          <CircularPagination api={perfectMatchApi} color="#F5722E" />
+        </div>
 
         <div className="pt-12 pb-6">
-          <Carousel
-            opts={{ align: "center", loop: false }}
-            className="w-full"
-            setApi={setOthersApi}
+          <h3 className="flex justify-center items-center mt-2 gap-2 text-[17px] text-[#AEADAD] text-center font-semibold pb-2">
+            OTHER APPLICATION CARDS
+          </h3>
+
+          <Swiper
+            grabCursor={true}
+            centeredSlides={true}
+            slidesPerView={"auto"}
+            initialSlide={1}
+            modules={[]} // Remove unnecessary modules
+            onSwiper={setOthersApi}
+            className="!pt-5 !pb-12 custom-swiper"
           >
-            <h3 className="flex justify-center items-center mt-2 gap-2 text-[17px] text-[#AEADAD] text-center font-semibold pb-2">
-              OTHER APPLICATION CARDS
-            </h3>
-            <CarouselContent>
-              {others.map((match, index) => (
-                <CarouselItem key={index} className="pl-4 basis-[320px]">
-                  <div className="relative">
-                    <EmployerCardMobile match={match} isFreeTrial={false} />
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CircularPagination api={othersApi} />
-          </Carousel>
+            {others.map((other, index) => (
+              <SwiperSlide
+                key={index}
+                className="!w-[320px] flex justify-center items-center custom-slide"
+              >
+                <div className="relative w-full max-w-[320px]">
+                  <EmployerCardMobile match={other} 
+                  isFreeTrial={false}
+                  bookmarked={bookmarkedCards.has(`others-${index}`)}
+                  onBookmark={() => toggleBookmark("others", index)} 
+                  />
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+          <CircularPagination api={othersApi} color="#F5722E" />
         </div>
       </div>
     </>

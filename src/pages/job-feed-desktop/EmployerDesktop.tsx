@@ -26,7 +26,7 @@ const EmployerDesktop: FC = () => {
       <main className="flex-grow flex flex-col md:flex-row bg-[#242625] md:mt-16 w-full">
 
         <div className="flex flex-col md:mt-10 md:ml-16 mb-8">
-          <EmployerHeader isFreeTrial={false}/>
+          <EmployerHeader isFreeTrial={true}/>
           <Sidebar />
         </div>
 

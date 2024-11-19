@@ -410,7 +410,7 @@ const ProfileCreation = () => {
                 <CoreSkillsTagInput
                   value={values.coreSkills || []}
                   onChange={(value) => setFieldValue("coreSkills", value)}
-                  className="min-h-[99px] pt-1 px-1"
+                  className="h-[99px] pt-1 px-1"
                   alternateColors={{
                     firstColor: "#168AAD",
                     secondColor: "#184E77",
@@ -430,7 +430,7 @@ const ProfileCreation = () => {
               <CertificationTagInput
                 value={values.certifications || []}
                 onChange={(value) => setFieldValue("certifications", value)}
-                className="min-h-[56px] pt-1 px-1"
+                className="h-[56px] pt-1 px-1"
                 tagClassName="bg-[#168AAD]"
                 placeholder="Type and enter to add certificate"
               />
@@ -664,7 +664,7 @@ const ProfileCreation = () => {
                   onChange={(value) =>
                     setFieldValue("interpersonalSkills", value)
                   }
-                  className="min-h-[99px] pt-1 px-1"
+                  className="h-[99px] pt-1 px-1"
                   alternateColors={{
                     firstColor: "#168AAD",
                     secondColor: "#184E77",

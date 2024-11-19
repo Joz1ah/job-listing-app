@@ -237,11 +237,7 @@ const JobHunterCardMobile: FC<MatchCardProps> = ({
     <CardContent className="p-0 mt-auto flex flex-col items-center">
       <Button
         variant="default"
-        className={`text-[12px] font-semibold ${
-          isFreeTrial ? "bg-gray-400" : "bg-[#F5722E]"
-        }`}
-        disabled={isFreeTrial}
-      >
+        className= "text-[12px] font-semibold ">
         I'm Interested
       </Button>
       <MoreVertical

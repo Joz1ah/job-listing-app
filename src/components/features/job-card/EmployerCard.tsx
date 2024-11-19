@@ -1,9 +1,6 @@
 import { FC } from "react";
-
 import { SkillsWithEllipsis } from "components";
-
 import { Bookmark, MoreVertical, MapPin } from "lucide-react";
-
 import {
   Card,
   CardHeader,
@@ -11,7 +8,6 @@ import {
   CardFooter,
   CardTitle,
 } from "components";
-
 import { Button } from "components";
 
 interface Skill {
@@ -33,8 +29,8 @@ interface Match {
 
 interface MatchCardProps {
   match: Match;
-  bookmarked: boolean;
-  onBookmark: () => void;
+  bookmarked?: boolean;
+  onBookmark?: () => void;
   isFreeTrial?: boolean;
 }
 
@@ -45,18 +41,13 @@ const SecureNameDisplay: FC<{ isFreeTrial: boolean; realName: string }> = ({
   if (isFreeTrial) {
     return (
       <div className="relative">
-        {/* Create a blurred background with placeholder text */}
         <div className="select-none pointer-events-none" aria-hidden="true">
-          {/* Blurred layer */}
           <div className="relative">
-            {/* Random characters to create blur effect */}
             <div className="absolute inset-0 blur-[8px] text-sm font-semibold bg-clip-text">
               {Array(realName.length).fill("X").join("")}
             </div>
           </div>
         </div>
-
-        {/* Spacer to maintain layout */}
         <div className="h-6" />
       </div>
     );
@@ -72,10 +63,34 @@ const getAvailabilityStyle = (type: string) => {
   return 'bg-[#F5722E]'; // Default orange for other options
 };
 
+// Common bookmark button component to ensure consistent behavior
+const BookmarkButton: FC<{ 
+  bookmarked: boolean; 
+  onBookmark: () => void; 
+  className?: string;
+}> = ({ bookmarked, onBookmark, className = "" }) => (
+  <Bookmark
+    className={`cursor-pointer ${
+      bookmarked ? "fill-orange-500" : ""
+    } text-orange-500 ${className}`}
+    size={26}
+    onClick={(e) => {
+      e.stopPropagation(); // Prevent event bubbling
+      onBookmark();
+    }}
+  />
+);
+
+const LanguageTag: FC<{ language: string }> = ({ language }) => (
+  <span className="text-[#F5722E] text-[10px] rounded-[4px] px-1.5 h-[18px] flex justify-center items-center outline outline-1 outline-[#F5722E]">
+    {language}
+  </span>
+);
+
 const EmployerCardDesktop: FC<MatchCardProps> = ({
   match,
-  bookmarked,
-  onBookmark,
+  bookmarked = false,
+  onBookmark = () => {},
   isFreeTrial = false,
 }) => {
   return (
@@ -89,12 +104,10 @@ const EmployerCardDesktop: FC<MatchCardProps> = ({
             <span className="text-[11px] font-light text-gray-400 -mr-2">
               Posted {match.appliedAgo}
             </span>
-            <Bookmark
-              className={`absolute mt-5 -mr-2 cursor-pointer ${
-                bookmarked ? "fill-orange-500" : ""
-              } text-orange-500`}
-              size={26}
-              onClick={onBookmark}
+            <BookmarkButton 
+              bookmarked={bookmarked} 
+              onBookmark={onBookmark}
+              className="absolute mt-5 -mr-2" 
             />
           </div>
         </div>
@@ -134,15 +147,10 @@ const EmployerCardDesktop: FC<MatchCardProps> = ({
               {match.salaryExpectation}
             </span>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             <span className="text-[13px] font-light">Language:</span>
             {match.language.map((lang, index) => (
-              <span
-                key={index}
-                className="text-[#F5722E] rounded-[4px] text-[12px] px-1.5 h-[18px] flex justify-center items-center outline outline-1 outline-[#F5722E]"
-              >
-                {lang}
-              </span>
+              <LanguageTag key={index} language={lang} />
             ))}
           </div>
         </div>
@@ -156,14 +164,20 @@ const EmployerCardDesktop: FC<MatchCardProps> = ({
         >
           Schedule Interview
         </Button>
-        <MoreVertical size={12} className="text-gray-700 cursor-pointer" />
+        <MoreVertical 
+          size={12} 
+          className="text-gray-700 cursor-pointer"
+          onClick={(e) => e.stopPropagation()} 
+        />
       </CardFooter>
     </Card>
   );
 };
 
-const EmployerCardMobile: FC<{ match: Match; isFreeTrial?: boolean }> = ({
+const EmployerCardMobile: FC<MatchCardProps> = ({
   match,
+  bookmarked = false,
+  onBookmark = () => {},
   isFreeTrial = false,
 }) => (
   <Card className="bg-[#F5F5F7] w-[300px] h-[380px] p-4 transition-all duration-300 hover:shadow-lg relative flex flex-col">
@@ -176,7 +190,10 @@ const EmployerCardMobile: FC<{ match: Match; isFreeTrial?: boolean }> = ({
             </span>
           </div>
           <div className="absolute top-10">
-            <Bookmark className="text-[#F5722E]" size={25} />
+            <BookmarkButton 
+              bookmarked={bookmarked} 
+              onBookmark={onBookmark}
+            />
           </div>
         </div>
 
@@ -221,12 +238,7 @@ const EmployerCardMobile: FC<{ match: Match; isFreeTrial?: boolean }> = ({
             <div className="flex gap-2 flex-wrap">
               <span className="text-[10px] font-light">Language:</span>
               {match.language.map((lang, index) => (
-                <span
-                  key={index}
-                  className="text-[#F5722E] rounded-[4px] text-[8px] px-1 h-[18px] flex justify-center items-center outline outline-1 outline-[#F5722E]"
-                >
-                  {lang}
-                </span>
+                <LanguageTag key={index} language={lang} />
               ))}
             </div>
           </div>
@@ -236,16 +248,14 @@ const EmployerCardMobile: FC<{ match: Match; isFreeTrial?: boolean }> = ({
     <CardContent className="p-0 mt-auto flex flex-col items-center">
       <Button
         variant="default"
-        className={`text-[12px] font-semibold ${
-          isFreeTrial ? "bg-gray-400" : "bg-[#F5722E]"
-        }`}
-        disabled={isFreeTrial}
+        className= "text-[12px] font-semibold"
       >
         Schedule Interview
       </Button>
       <MoreVertical
         size={12}
         className="text-gray-700 cursor-pointer absolute bottom-2 right-2"
+        onClick={(e) => e.stopPropagation()}
       />
     </CardContent>
   </Card>

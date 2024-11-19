@@ -89,3 +89,52 @@ input:-webkit-autofill:focus {
 input[data-autocompleted] {
     background-color: transparent !important;
 }
+
+@layer components {
+  .swiper-pagination-bullet {
+    @apply w-2 h-2 bg-[#AEADAD] opacity-50;
+  }
+
+  .swiper-pagination-bullet-active {
+    @apply bg-[#F5722E] opacity-100;
+  }
+}
+
+.custom-swiper {
+  padding: 0 5px 0 20px;
+  overflow: visible !important; /* Allow slides to be visible outside container */
+}
+
+.custom-swiper .swiper-wrapper {
+  align-items: center;
+}
+
+.custom-swiper .swiper-slide {
+  transition: all 0.5s ease;
+  opacity: 1;
+}
+
+.custom-swiper .swiper-slide > div {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 320px;
+}
+
+/* Previous slide */
+.custom-swiper .swiper-slide-prev {
+  transform: translateY(-20px) scale(0.9);
+  opacity: 1;
+}
+
+/* Next slide */
+.custom-swiper .swiper-slide-next {
+  transform: translateY(-20px) scale(0.9);
+  opacity: 1;
+}
+
+/* Active slide */
+.custom-swiper .swiper-slide-active {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  z-index: 2;
+}

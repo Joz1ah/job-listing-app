@@ -184,7 +184,7 @@ const CompanyProfile = () => {
 
           <h1 className="flex-1 text-center text-xl md:text-[32px] font-normal text-orange-500">
             <span className="inline-flex items-center gap-2 justify-center">
-              Complete Your Company Profile
+              Edit Your Company Profile
             </span>
           </h1>
         </div>
