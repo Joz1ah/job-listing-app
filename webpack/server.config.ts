@@ -31,7 +31,7 @@ const serverConfig: Configuration = {
   devtool: IS_DEV ? 'source-map' : false,
   resolve: {
     alias: ALIAS,
-    extensions: ['.ts', '.tsx', '.js']
+    extensions: ['.ts', '.tsx', '.js', '.mjs']
   },
   externals: [nodeExternals()]
 }

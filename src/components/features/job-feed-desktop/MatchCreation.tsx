@@ -679,7 +679,7 @@ const MatchCreation = () => {
             </div>
 
             {/* Footer Buttons */}
-            <div className="col-span-full flex flex-col md:flex-row justify-end gap-4 mt-8 md:-mt-10">
+            <div className="col-span-full flex flex-row justify-end gap-4 mt-8 md:-mt-10">
               <Button
                 type="button"
                 variant="outline"

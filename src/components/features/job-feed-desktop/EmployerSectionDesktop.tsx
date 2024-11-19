@@ -9,11 +9,6 @@ import { EmployerCardDesktop, EmployerCardMobile } from "components";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperType } from "swiper";
 
-import "swiper/css";
-import "swiper/css/effect-coverflow";
-import "swiper/css/pagination";
-
-
 interface selectedProps {
   setSelectedTab: (tab: string) => void;
 }

@@ -87,7 +87,7 @@ const clientConfig: Configuration = {
   devtool: IS_DEV ? 'source-map' : false,
   resolve: {
     alias: ALIAS,
-    extensions: ['.tsx', '.ts', '.js', '.scss', '.css'],
+    extensions: ['.tsx', '.ts', '.js', '.scss', '.css', '.mjs'],
     fallback: {
       url: false,
       path: false

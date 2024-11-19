@@ -2,13 +2,6 @@ import { FC, useState, useEffect, useRef } from "react";
 import sparkeIcon from "images/sparkle-icon.png";
 import { perfectMatch, others } from "mockData/job-hunter-data";
 
-import { Swiper, SwiperSlide } from "swiper/react";
-import type { Swiper as SwiperType } from "swiper";
-
-import "swiper/css";
-import "swiper/css/effect-coverflow";
-import "swiper/css/pagination";
-
 import { CircularPagination } from "components";
 
 import { Button } from "components";
@@ -18,6 +11,9 @@ import {
   JobHunterCardMobile,
   BookmarkLimitHandler,
 } from "components";
+
+import { Swiper, SwiperSlide } from "swiper/react";
+import type { Swiper as SwiperType } from "swiper";
 
 interface selectedProps {
   setSelectedTab: (tab: string) => void;

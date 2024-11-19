@@ -130,7 +130,7 @@ const EmployerMenuHeader: FC<HeaderProps> = ({
       </header>
 
       {/* Mobile Header */}
-      <header className="md:hidden bg-black py-4 px-2 flex justify-between items-center">
+      <header className="md:hidden bg-black py-4 px-2 flex justify-between items-center z-50">
         <img src={akazaLogoWhite} alt="Akaza Logo" className="h-8" />
         <div className="flex items-center">
           <NotificationFeed />
