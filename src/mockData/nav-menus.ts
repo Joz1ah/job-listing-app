@@ -37,7 +37,7 @@ interface NavItem {
   ];
 
   export const jobHunterMobileMenu: NavItem[] = [
-    { name: 'EDIT APPLICATION CARD', path: '#' },
+    { name: 'EDIT APPLICATION CARD', path: '/complete-profile' },
     { name: 'BOOKMARKED JOBS', path: '#'},
     { name: 'INTERVIEWS', path: '#'},
     { name: 'ABOUT US', path: '#'},

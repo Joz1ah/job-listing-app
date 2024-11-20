@@ -15,10 +15,11 @@ const CompleteProfile: FC = () => {
       onToggleMenu={toggleMenu}
       desktopMenuItems={jobHunterDesktopMenu}
       mobileMenuItems={jobHunterMobileMenu}
+      isFreeTrial={true}
     />
       
       {/* Main content */}
-      <main className="bg-[#242625] p-4 md:p-[60px]">
+      <main className="bg-[#242625] p-4 md:p-[60px] flex-grow flex">
         <ProfileCreation />
       </main>
 

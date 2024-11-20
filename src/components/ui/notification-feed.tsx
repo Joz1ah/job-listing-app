@@ -210,9 +210,10 @@ const NotificationFeed: FC<NotificationFeedProps> = ({ isFreeTrial = false }) =>
         
         <div 
           className={`
-            fixed md:absolute left-0 md:left-auto right-0 md:right-0 top-16 md:top-full 
+            fixed md:absolute left-0 md:left-auto right-0 md:right-0 top-[4rem] md:top-full
             w-full md:w-[400px] overflow-hidden
             transition-transform duration-1000 ease-out
+            z-50 pointer-events-none
             ${open ? 'translate-y-0' : '-translate-y-full'}
           `}
         >

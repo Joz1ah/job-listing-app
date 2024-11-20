@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {
   ChevronLeft,
   AlertTriangle,
@@ -9,10 +9,14 @@ import {
 import { Input, Button, Label } from "components";
 import { NavLink } from "react-router-dom";
 import { Badge } from "components";
+import { useNavigate } from "react-router-dom";
+import saveChanges from "images/save-changes.svg?url";
 
 import { Command, CommandGroup, CommandItem, CommandList } from "components";
 
 import { Popover, PopoverContent, PopoverTrigger } from "components";
+
+import { PreviewAppCard } from "components";
 
 import {
   LanguageTagInput,
@@ -141,7 +145,6 @@ const validationSchema = Yup.object().shape({
   ),
   salaryRange: Yup.string().required("This field is required"),
   yearsOfExperience: Yup.string().required("This field is required"),
-  jobDescription: Yup.string().required("This field is required"),
   coreSkills: Yup.array()
     .min(3, "Please add at least 3 core skills")
     .required("This field is required"),
@@ -154,7 +157,20 @@ const validationSchema = Yup.object().shape({
     .required("This field is required"),
 });
 
+// Loading Overlay Component
+const LoadingOverlay = () => (
+  <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
+    <div className="flex flex-col items-center">
+      <img src={saveChanges} alt="Loading" />
+    </div>
+  </div>
+);
+
 const ProfileCreation = () => {
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPreview, setShowPreview] = useState<boolean>(false);
+
   const selectOptions = {
     employmentType: [
       { value: "full-time", label: "Full Time" },
@@ -238,6 +254,14 @@ const ProfileCreation = () => {
     ],
   };
 
+  const handlePreviewConfirm = (): void => {
+    setShowPreview(false);
+    setIsLoading(true);
+    setTimeout(() => {
+      navigate("/job-feed-hunter");
+    }, 1500);
+  };
+
   const { values, errors, touched, handleChange, setFieldValue, handleSubmit } =
     useFormik<FormData & { employmentType: string[] }>({
       initialValues: {
@@ -257,9 +281,8 @@ const ProfileCreation = () => {
         certifications: [],
       },
       validationSchema,
-      onSubmit: (values) => {
-        // Handle form submission
-        console.log(values);
+      onSubmit: (): void => {
+        setShowPreview(true);
       },
     });
 
@@ -274,6 +297,14 @@ const ProfileCreation = () => {
   };
 
   return (
+    <>
+    <PreviewAppCard
+    isOpen={showPreview}
+    onClose={() => setShowPreview(false)}
+    formData={values}
+    onConfirm={handlePreviewConfirm}
+  />
+  {isLoading && <LoadingOverlay />}
     <div className="md:pt-10 md:flex md:flex-row md:gap-10">
       <div className="w-full md:w-[800px] min-h-[825px] bg-[#242625] md:bg-[#2D3A41] text-white mt-4 md:pt-6 md:mt-9">
         <div className="flex items-center relative w-full mb-8 md:mb-14">
@@ -291,7 +322,7 @@ const ProfileCreation = () => {
         <form
           onSubmit={handleSubmit}
           onKeyDown={handleKeyDown}
-          className="grid grid-cols-1 md:grid-cols-2 p-4 md:p-8 md:gap-x-[65px] "
+          className="grid grid-cols-1 md:grid-cols-2 p-4 md:p-8 md:gap-x-[65px] gap-y-[24px]"
         >
           {/* Left Column */}
           <div className="space-y-[24px]">
@@ -676,20 +707,33 @@ const ProfileCreation = () => {
           </div>
 
           {/* Footer Buttons */}
-          <div className="col-span-full flex justify-end mt-[60px] mb-0">
+          <div className="col-span-full flex justify-end md:mt-[60px] mb-0 ">
             <Button
               type="submit"
-              className="w-full md:w-auto bg-[#AEADAD] text-white hover:bg-[#F5722E] text-[16px] h-8 rounded-sm mr-2 mb-2 font-normal px-8"
+              className="hidden md:block md:w-auto bg-[#AEADAD] text-white hover:bg-[#F5722E] text-[16px] h-8 py-0 rounded-sm font-normal px-8"
             >
               Save Your Profile
             </Button>
           </div>
         </form>
       </div>
-      <div className="w-full md:w-auto">
+      <div className="w-full md:w-auto p-4 md:p-0">
         <PreviewCard values={values} selectOptions={selectOptions} />
+        <div className="flex justify-center mt-10 mb-8 md:hidden">
+          <Button
+          type="submit"
+            onClick={(e) => {
+              e.preventDefault();
+              handleSubmit();
+            }}
+            className="w-auto bg-[#AEADAD] text-white hover:bg-[#F5722E] text-[16px] h-8 py-0 rounded-sm font-normal px-8"
+          >
+            Save Your Profile
+          </Button>
+        </div>
       </div>
     </div>
+    </>
   );
 };
 

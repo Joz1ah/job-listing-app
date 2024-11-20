@@ -270,7 +270,7 @@ const MatchCreation = () => {
           <form
             onSubmit={handleSubmit}
             onKeyDown={handleKeyDown}
-            className="grid grid-cols-1 md:grid-cols-2 md:gap-[115px] p-8 md:px-[52px]"
+            className="grid grid-cols-1 md:grid-cols-2 md:gap-[115px] p-8 md:px-[52px] gap-y-[24px]"
           >
             {/* Left Column */}
             <div className="space-y-[24px]">
