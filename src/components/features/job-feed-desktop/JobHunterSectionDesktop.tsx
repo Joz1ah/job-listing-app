@@ -3,8 +3,7 @@ import sparkeIcon from "images/sparkle-icon.png";
 import { perfectMatch, others } from "mockData/job-hunter-data";
 import jobHunterAds from "images/job-hunter-ads.svg?url";
 import jobHunterMobileAds from "images/job-hunter-mobile-ads.svg?url";
-
-import { CircularPagination } from "components";
+import bulb from "images/bulb.svg?url";
 
 import { Button } from "components";
 import { JobHunterCardLoading } from "components";
@@ -15,7 +14,6 @@ import {
 } from "components";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import type { Swiper as SwiperType } from "swiper";
 
 import { useJobHunterContext } from "pages";
 
@@ -48,10 +46,7 @@ interface AdItem {
 
 type CardItem = Match | AdItem;
 
-const PerfectMatch: FC<selectedProps> = ({
-  setSelectedTab,
-  isFreeTrial,
-}) => {
+const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
   const [displayedItems, setDisplayedItems] = useState<CardItem[]>(() => {
     // Initial load of 5 items
     const initialItems = perfectMatch.slice(0, 5);
@@ -422,10 +417,7 @@ interface JobHunterSectionProps {
 
 const JobHunterSectionDesktop: FC<JobHunterSectionProps> = () => {
   const [selectedTab, setSelectedTab] = useState("perfectMatch");
-  const [perfectMatchApi, setPerfectMatchApi] = useState<
-    SwiperType | undefined
-  >(undefined);
-  const [othersApi, setOthersApi] = useState<SwiperType | undefined>(undefined);
+
   const [isLoading, setIsLoading] = useState(true);
   const [bookmarkedCards, setBookmarkedCards] = useState(new Set());
   const { isFreeTrial } = useJobHunterContext();
@@ -491,6 +483,84 @@ const JobHunterSectionDesktop: FC<JobHunterSectionProps> = () => {
     return result;
   };
 
+  interface EndCardProps {
+    type: "perfectMatch" | "otherOpportunities";
+  }
+
+  const EndCard: React.FC<EndCardProps> = ({ type }) => {
+    const handleScroll = () => {
+      const targetSection =
+        type === "perfectMatch"
+          ? document.getElementById("other-applications-mobile")
+          : document.getElementById("perfect-match-mobile");
+
+      if (targetSection) {
+        const offset = 80;
+        const elementPosition = targetSection.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.scrollY - offset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth",
+        });
+      }
+    };
+
+    const cardContent = {
+      perfectMatch: {
+        mainText: "perfect matches",
+        buttonText: "other opportunities",
+      },
+      otherOpportunities: {
+        mainText: "other opportunities",
+        buttonText: "perfect matches",
+      },
+    };
+
+    const content = cardContent[type];
+
+    return (
+      <div className="flex flex-col items-center w-[308px] h-[420px] bg-transparent rounded-lg text-center">
+        <div className="px-10 pt-[55px] flex flex-col items-center w-full">
+          <div className="text-xl font-semibold text-white">
+            <div>You've reached the</div>
+            <div>
+              end of your{" "}
+              <button
+                onClick={handleScroll}
+                className="text-[#F5722E] font-semibold hover:opacity-80"
+              >
+                {type === "perfectMatch" ? "perfect" : content.mainText}
+              </button>
+            </div>
+            {type === "perfectMatch" && (
+              <div>
+                <button
+                  onClick={handleScroll}
+                  className="text-[#F5722E] font-semibold hover:opacity-80"
+                >
+                  matches
+                </button>{" "}
+                for now!
+              </div>
+            )}
+            {type === "otherOpportunities" && <div>for now!</div>}
+          </div>
+          <div className="text-xl font-semibold text-white mt-0.5">
+            <div>Explore more options below.</div>
+          </div>
+          <div className="flex justify-center w-full mt-6">
+            <img
+              src={bulb}
+              alt="Bulb"
+              className="w-[55px] h-[75px] fill-orange-500"
+            />
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="mt-8 md:my-2">
       {/* Application Cards Section - Desktop View */}
@@ -554,7 +624,7 @@ const JobHunterSectionDesktop: FC<JobHunterSectionProps> = () => {
 
       {/* Mobile Carousel View */}
       <div className="block md:hidden w-full p-6 flex-grow overflow-x-hidden">
-        <div>
+        <div id="perfect-match-mobile">
           <h3 className="flex justify-center items-center mt-2 gap-2 text-[17px] text-[#F5722E] text-center font-semibold pb-2">
             <img
               src={sparkeIcon}
@@ -568,9 +638,8 @@ const JobHunterSectionDesktop: FC<JobHunterSectionProps> = () => {
             grabCursor={true}
             centeredSlides={true}
             slidesPerView={"auto"}
-            initialSlide={1}
-            modules={[]} // Remove unnecessary modules
-            onSwiper={setPerfectMatchApi}
+            initialSlide={0}
+            modules={[]} 
             className="!pt-5 !pb-12 custom-swiper"
           >
             {getItemsWithAds(perfectMatch).map((item, index) => (
@@ -596,49 +665,52 @@ const JobHunterSectionDesktop: FC<JobHunterSectionProps> = () => {
                 )}
               </SwiperSlide>
             ))}
+            <SwiperSlide className="!w-[320px] flex justify-center items-center custom-slide">
+              <EndCard type="perfectMatch" />
+            </SwiperSlide>
           </Swiper>
-          <CircularPagination api={perfectMatchApi} color="#F5722E" />
         </div>
 
-        <div className="pt-12 pb-6">
+        <div id="other-applications-mobile" className="pt-12 pb-6">
           <h3 className="flex justify-center items-center mt-2 gap-2 text-[17px] text-[#AEADAD] text-center font-semibold pb-2">
-            OTHER APPLICATION CARDS
+            OTHER OPPORTUNITIES
           </h3>
 
           <Swiper
             grabCursor={true}
             centeredSlides={true}
             slidesPerView={"auto"}
-            initialSlide={1}
-            modules={[]} // Remove unnecessary modules
-            onSwiper={setOthersApi}
+            initialSlide={0}
+            modules={[]}
             className="!pt-5 !pb-12 custom-swiper"
           >
             {getItemsWithAds(others).map((item, index) => (
-        <SwiperSlide
-          key={index}
-          className="!w-[320px] flex justify-center items-center custom-slide"
-        >
-          {'isAd' in item ? (
-            <img 
-              src={item.image}
-              alt="Job Hunter Ad"
-              className="w-[308px] mr-3"
-            />
-          ) : (
-            <div className="relative w-full max-w-[320px]">
-              <JobHunterCardMobile
-                match={item}
-                isFreeTrial={isFreeTrial}
-                bookmarked={bookmarkedCards.has(`others-${index}`)}
-                onBookmark={() => toggleBookmark("others", index)}
-              />
-            </div>
-          )}
-        </SwiperSlide>
-      ))}
+              <SwiperSlide
+                key={index}
+                className="!w-[320px] flex justify-center items-center custom-slide"
+              >
+                {"isAd" in item ? (
+                  <img
+                    src={item.image}
+                    alt="Job Hunter Ad"
+                    className="w-[308px] mr-3"
+                  />
+                ) : (
+                  <div className="relative w-full max-w-[320px]">
+                    <JobHunterCardMobile
+                      match={item}
+                      isFreeTrial={isFreeTrial}
+                      bookmarked={bookmarkedCards.has(`others-${index}`)}
+                      onBookmark={() => toggleBookmark("others", index)}
+                    />
+                  </div>
+                )}
+              </SwiperSlide>
+            ))}
+            <SwiperSlide className="!w-[320px] flex justify-center items-center custom-slide">
+              <EndCard type="otherOpportunities" />
+            </SwiperSlide>
           </Swiper>
-          <CircularPagination api={othersApi} color="#F5722E" />
         </div>
       </div>
     </div>

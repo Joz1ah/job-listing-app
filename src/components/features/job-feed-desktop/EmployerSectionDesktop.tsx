@@ -2,14 +2,13 @@ import { FC, useState, useEffect, useRef } from "react";
 import sparkeIcon from "images/sparkle-icon.png";
 import { perfectMatch, others } from "mockData/employer-data";
 import { Button } from "components";
-import { CircularPagination } from "components";
 import { EmployerCardLoading, BookmarkLimitHandler } from "components";
 import { EmployerCardDesktop, EmployerCardMobile } from "components";
 import employerAds from "images/employer-ads.svg?url";
 import employerMobileAds from "images/employer-mobile-ads.svg?url";
+import bulb from "images/bulb.svg?url";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import type { Swiper as SwiperType } from "swiper";
 
 import { useEmployerContext } from "pages";
 
@@ -416,10 +415,6 @@ interface EmployerSectionProps {
 
 const EmployerSectionDesktop: FC<EmployerSectionProps> = () => {
   const [selectedTab, setSelectedTab] = useState("perfectMatch");
-  const [perfectMatchApi, setPerfectMatchApi] = useState<
-    SwiperType | undefined
-  >(undefined);
-  const [othersApi, setOthersApi] = useState<SwiperType | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
   const [bookmarkedCards, setBookmarkedCards] = useState(new Set());
   const { isFreeTrial } = useEmployerContext();
@@ -484,6 +479,84 @@ const EmployerSectionDesktop: FC<EmployerSectionProps> = () => {
     return result;
   };
 
+  interface EndCardProps {
+    type: "perfectMatch" | "otherApplication";
+  }
+
+  const EndCard: React.FC<EndCardProps> = ({ type }) => {
+    const handleScroll = () => {
+      const targetSection =
+        type === "perfectMatch"
+          ? document.getElementById("other-applications-mobile")
+          : document.getElementById("perfect-match-mobile");
+
+      if (targetSection) {
+        const offset = 80;
+        const elementPosition = targetSection.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.scrollY - offset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth",
+        });
+      }
+    };
+
+    const cardContent = {
+      perfectMatch: {
+        mainText: "perfect matches",
+        buttonText: "other aplication card",
+      },
+      otherApplication: {
+        mainText: "other application card",
+        buttonText: "perfect matches",
+      },
+    };
+
+    const content = cardContent[type];
+
+    return (
+      <div className="flex flex-col items-center w-[308px] h-[420px] bg-transparent rounded-lg text-center">
+        <div className="px-10 pt-[55px] flex flex-col items-center w-full">
+          <div className="text-xl font-semibold text-white">
+            <div>You've reached the</div>
+            <div>
+              end of your{" "}
+              <button
+                onClick={handleScroll}
+                className="text-[#F5722E] font-semibold hover:opacity-80"
+              >
+                {type === "perfectMatch" ? "perfect" : content.mainText}
+              </button>
+            </div>
+            {type === "perfectMatch" && (
+              <div>
+                <button
+                  onClick={handleScroll}
+                  className="text-[#F5722E] font-semibold hover:opacity-80"
+                >
+                  matches
+                </button>{" "}
+                for now!
+              </div>
+            )}
+            {type === "otherApplication" && <div>for now!</div>}
+          </div>
+          <div className="text-xl font-semibold text-white mt-0.5">
+            <div>Explore more options below.</div>
+          </div>
+          <div className="flex justify-center w-full mt-6">
+            <img
+              src={bulb}
+              alt="Bulb"
+              className="w-[55px] h-[75px] fill-orange-500"
+            />
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <>
       <div className="hidden md:flex flex-col items-center pt-8 md:pt-24 mt-8 md:mt-12 px-4 md:pr-24 pb-4 ml-0 pl-0 mb-8">
@@ -546,7 +619,7 @@ const EmployerSectionDesktop: FC<EmployerSectionProps> = () => {
 
       {/* Mobile Carousel View */}
       <div className="block md:hidden w-full p-6 flex-grow overflow-x-hidden">
-        <div>
+        <div id="perfect-match-mobile">
           <h3 className="flex justify-center items-center mt-2 gap-2 text-[17px] text-[#F5722E] text-center font-semibold pb-2">
             <img
               src={sparkeIcon}
@@ -560,9 +633,8 @@ const EmployerSectionDesktop: FC<EmployerSectionProps> = () => {
             grabCursor={true}
             centeredSlides={true}
             slidesPerView={"auto"}
-            initialSlide={1}
+            initialSlide={0}
             modules={[]} // Remove unnecessary modules
-            onSwiper={setPerfectMatchApi}
             className="!pt-5 !pb-12 custom-swiper"
           >
             {getItemsWithAds(perfectMatch).map((item, index) => (
@@ -588,11 +660,13 @@ const EmployerSectionDesktop: FC<EmployerSectionProps> = () => {
                 )}
               </SwiperSlide>
             ))}
+            <SwiperSlide className="!w-[320px] flex justify-center items-center custom-slide">
+              <EndCard type="perfectMatch" />
+            </SwiperSlide>
           </Swiper>
-          <CircularPagination api={perfectMatchApi} color="#F5722E" />
         </div>
 
-        <div className="pt-12 pb-6">
+        <div id="other-applications-mobile" className="pt-12 pb-6">
           <h3 className="flex justify-center items-center mt-2 gap-2 text-[17px] text-[#AEADAD] text-center font-semibold pb-2">
             OTHER APPLICATION CARDS
           </h3>
@@ -601,9 +675,8 @@ const EmployerSectionDesktop: FC<EmployerSectionProps> = () => {
             grabCursor={true}
             centeredSlides={true}
             slidesPerView={"auto"}
-            initialSlide={1}
+            initialSlide={0}
             modules={[]} // Remove unnecessary modules
-            onSwiper={setOthersApi}
             className="!pt-5 !pb-12 custom-swiper"
           >
             {getItemsWithAds(others).map((item, index) => (
@@ -629,8 +702,10 @@ const EmployerSectionDesktop: FC<EmployerSectionProps> = () => {
                 )}
               </SwiperSlide>
             ))}
+            <SwiperSlide className="!w-[320px] flex justify-center items-center custom-slide">
+              <EndCard type="otherApplication" />
+            </SwiperSlide>
           </Swiper>
-          <CircularPagination api={othersApi} color="#F5722E" />
         </div>
       </div>
     </>
