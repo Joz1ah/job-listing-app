@@ -18,7 +18,7 @@ const JobHunter = lazy(() => import('pages').then(module => ({ default: module.J
 const CompleteProfile = lazy(() => import('pages').then(module => ({ default: module.CompleteProfile })))
 
 // Components imports
-const EmployerSection = lazy(() => import('components').then(module => ({ default: module.EmployerSectionDesktop })))
+const EmployerSection = lazy(() => import('components').then(module => ({ default: module.EmployerSectionDesktop})))
 const MatchCreation = lazy(() => import('components').then(module => ({ default: module.MatchCreation })))
 const CompanyProfile = lazy(() => import('components').then(module => ({ default: module.CompanyProfile })))
 

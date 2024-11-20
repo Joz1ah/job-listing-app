@@ -120,7 +120,7 @@ const EmployerCardDesktop: FC<MatchCardProps> = ({
         </div>
       </CardHeader>
       <CardContent>
-        <div className="h-[60px]">
+        <div className="h-[55px]">
           <SkillsWithEllipsis skills={match.skills} />
         </div>
         <div className="flex flex-col gap-1 mt-2">
@@ -157,10 +157,7 @@ const EmployerCardDesktop: FC<MatchCardProps> = ({
       </CardContent>
       <CardFooter className="flex flex-row justify-end -mt-4 -mr-4 space-x-1">
         <Button
-          className={`text-[12px] font-semibold px-0 w-[133px] h-[27px] ${
-            isFreeTrial ? "bg-gray-400" : "bg-orange-500"
-          }`}
-          disabled={isFreeTrial}
+          className= "text-[12px] font-semibold px-0 w-[133px] h-[27px] bg-orange-500"
         >
           Schedule Interview
         </Button>
@@ -180,7 +177,7 @@ const EmployerCardMobile: FC<MatchCardProps> = ({
   onBookmark = () => {},
   isFreeTrial = false,
 }) => (
-  <Card className="bg-[#F5F5F7] w-[300px] h-[380px] p-4 transition-all duration-300 hover:shadow-lg relative flex flex-col">
+  <Card className="bg-[#F5F5F7] w-[308px] h-[395px] p-4 transition-all duration-300 hover:shadow-lg relative flex flex-col">
     <CardHeader className="flex-1 overflow-y-auto p-0">
       <div className="w-full">
         <div className="flex flex-col items-end justify-end">
@@ -248,7 +245,7 @@ const EmployerCardMobile: FC<MatchCardProps> = ({
     <CardContent className="p-0 mt-auto flex flex-col items-center">
       <Button
         variant="default"
-        className= "text-[12px] font-semibold"
+        className= "text-[12px] font-semibold bg-orange-500"
       >
         Schedule Interview
       </Button>

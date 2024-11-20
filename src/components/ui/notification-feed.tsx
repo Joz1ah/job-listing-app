@@ -1,12 +1,13 @@
-import { FC, useState } from 'react';
-import { Bell, Ellipsis, ChevronDown } from 'lucide-react';
+import { FC, useState } from "react";
+import { Bell, Ellipsis, ChevronDown } from "lucide-react";
+import { ScrollArea } from "components";
+import { Badge } from "components";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from 'components';
-import { ScrollArea } from 'components';
-import { Badge } from 'components';
+} from "components";
+import freeTrialNotif from 'images/free-trial-bell.svg?url';
 
 type NotificationItem = {
   id: string;
@@ -17,34 +18,42 @@ type NotificationItem = {
   unread: boolean;
 };
 
+interface NotificationFeedProps {
+  isFreeTrial?: boolean;
+}
+
 const initialNewNotifications: NotificationItem[] = [
   {
-    id: '1',
-    title: 'Welcome to Akaza',
-    message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.',
+    id: "1",
+    title: "Welcome to Akaza",
+    message:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.",
     timestamp: new Date(Date.now() - 1000 * 20),
     unread: true,
   },
   {
-    id: '2',
-    title: 'You have a new Perfect Match',
-    message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.',
+    id: "2",
+    title: "You have a new Perfect Match",
+    message:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.",
     timestamp: new Date(Date.now() - 1000 * 60 * 30),
     hasMatch: true,
     unread: true,
   },
   {
-    id: '3',
-    title: 'You have a new Perfect Match',
-    message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.',
+    id: "3",
+    title: "You have a new Perfect Match",
+    message:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.",
     timestamp: new Date(Date.now() - 1000 * 60 * 45),
     hasMatch: true,
     unread: true,
   },
   {
-    id: '4',
-    title: 'You have a new Perfect Match',
-    message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.',
+    id: "4",
+    title: "You have a new Perfect Match",
+    message:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.",
     timestamp: new Date(Date.now() - 1000 * 60 * 50),
     hasMatch: true,
     unread: true,
@@ -53,44 +62,49 @@ const initialNewNotifications: NotificationItem[] = [
 
 const initialOlderNotifications: NotificationItem[] = [
   {
-    id: '5',
-    title: 'You have a new Perfect Match',
-    message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.',
+    id: "5",
+    title: "You have a new Perfect Match",
+    message:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.",
     timestamp: new Date(Date.now() - 1000 * 60 * 60 * 4),
     hasMatch: true,
     unread: true,
   },
   {
-    id: '6',
-    title: 'You have a new Perfect Match',
-    message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.',
+    id: "6",
+    title: "You have a new Perfect Match",
+    message:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.",
     timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24),
     hasMatch: true,
     unread: true,
   },
   {
-    id: '7',
-    title: 'You have a new Perfect Match',
-    message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.',
+    id: "7",
+    title: "You have a new Perfect Match",
+    message:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.",
     timestamp: new Date(Date.now() - 1000 * 60 * 60 * 48),
     hasMatch: true,
     unread: true,
   },
   {
-    id: '8',
-    title: 'You have a new Perfect Match',
-    message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.',
+    id: "8",
+    title: "You have a new Perfect Match",
+    message:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.",
     timestamp: new Date(Date.now() - 1000 * 60 * 60 * 72),
     hasMatch: true,
     unread: true,
   },
 ];
 
-const NotificationFeed: FC = () => {
+const NotificationFeed: FC<NotificationFeedProps> = ({ isFreeTrial = false }) => {
   const [expandedNew, setExpandedNew] = useState(false);
   const [newNotifications, setNewNotifications] = useState(initialNewNotifications);
   const [olderNotifications, setOlderNotifications] = useState(initialOlderNotifications);
   const [hasBeenViewed, setHasBeenViewed] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const displayedNewNotifications = expandedNew 
     ? newNotifications 
@@ -133,8 +147,9 @@ const NotificationFeed: FC = () => {
     );
   };
 
-  const handleOpenChange = (open: boolean) => {
-    if (open) {
+  const handleOpenChange = (openState: boolean) => {
+    setOpen(openState);
+    if (openState) {
       setHasBeenViewed(true);
     }
   };
@@ -181,60 +196,98 @@ const NotificationFeed: FC = () => {
   };
 
   return (
-    <Popover onOpenChange={handleOpenChange}>
-      <PopoverTrigger asChild>
-        <button className="relative p-2 rounded-full">
+    <div className="relative">
+      {isFreeTrial ? (
+        <div className="relative">
+        <button 
+          className="relative p-2 rounded-full z-50"
+          onClick={() => handleOpenChange(!open)}
+        >
           <Bell 
             className="w-[22px] h-[25px] text-orange-500 [transform:rotate(35deg)] cursor-pointer"
           />
-          {unreadCount > 0 && !hasBeenViewed && (
-            <Badge 
-              className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-red-500"
-              variant="secondary"
-            >
-              {unreadCount}
-            </Badge>
-          )}
         </button>
-      </PopoverTrigger>
-      <PopoverContent 
-        className="w-[350px] md:w-[400px] p-0 bg-[#121212] border-none shadow-xl rounded-none" 
-        align="end"
-      >
-        <div className="flex flex-col max-h-[90vh]">
-          <div className="flex-none">
-            {displayedNewNotifications.map((notification) => (
-              <NotificationItem key={notification.id} notification={notification} />
-            ))}
-            {newNotifications.length > 3 && (
-              <button
-                onClick={() => setExpandedNew(!expandedNew)}
-                className="w-full py-2 text-sm text-[#808080] hover:text-gray-400 hover:bg-[#1E1E1E] flex items-center justify-center gap-1"
-              >
-                {expandedNew ? 'Show Less' : 'Show More'}
-                <ChevronDown className={`h-4 w-4 transition-transform ${expandedNew ? 'rotate-180' : ''}`} />
-              </button>
-            )}
-          </div>
-
-          <div className="h-[2px] bg-white w-full" />
-
-          <ScrollArea className="h-[400px]">
-            {olderNotifications.map((notification) => (
-              <NotificationItem key={notification.id} notification={notification} />
-            ))}
-          </ScrollArea>
-
-          <button 
-            onClick={handleClearNotifications}
-            className="w-full py-3 text-center text-[13px] text-orange-500 hover:text-gray-400 hover:bg-[#1E1E1E] transition-colors"
-          >
-            Clear Notification
-          </button>
+        
+        <div 
+          className={`
+            fixed md:absolute left-0 md:left-auto right-0 md:right-0 top-16 md:top-full 
+            w-full md:w-[400px] overflow-hidden
+            transition-transform duration-1000 ease-out
+            ${open ? 'translate-y-0' : '-translate-y-full'}
+          `}
+        >
+            <div 
+              className={`
+                transform transition-transform duration-1000 ease-out
+                ${open ? 'translate-y-0' : '-translate-y-full'}
+              `}
+            >
+              <img 
+                src={freeTrialNotif}
+                alt="Free Trial Notification"
+                className="w-full h-auto"
+              />
+            </div>
         </div>
-      </PopoverContent>
-    </Popover>
+      </div>
+      ) : (
+        <Popover open={open} onOpenChange={handleOpenChange}>
+          <PopoverTrigger asChild>
+            <button className="relative p-2 rounded-full">
+              <Bell 
+                className="w-[22px] h-[25px] text-orange-500 [transform:rotate(35deg)] cursor-pointer"
+              />
+              {unreadCount > 0 && !hasBeenViewed && (
+                <Badge 
+                  className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-red-500"
+                  variant="secondary"
+                >
+                  {unreadCount}
+                </Badge>
+              )}
+            </button>
+          </PopoverTrigger>
+
+          <PopoverContent 
+            className="w-[350px] md:w-[400px] p-0 bg-black border border-black" 
+            align="end"
+          >
+            <div className="flex flex-col max-h-[90vh]">
+              <div className="flex-none">
+                {displayedNewNotifications.map((notification) => (
+                  <NotificationItem key={notification.id} notification={notification} />
+                ))}
+                {newNotifications.length > 3 && (
+                  <button
+                    onClick={() => setExpandedNew(!expandedNew)}
+                    className="w-full py-2 text-sm text-[#808080] hover:text-gray-400 hover:bg-[#1E1E1E] flex items-center justify-center gap-1"
+                  >
+                    {expandedNew ? 'Show Less' : 'Show More'}
+                    <ChevronDown className={`h-4 w-4 transition-transform ${expandedNew ? 'rotate-180' : ''}`} />
+                  </button>
+                )}
+              </div>
+
+              <div className="h-[2px] bg-white w-full" />
+
+              <ScrollArea className="h-[400px]">
+                {olderNotifications.map((notification) => (
+                  <NotificationItem key={notification.id} notification={notification} />
+                ))}
+              </ScrollArea>
+
+              <button 
+                onClick={handleClearNotifications}
+                className="w-full py-3 text-center text-[13px] text-orange-500 hover:text-gray-400 hover:bg-[#1E1E1E] transition-colors"
+              >
+                Clear Notification
+              </button>
+            </div>
+          </PopoverContent>
+        </Popover>
+      )}
+    </div>
   );
 };
 
-export { NotificationFeed }
+export { NotificationFeed };

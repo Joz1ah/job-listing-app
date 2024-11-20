@@ -4,42 +4,40 @@ import { useMenu } from "hooks";
 import { EmployerMenuHeader, FooterDesktop, PageMeta } from "components";
 import { Sidebar, EmployerHeader } from "components";
 import { employerDesktopMenu, employerMobileMenu } from "mockData/nav-menus";
+import { EmployerContext } from 'pages';
 
 const EmployerDesktop: FC = () => {
   const { menuOpen, toggleMenu } = useMenu();
-
+  const isFreeTrial = true;
 
   return (
-    
-    <div className="flex flex-col min-h-screen bg-gray-900 text-white">
-      <PageMeta title="Employer Dashboard" />
+    <EmployerContext.Provider value={{ isFreeTrial }}>
+      <div className="flex flex-col min-h-screen bg-gray-900 text-white">
+        <PageMeta title="Employer Dashboard" />
 
-      {/* Header */}
-      <EmployerMenuHeader
-      isMenuOpen={menuOpen}
-      onToggleMenu={toggleMenu}
-      desktopMenuItems={employerDesktopMenu}
-      mobileMenuItems={employerMobileMenu}
-    />
-      
-      {/* Main content */}
-      <main className="flex-grow flex flex-col md:flex-row bg-[#242625] md:mt-16 w-full">
+        <EmployerMenuHeader
+          isMenuOpen={menuOpen}
+          onToggleMenu={toggleMenu}
+          desktopMenuItems={employerDesktopMenu}
+          mobileMenuItems={employerMobileMenu}
+          isFreeTrial={isFreeTrial}
+        />
+        
+        <main className="flex-grow flex flex-col md:flex-row bg-[#242625] md:mt-16 w-full">
+          <div className="flex flex-col md:mt-10 md:ml-16 mb-8">
+            <EmployerHeader isFreeTrial={isFreeTrial}/>
+            <Sidebar />
+          </div>
 
-        <div className="flex flex-col md:mt-10 md:ml-16 mb-8">
-          <EmployerHeader isFreeTrial={true}/>
-          <Sidebar />
-        </div>
+          <div className="flex-1 flex justify-center">
+            <Outlet />
+          </div>
+        </main>
 
-        <div className="flex-1 flex justify-center">
-          <Outlet />
-        </div>
-
-      </main>
-
-      {/* Footer */}
-      <FooterDesktop />
-    </div>
+        <FooterDesktop />
+      </div>
+    </EmployerContext.Provider>
   );
 }
 
-export { EmployerDesktop }
+export { EmployerDesktop };

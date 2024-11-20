@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from "react";
-import { NavLink, useLocation } from "react-router-dom"; // Add useLocation
+import { NavLink, useLocation } from "react-router-dom";
 import { Button } from "components/ui/buttons";
-import { BadgeCheck, ChevronDown } from "lucide-react";
+import { BadgeCheck, ChevronDown, Info } from "lucide-react";
 import companyLogo from "images/company-logo.png";
 import akazaLogoWhite from "images/akaza-logo-white.png";
 import menuButton from "images/menu-button.png";
@@ -18,13 +18,15 @@ interface HeaderProps {
   onToggleMenu: () => void;
   desktopMenuItems: NavItem[];
   mobileMenuItems: NavItem[];
+  isFreeTrial?:boolean;
 }
 
 const JobHunterMenuHeader: FC<HeaderProps> = ({ 
   isMenuOpen, 
   onToggleMenu, 
   desktopMenuItems,
-  mobileMenuItems 
+  mobileMenuItems,
+  isFreeTrial 
 }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const location = useLocation(); // Add this hook
@@ -78,6 +80,14 @@ const JobHunterMenuHeader: FC<HeaderProps> = ({
     }
   };
 
+  const renderStatusIcon = () => {
+    if (isFreeTrial) {
+      return <Info className="w-4 h-4 text-[#2D3A41] fill-white" />;
+    } else
+    return <BadgeCheck className="w-4 h-4 text-[#2D3A41] fill-orange-500" />;
+  };
+
+
   return (
     <>
       {/* Desktop Header */}
@@ -108,14 +118,14 @@ const JobHunterMenuHeader: FC<HeaderProps> = ({
           </nav>
         </div>
         <div className="flex items-center space-x-4 flex-shrink-0">
-          <NotificationFeed />
+          <NotificationFeed isFreeTrial={isFreeTrial}/>
           <div className="flex items-center space-x-2">
             <NavLink to="/job-feed-employer" onClick={handleNavLinkClick}>
               <span className="text-white font-medium text-[18px]">
                 Michael V
               </span>
             </NavLink>
-            <BadgeCheck className="w-4 h-4 text-[#2D3A41] fill-orange-500" />
+            {renderStatusIcon()}
             <ChevronDown
               onClick={onToggleMenu}
               className="w-4 h-4 text-white cursor-pointer"
@@ -128,7 +138,7 @@ const JobHunterMenuHeader: FC<HeaderProps> = ({
       <header className="md:hidden bg-black py-4 px-2 flex justify-between items-center">
         <img src={akazaLogoWhite} alt="Akaza Logo" className="h-8" />
         <div className="flex items-center">
-          <NotificationFeed />
+          <NotificationFeed isFreeTrial={isFreeTrial}/>
           <Button
             variant="custom"
             className="text-[#F5722E] bg-black"

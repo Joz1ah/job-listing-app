@@ -116,7 +116,7 @@ const JobHunterCardDesktop: FC<MatchCardProps> = ({
         </div>
       </CardHeader>
       <CardContent>
-        <div className="h-[60px]">
+        <div className="h-[55px]">
           <SkillsWithEllipsis skills={match.skills} />
         </div>
 
@@ -148,10 +148,7 @@ const JobHunterCardDesktop: FC<MatchCardProps> = ({
       </CardContent>
       <CardFooter className="flex flex-row justify-end -mt-5 -mr-4 space-x-1">
         <Button
-          className={`text-[12px] font-semibold px-0 w-[133px] h-[27px] ${
-            isFreeTrial ? "bg-gray-400" : "bg-orange-500"
-          }`}
-          disabled={isFreeTrial}
+          className="text-[12px] font-semibold px-0 w-[133px] h-[27px] bg-orange-500"
         >
           I'm Interested
         </Button>
@@ -237,7 +234,7 @@ const JobHunterCardMobile: FC<MatchCardProps> = ({
     <CardContent className="p-0 mt-auto flex flex-col items-center">
       <Button
         variant="default"
-        className= "text-[12px] font-semibold ">
+        className= "text-[12px] font-semibold bg-orange-500">
         I'm Interested
       </Button>
       <MoreVertical

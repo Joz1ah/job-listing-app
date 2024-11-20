@@ -5,23 +5,64 @@ import { Button } from "components";
 import { CircularPagination } from "components";
 import { EmployerCardLoading, BookmarkLimitHandler } from "components";
 import { EmployerCardDesktop, EmployerCardMobile } from "components";
+import employerAds from "images/employer-ads.svg?url";
+import employerMobileAds from "images/employer-mobile-ads.svg?url";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperType } from "swiper";
 
+import { useEmployerContext } from "pages";
+
 interface selectedProps {
   setSelectedTab: (tab: string) => void;
+  isFreeTrial?: boolean;
 }
 
-const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
-  const [displayedItems, setDisplayedItems] = useState<typeof perfectMatch>(
-    perfectMatch.slice(0, 6),
-  );
+interface Skill {
+  name: string;
+  isMatch: boolean;
+}
+
+interface Match {
+  name: string;
+  location: string;
+  job: string;
+  skills: Skill[];
+  appliedAgo: string;
+  experience: string;
+  lookingFor: string[];
+  salaryExpectation: string;
+  language: string[];
+}
+
+interface AdItem {
+  isAd: true;
+  image: string;
+}
+
+type CardItem = Match | AdItem;
+
+const PerfectMatch: FC<selectedProps> = ({
+  setSelectedTab,
+  isFreeTrial,
+}) => {
+  const [displayedItems, setDisplayedItems] = useState<CardItem[]>(() => {
+    // Initial load of 5 items
+    const initialItems = perfectMatch.slice(0, 5);
+    if (isFreeTrial) {
+      // Insert first ad at position 3
+      return [
+        ...initialItems.slice(0, 3),
+        { isAd: true, image: employerAds },
+        ...initialItems.slice(3),
+      ];
+    }
+    return initialItems;
+  });
+
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(perfectMatch.length > 6);
   const loaderRef = useRef<HTMLDivElement>(null);
-
-  const ITEMS_PER_PAGE = 2;
 
   const loadMore = async () => {
     if (loading || !hasMore) return;
@@ -30,7 +71,10 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    const startIndex = displayedItems.length;
+    const currentItemCount = isFreeTrial
+      ? displayedItems.filter((item): item is Match => !("isAd" in item)).length
+      : displayedItems.length;
+    const startIndex = currentItemCount;
     const remainingItems = perfectMatch.length - startIndex;
 
     if (remainingItems <= 0) {
@@ -39,12 +83,20 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
       return;
     }
 
-    const itemsToLoad = Math.min(ITEMS_PER_PAGE, remainingItems);
+    const itemsToLoad = Math.min(2, remainingItems);
     const newItems = perfectMatch.slice(startIndex, startIndex + itemsToLoad);
 
-    if (newItems.length > 0) {
-      setDisplayedItems((prev) => [...prev, ...newItems]);
+    // Only add ads if isFreeTrial is true
+    let newDisplayItems: CardItem[] = newItems;
+    if (isFreeTrial) {
+      const realItemsAfterLoad = currentItemCount + itemsToLoad;
+      const needsAd = (realItemsAfterLoad - 3) % 5 === 0;
+      if (needsAd) {
+        newDisplayItems = [...newItems, { isAd: true, image: employerAds }];
+      }
     }
+
+    setDisplayedItems((prev) => [...prev, ...newDisplayItems]);
 
     if (startIndex + itemsToLoad >= perfectMatch.length) {
       setHasMore(false);
@@ -55,10 +107,28 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
 
   // Reset when switching tabs
   useEffect(() => {
-    setDisplayedItems(perfectMatch.slice(0, 6));
+    const initialItems = perfectMatch.slice(0, 5);
+    if (isFreeTrial) {
+      setDisplayedItems([
+        ...initialItems.slice(0, 3),
+        { isAd: true, image: employerAds },
+        ...initialItems.slice(3),
+      ]);
+    } else {
+      setDisplayedItems(initialItems);
+    }
     setHasMore(perfectMatch.length > 6);
     setLoading(false);
-  }, [setSelectedTab]);
+  }, [setSelectedTab, isFreeTrial]);
+
+  // Calculate loading cards - always show 2 if loading
+  // Update the remainingItems calculation
+  const remainingItems = isFreeTrial
+    ? perfectMatch.length -
+      displayedItems.filter((item) => !("isAd" in item)).length
+    : perfectMatch.length - displayedItems.length;
+  const showLoadingCards = loading && remainingItems > 0;
+  const loadingCardsCount = Math.min(2, remainingItems);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -93,23 +163,35 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
     });
   };
 
-  // Calculate remaining items and loading cards needed
-  const remainingItems = perfectMatch.length - displayedItems.length;
-  const showLoadingCards = loading && remainingItems > 0;
-  const loadingCardsCount = Math.min(2, remainingItems);
-
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
       <BookmarkLimitHandler
-        isFreeTrial={true}
+        isFreeTrial={isFreeTrial}
         maxBookmarks={3}
         onUpgradeClick={() => {
           console.log("Upgrade clicked");
         }}
       >
-        {displayedItems.map((match, index) => (
-          <EmployerCardDesktop key={index} match={match} />
-        ))}
+        {displayedItems.map((item, index) =>
+          "isAd" in item ? (
+            <div
+              key={`ad-${index}`}
+              className="w-full md:w-[436px] h-[275px] rounded-lg overflow-hidden"
+            >
+              <img
+                src={item.image}
+                alt="Employer Ad"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          ) : (
+            <EmployerCardDesktop
+              key={index}
+              match={item}
+              isFreeTrial={isFreeTrial}
+            />
+          ),
+        )}
       </BookmarkLimitHandler>
 
       {/* Dynamic Loading Cards */}
@@ -145,15 +227,27 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
   );
 };
 
-const OtherApplications: FC<selectedProps> = ({ setSelectedTab }) => {
-  const [displayedItems, setDisplayedItems] = useState<typeof others>(
-    others.slice(0, 6),
-  );
+const OtherApplications: FC<selectedProps> = ({
+  setSelectedTab,
+  isFreeTrial,
+}) => {
+  const [displayedItems, setDisplayedItems] = useState<CardItem[]>(() => {
+    // Initial load of 5 items
+    const initialItems = others.slice(0, 5);
+    if (isFreeTrial) {
+      // Insert first ad at position 3
+      return [
+        ...initialItems.slice(0, 3),
+        { isAd: true, image: employerAds },
+        ...initialItems.slice(3),
+      ];
+    }
+    return initialItems;
+  });
+
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(others.length > 6);
   const loaderRef = useRef<HTMLDivElement>(null);
-
-  const ITEMS_PER_PAGE = 2;
 
   const loadMore = async () => {
     if (loading || !hasMore) return;
@@ -162,7 +256,10 @@ const OtherApplications: FC<selectedProps> = ({ setSelectedTab }) => {
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    const startIndex = displayedItems.length;
+    const currentItemCount = isFreeTrial
+      ? displayedItems.filter((item): item is Match => !("isAd" in item)).length
+      : displayedItems.length;
+    const startIndex = currentItemCount;
     const remainingItems = others.length - startIndex;
 
     if (remainingItems <= 0) {
@@ -171,12 +268,20 @@ const OtherApplications: FC<selectedProps> = ({ setSelectedTab }) => {
       return;
     }
 
-    const itemsToLoad = Math.min(ITEMS_PER_PAGE, remainingItems);
+    const itemsToLoad = Math.min(2, remainingItems);
     const newItems = others.slice(startIndex, startIndex + itemsToLoad);
 
-    if (newItems.length > 0) {
-      setDisplayedItems((prev) => [...prev, ...newItems]);
+    // Only add ads if isFreeTrial is true
+    let newDisplayItems: CardItem[] = newItems;
+    if (isFreeTrial) {
+      const realItemsAfterLoad = currentItemCount + itemsToLoad;
+      const needsAd = (realItemsAfterLoad - 3) % 5 === 0;
+      if (needsAd) {
+        newDisplayItems = [...newItems, { isAd: true, image: employerAds }];
+      }
     }
+
+    setDisplayedItems((prev) => [...prev, ...newDisplayItems]);
 
     if (startIndex + itemsToLoad >= others.length) {
       setHasMore(false);
@@ -187,10 +292,26 @@ const OtherApplications: FC<selectedProps> = ({ setSelectedTab }) => {
 
   // Reset when switching tabs
   useEffect(() => {
-    setDisplayedItems(others.slice(0, 6));
+    const initialItems = others.slice(0, 5);
+    if (isFreeTrial) {
+      setDisplayedItems([
+        ...initialItems.slice(0, 3),
+        { isAd: true, image: employerAds },
+        ...initialItems.slice(3),
+      ]);
+    } else {
+      setDisplayedItems(initialItems);
+    }
     setHasMore(others.length > 6);
     setLoading(false);
-  }, [setSelectedTab]);
+  }, [setSelectedTab, isFreeTrial]);
+
+  // Calculate loading cards - always show 2 if loading
+  const remainingItems = isFreeTrial
+    ? others.length - displayedItems.filter((item) => !("isAd" in item)).length
+    : others.length - displayedItems.length;
+  const showLoadingCards = loading && remainingItems > 0;
+  const loadingCardsCount = Math.min(2, remainingItems);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -225,23 +346,35 @@ const OtherApplications: FC<selectedProps> = ({ setSelectedTab }) => {
     });
   };
 
-  // Calculate remaining items and loading cards needed
-  const remainingItems = others.length - displayedItems.length;
-  const showLoadingCards = loading && remainingItems > 0;
-  const loadingCardsCount = Math.min(2, remainingItems);
-
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
       <BookmarkLimitHandler
-        isFreeTrial={true}
+        isFreeTrial={isFreeTrial}
         maxBookmarks={3}
         onUpgradeClick={() => {
           console.log("Upgrade clicked");
         }}
       >
-        {displayedItems.map((match, index) => (
-          <EmployerCardDesktop key={index} match={match} />
-        ))}
+        {displayedItems.map((item, index) =>
+          "isAd" in item ? (
+            <div
+              key={`ad-${index}`}
+              className="w-full md:w-[436px] h-[275px] rounded-lg overflow-hidden"
+            >
+              <img
+                src={item.image}
+                alt="Job Hunter Ad"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          ) : (
+            <EmployerCardDesktop
+              key={index}
+              match={item}
+              isFreeTrial={isFreeTrial}
+            />
+          ),
+        )}
       </BookmarkLimitHandler>
 
       {/* Dynamic Loading Cards */}
@@ -277,7 +410,11 @@ const OtherApplications: FC<selectedProps> = ({ setSelectedTab }) => {
   );
 };
 
-const EmployerSectionDesktop: FC = () => {
+interface EmployerSectionProps {
+  isFreeTrial?: boolean;
+}
+
+const EmployerSectionDesktop: FC<EmployerSectionProps> = () => {
   const [selectedTab, setSelectedTab] = useState("perfectMatch");
   const [perfectMatchApi, setPerfectMatchApi] = useState<
     SwiperType | undefined
@@ -285,6 +422,7 @@ const EmployerSectionDesktop: FC = () => {
   const [othersApi, setOthersApi] = useState<SwiperType | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
   const [bookmarkedCards, setBookmarkedCards] = useState(new Set());
+  const { isFreeTrial } = useEmployerContext();
 
   const toggleBookmark = (section: string, index: number) => {
     const combinedId = `${section}-${index}`;
@@ -326,6 +464,24 @@ const EmployerSectionDesktop: FC = () => {
         ))}
       </div>
     );
+  };
+
+  // Helper function to inject ads for mobile view
+  const getItemsWithAds = (items: Match[]): CardItem[] => {
+    if (!isFreeTrial) return items;
+
+    const result: CardItem[] = [];
+    let itemCount = 0;
+
+    items.forEach((item) => {
+      if (itemCount === 3 || (itemCount > 3 && (itemCount - 3) % 5 === 0)) {
+        result.push({ isAd: true, image: employerMobileAds });
+      }
+      result.push(item);
+      itemCount++;
+    });
+
+    return result;
   };
 
   return (
@@ -373,9 +529,15 @@ const EmployerSectionDesktop: FC = () => {
           ) : (
             <div className="w-full">
               {selectedTab === "perfectMatch" ? (
-                <PerfectMatch setSelectedTab={handleTabChange} />
+                <PerfectMatch
+                  setSelectedTab={handleTabChange}
+                  isFreeTrial={isFreeTrial}
+                />
               ) : (
-                <OtherApplications setSelectedTab={handleTabChange} />
+                <OtherApplications
+                  setSelectedTab={handleTabChange}
+                  isFreeTrial={isFreeTrial}
+                />
               )}
             </div>
           )}
@@ -403,18 +565,27 @@ const EmployerSectionDesktop: FC = () => {
             onSwiper={setPerfectMatchApi}
             className="!pt-5 !pb-12 custom-swiper"
           >
-            {perfectMatch.map((match, index) => (
+            {getItemsWithAds(perfectMatch).map((item, index) => (
               <SwiperSlide
                 key={index}
                 className="!w-[320px] flex justify-center items-center custom-slide"
               >
-                <div className="relative w-full max-w-[320px]">
-                  <EmployerCardMobile match={match} 
-                  isFreeTrial={false}
-                  bookmarked={bookmarkedCards.has(`perfectMatch-${index}`)}
-                  onBookmark={() => toggleBookmark("perfectMatch", index)} 
+                {"isAd" in item ? (
+                  <img
+                    src={item.image}
+                    alt="Employer Ad"
+                    className="w-[308px] mr-3"
                   />
-                </div>
+                ) : (
+                  <div className="relative w-full max-w-[320px]">
+                    <EmployerCardMobile
+                      match={item}
+                      isFreeTrial={isFreeTrial}
+                      bookmarked={bookmarkedCards.has(`perfectMatch-${index}`)}
+                      onBookmark={() => toggleBookmark("perfectMatch", index)}
+                    />
+                  </div>
+                )}
               </SwiperSlide>
             ))}
           </Swiper>
@@ -435,18 +606,27 @@ const EmployerSectionDesktop: FC = () => {
             onSwiper={setOthersApi}
             className="!pt-5 !pb-12 custom-swiper"
           >
-            {others.map((other, index) => (
+            {getItemsWithAds(others).map((item, index) => (
               <SwiperSlide
                 key={index}
                 className="!w-[320px] flex justify-center items-center custom-slide"
               >
-                <div className="relative w-full max-w-[320px]">
-                  <EmployerCardMobile match={other} 
-                  isFreeTrial={false}
-                  bookmarked={bookmarkedCards.has(`others-${index}`)}
-                  onBookmark={() => toggleBookmark("others", index)} 
+                {"isAd" in item ? (
+                  <img
+                    src={item.image}
+                    alt="Employer Ad"
+                    className="w-[308px] mr-3"
                   />
-                </div>
+                ) : (
+                  <div className="relative w-full max-w-[320px]">
+                    <EmployerCardMobile
+                      match={item}
+                      isFreeTrial={isFreeTrial}
+                      bookmarked={bookmarkedCards.has(`others-${index}`)}
+                      onBookmark={() => toggleBookmark("others", index)}
+                    />
+                  </div>
+                )}
               </SwiperSlide>
             ))}
           </Swiper>
