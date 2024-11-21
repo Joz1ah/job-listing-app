@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { FC, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ChevronLeft,
@@ -67,7 +67,7 @@ interface FormFieldProps {
   tooltipContent?: string | React.ReactNode; // Modified to accept ReactNode
 }
 
-const FormField = React.forwardRef<HTMLDivElement, FormFieldProps>(
+const FormField: FC<FormFieldProps> = React.forwardRef<HTMLDivElement, FormFieldProps>(
   (
     { label, children, className, error, touched, showIcon, tooltipContent },
     ref,
@@ -147,7 +147,7 @@ const LoadingOverlay = () => (
   </div>
 );
 
-const MatchCreation = () => {
+const JobListingForm: FC = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [showPreview, setShowPreview] = useState<boolean>(false);
@@ -702,4 +702,4 @@ const MatchCreation = () => {
   );
 };
 
-export { MatchCreation };
+export { JobListingForm };

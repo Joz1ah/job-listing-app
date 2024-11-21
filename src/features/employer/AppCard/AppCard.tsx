@@ -18,7 +18,7 @@ interface Skill {
 interface Match {
   name: string;
   location: string;
-  job: string;
+  job: string
   skills: Skill[];
   appliedAgo: string;
   experience: string;
@@ -87,7 +87,7 @@ const LanguageTag: FC<{ language: string }> = ({ language }) => (
   </span>
 );
 
-const EmployerCardDesktop: FC<MatchCardProps> = ({
+const AppCardDesktop: FC<MatchCardProps> = ({
   match,
   bookmarked = false,
   onBookmark = () => {},
@@ -171,7 +171,7 @@ const EmployerCardDesktop: FC<MatchCardProps> = ({
   );
 };
 
-const EmployerCardMobile: FC<MatchCardProps> = ({
+const AppCardMobile: FC<MatchCardProps> = ({
   match,
   bookmarked = false,
   onBookmark = () => {},
@@ -258,4 +258,4 @@ const EmployerCardMobile: FC<MatchCardProps> = ({
   </Card>
 );
 
-export { EmployerCardDesktop, EmployerCardMobile };
+export { AppCardDesktop, AppCardMobile };

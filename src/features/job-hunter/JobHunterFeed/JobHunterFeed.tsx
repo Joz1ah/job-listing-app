@@ -6,16 +6,16 @@ import jobHunterMobileAds from "images/job-hunter-mobile-ads.svg?url";
 import bulb from "images/bulb.svg?url";
 
 import { Button } from "components";
-import { JobHunterCardLoading } from "components";
+import { JobCardSkeleton } from "components";
 import {
-  JobHunterCardDesktop,
-  JobHunterCardMobile,
   BookmarkLimitHandler,
 } from "components";
 
+import { JobCardDesktop, JobCardMobile } from "features";
+
 import { Swiper, SwiperSlide } from "swiper/react";
 
-import { useJobHunterContext } from "pages";
+import { useJobHunterContext } from "components";
 
 interface selectedProps {
   setSelectedTab: (tab: string) => void;
@@ -187,7 +187,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
               />
             </div>
           ) : (
-            <JobHunterCardDesktop
+            <JobCardDesktop
               key={index}
               match={item}
               isFreeTrial={isFreeTrial}
@@ -198,8 +198,8 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
 
       {showLoadingCards && (
         <>
-          <JobHunterCardLoading />
-          {loadingCardsCount > 1 && <JobHunterCardLoading />}
+          <JobCardSkeleton />
+          {loadingCardsCount > 1 && <JobCardSkeleton />}
         </>
       )}
 
@@ -369,7 +369,7 @@ const OtherApplications: FC<selectedProps> = ({
               />
             </div>
           ) : (
-            <JobHunterCardDesktop
+            <JobCardDesktop
               key={index}
               match={item}
               isFreeTrial={isFreeTrial}
@@ -381,8 +381,8 @@ const OtherApplications: FC<selectedProps> = ({
       {/* Dynamic Loading Cards */}
       {showLoadingCards && (
         <>
-          <JobHunterCardLoading />
-          {loadingCardsCount > 1 && <JobHunterCardLoading />}
+          <JobCardSkeleton />
+          {loadingCardsCount > 1 && <JobCardSkeleton />}
         </>
       )}
 
@@ -415,7 +415,7 @@ interface JobHunterSectionProps {
   isFreeTrial?: boolean;
 }
 
-const JobHunterSectionDesktop: FC<JobHunterSectionProps> = () => {
+const JobHunterFeed: FC<JobHunterSectionProps> = () => {
   const [selectedTab, setSelectedTab] = useState("perfectMatch");
 
   const [isLoading, setIsLoading] = useState(true);
@@ -458,7 +458,7 @@ const JobHunterSectionDesktop: FC<JobHunterSectionProps> = () => {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
         {[1, 2, 3, 4].map((i) => (
-          <JobHunterCardLoading key={i} />
+          <JobCardSkeleton key={i} />
         ))}
       </div>
     );
@@ -655,7 +655,7 @@ const JobHunterSectionDesktop: FC<JobHunterSectionProps> = () => {
                   />
                 ) : (
                   <div className="relative w-full max-w-[320px]">
-                    <JobHunterCardMobile
+                    <JobCardMobile
                       match={item}
                       isFreeTrial={isFreeTrial}
                       bookmarked={bookmarkedCards.has(`perfectMatch-${index}`)}
@@ -697,7 +697,7 @@ const JobHunterSectionDesktop: FC<JobHunterSectionProps> = () => {
                   />
                 ) : (
                   <div className="relative w-full max-w-[320px]">
-                    <JobHunterCardMobile
+                    <JobCardMobile
                       match={item}
                       isFreeTrial={isFreeTrial}
                       bookmarked={bookmarkedCards.has(`others-${index}`)}
@@ -717,4 +717,4 @@ const JobHunterSectionDesktop: FC<JobHunterSectionProps> = () => {
   );
 };
 
-export { JobHunterSectionDesktop };
+export { JobHunterFeed };

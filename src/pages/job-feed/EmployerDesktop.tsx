@@ -1,10 +1,11 @@
 import { FC } from "react";
 import { Outlet } from "react-router-dom";
 import { useMenu } from "hooks";
-import { EmployerMenuHeader, FooterDesktop, PageMeta } from "components";
-import { Sidebar, EmployerHeader } from "components";
+import { PageMeta } from "components";
+import { EmployerMenu, EmployerHeader, Footer } from "layouts";
+import { Sidebar } from "features";
 import { employerDesktopMenu, employerMobileMenu } from "mockData/nav-menus";
-import { EmployerContext } from 'pages';
+import { EmployerContext } from 'components';
 
 const EmployerDesktop: FC = () => {
   const { menuOpen, toggleMenu } = useMenu();
@@ -15,7 +16,7 @@ const EmployerDesktop: FC = () => {
       <div className="flex flex-col min-h-screen bg-gray-900 text-white">
         <PageMeta title="Employer Dashboard" />
 
-        <EmployerMenuHeader
+        <EmployerMenu
           isMenuOpen={menuOpen}
           onToggleMenu={toggleMenu}
           desktopMenuItems={employerDesktopMenu}
@@ -34,7 +35,7 @@ const EmployerDesktop: FC = () => {
           </div>
         </main>
 
-        <FooterDesktop />
+        <Footer />
       </div>
     </EmployerContext.Provider>
   );

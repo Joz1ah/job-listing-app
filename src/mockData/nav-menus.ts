@@ -5,8 +5,8 @@ interface NavItem {
   }
   
   export const employerDesktopMenu: NavItem[] = [
-    { name: 'MANAGE JOB LISTINGS', path: '#' },
-    { name: 'EDIT COMPANY PROFILE', path: '/job-feed-employer/company-profile' },
+    { name: 'MANAGE JOB LISTINGS', path: '/job-feed-employer' },
+    { name: 'EDIT COMPANY PROFILE', path: '/job-feed-employer/employer-profile' },
     { name: 'REPORTS & ANALYTICS', path: '#' },
     { name: 'INTERVIEWS', path: '#' },
     { name: '✦ SUBSCRIPTION PLANS', path: '#', isSpecial: true },
@@ -15,9 +15,9 @@ interface NavItem {
   ];
   
   export const employerMobileMenu: NavItem[] = [
-    { name: 'CREATE JOB LISTING', path: '/job-feed-employer/job-creation' },
-    { name: 'MANAGE JOB LISTINGS', path: '#' },
-    { name: 'EDIT COMPANY PROFILE', path: '/job-feed-employer/company-profile' },
+    { name: 'CREATE JOB LISTING', path: '/job-feed-employer/job-listing' },
+    { name: 'MANAGE JOB LISTINGS', path: '/job-feed-employer' },
+    { name: 'EDIT COMPANY PROFILE', path: '/job-feed-employer/employer-profile' },
     { name: 'REPORTS & ANALYTICS', path: '#' },
     { name: 'INTERVIEWS', path: '#' },
     { name: 'ABOUT US', path: '#'},
@@ -28,7 +28,7 @@ interface NavItem {
   ];
 
   export const jobHunterDesktopMenu: NavItem[] = [
-    { name: 'EDIT APPLICATION CARD', path: '/complete-profile' },
+    { name: 'EDIT APPLICATION CARD', path: '/create-application' },
     { name: 'BOOKMARKED JOBS', path: '#'},
     { name: 'INTERVIEWS', path: '#'},
     { name: '✦ SUBSCRIPTION PLANS', path: '#', isSpecial: true },
@@ -37,7 +37,7 @@ interface NavItem {
   ];
 
   export const jobHunterMobileMenu: NavItem[] = [
-    { name: 'EDIT APPLICATION CARD', path: '/complete-profile' },
+    { name: 'EDIT APPLICATION CARD', path: '/create-application' },
     { name: 'BOOKMARKED JOBS', path: '#'},
     { name: 'INTERVIEWS', path: '#'},
     { name: 'ABOUT US', path: '#'},

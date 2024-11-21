@@ -2,15 +2,15 @@ import { FC, useState, useEffect, useRef } from "react";
 import sparkeIcon from "images/sparkle-icon.png";
 import { perfectMatch, others } from "mockData/employer-data";
 import { Button } from "components";
-import { EmployerCardLoading, BookmarkLimitHandler } from "components";
-import { EmployerCardDesktop, EmployerCardMobile } from "components";
+import { AppCardSkeleton, BookmarkLimitHandler } from "components";
+import { AppCardDesktop, AppCardMobile } from "features";
 import employerAds from "images/employer-ads.svg?url";
 import employerMobileAds from "images/employer-mobile-ads.svg?url";
 import bulb from "images/bulb.svg?url";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 
-import { useEmployerContext } from "pages";
+import { useEmployerContext } from "components";
 
 interface selectedProps {
   setSelectedTab: (tab: string) => void;
@@ -184,7 +184,7 @@ const PerfectMatch: FC<selectedProps> = ({
               />
             </div>
           ) : (
-            <EmployerCardDesktop
+            <AppCardDesktop
               key={index}
               match={item}
               isFreeTrial={isFreeTrial}
@@ -196,8 +196,8 @@ const PerfectMatch: FC<selectedProps> = ({
       {/* Dynamic Loading Cards */}
       {showLoadingCards && (
         <>
-          <EmployerCardLoading />
-          {loadingCardsCount > 1 && <EmployerCardLoading />}
+          <AppCardSkeleton />
+          {loadingCardsCount > 1 && <AppCardSkeleton />}
         </>
       )}
 
@@ -367,7 +367,7 @@ const OtherApplications: FC<selectedProps> = ({
               />
             </div>
           ) : (
-            <EmployerCardDesktop
+            <AppCardDesktop
               key={index}
               match={item}
               isFreeTrial={isFreeTrial}
@@ -379,8 +379,8 @@ const OtherApplications: FC<selectedProps> = ({
       {/* Dynamic Loading Cards */}
       {showLoadingCards && (
         <>
-          <EmployerCardLoading />
-          {loadingCardsCount > 1 && <EmployerCardLoading />}
+          <AppCardSkeleton />
+          {loadingCardsCount > 1 && <AppCardSkeleton />}
         </>
       )}
 
@@ -413,7 +413,7 @@ interface EmployerSectionProps {
   isFreeTrial?: boolean;
 }
 
-const EmployerSectionDesktop: FC<EmployerSectionProps> = () => {
+const EmployerFeed: FC<EmployerSectionProps> = () => {
   const [selectedTab, setSelectedTab] = useState("perfectMatch");
   const [isLoading, setIsLoading] = useState(true);
   const [bookmarkedCards, setBookmarkedCards] = useState(new Set());
@@ -455,7 +455,7 @@ const EmployerSectionDesktop: FC<EmployerSectionProps> = () => {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
         {[1, 2, 3, 4].map((i) => (
-          <EmployerCardLoading key={i} />
+          <AppCardSkeleton key={i} />
         ))}
       </div>
     );
@@ -650,7 +650,7 @@ const EmployerSectionDesktop: FC<EmployerSectionProps> = () => {
                   />
                 ) : (
                   <div className="relative w-full max-w-[320px]">
-                    <EmployerCardMobile
+                    <AppCardMobile
                       match={item}
                       isFreeTrial={isFreeTrial}
                       bookmarked={bookmarkedCards.has(`perfectMatch-${index}`)}
@@ -692,7 +692,7 @@ const EmployerSectionDesktop: FC<EmployerSectionProps> = () => {
                   />
                 ) : (
                   <div className="relative w-full max-w-[320px]">
-                    <EmployerCardMobile
+                    <AppCardMobile
                       match={item}
                       isFreeTrial={isFreeTrial}
                       bookmarked={bookmarkedCards.has(`others-${index}`)}
@@ -711,4 +711,4 @@ const EmployerSectionDesktop: FC<EmployerSectionProps> = () => {
     </>
   );
 };
-export { EmployerSectionDesktop };
+export { EmployerFeed };

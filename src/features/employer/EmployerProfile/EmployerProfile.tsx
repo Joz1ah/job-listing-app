@@ -1,9 +1,9 @@
-import React from "react";
+import React, { FC } from "react";
 import { ChevronLeft, AlertTriangle, CircleAlert } from "lucide-react";
 import { Input, Button, Label } from "components";
 import { NavLink } from "react-router-dom";
 
-import EmployerProfile from "images/EmployerProfile.svg?url";
+import employerProfileCard from "images/EmployerProfileCard.svg?url";
 
 import { PhoneInput } from "components";
 
@@ -49,7 +49,7 @@ interface FormFieldProps {
   tooltipContent?: string | React.ReactNode; // Modified to accept ReactNode
 }
 
-const FormField = React.forwardRef<HTMLDivElement, FormFieldProps>(
+const FormField: FC<FormFieldProps> = React.forwardRef<HTMLDivElement, FormFieldProps>(
   (
     { label, children, className, error, touched, showIcon, tooltipContent },
     ref,
@@ -124,7 +124,7 @@ const validationSchema = Yup.object().shape({
   jobDescription: Yup.string().required("This field is required"),
 });
 
-const CompanyProfile = () => {
+const EmployerProfile: FC = () => {
   const selectOptions = {
     country: [
       { value: "us", label: "United States" },
@@ -380,10 +380,10 @@ const CompanyProfile = () => {
         </form>
       </div>
       <div className="w-full md:w-auto">
-        <img src={EmployerProfile} alt="Employer Profile" />
+        <img src={employerProfileCard} alt="Employer Profile" />
       </div>
     </div>
   );
 };
 
-export { CompanyProfile };
+export { EmployerProfile };

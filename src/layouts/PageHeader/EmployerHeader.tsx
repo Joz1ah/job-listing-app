@@ -12,8 +12,8 @@ const EmployerHeader: FC<Props> = ({ isFreeTrial = false }) => {
   const hasHalfStar = rating % 1 !== 0;
 
   const location = useLocation();
-  const hideOnPagesMobile = ["/job-feed-employer/job-creation", "/job-feed-employer/company-profile"];
-  const hideOnPagesDesktop = ["/job-feed-employer/company-profile"];
+  const hideOnPagesMobile = ["/job-feed-employer/job-listing", "/job-feed-employer/employer-profile"];
+  const hideOnPagesDesktop = ["/job-feed-employer/employer-profile"];
 
   const hideOnMobile = hideOnPagesMobile.includes(location.pathname);
   const hideOnDesktop = hideOnPagesDesktop.includes(location.pathname);

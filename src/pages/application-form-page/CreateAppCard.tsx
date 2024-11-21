@@ -1,16 +1,18 @@
 import { FC } from "react";
 import { useMenu } from "hooks";
-import { FooterDesktop, ProfileCreation,  JobHunterMenuHeader, PageMeta } from "components";
+import { PageMeta } from "components";
 import { jobHunterDesktopMenu, jobHunterMobileMenu } from "mockData/nav-menus";
+import { JobHunterMenu, Footer } from "layouts";
+import { ApplicationForm } from "features";
 
-const CompleteProfile: FC = () => {
+const CreateAppCard: FC = () => {
   const { menuOpen, toggleMenu } = useMenu();
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-900 text-white">
       <PageMeta title="Complete your Profile" />
       {/* Header */}
-      <JobHunterMenuHeader
+      <JobHunterMenu
       isMenuOpen={menuOpen}
       onToggleMenu={toggleMenu}
       desktopMenuItems={jobHunterDesktopMenu}
@@ -20,13 +22,13 @@ const CompleteProfile: FC = () => {
       
       {/* Main content */}
       <main className="bg-[#242625] p-4 md:p-[60px] flex-grow flex">
-        <ProfileCreation />
+        <ApplicationForm />
       </main>
 
       {/* Footer */}
-      <FooterDesktop />
+      <Footer />
     </div>
   );
 };
 
-export { CompleteProfile }
+export { CreateAppCard }

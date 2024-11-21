@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { FC, useState } from "react";
 import {
   ChevronLeft,
   AlertTriangle,
@@ -16,17 +16,17 @@ import { Command, CommandGroup, CommandItem, CommandList } from "components";
 
 import { Popover, PopoverContent, PopoverTrigger } from "components";
 
-import { PreviewAppCard } from "components";
-
+import { AppCardPreview } from "features";
 import {
   LanguageTagInput,
   BirthdayInput,
   PhoneInput,
-  PreviewCard,
   CoreSkillsTagInput,
   InterpersonalSkillsTagInput,
   CertificationTagInput,
 } from "components";
+
+import { PreviewAppCard } from "components";
 
 import {
   Select,
@@ -74,7 +74,7 @@ interface FormFieldProps {
   tooltipContent?: string | React.ReactNode; // Modified to accept ReactNode
 }
 
-const FormField = React.forwardRef<HTMLDivElement, FormFieldProps>(
+const FormField: FC<FormFieldProps> = React.forwardRef<HTMLDivElement, FormFieldProps>(
   (
     { label, children, className, error, touched, showIcon, tooltipContent },
     ref,
@@ -166,7 +166,7 @@ const LoadingOverlay = () => (
   </div>
 );
 
-const ProfileCreation = () => {
+const ApplicationForm: FC = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [showPreview, setShowPreview] = useState<boolean>(false);
@@ -718,7 +718,7 @@ const ProfileCreation = () => {
         </form>
       </div>
       <div className="w-full md:w-auto p-4 md:p-0">
-        <PreviewCard values={values} selectOptions={selectOptions} />
+        <AppCardPreview values={values} selectOptions={selectOptions} />
         <div className="flex justify-center mt-10 mb-8 md:hidden">
           <Button
           type="submit"
@@ -737,4 +737,4 @@ const ProfileCreation = () => {
   );
 };
 
-export { ProfileCreation };
+export { ApplicationForm };

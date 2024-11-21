@@ -13,7 +13,7 @@ interface NavItem {
   isSpecial?: boolean;
 }
 
-interface HeaderProps {
+interface MenuProps {
   isMenuOpen: boolean;
   onToggleMenu: () => void;
   desktopMenuItems: NavItem[];
@@ -21,7 +21,7 @@ interface HeaderProps {
   isFreeTrial?:boolean;
 }
 
-const JobHunterMenuHeader: FC<HeaderProps> = ({ 
+const JobHunterMenu: FC<MenuProps> = ({ 
   isMenuOpen, 
   onToggleMenu, 
   desktopMenuItems,
@@ -198,4 +198,4 @@ const JobHunterMenuHeader: FC<HeaderProps> = ({
   );
 };
 
-export { JobHunterMenuHeader }
+export { JobHunterMenu }

@@ -1,6 +1,6 @@
 import { FC } from "react";
 
-const FooterDesktop: FC = () => {
+const Footer: FC = () => {
   return (
     <footer className="bg-black text-white p-4 text-center text-[11px] font-light">
       <p>Terms & Conditions • Privacy Policy</p>
@@ -9,4 +9,4 @@ const FooterDesktop: FC = () => {
   );
 };
 
-export { FooterDesktop };
+export { Footer };

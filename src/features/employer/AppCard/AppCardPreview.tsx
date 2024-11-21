@@ -52,7 +52,7 @@ interface PreviewCardProps {
   selectOptions: SelectOptions;
 }
 
-const PreviewCard: React.FC<PreviewCardProps> = ({ values, selectOptions }) => {
+const AppCardPreview: React.FC<PreviewCardProps> = ({ values, selectOptions }) => {
   const getLabel = (
     type: keyof SelectOptions,
     value: string | string[],
@@ -381,4 +381,4 @@ const PreviewCard: React.FC<PreviewCardProps> = ({ values, selectOptions }) => {
   );
 };
 
-export { PreviewCard };
+export { AppCardPreview };

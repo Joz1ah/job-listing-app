@@ -72,7 +72,7 @@ const getAvailabilityStyle = (type: string) => {
   return 'bg-[#F5722E]'; // Default orange for other options
 };
 
-const JobHunterCardDesktop: FC<MatchCardProps> = ({
+const JobCardDesktop: FC<MatchCardProps> = ({
   match,
   bookmarked = false,
   onBookmark = () => {},
@@ -158,7 +158,7 @@ const JobHunterCardDesktop: FC<MatchCardProps> = ({
   );
 };
 
-const JobHunterCardMobile: FC<MatchCardProps> = ({
+const JobCardMobile: FC<MatchCardProps> = ({
    match, 
    bookmarked = false,
    onBookmark = () => {},
@@ -245,4 +245,4 @@ const JobHunterCardMobile: FC<MatchCardProps> = ({
   </Card>
 );
 
-export { JobHunterCardDesktop, JobHunterCardMobile };
+export { JobCardDesktop, JobCardMobile };

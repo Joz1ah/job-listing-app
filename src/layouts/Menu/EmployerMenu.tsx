@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from "react";
-import { NavLink, useLocation } from "react-router-dom"; // Add useLocation
+import { NavLink, useLocation } from "react-router-dom";
 import { Button } from "components/ui/buttons";
 import { BadgeCheck, ChevronDown, Info } from "lucide-react";
 import companyLogo from "images/company-logo.png";
@@ -13,7 +13,7 @@ interface NavItem {
   isSpecial?: boolean;
 }
 
-interface HeaderProps {
+interface MenuProps {
   isMenuOpen: boolean;
   onToggleMenu: () => void;
   desktopMenuItems: NavItem[];
@@ -22,7 +22,7 @@ interface HeaderProps {
 }
 
 
-const EmployerMenuHeader: FC<HeaderProps> = ({ 
+const EmployerMenu: FC<MenuProps> = ({ 
   isMenuOpen, 
   onToggleMenu, 
   desktopMenuItems,
@@ -116,7 +116,7 @@ const EmployerMenuHeader: FC<HeaderProps> = ({
               </li>
             </ul>
           </nav>
-          <NavLink to="/job-feed-employer/job-creation" onClick={handleNavLinkClick}>
+          <NavLink to="/job-feed-employer/job-listing" onClick={handleNavLinkClick}>
             <Button className="bg-orange-500 w-[172px] h-[44px] font-light">
               Create Job listing
             </Button>
@@ -203,4 +203,4 @@ const EmployerMenuHeader: FC<HeaderProps> = ({
   );
 };
 
-export { EmployerMenuHeader }
+export { EmployerMenu }

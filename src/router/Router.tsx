@@ -15,12 +15,12 @@ const About = lazy(() => import('pages').then(module => ({ default: module.About
 const NotFound = lazy(() => import('pages').then(module => ({ default: module.NotFound })))
 const Employer = lazy(() => import('pages').then(module => ({ default: module.EmployerDesktop })))
 const JobHunter = lazy(() => import('pages').then(module => ({ default: module.JobHunterDesktop })))
-const CompleteProfile = lazy(() => import('pages').then(module => ({ default: module.CompleteProfile })))
+const CompleteProfile = lazy(() => import('pages').then(module => ({ default: module.CreateAppCard })))
 
 // Components imports
-const EmployerSection = lazy(() => import('components').then(module => ({ default: module.EmployerSectionDesktop})))
-const MatchCreation = lazy(() => import('components').then(module => ({ default: module.MatchCreation })))
-const CompanyProfile = lazy(() => import('components').then(module => ({ default: module.CompanyProfile })))
+const EmployerSection = lazy(() => import('features').then(module => ({ default: module.EmployerFeed})))
+const JobListingForm = lazy(() => import('features').then(module => ({ default: module.JobListingForm   })))
+const EmployerProfile = lazy(() => import('features').then(module => ({ default: module.EmployerProfile })))
 
 
 interface LazyComponentProps {
@@ -65,11 +65,11 @@ const routes: RouteObject[] = [
       },
       {
         path: ROUTE_CONSTANTS.JOB_LISTING,
-        element: <LazyComponent component={MatchCreation} />
+        element: <LazyComponent component={JobListingForm} />
       },
       {
-        path: ROUTE_CONSTANTS.COMPANY_PROFILE,
-        element: <LazyComponent component={CompanyProfile} />,
+        path: ROUTE_CONSTANTS.EMPLOYER_PROFILE,
+        element: <LazyComponent component={EmployerProfile} />,
       },
     ]
   },
@@ -78,7 +78,7 @@ const routes: RouteObject[] = [
     element: <LazyComponent component={JobHunter} />,
   },
   {
-    path: ROUTE_CONSTANTS.COMPLETE_PROFILE,
+    path: ROUTE_CONSTANTS.CREATE_APPLICATION,
     element: <LazyComponent component={CompleteProfile} />,
   },
   {
