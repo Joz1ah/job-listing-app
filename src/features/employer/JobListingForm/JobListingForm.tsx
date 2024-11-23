@@ -401,7 +401,7 @@ const JobListingForm: FC = () => {
                   value={values.salaryRange}
                   onValueChange={(value) => setFieldValue("salaryRange", value)}
                 >
-                  <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2" aria-hidden="true">
+                  <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2">
                     <SelectValue
                       placeholder="Select Salary Range"
                     />

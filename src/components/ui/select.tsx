@@ -124,7 +124,6 @@ const SelectItem = React.forwardRef<
       "hover:bg-[#D35400] hover:text-white",
       "data-[state=checked]:bg-orange-500 data-[state=checked]:text-white data-[state=checked]:font-bold",
       "data-[state=checked]:hover:bg-[#D35400]",
-      "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
       className
     )}
     {...props}
