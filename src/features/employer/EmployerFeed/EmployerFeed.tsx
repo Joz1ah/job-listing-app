@@ -1,6 +1,6 @@
 import { FC, useState, useEffect, useRef } from "react";
 import sparkeIcon from "images/sparkle-icon.png";
-import { perfectMatch, others } from "mockData/employer-data";
+import { perfectMatch, others } from "mockData/job-hunter-data";
 import { Button } from "components";
 import { AppCardSkeleton, BookmarkLimitHandler } from "components";
 import { AppCardDesktop, AppCardMobile } from "features";
@@ -450,11 +450,10 @@ const EmployerFeed: FC<EmployerSectionProps> = () => {
     }, 500);
   }, []);
 
-  // Current definition from your code
   const LoadingGrid = () => {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-        {[1, 2, 3, 4].map((i) => (
+        {[1, 2, 3, 4, 5, 6].map((i) => (
           <AppCardSkeleton key={i} />
         ))}
       </div>
@@ -482,39 +481,21 @@ const EmployerFeed: FC<EmployerSectionProps> = () => {
   interface EndCardProps {
     type: "perfectMatch" | "otherApplication";
   }
-
+  
   const EndCard: React.FC<EndCardProps> = ({ type }) => {
-    const handleScroll = () => {
-      const targetSection =
-        type === "perfectMatch"
-          ? document.getElementById("other-applications-mobile")
-          : document.getElementById("perfect-match-mobile");
-
-      if (targetSection) {
-        const offset = 80;
-        const elementPosition = targetSection.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.scrollY - offset;
-
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: "smooth",
-        });
-      }
-    };
-
     const cardContent = {
       perfectMatch: {
         mainText: "perfect matches",
-        buttonText: "other aplication card",
+        exploreText: "Explore more options below"
       },
       otherApplication: {
         mainText: "other application card",
-        buttonText: "perfect matches",
+        exploreText: "Explore your perfect matches"
       },
     };
-
+  
     const content = cardContent[type];
-
+  
     return (
       <div className="flex flex-col items-center w-[308px] h-[420px] bg-transparent rounded-lg text-center">
         <div className="px-10 pt-[55px] flex flex-col items-center w-full">
@@ -522,28 +503,22 @@ const EmployerFeed: FC<EmployerSectionProps> = () => {
             <div>You've reached the</div>
             <div>
               end of your{" "}
-              <button
-                onClick={handleScroll}
-                className="text-[#F5722E] font-semibold hover:opacity-80"
-              >
+              <span className="text-[#F5722E] font-semibold">
                 {type === "perfectMatch" ? "perfect" : content.mainText}
-              </button>
+              </span>
             </div>
             {type === "perfectMatch" && (
               <div>
-                <button
-                  onClick={handleScroll}
-                  className="text-[#F5722E] font-semibold hover:opacity-80"
-                >
+                <span className="text-[#F5722E] font-semibold">
                   matches
-                </button>{" "}
+                </span>{" "}
                 for now!
               </div>
             )}
             {type === "otherApplication" && <div>for now!</div>}
           </div>
           <div className="text-xl font-semibold text-white mt-0.5">
-            <div>Explore more options below.</div>
+            <div>{content.exploreText}</div>
           </div>
           <div className="flex justify-center w-full mt-6">
             <img

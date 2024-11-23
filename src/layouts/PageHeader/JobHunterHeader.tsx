@@ -1,10 +1,20 @@
 import { FC } from "react";
 import {BriefcaseBusiness, DollarSign, Info, Star, MapPin } from "lucide-react";
+import { Tooltip } from "components";
 
 const JobHunterHeader: FC = () => {
   const rating = 4.5;
   const fullStars = Math.floor(rating);
   const hasHalfStar = rating % 1 !== 0;
+
+  const DesktopTooltip = ({ content, children }: { content: string, children: React.ReactNode }) => (
+    <>
+      <div className="md:hidden">{children}</div>
+      <div className="hidden md:block">
+        <Tooltip content={content}>{children}</Tooltip>
+      </div>
+    </>
+  );
 
   return (
     <div className="w-full px-6 md:pt-16 mt-8 md:mt-16 md:pl-16">
@@ -47,19 +57,21 @@ const JobHunterHeader: FC = () => {
 
         {/* Desktop view - hidden on small screens, shown on md and up */}
         <div className="hidden md:flex flex-col items-start mt-2 mx-0">
-          <div className="flex items-center space-x-1 text-[11px] font-light text-white">
-            <span className="border-2 border-dotted border-orange-500 text-white text-[15px] px-2 py-1 border-opacity-70">
-              Your interview from rating employers
-            </span>
-            <Info className="fill-[#D6D6D6] text-[#263238] mb-4" size={13} />
-          </div>
+        <DesktopTooltip content="This is how employer rated your interview">
+            <div className="flex items-center space-x-1 text-[11px] font-light text-white">
+              <span className="border-2 border-dotted border-orange-500 text-white text-[15px] px-2 py-1 border-opacity-70">
+                Your interview from rating employers
+              </span>
+              <Info className="fill-[#D6D6D6] text-[#263238] mb-4" size={14} />
+            </div>
+          </DesktopTooltip>
         </div>
       </div>
-      <div className="flex flex-col items-start mt-2 space-y-2">
+      <div className="flex flex-col items-start mt-4 space-y-2">
         <div className="flex items-center space-x-2 text-[11px] font-light text-white">
           <DollarSign className="text-orange-500" size={14} strokeWidth={4} />
           <span className="text-[13px] md:text-[15px]">Expected Salary: </span>
-          <span className="outline outline-1 outline-orange-500 underline text-orange-500 px-1 font-semibold sm:text-[10px] md:text-[15px] rounded-[2px]">
+          <span className="outline outline-1 outline-orange-500 text-orange-500 px-1 font-semibold sm:text-[10px] md:text-[15px] rounded-[2px]">
             $100,000
           </span>
           <span className="outline outline-1 outline-white px-1 ml-1 sm:text-[10px] md:text-[15px] rounded-[2px]">
@@ -68,6 +80,7 @@ const JobHunterHeader: FC = () => {
         </div>
       </div>
       <div className="flex flex-col items-start mt-2 space-y-2">
+      <DesktopTooltip content="Your preferred types of employment">
         <div className="flex items-center space-x-2 text-[11px] font-light text-white">
           <BriefcaseBusiness
             className="fill-orange-500 text-[#263238]"
@@ -83,6 +96,7 @@ const JobHunterHeader: FC = () => {
             Part Time
           </span>
         </div>
+        </DesktopTooltip>
       </div>
     </div>
   );

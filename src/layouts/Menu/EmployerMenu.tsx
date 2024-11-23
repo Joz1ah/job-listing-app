@@ -156,7 +156,7 @@ const EmployerMenu: FC<MenuProps> = ({
         </div>
       </header>
 
-      {/* Side Menu */}
+      {/* Sliding Menu */}
       <div className="relative">
         {/* Overlay */}
         <div 

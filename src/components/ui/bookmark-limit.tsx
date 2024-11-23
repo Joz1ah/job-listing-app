@@ -2,6 +2,8 @@ import React, { useState, ReactElement } from 'react';
 import {
   AlertDialog,
   AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogTitle,
 } from 'components';
 import subscribePopup from 'images/popup-subscribe.svg?url';
 
@@ -79,9 +81,16 @@ const BookmarkLimitHandler: React.FC<BookmarkLimitHandlerProps> = ({
 
       <AlertDialog open={showLimitPopup} onOpenChange={setShowLimitPopup}>
         <AlertDialogContent className="p-0 border-none bg-transparent">
+          <AlertDialogTitle className="sr-only">
+            Bookmark Limit Reached
+          </AlertDialogTitle>
+          <AlertDialogDescription className="sr-only">
+            You've reached the maximum number of bookmarks allowed in the free trial. 
+            Upgrade your account to bookmark more matches.
+          </AlertDialogDescription>
           <img 
             src={subscribePopup} 
-            alt="Subscribe Popup"
+            alt="You've reached the maximum bookmarks limit. Click to upgrade your account"
             className="w-full h-auto cursor-pointer"
             onClick={() => {
               setShowLimitPopup(false);

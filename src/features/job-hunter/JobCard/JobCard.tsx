@@ -11,7 +11,6 @@ import {
   CardContent,
   CardFooter,
   CardTitle,
-  CardDescription,
 } from "components";
 
 interface Skill {
@@ -38,9 +37,9 @@ interface MatchCardProps {
   isFreeTrial?: boolean;
 }
 
-const SecureNameDisplay: FC<{ isFreeTrial: boolean; realName: string }> = ({
+const SecureCompanyDisplay: FC<{ isFreeTrial: boolean; company: string }> = ({
   isFreeTrial,
-  realName,
+  company,
 }) => {
   if (isFreeTrial) {
     return (
@@ -51,7 +50,7 @@ const SecureNameDisplay: FC<{ isFreeTrial: boolean; realName: string }> = ({
           <div className="relative">
             {/* Random characters to create blur effect */}
             <div className="absolute inset-0 blur-[8px] text-sm font-semibold bg-clip-text">
-              {Array(realName.length).fill("X").join("")}
+              {Array(company.length).fill("X").join("")}
             </div>
           </div>
         </div>
@@ -62,14 +61,16 @@ const SecureNameDisplay: FC<{ isFreeTrial: boolean; realName: string }> = ({
     );
   }
 
-  return <CardTitle className="text-sm font-semibold">{realName}</CardTitle>;
+  return (
+    <p className="text-[13px] font-light mt-0 underline">{company}</p>
+  );
 };
 
 const getAvailabilityStyle = (type: string) => {
-  if (type.toLowerCase() === 'part time') {
-    return 'bg-[#BF532C]'; // Darker orange for Part Time
+  if (type.toLowerCase() === "part time") {
+    return "bg-[#BF532C]"; // Darker orange for Part Time
   }
-  return 'bg-[#F5722E]'; // Default orange for other options
+  return "bg-[#F5722E]"; // Default orange for other options
 };
 
 const JobCardDesktop: FC<MatchCardProps> = ({
@@ -92,7 +93,7 @@ const JobCardDesktop: FC<MatchCardProps> = ({
           </div>
         </div>
         <div className="w-full relative">
-          <SecureNameDisplay isFreeTrial={isFreeTrial} realName={match.position} />
+          <CardTitle className="text-sm font-semibold">{match.position}</CardTitle>
           <Bookmark
             className={`absolute top-0 right-[-8px] cursor-pointer ${
               bookmarked ? "fill-orange-500" : ""
@@ -100,12 +101,15 @@ const JobCardDesktop: FC<MatchCardProps> = ({
             size={26}
             onClick={onBookmark}
           />
-          <p className="text-[13px] font-light mt-0 underline">
-            {match.company}
-          </p>
+          <SecureCompanyDisplay
+            isFreeTrial={isFreeTrial}
+            company={match.company}
+          />
           <div className="flex flex-row items-center gap-1">
             <MapPin size={14} className="text-orange-500" />
-            <p className="text-[13px] font-light mt-0">Based in {match.location}</p>
+            <p className="text-[13px] font-light mt-0">
+              Based in {match.location}
+            </p>
           </div>
         </div>
       </CardHeader>
@@ -141,9 +145,7 @@ const JobCardDesktop: FC<MatchCardProps> = ({
         </div>
       </CardContent>
       <CardFooter className="flex flex-row justify-end -mt-5 -mr-4 space-x-1">
-        <Button
-          className="text-[12px] font-semibold px-0 w-[133px] h-[27px] bg-orange-500"
-        >
+        <Button className="text-[12px] font-semibold px-0 w-[133px] h-[27px] bg-orange-500">
           I'm Interested
         </Button>
         <MoreVertical size={12} className="text-gray-700 cursor-pointer" />
@@ -153,11 +155,11 @@ const JobCardDesktop: FC<MatchCardProps> = ({
 };
 
 const JobCardMobile: FC<MatchCardProps> = ({
-   match, 
-   bookmarked = false,
-   onBookmark = () => {},
-   isFreeTrial = false 
-  }) => (
+  match,
+  bookmarked = false,
+  onBookmark = () => {},
+  isFreeTrial = false,
+}) => (
   <Card className="bg-[#F5F5F7] w-[308px] h-[395px] p-2 relative flex flex-col">
     <CardHeader className="flex-1 overflow-y-auto p-0">
       <div className="w-full">
@@ -168,41 +170,42 @@ const JobCardMobile: FC<MatchCardProps> = ({
             </span>
           </div>
           <Bookmark
-              className={`absolute top-7 ${
-                bookmarked ? "fill-orange-500" : ""
-              } text-orange-500`}
-              size={26}
-              onClick={onBookmark}
-            />
+            className={`absolute top-7 ${
+              bookmarked ? "fill-orange-500" : ""
+            } text-orange-500`}
+            size={26}
+            onClick={onBookmark}
+          />
         </div>
 
         <div className="pt-2 pl-2">
           <div className="-space-y-1">
-            <SecureNameDisplay isFreeTrial={isFreeTrial} realName={match.position} />
-            <CardDescription className="text-[13px] text-[#263238] underline mt-0">
-              {match.company}
-            </CardDescription>
+            <CardTitle className="text-sm font-semibold">{match.position}</CardTitle>
+            <SecureCompanyDisplay
+              isFreeTrial={isFreeTrial}
+              company={match.company}
+            />
           </div>
 
-          <p className="text-[13px] text-[#263238] flex items-center mb-2">
+          <p className="text-[13px] text-[#263238] flex items-center mb-2 font-light">
             <MapPin size={14} className="mr-1 text-[#F5722E]" />
-            {match.location}
+            Based in {match.location}
           </p>
 
-          <div className="h-[60px]">
+          <div className="h-[50px]">
             <SkillsWithEllipsis skills={match.skills} />
           </div>
 
-          <div className="mt-6 space-y-1">
+          <div className="mt-6 flex flex-col gap-1">
             <div className="flex gap-2">
               <span className="text-[13px] font-light">Experience:</span>
-              <span className="text-[12px] text-[#F5722E] font-light outline outline-1 outline-[#F5722E] rounded-[2px] px-1">
+              <span className="text-[12px] text-[#F5722E] font-light border border-[#F5722E] items-center rounded-[2px] px-1">
                 {match.experience}
               </span>
             </div>
 
-            <div className="flex gap-2 flex-wrap">
-              <span className="text-[13px] font-light">Available for:</span>
+            <div className="flex gap-y-0.5 gap-x-1 flex-wrap">
+              <span className="text-[13px] font-light pr-1">Available for:</span>
               {match.lookingFor.map((type, index) => (
                 <span
                   key={index}
@@ -221,14 +224,15 @@ const JobCardMobile: FC<MatchCardProps> = ({
             </div>
           </div>
 
-          <div className="text-[11px] mb-4 mt-4">{match.description}</div>
+          <div className="text-[11px] mb-3 mt-3 line-clamp-3">{match.description}</div>
         </div>
       </div>
     </CardHeader>
     <CardContent className="p-0 mt-auto flex flex-col items-center">
       <Button
         variant="default"
-        className= "text-[12px] font-semibold bg-orange-500">
+        className="text-[12px] font-semibold bg-orange-500"
+      >
         I'm Interested
       </Button>
       <MoreVertical

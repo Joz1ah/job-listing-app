@@ -82,7 +82,7 @@ const BookmarkButton: FC<{
 );
 
 const LanguageTag: FC<{ language: string }> = ({ language }) => (
-  <span className="text-[#F5722E] text-[10px] rounded-[4px] px-1.5 h-[18px] flex justify-center items-center outline outline-1 outline-[#F5722E]">
+  <span className="text-[12px] text-[#F5722E] font-light border border-[#F5722E] items-center rounded-sm px-1">
     {language}
   </span>
 );
@@ -126,7 +126,7 @@ const AppCardDesktop: FC<MatchCardProps> = ({
         <div className="flex flex-col gap-1 mt-2">
           <div className="flex gap-2">
             <span className="text-[13px] font-light">Experience:</span>
-            <span className="text-[12px] text-orange-500 font-light border border-orange-500 rounded-[4px] px-1.5">
+            <span className="text-[12px] text-[#F5722E] font-light border border-[#F5722E] items-center rounded-[2px] px-1">
               {match.experience}
             </span>
           </div>
@@ -196,9 +196,9 @@ const AppCardMobile: FC<MatchCardProps> = ({
 
         <div className="pt-2 pl-2">
           <SecureNameDisplay isFreeTrial={isFreeTrial} realName={match.name} />
-          <p className="text-[10px] text-[#F5722E] flex items-center mb-2">
-            <MapPin size={9} className="mr-1 text-[#F5722E]" />
-            {match.location}
+          <p className="text-[13px] text-black flex items-center mb-2 font-light">
+            <MapPin size={14} className="mr-1 text-[#F5722E]" />
+            Based in {match.location}
           </p>
 
           <div className="flex flex-col gap-2">
@@ -206,17 +206,18 @@ const AppCardMobile: FC<MatchCardProps> = ({
               <SkillsWithEllipsis skills={match.skills} />
             </div>
 
+            <div className="flex flex-col gap-1 mt-4">
             <div className="flex gap-2">
-              <span className="text-[10px] font-light">Experience:</span>
-              <span className="text-[10px] font-light">{match.experience}</span>
+              <span className="text-[13px] font-light">Experience:</span>
+              <span className="text-[12px] text-[#F5722E] font-light border border-[#F5722E] items-center rounded-[2px] px-1">{match.experience}</span>
             </div>
 
-            <div className="flex gap-2 flex-wrap">
-              <span className="text-[10px] font-light">Looking for:</span>
+            <div className="flex gap-y-0.5 gap-x-1 flex-wrap">
+              <span className="text-[13px] font-light">Looking for:</span>
               {match.lookingFor.map((type, index) => (
                 <span
                   key={index}
-                  className={`${getAvailabilityStyle(type)} text-white rounded-[4px] text-[8px] px-1 h-[18px] flex justify-center items-center`}
+                  className={`${getAvailabilityStyle(type)} text-white rounded-[4px] text-[12px] px-1 h-[18px] flex justify-center items-center`}
                 >
                   {type}
                 </span>
@@ -224,19 +225,20 @@ const AppCardMobile: FC<MatchCardProps> = ({
             </div>
 
             <div className="flex gap-2">
-              <span className="text-[10px] font-light">
+              <span className="text-[13px] font-light">
                 Salary Expectation:
               </span>
-              <span className="bg-[#F5722E] text-white rounded-[4px] text-[8px] px-1 h-[18px] flex justify-center items-center">
+              <span className="bg-[#F5722E] text-white rounded-[4px] text-[12px] px-1 h-[18px] flex justify-center items-center">
                 {match.salaryExpectation}
               </span>
             </div>
 
             <div className="flex gap-2 flex-wrap">
-              <span className="text-[10px] font-light">Language:</span>
+              <span className="text-[13px] font-light">Language:</span>
               {match.language.map((lang, index) => (
                 <LanguageTag key={index} language={lang} />
               ))}
+            </div>
             </div>
           </div>
         </div>

@@ -77,15 +77,6 @@ const EmployerHeader: FC<Props> = ({ isFreeTrial = false }) => {
           </div>
         )}
 
-        {/* Desktop view - always shown */}
-        <div className="hidden md:flex flex-col items-start mt-2">
-          <div className="flex items-center space-x-1 text-[11px] font-light text-white">
-            <span className="border-2 border-dotted border-orange-500 text-white text-[15px] px-2 py-1 border-opacity-70">
-              Your Job Hunter post interview appear here
-            </span>
-            <Info className="fill-[#D6D6D6] text-[#263238] mb-4" size={13} />
-          </div>
-        </div>
       </div>
     </div>
   );
