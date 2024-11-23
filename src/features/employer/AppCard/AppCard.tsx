@@ -96,7 +96,7 @@ const AppCardDesktop: FC<MatchCardProps> = ({
   return (
     <Card className="bg-[#FFFFFF] border-none w-full md:w-[436px] h-auto md:h-[275px]">
       <CardHeader className="flex flex-col justify-between items-start pb-0">
-        <div className="flex flex-row -mt-4 justify-between w-full">
+        <div className="flex flex-row -mt-4 justify-between w-full relative">
           <span className="text-[13px] text-orange-500 font-semibold">
             ☆ NEW
           </span>
@@ -104,15 +104,15 @@ const AppCardDesktop: FC<MatchCardProps> = ({
             <span className="text-[11px] font-light text-gray-400 -mr-2">
               Posted {match.appliedAgo}
             </span>
-            <BookmarkButton 
-              bookmarked={bookmarked} 
-              onBookmark={onBookmark}
-              className="absolute mt-5 -mr-2" 
-            />
           </div>
         </div>
-        <div>
+        <div className="w-full relative">
           <SecureNameDisplay isFreeTrial={isFreeTrial} realName={match.name} />
+          <BookmarkButton 
+            bookmarked={bookmarked} 
+            onBookmark={onBookmark}
+            className="absolute top-0 right-[-8px]" 
+          />
           <div className="flex flex-row items-center">
             <MapPin size={14} className="text-orange-500" />
             <p className="text-[13px] font-light mt-0">Based in {match.location}</p>

@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import { ChevronLeft, AlertTriangle, CircleAlert } from "lucide-react";
-import { Input, Button, Label } from "components";
+import { Input, Button, Label, Textarea } from "components";
 import { NavLink } from "react-router-dom";
 
 import employerProfileCard from "images/EmployerProfileCard.svg?url";
@@ -24,7 +24,7 @@ import { isValidPhoneNumber } from "react-phone-number-input";
 import { Tooltip } from "components";
 
 interface FormData {
-  bussinessName: string;
+  businessName: string;
   firstName: string;
   lastName: string;
   position: string;
@@ -33,7 +33,14 @@ interface FormData {
   mobileNumber: string;
   companyWebsite: string;
   yearFounded: number;
+  unitAndBldg: string;
+  buildingName: string;
+  streetAddress: string;
+  city: string;
+  state: string;
+  postalCode: number;
   country: string;
+  companyOverview: string;
 }
 
 {
@@ -49,7 +56,10 @@ interface FormFieldProps {
   tooltipContent?: string | React.ReactNode; // Modified to accept ReactNode
 }
 
-const FormField: FC<FormFieldProps> = React.forwardRef<HTMLDivElement, FormFieldProps>(
+const FormField: FC<FormFieldProps> = React.forwardRef<
+  HTMLDivElement,
+  FormFieldProps
+>(
   (
     { label, children, className, error, touched, showIcon, tooltipContent },
     ref,
@@ -110,8 +120,8 @@ const validationSchema = Yup.object().shape({
     .required("This field is required")
     .typeError("Please enter a valid number")
     .integer("Year must be a whole number")
-    .min(1800, "Year must be after 1800") // Optional: Minimum year check
-    .max(new Date().getFullYear(), "Year cannot be in the future"), // Optional: Max year check
+    .min(1800, "Year must be after 1800")
+    .max(new Date().getFullYear(), "Year cannot be in the future"),
   emailAddress: Yup.string()
     .required("This field is required")
     .email("Invalid email address"),
@@ -120,8 +130,13 @@ const validationSchema = Yup.object().shape({
     .test("phone", "Please enter a valid phone number", function (value) {
       return value ? isValidPhoneNumber(value) : false;
     }),
-  country: Yup.string().required("This field is required"),
-  jobDescription: Yup.string().required("This field is required"),
+  unitAndBldg: Yup.string(),
+  streetAddress: Yup.string().required("Street address is required"),
+  city: Yup.string().required("City is required"),
+  state: Yup.string().required("State is required"),
+  postalCode: Yup.string().required("Postal code is required"),
+  country: Yup.string().required("Country is required"),
+  companyOverview: Yup.string().required("This field is required"),
 });
 
 const EmployerProfile: FC = () => {
@@ -145,7 +160,7 @@ const EmployerProfile: FC = () => {
   const { values, errors, touched, handleChange, setFieldValue, handleSubmit } =
     useFormik<FormData & { employmentType: string[] }>({
       initialValues: {
-        bussinessName: "",
+        businessName: "",
         firstName: "",
         lastName: "",
         position: "",
@@ -155,7 +170,14 @@ const EmployerProfile: FC = () => {
         mobileNumber: "",
         companyWebsite: "",
         employmentType: [],
+        unitAndBldg: "",
+        buildingName: "",
+        streetAddress: "",
+        city: "",
+        state: "",
+        postalCode: 0,
         country: "",
+        companyOverview: "",
       },
       validationSchema,
       onSubmit: (values) => {
@@ -175,7 +197,7 @@ const EmployerProfile: FC = () => {
   };
 
   return (
-    <div className="md:pt-10 md:flex md:flex-row md:gap-10">
+    <div className="md:pt-10 md:flex md:flex-row md:gap-10 mb-10">
       <div className="w-full md:w-[800px] min-h-[825px] bg-[#242625] md:bg-[#2D3A41] text-white md:pt-6">
         <div className="flex items-center relative w-full mb-8 md:mb-14">
           <NavLink to="/job-feed-employer" className="absolute left-0">
@@ -197,12 +219,12 @@ const EmployerProfile: FC = () => {
           <FormField
             label="Legal Business Name"
             className="bg-transparent"
-            error={errors.bussinessName}
-            touched={touched.bussinessName}
+            error={errors.businessName}
+            touched={touched.businessName}
           >
             <Input
               name="bussinessName"
-              value={values.bussinessName}
+              value={values.businessName}
               onChange={handleChange}
               className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
             />
@@ -326,57 +348,134 @@ const EmployerProfile: FC = () => {
                 />
               </FormField>
             </div>
-
-            
           </div>
 
-          <div className="">
-              <h2 className="text-white text-lg mb-4 flex">
-                Complete Company Address
-              </h2>
+
+            <h2 className="text-white text-lg mb-4 flex">
+              Complete Company Address
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 gap-x-[65px]">
+              <FormField
+                label="Unit No./Building"
+                error={errors.unitAndBldg}
+                touched={touched.unitAndBldg}
+              >
+                <Input
+                  name="unitAndBldg"
+                  value={values.unitAndBldg}
+                  onChange={handleChange}
+                  placeholder="N/A"
+                  className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
+                />
+              </FormField>
 
               <FormField
-                label="Country of Residence"
-                error={errors.country}
-                touched={touched.country}
+                label="Street Address"
+                error={errors.streetAddress}
+                touched={touched.streetAddress}
               >
-                <Select
-                  name="country"
-                  value={values.country}
-                  onValueChange={(value) => setFieldValue("country", value)}
-                >
-                  <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500">
-                    <SelectValue placeholder="Select your Country of Residence" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-[#F5F5F7] items-center p-0 [&>*]:p-0 border-none rounded-none">
-                    {selectOptions.country.map(({ value, label }) => (
-                      <SelectItem
-                        key={value}
-                        className={cn(
-                          "rounded-none justify-start pl-3 h-[55px] transition-all duration-500 ease-in-out",
-                          "focus:bg-orange-500 focus:text-white",
-                          "data-[state=checked]:bg-orange-500 data-[state=checked]:text-white data-[state=checked]:font-bold",
-                          "data-[state=checked]:focus:bg-orange-500",
-                        )}
-                        value={value}
-                      >
-                        <div className="py-3 w-full text-center">{label}</div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Input
+                  name="streetAddress"
+                  value={values.streetAddress}
+                  onChange={handleChange}
+                  placeholder="1600 Amphitheatre Parkway"
+                  className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
+                />
               </FormField>
+
+              <FormField
+                label="City"
+                error={errors.city}
+                touched={touched.city}
+              >
+                <Input
+                  name="city"
+                  value={values.city}
+                  onChange={handleChange}
+                  placeholder="Mountain View"
+                  className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
+                />
+              </FormField>
+
+              <FormField
+                label="State/Province/Region"
+                error={errors.state}
+                touched={touched.state}
+              >
+                <Input
+                  name="state"
+                  value={values.state}
+                  onChange={handleChange}
+                  placeholder="California"
+                  className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
+                />
+              </FormField>
+
+              {/* Empty column on the left */}
+              <div className="md:col-span-1"></div>
+
+              {/* Country field on the right */}
+              <div className="md:col-span-1">
+                <FormField
+                  label="Country"
+                  error={errors.country}
+                  touched={touched.country}
+                >
+                  <Select
+                    name="country"
+                    value={values.country}
+                    onValueChange={(value) => setFieldValue("country", value)}
+                  >
+                    <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500">
+                      <SelectValue placeholder="USA" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-[#F5F5F7] items-center p-0 [&>*]:p-0 border-none rounded-none">
+                      {selectOptions.country.map(({ value, label }) => (
+                        <SelectItem
+                          key={value}
+                          className={cn(
+                            "rounded-none justify-start pl-3 h-[55px] transition-all duration-500 ease-in-out",
+                          )}
+                          value={value}
+                        >
+                          <div className="py-3 w-full text-center">{label}</div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormField>
+              </div>
             </div>
 
-            {/* Footer Buttons */}
-            <div className="col-span-full flex justify-end mt-[60px] mb-0">
-              <Button
-                type="submit"
-                className="w-full md:w-auto bg-[#AEADAD] text-white hover:bg-[#F5722E] text-[16px] h-8 rounded-sm mr-2 mb-2 font-normal px-8"
-              >
-                Save Your Profile
-              </Button>
-            </div>
+
+          <FormField
+            label="Job Description"
+            error={errors.companyOverview}
+            touched={touched.companyOverview}
+            className="relative "
+          >
+            <Textarea
+              name="companyOverview"
+              value={values.companyOverview}
+              onChange={handleChange}
+              className="bg-transparent border-[#AEADAD] h-[90px] pt-4 resize-none border-2 focus-within:border-orange-500 placeholder:text-white"
+              placeholder="Please provide a job description"
+            />
+            {/* <span className="flex right-0 italic text-[11px] absolute">
+              Maximum of 500 words
+            </span> */}
+          </FormField>
+
+          {/* Footer Buttons */}
+          <div className="col-span-full flex justify-end pt-[60px] mb-0">
+            <Button
+              type="submit"
+              className="w-full md:w-auto bg-[#AEADAD] text-white hover:bg-[#F5722E] text-[16px] h-8 rounded-sm mr-2 mb-2 font-normal px-8"
+            >
+              Save Your Profile
+            </Button>
+          </div>
         </form>
       </div>
       <div className="w-full md:w-auto">

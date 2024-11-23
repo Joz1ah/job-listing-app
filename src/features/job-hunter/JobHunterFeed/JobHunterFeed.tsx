@@ -564,7 +564,7 @@ const JobHunterFeed: FC<JobHunterSectionProps> = () => {
   return (
     <div className="mt-8 md:my-2">
       {/* Application Cards Section - Desktop View */}
-      <div className="hidden md:block max-w-5xl mx-auto pt-8 md:pt-2 mt-8 md:mt-2 px-4 md:px-6 pb-4">
+      <div className="hidden md:flex flex-col items-center pt-8 px-4 mb-8">
         <div className="flex justify-center mb-8 md:mb-6">
           {/* Perfect Match Tab */}
           <button

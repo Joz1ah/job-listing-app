@@ -253,8 +253,7 @@ const JobListingForm: FC = () => {
     onConfirm={handlePreviewConfirm}
   />
       {isLoading && <LoadingOverlay />}
-      <div className="flex-1 flex justify-center items-start md:mr-16 mx-auto mb-6">
-        <div className="w-full md:max-w-[927px] min-h-[825px] bg-transparent md:bg-[#2D3A41] text-white md:pt-6 pb-12 md:mt-9 ml-1">
+        <div className="w-full md:max-w-[927px] min-h-[825px] bg-transparent md:bg-[#2D3A41] text-white md:pt-6 pb-12 md:mt-9 mb-10">
           <div className="flex items-center relative w-full mb-8 md:mb-14">
             <NavLink to="/job-feed-employer" className="absolute left-0">
               <ChevronLeft strokeWidth={4} className="h-6 w-6 ml-4" />
@@ -684,7 +683,6 @@ const JobListingForm: FC = () => {
             </div>
           </form>
         </div>
-      </div>
     </>
   );
 };

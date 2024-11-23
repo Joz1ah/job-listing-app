@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { useMenu } from "hooks";
-import { PageMeta } from "components";
+import { PageMeta, ScrollArea } from "components";
 import { jobHunterDesktopMenu, jobHunterMobileMenu } from "mockData/nav-menus";
 import { JobHunterMenu, Footer } from "layouts";
 import { ApplicationForm } from "features";
@@ -9,26 +9,30 @@ const CreateAppCard: FC = () => {
   const { menuOpen, toggleMenu } = useMenu();
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-900 text-white">
+    <div className="flex flex-col h-screen bg-gray-900 text-white">
       <PageMeta title="Complete your Profile" />
       {/* Header */}
       <JobHunterMenu
-      isMenuOpen={menuOpen}
-      onToggleMenu={toggleMenu}
-      desktopMenuItems={jobHunterDesktopMenu}
-      mobileMenuItems={jobHunterMobileMenu}
-      isFreeTrial={true}
-    />
+        isMenuOpen={menuOpen}
+        onToggleMenu={toggleMenu}
+        desktopMenuItems={jobHunterDesktopMenu}
+        mobileMenuItems={jobHunterMobileMenu}
+        isFreeTrial={true}
+      />
       
-      {/* Main content */}
-      <main className="bg-[#242625] p-4 md:p-[60px] flex-grow flex">
-        <ApplicationForm />
-      </main>
+      <ScrollArea className="flex-1">
+        <div className="flex flex-col min-h-full">
+          {/* Main content */}
+          <main className="flex-grow bg-[#242625] p-4 md:p-[60px] flex">
+            <ApplicationForm />
+          </main>
 
-      {/* Footer */}
-      <Footer />
+          {/* Footer */}
+          <Footer />
+        </div>
+      </ScrollArea>
     </div>
   );
 };
 
-export { CreateAppCard }
+export { CreateAppCard };

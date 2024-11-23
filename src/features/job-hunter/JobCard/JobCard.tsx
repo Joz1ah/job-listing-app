@@ -86,32 +86,26 @@ const JobCardDesktop: FC<MatchCardProps> = ({
             ☆ NEW
           </span>
           <div className="flex flex-col items-end">
-            <div className="flex flex-col items-end -mr-2">
-              <span className="text-[11px] font-light text-gray-400">
-                Applied {match.appliedAgo}
-              </span>
-            </div>
-            <Bookmark
-              className={`absolute mt-5 -mr-2 cursor-pointer ${
-                bookmarked ? "fill-orange-500" : ""
-              } text-orange-500`}
-              size={26}
-              onClick={onBookmark}
-            />
+            <span className="text-[11px] font-light text-gray-400 -mr-2">
+              Applied {match.appliedAgo}
+            </span>
           </div>
         </div>
-        <div className="w-full">
-          <div className="flex flex-row justify-between items-start">
-            <div>
-              <SecureNameDisplay isFreeTrial={isFreeTrial} realName={match.position} />
-              <p className="text-[13px] font-light mt-0 underline">
-                {match.company}
-              </p>
-              <div className="flex flex-row items-center gap-1">
-                <MapPin size={14} className="text-orange-500" />
-                <p className="text-[13px] font-light mt-0">Based in {match.location}</p>
-              </div>
-            </div>
+        <div className="w-full relative">
+          <SecureNameDisplay isFreeTrial={isFreeTrial} realName={match.position} />
+          <Bookmark
+            className={`absolute top-0 right-[-8px] cursor-pointer ${
+              bookmarked ? "fill-orange-500" : ""
+            } text-orange-500`}
+            size={26}
+            onClick={onBookmark}
+          />
+          <p className="text-[13px] font-light mt-0 underline">
+            {match.company}
+          </p>
+          <div className="flex flex-row items-center gap-1">
+            <MapPin size={14} className="text-orange-500" />
+            <p className="text-[13px] font-light mt-0">Based in {match.location}</p>
           </div>
         </div>
       </CardHeader>

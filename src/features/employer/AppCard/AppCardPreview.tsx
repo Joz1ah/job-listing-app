@@ -98,7 +98,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({ values, selectOptions }) =
 
       {/* Desktop View */}
       <Card className="bg-white border-none w-full md:w-[436px] h-auto md:h-[275px] hidden md:block">
-        <CardHeader className="flex flex-col justify-between items-start pb-0">
+      <CardHeader className="flex flex-col justify-between items-start pb-0">
           <div className="flex flex-row -mt-4 justify-between w-full">
             <span className="text-[13px] text-orange-500 font-semibold">
               ☆ NEW
@@ -107,13 +107,9 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({ values, selectOptions }) =
               <span className="text-[11px] font-light text-gray-400 -mr-2">
                 Applied today
               </span>
-              <Bookmark
-                className="absolute mt-5 -mr-2 cursor-pointer text-orange-500"
-                size={26}
-              />
             </div>
           </div>
-          <div>
+          <div className="w-full relative">
             <CardTitle
               className={`text-sm ${hasName ? "font-semibold" : "font-semibold text-black"}`}
             >
@@ -121,6 +117,10 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({ values, selectOptions }) =
                 ? `${values.firstName} ${values.lastName}`
                 : "Your First and Last Name"}
             </CardTitle>
+            <Bookmark
+              className="absolute top-0 right-[-8px] cursor-pointer text-orange-500"
+              size={26}
+            />
             <div className="flex flex-row items-center gap-1 h-[16px]">
               <MapPin size={14} className="text-orange-500" />
               <p className="text-[13px] font-light mt-0 text-black">
