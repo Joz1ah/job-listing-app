@@ -46,7 +46,7 @@ const SecureNameDisplay: FC<{ isFreeTrial: boolean; realName: string }> = ({
     return (
       <div className="relative">
         {/* Create a blurred background with placeholder text */}
-        <div className="select-none pointer-events-none" aria-hidden="true">
+        <div className="select-none pointer-events-none">
           {/* Blurred layer */}
           <div className="relative">
             {/* Random characters to create blur effect */}

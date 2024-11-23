@@ -16,7 +16,7 @@ import { Badge } from "components";
 
 import { Command, CommandGroup, CommandItem, CommandList } from "components";
 
-import { Popover, PopoverContent, PopoverTrigger, PreviewModal} from "components";
+import { Popover, PopoverContent, PopoverTrigger, PreviewModal } from "components";
 
 import {
   CoreSkillsTagInput,
@@ -96,9 +96,9 @@ const FormField: FC<FormFieldProps> = React.forwardRef<HTMLDivElement, FormField
           <div className="relative">
             {children}
             {showError && (
-              <div className="absolute -right-7 top-1/2 -translate-y-1/2">
+              <div className="absolute -right-6 top-1/2 -translate-y-1/2">
                 <AlertTriangle
-                  className="fill-red-500 text-[#2D3A41]"
+                  className="fill-red-500 text-[#242625] md:text-[#2D3A41]"
                   size={20}
                 />
               </div>
@@ -401,10 +401,9 @@ const JobListingForm: FC = () => {
                   value={values.salaryRange}
                   onValueChange={(value) => setFieldValue("salaryRange", value)}
                 >
-                  <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500">
+                  <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2" aria-hidden="true">
                     <SelectValue
                       placeholder="Select Salary Range"
-                      className=""
                     />
                   </SelectTrigger>
                   <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none">
@@ -412,10 +411,7 @@ const JobListingForm: FC = () => {
                       <SelectItem
                         key={value}
                         className={cn(
-                          "rounded-none justify-start pl-3 h-[55px] transition-all duration-500 ease-in-out",
-                          "focus:bg-orange-500 focus:text-white",
-                          "data-[state=checked]:bg-orange-500 data-[state=checked]:text-white data-[state=checked]:font-bold",
-                          "data-[state=checked]:focus:bg-orange-500",
+                          "rounded-none justify-start pl-3 h-[55px]",
                         )}
                         value={value}
                       >
@@ -464,10 +460,7 @@ const JobListingForm: FC = () => {
                       <SelectItem
                         key={value}
                         className={cn(
-                          "rounded-none justify-start pl-3 h-[55px] transition-all duration-500 ease-in-out",
-                          "focus:bg-orange-500 focus:text-white",
-                          "data-[state=checked]:bg-orange-500 data-[state=checked]:text-white data-[state=checked]:font-bold",
-                          "data-[state=checked]:focus:bg-orange-500",
+                          "rounded-none justify-start pl-3 h-[55px]",
                         )}
                         value={value}
                       >
@@ -553,10 +546,7 @@ const JobListingForm: FC = () => {
                           <SelectItem
                             key={value}
                             className={cn(
-                              "rounded-none justify-start pl-3 h-[55px] transition-all duration-500 ease-in-out",
-                              "focus:bg-orange-500 focus:text-white",
-                              "data-[state=checked]:bg-orange-500 data-[state=checked]:text-white data-[state=checked]:font-bold",
-                              "data-[state=checked]:focus:bg-orange-500",
+                              "rounded-none justify-start pl-3 h-[55px]",
                             )}
                             value={value}
                           >
@@ -618,10 +608,7 @@ const JobListingForm: FC = () => {
                         <SelectItem
                           key={value}
                           className={cn(
-                            "rounded-none justify-start pl-3 h-[55px] transition-all duration-500 ease-in-out",
-                            "focus:bg-orange-500 focus:text-white",
-                            "data-[state=checked]:bg-orange-500 data-[state=checked]:text-white data-[state=checked]:font-bold",
-                            "data-[state=checked]:focus:bg-orange-500",
+                            "rounded-none justify-start pl-3 h-[55px]",
                           )}
                           value={value}
                         >

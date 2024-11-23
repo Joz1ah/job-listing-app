@@ -203,7 +203,7 @@ const TagInputs: React.FC<TagInputProps> = ({
                   onMouseEnter={() => setFocusedIndex(index)}
                   className={cn(
                     "px-2 py-2 cursor-pointer transition-all ease-in-out duration-500",
-                    index === focusedIndex ? "bg-[#BF532C] text-white" : "hover:bg-[#BF532C] hover:text-white"
+                    index === focusedIndex ? "bg-orange-500 text-white" : "hover:bg-orange-500 hover:text-white"
                   )}
                 >
                   {option.label}

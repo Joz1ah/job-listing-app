@@ -106,7 +106,7 @@ const PerfectMatch: FC<selectedProps> = ({
 
   // Reset when switching tabs
   useEffect(() => {
-    const initialItems = perfectMatch.slice(0, 5);
+    const initialItems = perfectMatch.slice(0, isFreeTrial ? 5 : 6);
     if (isFreeTrial) {
       setDisplayedItems([
         ...initialItems.slice(0, 3),
@@ -232,7 +232,7 @@ const OtherApplications: FC<selectedProps> = ({
 }) => {
   const [displayedItems, setDisplayedItems] = useState<CardItem[]>(() => {
     // Initial load of 5 items
-    const initialItems = others.slice(0, 5);
+    const initialItems = others.slice(0, isFreeTrial ? 5 : 6);
     if (isFreeTrial) {
       // Insert first ad at position 3
       return [

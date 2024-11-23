@@ -154,7 +154,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({ values, selectOptions }) =
               </div>
             </div>
           ) : (
-            <div className="h-[60px] mb-3">
+            <div className="h-[70px] md:h-[60px] mb-3">
               <p className="text-[13px] font-light text-black">Core Skills:</p>
               <div className="flex flex-wrap gap-1 mt-1">
                 {[0, 1, 2, 3, 4].map((i) => (

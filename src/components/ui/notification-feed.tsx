@@ -219,7 +219,7 @@ const NotificationFeed: FC<NotificationFeedProps> = ({ isFreeTrial = false }) =>
         >
             <div 
               className={`
-                transform transition-transform duration-1000 ease-out
+                transform transition-transform duration-900 ease-out
                 ${open ? 'translate-y-0' : '-translate-y-full'}
               `}
             >

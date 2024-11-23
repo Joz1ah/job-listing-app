@@ -41,7 +41,7 @@ const SecureNameDisplay: FC<{ isFreeTrial: boolean; realName: string }> = ({
   if (isFreeTrial) {
     return (
       <div className="relative">
-        <div className="select-none pointer-events-none" aria-hidden="true">
+        <div className="select-none pointer-events-none">
           <div className="relative">
             <div className="absolute inset-0 blur-[8px] text-sm font-semibold bg-clip-text">
               {Array(realName.length).fill("X").join("")}

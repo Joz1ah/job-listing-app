@@ -78,9 +78,9 @@ const FormField: FC<FormFieldProps> = React.forwardRef<HTMLDivElement, FormField
           <div className="relative w-full">
             {children}
             {showError && (
-              <div className="absolute -right-7 top-1/2 -translate-y-1/2">
+              <div className="absolute -right-6 top-1/2 -translate-y-1/2">
                 <AlertTriangle
-                  className="fill-red-500 text-[#2D3A41]"
+                  className="fill-red-500 text-[#242625] md:text-[#2D3A41]"
                   size={20}
                 />
               </div>
@@ -293,7 +293,7 @@ const EmployerProfile: FC = () => {
                   name="mobileNumber"
                   value={values.mobileNumber}
                   onChange={handleChange}
-                  className="bg-[#2D3A41] border-2 rounded-md border-[#AEADAD] h-[56px] focus-within:border-orange-500 transition-colors flex justify-between"
+                  className="bg-transparent border-2 rounded-md border-[#AEADAD] h-[56px] focus-within:border-orange-500 transition-colors flex justify-between"
                   defaultCountry="CA"
                 />
               </FormField>
