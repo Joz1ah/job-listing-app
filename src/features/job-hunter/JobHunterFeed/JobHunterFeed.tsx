@@ -12,7 +12,14 @@ import { BookmarkLimitHandler } from "components";
 
 import { JobCardDesktop, JobCardMobile } from "features";
 
-import { Swiper, SwiperSlide } from "swiper/react";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+} from "components";
+
 
 import { useJobHunterContext } from "components";
 
@@ -457,6 +464,58 @@ const OtherApplications: FC<selectedProps> = ({
   );
 };
 
+interface EndCardProps {
+  type: "perfectMatch" | "otherOpportunities";
+}
+
+const EndCard: React.FC<EndCardProps> = ({ type }) => {
+  const cardContent = {
+    perfectMatch: {
+      mainText: "perfect matches",
+      exploreText: "Explore more options below",
+    },
+    otherOpportunities: {
+      mainText: "other opportunities",
+      exploreText: "Explore your perfect matches",
+    },
+  };
+
+  const content = cardContent[type];
+
+  return (
+    <div className="flex flex-col items-center w-[308px] h-[420px] bg-transparent rounded-lg text-center">
+      <div className="px-10 pt-[55px] flex flex-col items-center w-full">
+        <div className="text-xl font-semibold text-white">
+          <div>You've reached the</div>
+          <div>
+            end of your{" "}
+            <span className="text-[#F5722E] font-semibold">
+              {type === "perfectMatch" ? "perfect" : content.mainText}
+            </span>
+          </div>
+          {type === "perfectMatch" && (
+            <div>
+              <span className="text-[#F5722E] font-semibold">matches</span>{" "}
+              for now!
+            </div>
+          )}
+          {type === "otherOpportunities" && <div>for now!</div>}
+        </div>
+        <div className="text-xl font-semibold text-white mt-0.5">
+          <div>{content.exploreText}</div>
+        </div>
+        <div className="flex justify-center w-full mt-6">
+          <img
+            src={bulb}
+            alt="Bulb"
+            className="w-[55px] h-[75px] fill-orange-500"
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
 interface JobHunterSectionProps {
   isFreeTrial?: boolean;
 }
@@ -526,58 +585,6 @@ const JobHunterFeed: FC<JobHunterSectionProps> = () => {
     });
 
     return result;
-  };
-
-  interface EndCardProps {
-    type: "perfectMatch" | "otherOpportunities";
-  }
-
-  const EndCard: React.FC<EndCardProps> = ({ type }) => {
-    const cardContent = {
-      perfectMatch: {
-        mainText: "perfect matches",
-        exploreText: "Explore more options below",
-      },
-      otherOpportunities: {
-        mainText: "other opportunities",
-        exploreText: "Explore your perfect matches",
-      },
-    };
-
-    const content = cardContent[type];
-
-    return (
-      <div className="flex flex-col items-center w-[308px] h-[420px] bg-transparent rounded-lg text-center">
-        <div className="px-10 pt-[55px] flex flex-col items-center w-full">
-          <div className="text-xl font-semibold text-white">
-            <div>You've reached the</div>
-            <div>
-              end of your{" "}
-              <span className="text-[#F5722E] font-semibold">
-                {type === "perfectMatch" ? "perfect" : content.mainText}
-              </span>
-            </div>
-            {type === "perfectMatch" && (
-              <div>
-                <span className="text-[#F5722E] font-semibold">matches</span>{" "}
-                for now!
-              </div>
-            )}
-            {type === "otherOpportunities" && <div>for now!</div>}
-          </div>
-          <div className="text-xl font-semibold text-white mt-0.5">
-            <div>{content.exploreText}</div>
-          </div>
-          <div className="flex justify-center w-full mt-6">
-            <img
-              src={bulb}
-              alt="Bulb"
-              className="w-[55px] h-[75px] fill-orange-500"
-            />
-          </div>
-        </div>
-      </div>
-    );
   };
 
   return (
@@ -652,41 +659,35 @@ const JobHunterFeed: FC<JobHunterSectionProps> = () => {
             PERFECT MATCH
           </h3>
 
-          <Swiper
-            grabCursor={true}
-            centeredSlides={true}
-            slidesPerView={"auto"}
-            initialSlide={0}
-            modules={[]}
-            className="!pt-5 !pb-12 custom-swiper"
-          >
-            {getItemsWithAds(perfectMatch).map((item, index) => (
-              <SwiperSlide
-                key={index}
-                className="!w-[320px] flex justify-center items-center custom-slide"
-              >
-                {"isAd" in item ? (
-                  <img
-                    src={item.image}
-                    alt="Job Hunter Ad"
-                    className="w-[308px] mr-3"
-                  />
-                ) : (
-                  <div className="relative w-full max-w-[320px]">
-                    <JobCardMobile
-                      match={item}
-                      isFreeTrial={isFreeTrial}
-                      bookmarked={bookmarkedCards.has(`perfectMatch-${index}`)}
-                      onBookmark={() => toggleBookmark("perfectMatch", index)}
+          <Carousel className="w-full max-w-[320px] mx-auto">
+            <CarouselContent>
+              {getItemsWithAds(perfectMatch).map((item, index) => (
+                <CarouselItem key={index} className="flex justify-center">
+                  {"isAd" in item ? (
+                    <img
+                      src={item.image}
+                      alt="Job Hunter Ad"
+                      className="w-[308px]"
                     />
-                  </div>
-                )}
-              </SwiperSlide>
-            ))}
-            <SwiperSlide className="!w-[320px] flex justify-center items-center custom-slide">
-              <EndCard type="perfectMatch" />
-            </SwiperSlide>
-          </Swiper>
+                  ) : (
+                    <div className="relative w-full max-w-[320px]">
+                      <JobCardMobile
+                        match={item}
+                        isFreeTrial={isFreeTrial}
+                        bookmarked={bookmarkedCards.has(`perfectMatch-${index}`)}
+                        onBookmark={() => toggleBookmark("perfectMatch", index)}
+                      />
+                    </div>
+                  )}
+                </CarouselItem>
+              ))}
+              <CarouselItem className="flex justify-center">
+                <EndCard type="perfectMatch" />
+              </CarouselItem>
+            </CarouselContent>
+            <CarouselPrevious className="hidden" />
+            <CarouselNext className="hidden" />
+          </Carousel>
         </div>
 
         <div id="other-applications-mobile" className="pt-12 pb-6">
@@ -694,41 +695,35 @@ const JobHunterFeed: FC<JobHunterSectionProps> = () => {
             OTHER OPPORTUNITIES
           </h3>
 
-          <Swiper
-            grabCursor={true}
-            centeredSlides={true}
-            slidesPerView={"auto"}
-            initialSlide={0}
-            modules={[]}
-            className="!pt-5 !pb-12 custom-swiper"
-          >
-            {getItemsWithAds(others).map((item, index) => (
-              <SwiperSlide
-                key={index}
-                className="!w-[320px] flex justify-center items-center custom-slide"
-              >
-                {"isAd" in item ? (
-                  <img
-                    src={item.image}
-                    alt="Job Hunter Ad"
-                    className="w-[308px] mr-3"
-                  />
-                ) : (
-                  <div className="relative w-full max-w-[320px]">
-                    <JobCardMobile
-                      match={item}
-                      isFreeTrial={isFreeTrial}
-                      bookmarked={bookmarkedCards.has(`others-${index}`)}
-                      onBookmark={() => toggleBookmark("others", index)}
+          <Carousel className="w-full max-w-[320px] mx-auto">
+            <CarouselContent>
+              {getItemsWithAds(others).map((item, index) => (
+                <CarouselItem key={index} className="flex justify-center">
+                  {"isAd" in item ? (
+                    <img
+                      src={item.image}
+                      alt="Job Hunter Ad"
+                      className="w-[308px]"
                     />
-                  </div>
-                )}
-              </SwiperSlide>
-            ))}
-            <SwiperSlide className="!w-[320px] flex justify-center items-center custom-slide">
-              <EndCard type="otherOpportunities" />
-            </SwiperSlide>
-          </Swiper>
+                  ) : (
+                    <div className="relative w-full max-w-[320px]">
+                      <JobCardMobile
+                        match={item}
+                        isFreeTrial={isFreeTrial}
+                        bookmarked={bookmarkedCards.has(`others-${index}`)}
+                        onBookmark={() => toggleBookmark("others", index)}
+                      />
+                    </div>
+                  )}
+                </CarouselItem>
+              ))}
+              <CarouselItem className="flex justify-center">
+                <EndCard type="otherOpportunities" />
+              </CarouselItem>
+            </CarouselContent>
+            <CarouselPrevious className="hidden" />
+            <CarouselNext className="hidden" />
+          </Carousel>
         </div>
       </div>
     </div>

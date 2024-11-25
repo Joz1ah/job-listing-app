@@ -1,21 +1,10 @@
 import { FC, useState, useEffect } from 'react';
-import type { Swiper as SwiperType } from 'swiper';
 import type { CarouselApi } from "components";
 
 interface CircularPaginationProps {
-  api: SwiperType | CarouselApi | null | undefined;
+  api: CarouselApi | null;
   color?: string;
 }
-
-type ApiType = SwiperType | CarouselApi;
-
-const isSwiperInstance = (api: ApiType | null | undefined): api is SwiperType => {
-  return api !== null && api !== undefined && 'slides' in api;
-};
-
-const isCarouselApi = (api: ApiType | null | undefined): api is CarouselApi => {
-  return api !== null && api !== undefined && 'scrollTo' in api;
-};
 
 const CircularPagination: FC<CircularPaginationProps> = ({ api, color = "#F5722E" }) => {
   const [currentPage, setCurrentPage] = useState(0);
@@ -24,48 +13,27 @@ const CircularPagination: FC<CircularPaginationProps> = ({ api, color = "#F5722E
   useEffect(() => {
     if (!api) return;
 
-    let cleanup: (() => void) | undefined;
+    const onSelect = () => {
+      setCurrentPage(api.selectedScrollSnap());
+    };
 
-    if (isSwiperInstance(api)) {
-      const updateState = () => {
-        setCurrentPage(api.realIndex);
-        setTotalPages(api.slides.length);
-      };
+    const onInit = () => {
+      setTotalPages(api.scrollSnapList().length);
+      setCurrentPage(api.selectedScrollSnap());
+    };
 
-      updateState();
-      api.on('slideChange', updateState);
-      api.on('init', updateState);
+    // Initial setup
+    onInit();
 
-      cleanup = () => {
-        api.off('slideChange', updateState);
-        api.off('init', updateState);
-      };
-    } else if (isCarouselApi(api)) {
-      const onSelect = () => {
-        setCurrentPage(api.selectedScrollSnap());
-      };
-
-      const onInit = () => {
-        setTotalPages(api.scrollSnapList().length);
-        setCurrentPage(api.selectedScrollSnap());
-      };
-
-      onInit();
-      api.on("select", onSelect);
-      api.on("init", onInit);
-      api.on("reInit", onInit);
-
-      cleanup = () => {
-        api.off("select", onSelect);
-        api.off("init", onInit);
-        api.off("reInit", onInit);
-      };
-    }
+    // Event listeners
+    api.on("select", onSelect);
+    api.on("init", onInit);
+    api.on("reInit", onInit);
 
     return () => {
-      if (cleanup) {
-        cleanup();
-      }
+      api.off("select", onSelect);
+      api.off("init", onInit);
+      api.off("reInit", onInit);
     };
   }, [api]);
 
@@ -89,16 +57,6 @@ const CircularPagination: FC<CircularPaginationProps> = ({ api, color = "#F5722E
     return [currentPage - 1, currentPage, currentPage + 1];
   };
 
-  const handleClick = (pageNum: number) => {
-    if (!api) return;
-
-    if (isSwiperInstance(api)) {
-      api.slideTo(pageNum);
-    } else if (isCarouselApi(api)) {
-      api.scrollTo(pageNum);
-    }
-  };
-
   if (!api || totalPages <= 1) return null;
 
   return (
@@ -106,7 +64,7 @@ const CircularPagination: FC<CircularPaginationProps> = ({ api, color = "#F5722E
       {getDisplayedPages().map((pageNum) => (
         <button
           key={pageNum}
-          onClick={() => handleClick(pageNum)}
+          onClick={() => api?.scrollTo(pageNum)}
           className="flex items-center justify-center w-[7px] h-[7px] p-0 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
           aria-label={`Page ${pageNum + 1} of ${totalPages}`}
         >
