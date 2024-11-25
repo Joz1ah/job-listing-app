@@ -20,9 +20,6 @@ const AppCardSkeleton: FC = () => {
               <div className="flex flex-col items-end -mr-2">
                 <Skeleton className="h-[17px] w-24 bg-gray-300" />
               </div>
-              <div className="absolute mt-5 -mr-2">
-                <Skeleton className="h-[26px] w-[20px] bg-gray-300" />
-              </div>
             </div>
           </div>
           <div>

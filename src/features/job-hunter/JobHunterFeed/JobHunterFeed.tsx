@@ -4,12 +4,11 @@ import { perfectMatch, others } from "mockData/jobs-data";
 import jobHunterAds from "images/job-hunter-ads.svg?url";
 import jobHunterMobileAds from "images/job-hunter-mobile-ads.svg?url";
 import bulb from "images/bulb.svg?url";
+import jobHunterPopAds from "images/popup-hunter.svg?url";
 
 import { Button } from "components";
 import { JobCardSkeleton } from "components";
-import {
-  BookmarkLimitHandler,
-} from "components";
+import { BookmarkLimitHandler } from "components";
 
 import { JobCardDesktop, JobCardMobile } from "features";
 
@@ -84,22 +83,42 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
       return;
     }
 
-    const itemsToLoad = Math.min(2, remainingItems);
-    const newItems = perfectMatch.slice(startIndex, startIndex + itemsToLoad);
-
-    // Only add ads if isFreeTrial is true
-    let newDisplayItems: CardItem[] = newItems;
     if (isFreeTrial) {
-      const realItemsAfterLoad = currentItemCount + itemsToLoad;
-      const needsAd = (realItemsAfterLoad - 3) % 5 === 0;
-      if (needsAd) {
-        newDisplayItems = [...newItems, { isAd: true, image: jobHunterAds }];
+      // Calculate if we need an ad in the next 2 positions
+      const realItemsCount = displayedItems.filter(item => !("isAd" in item)).length;
+      const nextPositionNeedsAd = (realItemsCount + 1 - 3) % 5 === 0;
+      const secondPositionNeedsAd = (realItemsCount + 2 - 3) % 5 === 0;
+
+      if (nextPositionNeedsAd) {
+        // Load 1 real item + ad
+        const newItems = perfectMatch.slice(startIndex, startIndex + 1);
+        setDisplayedItems((prev) => [
+          ...prev,
+          ...newItems,
+          { isAd: true, image: jobHunterAds }
+        ]);
+      } else if (secondPositionNeedsAd) {
+        // Load 2 real items + ad
+        const newItems = perfectMatch.slice(startIndex, startIndex + 2);
+        setDisplayedItems((prev) => [
+          ...prev,
+          newItems[0],
+          { isAd: true, image: jobHunterAds }
+        ]);
+      } else {
+        // Load 2 regular items
+        const itemsToLoad = Math.min(2, remainingItems);
+        const newItems = perfectMatch.slice(startIndex, startIndex + itemsToLoad);
+        setDisplayedItems((prev) => [...prev, ...newItems]);
       }
+    } else {
+      // Non-free trial users always get 2 regular items
+      const itemsToLoad = Math.min(2, remainingItems);
+      const newItems = perfectMatch.slice(startIndex, startIndex + itemsToLoad);
+      setDisplayedItems((prev) => [...prev, ...newItems]);
     }
 
-    setDisplayedItems((prev) => [...prev, ...newDisplayItems]);
-
-    if (startIndex + itemsToLoad >= perfectMatch.length) {
+    if (startIndex + 2 >= perfectMatch.length) {
       setHasMore(false);
     }
 
@@ -120,14 +139,14 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
     }
     setHasMore(perfectMatch.length > 6);
     setLoading(false);
-  }, [setSelectedTab, isFreeTrial]);
+  }, [setSelectedTab, isFreeTrial, perfectMatch, jobHunterAds]);
 
-  // Calculate loading cards - always show 2 if loading
-  // Update the remainingItems calculation
+  // Calculate loading cards
   const remainingItems = isFreeTrial
     ? perfectMatch.length -
       displayedItems.filter((item) => !("isAd" in item)).length
     : perfectMatch.length - displayedItems.length;
+    
   const showLoadingCards = loading && remainingItems > 0;
   const loadingCardsCount = Math.min(2, remainingItems);
 
@@ -173,6 +192,9 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
         onUpgradeClick={() => {
           console.log("Upgrade clicked");
         }}
+        limitPopupImage={jobHunterPopAds}
+        limitPopupTitle="Job Hunter Bookmark Limit"
+        limitPopupDescription="Upgrade to bookmark more job matches!"
       >
         {displayedItems.map((item, index) =>
           "isAd" in item ? (
@@ -269,22 +291,42 @@ const OtherApplications: FC<selectedProps> = ({
       return;
     }
 
-    const itemsToLoad = Math.min(2, remainingItems);
-    const newItems = others.slice(startIndex, startIndex + itemsToLoad);
-
-    // Only add ads if isFreeTrial is true
-    let newDisplayItems: CardItem[] = newItems;
     if (isFreeTrial) {
-      const realItemsAfterLoad = currentItemCount + itemsToLoad;
-      const needsAd = (realItemsAfterLoad - 3) % 5 === 0;
-      if (needsAd) {
-        newDisplayItems = [...newItems, { isAd: true, image: jobHunterAds }];
+      // Calculate if we need an ad in the next 2 positions
+      const realItemsCount = displayedItems.filter(item => !("isAd" in item)).length;
+      const nextPositionNeedsAd = (realItemsCount + 1 - 3) % 5 === 0;
+      const secondPositionNeedsAd = (realItemsCount + 2 - 3) % 5 === 0;
+
+      if (nextPositionNeedsAd) {
+        // Load 1 real item + ad
+        const newItems = others.slice(startIndex, startIndex + 1);
+        setDisplayedItems((prev) => [
+          ...prev,
+          ...newItems,
+          { isAd: true, image: jobHunterAds }
+        ]);
+      } else if (secondPositionNeedsAd) {
+        // Load 2 real items + ad
+        const newItems = others.slice(startIndex, startIndex + 2);
+        setDisplayedItems((prev) => [
+          ...prev,
+          newItems[0],
+          { isAd: true, image: jobHunterAds }
+        ]);
+      } else {
+        // Load 2 regular items
+        const itemsToLoad = Math.min(2, remainingItems);
+        const newItems = others.slice(startIndex, startIndex + itemsToLoad);
+        setDisplayedItems((prev) => [...prev, ...newItems]);
       }
+    } else {
+      // Non-free trial users always get 2 regular items
+      const itemsToLoad = Math.min(2, remainingItems);
+      const newItems = others.slice(startIndex, startIndex + itemsToLoad);
+      setDisplayedItems((prev) => [...prev, ...newItems]);
     }
 
-    setDisplayedItems((prev) => [...prev, ...newDisplayItems]);
-
-    if (startIndex + itemsToLoad >= others.length) {
+    if (startIndex + 2 >= others.length) {
       setHasMore(false);
     }
 
@@ -293,7 +335,7 @@ const OtherApplications: FC<selectedProps> = ({
 
   // Reset when switching tabs
   useEffect(() => {
-    const initialItems = others.slice(0, 5);
+    const initialItems = others.slice(0, isFreeTrial ? 5 : 6);
     if (isFreeTrial) {
       setDisplayedItems([
         ...initialItems.slice(0, 3),
@@ -305,12 +347,14 @@ const OtherApplications: FC<selectedProps> = ({
     }
     setHasMore(others.length > 6);
     setLoading(false);
-  }, [setSelectedTab, isFreeTrial]);
+  }, [setSelectedTab, isFreeTrial, others, jobHunterAds]);
 
-  // Calculate loading cards - always show 2 if loading
+  // Calculate loading cards
   const remainingItems = isFreeTrial
-    ? others.length - displayedItems.filter((item) => !("isAd" in item)).length
+    ? others.length -
+      displayedItems.filter((item) => !("isAd" in item)).length
     : others.length - displayedItems.length;
+    
   const showLoadingCards = loading && remainingItems > 0;
   const loadingCardsCount = Math.min(2, remainingItems);
 
@@ -355,6 +399,9 @@ const OtherApplications: FC<selectedProps> = ({
         onUpgradeClick={() => {
           console.log("Upgrade clicked");
         }}
+        limitPopupImage={jobHunterPopAds}
+        limitPopupTitle="Job Hunter Bookmark Limit"
+        limitPopupDescription="Upgrade to bookmark more job matches!"
       >
         {displayedItems.map((item, index) =>
           "isAd" in item ? (
@@ -485,21 +532,21 @@ const JobHunterFeed: FC<JobHunterSectionProps> = () => {
   interface EndCardProps {
     type: "perfectMatch" | "otherOpportunities";
   }
-  
+
   const EndCard: React.FC<EndCardProps> = ({ type }) => {
     const cardContent = {
       perfectMatch: {
         mainText: "perfect matches",
-        exploreText: "Explore more options below"
+        exploreText: "Explore more options below",
       },
       otherOpportunities: {
         mainText: "other opportunities",
-        exploreText: "Explore your perfect matches"
+        exploreText: "Explore your perfect matches",
       },
     };
-  
+
     const content = cardContent[type];
-  
+
     return (
       <div className="flex flex-col items-center w-[308px] h-[420px] bg-transparent rounded-lg text-center">
         <div className="px-10 pt-[55px] flex flex-col items-center w-full">
@@ -513,9 +560,7 @@ const JobHunterFeed: FC<JobHunterSectionProps> = () => {
             </div>
             {type === "perfectMatch" && (
               <div>
-                <span className="text-[#F5722E] font-semibold">
-                  matches
-                </span>{" "}
+                <span className="text-[#F5722E] font-semibold">matches</span>{" "}
                 for now!
               </div>
             )}
@@ -614,7 +659,7 @@ const JobHunterFeed: FC<JobHunterSectionProps> = () => {
             centeredSlides={true}
             slidesPerView={"auto"}
             initialSlide={0}
-            modules={[]} 
+            modules={[]}
             className="!pt-5 !pb-12 custom-swiper"
           >
             {getItemsWithAds(perfectMatch).map((item, index) => (

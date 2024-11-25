@@ -81,7 +81,7 @@ const Sidebar: FC = () => {
       {/* Mobile View */}
       {shouldShowMobileView && (
         <div className="block md:hidden">
-          <div className="mt-16 flex flex-col gap-4 items-center justify-center">
+          <div className="md:mt-16 flex flex-col gap-4 items-center justify-center">
             <div className="w-[336px]">
               <SelectComponent />
             </div>

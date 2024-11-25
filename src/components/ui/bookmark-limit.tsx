@@ -5,7 +5,6 @@ import {
   AlertDialogDescription,
   AlertDialogTitle,
 } from 'components';
-import subscribePopup from 'images/popup-subscribe.svg?url';
 
 interface Match {
   position: string;
@@ -31,6 +30,10 @@ interface BookmarkLimitHandlerProps {
   isFreeTrial?: boolean;
   onUpgradeClick?: () => void;
   maxBookmarks?: number;
+  limitPopupImage: string;  // New prop for the popup image
+  limitPopupTitle?: string; // Optional custom title
+  limitPopupDescription?: string; // Optional custom description
+  imageAltText?: string; // Optional custom alt text
 }
 
 const BookmarkLimitHandler: React.FC<BookmarkLimitHandlerProps> = ({ 
@@ -38,6 +41,10 @@ const BookmarkLimitHandler: React.FC<BookmarkLimitHandlerProps> = ({
   isFreeTrial = false,
   onUpgradeClick,
   maxBookmarks = 3,
+  limitPopupImage,
+  limitPopupTitle = 'Bookmark Limit Reached',
+  limitPopupDescription = "You've reached the maximum number of bookmarks allowed in the free trial. Upgrade your account to bookmark more matches.",
+  imageAltText = "You've reached the maximum bookmarks limit. Click to upgrade your account",
 }) => {
   const [bookmarkedCards, setBookmarkedCards] = useState<Set<number | string>>(new Set());
   const [showLimitPopup, setShowLimitPopup] = useState<boolean>(false);
@@ -82,15 +89,14 @@ const BookmarkLimitHandler: React.FC<BookmarkLimitHandlerProps> = ({
       <AlertDialog open={showLimitPopup} onOpenChange={setShowLimitPopup}>
         <AlertDialogContent className="p-0 border-none bg-transparent">
           <AlertDialogTitle className="sr-only">
-            Bookmark Limit Reached
+            {limitPopupTitle}
           </AlertDialogTitle>
           <AlertDialogDescription className="sr-only">
-            You've reached the maximum number of bookmarks allowed in the free trial. 
-            Upgrade your account to bookmark more matches.
+            {limitPopupDescription}
           </AlertDialogDescription>
           <img 
-            src={subscribePopup} 
-            alt="You've reached the maximum bookmarks limit. Click to upgrade your account"
+            src={limitPopupImage}
+            alt={imageAltText}
             className="w-full h-auto cursor-pointer"
             onClick={() => {
               setShowLimitPopup(false);

@@ -117,7 +117,7 @@ const EmployerMenu: FC<MenuProps> = ({
             </ul>
           </nav>
           <NavLink to="/job-feed-employer/job-listing" onClick={handleNavLinkClick}>
-            <Button className="bg-orange-500 w-[172px] h-[44px] font-light">
+            <Button className="bg-orange-500 w-[172px] h-[44px] font-light rounded-sm">
               Create Job listing
             </Button>
           </NavLink>

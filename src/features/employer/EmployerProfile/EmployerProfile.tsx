@@ -221,6 +221,9 @@ const EmployerProfile: FC = () => {
             className="bg-transparent"
             error={errors.businessName}
             touched={touched.businessName}
+            showIcon={true}
+            tooltipContent="Please enter your company’s complete legal business name
+                            e.g. “ Imagination Ventures LLC”"
           >
             <Input
               name="bussinessName"
@@ -350,104 +353,94 @@ const EmployerProfile: FC = () => {
             </div>
           </div>
 
+          <h2 className="text-white text-lg mb-4 flex">
+            Complete Company Address
+          </h2>
 
-            <h2 className="text-white text-lg mb-4 flex">
-              Complete Company Address
-            </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 gap-x-[65px]">
+            <FormField
+              label="Unit No./Building"
+              error={errors.unitAndBldg}
+              touched={touched.unitAndBldg}
+            >
+              <Input
+                name="unitAndBldg"
+                value={values.unitAndBldg}
+                onChange={handleChange}
+                className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
+              />
+            </FormField>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 gap-x-[65px]">
+            <FormField
+              label="Street Address"
+              error={errors.streetAddress}
+              touched={touched.streetAddress}
+            >
+              <Input
+                name="streetAddress"
+                value={values.streetAddress}
+                onChange={handleChange}
+                className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
+              />
+            </FormField>
+
+            <FormField label="City" error={errors.city} touched={touched.city}>
+              <Input
+                name="city"
+                value={values.city}
+                onChange={handleChange}
+                className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
+              />
+            </FormField>
+
+            <FormField
+              label="State/Province/Region"
+              error={errors.state}
+              touched={touched.state}
+            >
+              <Input
+                name="state"
+                value={values.state}
+                onChange={handleChange}
+                className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
+              />
+            </FormField>
+
+            {/* Empty column on the left */}
+            <div className="md:col-span-1"></div>
+
+            {/* Country field on the right */}
+            <div className="md:col-span-1">
               <FormField
-                label="Unit No./Building"
-                error={errors.unitAndBldg}
-                touched={touched.unitAndBldg}
+                label="Country"
+                error={errors.country}
+                touched={touched.country}
               >
-                <Input
-                  name="unitAndBldg"
-                  value={values.unitAndBldg}
-                  onChange={handleChange}
-                  placeholder="N/A"
-                  className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
-                />
-              </FormField>
-
-              <FormField
-                label="Street Address"
-                error={errors.streetAddress}
-                touched={touched.streetAddress}
-              >
-                <Input
-                  name="streetAddress"
-                  value={values.streetAddress}
-                  onChange={handleChange}
-                  placeholder="1600 Amphitheatre Parkway"
-                  className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
-                />
-              </FormField>
-
-              <FormField
-                label="City"
-                error={errors.city}
-                touched={touched.city}
-              >
-                <Input
-                  name="city"
-                  value={values.city}
-                  onChange={handleChange}
-                  placeholder="Mountain View"
-                  className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
-                />
-              </FormField>
-
-              <FormField
-                label="State/Province/Region"
-                error={errors.state}
-                touched={touched.state}
-              >
-                <Input
-                  name="state"
-                  value={values.state}
-                  onChange={handleChange}
-                  placeholder="California"
-                  className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
-                />
-              </FormField>
-
-              {/* Empty column on the left */}
-              <div className="md:col-span-1"></div>
-
-              {/* Country field on the right */}
-              <div className="md:col-span-1">
-                <FormField
-                  label="Country"
-                  error={errors.country}
-                  touched={touched.country}
+                <Select
+                  name="country"
+                  value={values.country}
+                  onValueChange={(value) => setFieldValue("country", value)}
                 >
-                  <Select
-                    name="country"
-                    value={values.country}
-                    onValueChange={(value) => setFieldValue("country", value)}
-                  >
-                    <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500">
-                      <SelectValue placeholder="USA" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-[#F5F5F7] items-center p-0 [&>*]:p-0 border-none rounded-none">
-                      {selectOptions.country.map(({ value, label }) => (
-                        <SelectItem
-                          key={value}
-                          className={cn(
-                            "rounded-none justify-start pl-3 h-[55px] transition-all duration-500 ease-in-out",
-                          )}
-                          value={value}
-                        >
-                          <div className="py-3 w-full text-center">{label}</div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </FormField>
-              </div>
+                  <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#F5F5F7] items-center p-0 [&>*]:p-0 border-none rounded-none">
+                    {selectOptions.country.map(({ value, label }) => (
+                      <SelectItem
+                        key={value}
+                        className={cn(
+                          "rounded-none justify-start pl-3 h-[55px] transition-all duration-500 ease-in-out",
+                        )}
+                        value={value}
+                      >
+                        <div className="py-3 w-full text-center">{label}</div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormField>
             </div>
-
+          </div>
 
           <FormField
             label="Job Description"
