@@ -23,7 +23,7 @@ const CreateAppCard: FC = () => {
       <ScrollArea className="flex-1">
         <div className="flex flex-col min-h-full">
           {/* Main content */}
-          <main className="flex-grow bg-[#242625] p-4 md:p-[60px] flex">
+          <main className="flex-grow bg-[#242625] p-4 md:p-[60px] flex justify-center">
             <ApplicationForm />
           </main>
 

@@ -18,7 +18,6 @@ const EmployerDesktop: FC = () => {
     <EmployerContext.Provider value={{ isFreeTrial }}>
       <div className="flex flex-col h-screen bg-gray-900 text-white">
         <PageMeta title="Employer Dashboard" />
-
         <EmployerMenu
           isMenuOpen={menuOpen}
           onToggleMenu={toggleMenu}
@@ -27,17 +26,19 @@ const EmployerDesktop: FC = () => {
           isFreeTrial={isFreeTrial}
         />
         
-        {/* ScrollArea wraps both main content and footer */}
         <ScrollArea className="flex-1">
           <div className="flex flex-col min-h-full">
-            <main className="flex-grow flex flex-col md:flex-row bg-[#242625] md:mt-16 w-full">
-              <div className="flex flex-col md:mt-10 md:ml-16 mb-8">
-                <EmployerHeader isFreeTrial={isFreeTrial}/>
-                <Sidebar />
-              </div>
-
-              <div className="flex-1 flex justify-center">
-                <Outlet />
+            <main className="flex-1 flex flex-col bg-[#242625] w-full md:px-12 md:py-16">
+              <EmployerHeader isFreeTrial={isFreeTrial}/>
+              <div className="flex flex-col md:flex-row">
+                {/* Sidebar */}
+                <div className="flex-shrink-0">
+                  <Sidebar />
+                </div>
+                {/* Main Content */}
+                <div className="flex-1 flex justify-center">
+                  <Outlet />
+                </div>
               </div>
             </main>
 

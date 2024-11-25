@@ -56,28 +56,22 @@ interface FormFieldProps {
   tooltipContent?: string | React.ReactNode; // Modified to accept ReactNode
 }
 
-const FormField: FC<FormFieldProps> = React.forwardRef<
-  HTMLDivElement,
-  FormFieldProps
->(
-  (
-    { label, children, className, error, touched, showIcon, tooltipContent },
-    ref,
-  ) => {
+const FormField: FC<FormFieldProps> = React.forwardRef<HTMLDivElement, FormFieldProps>(
+  ({ label, children, className, error, touched, showIcon, tooltipContent }, ref) => {
     const showError = touched && error;
 
     return (
       <div ref={ref} className={cn("relative pt-4 w-full", className)}>
         <div className="relative">
-          <div className="absolute -top-3 left-5 bg-[#242625] md:bg-[#2D3A41] px-1 z-20">
-            <div className="flex items-center">
+          <div className="absolute -top-3 left-4 md:left-5 bg-[#242625] md:bg-[#2D3A41] px-2 z-20">
+            <div className="flex items-center gap-2">
               <Label className="text-sm md:text-base font-normal text-white">
                 {label}
               </Label>
               {showIcon && tooltipContent && (
                 <Tooltip content={tooltipContent}>
                   <CircleAlert
-                    className="relative -top-1 cursor-pointer fill-gray-400 text-[#2D3A41] ml-1"
+                    className="cursor-pointer fill-gray-400 text-[#2D3A41]"
                     strokeWidth={1.5}
                     size={14}
                   />
@@ -98,13 +92,13 @@ const FormField: FC<FormFieldProps> = React.forwardRef<
           </div>
         </div>
         {showError && (
-          <div className="absolute text-xs md:text-sm italic text-red-500">
+          <div className="absolute text-xs md:text-sm italic text-red-500 mt-1">
             {error}
           </div>
         )}
       </div>
     );
-  },
+  }
 );
 
 FormField.displayName = "FormField";
@@ -197,14 +191,14 @@ const EmployerProfile: FC = () => {
   };
 
   return (
-    <div className="md:pt-10 md:flex md:flex-row md:gap-10 mb-10">
-      <div className="w-full md:w-[800px] min-h-[825px] bg-[#242625] md:bg-[#2D3A41] text-white md:pt-6">
-        <div className="flex items-center relative w-full mb-8 md:mb-14">
-          <NavLink to="/job-feed-employer" className="absolute left-0">
-            <ChevronLeft strokeWidth={4} className="h-6 w-6 ml-4" />
+    <div className="flex flex-col xl:flex-row gap-8 px-4 md:px-8 lg:px-12 py-6">
+      <div className="w-full xl:w-[800px] min-h-[825px] bg-[#242625] md:bg-[#2D3A41] text-white">
+        <div className="flex items-center relative w-full mb-6 md:mb-10">
+          <NavLink to="/job-feed-employer" className="absolute left-4 top-6">
+            <ChevronLeft strokeWidth={4} className="h-6 w-6" />
           </NavLink>
 
-          <h1 className="flex-1 text-center text-xl md:text-[32px] font-normal text-orange-500">
+          <h1 className="flex-1 text-center text-xl md:text-[32px] pt-6 font-normal text-orange-500">
             <span className="inline-flex items-center gap-2 justify-center">
               Edit Your Company Profile
             </span>
@@ -214,7 +208,7 @@ const EmployerProfile: FC = () => {
         <form
           onSubmit={handleSubmit}
           onKeyDown={handleKeyDown}
-          className="space-y-6 p-8"
+          className="space-y-6 p-4 md:p-8"
         >
           <FormField
             label="Legal Business Name"
@@ -233,9 +227,9 @@ const EmployerProfile: FC = () => {
             />
           </FormField>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 md:gap-x-[65px]">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-x-[65px]">
             {/* Left Column */}
-            <div className="space-y-[24px]">
+            <div className="space-y-6">
               <FormField
                 label="First Name"
                 className="bg-transparent"
@@ -294,7 +288,7 @@ const EmployerProfile: FC = () => {
             </div>
 
             {/* Right Column */}
-            <div className="space-y-[24px]">
+            <div className="space-y-6">
               <FormField
                 label="Last Name"
                 className="bg-transparent"
@@ -353,11 +347,11 @@ const EmployerProfile: FC = () => {
             </div>
           </div>
 
-          <h2 className="text-white text-lg mb-4 flex">
+          <h2 className="text-white text-lg mb-4 flex justify-center">
             Complete Company Address
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 gap-x-[65px]">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-x-[65px]">
             <FormField
               label="Unit No./Building"
               error={errors.unitAndBldg}
@@ -410,7 +404,7 @@ const EmployerProfile: FC = () => {
             <div className="md:col-span-1"></div>
 
             {/* Country field on the right */}
-            <div className="md:col-span-1">
+            <div className="md:col-start-2">
               <FormField
                 label="Country"
                 error={errors.country}
@@ -461,7 +455,7 @@ const EmployerProfile: FC = () => {
           </FormField>
 
           {/* Footer Buttons */}
-          <div className="col-span-full flex justify-end pt-[60px] mb-0">
+          <div className="flex justify-end pt-8 md:pt-12">
             <Button
               type="submit"
               className="w-full md:w-auto bg-[#AEADAD] text-white hover:bg-[#F5722E] text-[16px] h-8 rounded-sm mr-2 mb-2 font-normal px-8"
@@ -471,7 +465,7 @@ const EmployerProfile: FC = () => {
           </div>
         </form>
       </div>
-      <div className="w-full md:w-auto">
+      <div className="w-full xl:w-auto flex xl:block justify-center">
         <img src={employerProfileCard} alt="Employer Profile" />
       </div>
     </div>

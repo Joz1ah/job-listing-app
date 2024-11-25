@@ -85,9 +85,9 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({ values, selectOptions }) =
   const hasLanguages = values.languages?.length > 0;
 
   return (
-    <div className="mt-8 flex flex-col items-center md:items-start"
+    <div className="flex flex-col items-center md:items-start"
 >
-      <div className="flex items-center flex-wrap text-white text-base mb-6 md:mb-2">
+      <div className="flex items-center flex-wrap text-white text-base mb-6 md:mb-2 justify-center xl:justify-start">
         <span>This is how your</span>
         <div className="flex items-center mx-1">
           <img src={sparkleIcon} className="w-4 h-4 mr-1" alt="spark icon" />
@@ -97,6 +97,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({ values, selectOptions }) =
       </div>
 
       {/* Desktop View */}
+      <div className="w-full xl:w-auto flex xl:block justify-center">
       <Card className="bg-white border-none w-full md:w-[436px] h-auto md:h-[275px] hidden md:block">
       <CardHeader className="flex flex-col justify-between items-start pb-0">
           <div className="flex flex-row -mt-4 justify-between w-full">
@@ -252,6 +253,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({ values, selectOptions }) =
           <MoreVertical size={12} className="text-gray-700 cursor-pointer" />
         </CardFooter>
       </Card>
+      </div>
 
       {/* Mobile View */}
       <Card className="bg-[#F5F5F7] w-[308px] h-[395px] p-4 md:hidden flex flex-col">

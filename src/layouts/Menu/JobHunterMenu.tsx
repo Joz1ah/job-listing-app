@@ -29,14 +29,13 @@ const JobHunterMenu: FC<MenuProps> = ({
   isFreeTrial 
 }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  const location = useLocation(); // Add this hook
+  const location = useLocation();
 
-  // Close menu when route changes
   useEffect(() => {
     if (isMenuOpen) {
       onToggleMenu();
     }
-  }, [location.pathname]); // Add this effect
+  }, [location.pathname]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -53,7 +52,6 @@ const JobHunterMenu: FC<MenuProps> = ({
     };
 
     window.addEventListener('resize', handleResize);
-
     return () => {
       document.body.style.overflow = '';
       document.body.style.paddingRight = '';
@@ -73,7 +71,6 @@ const JobHunterMenu: FC<MenuProps> = ({
 
   const currentMenuItems = isMobile ? mobileMenuItems : desktopMenuItems;
 
-  // Handler for NavLink clicks
   const handleNavLinkClick = () => {
     if (isMenuOpen) {
       onToggleMenu();
@@ -83,25 +80,24 @@ const JobHunterMenu: FC<MenuProps> = ({
   const renderStatusIcon = () => {
     if (isFreeTrial) {
       return <Info className="w-4 h-4 text-[#2D3A41] fill-white" />;
-    } else
+    }
     return <BadgeCheck className="w-4 h-4 text-[#2D3A41] fill-orange-500" />;
   };
-
 
   return (
     <>
       {/* Desktop Header */}
-      <header className="hidden md:flex fixed top-0 left-0 right-0 bg-[#2D3A41] h-[72px] pr-4 justify-between items-center flex-nowrap z-50">
-        <div className="flex items-center space-x-8 flex-shrink-0">
-          <NavLink to="/job-feed-employer" onClick={handleNavLinkClick}>
+      <header className="hidden md:flex fixed top-0 left-0 right-0 bg-[#2D3A41] h-[72px] px-4 justify-between items-center flex-nowrap z-50">
+        <div className="flex items-center gap-4 flex-grow">
+          <NavLink to="/job-feed-employer" onClick={handleNavLinkClick} className="flex-shrink-0">
             <img
               src={companyLogo}
               alt="Company Logo"
-              className="w-[161px] h-[50px] cursor-pointer"
+              className="w-[100px] lg:w-[161px] h-auto"
             />
           </NavLink>
-          <nav>
-            <ul className="flex space-x-[50px] text-white text-[16px] font-light">
+          <nav className="flex-shrink">
+            <ul className="flex gap-4 lg:gap-8 text-white text-[14px] lg:text-[16px] font-light whitespace-nowrap">
               <li className="hover:text-orange-500">
                 <NavLink to="#" onClick={handleNavLinkClick}>About us</NavLink>
               </li>
@@ -117,18 +113,18 @@ const JobHunterMenu: FC<MenuProps> = ({
             </ul>
           </nav>
         </div>
-        <div className="flex items-center space-x-4 flex-shrink-0">
+        <div className="flex items-center gap-4 flex-shrink-0">
           <NotificationFeed isFreeTrial={isFreeTrial}/>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center gap-2 flex-shrink-0 min-w-0">
             <NavLink to="/job-feed-employer" onClick={handleNavLinkClick}>
-              <span className="text-white font-medium text-[18px]">
+              <span className="text-white font-medium text-[14px] lg:text-[18px] truncate block max-w-[100px] lg:max-w-[200px]">
                 Michael V
               </span>
             </NavLink>
             {renderStatusIcon()}
             <ChevronDown
               onClick={onToggleMenu}
-              className="w-4 h-4 text-white cursor-pointer"
+              className="w-4 h-4 text-white cursor-pointer hover:text-orange-500 transition-colors flex-shrink-0"
             />
           </div>
         </div>
@@ -151,17 +147,15 @@ const JobHunterMenu: FC<MenuProps> = ({
         </div>
       </header>
 
-      {/* Side Menu */}
+      {/* Sliding Menu */}
       <div className="relative">
-        {/* Overlay */}
         <div 
           className={`fixed top-[72px] left-0 w-full h-full bg-black/50 transition-opacity duration-300 ${
             isMenuOpen ? "opacity-100 z-[998]" : "opacity-0 pointer-events-none -z-10"
           }`}
-          onClick={onToggleMenu} // Add click handler to close menu when clicking overlay
+          onClick={onToggleMenu}
         />
         
-        {/* Menu */}
         <div
           className={`fixed top-0 right-0 h-screen w-full md:w-[440px] bg-black text-white shadow-xl transition-transform duration-500 ease-in-out z-[999] ${
             isMenuOpen ? "translate-x-0" : "translate-x-full"

@@ -41,10 +41,10 @@ export const perfectMatch: Match[] = [
     description:
       "Join our rapidly growing team to build scalable web applications and mentor junior developers.",
     skills: [
-      { name: "React", isMatch: true },
+      { name: "Quality Assurance", isMatch: true },
       { name: "JavaScript", isMatch: true },
-      { name: "CSS", isMatch: true },
-      { name: "HTML", isMatch: true },
+      { name: "Machine Learning", isMatch: true },
+      { name: "Product Management", isMatch: true },
       { name: "TypeScript", isMatch: true },
     ],
     appliedAgo: "1 week ago",

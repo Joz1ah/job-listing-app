@@ -68,18 +68,15 @@ interface FormFieldProps {
 }
 
 const FormField: FC<FormFieldProps> = React.forwardRef<HTMLDivElement, FormFieldProps>(
-  (
-    { label, children, className, error, touched, showIcon, tooltipContent },
-    ref,
-  ) => {
+  ({ label, children, className, error, touched, showIcon, tooltipContent }, ref) => {
     const showError = touched && error;
 
     return (
       <div ref={ref} className={cn("relative pt-4", className)}>
         <div className="relative">
-          <div className="absolute -top-3 left-5 bg-[#242625] md:bg-[#2D3A41] px-1 z-20">
-            <div className="flex items-center">
-              <Label className="text-base font-normal text-white">
+          <div className="absolute -top-3 left-4 md:left-5 bg-[#242625] md:bg-[#2D3A41] px-2 z-20">
+            <div className="flex items-center gap-2">
+              <Label className="text-sm md:text-base font-normal text-white">
                 {label}
               </Label>
               {showIcon && tooltipContent && (
@@ -106,11 +103,13 @@ const FormField: FC<FormFieldProps> = React.forwardRef<HTMLDivElement, FormField
           </div>
         </div>
         {showError && (
-          <div className="absolute text-sm italic text-red-500">{error}</div>
+          <div className="absolute text-xs md:text-sm italic text-red-500 mt-1">
+            {error}
+          </div>
         )}
       </div>
     );
-  },
+  }
 );
 
 FormField.displayName = "FormField";
@@ -253,26 +252,27 @@ const JobListingForm: FC = () => {
     onConfirm={handlePreviewConfirm}
   />
       {isLoading && <LoadingOverlay />}
-        <div className="w-full md:max-w-[927px] min-h-[825px] bg-transparent md:bg-[#2D3A41] text-white md:pt-6 pb-12 md:mt-9 mb-10">
-          <div className="flex items-center relative w-full mb-8 md:mb-14">
-            <NavLink to="/job-feed-employer" className="absolute left-0">
-              <ChevronLeft strokeWidth={4} className="h-6 w-6 ml-4" />
-            </NavLink>
+      <div className="w-full max-w-[927px] min-h-[825px] bg-transparent md:bg-[#2D3A41] text-white mx-2 px-4 py-8 md:py-12">
+        {/* Header */}
+        <div className="flex items-center relative w-full mb-6 md:mb-14">
+          <NavLink to="/job-feed-employer" className="absolute left-0 md:left-4">
+            <ChevronLeft strokeWidth={4} className="h-6 w-6" />
+          </NavLink>
 
-            <h1 className="flex-1 text-center text-xl md:text-[32px] font-normal text-orange-500">
-              <span className="inline-flex items-center gap-2 justify-center">
-                Create Job Listing
-              </span>
-            </h1>
-          </div>
+          <h1 className="flex-1 text-center text-xl md:text-[32px] font-normal text-orange-500">
+            <span className="inline-flex items-center gap-2 justify-center">
+              Create Job Listing
+            </span>
+          </h1>
+        </div>
 
           <form
             onSubmit={handleSubmit}
             onKeyDown={handleKeyDown}
-            className="grid grid-cols-1 md:grid-cols-2 md:gap-[115px] p-8 md:px-[52px] gap-y-[24px]"
+            className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-x-16 xl:gap-x-[115px] p-4 md:p-8 "
           >
             {/* Left Column */}
-            <div className="space-y-[24px]">
+            <div className="space-y-6">
               <FormField
                 label="Job Title"
                 className="bg-transparent"
@@ -431,7 +431,7 @@ const JobListingForm: FC = () => {
                   name="jobDescription"
                   value={values.jobDescription}
                   onChange={handleChange}
-                  className="bg-transparent border-[#AEADAD] min-h-[150px] md:min-h-[179px] pt-4 resize-none border-2 focus-within:border-orange-500 placeholder:text-white"
+                  className="bg-transparent border-[#AEADAD] min-h-[150px] md:min-h-[175px] pt-4 resize-none border-2 focus-within:border-orange-500 placeholder:text-white"
                   placeholder="Please provide a job description"
                 />
                 <span className="flex right-0 italic text-[11px] absolute">
@@ -491,8 +491,8 @@ const JobListingForm: FC = () => {
             </div>
 
             {/* Right Column */}
-            <div className="flex flex-col">
-              <div className="space-y-[24px] mb-[24px]">
+            <div className="flex flex-col space-y-6 ">
+              
                 <FormField
                   label="Priority Indicator"
                   error={errors.priorityIndicator}
@@ -617,7 +617,6 @@ const JobListingForm: FC = () => {
                     </SelectContent>
                   </Select>
                 </FormField>
-              </div>
 
               <div className="mb-8 md:mb-14">
                 <FormField
@@ -665,7 +664,7 @@ const JobListingForm: FC = () => {
             </div>
 
             {/* Footer Buttons */}
-            <div className="col-span-full flex flex-row justify-end gap-4 mt-8 md:-mt-10">
+            <div className="col-span-full flex flex-col md:flex-row justify-end gap-4 mt-8 md:mt-12">
               <Button
                 type="button"
                 variant="outline"

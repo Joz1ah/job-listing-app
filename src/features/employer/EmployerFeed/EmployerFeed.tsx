@@ -181,7 +181,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+    <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 min-[1400px]:gap-8 2xl:gap-12 justify-items-center w-full max-w-[932px]">
       <BookmarkLimitHandler
         isFreeTrial={isFreeTrial}
         maxBookmarks={3}
@@ -189,18 +189,18 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
           console.log("Upgrade clicked");
         }}
         limitPopupImage={employerPopAds}
-        limitPopupTitle="Employer Bookmark Limit"
-        limitPopupDescription="Upgrade to bookmark more candidate matches!"
+        limitPopupTitle="Job Hunter Bookmark Limit"
+        limitPopupDescription="Upgrade to bookmark more job matches!"
       >
         {displayedItems.map((item, index) =>
           "isAd" in item ? (
             <div
               key={`ad-${index}`}
-              className="w-full md:w-[436px] h-[275px] rounded-lg overflow-hidden"
+              className="w-[436px] h-[275px] rounded-lg overflow-hidden"
             >
               <img
                 src={item.image}
-                alt="Employer Ad"
+                alt="Job Hunter Ad"
                 className="w-full h-full object-cover"
               />
             </div>
@@ -210,20 +210,19 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
               match={item}
               isFreeTrial={isFreeTrial}
             />
-          ),
+          )
         )}
       </BookmarkLimitHandler>
 
-      {/* Dynamic Loading Cards */}
       {showLoadingCards && (
         <>
-          <AppCardSkeleton />
+          <AppCardSkeleton/>
           {loadingCardsCount > 1 && <AppCardSkeleton />}
         </>
       )}
 
       {!hasMore && displayedItems.length > 0 && (
-        <div className="bg-transparent border-none w-full md:w-[436px] h-auto md:h-[275px] flex items-center justify-center text-center p-0">
+        <div className="bg-transparent border-none w-full h-[275px] flex items-center justify-center text-center">
           <div className="p-10">
             <p className="text-xl font-semibold text-white">
               You've reached the end of your perfect matches for now!
@@ -233,7 +232,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
             </span>
             <Button
               variant="link"
-              className="text-[20px] text-orange-500  font-semibold pl-2 underline pt-0"
+              className="text-[20px] text-orange-500 font-semibold pl-2 underline pt-0"
               onClick={handleClick}
             >
               other application cards
@@ -244,7 +243,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
 
       <div ref={loaderRef} className="h-px w-px" />
     </div>
-  );
+);
 };
 
 const OtherApplications: FC<selectedProps> = ({
@@ -389,7 +388,7 @@ const OtherApplications: FC<selectedProps> = ({
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+    <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 min-[1400px]:gap-8 2xl:gap-12 justify-items-center w-full max-w-[932px]">
       <BookmarkLimitHandler
         isFreeTrial={isFreeTrial}
         maxBookmarks={3}
@@ -409,7 +408,7 @@ const OtherApplications: FC<selectedProps> = ({
               <img
                 src={item.image}
                 alt="Job Hunter Ad"
-                className="w-full h-full object-cover"
+                className="w-[436px] h-[275px] rounded-lg overflow-hidden"
               />
             </div>
           ) : (
@@ -498,7 +497,7 @@ const EmployerFeed: FC<EmployerSectionProps> = () => {
 
   const LoadingGrid = () => {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 min-[1400px]:gap-8 2xl:gap-12 justify-items-center w-full max-w-[932px]">
         {[1, 2, 3, 4, 5, 6].map((i) => (
           <AppCardSkeleton key={i} />
         ))}
@@ -577,10 +576,10 @@ const EmployerFeed: FC<EmployerSectionProps> = () => {
   };
 
   return (
-    <>
-      <div className="hidden md:flex flex-col items-center pt-8 md:pt-24 mt-8 md:mt-12 px-4 md:pr-24 pb-4 ml-0 pl-0 mb-8">
+    <div>
+      <div className="hidden md:flex flex-col items-center mx-3 mb-8">
         {/* Tab Buttons */}
-        <div className="mb-8 md:mb-12 hidden md:flex">
+        <div className="flex justify-center mb-8 md:mb-12">
           <button
             className={`font-semibold mr-6 pb-2 text-[17px] inline-flex items-center gap-2 ${
               selectedTab === "perfectMatch"
@@ -727,7 +726,7 @@ const EmployerFeed: FC<EmployerSectionProps> = () => {
           </Swiper>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 export { EmployerFeed };

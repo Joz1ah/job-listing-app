@@ -184,8 +184,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-      {/* BookmarkLimitHandler no longer needs className prop */}
+    <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 min-[1400px]:gap-8 2xl:gap-12 justify-items-center w-full max-w-[932px]">
       <BookmarkLimitHandler
         isFreeTrial={isFreeTrial}
         maxBookmarks={3}
@@ -200,7 +199,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
           "isAd" in item ? (
             <div
               key={`ad-${index}`}
-              className="w-full md:w-[436px] h-[275px] rounded-lg overflow-hidden"
+              className="w-[436px] h-[275px] rounded-lg overflow-hidden"
             >
               <img
                 src={item.image}
@@ -214,7 +213,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
               match={item}
               isFreeTrial={isFreeTrial}
             />
-          ),
+          )
         )}
       </BookmarkLimitHandler>
 
@@ -226,7 +225,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
       )}
 
       {!hasMore && displayedItems.length > 0 && (
-        <div className="bg-transparent border-none w-full md:w-[436px] h-auto md:h-[275px] flex items-center justify-center text-center p-0">
+        <div className="bg-transparent border-none w-full h-[275px] flex items-center justify-center text-center">
           <div className="p-10">
             <p className="text-xl font-semibold text-white">
               You've reached the end of your perfect matches for now!
@@ -392,7 +391,7 @@ const OtherApplications: FC<selectedProps> = ({
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+    <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 min-[1400px]:gap-8 2xl:gap-12 justify-items-center w-full max-w-[932px]">
       <BookmarkLimitHandler
         isFreeTrial={isFreeTrial}
         maxBookmarks={3}
@@ -407,7 +406,7 @@ const OtherApplications: FC<selectedProps> = ({
           "isAd" in item ? (
             <div
               key={`ad-${index}`}
-              className="w-full md:w-[436px] h-[275px] rounded-lg overflow-hidden"
+              className="w-[436px] h-[275px] rounded-lg overflow-hidden"
             >
               <img
                 src={item.image}
@@ -421,7 +420,7 @@ const OtherApplications: FC<selectedProps> = ({
               match={item}
               isFreeTrial={isFreeTrial}
             />
-          ),
+          )
         )}
       </BookmarkLimitHandler>
 
@@ -502,7 +501,7 @@ const JobHunterFeed: FC<JobHunterSectionProps> = () => {
 
   const LoadingGrid = () => {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 min-[1400px]:gap-8 2xl:gap-12 justify-items-center w-full max-w-[932px]">
         {[1, 2, 3, 4, 5, 6].map((i) => (
           <JobCardSkeleton key={i} />
         ))}
@@ -582,16 +581,15 @@ const JobHunterFeed: FC<JobHunterSectionProps> = () => {
   };
 
   return (
-    <div className="mt-8 md:my-2">
+    <div className="w-full mt-4 md:mt-8 md:my-2">
       {/* Application Cards Section - Desktop View */}
-      <div className="hidden md:flex flex-col items-center pt-8 px-4 mb-8">
-        <div className="flex justify-center mb-8 md:mb-6">
-          {/* Perfect Match Tab */}
-          <button
-            className={`font-semibold mr-6 pb-2 text-[17px] inline-flex items-center gap-2 ${
+      <div className="hidden md:flex flex-col items-center">
+        <div className="flex justify-center mb-8 w-full">
+        <button
+            className={`font-semibold mr-6 pb-2 text-[17px] inline-flex items-center gap-2 transition-colors ${
               selectedTab === "perfectMatch"
                 ? "text-orange-500 border-b-2 border-orange-500"
-                : "text-[#AEADAD]"
+                : "text-[#AEADAD] hover:text-orange-400"
             }`}
             onClick={() => handleTabChange("perfectMatch")}
             disabled={isLoading}
@@ -609,10 +607,10 @@ const JobHunterFeed: FC<JobHunterSectionProps> = () => {
           </button>
           {/* Other Applications Tab */}
           <button
-            className={`font-semibold pb-2 text-[17px] ${
+            className={`font-semibold pb-2 text-[17px] transition-colors ${
               selectedTab === "otherApplications"
                 ? "text-orange-500 border-b-2 border-orange-500"
-                : "text-[#AEADAD]"
+                : "text-[#AEADAD] hover:text-orange-400"
             }`}
             onClick={() => handleTabChange("otherApplications")}
             disabled={isLoading}
@@ -621,7 +619,7 @@ const JobHunterFeed: FC<JobHunterSectionProps> = () => {
           </button>
         </div>
 
-        <div className="min-h-[600px]">
+        <div className="w-full max-w-[932px] mx-auto px-4">
           {isLoading ? (
             <LoadingGrid />
           ) : (

@@ -80,7 +80,7 @@ const JobCardDesktop: FC<MatchCardProps> = ({
   isFreeTrial = false,
 }) => {
   return (
-    <Card className="bg-white border-none w-full md:w-[436px] h-auto md:h-[275px]">
+    <Card className="bg-white border-none w-[436px] h-[275px] relative">
       <CardHeader className="flex flex-col justify-between items-start pb-0">
         <div className="flex flex-row -mt-4 justify-between w-full">
           <span className="text-[13px] text-orange-500 font-semibold">
@@ -113,19 +113,20 @@ const JobCardDesktop: FC<MatchCardProps> = ({
           </div>
         </div>
       </CardHeader>
+
       <CardContent>
-        <div className="h-[55px]">
+        <div className="h-[60px]">
           <SkillsWithEllipsis skills={match.skills} />
         </div>
 
-        <div className="flex flex-col gap-1 mt-4">
-          <div className="flex gap-2">
+        <div className="flex flex-col gap-1 mt-2">
+          <div className="flex gap-2 flex-wrap">
             <span className="text-[13px] font-light">Experience:</span>
             <span className="text-[12px] text-orange-500 font-light rounded-[4px] px-1.5 border border-orange-500">
               {match.experience}
             </span>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-x-2 gap-y-0 flex-wrap">
             <span className="text-[13px] font-light">Available for:</span>
             {match.lookingFor.map((type, idx) => (
               <span
@@ -136,7 +137,7 @@ const JobCardDesktop: FC<MatchCardProps> = ({
               </span>
             ))}
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             <span className="text-[13px] font-light">Salary:</span>
             <span className="bg-[#F5722E] text-white rounded-[4px] text-[12px] px-1.5 flex justify-center items-center">
               {match.salaryExpectation}
@@ -144,11 +145,15 @@ const JobCardDesktop: FC<MatchCardProps> = ({
           </div>
         </div>
       </CardContent>
-      <CardFooter className="flex flex-row justify-end -mt-5 -mr-4 space-x-1">
-        <Button className="text-[12px] font-semibold px-0 w-[133px] h-[27px] bg-orange-500">
+
+      <CardFooter className="absolute bottom-0 right-0 flex flex-row justify-end items-center space-x-1 p-2">
+        <Button className="text-[10px] sm:text-[12px] font-semibold px-0 w-[100px] sm:w-[133px] h-[24px] sm:h-[27px] bg-orange-500">
           I'm Interested
         </Button>
-        <MoreVertical size={12} className="text-gray-700 cursor-pointer" />
+        <MoreVertical 
+          size={12} 
+          className="text-gray-700 cursor-pointer" 
+        />
       </CardFooter>
     </Card>
   );

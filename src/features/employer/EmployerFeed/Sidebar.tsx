@@ -38,14 +38,14 @@ const Sidebar: FC = () => {
       <div className="relative">
         <div className="absolute -top-3 left-5 bg-[#242625] md:bg-[#2D3A41] px-1 z-20">
           <div className="flex items-center">
-            <Label className="text-base font-normal text-white">
+            <Label className="text-sm md:text-base font-normal text-white">
               All Job Listing
             </Label>
           </div>
         </div>
         <Select>
           <SelectTrigger 
-            className="bg-transparent border-[#AEADAD] h-[56px] border-2 text-white"
+            className="bg-transparent border-[#AEADAD] h-[56px] border-2 text-white text-sm md:text-base"
           >
             <SelectValue 
               placeholder="Full Stack Developer"
@@ -63,7 +63,7 @@ const Sidebar: FC = () => {
                   key={item.title}
                   value={item.title.toLowerCase().replace(/\s+/g, '-')}
                   className={cn(
-                    "rounded-none justify-center pl-3 h-[55px]",
+                    "rounded-none justify-center pl-3 h-[55px] text-sm md:text-base"
                   )}
                 >
                   <div className="py-3 w-full text-center">{item.title}</div>
@@ -80,26 +80,20 @@ const Sidebar: FC = () => {
     <>
       {/* Mobile View */}
       {shouldShowMobileView && (
-        <div className="block md:hidden">
-          <div className="md:mt-16 flex flex-col gap-4 items-center justify-center">
-            <div className="w-[336px]">
-              <SelectComponent />
-            </div>
+        <div className="block md:hidden w-full px-4 mb-6">
+          <div className="max-w-[311px] mx-auto">
+            <SelectComponent />
           </div>
         </div>
       )}
 
       {/* Desktop View */}
       {shouldShowDesktopView && (
-        <div className="hidden md:block">
-          <div className="w-[311px] h-[652px] bg-[#2D3A41] rounded mb-12 mt-2 px-2 py-4">
-            <h4 className="font-semibold mb-6 text-center pt-2 text-[16px] text-white">
-              All Job Listings
-            </h4>
-            <div className="w-full">
-              <SelectComponent />
-            </div>
-          </div>
+        <div className="hidden md:block w-[220px] lg:w-[260px] xl:w-[311px] h-[652px] bg-[#2D3A41] rounded py-6 px-3">
+          <h4 className="font-semibold mb-4 text-center text-sm md:text-base text-white">
+            All Job Listings
+          </h4>
+          <SelectComponent />
         </div>
       )}
     </>

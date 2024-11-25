@@ -39,38 +39,38 @@ const EmployerHeader: FC<Props> = ({ isFreeTrial = false }) => {
         hideOnMobile ? "hidden md:block" : "block"
       } ${hideOnDesktop ? "md:hidden" : ""}`}
     >
-      <div className="flex flex-col items-center md:items-start">
-        <div className="flex items-center text-3xl md:text-3xl text-white font-normal">
-          <span>ABC Incorporated</span>
-          <VerificationIcon
-            className={`${
-              isFreeTrial
-                ? "fill-[#F5F5F7] text-[#263238]"
-                : "fill-[#F5722E] text-[#263238]"
-            }`}
-            size={34}
-          />
-        </div>
-      </div>
-      
-      <div className="flex flex-col items-center md:items-start mt-2 justify-between space-y-2 md:space-y-0">
-        <div className="flex flex-col md:space-y-2">
-          <div className="flex items-center space-x-2 text-white font-light pt-2 md:pt-0 md:pb-2">
-            <Building className="fill-[#D6D6D6] text-[#263238]" size={19} />
-            <span className="text-[15px]">
-              Germany, South Africa, and China
-            </span>
+      <div className="flex flex-col items-center md:flex-row md:justify-between md:items-start">
+        <div className="flex flex-col space-y-2 md:space-y-4">
+          <div className="flex items-center">
+            <h1 className="text-3xl text-white font-normal">ABC Incorporated</h1>
+            <VerificationIcon
+              className={`ml-2 ${
+                isFreeTrial
+                  ? "fill-[#F5F5F7] text-[#263238]"
+                  : "fill-[#F5722E] text-[#263238]"
+              }`}
+              size={34}
+            />
           </div>
 
-          {/* Desktop view - interview rating */}
-          <DesktopTooltip content="This is how job hunters rated your interview">
-          <div className="hidden md:flex items-center space-x-2">
-            <span className="border-2 border-dotted border-orange-500 text-white text-[15px] px-2 py-1 border-opacity-70">
-              Your interview from rating employers
-            </span>
-            <Info className="fill-[#D6D6D6] text-[#263238] mb-4" size={14}/>
+          <div className="flex flex-col space-y-3">
+            <div className="flex items-center space-x-2 text-white font-light">
+              <Building className="fill-[#D6D6D6] text-[#263238]" size={19} />
+              <span className="text-[15px]">
+                Germany, South Africa, and China
+              </span>
+            </div>
+
+            {/* Desktop view - interview rating */}
+            <DesktopTooltip content="This is how job hunters rated your interview">
+              <div className="hidden md:flex items-center space-x-2">
+                <div className="border-2 border-dotted border-orange-500 text-white text-[15px] px-2 py-1 border-opacity-70 whitespace-nowrap">
+                  Your interview from rating employers
+                </div>
+                <Info className="fill-[#D6D6D6] text-[#263238]" size={14}/>
+              </div>
+            </DesktopTooltip>
           </div>
-          </DesktopTooltip>
         </div>
 
         {/* Mobile view - star rating (hidden on job creation page) */}

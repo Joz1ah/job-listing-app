@@ -75,24 +75,21 @@ interface FormFieldProps {
 }
 
 const FormField: FC<FormFieldProps> = React.forwardRef<HTMLDivElement, FormFieldProps>(
-  (
-    { label, children, className, error, touched, showIcon, tooltipContent },
-    ref,
-  ) => {
+  ({ label, children, className, error, touched, showIcon, tooltipContent }, ref) => {
     const showError = touched && error;
 
     return (
       <div ref={ref} className={cn("relative pt-4 w-full", className)}>
         <div className="relative">
-          <div className="absolute -top-3 left-5 bg-[#242625] md:bg-[#2D3A41] px-1 z-20">
-            <div className="flex items-center">
+          <div className="absolute -top-3 left-4 md:left-5 bg-[#242625] md:bg-[#2D3A41] px-2 z-20">
+            <div className="flex items-center gap-2">
               <Label className="text-sm md:text-base font-normal text-white">
                 {label}
               </Label>
               {showIcon && tooltipContent && (
                 <Tooltip content={tooltipContent}>
                   <CircleAlert
-                    className="relative -top-1 cursor-pointer fill-gray-400 text-[#2D3A41] ml-1"
+                    className="cursor-pointer fill-gray-400 text-[#2D3A41]"
                     strokeWidth={1.5}
                     size={14}
                   />
@@ -113,13 +110,13 @@ const FormField: FC<FormFieldProps> = React.forwardRef<HTMLDivElement, FormField
           </div>
         </div>
         {showError && (
-          <div className="absolute text-xs md:text-sm italic text-red-500">
+          <div className="absolute text-xs md:text-sm italic text-red-500 mt-1">
             {error}
           </div>
         )}
       </div>
     );
-  },
+  }
 );
 
 FormField.displayName = "FormField";
@@ -305,14 +302,14 @@ const ApplicationForm: FC = () => {
     onConfirm={handlePreviewConfirm}
   />
   {isLoading && <LoadingOverlay />}
-    <div className="md:pt-10 md:flex md:flex-row md:gap-10">
-      <div className="w-full md:w-[800px] min-h-[825px] bg-[#242625] md:bg-[#2D3A41] text-white mt-4 md:pt-6 md:mt-9">
-        <div className="flex items-center relative w-full mb-8 md:mb-14">
-          <NavLink to="/job-feed-employer" className="absolute left-0">
+    <div className="flex flex-col xl:flex-row gap-8 px-4 md:px-8 lg:px-12 py-6">
+      <div className="w-full xl:w-[800px] min-h-[825px] bg-[#242625] md:bg-[#2D3A41] text-white">
+        <div className="flex items-center relative w-full mb-6 md:mb-10">
+          <NavLink to="/job-feed-employer" className="absolute left-4 top-6">
             <ChevronLeft strokeWidth={4} className="h-6 w-6 ml-4" />
           </NavLink>
 
-          <h1 className="flex-1 text-center text-xl md:text-[32px] font-normal text-orange-500">
+          <h1 className="flex-1 text-center text-xl md:text-[32px] pt-6 font-normal text-orange-500">
             <span className="inline-flex items-center gap-2 justify-center">
               Edit Your Application Card
             </span>
@@ -322,7 +319,7 @@ const ApplicationForm: FC = () => {
         <form
           onSubmit={handleSubmit}
           onKeyDown={handleKeyDown}
-          className="grid grid-cols-1 md:grid-cols-2 p-4 md:p-8 md:gap-x-[65px] gap-y-[24px]"
+          className="grid grid-cols-1 md:grid-cols-2 p-4 md:p-8 md:gap-x-[65px] gap-y-6"
         >
           {/* Left Column */}
           <div className="space-y-[24px]">
