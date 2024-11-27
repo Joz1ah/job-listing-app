@@ -25,14 +25,19 @@ const ManageJobListings: FC = () => {
 
         <ScrollArea className="flex-1">
           <div className="flex flex-col min-h-full">
-            <main className="flex-1 flex flex-col w-full lg:flex-row md:py-16 py-6 px-2 xl:px-10 bg-[#212529]">
-              <ManageJobListingsSidebar
-                userName="ABC Incorporated"
-                subscriptionType="Montly Subscriber"
-                isFreeTrial={isFreeTrial}
-              />
-              <div className="flex-1 pt-10 flex items-start justify-center">
-                  <Outlet />
+          <main className="flex-1 flex flex-col w-full lg:flex-row md:py-16 py-6 bg-[#212529]">
+              <div className="flex justify-center w-full max-w-screen-xl mx-auto">
+                <div className="flex flex-col lg:flex-row w-full pt-8">
+                  <ManageJobListingsSidebar
+                    userName="ABC Incorporated"
+                    subscriptionType="Montly Subscriber"
+                    isFreeTrial={isFreeTrial}
+                    className="w-[395px]"
+                  />
+                  <div className="flex-1 m-4">
+                    <Outlet />
+                  </div>
+                </div>
               </div>
             </main>
             <Footer />
