@@ -8,20 +8,36 @@ const LoadingFallback = () => (
   </div>
 );
 
-// Adjust imports to match your file structure and add type assertions
+// Common page imports
 const Home = lazy(() => import('pages').then(module => ({ default: module.Home })))
 const Fetch = lazy(() => import('pages').then(module => ({ default: module.Fetch })))
 const About = lazy(() => import('pages').then(module => ({ default: module.About })))
 const NotFound = lazy(() => import('pages').then(module => ({ default: module.NotFound })))
-const Employer = lazy(() => import('pages').then(module => ({ default: module.EmployerDesktop })))
-const JobHunter = lazy(() => import('pages').then(module => ({ default: module.JobHunterDesktop })))
+const Employer = lazy(() => import('pages').then(module => ({ default: module.EmployerFeed })))
+const JobHunter = lazy(() => import('pages').then(module => ({ default: module.JobHunterFeed })))
 const CompleteProfile = lazy(() => import('pages').then(module => ({ default: module.CreateAppCard })))
 
-// Components imports
-const EmployerSection = lazy(() => import('features').then(module => ({ default: module.EmployerFeed})))
-const JobListingForm = lazy(() => import('features').then(module => ({ default: module.JobListingForm   })))
-const EmployerProfile = lazy(() => import('features').then(module => ({ default: module.EmployerProfile })))
+// Employer feature imports
+const EmployerSection = lazy(() => import('features/employer').then(module => ({ default: module.EmployerFeed})))
+const JobListingForm = lazy(() => import('features/employer').then(module => ({ default: module.JobListingForm   })))
+const EmployerProfile = lazy(() => import('features/employer').then(module => ({ default: module.EmployerProfile })))
 
+// Job Hunter feature imports
+const JobHunterSection = lazy(() => import('features/job-hunter').then(module => ({ default: module.JobHunterFeed })))
+
+// Employer settings imports
+const AccountSettingsEmployer = lazy(() => import('pages').then(module => ({ default: module.AccountSettingsEmployer })))
+const EmployerGeneralSettings = lazy(() => import('features/employer').then(module => ({ default: module.GeneralSettings })))
+const EmployerBillingSettings = lazy(() => import('features/employer').then(module => ({ default: module.BillingSettings })))
+const EmployerSubscriptionSettings = lazy(() => import('features/employer').then(module => ({ default: module.SubscriptionSettings })))
+const EmployerPrivacySettings = lazy(() => import('features/employer').then(module => ({ default: module.PrivacyAndSecuritySettings })))
+
+// Job Hunter settings imports
+const AccountSettingsJobHunter = lazy(() => import('pages').then(module => ({ default: module.AccountSettingsJobHunter })))
+const JobHunterGeneralSettings = lazy(() => import('features/job-hunter').then(module => ({ default: module.GeneralSettings })))
+const JobHunterBillingSettings = lazy(() => import('features/job-hunter').then(module => ({ default: module.BillingSettings })))
+const JobHunterSubscriptionSettings = lazy(() => import('features/job-hunter').then(module => ({ default: module.SubscriptionSettings })))
+const JobHunterPrivacySettings = lazy(() => import('features/job-hunter').then(module => ({ default: module.PrivacyAndSecuritySettings })))
 
 interface LazyComponentProps {
   component: ComponentType<any>;
@@ -76,10 +92,68 @@ const routes: RouteObject[] = [
   {
     path: ROUTE_CONSTANTS.JOB_HUNTER,
     element: <LazyComponent component={JobHunter} />,
+    children: [
+      {
+        path: '',
+        element: <LazyComponent component={JobHunterSection} />
+      },
+    ]
   },
   {
     path: ROUTE_CONSTANTS.CREATE_APPLICATION,
     element: <LazyComponent component={CompleteProfile} />,
+  },
+  {
+    path: ROUTE_CONSTANTS.ACCOUNT_SETTINGS_EMPLOYER,
+    element: <LazyComponent component={AccountSettingsEmployer} />,
+    children: [
+      {
+        path: '',
+        element: <Navigate to={`${ROUTE_CONSTANTS.ACCOUNT_SETTINGS_EMPLOYER}/general`} replace />
+      },
+      {
+        path: 'general',
+        element: <LazyComponent component={EmployerGeneralSettings} />
+      },
+      {
+        path: 'billing',
+        element: <LazyComponent component={EmployerBillingSettings} />
+      },
+      {
+        path: 'subscription',
+        element: <LazyComponent component={EmployerSubscriptionSettings} />
+      },
+      {
+        path: 'privacy',
+        element: <LazyComponent component={EmployerPrivacySettings} />
+      }
+    ]
+  },
+  {
+    path: ROUTE_CONSTANTS.ACCOUNT_SETTINGS_JOB_HUNTER,
+    element: <LazyComponent component={AccountSettingsJobHunter} />,
+    children: [
+      {
+        path: '',
+        element: <Navigate to={`${ROUTE_CONSTANTS.ACCOUNT_SETTINGS_JOB_HUNTER}/general`} replace />
+      },
+      {
+        path: 'general',
+        element: <LazyComponent component={JobHunterGeneralSettings} />
+      },
+      {
+        path: 'billing',
+        element: <LazyComponent component={JobHunterBillingSettings} />
+      },
+      {
+        path: 'subscription',
+        element: <LazyComponent component={JobHunterSubscriptionSettings} />
+      },
+      {
+        path: 'privacy',
+        element: <LazyComponent component={JobHunterPrivacySettings} />
+      }
+    ]
   },
   {
     path: 'sw.js',

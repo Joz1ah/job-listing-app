@@ -211,7 +211,7 @@ const JobListingForm: FC = () => {
     }, 1500);
   };
 
-  const { values, errors, touched, handleChange, setFieldValue, handleSubmit } =
+  const { values, errors, touched, handleChange, setFieldValue, handleSubmit, isValid } =
     useFormik<FormData & { employmentType: string[] }>({
       initialValues: {
         jobTitle: "",
@@ -228,6 +228,7 @@ const JobListingForm: FC = () => {
         certifications: [],
       },
       validationSchema,
+      validateOnMount: true,
       onSubmit: (): void => {
         setShowPreview(true);
       },
@@ -675,7 +676,9 @@ const JobListingForm: FC = () => {
               </Button>
               <Button
                 type="submit"
-                className="w-full md:w-auto bg-[#AEADAD] text-white hover:bg-[#F5722E]"
+                className={cn("w-full md:w-auto bg-[#AEADAD] text-white hover:bg-[#F5722E]",
+                isValid ? "bg-orange-500 hover:bg-orange-600" : "bg-[#AEADAD] hover:bg-[#AEADAD]"
+              )}
               >
                 Add Job
               </Button>

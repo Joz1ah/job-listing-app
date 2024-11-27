@@ -3,7 +3,7 @@ import sparkeIcon from "images/sparkle-icon.png";
 import { perfectMatch, others } from "mockData/job-hunter-data";
 import { Button } from "components";
 import { AppCardSkeleton, BookmarkLimitHandler } from "components";
-import { AppCardDesktop, AppCardMobile } from "features";
+import { AppCardDesktop, AppCardMobile } from "features/employer";
 import employerAds from "images/employer-ads.svg?url";
 import employerMobileAds from "images/employer-mobile-ads.svg?url";
 import bulb from "images/bulb.svg?url";
@@ -587,36 +587,36 @@ const EmployerFeed: FC<EmployerSectionProps> = () => {
       <div className="hidden md:flex flex-col items-center mx-3 mb-8">
         {/* Tab Buttons */}
         <div className="flex justify-center mb-8 md:mb-12">
-          <button
-            className={`font-semibold mr-6 pb-2 text-[17px] inline-flex items-center gap-2 ${
+        <button
+          className={`font-semibold mr-6 pb-2 text-[17px] inline-flex items-center gap-2 transition-colors group ${
+            selectedTab === "perfectMatch"
+              ? "text-orange-500 border-b-2 border-orange-500"
+              : "text-[#AEADAD] hover:text-orange-500"
+          }`}
+          onClick={() => handleTabChange("perfectMatch")}
+          disabled={isLoading}
+        >
+          <img
+            src={sparkeIcon}
+            alt="Sparkle Icon"
+            className={`w-5 h-5 ${
               selectedTab === "perfectMatch"
-                ? "text-orange-500 border-b-2 border-orange-500"
-                : "text-[#AEADAD]"
+                ? "filter grayscale-0"
+                : "filter grayscale group-hover:grayscale-0"
             }`}
-            onClick={() => handleTabChange("perfectMatch")}
-            disabled={isLoading}
-          >
-            <img
-              src={sparkeIcon}
-              alt="Sparkle Icon"
-              className={`w-5 h-5 ${
-                selectedTab === "perfectMatch"
-                  ? "filter grayscale-0"
-                  : "filter grayscale"
-              }`}
-            />
-            PERFECT MATCH
-          </button>
-          <button
-            className={`font-semibold pb-2 text-[17px] ${
+          />
+          PERFECT MATCH
+        </button>
+        <button
+            className={`font-semibold pb-2 text-[17px] transition-colors ${
               selectedTab === "otherApplications"
                 ? "text-orange-500 border-b-2 border-orange-500"
-                : "text-[#AEADAD]"
+                : "text-[#AEADAD] hover:text-orange-500"
             }`}
             onClick={() => handleTabChange("otherApplications")}
             disabled={isLoading}
           >
-            OTHER APPLICATION CARDS
+            OTHER OPPORTUNITIES
           </button>
         </div>
 

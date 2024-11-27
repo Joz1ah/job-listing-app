@@ -16,7 +16,7 @@ import { Command, CommandGroup, CommandItem, CommandList } from "components";
 
 import { Popover, PopoverContent, PopoverTrigger } from "components";
 
-import { AppCardPreview } from "features";
+import { AppCardPreview } from "features/employer";
 import {
   LanguageTagInput,
   BirthdayInput,
@@ -89,7 +89,7 @@ const FormField: FC<FormFieldProps> = React.forwardRef<HTMLDivElement, FormField
               {showIcon && tooltipContent && (
                 <Tooltip content={tooltipContent}>
                   <CircleAlert
-                    className="cursor-pointer fill-gray-400 text-[#2D3A41]"
+                    className="relative cursor-pointer -top-1 fill-gray-400 text-[#2D3A41]"
                     strokeWidth={1.5}
                     size={14}
                   />
@@ -259,7 +259,7 @@ const ApplicationForm: FC = () => {
     }, 1500);
   };
 
-  const { values, errors, touched, handleChange, setFieldValue, handleSubmit } =
+  const { values, errors, touched, handleChange, setFieldValue, handleSubmit, isValid } =
     useFormik<FormData & { employmentType: string[] }>({
       initialValues: {
         firstName: "",
@@ -278,6 +278,7 @@ const ApplicationForm: FC = () => {
         certifications: [],
       },
       validationSchema,
+      validateOnMount: true,
       onSubmit: (): void => {
         setShowPreview(true);
       },
@@ -303,7 +304,7 @@ const ApplicationForm: FC = () => {
   />
   {isLoading && <LoadingOverlay />}
     <div className="flex flex-col xl:flex-row gap-8 px-4 md:px-8 lg:px-12 py-6">
-      <div className="w-full xl:w-[800px] min-h-[825px] bg-[#242625] md:bg-[#2D3A41] text-white">
+      <div className="w-full xl:w-[800px] h-[960px] bg-[#242625] md:bg-[#2D3A41] text-white">
         <div className="flex items-center relative w-full mb-6 md:mb-10">
           <NavLink to="/job-feed-employer" className="absolute left-4 top-6">
             <ChevronLeft strokeWidth={4} className="h-6 w-6 ml-4" />
@@ -695,7 +696,9 @@ const ApplicationForm: FC = () => {
           <div className="col-span-full flex justify-end md:mt-[60px] mb-0 ">
             <Button
               type="submit"
-              className="hidden md:block md:w-auto bg-[#AEADAD] text-white hover:bg-[#F5722E] text-[16px] h-8 py-0 rounded-sm font-normal px-8"
+              className={cn("hidden md:block md:w-auto text-white  text-[16px] h-8 py-0 rounded-sm font-normal px-8",
+              isValid ? "bg-orange-500 hover:bg-orange-600" : "bg-[#AEADAD] hover:bg-[#AEADAD]"
+            )}
             >
               Save Your Profile
             </Button>
@@ -711,7 +714,9 @@ const ApplicationForm: FC = () => {
               e.preventDefault();
               handleSubmit();
             }}
-            className="w-auto bg-[#AEADAD] text-white hover:bg-[#F5722E] text-[16px] h-8 py-0 rounded-sm font-normal px-8"
+            className={cn("w-auto text-white text-[16px] h-8 py-0 rounded-sm font-normal px-8",
+            isValid ? "bg-orange-500 hover:bg-orange-600" : "bg-[#AEADAD] hover:bg-[#AEADAD]"
+          )}
           >
             Save Your Profile
           </Button>

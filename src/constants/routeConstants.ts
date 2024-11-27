@@ -7,5 +7,7 @@ export const ROUTE_CONSTANTS = {
   EMPLOYER: '/job-feed-employer',
   JOB_LISTING: 'job-listing',
   CREATE_APPLICATION: '/create-application',
-  EMPLOYER_PROFILE: 'employer-profile'
+  EMPLOYER_PROFILE: 'employer-profile',
+  ACCOUNT_SETTINGS_EMPLOYER: '/employer/account-settings',
+  ACCOUNT_SETTINGS_JOB_HUNTER: '/job-hunter/account-settings',
 }

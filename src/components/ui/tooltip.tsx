@@ -41,8 +41,9 @@ const Tooltip = ({
             absolute z-50 px-4 py-3 
             text-[9px] text-black bg-white
             border border-gray-200 shadow-sm text-left
-            w-[200px] h-[65px]
+            w-[200px] min-h-[65px]
             -top-[70px] -right-[210px]
+            break-words whitespace-normal
           "
           role="tooltip"
         >

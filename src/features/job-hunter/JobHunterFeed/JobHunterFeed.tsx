@@ -10,7 +10,7 @@ import { Button } from "components";
 import { JobCardSkeleton } from "components";
 import { BookmarkLimitHandler } from "components";
 
-import { JobCardDesktop, JobCardMobile } from "features";
+import { JobCardDesktop, JobCardMobile } from "features/job-hunter";
 
 import {
   Carousel,
@@ -593,31 +593,31 @@ const JobHunterFeed: FC<JobHunterSectionProps> = () => {
       <div className="hidden md:flex flex-col items-center">
         <div className="flex justify-center mb-8 w-full">
         <button
-            className={`font-semibold mr-6 pb-2 text-[17px] inline-flex items-center gap-2 transition-colors ${
+          className={`font-semibold mr-6 pb-2 text-[17px] inline-flex items-center gap-2 transition-colors group ${
+            selectedTab === "perfectMatch"
+              ? "text-orange-500 border-b-2 border-orange-500"
+              : "text-[#AEADAD] hover:text-orange-500"
+          }`}
+          onClick={() => handleTabChange("perfectMatch")}
+          disabled={isLoading}
+        >
+          <img
+            src={sparkeIcon}
+            alt="Sparkle Icon"
+            className={`w-5 h-5 ${
               selectedTab === "perfectMatch"
-                ? "text-orange-500 border-b-2 border-orange-500"
-                : "text-[#AEADAD] hover:text-orange-400"
+                ? "filter grayscale-0"
+                : "filter grayscale group-hover:grayscale-0"
             }`}
-            onClick={() => handleTabChange("perfectMatch")}
-            disabled={isLoading}
-          >
-            <img
-              src={sparkeIcon}
-              alt="Sparkle Icon"
-              className={`w-5 h-5 ${
-                selectedTab === "perfectMatch"
-                  ? "filter grayscale-0"
-                  : "filter grayscale"
-              }`}
-            />
-            PERFECT MATCH
-          </button>
+          />
+          PERFECT MATCH
+        </button>
           {/* Other Applications Tab */}
           <button
             className={`font-semibold pb-2 text-[17px] transition-colors ${
               selectedTab === "otherApplications"
                 ? "text-orange-500 border-b-2 border-orange-500"
-                : "text-[#AEADAD] hover:text-orange-400"
+                : "text-[#AEADAD] hover:text-orange-500"
             }`}
             onClick={() => handleTabChange("otherApplications")}
             disabled={isLoading}

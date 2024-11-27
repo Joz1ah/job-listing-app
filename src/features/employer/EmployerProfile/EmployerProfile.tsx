@@ -1,9 +1,11 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { ChevronLeft, AlertTriangle, CircleAlert } from "lucide-react";
 import { Input, Button, Label, Textarea } from "components";
-import { NavLink } from "react-router-dom";
 
 import employerProfileCard from "images/EmployerProfileCard.svg?url";
+import saveChanges from "images/save-changes.svg?url";
+
+import { NavLink, useNavigate } from "react-router-dom";
 
 import { PhoneInput } from "components";
 
@@ -71,7 +73,7 @@ const FormField: FC<FormFieldProps> = React.forwardRef<HTMLDivElement, FormField
               {showIcon && tooltipContent && (
                 <Tooltip content={tooltipContent}>
                   <CircleAlert
-                    className="cursor-pointer fill-gray-400 text-[#2D3A41]"
+                    className="relative cursor-pointer -top-1 fill-gray-400 text-[#2D3A41]"
                     strokeWidth={1.5}
                     size={14}
                   />
@@ -133,7 +135,19 @@ const validationSchema = Yup.object().shape({
   companyOverview: Yup.string().required("This field is required"),
 });
 
+// Loading Overlay Component
+const LoadingOverlay = () => (
+  <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
+    <div className="flex flex-col items-center">
+      <img src={saveChanges} alt="Loading" />
+    </div>
+  </div>
+);
+
 const EmployerProfile: FC = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
+
   const selectOptions = {
     country: [
       { value: "us", label: "United States" },
@@ -151,7 +165,7 @@ const EmployerProfile: FC = () => {
     ],
   };
 
-  const { values, errors, touched, handleChange, setFieldValue, handleSubmit } =
+  const { values, errors, touched, handleChange, setFieldValue, handleSubmit, isValid } =
     useFormik<FormData & { employmentType: string[] }>({
       initialValues: {
         businessName: "",
@@ -174,9 +188,19 @@ const EmployerProfile: FC = () => {
         companyOverview: "",
       },
       validationSchema,
-      onSubmit: (values) => {
-        // Handle form submission
-        console.log(values);
+      validateOnMount:true,
+      onSubmit: async (values) => {
+        setIsSubmitting(true);
+        try {
+          // Simulate API call with setTimeout
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          console.log(values);
+          // After successful submission, navigate to job feed
+          navigate('/job-feed-employer');
+        } catch (error) {
+          console.error('Error submitting form:', error);
+          setIsSubmitting(false);
+        }
       },
     });
 
@@ -191,6 +215,9 @@ const EmployerProfile: FC = () => {
   };
 
   return (
+    <>
+    {isSubmitting && <LoadingOverlay />}
+    
     <div className="flex flex-col xl:flex-row gap-8 px-4 md:px-8 lg:px-12 py-6">
       <div className="w-full xl:w-[800px] min-h-[825px] bg-[#242625] md:bg-[#2D3A41] text-white">
         <div className="flex items-center relative w-full mb-6 md:mb-10">
@@ -216,11 +243,10 @@ const EmployerProfile: FC = () => {
             error={errors.businessName}
             touched={touched.businessName}
             showIcon={true}
-            tooltipContent="Please enter your company’s complete legal business name
-                            e.g. “ Imagination Ventures LLC”"
+            tooltipContent="Please enter your company’s complete legal business name e.g. “ Imagination Ventures LLC”"
           >
             <Input
-              name="bussinessName"
+              name="businessName"
               value={values.businessName}
               onChange={handleChange}
               className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
@@ -458,7 +484,12 @@ const EmployerProfile: FC = () => {
           <div className="flex justify-end pt-8 md:pt-12">
             <Button
               type="submit"
-              className="w-full md:w-auto bg-[#AEADAD] text-white hover:bg-[#F5722E] text-[16px] h-8 rounded-sm mr-2 mb-2 font-normal px-8"
+              className={cn(
+                "hidden md:block md:w-auto text-white text-[16px] h-8 py-0 rounded-sm font-normal px-8",
+                isValid && !isSubmitting
+                  ? "bg-orange-500 hover:bg-orange-600"
+                  : "bg-[#AEADAD] hover:bg-[#AEADAD]"
+              )}
             >
               Save Your Profile
             </Button>
@@ -469,6 +500,7 @@ const EmployerProfile: FC = () => {
         <img src={employerProfileCard} alt="Employer Profile" />
       </div>
     </div>
+    </>
   );
 };
 

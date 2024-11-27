@@ -3,7 +3,7 @@ import { useMenu } from "hooks";
 import { PageMeta, ScrollArea } from "components";
 import { jobHunterDesktopMenu, jobHunterMobileMenu } from "mockData/nav-menus";
 import { JobHunterMenu, Footer } from "layouts";
-import { ApplicationForm } from "features";
+import { ApplicationForm } from "features/job-hunter";
 
 const CreateAppCard: FC = () => {
   const { menuOpen, toggleMenu } = useMenu();

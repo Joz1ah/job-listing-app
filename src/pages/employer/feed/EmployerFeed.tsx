@@ -6,11 +6,11 @@ import {
   ScrollArea 
 } from "components";
 import { EmployerMenu, EmployerHeader, Footer } from "layouts";
-import { Sidebar } from "features";
+import { Sidebar } from "features/employer";
 import { employerDesktopMenu, employerMobileMenu } from "mockData/nav-menus";
 import { EmployerContext } from 'components';
 
-const EmployerDesktop: FC = () => {
+const EmployerFeed: FC = () => {
   const { menuOpen, toggleMenu } = useMenu();
   const isFreeTrial = true;
 
@@ -50,4 +50,4 @@ const EmployerDesktop: FC = () => {
   );
 }
 
-export { EmployerDesktop };
+export { EmployerFeed };

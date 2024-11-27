@@ -10,7 +10,7 @@ interface NavItem {
     { name: 'REPORTS & ANALYTICS', path: '#' },
     { name: 'INTERVIEWS', path: '#' },
     { name: '✦ SUBSCRIPTION PLANS', path: '#', isSpecial: true },
-    { name: 'ACCOUNT SETTINGS', path: '#' },
+    { name: 'ACCOUNT SETTINGS', path: '/employer/account-settings' },
     { name: 'SIGN OUT', path: '#' }
   ];
   
@@ -23,7 +23,7 @@ interface NavItem {
     { name: 'ABOUT US', path: '#'},
     { name: 'CONTACT US', path: '#'},
     { name: '✦ SUBSCRIPTION PLANS', path: '#', isSpecial: true },
-    { name: 'ACCOUNT SETTINGS', path: '#'},
+    { name: 'ACCOUNT SETTINGS', path: '/employer/account-settings'},
     { name: 'SIGN OUT', path: '#'}
   ];
 
@@ -32,7 +32,7 @@ interface NavItem {
     { name: 'BOOKMARKED JOBS', path: '#'},
     { name: 'INTERVIEWS', path: '#'},
     { name: '✦ SUBSCRIPTION PLANS', path: '#', isSpecial: true },
-    { name: 'ACCOUNT SETTINGS', path: '#'},
+    { name: 'ACCOUNT SETTINGS', path: '/job-hunter/account-settings'},
     { name: 'SIGN OUT', path: '#'}
   ];
 
@@ -44,6 +44,6 @@ interface NavItem {
     { name: 'CONTACT US', path: '#' },
     { name: '✦ SUBSCRIPTION PLANS', path: '#', isSpecial: true },
     { name: 'FAQ', path: '#'},
-    { name: 'ACCOUNT SETTINGS', path: '#'},
+    { name: 'ACCOUNT SETTINGS', path: '/job-hunter/account-settings'},
     { name: 'SIGN OUT', path: '#'}
   ];
