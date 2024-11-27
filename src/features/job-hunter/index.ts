@@ -16,4 +16,3 @@ export { BookmarkSidebar } from 'features/job-hunter/Sidebar/bookmark-sidebar'
 export { SavedJobs } from 'features/job-hunter/BookmarkedJobs/saved-jobs'
 export { AppliedJobs } from 'features/job-hunter/BookmarkedJobs/applied-jobs'
 
-export { InterviewCard } from 'features/job-hunter/InterviewCard/interview-card'

@@ -1,5 +1,5 @@
 import { FC, useState, useEffect, useRef } from "react";
-import { InterviewCard } from "features/job-hunter";
+import { PendingCard } from "features";
 import { AppCardSkeleton } from "components";
 
 interface Interview {
@@ -148,7 +148,7 @@ const PendingInterviews: FC = () => {
     <div className="flex flex-col items-center w-full">
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-y-6 gap-x-14 justify-items-center w-full">
         {displayedItems.map((interview, index) => (
-          <InterviewCard 
+          <PendingCard 
             key={index}
             interview={interview}
             onAccept={() => console.log('Accept:', interview)}

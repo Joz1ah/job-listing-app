@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { MapPin, Bookmark } from "lucide-react";
+import { MapPin } from "lucide-react";
 import {
   Card,
   CardHeader,
@@ -17,48 +17,26 @@ interface Interview {
   meetingLink: string;
   receivedTime?: string;
   isNew?: boolean;
-  bookmarked?: boolean;
 }
 
 import gmeet from 'images/google-meet.svg?url'
 
 interface InterviewCardProps {
   interview: Interview;
-  onAccept?: () => void;
-  onReschedule?: () => void;
-  onDecline?: () => void;
-  onBookmark?: () => void;
+  onJoinInterview?: () => void;
+  onPreviewJob?: () => void;
 }
 
-const BookmarkButton: FC<{ 
-  bookmarked: boolean; 
-  onBookmark: () => void; 
-  className?: string;
-}> = ({ bookmarked, onBookmark, className = "" }) => (
-  <Bookmark
-    className={`cursor-pointer ${
-      bookmarked ? "fill-orange-500" : ""
-    } text-orange-500 ${className}`}
-    size={26}
-    onClick={(e) => {
-      e.stopPropagation();
-      onBookmark();
-    }}
-  />
-);
-
-const InterviewCard: FC<InterviewCardProps> = ({
+const AcceptedCard: FC<InterviewCardProps> = ({
   interview,
-  onAccept,
-  onReschedule,
-  onDecline,
-  onBookmark = () => {},
+  onJoinInterview,
+  onPreviewJob,
 }) => {
   return (
     <Card className="bg-[#FFFFFF] border-none w-full md:w-[436px] h-auto md:h-[275px]">
       <CardHeader className="flex flex-col justify-between items-start pb-0">
         <div className="flex flex-row -mt-4 justify-between w-full">
-          <div className="h-[20px]"> {/* Fixed height container */}
+          <div className="h-[20px]">
             {interview.isNew && (
               <span className="text-[13px] text-orange-500 font-semibold">
                 ★ NEW
@@ -72,12 +50,7 @@ const InterviewCard: FC<InterviewCardProps> = ({
           </div>
         </div>
         <div className="w-full relative mt-2">
-          <h3 className="text-[14px] font-semibold pr-8">{interview.position}</h3>
-          <BookmarkButton 
-            bookmarked={interview.bookmarked || false}
-            onBookmark={onBookmark}
-            className="absolute top-0 right-[-8px]"
-          />
+          <h3 className="text-[14px] font-semibold">{interview.position}</h3>
           <p className="text-[13px] text-black underline">{interview.company}</p>
           <div className="flex flex-row items-center">
             <MapPin size={14} className="text-orange-500" />
@@ -109,30 +82,30 @@ const InterviewCard: FC<InterviewCardProps> = ({
         </div>
       </CardContent>
 
-      <CardFooter className="flex flex-row justify-center pt-2 space-x-6">
-        <Button
-          onClick={onAccept}
-          className="text-[13px] font-semibold w-[100px] h-[32px] bg-orange-500 hover:bg-orange-600 text-white"
-        >
-          Accept
-        </Button>
-        <Button
-          onClick={onReschedule}
-          variant="outline"
-          className="text-[13px] font-semibold w-[100px] h-[32px] text-orange-500 border-2 border-orange-500 hover:bg-orange-500 hover:text-white"
-        >
-          Reschedule
-        </Button>
-        <Button
-          onClick={onDecline}
-          variant="outline"
-          className="text-[13px] font-semibold w-[100px] h-[32px] bg-red-500 text-white hover:bg-red-600 hover:text-white"
-        >
-          Decline
-        </Button>
+      <CardFooter className="flex flex-col space-y-4 pt-2">
+        <div className="flex flex-row justify-center space-x-6 w-full">
+          <Button
+            onClick={onJoinInterview}
+            className="text-[13px] font-semibold w-[140px] h-[32px] bg-orange-500 hover:bg-orange-600 text-white"
+          >
+            Join Interview
+          </Button>
+          <Button
+            onClick={onPreviewJob}
+            variant="outline"
+            className="text-[13px] font-semibold w-[140px] h-[32px] text-orange-500 border-2 border-orange-500 hover:bg-orange-500 hover:text-white"
+          >
+            Preview Job
+          </Button>
+        </div>
+        <div className="text-center">
+          <span className="text-[13px] text-green-600 font-semibold">
+            Status: Accepted
+          </span>
+        </div>
       </CardFooter>
     </Card>
   );
 };
 
-export { InterviewCard };
+export { AcceptedCard };
