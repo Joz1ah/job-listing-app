@@ -83,7 +83,7 @@ const EmployerMenu: FC<MenuProps> = ({
       <header className="hidden md:flex fixed top-0 left-0 right-0 bg-[#2D3A41] h-[72px] px-4 justify-between items-center z-50">
         <div className="flex items-center gap-4">
           <NavLink
-            to="/job-feed-employer"
+            to="/employer/feed"
             onClick={handleNavLinkClick}
             className="flex-shrink-0"
           >
@@ -118,7 +118,7 @@ const EmployerMenu: FC<MenuProps> = ({
                 </li>
                 <li>
                   <NavLink
-                    to="/job-feed-employer/job-listing"
+                    to="/employer/job-listing"
                     onClick={handleNavLinkClick}
                     className="flex-shrink-0"
                   >
@@ -128,7 +128,7 @@ const EmployerMenu: FC<MenuProps> = ({
                     `}
                     >
                       {isSmallScreen ? (
-                        <Plus className="text-white" size={16}/>
+                        <Plus className="text-white" size={16} />
                       ) : (
                         <span className="text-white font-light">
                           Create Job listing
@@ -145,7 +145,7 @@ const EmployerMenu: FC<MenuProps> = ({
         <div className="flex items-center gap-4 flex-shrink-0">
           <NotificationFeed isFreeTrial={isFreeTrial} />
           <div className="flex items-center gap-2 flex-shrink-0 min-w-0">
-            <NavLink to="/job-feed-hunter" onClick={handleNavLinkClick}>
+            <NavLink to="/job-hunter/feed" onClick={handleNavLinkClick}>
               <span className="text-white font-medium text-[14px] lg:text-[18px] truncate block max-w-[100px] lg:max-w-[200px]">
                 ABC Incorporated
               </span>

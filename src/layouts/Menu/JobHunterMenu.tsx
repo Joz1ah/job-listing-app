@@ -18,15 +18,15 @@ interface MenuProps {
   onToggleMenu: () => void;
   desktopMenuItems: NavItem[];
   mobileMenuItems: NavItem[];
-  isFreeTrial?:boolean;
+  isFreeTrial?: boolean;
 }
 
-const JobHunterMenu: FC<MenuProps> = ({ 
-  isMenuOpen, 
-  onToggleMenu, 
+const JobHunterMenu: FC<MenuProps> = ({
+  isMenuOpen,
+  onToggleMenu,
   desktopMenuItems,
   mobileMenuItems,
-  isFreeTrial 
+  isFreeTrial,
 }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const location = useLocation();
@@ -43,29 +43,29 @@ const JobHunterMenu: FC<MenuProps> = ({
       setIsMobile(mobile);
 
       if (!mobile) {
-        document.body.style.overflow = '';
-        document.body.style.paddingRight = '';
+        document.body.style.overflow = "";
+        document.body.style.paddingRight = "";
       } else if (isMenuOpen) {
-        document.body.style.overflow = 'hidden';
+        document.body.style.overflow = "hidden";
         document.body.style.paddingRight = `${window.innerWidth - document.documentElement.clientWidth}px`;
       }
     };
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
     return () => {
-      document.body.style.overflow = '';
-      document.body.style.paddingRight = '';
-      window.removeEventListener('resize', handleResize);
+      document.body.style.overflow = "";
+      document.body.style.paddingRight = "";
+      window.removeEventListener("resize", handleResize);
     };
   }, [isMenuOpen]);
 
   useEffect(() => {
     if (isMenuOpen && isMobile) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
       document.body.style.paddingRight = `${window.innerWidth - document.documentElement.clientWidth}px`;
     } else {
-      document.body.style.overflow = '';
-      document.body.style.paddingRight = '';
+      document.body.style.overflow = "";
+      document.body.style.paddingRight = "";
     }
   }, [isMenuOpen, isMobile]);
 
@@ -89,7 +89,11 @@ const JobHunterMenu: FC<MenuProps> = ({
       {/* Desktop Header */}
       <header className="hidden md:flex fixed top-0 left-0 right-0 bg-[#2D3A41] h-[72px] px-4 justify-between items-center flex-nowrap z-50">
         <div className="flex items-center gap-4 flex-grow">
-          <NavLink to="/job-feed-employer" onClick={handleNavLinkClick} className="flex-shrink-0">
+          <NavLink
+            to="/job-hunter/feed"
+            onClick={handleNavLinkClick}
+            className="flex-shrink-0"
+          >
             <img
               src={companyLogo}
               alt="Company Logo"
@@ -99,24 +103,32 @@ const JobHunterMenu: FC<MenuProps> = ({
           <nav className="flex-shrink">
             <ul className="flex gap-4 lg:gap-8 text-white text-[14px] lg:text-[16px] font-light whitespace-nowrap">
               <li className="hover:text-orange-500">
-                <NavLink to="#" onClick={handleNavLinkClick}>About us</NavLink>
+                <NavLink to="#" onClick={handleNavLinkClick}>
+                  About us
+                </NavLink>
               </li>
               <li className="hover:text-orange-500">
-                <NavLink to="#" onClick={handleNavLinkClick}>Contact us</NavLink>
+                <NavLink to="#" onClick={handleNavLinkClick}>
+                  Contact us
+                </NavLink>
               </li>
               <li className="hover:text-orange-500">
-                <NavLink to="#" onClick={handleNavLinkClick}>Subscription plans</NavLink>
+                <NavLink to="#" onClick={handleNavLinkClick}>
+                  Subscription plans
+                </NavLink>
               </li>
               <li className="hover:text-orange-500">
-                <NavLink to="#" onClick={handleNavLinkClick}>FAQ</NavLink>
+                <NavLink to="#" onClick={handleNavLinkClick}>
+                  FAQ
+                </NavLink>
               </li>
             </ul>
           </nav>
         </div>
         <div className="flex items-center gap-4 flex-shrink-0">
-          <NotificationFeed isFreeTrial={isFreeTrial}/>
+          <NotificationFeed isFreeTrial={isFreeTrial} />
           <div className="flex items-center gap-2 flex-shrink-0 min-w-0">
-            <NavLink to="/job-feed-employer" onClick={handleNavLinkClick}>
+            <NavLink to="/employer/feed" onClick={handleNavLinkClick}>
               <span className="text-white font-medium text-[14px] lg:text-[18px] truncate block max-w-[100px] lg:max-w-[200px]">
                 Michael V
               </span>
@@ -156,7 +168,7 @@ const JobHunterMenu: FC<MenuProps> = ({
       <header className="md:hidden bg-black py-4 px-2 flex justify-between items-center">
         <img src={akazaLogoWhite} alt="Akaza Logo" className="h-8" />
         <div className="flex items-center">
-          <NotificationFeed isFreeTrial={isFreeTrial}/>
+          <NotificationFeed isFreeTrial={isFreeTrial} />
           <Button
             variant="custom"
             className="text-[#F5722E] bg-black"
@@ -171,13 +183,15 @@ const JobHunterMenu: FC<MenuProps> = ({
 
       {/* Sliding Menu */}
       <div className="relative">
-        <div 
+        <div
           className={`fixed top-[72px] left-0 w-full h-full bg-black/50 transition-opacity duration-300 ${
-            isMenuOpen ? "opacity-100 z-[998]" : "opacity-0 pointer-events-none -z-10"
+            isMenuOpen
+              ? "opacity-100 z-[998]"
+              : "opacity-0 pointer-events-none -z-10"
           }`}
           onClick={onToggleMenu}
         />
-        
+
         <div
           className={`fixed top-0 right-0 h-screen w-full md:w-[440px] bg-black text-white shadow-xl transition-transform duration-500 ease-in-out z-[999] ${
             isMenuOpen ? "translate-x-0" : "translate-x-full"
@@ -193,7 +207,9 @@ const JobHunterMenu: FC<MenuProps> = ({
                       to={item.path}
                       onClick={handleNavLinkClick}
                       className={`${
-                        item.isSpecial ? 'text-orange-500 hover:text-orange-600' : 'hover:text-[#F5722E]'
+                        item.isSpecial
+                          ? "text-orange-500 hover:text-orange-600"
+                          : "hover:text-[#F5722E]"
                       } py-3 sm:py-2 inline-block text-sm`}
                     >
                       {item.name}
@@ -214,4 +230,4 @@ const JobHunterMenu: FC<MenuProps> = ({
   );
 };
 
-export { JobHunterMenu }
+export { JobHunterMenu };

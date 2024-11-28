@@ -53,21 +53,21 @@ const JobHunterBillingSettings = lazy(() => import('features/job-hunter').then(m
 const JobHunterSubscriptionSettings = lazy(() => import('features/job-hunter').then(module => ({ default: module.SubscriptionSettings })))
 const JobHunterPrivacySettings = lazy(() => import('features/job-hunter').then(module => ({ default: module.PrivacyAndSecuritySettings })))
 
-// Add these imports after the employer feature imports
+// Job listings management imports
 const ManageJobListings = lazy(() => import('pages').then(module => ({ default: module.ManageJobListings })))
 const ActiveListings = lazy(() => import('features/employer').then(module => ({ default: module.ActiveListings })))
 const DraftListings = lazy(() => import('features/employer').then(module => ({ default: module.DraftListings })))
 const ExpiredListings = lazy(() => import('features/employer').then(module => ({ default: module.ExpiredListings })))
 const ClosedListings = lazy(() => import('features/employer').then(module => ({ default: module.ClosedListings })))
 
-// Add these imports after the job listings imports
+// Reports and analytics imports
 const ReportsAnalytics = lazy(() => import('pages').then(module => ({ default: module.ReportsAnalytics })))
 const JobPerformance = lazy(() => import('features/employer').then(module => ({ default: module.JobPerformance })))
 const CandidateAnalytics = lazy(() => import('features/employer').then(module => ({ default: module.CandidateAnalytics })))
 const InterviewAnalytics = lazy(() => import('features/employer').then(module => ({ default: module.InterviewAnalytics })))
 const CostAnalytics = lazy(() => import('features/employer').then(module => ({ default: module.CostAnalytics })))
 
-// Add these imports after the job hunter feature imports
+// Bookmarked jobs imports
 const BookmarkedJobs = lazy(() => import('pages').then(module => ({ default: module.BookmarkedJobs })))
 const SavedJobs = lazy(() => import('features/job-hunter').then(module => ({ default: module.SavedJobs })))
 const AppliedJobs = lazy(() => import('features/job-hunter').then(module => ({ default: module.AppliedJobs })))
@@ -86,7 +86,7 @@ const LazyComponent = ({ component: Component, ...props }: LazyComponentProps) =
 const routes: RouteObject[] = [
   {
     path: '',
-    element: <Navigate to={ROUTE_CONSTANTS.EMPLOYER} replace />
+    element: <Navigate to={`${ROUTE_CONSTANTS.EMPLOYER}/${ROUTE_CONSTANTS.FEED}`} replace />
   },
   {
     path: ROUTE_CONSTANTS.HOME,
@@ -109,7 +109,7 @@ const routes: RouteObject[] = [
     element: <LazyComponent component={Employer} />,
     children: [
       {
-        path: '',
+        path: ROUTE_CONSTANTS.FEED,
         element: <LazyComponent component={EmployerSection} />
       },
       {
@@ -118,8 +118,8 @@ const routes: RouteObject[] = [
       },
       {
         path: ROUTE_CONSTANTS.EMPLOYER_PROFILE,
-        element: <LazyComponent component={EmployerProfile} />,
-      },
+        element: <LazyComponent component={EmployerProfile} />
+      }
     ]
   },
   {
@@ -127,14 +127,14 @@ const routes: RouteObject[] = [
     element: <LazyComponent component={JobHunter} />,
     children: [
       {
-        path: '',
+        path: ROUTE_CONSTANTS.FEED,
         element: <LazyComponent component={JobHunterSection} />
-      },
+      }
     ]
   },
   {
     path: ROUTE_CONSTANTS.CREATE_APPLICATION,
-    element: <LazyComponent component={CompleteProfile} />,
+    element: <LazyComponent component={CompleteProfile} />
   },
   {
     path: ROUTE_CONSTANTS.INTERVIEWS_EMPLOYER,
@@ -142,22 +142,22 @@ const routes: RouteObject[] = [
     children: [
       {
         path: '',
-        element: <Navigate to={`${ROUTE_CONSTANTS.INTERVIEWS_EMPLOYER}/pending`} replace />
+        element: <Navigate to={`${ROUTE_CONSTANTS.INTERVIEWS_EMPLOYER}/${ROUTE_CONSTANTS.PENDING}`} replace />
       },
       {
-        path: 'pending',
+        path: ROUTE_CONSTANTS.PENDING,
         element: <LazyComponent component={EmployerPendingInterviews} />
       },
       {
-        path: 'accepted',
+        path: ROUTE_CONSTANTS.ACCEPTED,
         element: <LazyComponent component={EmployerAcceptedInterviews} />
       },
       {
-        path: 'reschedule',
+        path: ROUTE_CONSTANTS.RESCHEDULE,
         element: <LazyComponent component={EmployerRescheduleRequests} />
       },
       {
-        path: 'calendar',
+        path: ROUTE_CONSTANTS.CALENDAR,
         element: <LazyComponent component={EmployerInterviewCalendar} />
       }
     ]
@@ -168,22 +168,22 @@ const routes: RouteObject[] = [
     children: [
       {
         path: '',
-        element: <Navigate to={`${ROUTE_CONSTANTS.INTERVIEWS_JOB_HUNTER}/pending`} replace />
+        element: <Navigate to={`${ROUTE_CONSTANTS.INTERVIEWS_JOB_HUNTER}/${ROUTE_CONSTANTS.PENDING}`} replace />
       },
       {
-        path: 'pending',
+        path: ROUTE_CONSTANTS.PENDING,
         element: <LazyComponent component={JobHunterPendingInterviews} />
       },
       {
-        path: 'accepted',
+        path: ROUTE_CONSTANTS.ACCEPTED,
         element: <LazyComponent component={JobHunterAcceptedInterviews} />
       },
       {
-        path: 'reschedule',
+        path: ROUTE_CONSTANTS.RESCHEDULE,
         element: <LazyComponent component={JobHunterRescheduleRequests} />
       },
       {
-        path: 'calendar',
+        path: ROUTE_CONSTANTS.CALENDAR,
         element: <LazyComponent component={JobHunterInterviewCalendar} />
       }
     ]
@@ -194,22 +194,22 @@ const routes: RouteObject[] = [
     children: [
       {
         path: '',
-        element: <Navigate to={`${ROUTE_CONSTANTS.ACCOUNT_SETTINGS_EMPLOYER}/general`} replace />
+        element: <Navigate to={`${ROUTE_CONSTANTS.ACCOUNT_SETTINGS_EMPLOYER}/${ROUTE_CONSTANTS.GENERAL}`} replace />
       },
       {
-        path: 'general',
+        path: ROUTE_CONSTANTS.GENERAL,
         element: <LazyComponent component={EmployerGeneralSettings} />
       },
       {
-        path: 'billing',
+        path: ROUTE_CONSTANTS.BILLING,
         element: <LazyComponent component={EmployerBillingSettings} />
       },
       {
-        path: 'subscription',
+        path: ROUTE_CONSTANTS.SUBSCRIPTION,
         element: <LazyComponent component={EmployerSubscriptionSettings} />
       },
       {
-        path: 'privacy',
+        path: ROUTE_CONSTANTS.PRIVACY,
         element: <LazyComponent component={EmployerPrivacySettings} />
       }
     ]
@@ -220,22 +220,22 @@ const routes: RouteObject[] = [
     children: [
       {
         path: '',
-        element: <Navigate to={`${ROUTE_CONSTANTS.ACCOUNT_SETTINGS_JOB_HUNTER}/general`} replace />
+        element: <Navigate to={`${ROUTE_CONSTANTS.ACCOUNT_SETTINGS_JOB_HUNTER}/${ROUTE_CONSTANTS.GENERAL}`} replace />
       },
       {
-        path: 'general',
+        path: ROUTE_CONSTANTS.GENERAL,
         element: <LazyComponent component={JobHunterGeneralSettings} />
       },
       {
-        path: 'billing',
+        path: ROUTE_CONSTANTS.BILLING,
         element: <LazyComponent component={JobHunterBillingSettings} />
       },
       {
-        path: 'subscription',
+        path: ROUTE_CONSTANTS.SUBSCRIPTION,
         element: <LazyComponent component={JobHunterSubscriptionSettings} />
       },
       {
-        path: 'privacy',
+        path: ROUTE_CONSTANTS.PRIVACY,
         element: <LazyComponent component={JobHunterPrivacySettings} />
       }
     ]
@@ -246,22 +246,22 @@ const routes: RouteObject[] = [
     children: [
       {
         path: '',
-        element: <Navigate to={`${ROUTE_CONSTANTS.MANAGE_JOB_LISTINGS}/active`} replace />
+        element: <Navigate to={`${ROUTE_CONSTANTS.MANAGE_JOB_LISTINGS}/${ROUTE_CONSTANTS.ACTIVE}`} replace />
       },
       {
-        path: 'active',
+        path: ROUTE_CONSTANTS.ACTIVE,
         element: <LazyComponent component={ActiveListings} />
       },
       {
-        path: 'drafts',
+        path: ROUTE_CONSTANTS.DRAFTS,
         element: <LazyComponent component={DraftListings} />
       },
       {
-        path: 'expired',
+        path: ROUTE_CONSTANTS.EXPIRED,
         element: <LazyComponent component={ExpiredListings} />
       },
       {
-        path: 'closed',
+        path: ROUTE_CONSTANTS.CLOSED,
         element: <LazyComponent component={ClosedListings} />
       }
     ]
@@ -272,22 +272,22 @@ const routes: RouteObject[] = [
     children: [
       {
         path: '',
-        element: <Navigate to={`${ROUTE_CONSTANTS.REPORTS_ANALYTICS}/job-performance`} replace />
+        element: <Navigate to={`${ROUTE_CONSTANTS.REPORTS_ANALYTICS}/${ROUTE_CONSTANTS.JOB_PERFORMANCE}`} replace />
       },
       {
-        path: 'job-performance',
+        path: ROUTE_CONSTANTS.JOB_PERFORMANCE,
         element: <LazyComponent component={JobPerformance} />
       },
       {
-        path: 'candidates',
+        path: ROUTE_CONSTANTS.CANDIDATES,
         element: <LazyComponent component={CandidateAnalytics} />
       },
       {
-        path: 'interviews',
+        path: ROUTE_CONSTANTS.INTERVIEWS,
         element: <LazyComponent component={InterviewAnalytics} />
       },
       {
-        path: 'costs',
+        path: ROUTE_CONSTANTS.COSTS,
         element: <LazyComponent component={CostAnalytics} />
       }
     ]
@@ -298,14 +298,14 @@ const routes: RouteObject[] = [
     children: [
       {
         path: '',
-        element: <Navigate to={`${ROUTE_CONSTANTS.BOOKMARKED_JOBS}/saved`} replace />
+        element: <Navigate to={`${ROUTE_CONSTANTS.BOOKMARKED_JOBS}/${ROUTE_CONSTANTS.SAVED}`} replace />
       },
       {
-        path: 'saved',
+        path: ROUTE_CONSTANTS.SAVED,
         element: <LazyComponent component={SavedJobs} />
       },
       {
-        path: 'applied',
+        path: ROUTE_CONSTANTS.APPLIED,
         element: <LazyComponent component={AppliedJobs} />
       }
     ]

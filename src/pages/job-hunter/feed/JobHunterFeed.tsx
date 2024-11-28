@@ -8,10 +8,12 @@ import { jobHunterDesktopMenu, jobHunterMobileMenu } from "mockData/nav-menus";
 import { JobHunterContext } from 'components';
 import { JobHunterMenu, JobHunterHeader, Footer } from "layouts";
 import { Outlet } from "react-router-dom";
+import { useJobHunterTrialStatus } from "components";
+
 
 const JobHunterFeed: FC = () => {
   const { menuOpen, toggleMenu } = useMenu();
-  const isFreeTrial = true; 
+  const { isFreeTrial } = useJobHunterTrialStatus();
 
   return (
     <JobHunterContext.Provider value={{ isFreeTrial }}>

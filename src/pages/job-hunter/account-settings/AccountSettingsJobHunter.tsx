@@ -6,10 +6,11 @@ import { jobHunterDesktopMenu, jobHunterMobileMenu } from "mockData/nav-menus";
 import { JobHunterContext } from "components";
 import { JobHunterMenu, Footer } from "layouts";
 import { SettingsSidebar } from "features";
+import { useJobHunterTrialStatus } from "components";
 
 const AccountSettingsJobHunter: FC = () => {
   const { menuOpen, toggleMenu } = useMenu();
-  const isFreeTrial = true;
+  const { isFreeTrial } = useJobHunterTrialStatus();
 
   return (
     <JobHunterContext.Provider value={{ isFreeTrial }}>

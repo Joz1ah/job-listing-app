@@ -1,10 +1,11 @@
 export const ROUTE_CONSTANTS = {
+  // Existing routes
   ABOUT: '/about',
   FETCH: '/fetch',
   HOME: '/',
   NOT_FOUND: '/404',
-  JOB_HUNTER: '/job-feed-hunter',
-  EMPLOYER: '/job-feed-employer',
+  JOB_HUNTER: '/job-hunter',
+  EMPLOYER: '/employer',
   JOB_LISTING: 'job-listing',
   CREATE_APPLICATION: '/create-application',
   EMPLOYER_PROFILE: 'employer-profile',
@@ -14,5 +15,25 @@ export const ROUTE_CONSTANTS = {
   INTERVIEWS_EMPLOYER: '/employer/interviews',
   MANAGE_JOB_LISTINGS: '/employer/manage-job-listings',
   REPORTS_ANALYTICS: '/employer/reports-and-analytics',
-  BOOKMARKED_JOBS: '/job-hunter/bookmarked-jobs'
+  BOOKMARKED_JOBS: '/job-hunter/bookmarked-jobs',
+  
+  FEED: 'feed',
+  GENERAL: 'general',
+  BILLING: 'billing',
+  SUBSCRIPTION: 'subscription',
+  PRIVACY: 'privacy',
+  PENDING: 'pending',
+  ACCEPTED: 'accepted',
+  RESCHEDULE: 'reschedule',
+  CALENDAR: 'calendar',
+  ACTIVE: 'active',
+  DRAFTS: 'drafts',
+  EXPIRED: 'expired',
+  CLOSED: 'closed',
+  JOB_PERFORMANCE: 'job-performance',
+  CANDIDATES: 'candidates',
+  INTERVIEWS: 'interviews',
+  COSTS: 'costs',
+  SAVED: 'saved',
+  APPLIED: 'applied'
 }

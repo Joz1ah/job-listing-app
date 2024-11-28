@@ -118,3 +118,4 @@ export { JobHunterContext, useJobHunterContext } from 'components/context/JobHun
 export { MultiSelect } from 'components/ui/multi-select-input'
 export { PendingCardSkeleton } from 'components/skeleton-loading/PendingCardSkeleton'
 export { AcceptedCardSkeleton } from 'components/skeleton-loading/AcceptedCardSkeleton'
+export {TrialProviders, useEmployerTrialStatus, useJobHunterTrialStatus } from 'components/context/TrialContext'

@@ -6,10 +6,11 @@ import { employerDesktopMenu, employerMobileMenu} from "mockData/nav-menus";
 import { EmployerContext } from "components";
 import { EmployerMenu, Footer } from "layouts";
 import { ManageJobListingsSidebar } from "features/employer";
+import { useEmployerTrialStatus } from "components";
 
 const ManageJobListings: FC = () => {
   const { menuOpen, toggleMenu } = useMenu();
-  const isFreeTrial = false;
+  const { isFreeTrial } = useEmployerTrialStatus();
 
   return (
     <EmployerContext.Provider value={{ isFreeTrial }}>
