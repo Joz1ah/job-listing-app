@@ -25,6 +25,7 @@ export const ROUTE_CONSTANTS = {
   PENDING: 'pending',
   ACCEPTED: 'accepted',
   RESCHEDULE: 'reschedule',
+  DECLINED: 'declined',
   CALENDAR: 'calendar',
   ACTIVE: 'active',
   DRAFTS: 'drafts',

@@ -15,4 +15,5 @@ export { InterviewCalendar } from 'features/job-hunter/JobHunterInterviews/inter
 export { BookmarkSidebar } from 'features/job-hunter/Sidebar/bookmark-sidebar'
 export { SavedJobs } from 'features/job-hunter/BookmarkedJobs/saved-jobs'
 export { AppliedJobs } from 'features/job-hunter/BookmarkedJobs/applied-jobs'
+export { InterviewSidebarJobHunter } from 'features/job-hunter/Sidebar/interviews-sidebar-hunter'
 

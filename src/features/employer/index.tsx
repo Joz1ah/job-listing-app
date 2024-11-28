@@ -10,7 +10,7 @@ export { BillingSettings } from 'features/employer/EmployerSettings/billing'
 export { SubscriptionSettings } from 'features/employer/EmployerSettings/subscription'
 export { PrivacyAndSecuritySettings } from 'features/employer/EmployerSettings/privacy-security'
 
-export { PendingInterviews } from 'features/employer/EmployerInterviews/pending-interviews'
+export { DeclinedInterviews } from 'features/employer/EmployerInterviews/declined-interviews'
 export { AcceptedInterviews } from 'features/employer/EmployerInterviews/accepted-interviews'
 export { RescheduleRequests } from 'features/employer/EmployerInterviews/reschedule-requests'
 export { InterviewCalendar } from 'features/employer/EmployerInterviews/interview-calendar'
@@ -27,3 +27,5 @@ export { JobPerformance } from 'features/employer/ReportsAnalytics/job-performan
 export { CandidateAnalytics } from 'features/employer/ReportsAnalytics/candidate-analytics'
 export { CostAnalytics } from 'features/employer/ReportsAnalytics/cost-analytics'
 export { InterviewAnalytics } from 'features/employer/ReportsAnalytics/interview-analytics'
+
+export { InterviewSidebarEmployer } from 'features/employer/Sidebar/interviews-sidebar-employer'

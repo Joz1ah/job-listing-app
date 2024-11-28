@@ -8,7 +8,7 @@ interface MenuItem {
   path: string;
 }
 
-interface InterviewSidebarProps {
+interface InterviewSidebarJobHunterProps {
   userName: string;
   subscriptionType: string;
   userType: 'employer' | 'job-hunter';
@@ -16,7 +16,7 @@ interface InterviewSidebarProps {
   className?: string;
 }
 
-const InterviewSidebar: FC<InterviewSidebarProps> = ({ 
+const InterviewSidebarJobHunter: FC<InterviewSidebarJobHunterProps> = ({ 
   userName,
   subscriptionType,
   userType,
@@ -122,4 +122,4 @@ const InterviewSidebar: FC<InterviewSidebarProps> = ({
   );
 };
 
-export { InterviewSidebar };
+export { InterviewSidebarJobHunter };

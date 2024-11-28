@@ -5,7 +5,7 @@ import { PageMeta, ScrollArea } from "components";
 import { jobHunterDesktopMenu, jobHunterMobileMenu } from "mockData/nav-menus";
 import { JobHunterContext } from "components";
 import { JobHunterMenu, Footer } from "layouts";
-import { InterviewSidebar } from "features";
+import { InterviewSidebarJobHunter } from "features/job-hunter";
 import { useJobHunterTrialStatus } from "components";
 
 const InterviewJobHunter: FC = () => {
@@ -29,7 +29,7 @@ const InterviewJobHunter: FC = () => {
             <main className="flex-1 flex flex-col w-full lg:flex-row md:py-16 py-6 bg-[#212529]">
               <div className="flex justify-center w-full max-w-screen-xl mx-auto">
                 <div className="flex flex-col lg:flex-row w-full pt-8">
-                  <InterviewSidebar
+                  <InterviewSidebarJobHunter
                     userName="John Doe"
                     subscriptionType="Free Trial"
                     userType="job-hunter"

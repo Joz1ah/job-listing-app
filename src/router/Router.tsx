@@ -18,8 +18,8 @@ const JobHunter = lazy(() => import('pages').then(module => ({ default: module.J
 const CompleteProfile = lazy(() => import('pages').then(module => ({ default: module.CreateAppCard })))
 
 // Employer feature imports
-const EmployerSection = lazy(() => import('features/employer').then(module => ({ default: module.EmployerFeed})))
-const JobListingForm = lazy(() => import('features/employer').then(module => ({ default: module.JobListingForm   })))
+const EmployerSection = lazy(() => import('features/employer').then(module => ({ default: module.EmployerFeed })))
+const JobListingForm = lazy(() => import('features/employer').then(module => ({ default: module.JobListingForm })))
 const EmployerProfile = lazy(() => import('features/employer').then(module => ({ default: module.EmployerProfile })))
 
 // Job Hunter feature imports
@@ -27,10 +27,10 @@ const JobHunterSection = lazy(() => import('features/job-hunter').then(module =>
 
 // Employer interviews
 const InterviewEmployer = lazy(() => import('pages').then(module => ({ default: module.InterviewEmployer })))
-const EmployerPendingInterviews = lazy(() => import('features/employer').then(module => ({ default: module.PendingInterviews })))
-const EmployerAcceptedInterviews = lazy(() => import('features/employer').then(module => ({ default: module.AcceptedInterviews })))
-const EmployerRescheduleRequests = lazy(() => import('features/employer').then(module => ({ default: module.RescheduleRequests })))
 const EmployerInterviewCalendar = lazy(() => import('features/employer').then(module => ({ default: module.InterviewCalendar })))
+const EmployerAcceptedInterviews = lazy(() => import('features/employer').then(module => ({ default: module.AcceptedInterviews })))
+const EmployerDeclinedInterviews = lazy(() => import('features/employer').then(module => ({ default: module.DeclinedInterviews })))
+const EmployerRescheduleRequests = lazy(() => import('features/employer').then(module => ({ default: module.RescheduleRequests })))
 
 // Job Hunter interviews
 const InterviewJobHunter = lazy(() => import('pages').then(module => ({ default: module.InterviewJobHunter })))
@@ -142,23 +142,23 @@ const routes: RouteObject[] = [
     children: [
       {
         path: '',
-        element: <Navigate to={`${ROUTE_CONSTANTS.INTERVIEWS_EMPLOYER}/${ROUTE_CONSTANTS.PENDING}`} replace />
+        element: <Navigate to={`${ROUTE_CONSTANTS.INTERVIEWS_EMPLOYER}/${ROUTE_CONSTANTS.CALENDAR}`} replace />
       },
       {
-        path: ROUTE_CONSTANTS.PENDING,
-        element: <LazyComponent component={EmployerPendingInterviews} />
+        path: ROUTE_CONSTANTS.CALENDAR,
+        element: <LazyComponent component={EmployerInterviewCalendar} />
       },
       {
         path: ROUTE_CONSTANTS.ACCEPTED,
         element: <LazyComponent component={EmployerAcceptedInterviews} />
       },
       {
-        path: ROUTE_CONSTANTS.RESCHEDULE,
-        element: <LazyComponent component={EmployerRescheduleRequests} />
+        path: ROUTE_CONSTANTS.DECLINED,
+        element: <LazyComponent component={EmployerDeclinedInterviews} />
       },
       {
-        path: ROUTE_CONSTANTS.CALENDAR,
-        element: <LazyComponent component={EmployerInterviewCalendar} />
+        path: ROUTE_CONSTANTS.RESCHEDULE,
+        element: <LazyComponent component={EmployerRescheduleRequests} />
       }
     ]
   },
