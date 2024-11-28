@@ -20,7 +20,6 @@ import {
   CarouselNext,
 } from "components";
 
-
 import { useJobHunterContext } from "components";
 
 interface selectedProps {
@@ -92,7 +91,9 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
 
     if (isFreeTrial) {
       // Calculate if we need an ad in the next 2 positions
-      const realItemsCount = displayedItems.filter(item => !("isAd" in item)).length;
+      const realItemsCount = displayedItems.filter(
+        (item) => !("isAd" in item),
+      ).length;
       const nextPositionNeedsAd = (realItemsCount + 1 - 3) % 5 === 0;
       const secondPositionNeedsAd = (realItemsCount + 2 - 3) % 5 === 0;
 
@@ -102,7 +103,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
         setDisplayedItems((prev) => [
           ...prev,
           ...newItems,
-          { isAd: true, image: jobHunterAds }
+          { isAd: true, image: jobHunterAds },
         ]);
       } else if (secondPositionNeedsAd) {
         // Load 2 real items + ad
@@ -110,12 +111,15 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
         setDisplayedItems((prev) => [
           ...prev,
           newItems[0],
-          { isAd: true, image: jobHunterAds }
+          { isAd: true, image: jobHunterAds },
         ]);
       } else {
         // Load 2 regular items
         const itemsToLoad = Math.min(2, remainingItems);
-        const newItems = perfectMatch.slice(startIndex, startIndex + itemsToLoad);
+        const newItems = perfectMatch.slice(
+          startIndex,
+          startIndex + itemsToLoad,
+        );
         setDisplayedItems((prev) => [...prev, ...newItems]);
       }
     } else {
@@ -153,7 +157,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
     ? perfectMatch.length -
       displayedItems.filter((item) => !("isAd" in item)).length
     : perfectMatch.length - displayedItems.length;
-    
+
   const showLoadingCards = loading && remainingItems > 0;
   const loadingCardsCount = Math.min(2, remainingItems);
 
@@ -220,7 +224,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
               match={item}
               isFreeTrial={isFreeTrial}
             />
-          )
+          ),
         )}
       </BookmarkLimitHandler>
 
@@ -299,7 +303,9 @@ const OtherApplications: FC<selectedProps> = ({
 
     if (isFreeTrial) {
       // Calculate if we need an ad in the next 2 positions
-      const realItemsCount = displayedItems.filter(item => !("isAd" in item)).length;
+      const realItemsCount = displayedItems.filter(
+        (item) => !("isAd" in item),
+      ).length;
       const nextPositionNeedsAd = (realItemsCount + 1 - 3) % 5 === 0;
       const secondPositionNeedsAd = (realItemsCount + 2 - 3) % 5 === 0;
 
@@ -309,7 +315,7 @@ const OtherApplications: FC<selectedProps> = ({
         setDisplayedItems((prev) => [
           ...prev,
           ...newItems,
-          { isAd: true, image: jobHunterAds }
+          { isAd: true, image: jobHunterAds },
         ]);
       } else if (secondPositionNeedsAd) {
         // Load 2 real items + ad
@@ -317,7 +323,7 @@ const OtherApplications: FC<selectedProps> = ({
         setDisplayedItems((prev) => [
           ...prev,
           newItems[0],
-          { isAd: true, image: jobHunterAds }
+          { isAd: true, image: jobHunterAds },
         ]);
       } else {
         // Load 2 regular items
@@ -357,10 +363,9 @@ const OtherApplications: FC<selectedProps> = ({
 
   // Calculate loading cards
   const remainingItems = isFreeTrial
-    ? others.length -
-      displayedItems.filter((item) => !("isAd" in item)).length
+    ? others.length - displayedItems.filter((item) => !("isAd" in item)).length
     : others.length - displayedItems.length;
-    
+
   const showLoadingCards = loading && remainingItems > 0;
   const loadingCardsCount = Math.min(2, remainingItems);
 
@@ -427,7 +432,7 @@ const OtherApplications: FC<selectedProps> = ({
               match={item}
               isFreeTrial={isFreeTrial}
             />
-          )
+          ),
         )}
       </BookmarkLimitHandler>
 
@@ -495,8 +500,8 @@ const EndCard: React.FC<EndCardProps> = ({ type }) => {
           </div>
           {type === "perfectMatch" && (
             <div>
-              <span className="text-[#F5722E] font-semibold">matches</span>{" "}
-              for now!
+              <span className="text-[#F5722E] font-semibold">matches</span> for
+              now!
             </div>
           )}
           {type === "otherOpportunities" && <div>for now!</div>}
@@ -592,36 +597,52 @@ const JobHunterFeed: FC<JobHunterSectionProps> = () => {
       {/* Application Cards Section - Desktop View */}
       <div className="hidden md:flex flex-col items-center">
         <div className="flex justify-center mb-8 w-full">
-        <button
-          className={`font-semibold mr-6 pb-2 text-[17px] inline-flex items-center gap-2 transition-colors group ${
-            selectedTab === "perfectMatch"
-              ? "text-orange-500 border-b-2 border-orange-500"
-              : "text-[#AEADAD] hover:text-orange-500"
-          }`}
-          onClick={() => handleTabChange("perfectMatch")}
-          disabled={isLoading}
-        >
-          <img
-            src={sparkeIcon}
-            alt="Sparkle Icon"
-            className={`w-5 h-5 ${
-              selectedTab === "perfectMatch"
-                ? "filter grayscale-0"
-                : "filter grayscale group-hover:grayscale-0"
-            }`}
-          />
-          PERFECT MATCH
-        </button>
-          {/* Other Applications Tab */}
           <button
-            className={`font-semibold pb-2 text-[17px] transition-colors ${
+            className={`font-semibold mr-6 pb-2 text-[17px] inline-flex items-center gap-2 transition-all duration-200 relative group ${
+              selectedTab === "perfectMatch"
+                ? "text-orange-500"
+                : "text-[#AEADAD] hover:text-orange-500"
+            }`}
+            onClick={() => handleTabChange("perfectMatch")}
+            disabled={isLoading}
+          >
+            <div
+              className="absolute bottom-0 left-0 w-full h-0.5 bg-orange-500 transform origin-left transition-transform duration-200 ease-out"
+              style={{
+                transform:
+                  selectedTab === "perfectMatch" ? "scaleX(1)" : "scaleX(0)",
+              }}
+            />
+            <img
+              src={sparkeIcon}
+              alt="Sparkle Icon"
+              className={`w-5 h-5 transition-all duration-200 ${
+                selectedTab === "perfectMatch"
+                  ? "filter grayscale-0"
+                  : "filter grayscale group-hover:grayscale-0"
+              }`}
+            />
+            PERFECT MATCH
+          </button>
+
+          <button
+            className={`font-semibold pb-2 text-[17px] transition-all duration-200 relative ${
               selectedTab === "otherApplications"
-                ? "text-orange-500 border-b-2 border-orange-500"
+                ? "text-orange-500"
                 : "text-[#AEADAD] hover:text-orange-500"
             }`}
             onClick={() => handleTabChange("otherApplications")}
             disabled={isLoading}
           >
+            <div
+              className="absolute bottom-0 right-0 w-full h-0.5 bg-orange-500 transform origin-right transition-transform duration-200 ease-out"
+              style={{
+                transform:
+                  selectedTab === "otherApplications"
+                    ? "scaleX(1)"
+                    : "scaleX(0)",
+              }}
+            />
             OTHER OPPORTUNITIES
           </button>
         </div>
@@ -674,7 +695,9 @@ const JobHunterFeed: FC<JobHunterSectionProps> = () => {
                       <JobCardMobile
                         match={item}
                         isFreeTrial={isFreeTrial}
-                        bookmarked={bookmarkedCards.has(`perfectMatch-${index}`)}
+                        bookmarked={bookmarkedCards.has(
+                          `perfectMatch-${index}`,
+                        )}
                         onBookmark={() => toggleBookmark("perfectMatch", index)}
                       />
                     </div>

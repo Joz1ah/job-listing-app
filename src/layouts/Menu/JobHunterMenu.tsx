@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { Button } from "components/ui/buttons";
-import { BadgeCheck, ChevronDown, Info } from "lucide-react";
+import { BadgeCheck, ChevronDown, Info, ChevronUp } from "lucide-react";
 import companyLogo from "images/company-logo.png";
 import akazaLogoWhite from "images/akaza-logo-white.png";
 import menuButton from "images/menu-button.png";
@@ -122,10 +122,32 @@ const JobHunterMenu: FC<MenuProps> = ({
               </span>
             </NavLink>
             {renderStatusIcon()}
-            <ChevronDown
-              onClick={onToggleMenu}
-              className="w-4 h-4 text-white cursor-pointer hover:text-orange-500 transition-colors flex-shrink-0"
-            />
+            <div className="relative w-6 h-6">
+              <div
+                className={`absolute inset-0 transform transition-all duration-300 ease-in-out ${
+                  isMenuOpen
+                    ? "opacity-0 rotate-90 scale-0"
+                    : "opacity-100 rotate-0 scale-100"
+                } hover:scale-90`}
+              >
+                <ChevronDown
+                  onClick={onToggleMenu}
+                  className="w-6 h-6 text-white cursor-pointer transition-transform flex-shrink-0"
+                />
+              </div>
+              <div
+                className={`absolute inset-0 transform transition-all duration-300 ease-in-out ${
+                  isMenuOpen
+                    ? "opacity-100 rotate-0 scale-100"
+                    : "opacity-0 -rotate-90 scale-0"
+                } hover:scale-90`}
+              >
+                <ChevronUp
+                  onClick={onToggleMenu}
+                  className="w-6 h-6 text-white cursor-pointer transition-transform flex-shrink-0"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </header>

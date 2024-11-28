@@ -1,11 +1,6 @@
 import { FC } from "react";
 import { MapPin } from "lucide-react";
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardFooter,
-} from "components";
+import { Card, CardHeader, CardContent, CardFooter } from "components";
 import { Button } from "components";
 
 interface Interview {
@@ -19,7 +14,7 @@ interface Interview {
   isNew?: boolean;
 }
 
-import gmeet from 'images/google-meet.svg?url'
+import gmeet from "images/google-meet.svg?url";
 
 interface InterviewCardProps {
   interview: Interview;
@@ -51,10 +46,14 @@ const AcceptedCard: FC<InterviewCardProps> = ({
         </div>
         <div className="w-full relative mt-2">
           <h3 className="text-[14px] font-semibold">{interview.position}</h3>
-          <p className="text-[13px] text-black underline">{interview.company}</p>
+          <p className="text-[13px] text-black underline">
+            {interview.company}
+          </p>
           <div className="flex flex-row items-center">
             <MapPin size={14} className="text-orange-500" />
-            <p className="text-[13px] font-light mt-0 ml-2">Based in {interview.location}</p>
+            <p className="text-[13px] font-light mt-0 ml-2">
+              Based in {interview.location}
+            </p>
           </div>
         </div>
       </CardHeader>
@@ -74,7 +73,7 @@ const AcceptedCard: FC<InterviewCardProps> = ({
             </span>
           </div>
           <div className="flex items-center gap-1">
-            <img src={gmeet} alt="gmeet"/>
+            <img src={gmeet} alt="gmeet" />
             <span className="text-[13px] text-gray-400 cursor-pointer">
               {interview.meetingLink}
             </span>
@@ -99,8 +98,8 @@ const AcceptedCard: FC<InterviewCardProps> = ({
           </Button>
         </div>
         <div className="text-center">
-          <span className="text-[13px] text-green-600 font-semibold">
-            Status: Accepted
+          <span className="text-sm text-black font-semibold">
+            Status: <span className="text-green-600">Accepted</span>
           </span>
         </div>
       </CardFooter>
