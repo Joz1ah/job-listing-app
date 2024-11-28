@@ -1,6 +1,6 @@
 import { FC, useState, useEffect, useRef } from "react";
 import { PendingCard } from "features";
-import { AppCardSkeleton } from "components";
+import { PendingCardSkeleton } from "components";
 
 interface Interview {
   position: string;
@@ -79,9 +79,10 @@ const mockInterviews: Interview[] = [
 
 const PendingInterviews: FC = () => {
   const [displayedItems, setDisplayedItems] = useState<Interview[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // Start with loading true
   const [hasMore, setHasMore] = useState(true);
   const loaderRef = useRef<HTMLDivElement>(null);
+  const [initialLoad, setInitialLoad] = useState(true); // Add initialLoad state
 
   const loadMore = async () => {
     if (loading || !hasMore) return;
@@ -109,18 +110,27 @@ const PendingInterviews: FC = () => {
     setLoading(false);
   };
 
+  // Initial load with skeleton
   useEffect(() => {
-    const initialItems = mockInterviews.slice(0, 6);
-    setDisplayedItems(initialItems);
-    setHasMore(mockInterviews.length > 6);
-    setLoading(false);
+    const loadInitialItems = async () => {
+      setLoading(true);
+      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+      
+      const initialItems = mockInterviews.slice(0, 6);
+      setDisplayedItems(initialItems);
+      setHasMore(mockInterviews.length > 6);
+      setLoading(false);
+      setInitialLoad(false);
+    };
+
+    loadInitialItems();
   }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         const target = entries[0];
-        if (target.isIntersecting && !loading && hasMore) {
+        if (target.isIntersecting && !loading && hasMore && !initialLoad) {
           loadMore();
         }
       },
@@ -139,15 +149,15 @@ const PendingInterviews: FC = () => {
         observer.unobserve(loaderRef.current);
       }
     };
-  }, [loading, hasMore]);
+  }, [loading, hasMore, initialLoad]);
 
-  const showLoadingCards = loading && mockInterviews.length - displayedItems.length > 0;
-  const loadingCardsCount = Math.min(2, mockInterviews.length - displayedItems.length);
+  const showLoadingCards = loading;
+  const loadingCardsCount = Math.min(6, mockInterviews.length); // Show up to 6 loading cards initially
 
   return (
     <div className="flex flex-col items-center w-full">
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-y-6 gap-x-14 justify-items-center w-full">
-        {displayedItems.map((interview, index) => (
+        {!initialLoad && displayedItems.map((interview, index) => (
           <PendingCard 
             key={index}
             interview={interview}
@@ -159,12 +169,13 @@ const PendingInterviews: FC = () => {
 
         {showLoadingCards && (
           <>
-            <AppCardSkeleton />
-            {loadingCardsCount > 1 && <AppCardSkeleton />}
+            {Array.from({ length: loadingCardsCount }).map((_, index) => (
+              <PendingCardSkeleton key={`skeleton-${index}`} />
+            ))}
           </>
         )}
 
-        {!hasMore && displayedItems.length > 0 && (
+        {!hasMore && displayedItems.length > 0 && !loading && (
           <div className="bg-transparent border-none w-full h-[275px] flex items-center justify-center text-center">
             <div className="p-10">
               <p className="text-xl font-semibold text-white">
