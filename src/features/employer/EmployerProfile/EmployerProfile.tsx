@@ -491,7 +491,7 @@ const EmployerProfile: FC = () => {
                   : "bg-[#AEADAD] hover:bg-[#AEADAD]"
               )}
             >
-              Save Your Profile
+              Save and Preview
             </Button>
           </div>
         </form>

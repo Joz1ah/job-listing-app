@@ -391,7 +391,7 @@ const JobListingForm: FC = () => {
             </FormField>
 
             <FormField
-              label="Certification"
+              label="Certificates"
               error={errors.certifications}
               touched={touched.certifications}
               showIcon={true}

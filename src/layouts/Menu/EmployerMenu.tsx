@@ -123,17 +123,16 @@ const EmployerMenu: FC<MenuProps> = ({
                     className="flex-shrink-0"
                   >
                     <Button
-                      className={`bg-orange-500 rounded-sm transition-all duration-300 flex items-center justify-center ml-4
-                        ${
-                          isSmallScreen
-                            ? "w-10 h-10 p-0 min-w-0"
-                            : "w-[172px] h-[44px] font-light"
-                        }`}
+                      className={`bg-orange-500 rounded-sm flex items-center justify-center p-0
+                      ${isSmallScreen ? "w-10 h-10" : "w-[172px] h-[44px]"}
+                    `}
                     >
                       {isSmallScreen ? (
-                        <Plus className="w-5 h-5 text-white" />
+                        <Plus className="text-white" size={16}/>
                       ) : (
-                        "Create Job listing"
+                        <span className="text-white font-light">
+                          Create Job listing
+                        </span>
                       )}
                     </Button>
                   </NavLink>

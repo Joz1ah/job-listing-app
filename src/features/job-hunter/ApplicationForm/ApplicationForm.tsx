@@ -451,7 +451,7 @@ const ApplicationForm: FC = () => {
               </div>
 
               <FormField
-                label="Certification"
+                label="Certificates"
                 error={errors.certifications}
                 touched={touched.certifications}
                 showIcon={true}
@@ -622,7 +622,7 @@ const ApplicationForm: FC = () => {
                     : "bg-[#AEADAD] hover:bg-[#AEADAD]",
                 )}
               >
-                Save Your Profile
+                Save and Preview
               </Button>
             </div>
           </form>
@@ -643,7 +643,7 @@ const ApplicationForm: FC = () => {
                   : "bg-[#AEADAD] hover:bg-[#AEADAD]",
               )}
             >
-              Save Your Profile
+              Save and Preview
             </Button>
           </div>
         </div>
