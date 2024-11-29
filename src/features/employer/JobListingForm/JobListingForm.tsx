@@ -1,14 +1,13 @@
 import React, { FC, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  ChevronLeft,
-  AlertTriangle,
-  CircleAlert,
+  ChevronLeft
 } from "lucide-react";
-import { Input, Button, Textarea, Label } from "components";
+import { Input, Button, Textarea } from "components";
 import { NavLink } from "react-router-dom";
 import sparkeIcon from "images/sparkle-icon.png";
 import saveChanges from "images/save-changes.svg?url";
+import { selectOptions } from "mockData/job-listing-form-options";
 
 import {
   MultiSelect,
@@ -34,7 +33,7 @@ import { cn } from "lib/utils";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-import { Tooltip } from "components";
+import { InputField } from "components";
 
 interface FormData {
   jobTitle: string;
@@ -50,72 +49,6 @@ interface FormData {
   languages: string[];
   certifications: string[];
 }
-
-{
-  /*Floating Label*/
-}
-interface FormFieldProps {
-  label: string;
-  children: React.ReactNode;
-  className?: string;
-  error?: string | string[];
-  touched?: boolean;
-  showIcon?: boolean;
-  tooltipContent?: string | React.ReactNode; // Modified to accept ReactNode
-}
-
-const FormField: FC<FormFieldProps> = React.forwardRef<
-  HTMLDivElement,
-  FormFieldProps
->(
-  (
-    { label, children, className, error, touched, showIcon, tooltipContent },
-    ref,
-  ) => {
-    const showError = touched && error;
-
-    return (
-      <div ref={ref} className={cn("relative pt-4", className)}>
-        <div className="relative">
-          <div className="absolute -top-3 left-4 md:left-5 bg-[#242625] md:bg-[#2D3A41] px-2 z-20">
-            <div className="flex items-center gap-2">
-              <Label className="text-sm md:text-base font-normal text-white">
-                {label}
-              </Label>
-              {showIcon && tooltipContent && (
-                <Tooltip content={tooltipContent}>
-                  <CircleAlert
-                    className="relative -top-1 cursor-pointer fill-gray-400 text-[#2D3A41]"
-                    strokeWidth={1.5}
-                    size={14}
-                  />
-                </Tooltip>
-              )}
-            </div>
-          </div>
-          <div className="relative">
-            {children}
-            {showError && (
-              <div className="absolute -right-6 top-1/2 -translate-y-1/2">
-                <AlertTriangle
-                  className="fill-red-500 text-[#242625] md:text-[#2D3A41]"
-                  size={20}
-                />
-              </div>
-            )}
-          </div>
-        </div>
-        {showError && (
-          <div className="absolute text-xs md:text-sm italic text-red-500 mt-1">
-            {error}
-          </div>
-        )}
-      </div>
-    );
-  },
-);
-
-FormField.displayName = "FormField";
 
 const validationSchema = Yup.object().shape({
   jobTitle: Yup.string().required("This field is required"),
@@ -154,54 +87,6 @@ const JobListingForm: FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPreview, setShowPreview] = useState<boolean>(false);
 
-  const selectOptions = {
-    employmentType: [
-      { value: "full-time", label: "Full Time" },
-      { value: "part-time", label: "Part Time" },
-      { value: "contract", label: "Contract only" },
-    ],
-    salaryRange: [
-      { value: "negotiable", label: "Negotiable" },
-      { value: "0-30", label: "$0 - $30,000" },
-      { value: "31-50", label: "$31,000 - $50,000" },
-      { value: "51-70", label: "$51,000 - $70,000" },
-      { value: "71-100", label: "$71,000 - $100,000" },
-      { value: "101-120", label: "$101,000 - $120,000" },
-      { value: "121-plus", label: "$121,000 or more" },
-    ],
-
-    yearsOfExperience: [
-      { value: "no-exp", label: "No experience" },
-      { value: "less-than-1", label: "Under a year" },
-      { value: "1-3-years", label: "1-3 years" },
-      { value: "3-5-years", label: "3-5 years" },
-      { value: "5-10-years", label: "5-10 years" },
-      { value: "10-plus-years", label: "10+ years" },
-    ],
-    education: [
-      { value: "bachelors-degree", label: "Bachelor's Degree" },
-      { value: "high-school-diploma", label: "High School Diploma" },
-      { value: "masters-degree", label: "Master's Degree" },
-      { value: "associate-degree", label: "Associate Degree" },
-      {
-        value: "professional-certification",
-        label: "Professional Certification only",
-      },
-      {
-        value: "vocational-training",
-        label: "Vocational/Technical Training only",
-      },
-      { value: "phd-doctorate", label: "Doctorate/PhD" },
-      { value: "incomplete-college", label: "Incomplete College Degree" },
-    ],
-    priorityIndicator: [
-      { value: "location", label: "Location" },
-      { value: "salary", label: "Salary" },
-      { value: "language", label: "Language" },
-      { value: "none", label: "None" },
-    ],
-  };
-
   const handleSaveChanges = (): void => {
     setShowPreview(true);
   };
@@ -210,7 +95,7 @@ const JobListingForm: FC = () => {
     setShowPreview(false);
     setIsLoading(true);
     setTimeout(() => {
-      navigate("/job-feed-employer");
+      navigate("/employer/feed");
     }, 1500);
   };
 
@@ -287,7 +172,7 @@ const JobListingForm: FC = () => {
         >
           {/* Left Column */}
           <div className="space-y-6">
-            <FormField
+            <InputField
               label="Job Title"
               className="bg-transparent"
               error={errors.jobTitle}
@@ -300,9 +185,9 @@ const JobListingForm: FC = () => {
                 className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
                 placeholder="Provide a Job Title"
               />
-            </FormField>
+            </InputField>
 
-            <FormField
+            <InputField
               label="Employment Type"
               error={errors.employmentType}
               touched={touched.employmentType}
@@ -314,9 +199,9 @@ const JobListingForm: FC = () => {
                 onChange={(value) => setFieldValue("employmentType", value)}
                 options={selectOptions.employmentType}
               />
-            </FormField>
+            </InputField>
 
-            <FormField
+            <InputField
               label="Salary Range"
               error={errors.salaryRange}
               touched={touched.salaryRange}
@@ -341,9 +226,9 @@ const JobListingForm: FC = () => {
                   ))}
                 </SelectContent>
               </Select>
-            </FormField>
+            </InputField>
 
-            <FormField
+            <InputField
               label="Job Description"
               error={errors.jobDescription}
               touched={touched.jobDescription}
@@ -359,9 +244,9 @@ const JobListingForm: FC = () => {
               <span className="flex right-0 italic text-[11px] absolute">
                 Maximum of 500 words
               </span>
-            </FormField>
+            </InputField>
 
-            <FormField
+            <InputField
               label="Years of Experience"
               error={errors.yearsOfExperience}
               touched={touched.yearsOfExperience}
@@ -388,9 +273,9 @@ const JobListingForm: FC = () => {
                   ))}
                 </SelectContent>
               </Select>
-            </FormField>
+            </InputField>
 
-            <FormField
+            <InputField
               label="Certificates"
               error={errors.certifications}
               touched={touched.certifications}
@@ -407,12 +292,12 @@ const JobListingForm: FC = () => {
                 }}
                 placeholder="Type and enter to add certificate"
               />
-            </FormField>
+            </InputField>
           </div>
 
           {/* Right Column */}
           <div className="flex flex-col space-y-6 ">
-            <FormField
+            <InputField
               label="Priority Indicator"
               error={errors.priorityIndicator}
               touched={touched.priorityIndicator}
@@ -468,9 +353,9 @@ const JobListingForm: FC = () => {
                   ))}
                 </SelectContent>
               </Select>
-            </FormField>
+            </InputField>
 
-            <FormField
+            <InputField
               label="Location"
               error={errors.location}
               touched={touched.location}
@@ -482,9 +367,9 @@ const JobListingForm: FC = () => {
                 className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus-within:border-orange-500 placeholder:text-white"
                 placeholder="Type and enter country"
               />
-            </FormField>
+            </InputField>
 
-            <FormField
+            <InputField
               label="Languages"
               error={errors.languages}
               touched={touched.languages}
@@ -498,9 +383,9 @@ const JobListingForm: FC = () => {
                 tagClassName="bg-orange-500"
                 placeholder="Type and enter to add language"
               />
-            </FormField>
+            </InputField>
 
-            <FormField
+            <InputField
               label="Education"
               error={errors.education}
               touched={touched.education}
@@ -525,10 +410,10 @@ const JobListingForm: FC = () => {
                   ))}
                 </SelectContent>
               </Select>
-            </FormField>
+            </InputField>
 
             <div className="mb-8 md:mb-14">
-              <FormField
+              <InputField
                 label="Core Skills"
                 error={errors.coreSkills}
                 touched={touched.coreSkills}
@@ -545,11 +430,11 @@ const JobListingForm: FC = () => {
                   }}
                   placeholder="Type and enter to add core skill"
                 />
-              </FormField>
+              </InputField>
             </div>
 
             <div className="mb-8 md:mb-14">
-              <FormField
+              <InputField
                 label="Interpersonal Skills"
                 error={errors.interpersonalSkills}
                 touched={touched.interpersonalSkills}
@@ -568,7 +453,7 @@ const JobListingForm: FC = () => {
                   }}
                   placeholder="Type and enter to add interpersonal skill"
                 />
-              </FormField>
+              </InputField>
             </div>
           </div>
 

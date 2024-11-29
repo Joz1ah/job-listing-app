@@ -1,9 +1,11 @@
 import React, { FC, useState } from "react";
-import { ChevronLeft, AlertTriangle, CircleAlert } from "lucide-react";
-import { Input, Button, Label } from "components";
+import { ChevronLeft } from "lucide-react";
+import { Input, Button, InputField } from "components";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import saveChanges from "images/save-changes.svg?url";
+
+import { selectOptions } from "mockData/app-form-options";
 
 import { AppCardPreview } from "features/employer";
 
@@ -33,8 +35,6 @@ import * as Yup from "yup";
 
 import { isValidPhoneNumber } from "react-phone-number-input";
 
-import { Tooltip } from "components";
-
 interface FormData {
   firstName: string;
   lastName: string;
@@ -51,72 +51,6 @@ interface FormData {
   country: string;
   certifications: string[];
 }
-
-{
-  /*Floating Label*/
-}
-interface FormFieldProps {
-  label: string;
-  children: React.ReactNode;
-  className?: string;
-  error?: string | string[];
-  touched?: boolean;
-  showIcon?: boolean;
-  tooltipContent?: string | React.ReactNode; // Modified to accept ReactNode
-}
-
-const FormField: FC<FormFieldProps> = React.forwardRef<
-  HTMLDivElement,
-  FormFieldProps
->(
-  (
-    { label, children, className, error, touched, showIcon, tooltipContent },
-    ref,
-  ) => {
-    const showError = touched && error;
-
-    return (
-      <div ref={ref} className={cn("relative pt-4 w-full", className)}>
-        <div className="relative">
-          <div className="absolute -top-3 left-4 md:left-5 bg-[#242625] md:bg-[#2D3A41] px-2 z-20">
-            <div className="flex items-center gap-2">
-              <Label className="text-sm md:text-base font-normal text-white">
-                {label}
-              </Label>
-              {showIcon && tooltipContent && (
-                <Tooltip content={tooltipContent}>
-                  <CircleAlert
-                    className="relative cursor-pointer -top-1 fill-gray-400 text-[#2D3A41]"
-                    strokeWidth={1.5}
-                    size={14}
-                  />
-                </Tooltip>
-              )}
-            </div>
-          </div>
-          <div className="relative w-full">
-            {children}
-            {showError && (
-              <div className="absolute -right-6 top-1/2 -translate-y-1/2">
-                <AlertTriangle
-                  className="fill-red-500 text-[#242625] md:text-[#2D3A41]"
-                  size={20}
-                />
-              </div>
-            )}
-          </div>
-        </div>
-        {showError && (
-          <div className="absolute text-xs md:text-sm italic text-red-500 mt-1">
-            {error}
-          </div>
-        )}
-      </div>
-    );
-  },
-);
-
-FormField.displayName = "FormField";
 
 const validationSchema = Yup.object().shape({
   firstName: Yup.string().required("This field is required"),
@@ -165,94 +99,11 @@ const ApplicationForm: FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPreview, setShowPreview] = useState<boolean>(false);
 
-  const selectOptions = {
-    employmentType: [
-      { value: "full-time", label: "Full Time" },
-      { value: "part-time", label: "Part Time" },
-      { value: "contract", label: "Contract only" },
-    ],
-    salaryRange: [
-      { value: "nego", label: "Negotiable" },
-      { value: "0-30", label: "$0 - $30,000" },
-      { value: "31-50", label: "$31,000 - $50,000" },
-      { value: "51-70", label: "$51,000 - $70,000" },
-      { value: "71-100", label: "$71,000 - $100,000" },
-      { value: "100-120", label: "$100,000 - $120,000" },
-      { value: "121+", label: "$121,000 or more" },
-    ],
-    yearsOfExperience: [
-      { value: "noExp", label: "No experience" },
-      { value: "-1", label: "under a year" },
-      { value: "1-3", label: "1-3 years" },
-      { value: "3-5", label: "3-5 years" },
-      { value: "5-10", label: "5-10 years" },
-      { value: "10+", label: "10+ years" },
-    ],
-    education: [
-      { value: "bachelors", label: "Bachelor's Degree" },
-      { value: "high-school", label: "High School Diploma" },
-      { value: "masters", label: "Master's Degree" },
-      { value: "associate", label: "Associate Degree" },
-      { value: "professional", label: "Professional Certification only" },
-      { value: "techvoc", label: "Vocational/Technical Training only" },
-      { value: "phd", label: "Doctorate/PhD" },
-      { value: "inc", label: "Incomplete College Degree" },
-    ],
-    country: [
-      { value: "us", label: "United States" },
-      { value: "ca", label: "Canada" },
-      { value: "gb", label: "United Kingdom" },
-      { value: "au", label: "Australia" },
-      { value: "de", label: "Germany" },
-      { value: "fr", label: "France" },
-      { value: "jp", label: "Japan" },
-      { value: "sg", label: "Singapore" },
-      { value: "ae", label: "United Arab Emirates" },
-      { value: "in", label: "India" },
-      { value: "ph", label: "Philippines" },
-      { value: "cn", label: "China" },
-    ],
-
-    languages: [
-      { value: "en", label: "English" },
-      { label: "French", value: "fr" },
-      { label: "German", value: "de" },
-      { label: "Spanish", value: "es" },
-      { label: "Portuguese", value: "pt" },
-      { label: "Russian", value: "ru" },
-      { label: "Japanese", value: "ja" },
-      { label: "Korean", value: "ko" },
-      { label: "Chinese", value: "zh" },
-    ],
-    coreSkills: [
-      // Technical/Hard Skills
-      { label: "HTML", value: "html" },
-      { label: "CSS", value: "css" },
-      { label: "Bootstrap", value: "bootstrap" },
-      { label: "Tailwind CSS", value: "tailwind-css" },
-      { label: "JavaScript", value: "javascript" },
-      { label: "Python", value: "python" },
-      { label: "React", value: "react" },
-      { label: "Node.js", value: "nodejs" },
-      { label: "SQL", value: "sql" },
-      { label: "Data Analysis", value: "data-analysis" },
-      { label: "Project Management", value: "project-management" },
-      { label: "DevOps", value: "devops" },
-      { label: "UI/UX Design", value: "uiux-design" },
-      { label: "Machine Learning", value: "machine-learning" },
-      { label: "Cloud Computing", value: "cloud-computing" },
-      { label: "Agile Methodologies", value: "agile" },
-      { label: "Quality Assurance", value: "qa" },
-      { label: "Digital Marketing", value: "digital-marketing" },
-      { label: "Content Writing", value: "content-writing" },
-    ],
-  };
-
   const handlePreviewConfirm = (): void => {
     setShowPreview(false);
     setIsLoading(true);
     setTimeout(() => {
-      navigate("/job-feed-hunter");
+      navigate("/job-hunter/feed");
     }, 1500);
   };
 
@@ -308,7 +159,7 @@ const ApplicationForm: FC = () => {
       />
       {isLoading && <LoadingOverlay />}
       <div className="flex flex-col xl:flex-row gap-8 px-4 md:px-8 lg:px-12 py-6">
-        <div className="w-full xl:w-[800px] h-[960px] bg-[#242625] md:bg-[#2D3A41] text-white">
+        <div className="w-full xl:w-[800px] min-h-[960px] bg-[#242625] md:bg-[#2D3A41] text-white">
           <div className="flex items-center relative w-full mb-6 md:mb-10">
             <NavLink to="/job-hunter/feed" className="absolute left-4 top-6">
               <ChevronLeft strokeWidth={4} className="h-6 w-6 ml-4" />
@@ -328,7 +179,7 @@ const ApplicationForm: FC = () => {
           >
             {/* Left Column */}
             <div className="space-y-[24px]">
-              <FormField
+              <InputField
                 label="First Name"
                 className="bg-transparent"
                 error={errors.firstName}
@@ -340,9 +191,9 @@ const ApplicationForm: FC = () => {
                   onChange={handleChange}
                   className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
                 />
-              </FormField>
+              </InputField>
 
-              <FormField
+              <InputField
                 label="Birthday"
                 error={errors.birthday}
                 touched={touched.birthday}
@@ -352,9 +203,9 @@ const ApplicationForm: FC = () => {
                   value={values.birthday}
                   onChange={(name, value) => setFieldValue(name, value)}
                 />
-              </FormField>
+              </InputField>
 
-              <FormField
+              <InputField
                 label="Mobile Number"
                 error={errors.mobileNumber}
                 touched={touched.mobileNumber}
@@ -366,9 +217,9 @@ const ApplicationForm: FC = () => {
                   className="bg-transparent border-2 rounded-md border-[#AEADAD] h-[56px] focus-within:border-orange-500 transition-colors flex justify-between"
                   defaultCountry="CA"
                 />
-              </FormField>
+              </InputField>
 
-              <FormField
+              <InputField
                 label="Education"
                 error={errors.education}
                 touched={touched.education}
@@ -395,9 +246,9 @@ const ApplicationForm: FC = () => {
                     ))}
                   </SelectContent>
                 </Select>
-              </FormField>
+              </InputField>
 
-              <FormField
+              <InputField
                 label="Salary Range"
                 error={errors.salaryRange}
                 touched={touched.salaryRange}
@@ -427,10 +278,10 @@ const ApplicationForm: FC = () => {
                     ))}
                   </SelectContent>
                 </Select>
-              </FormField>
+              </InputField>
 
               <div className="mb-8 md:mb-14">
-                <FormField
+                <InputField
                   label="Core Skills"
                   error={errors.coreSkills}
                   touched={touched.coreSkills}
@@ -447,10 +298,10 @@ const ApplicationForm: FC = () => {
                     }}
                     placeholder="Type and enter to add core skill"
                   />
-                </FormField>
+                </InputField>
               </div>
 
-              <FormField
+              <InputField
                 label="Certificates"
                 error={errors.certifications}
                 touched={touched.certifications}
@@ -464,12 +315,12 @@ const ApplicationForm: FC = () => {
                   tagClassName="bg-[#168AAD]"
                   placeholder="Type and enter to add certificate"
                 />
-              </FormField>
+              </InputField>
             </div>
 
             {/* Right Column */}
             <div className="space-y-[24px]">
-              <FormField
+              <InputField
                 label="Last Name"
                 className="bg-transparent"
                 error={errors.lastName}
@@ -481,9 +332,9 @@ const ApplicationForm: FC = () => {
                   onChange={handleChange}
                   className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
                 />
-              </FormField>
+              </InputField>
 
-              <FormField
+              <InputField
                 label="Languages"
                 error={errors.languages}
                 touched={touched.languages}
@@ -497,9 +348,9 @@ const ApplicationForm: FC = () => {
                   tagClassName="bg-orange-500"
                   placeholder="Type and enter to add language"
                 />
-              </FormField>
+              </InputField>
 
-              <FormField
+              <InputField
                 label="Country of Residence"
                 error={errors.country}
                 touched={touched.country}
@@ -526,9 +377,9 @@ const ApplicationForm: FC = () => {
                     ))}
                   </SelectContent>
                 </Select>
-              </FormField>
+              </InputField>
 
-              <FormField
+              <InputField
                 label="Email Address"
                 className="bg-transparent"
                 error={errors.emailAddress}
@@ -540,9 +391,9 @@ const ApplicationForm: FC = () => {
                   onChange={handleChange}
                   className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
                 />
-              </FormField>
+              </InputField>
 
-              <FormField
+              <InputField
                 label="Employment Type"
                 error={errors.employmentType}
                 touched={touched.employmentType}
@@ -554,9 +405,9 @@ const ApplicationForm: FC = () => {
                   onChange={(value) => setFieldValue("employmentType", value)}
                   options={selectOptions.employmentType}
                 />
-              </FormField>
+              </InputField>
 
-              <FormField
+              <InputField
                 label="Years of Experience"
                 error={errors.yearsOfExperience}
                 touched={touched.yearsOfExperience}
@@ -585,10 +436,10 @@ const ApplicationForm: FC = () => {
                     ))}
                   </SelectContent>
                 </Select>
-              </FormField>
+              </InputField>
 
               <div className="mb-14">
-                <FormField
+                <InputField
                   label="Interpersonal Skills"
                   error={errors.interpersonalSkills}
                   touched={touched.interpersonalSkills}
@@ -607,16 +458,16 @@ const ApplicationForm: FC = () => {
                     }}
                     placeholder="Type and enter to add interpersonal skill"
                   />
-                </FormField>
+                </InputField>
               </div>
             </div>
 
             {/* Footer Buttons */}
-            <div className="col-span-full flex justify-end md:mt-[60px] mb-0 ">
+            <div className="col-span-full flex justify-center md:justify-end md:mt-[60px] mb-0 ">
               <Button
                 type="submit"
                 className={cn(
-                  "hidden md:block md:w-auto text-white  text-[16px] h-8 py-0 rounded-sm font-normal px-8",
+                  "block md:w-auto text-white text-[16px] h-8 py-0 rounded-sm font-normal px-8",
                   isValid
                     ? "bg-orange-500 hover:bg-orange-600"
                     : "bg-[#AEADAD] hover:bg-[#AEADAD]",
@@ -627,24 +478,9 @@ const ApplicationForm: FC = () => {
             </div>
           </form>
         </div>
-        <div className="w-full md:w-auto p-4 md:p-0">
-          <AppCardPreview values={values} selectOptions={selectOptions} />
-          <div className="flex justify-center mt-10 mb-8 md:hidden">
-            <Button
-              type="submit"
-              onClick={(e) => {
-                e.preventDefault();
-                handleSubmit();
-              }}
-              className={cn(
-                "w-auto text-white text-[16px] h-8 py-0 rounded-sm font-normal px-8",
-                isValid
-                  ? "bg-orange-500 hover:bg-orange-600"
-                  : "bg-[#AEADAD] hover:bg-[#AEADAD]",
-              )}
-            >
-              Save and Preview
-            </Button>
+        <div className="w-auto flex justify-center">
+          <div className="scale-[0.85] sm:scale-100 origin-center transition-transform duration-300">
+            <AppCardPreview values={values} selectOptions={selectOptions} />
           </div>
         </div>
       </div>

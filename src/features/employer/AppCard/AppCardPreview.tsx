@@ -258,7 +258,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({ values, selectOptions }) =
       {/* Mobile View */}
       <Card className="bg-[#F5F5F7] w-[308px] h-[395px] p-4 md:hidden flex flex-col">
         <CardHeader className="flex-1 overflow-y-auto p-0">
-          <div className="w-full">
+          <div className="w-full relative">
             <div className="flex flex-col items-end justify-end">
               <div className="flex-1">
                 <span className="text-[11px] text-gray-600 font-light">
@@ -267,7 +267,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({ values, selectOptions }) =
               </div>
               <div>
                 <Bookmark
-                  className="text-orange-500 cursor-pointer absolute right-20"
+                  className="text-orange-500 cursor-pointer absolute right-1"
                   size={24}
                 />
               </div>
@@ -366,7 +366,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({ values, selectOptions }) =
             </div>
           </div>
         </CardHeader>
-        <CardContent className="p-0 mt-auto flex flex-col items-center">
+        <CardContent className="p-0 mt-auto flex flex-col items-center relative">
           <Button
             variant="default"
             className="text-[12px] font-semibold bg-orange-500"
@@ -375,7 +375,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({ values, selectOptions }) =
           </Button>
           <MoreVertical
             size={12}
-            className="text-gray-700 cursor-pointer absolute right-20 mt-6"
+            className="text-gray-700 cursor-pointer absolute right-1 mt-6"
           />
         </CardContent>
       </Card>

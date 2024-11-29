@@ -120,3 +120,4 @@ export { PendingCardSkeleton } from 'components/skeleton-loading/PendingCardSkel
 export { AcceptedCardSkeleton } from 'components/skeleton-loading/AcceptedCardSkeleton'
 export {TrialProviders, useEmployerTrialStatus, useJobHunterTrialStatus } from 'components/context/TrialContext'
 export { Calendar } from 'components/ui/calendar'
+export { InputField } from 'components/ui/input-field'

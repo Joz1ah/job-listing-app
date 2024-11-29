@@ -1,6 +1,6 @@
 import React, { FC, useState } from "react";
-import { ChevronLeft, AlertTriangle, CircleAlert } from "lucide-react";
-import { Input, Button, Label, Textarea } from "components";
+import { ChevronLeft } from "lucide-react";
+import { Input, Button, Textarea, InputField } from "components";
 
 import employerProfileCard from "images/EmployerProfileCard.svg?url";
 import saveChanges from "images/save-changes.svg?url";
@@ -8,6 +8,8 @@ import saveChanges from "images/save-changes.svg?url";
 import { NavLink, useNavigate } from "react-router-dom";
 
 import { PhoneInput } from "components";
+
+import { selectOptions } from "mockData/employer-profile-options";
 
 import {
   Select,
@@ -23,7 +25,6 @@ import * as Yup from "yup";
 
 import { isValidPhoneNumber } from "react-phone-number-input";
 
-import { Tooltip } from "components";
 
 interface FormData {
   businessName: string;
@@ -45,65 +46,6 @@ interface FormData {
   companyOverview: string;
 }
 
-{
-  /*Floating Label*/
-}
-interface FormFieldProps {
-  label: string;
-  children: React.ReactNode;
-  className?: string;
-  error?: string | string[];
-  touched?: boolean;
-  showIcon?: boolean;
-  tooltipContent?: string | React.ReactNode; // Modified to accept ReactNode
-}
-
-const FormField: FC<FormFieldProps> = React.forwardRef<HTMLDivElement, FormFieldProps>(
-  ({ label, children, className, error, touched, showIcon, tooltipContent }, ref) => {
-    const showError = touched && error;
-
-    return (
-      <div ref={ref} className={cn("relative pt-4 w-full", className)}>
-        <div className="relative">
-          <div className="absolute -top-3 left-4 md:left-5 bg-[#242625] md:bg-[#2D3A41] px-2 z-20">
-            <div className="flex items-center gap-2">
-              <Label className="text-sm md:text-base font-normal text-white">
-                {label}
-              </Label>
-              {showIcon && tooltipContent && (
-                <Tooltip content={tooltipContent}>
-                  <CircleAlert
-                    className="relative cursor-pointer -top-1 fill-gray-400 text-[#2D3A41]"
-                    strokeWidth={1.5}
-                    size={14}
-                  />
-                </Tooltip>
-              )}
-            </div>
-          </div>
-          <div className="relative w-full">
-            {children}
-            {showError && (
-              <div className="absolute -right-6 top-1/2 -translate-y-1/2">
-                <AlertTriangle
-                  className="fill-red-500 text-[#242625] md:text-[#2D3A41]"
-                  size={20}
-                />
-              </div>
-            )}
-          </div>
-        </div>
-        {showError && (
-          <div className="absolute text-xs md:text-sm italic text-red-500 mt-1">
-            {error}
-          </div>
-        )}
-      </div>
-    );
-  }
-);
-
-FormField.displayName = "FormField";
 
 const validationSchema = Yup.object().shape({
   businessName: Yup.string().required("This field is required"),
@@ -148,23 +90,6 @@ const EmployerProfile: FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
-  const selectOptions = {
-    country: [
-      { value: "us", label: "United States" },
-      { value: "ca", label: "Canada" },
-      { value: "gb", label: "United Kingdom" },
-      { value: "au", label: "Australia" },
-      { value: "de", label: "Germany" },
-      { value: "fr", label: "France" },
-      { value: "jp", label: "Japan" },
-      { value: "sg", label: "Singapore" },
-      { value: "ae", label: "United Arab Emirates" },
-      { value: "in", label: "India" },
-      { value: "ph", label: "Philippines" },
-      { value: "cn", label: "China" },
-    ],
-  };
-
   const { values, errors, touched, handleChange, setFieldValue, handleSubmit, isValid } =
     useFormik<FormData & { employmentType: string[] }>({
       initialValues: {
@@ -196,7 +121,7 @@ const EmployerProfile: FC = () => {
           await new Promise(resolve => setTimeout(resolve, 2000));
           console.log(values);
           // After successful submission, navigate to job feed
-          navigate('/job-feed-employer');
+          navigate('/employer/feed');
         } catch (error) {
           console.error('Error submitting form:', error);
           setIsSubmitting(false);
@@ -237,7 +162,7 @@ const EmployerProfile: FC = () => {
           onKeyDown={handleKeyDown}
           className="space-y-6 p-4 md:p-8"
         >
-          <FormField
+          <InputField
             label="Legal Business Name"
             className="bg-transparent"
             error={errors.businessName}
@@ -251,12 +176,12 @@ const EmployerProfile: FC = () => {
               onChange={handleChange}
               className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
             />
-          </FormField>
+          </InputField>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-x-[65px]">
             {/* Left Column */}
             <div className="space-y-6">
-              <FormField
+              <InputField
                 label="First Name"
                 className="bg-transparent"
                 error={errors.firstName}
@@ -268,9 +193,9 @@ const EmployerProfile: FC = () => {
                   onChange={handleChange}
                   className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
                 />
-              </FormField>
+              </InputField>
 
-              <FormField
+              <InputField
                 label="Email Address"
                 className="bg-transparent"
                 error={errors.emailAddress}
@@ -282,9 +207,9 @@ const EmployerProfile: FC = () => {
                   onChange={handleChange}
                   className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
                 />
-              </FormField>
+              </InputField>
 
-              <FormField
+              <InputField
                 label="Position of the Representative"
                 className="bg-transparent"
                 error={errors.position}
@@ -296,9 +221,9 @@ const EmployerProfile: FC = () => {
                   onChange={handleChange}
                   className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
                 />
-              </FormField>
+              </InputField>
 
-              <FormField
+              <InputField
                 label="Industry"
                 className="bg-transparent"
                 error={errors.industry}
@@ -310,12 +235,12 @@ const EmployerProfile: FC = () => {
                   onChange={handleChange}
                   className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
                 />
-              </FormField>
+              </InputField>
             </div>
 
             {/* Right Column */}
             <div className="space-y-6">
-              <FormField
+              <InputField
                 label="Last Name"
                 className="bg-transparent"
                 error={errors.lastName}
@@ -327,9 +252,9 @@ const EmployerProfile: FC = () => {
                   onChange={handleChange}
                   className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
                 />
-              </FormField>
+              </InputField>
 
-              <FormField
+              <InputField
                 label="Mobile Number"
                 error={errors.mobileNumber}
                 touched={touched.mobileNumber}
@@ -341,9 +266,9 @@ const EmployerProfile: FC = () => {
                   className="bg-transparent border-2 rounded-md border-[#AEADAD] h-[56px] focus-within:border-orange-500 transition-colors flex justify-between"
                   defaultCountry="CA"
                 />
-              </FormField>
+              </InputField>
 
-              <FormField
+              <InputField
                 label="Company Website"
                 className="bg-transparent"
                 error={errors.companyWebsite}
@@ -355,9 +280,9 @@ const EmployerProfile: FC = () => {
                   onChange={handleChange}
                   className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
                 />
-              </FormField>
+              </InputField>
 
-              <FormField
+              <InputField
                 label="Year Founded"
                 className="bg-transparent"
                 error={errors.yearFounded}
@@ -369,7 +294,7 @@ const EmployerProfile: FC = () => {
                   onChange={handleChange}
                   className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
                 />
-              </FormField>
+              </InputField>
             </div>
           </div>
 
@@ -378,7 +303,7 @@ const EmployerProfile: FC = () => {
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-x-[65px]">
-            <FormField
+            <InputField
               label="Unit No./Building"
               error={errors.unitAndBldg}
               touched={touched.unitAndBldg}
@@ -389,9 +314,9 @@ const EmployerProfile: FC = () => {
                 onChange={handleChange}
                 className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
               />
-            </FormField>
+            </InputField>
 
-            <FormField
+            <InputField
               label="Street Address"
               error={errors.streetAddress}
               touched={touched.streetAddress}
@@ -402,18 +327,18 @@ const EmployerProfile: FC = () => {
                 onChange={handleChange}
                 className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
               />
-            </FormField>
+            </InputField>
 
-            <FormField label="City" error={errors.city} touched={touched.city}>
+            <InputField label="City" error={errors.city} touched={touched.city}>
               <Input
                 name="city"
                 value={values.city}
                 onChange={handleChange}
                 className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
               />
-            </FormField>
+            </InputField>
 
-            <FormField
+            <InputField
               label="State/Province/Region"
               error={errors.state}
               touched={touched.state}
@@ -424,14 +349,14 @@ const EmployerProfile: FC = () => {
                 onChange={handleChange}
                 className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
               />
-            </FormField>
+            </InputField>
 
             {/* Empty column on the left */}
             <div className="md:col-span-1"></div>
 
             {/* Country field on the right */}
             <div className="md:col-start-2">
-              <FormField
+              <InputField
                 label="Country"
                 error={errors.country}
                 touched={touched.country}
@@ -458,11 +383,11 @@ const EmployerProfile: FC = () => {
                     ))}
                   </SelectContent>
                 </Select>
-              </FormField>
+              </InputField>
             </div>
           </div>
 
-          <FormField
+          <InputField
             label="Job Description"
             error={errors.companyOverview}
             touched={touched.companyOverview}
@@ -478,14 +403,14 @@ const EmployerProfile: FC = () => {
             {/* <span className="flex right-0 italic text-[11px] absolute">
               Maximum of 500 words
             </span> */}
-          </FormField>
+          </InputField>
 
           {/* Footer Buttons */}
-          <div className="flex justify-end pt-8 md:pt-12">
+          <div className="flex justify-center md:justify-end pt-8 md:pt-12">
             <Button
               type="submit"
               className={cn(
-                "hidden md:block md:w-auto text-white text-[16px] h-8 py-0 rounded-sm font-normal px-8",
+                "block md:w-auto text-white text-[16px] h-8 py-0 rounded-sm font-normal px-8",
                 isValid && !isSubmitting
                   ? "bg-orange-500 hover:bg-orange-600"
                   : "bg-[#AEADAD] hover:bg-[#AEADAD]"
