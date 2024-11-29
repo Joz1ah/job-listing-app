@@ -267,7 +267,7 @@ const JobListingForm: FC = () => {
         {/* Header */}
         <div className="flex items-center relative w-full mb-6 md:mb-14">
           <NavLink
-            to="/job-feed-employer"
+            to="/employer/feed"
             className="absolute left-0 md:left-4"
           >
             <ChevronLeft strokeWidth={4} className="h-6 w-6" />

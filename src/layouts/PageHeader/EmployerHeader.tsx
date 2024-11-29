@@ -23,10 +23,10 @@ const EmployerHeader: FC<Props> = ({ isFreeTrial = false }) => {
 
   const location = useLocation();
   const hideOnPagesMobile = [
-    "/job-feed-employer/job-listing",
-    "/job-feed-employer/employer-profile",
+    "/employer/job-listing",
+    "/employer/employer-profile",
   ];
-  const hideOnPagesDesktop = ["/job-feed-employer/employer-profile"];
+  const hideOnPagesDesktop = ["/employer/employer-profile"];
 
   const hideOnMobile = hideOnPagesMobile.includes(location.pathname);
   const hideOnDesktop = hideOnPagesDesktop.includes(location.pathname);

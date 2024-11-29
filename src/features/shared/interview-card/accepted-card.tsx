@@ -62,13 +62,13 @@ const AcceptedCard: FC<InterviewCardProps> = ({
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-1">
             <span className="text-[13px] min-w-[40px]">Date:</span>
-            <span className="text-[13px] font-semibold px-1 rounded-[2px] bg-[#184E77] text-white">
+            <span className="text-[13px] font-semibold px-1 rounded-[2px] bg-[#184E77] text-white w-[135px] h-[17px] flex justify-center">
               {interview.date}
             </span>
           </div>
           <div className="flex items-center gap-1">
             <span className="text-[13px] min-w-[40px]">Time:</span>
-            <span className="text-[13px] font-semibold px-1 rounded-[2px] bg-[#168AAD] text-white">
+            <span className="text-[13px] font-semibold px-1 rounded-[2px] bg-[#168AAD] text-white w-[135px] h-[17px] flex justify-center">
               {interview.time}
             </span>
           </div>

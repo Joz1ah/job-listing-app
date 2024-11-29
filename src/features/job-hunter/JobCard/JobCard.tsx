@@ -3,7 +3,7 @@ import { FC } from "react";
 import { SkillsWithEllipsis } from "components";
 
 import { Bookmark, MoreVertical, MapPin } from "lucide-react";
-import { Button } from "components";
+//import { Button } from "components";
 
 import {
   Card,
@@ -147,9 +147,9 @@ const JobCardDesktop: FC<MatchCardProps> = ({
       </CardContent>
 
       <CardFooter className="absolute bottom-0 right-0 flex flex-row justify-end items-center space-x-1 p-2">
-        <Button className="text-[10px] sm:text-[12px] font-semibold px-0 w-[100px] sm:w-[133px] h-[24px] sm:h-[27px] bg-orange-500">
+        {/* <Button className="text-[10px] sm:text-[12px] font-semibold px-0 w-[100px] sm:w-[133px] h-[24px] sm:h-[27px] bg-orange-500">
           I'm Interested
-        </Button>
+        </Button> */}
         <MoreVertical 
           size={12} 
           className="text-gray-700 cursor-pointer" 
@@ -234,12 +234,12 @@ const JobCardMobile: FC<MatchCardProps> = ({
       </div>
     </CardHeader>
     <CardContent className="p-0 mt-auto flex flex-col items-center">
-      <Button
+      {/* <Button
         variant="default"
         className="text-[12px] font-semibold bg-orange-500"
       >
         I'm Interested
-      </Button>
+      </Button> */}
       <MoreVertical
         size={12}
         className="text-gray-700 cursor-pointer absolute bottom-3 right-2"

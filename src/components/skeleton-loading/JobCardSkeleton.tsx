@@ -70,7 +70,6 @@ const JobCardSkeleton: FC = () => {
       </CardContent>
 
       <CardFooter className="absolute bottom-0 right-0 flex flex-row justify-end p-4 gap-1">
-        <Skeleton className="h-[27px] w-[133px] bg-gray-300" />
         <Skeleton className="h-[12px] w-[12px] bg-gray-300" />
       </CardFooter>
     </Card>
