@@ -195,7 +195,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
   };
 
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 min-[1400px]:gap-8 2xl:gap-12 justify-items-center w-full max-w-[932px]">
+    <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 justify-items-center w-full sm:w-[436px] md:w-[436px] xl:w-[900px] mx-auto px-4 xl:px-0">
       <BookmarkLimitHandler
         isFreeTrial={isFreeTrial}
         maxBookmarks={3}
@@ -236,7 +236,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
       )}
 
       {!hasMore && displayedItems.length > 0 && (
-        <div className="bg-transparent border-none w-full h-[275px] flex items-center justify-center text-center">
+        <div className="w-full md:w-[436px] h-auto md:h-[275px] flex items-center justify-center text-center">
           <div className="p-10">
             <p className="text-xl font-semibold text-white">
               You've reached the end of your perfect matches for now!
@@ -403,7 +403,7 @@ const OtherApplications: FC<selectedProps> = ({
   };
 
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 min-[1400px]:gap-8 2xl:gap-12 justify-items-center w-full max-w-[932px]">
+    <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 justify-items-center w-full sm:w-[436px] md:w-[436px] xl:w-[900px] mx-auto px-4 xl:px-0">
       <BookmarkLimitHandler
         isFreeTrial={isFreeTrial}
         maxBookmarks={3}
@@ -445,7 +445,7 @@ const OtherApplications: FC<selectedProps> = ({
       )}
 
       {!hasMore && displayedItems.length > 0 && (
-        <div className="bg-transparent border-none w-full md:w-[436px] h-auto md:h-[275px] flex items-center justify-center text-center p-0">
+        <div className="w-full md:w-[436px] h-auto md:h-[275px] flex items-center justify-center text-center">
           <div className="p-10">
             <p className="text-xl font-semibold text-white">
               You've reached the end of your other application cards for now!
@@ -569,7 +569,7 @@ const JobHunterFeed: FC<JobHunterSectionProps> = () => {
 
   const LoadingGrid = () => {
     return (
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 min-[1400px]:gap-8 2xl:gap-12 justify-items-center w-full max-w-[932px]">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 justify-items-center w-full sm:w-[436px] md:w-[436px] xl:w-[900px] mx-auto px-4 xl:px-0">
         {[1, 2, 3, 4, 5, 6].map((i) => (
           <JobCardSkeleton key={i} />
         ))}
