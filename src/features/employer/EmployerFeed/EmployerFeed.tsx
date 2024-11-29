@@ -9,13 +9,15 @@ import employerMobileAds from "images/employer-mobile-ads.svg?url";
 import bulb from "images/bulb.svg?url";
 import employerPopAds from "images/popup-employer.svg?url";
 
-import {
+import { Swiper, SwiperSlide } from "swiper/react";
+
+/* import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselPrevious,
   CarouselNext,
-} from "components";
+} from "components"; */
 
 import { useEmployerContext } from "components";
 
@@ -221,7 +223,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
               match={item}
               isFreeTrial={isFreeTrial}
             />
-          )
+          ),
         )}
       </BookmarkLimitHandler>
 
@@ -666,84 +668,90 @@ const EmployerFeed: FC<EmployerSectionProps> = () => {
 
       {/* Mobile Carousel View */}
       <div className="block md:hidden w-full p-6 flex-grow overflow-x-hidden">
-        <div id="perfect-match-mobile">
-          <h3 className="flex justify-center items-center mt-2 gap-2 text-[17px] text-[#F5722E] text-center font-semibold pb-2">
-            <img
-              src={sparkeIcon}
-              alt="Sparkle Icon"
-              className="w-[22px] h-[24px]"
-            />
-            PERFECT MATCH
-          </h3>
+        <h3 className="flex justify-center items-center mt-2 gap-2 text-[17px] text-[#F5722E] text-center font-semibold pb-2">
+          <img
+            src={sparkeIcon}
+            alt="Sparkle Icon"
+            className="w-[22px] h-[24px]"
+          />
+          PERFECT MATCH
+        </h3>
 
-          <Carousel className="w-full max-w-[320px] mx-auto">
-            <CarouselContent>
-              {getItemsWithAds(perfectMatch).map((item, index) => (
-                <CarouselItem key={index} className="flex justify-center">
-                  {"isAd" in item ? (
-                    <img
-                      src={item.image}
-                      alt="Employer Ad"
-                      className="w-[308px]"
-                    />
-                  ) : (
-                    <div className="relative w-full max-w-[320px]">
-                      <AppCardMobile
-                        match={item}
-                        isFreeTrial={isFreeTrial}
-                        bookmarked={bookmarkedCards.has(
-                          `perfectMatch-${index}`,
-                        )}
-                        onBookmark={() => toggleBookmark("perfectMatch", index)}
-                      />
-                    </div>
-                  )}
-                </CarouselItem>
-              ))}
-              <CarouselItem className="flex justify-center">
-                <EndCard type="perfectMatch" />
-              </CarouselItem>
-            </CarouselContent>
-            <CarouselPrevious className="hidden" />
-            <CarouselNext className="hidden" />
-          </Carousel>
-        </div>
+        <Swiper
+          grabCursor={true}
+          centeredSlides={true}
+          slidesPerView={"auto"}
+          initialSlide={0}
+          modules={[]} // Remove unnecessary modules
+          className="!pt-5 !pb-12 custom-swiper"
+        >
+          {getItemsWithAds(perfectMatch).map((item, index) => (
+            <SwiperSlide
+              key={index}
+              className="!w-[320px] flex justify-center items-center custom-slide"
+            >
+              {"isAd" in item ? (
+                <img
+                  src={item.image}
+                  alt="Employer Ad"
+                  className="w-[308px] mr-3"
+                />
+              ) : (
+                <div className="relative w-full max-w-[320px]">
+                  <AppCardMobile
+                    match={item}
+                    isFreeTrial={isFreeTrial}
+                    bookmarked={bookmarkedCards.has(`perfectMatch-${index}`)}
+                    onBookmark={() => toggleBookmark("perfectMatch", index)}
+                  />
+                </div>
+              )}
+            </SwiperSlide>
+          ))}
+          <SwiperSlide className="!w-[320px] flex justify-center items-center custom-slide">
+            <EndCard type="perfectMatch" />
+          </SwiperSlide>
+        </Swiper>
 
-        <div id="other-applications-mobile" className="pt-12 pb-6">
-          <h3 className="flex justify-center items-center mt-2 gap-2 text-[17px] text-[#AEADAD] text-center font-semibold pb-2">
-            OTHER APPLICATION CARDS
-          </h3>
+        <h3 className="flex justify-center items-center mt-2 gap-2 text-[17px] text-[#AEADAD] text-center font-semibold pb-2">
+          OTHER APPLICATION CARDS
+        </h3>
 
-          <Carousel className="w-full max-w-[320px] mx-auto">
-            <CarouselContent>
-              {getItemsWithAds(others).map((item, index) => (
-                <CarouselItem key={index} className="flex justify-center">
-                  {"isAd" in item ? (
-                    <img
-                      src={item.image}
-                      alt="Employer Ad"
-                      className="w-[308px]"
-                    />
-                  ) : (
-                    <div className="relative w-full max-w-[320px]">
-                      <AppCardMobile
-                        match={item}
-                        isFreeTrial={isFreeTrial}
-                        bookmarked={bookmarkedCards.has(`others-${index}`)}
-                        onBookmark={() => toggleBookmark("others", index)}
-                      />
-                    </div>
-                  )}
-                </CarouselItem>
-              ))}
-              <CarouselItem className="flex justify-center">
-                <EndCard type="otherApplication" />
-              </CarouselItem>
-            </CarouselContent>
-            <CarouselPrevious className="hidden" />
-            <CarouselNext className="hidden" />
-          </Carousel>
-        </div>
+        <Swiper
+          grabCursor={true}
+          centeredSlides={true}
+          slidesPerView={"auto"}
+          initialSlide={0}
+          modules={[]} // Remove unnecessary modules
+          className="!pt-5 !pb-12 custom-swiper"
+        >
+          {getItemsWithAds(others).map((item, index) => (
+            <SwiperSlide
+              key={index}
+              className="!w-[320px] flex justify-center items-center custom-slide"
+            >
+              {"isAd" in item ? (
+                <img
+                  src={item.image}
+                  alt="Employer Ad"
+                  className="w-[308px] mr-3"
+                />
+              ) : (
+                <div className="relative w-full max-w-[320px]">
+                  <AppCardMobile
+                    match={item}
+                    isFreeTrial={isFreeTrial}
+                    bookmarked={bookmarkedCards.has(`others-${index}`)}
+                    onBookmark={() => toggleBookmark("others", index)}
+                  />
+                </div>
+              )}
+            </SwiperSlide>
+          ))}
+          <SwiperSlide className="!w-[320px] flex justify-center items-center custom-slide">
+            <EndCard type="otherApplication" />
+          </SwiperSlide>
+        </Swiper>
       </div>
     </div>
   );
