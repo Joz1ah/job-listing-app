@@ -546,10 +546,14 @@ const JobHunterFeed: FC<JobHunterSectionProps> = () => {
   };
 
   const handleTabChange = (tab: string) => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    const scrollViewport = document.querySelector('[data-radix-scroll-area-viewport]');
+    if (scrollViewport) {
+      scrollViewport.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+    
     setSelectedTab(tab);
     setIsLoading(true);
     setTimeout(() => {
