@@ -7,11 +7,12 @@ import {
 import { jobHunterDesktopMenu, jobHunterMobileMenu } from "mockData/nav-menus";
 import { JobHunterContext } from 'components';
 import { JobHunterMenu, JobHunterHeader, Footer } from "layouts";
-import { Outlet } from "react-router-dom";
+/* import { Outlet } from "react-router-dom"; */
 import { useJobHunterTrialStatus } from "components";
+import { JobHunterFeed } from "features/job-hunter";
 
 
-const JobHunterFeed: FC = () => {
+const JobHunterFeedLayout: FC = () => {
   const { menuOpen, toggleMenu } = useMenu();
   const { isFreeTrial } = useJobHunterTrialStatus();
 
@@ -31,7 +32,7 @@ const JobHunterFeed: FC = () => {
           <div className="flex flex-col min-h-full">
             <main className="flex-1 flex flex-col bg-[#242625] w-full">
               <JobHunterHeader />
-              <Outlet />
+              <JobHunterFeed />
             </main>
 
             <Footer />
@@ -42,4 +43,4 @@ const JobHunterFeed: FC = () => {
   );
 };
 
-export { JobHunterFeed };
+export { JobHunterFeedLayout };

@@ -1,4 +1,4 @@
-export { ApplicationForm } from 'features/job-hunter/ApplicationForm/ApplicationForm'
+export { ApplicationCardForm} from 'features/job-hunter/ApplicationForm/ApplicationCardForm'
 export { JobCardDesktop, JobCardMobile } from 'features/job-hunter/JobCard/JobCard'
 export { JobHunterFeed } from 'features/job-hunter/JobHunterFeed/JobHunterFeed'
 
@@ -16,4 +16,5 @@ export { BookmarkSidebar } from 'features/job-hunter/Sidebar/bookmark-sidebar'
 export { SavedJobs } from 'features/job-hunter/BookmarkedJobs/saved-jobs'
 export { AppliedJobs } from 'features/job-hunter/BookmarkedJobs/applied-jobs'
 export { InterviewSidebarJobHunter } from 'features/job-hunter/Sidebar/interviews-sidebar-hunter'
+export { EditApplicationCard } from 'features/job-hunter/ApplicationForm/EditApplicationCard'
 

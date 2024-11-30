@@ -2,7 +2,7 @@ export { AppCardDesktop, AppCardMobile } from 'features/employer/AppCard/AppCard
 export { AppCardPreview } from 'features/employer/AppCard/AppCardPreview'
 export { EmployerFeed } from 'features/employer/EmployerFeed/EmployerFeed'
 export { Sidebar } from 'features/employer/EmployerFeed/Sidebar'
-export { EmployerProfile } from 'features/employer/EmployerProfile/EmployerProfile'
+export { CompleteEmployerProfile } from 'features/employer/EmployerProfile/CompleteEmployerProfile'
 export { JobListingForm } from 'features/employer/JobListingForm/JobListingForm'
 
 export { GeneralSettings } from 'features/employer/EmployerSettings/general'
@@ -29,3 +29,5 @@ export { CostAnalytics } from 'features/employer/ReportsAnalytics/cost-analytics
 export { InterviewAnalytics } from 'features/employer/ReportsAnalytics/interview-analytics'
 
 export { InterviewSidebarEmployer } from 'features/employer/Sidebar/interviews-sidebar-employer'
+
+export { EditEmployerProfile } from 'features/employer/EmployerProfile/EditEmployerProfile'

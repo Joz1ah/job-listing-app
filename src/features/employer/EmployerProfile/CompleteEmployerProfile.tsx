@@ -86,7 +86,7 @@ const LoadingOverlay = () => (
   </div>
 );
 
-const EmployerProfile: FC = () => {
+const CompleteEmployerProfile: FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
@@ -152,7 +152,7 @@ const EmployerProfile: FC = () => {
 
           <h1 className="flex-1 text-center text-xl md:text-[32px] pt-6 font-normal text-orange-500">
             <span className="inline-flex items-center gap-2 justify-center">
-              Edit Your Company Profile
+              Complete Your Company Profile
             </span>
           </h1>
         </div>
@@ -429,4 +429,4 @@ const EmployerProfile: FC = () => {
   );
 };
 
-export { EmployerProfile };
+export { CompleteEmployerProfile };

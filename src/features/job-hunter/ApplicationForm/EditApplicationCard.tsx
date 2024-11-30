@@ -94,7 +94,7 @@ const LoadingOverlay = () => (
   </div>
 );
 
-const ApplicationForm: FC = () => {
+const EditApplicationCard: FC = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [showPreview, setShowPreview] = useState<boolean>(false);
@@ -117,18 +117,18 @@ const ApplicationForm: FC = () => {
     isValid,
   } = useFormik<FormData & { employmentType: string[] }>({
     initialValues: {
-      firstName: "",
-      lastName: "",
+      firstName: "Nadine",
+      lastName: "Lustre",
       birthday: "",
-      emailAddress: "",
-      mobileNumber: "",
+      emailAddress: "nadine@gmail.com",
+      mobileNumber: "+63888888888",
       employmentType: [],
       salaryRange: "",
       yearsOfExperience: "",
-      coreSkills: [],
-      interpersonalSkills: [],
+      coreSkills: ["React", "JavaScript", "CSS", "HTML", "Git"],
+      interpersonalSkills: ["Leadership", "Team Collaboration", "Problem Solving"],
       education: "",
-      languages: [],
+      languages: ["English"],
       country: "",
       certifications: [],
     },
@@ -488,4 +488,4 @@ const ApplicationForm: FC = () => {
   );
 };
 
-export { ApplicationForm };
+export { EditApplicationCard };

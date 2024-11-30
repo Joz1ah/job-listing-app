@@ -13,17 +13,19 @@ const Home = lazy(() => import('pages').then(module => ({ default: module.Home }
 const Fetch = lazy(() => import('pages').then(module => ({ default: module.Fetch })))
 const About = lazy(() => import('pages').then(module => ({ default: module.About })))
 const NotFound = lazy(() => import('pages').then(module => ({ default: module.NotFound })))
-const Employer = lazy(() => import('pages').then(module => ({ default: module.EmployerFeed })))
-const JobHunter = lazy(() => import('pages').then(module => ({ default: module.JobHunterFeed })))
-const CompleteProfile = lazy(() => import('pages').then(module => ({ default: module.CreateAppCard })))
+const EmployerFeedLayout = lazy(() => import('pages').then(module => ({ default: module.EmployerFeedLayout })))
+const JobHunterFeedLayout = lazy(() => import('pages').then(module => ({ default: module.JobHunterFeedLayout })))
+const CreateAppCard = lazy(() => import('pages').then(module => ({ default: module.CreateAppCard })))
+const EditAppCard = lazy(() => import('pages').then(module => ({ default: module.EditAppCard })))
 
 // Employer feature imports
-const EmployerSection = lazy(() => import('features/employer').then(module => ({ default: module.EmployerFeed })))
-const JobListingForm = lazy(() => import('features/employer').then(module => ({ default: module.JobListingForm })))
-const EmployerProfile = lazy(() => import('features/employer').then(module => ({ default: module.EmployerProfile })))
+const EmployerFeed = lazy(() => import('features/employer').then(module => ({ default: module.EmployerFeed })))
+const JobListingFormLayout = lazy(() => import('pages').then(module => ({ default: module.JobListingFormLayout })))
+const CompleteProfile = lazy(() => import('pages').then(module => ({ default: module.CompleteProfile })))
+const EditProfile = lazy(() => import('pages').then(module => ({ default: module.EditProfile })))
 
 // Job Hunter feature imports
-const JobHunterSection = lazy(() => import('features/job-hunter').then(module => ({ default: module.JobHunterFeed })))
+const JobHunterFeed = lazy(() => import('features/job-hunter').then(module => ({ default: module.JobHunterFeed })))
 
 // Employer interviews
 const InterviewEmployer = lazy(() => import('pages').then(module => ({ default: module.InterviewEmployer })))
@@ -106,35 +108,51 @@ const routes: RouteObject[] = [
   },
   {
     path: ROUTE_CONSTANTS.EMPLOYER,
-    element: <LazyComponent component={Employer} />,
+    element: <LazyComponent component={EmployerFeedLayout} />,
     children: [
       {
+        index: true,
+        element: <LazyComponent component={EmployerFeed} />
+      },
+      {
         path: ROUTE_CONSTANTS.FEED,
-        element: <LazyComponent component={EmployerSection} />
-      },
-      {
-        path: ROUTE_CONSTANTS.JOB_LISTING,
-        element: <LazyComponent component={JobListingForm} />
-      },
-      {
-        path: ROUTE_CONSTANTS.EMPLOYER_PROFILE,
-        element: <LazyComponent component={EmployerProfile} />
+        element: <LazyComponent component={EmployerFeed} />
       }
     ]
   },
   {
+    path: ROUTE_CONSTANTS.JOB_LISTING,
+    element: <LazyComponent component={JobListingFormLayout} />
+  },
+  {
+    path: ROUTE_CONSTANTS.COMPLETE_PROFILE,
+    element: <LazyComponent component={CompleteProfile} />
+  },
+  {
+    path: ROUTE_CONSTANTS.EDIT_PROFILE,
+    element: <LazyComponent component={EditProfile} />
+  },
+  {
     path: ROUTE_CONSTANTS.JOB_HUNTER,
-    element: <LazyComponent component={JobHunter} />,
+    element: <LazyComponent component={JobHunterFeedLayout} />,
     children: [
       {
+        index: true,
+        element: <LazyComponent component={JobHunterFeed} />
+      },
+      {
         path: ROUTE_CONSTANTS.FEED,
-        element: <LazyComponent component={JobHunterSection} />
+        element: <LazyComponent component={JobHunterFeed} />
       }
     ]
   },
   {
     path: ROUTE_CONSTANTS.CREATE_APPLICATION,
-    element: <LazyComponent component={CompleteProfile} />
+    element: <LazyComponent component={CreateAppCard} />
+  },
+  {
+    path: ROUTE_CONSTANTS.EDIT_APPLICATION,
+    element: <LazyComponent component={EditAppCard} />
   },
   {
     path: ROUTE_CONSTANTS.INTERVIEWS_EMPLOYER,

@@ -3,9 +3,9 @@ import { useMenu } from "hooks";
 import { PageMeta, ScrollArea } from "components";
 import { jobHunterDesktopMenu, jobHunterMobileMenu } from "mockData/nav-menus";
 import { JobHunterMenu, Footer } from "layouts";
-import { ApplicationForm } from "features/job-hunter";
+import { EditApplicationCard } from "features/job-hunter";
 
-const CreateAppCard: FC = () => {
+const EditAppCard: FC = () => {
   const { menuOpen, toggleMenu } = useMenu();
 
   return (
@@ -24,7 +24,7 @@ const CreateAppCard: FC = () => {
         <div className="flex flex-col min-h-full">
           {/* Main content */}
           <main className="flex-grow bg-[#242625] p-4 md:p-[60px] flex justify-center">
-            <ApplicationForm />
+            <EditApplicationCard />
           </main>
 
           {/* Footer */}
@@ -35,4 +35,4 @@ const CreateAppCard: FC = () => {
   );
 };
 
-export { CreateAppCard };
+export { EditAppCard };
