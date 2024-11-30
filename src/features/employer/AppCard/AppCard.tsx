@@ -9,6 +9,7 @@ import {
   CardTitle,
 } from "components";
 import { Button } from "components";
+import { useBookmarks } from "components/context/BookmarkContext";
 
 interface Skill {
   name: string;
@@ -63,23 +64,31 @@ const getAvailabilityStyle = (type: string) => {
   return 'bg-[#F5722E]'; // Default orange for other options
 };
 
-// Common bookmark button component to ensure consistent behavior
+const generateCardId = (match: Match): string => {
+  return `${match.name}-${match.job}-${match.location}`.toLowerCase().replace(/\s+/g, '-');
+};
+
+// Updated BookmarkButton to use the unified context
 const BookmarkButton: FC<{ 
-  bookmarked: boolean; 
-  onBookmark: () => void; 
+  cardId: string;
   className?: string;
-}> = ({ bookmarked, onBookmark, className = "" }) => (
-  <Bookmark
-    className={`cursor-pointer ${
-      bookmarked ? "fill-orange-500" : ""
-    } text-orange-500 ${className}`}
-    size={26}
-    onClick={(e) => {
-      e.stopPropagation(); // Prevent event bubbling
-      onBookmark();
-    }}
-  />
-);
+}> = ({ cardId, className = "" }) => {
+  const { isBookmarked, handleBookmarkToggle } = useBookmarks();
+  const bookmarked = isBookmarked(cardId);
+
+  return (
+    <Bookmark
+      className={`cursor-pointer ${
+        bookmarked ? "fill-orange-500" : ""
+      } text-orange-500 ${className}`}
+      size={26}
+      onClick={(e) => {
+        e.stopPropagation();
+        handleBookmarkToggle(cardId);
+      }}
+    />
+  );
+};
 
 const LanguageTag: FC<{ language: string }> = ({ language }) => (
   <span className="text-[12px] text-[#F5722E] font-light border border-[#F5722E] items-center rounded-sm px-1">
@@ -89,10 +98,11 @@ const LanguageTag: FC<{ language: string }> = ({ language }) => (
 
 const AppCardDesktop: FC<MatchCardProps> = ({
   match,
-  bookmarked = false,
-  onBookmark = () => {},
   isFreeTrial = false,
 }) => {
+
+  const cardId = generateCardId(match);
+
   return (
     <Card className="bg-[#FFFFFF] border-none w-full md:w-[436px] h-auto md:h-[275px]">
       <CardHeader className="flex flex-col justify-between items-start pb-0">
@@ -109,8 +119,7 @@ const AppCardDesktop: FC<MatchCardProps> = ({
         <div className="w-full relative">
           <SecureNameDisplay isFreeTrial={isFreeTrial} realName={match.name} />
           <BookmarkButton 
-            bookmarked={bookmarked} 
-            onBookmark={onBookmark}
+            cardId={cardId}
             className="absolute top-0 right-[-8px]" 
           />
           <div className="flex flex-row items-center">
@@ -173,10 +182,12 @@ const AppCardDesktop: FC<MatchCardProps> = ({
 
 const AppCardMobile: FC<MatchCardProps> = ({
   match,
-  bookmarked = false,
-  onBookmark = () => {},
   isFreeTrial = false,
-}) => (
+}) => {
+
+  const cardId = generateCardId(match)
+
+return (  
   <Card className="bg-[#F5F5F7] w-[308px] h-[395px] p-4 transition-all duration-300 hover:shadow-lg relative flex flex-col">
     <CardHeader className="flex-1 overflow-y-auto p-0">
       <div className="w-full">
@@ -188,8 +199,7 @@ const AppCardMobile: FC<MatchCardProps> = ({
           </div>
           <div className="absolute top-10">
             <BookmarkButton 
-              bookmarked={bookmarked} 
-              onBookmark={onBookmark}
+              cardId={cardId}
             />
           </div>
         </div>
@@ -259,5 +269,6 @@ const AppCardMobile: FC<MatchCardProps> = ({
     </CardContent>
   </Card>
 );
+};
 
 export { AppCardDesktop, AppCardMobile };

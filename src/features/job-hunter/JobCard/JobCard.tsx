@@ -5,6 +5,8 @@ import { SkillsWithEllipsis } from "components";
 import { Bookmark, MoreVertical, MapPin } from "lucide-react";
 //import { Button } from "components";
 
+import { useBookmarks } from "components/context/BookmarkContext";
+
 import {
   Card,
   CardHeader,
@@ -73,12 +75,39 @@ const getAvailabilityStyle = (type: string) => {
   return "bg-[#F5722E]"; // Default orange for other options
 };
 
+const generateCardId = (match: Match): string => {
+  return `${match.position}-${match.company}-${match.location}`.toLowerCase().replace(/\s+/g, '-');
+};
+
+// Updated BookmarkButton to use the unified context
+const BookmarkButton: FC<{ 
+  cardId: string;
+  className?: string;
+}> = ({ cardId, className = "" }) => {
+  const { isBookmarked, handleBookmarkToggle } = useBookmarks();
+  const bookmarked = isBookmarked(cardId);
+
+  return (
+    <Bookmark
+      className={`cursor-pointer ${
+        bookmarked ? "fill-orange-500" : ""
+      } text-orange-500 ${className}`}
+      size={26}
+      onClick={(e) => {
+        e.stopPropagation();
+        handleBookmarkToggle(cardId);
+      }}
+    />
+  );
+};
+
 const JobCardDesktop: FC<MatchCardProps> = ({
   match,
-  bookmarked = false,
-  onBookmark = () => {},
   isFreeTrial = false,
 }) => {
+
+  const cardId = generateCardId(match);
+
   return (
     <Card className="bg-white border-none w-[436px] h-[275px] relative">
       <CardHeader className="flex flex-col justify-between items-start pb-0">
@@ -94,12 +123,9 @@ const JobCardDesktop: FC<MatchCardProps> = ({
         </div>
         <div className="w-full relative">
           <CardTitle className="text-sm font-semibold">{match.position}</CardTitle>
-          <Bookmark
-            className={`absolute top-0 right-[-8px] cursor-pointer ${
-              bookmarked ? "fill-orange-500" : ""
-            } text-orange-500`}
-            size={26}
-            onClick={onBookmark}
+          <BookmarkButton
+            cardId={cardId}
+            className="absolute top-0 right-[-8px]" 
           />
           <SecureCompanyDisplay
             isFreeTrial={isFreeTrial}
@@ -161,10 +187,12 @@ const JobCardDesktop: FC<MatchCardProps> = ({
 
 const JobCardMobile: FC<MatchCardProps> = ({
   match,
-  bookmarked = false,
-  onBookmark = () => {},
   isFreeTrial = false,
-}) => (
+}) => {
+
+  const cardId = generateCardId(match);
+
+  return (
   <Card className="bg-[#F5F5F7] w-[308px] h-[395px] p-2 relative flex flex-col">
     <CardHeader className="flex-1 overflow-y-auto p-0">
       <div className="w-full">
@@ -174,12 +202,9 @@ const JobCardMobile: FC<MatchCardProps> = ({
               Posted {match.appliedAgo}
             </span>
           </div>
-          <Bookmark
-            className={`absolute top-7 ${
-              bookmarked ? "fill-orange-500" : ""
-            } text-orange-500`}
-            size={26}
-            onClick={onBookmark}
+          <BookmarkButton
+            className="absolute top-7 "
+            cardId={cardId}
           />
         </div>
 
@@ -246,6 +271,7 @@ const JobCardMobile: FC<MatchCardProps> = ({
       />
     </CardContent>
   </Card>
-);
+  );
+};
 
 export { JobCardDesktop, JobCardMobile };

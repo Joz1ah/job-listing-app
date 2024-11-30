@@ -1,4 +1,5 @@
 import React, { useState, ReactElement } from 'react';
+import { BookmarkProvider } from 'components';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -36,56 +37,26 @@ interface BookmarkLimitHandlerProps {
   imageAltText?: string; // Optional custom alt text
 }
 
-const BookmarkLimitHandler: React.FC<BookmarkLimitHandlerProps> = ({ 
-  children, 
+const BookmarkLimitHandler: React.FC<BookmarkLimitHandlerProps> = ({
+  children,
   isFreeTrial = false,
-  onUpgradeClick,
   maxBookmarks = 3,
+  onUpgradeClick,
   limitPopupImage,
   limitPopupTitle = 'Bookmark Limit Reached',
-  limitPopupDescription = "You've reached the maximum number of bookmarks allowed in the free trial. Upgrade your account to bookmark more matches.",
-  imageAltText = "You've reached the maximum bookmarks limit. Click to upgrade your account",
+  limitPopupDescription = "You've reached the maximum number of bookmarks allowed in the free trial.",
+  imageAltText = "Bookmark limit reached",
 }) => {
-  const [bookmarkedCards, setBookmarkedCards] = useState<Set<number | string>>(new Set());
-  const [showLimitPopup, setShowLimitPopup] = useState<boolean>(false);
-
-  const handleBookmarkToggle = (index: number | string): void => {
-    if (bookmarkedCards.has(index)) {
-      // Always allow unbookmarking
-      setBookmarkedCards(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(index);
-        return newSet;
-      });
-    } else {
-      // Check if we're at the limit when trying to add
-      if (isFreeTrial && bookmarkedCards.size >= maxBookmarks) {
-        setShowLimitPopup(true);
-        return;
-      }
-      
-      setBookmarkedCards(prev => {
-        const newSet = new Set(prev);
-        newSet.add(index);
-        return newSet;
-      });
-    }
-  };
+  const [showLimitPopup, setShowLimitPopup] = useState(false);
 
   return (
-    <>
-      {React.Children.map(children, (child, index) => {
-        if (React.isValidElement<MatchCardProps>(child)) {
-          return React.cloneElement(child, {
-            ...child.props,
-            bookmarked: bookmarkedCards.has(child.key ?? index),
-            onBookmark: () => handleBookmarkToggle(child.key ?? index),
-            isFreeTrial
-          });
-        }
-        return child;
-      })}
-
+    <BookmarkProvider
+      isFreeTrial={isFreeTrial}
+      maxBookmarks={maxBookmarks}
+      onLimitReached={() => setShowLimitPopup(true)}
+    >
+      {children}
+      
       <AlertDialog open={showLimitPopup} onOpenChange={setShowLimitPopup}>
         <AlertDialogContent className="p-0 border-none bg-transparent">
           <AlertDialogTitle className="sr-only">
@@ -105,7 +76,7 @@ const BookmarkLimitHandler: React.FC<BookmarkLimitHandlerProps> = ({
           />
         </AlertDialogContent>
       </AlertDialog>
-    </>
+    </BookmarkProvider>
   );
 };
 

@@ -121,3 +121,4 @@ export { AcceptedCardSkeleton } from 'components/skeleton-loading/AcceptedCardSk
 export {TrialProviders, useEmployerTrialStatus, useJobHunterTrialStatus } from 'components/context/TrialContext'
 export { Calendar } from 'components/ui/calendar'
 export { InputField } from 'components/ui/input-field'
+export { BookmarkProvider, useBookmarks } from 'components/context/BookmarkContext'

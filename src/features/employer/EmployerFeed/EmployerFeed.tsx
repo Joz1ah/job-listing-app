@@ -11,14 +11,6 @@ import employerPopAds from "images/popup-employer.svg?url";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 
-/* import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselPrevious,
-  CarouselNext,
-} from "components"; */
-
 import { useEmployerContext } from "components";
 
 interface selectedProps {
@@ -195,16 +187,6 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
 
   return (
     <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 justify-items-center w-full sm:w-[436px] md:w-[436px] xl:w-[900px] mx-auto px-4 xl:px-0">
-      <BookmarkLimitHandler
-        isFreeTrial={isFreeTrial}
-        maxBookmarks={3}
-        onUpgradeClick={() => {
-          console.log("Upgrade clicked");
-        }}
-        limitPopupImage={employerPopAds}
-        limitPopupTitle="Job Hunter Bookmark Limit"
-        limitPopupDescription="Upgrade to bookmark more job matches!"
-      >
         {displayedItems.map((item, index) =>
           "isAd" in item ? (
             <div
@@ -225,7 +207,6 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
             />
           ),
         )}
-      </BookmarkLimitHandler>
 
       {showLoadingCards && (
         <>
@@ -527,20 +508,11 @@ interface EmployerSectionProps {
 const EmployerFeed: FC<EmployerSectionProps> = () => {
   const [selectedTab, setSelectedTab] = useState("perfectMatch");
   const [isLoading, setIsLoading] = useState(true);
-  const [bookmarkedCards, setBookmarkedCards] = useState(new Set());
   const { isFreeTrial } = useEmployerContext();
 
-  const toggleBookmark = (section: string, index: number) => {
-    const combinedId = `${section}-${index}`;
-    setBookmarkedCards((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(combinedId)) {
-        newSet.delete(combinedId);
-      } else {
-        newSet.add(combinedId);
-      }
-      return newSet;
-    });
+  const handleUpgradeClick = () => {
+    console.log("Upgrade clicked");
+    // Implement your upgrade logic here
   };
 
   const handleTabChange = (tab: string) => {
@@ -596,6 +568,14 @@ const EmployerFeed: FC<EmployerSectionProps> = () => {
   };
 
   return (
+    <BookmarkLimitHandler
+      isFreeTrial={isFreeTrial}
+      maxBookmarks={3}
+      onUpgradeClick={handleUpgradeClick}
+      limitPopupImage={employerPopAds}
+      limitPopupTitle="Bookmark Limit Reached"
+      limitPopupDescription="Upgrade to bookmark more matches!"
+    >
     <div>
       <div className="hidden md:flex flex-col items-center mx-3 mb-8">
         {/* Tab Buttons */}
@@ -701,8 +681,6 @@ const EmployerFeed: FC<EmployerSectionProps> = () => {
                   <AppCardMobile
                     match={item}
                     isFreeTrial={isFreeTrial}
-                    bookmarked={bookmarkedCards.has(`perfectMatch-${index}`)}
-                    onBookmark={() => toggleBookmark("perfectMatch", index)}
                   />
                 </div>
               )}
@@ -741,8 +719,6 @@ const EmployerFeed: FC<EmployerSectionProps> = () => {
                   <AppCardMobile
                     match={item}
                     isFreeTrial={isFreeTrial}
-                    bookmarked={bookmarkedCards.has(`others-${index}`)}
-                    onBookmark={() => toggleBookmark("others", index)}
                   />
                 </div>
               )}
@@ -754,6 +730,7 @@ const EmployerFeed: FC<EmployerSectionProps> = () => {
         </Swiper>
       </div>
     </div>
+    </BookmarkLimitHandler>
   );
 };
 export { EmployerFeed };
