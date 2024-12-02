@@ -17,11 +17,6 @@ import { isServer } from 'utils'
 
 import 'style/global.scss'
 
-import "swiper/scss";
-import "swiper/scss/effect-coverflow";
-import "swiper/scss/pagination";
-
-
 const serverPreloadedState =
   !isServer && window.__PRELOADED_STATE__ != null
     ? window.__PRELOADED_STATE__

@@ -3,13 +3,9 @@ import sparkeIcon from "images/sparkle-icon.png";
 import { perfectMatch, others } from "mockData/job-hunter-data";
 import { Button } from "components";
 import { AppCardSkeleton, BookmarkLimitHandler } from "components";
-import { AppCardDesktop, AppCardMobile } from "features/employer";
+import { AppCard } from "features/employer";
 import employerAds from "images/employer-ads.svg?url";
-import employerMobileAds from "images/employer-mobile-ads.svg?url";
-import bulb from "images/bulb.svg?url";
 import employerPopAds from "images/popup-employer.svg?url";
-
-import { Swiper, SwiperSlide } from "swiper/react";
 
 import { useEmployerContext } from "components";
 
@@ -186,27 +182,23 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
   };
 
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 justify-items-center w-full sm:w-[436px] md:w-[436px] xl:w-[900px] mx-auto px-4 xl:px-0">
-        {displayedItems.map((item, index) =>
-          "isAd" in item ? (
-            <div
-              key={`ad-${index}`}
-              className="w-[436px] h-[275px] rounded-lg overflow-hidden"
-            >
-              <img
-                src={item.image}
-                alt="Job Hunter Ad"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          ) : (
-            <AppCardDesktop
-              key={index}
-              match={item}
-              isFreeTrial={isFreeTrial}
+    <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 justify-items-center w-full max-w-[436px] xl:max-w-[900px] mx-auto px-0">
+      {displayedItems.map((item, index) =>
+        "isAd" in item ? (
+          <div
+            key={`ad-${index}`}
+            className="bg-white border-none h-[275px] w-full max-w-[436px] rounded-lg overflow-hidden"
+          >
+            <img
+              src={item.image}
+              alt="Job Hunter Ad"
+              className="w-full h-[275px] object-cover"
             />
-          ),
-        )}
+          </div>
+        ) : (
+          <AppCard key={index} match={item} isFreeTrial={isFreeTrial} />
+        ),
+      )}
 
       {showLoadingCards && (
         <>
@@ -383,39 +375,23 @@ const OtherApplications: FC<selectedProps> = ({
   };
 
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 justify-items-center w-full sm:w-[436px] md:w-[436px] xl:w-[900px] mx-auto px-4 xl:px-0">
-      <BookmarkLimitHandler
-        isFreeTrial={isFreeTrial}
-        maxBookmarks={3}
-        onUpgradeClick={() => {
-          console.log("Upgrade clicked");
-        }}
-        limitPopupImage={employerPopAds}
-        limitPopupTitle="Employer Bookmark Limit"
-        limitPopupDescription="Upgrade to bookmark more candidate matches!"
-      >
-        {displayedItems.map((item, index) =>
-          "isAd" in item ? (
-            <div
-              key={`ad-${index}`}
-              className="w-full md:w-[436px] h-[275px] rounded-lg overflow-hidden"
-            >
-              <img
-                src={item.image}
-                alt="Job Hunter Ad"
-                className="w-[436px] h-[275px] rounded-lg overflow-hidden"
-              />
-            </div>
-          ) : (
-            <AppCardDesktop
-              key={index}
-              match={item}
-              isFreeTrial={isFreeTrial}
+    <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 justify-items-center w-full max-w-[436px] xl:max-w-[900px] mx-auto px-0">
+      {displayedItems.map((item, index) =>
+        "isAd" in item ? (
+          <div
+            key={`ad-${index}`}
+            className="bg-white border-none h-[275px] w-full max-w-[436px] rounded-lg overflow-hidden"
+          >
+            <img
+              src={item.image}
+              alt="Job Hunter Ad"
+              className="w-full h-[275px] object-cover"
             />
-          ),
-        )}
-      </BookmarkLimitHandler>
-
+          </div>
+        ) : (
+          <AppCard key={index} match={item} isFreeTrial={isFreeTrial} />
+        ),
+      )}
       {/* Dynamic Loading Cards */}
       {showLoadingCards && (
         <>
@@ -445,58 +421,6 @@ const OtherApplications: FC<selectedProps> = ({
       )}
 
       <div ref={loaderRef} className="h-px w-px" />
-    </div>
-  );
-};
-
-interface EndCardProps {
-  type: "perfectMatch" | "otherApplication";
-}
-
-const EndCard: React.FC<EndCardProps> = ({ type }) => {
-  const cardContent = {
-    perfectMatch: {
-      mainText: "perfect matches",
-      exploreText: "Explore more options below",
-    },
-    otherApplication: {
-      mainText: "other application card",
-      exploreText: "Explore your perfect matches",
-    },
-  };
-
-  const content = cardContent[type];
-
-  return (
-    <div className="flex flex-col items-center w-[308px] h-[420px] bg-transparent rounded-lg text-center">
-      <div className="px-10 pt-[55px] flex flex-col items-center w-full">
-        <div className="text-xl font-semibold text-white">
-          <div>You've reached the</div>
-          <div>
-            end of your{" "}
-            <span className="text-[#F5722E] font-semibold">
-              {type === "perfectMatch" ? "perfect" : content.mainText}
-            </span>
-          </div>
-          {type === "perfectMatch" && (
-            <div>
-              <span className="text-[#F5722E] font-semibold">matches</span> for
-              now!
-            </div>
-          )}
-          {type === "otherApplication" && <div>for now!</div>}
-        </div>
-        <div className="text-xl font-semibold text-white mt-0.5">
-          <div>{content.exploreText}</div>
-        </div>
-        <div className="flex justify-center w-full mt-6">
-          <img
-            src={bulb}
-            alt="Bulb"
-            className="w-[55px] h-[75px] fill-orange-500"
-          />
-        </div>
-      </div>
     </div>
   );
 };
@@ -541,30 +465,12 @@ const EmployerFeed: FC<EmployerSectionProps> = () => {
 
   const LoadingGrid = () => {
     return (
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 justify-items-center w-full sm:w-[436px] md:w-[436px] xl:w-[900px] mx-auto px-4 xl:px-0">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 xl:gap-5 justify-items-center w-full md:min-w-[436px] xl:w-[900px] mx-auto px-0">
         {[1, 2, 3, 4, 5, 6].map((i) => (
           <AppCardSkeleton key={i} />
         ))}
       </div>
     );
-  };
-
-  // Helper function to inject ads for mobile view
-  const getItemsWithAds = (items: Match[]): CardItem[] => {
-    if (!isFreeTrial) return items;
-
-    const result: CardItem[] = [];
-    let itemCount = 0;
-
-    items.forEach((item) => {
-      if (itemCount === 3 || (itemCount > 3 && (itemCount - 3) % 5 === 0)) {
-        result.push({ isAd: true, image: employerMobileAds });
-      }
-      result.push(item);
-      itemCount++;
-    });
-
-    return result;
   };
 
   return (
@@ -577,7 +483,7 @@ const EmployerFeed: FC<EmployerSectionProps> = () => {
       limitPopupDescription="Upgrade to bookmark more matches!"
     >
     <div>
-      <div className="hidden md:flex flex-col items-center mx-3 mb-8">
+      <div className="flex flex-col items-center mb-8">
         {/* Tab Buttons */}
         <div className="flex justify-center mb-8 md:mb-12">
           <button
@@ -644,90 +550,6 @@ const EmployerFeed: FC<EmployerSectionProps> = () => {
             </div>
           )}
         </div>
-      </div>
-
-      {/* Mobile Carousel View */}
-      <div className="block md:hidden w-full p-6 flex-grow overflow-x-hidden">
-        <h3 className="flex justify-center items-center mt-2 gap-2 text-[17px] text-[#F5722E] text-center font-semibold pb-2">
-          <img
-            src={sparkeIcon}
-            alt="Sparkle Icon"
-            className="w-[22px] h-[24px]"
-          />
-          PERFECT MATCH
-        </h3>
-
-        <Swiper
-          grabCursor={true}
-          centeredSlides={true}
-          slidesPerView={"auto"}
-          initialSlide={0}
-          modules={[]} // Remove unnecessary modules
-          className="!pt-5 !pb-12 custom-swiper"
-        >
-          {getItemsWithAds(perfectMatch).map((item, index) => (
-            <SwiperSlide
-              key={index}
-              className="!w-[320px] flex justify-center items-center custom-slide"
-            >
-              {"isAd" in item ? (
-                <img
-                  src={item.image}
-                  alt="Employer Ad"
-                  className="w-[308px] mr-3"
-                />
-              ) : (
-                <div className="relative w-full max-w-[320px]">
-                  <AppCardMobile
-                    match={item}
-                    isFreeTrial={isFreeTrial}
-                  />
-                </div>
-              )}
-            </SwiperSlide>
-          ))}
-          <SwiperSlide className="!w-[320px] flex justify-center items-center custom-slide">
-            <EndCard type="perfectMatch" />
-          </SwiperSlide>
-        </Swiper>
-
-        <h3 className="flex justify-center items-center mt-2 gap-2 text-[17px] text-[#AEADAD] text-center font-semibold pb-2">
-          OTHER APPLICATION CARDS
-        </h3>
-
-        <Swiper
-          grabCursor={true}
-          centeredSlides={true}
-          slidesPerView={"auto"}
-          initialSlide={0}
-          modules={[]} // Remove unnecessary modules
-          className="!pt-5 !pb-12 custom-swiper"
-        >
-          {getItemsWithAds(others).map((item, index) => (
-            <SwiperSlide
-              key={index}
-              className="!w-[320px] flex justify-center items-center custom-slide"
-            >
-              {"isAd" in item ? (
-                <img
-                  src={item.image}
-                  alt="Employer Ad"
-                  className="w-[308px] mr-3"
-                />
-              ) : (
-                <div className="relative w-full max-w-[320px]">
-                  <AppCardMobile
-                    match={item}
-                    isFreeTrial={isFreeTrial}
-                  />
-                </div>
-              )}
-            </SwiperSlide>
-          ))}
-          <SwiperSlide className="!w-[320px] flex justify-center items-center custom-slide">
-            <EndCard type="otherApplication" />
-          </SwiperSlide>
-        </Swiper>
       </div>
     </div>
     </BookmarkLimitHandler>

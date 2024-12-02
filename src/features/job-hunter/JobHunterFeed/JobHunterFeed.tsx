@@ -2,17 +2,13 @@ import { FC, useState, useEffect, useRef } from "react";
 import sparkeIcon from "images/sparkle-icon.png";
 import { perfectMatch, others } from "mockData/jobs-data";
 import jobHunterAds from "images/job-hunter-ads.svg?url";
-import jobHunterMobileAds from "images/job-hunter-mobile-ads.svg?url";
-import bulb from "images/bulb.svg?url";
 import jobHunterPopAds from "images/popup-hunter.svg?url";
 
 import { Button } from "components";
 import { JobCardSkeleton } from "components";
 import { BookmarkLimitHandler } from "components";
 
-import { JobCardDesktop, JobCardMobile } from "features/job-hunter";
-
-import { Swiper, SwiperSlide } from "swiper/react";
+import { JobCard } from "features/job-hunter";
 
 import { useJobHunterContext } from "components";
 
@@ -189,27 +185,23 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
   };
 
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 justify-items-center w-full sm:w-[436px] md:w-[436px] xl:w-[900px] mx-auto px-4 xl:px-0">
-        {displayedItems.map((item, index) =>
-          "isAd" in item ? (
-            <div
-              key={`ad-${index}`}
-              className="w-[436px] h-[275px] rounded-lg overflow-hidden"
-            >
-              <img
-                src={item.image}
-                alt="Job Hunter Ad"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          ) : (
-            <JobCardDesktop
-              key={index}
-              match={item}
-              isFreeTrial={isFreeTrial}
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 justify-items-center w-full max-w-[436px] md:max-w-[900px] mx-auto px-0">
+      {displayedItems.map((item, index) =>
+        "isAd" in item ? (
+          <div
+            key={`ad-${index}`}
+            className="bg-white border-none h-[275px] w-full max-w-[436px] rounded-lg overflow-hidden"
+          >
+            <img
+              src={item.image}
+              alt="Job Hunter Ad"
+              className="w-full h-[275px] object-cover"
             />
-          ),
-        )}
+          </div>
+        ) : (
+          <JobCard key={index} match={item} isFreeTrial={isFreeTrial} />
+        ),
+      )}
       {showLoadingCards && (
         <>
           <JobCardSkeleton />
@@ -385,27 +377,23 @@ const OtherApplications: FC<selectedProps> = ({
   };
 
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 justify-items-center w-full sm:w-[436px] md:w-[436px] xl:w-[900px] mx-auto px-4 xl:px-0">
-        {displayedItems.map((item, index) =>
-          "isAd" in item ? (
-            <div
-              key={`ad-${index}`}
-              className="w-[436px] h-[275px] rounded-lg overflow-hidden"
-            >
-              <img
-                src={item.image}
-                alt="Job Hunter Ad"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          ) : (
-            <JobCardDesktop
-              key={index}
-              match={item}
-              isFreeTrial={isFreeTrial}
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 justify-items-center w-full max-w-[436px] md:max-w-[900px] mx-auto px-0">
+      {displayedItems.map((item, index) =>
+        "isAd" in item ? (
+          <div
+            key={`ad-${index}`}
+            className="bg-white border-none h-[275px] w-full max-w-[436px] rounded-lg overflow-hidden"
+          >
+            <img
+              src={item.image}
+              alt="Job Hunter Ad"
+              className="w-full h-[275px] object-cover"
             />
-          ),
-        )}
+          </div>
+        ) : (
+          <JobCard key={index} match={item} isFreeTrial={isFreeTrial} />
+        ),
+      )}
 
       {/* Dynamic Loading Cards */}
       {showLoadingCards && (
@@ -436,58 +424,6 @@ const OtherApplications: FC<selectedProps> = ({
       )}
 
       <div ref={loaderRef} className="h-px w-px" />
-    </div>
-  );
-};
-
-interface EndCardProps {
-  type: "perfectMatch" | "otherOpportunities";
-}
-
-const EndCard: React.FC<EndCardProps> = ({ type }) => {
-  const cardContent = {
-    perfectMatch: {
-      mainText: "perfect matches",
-      exploreText: "Explore more options below",
-    },
-    otherOpportunities: {
-      mainText: "other opportunities",
-      exploreText: "Explore your perfect matches",
-    },
-  };
-
-  const content = cardContent[type];
-
-  return (
-    <div className="flex flex-col items-center w-[308px] h-[420px] bg-transparent rounded-lg text-center">
-      <div className="px-10 pt-[55px] flex flex-col items-center w-full">
-        <div className="text-xl font-semibold text-white">
-          <div>You've reached the</div>
-          <div>
-            end of your{" "}
-            <span className="text-[#F5722E] font-semibold">
-              {type === "perfectMatch" ? "perfect" : content.mainText}
-            </span>
-          </div>
-          {type === "perfectMatch" && (
-            <div>
-              <span className="text-[#F5722E] font-semibold">matches</span> for
-              now!
-            </div>
-          )}
-          {type === "otherOpportunities" && <div>for now!</div>}
-        </div>
-        <div className="text-xl font-semibold text-white mt-0.5">
-          <div>{content.exploreText}</div>
-        </div>
-        <div className="flex justify-center w-full mt-6">
-          <img
-            src={bulb}
-            alt="Bulb"
-            className="w-[55px] h-[75px] fill-orange-500"
-          />
-        </div>
-      </div>
     </div>
   );
 };
@@ -532,7 +468,7 @@ const JobHunterFeed: FC<JobHunterSectionProps> = () => {
 
   const LoadingGrid = () => {
     return (
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 justify-items-center w-full sm:w-[436px] md:w-[436px] xl:w-[900px] mx-auto px-4 xl:px-0">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 justify-items-center w-full max-w-[436px] md:max-w-[900px] mx-auto px-4 md:px-0">
         {[1, 2, 3, 4, 5, 6].map((i) => (
           <JobCardSkeleton key={i} />
         ))}
@@ -540,193 +476,89 @@ const JobHunterFeed: FC<JobHunterSectionProps> = () => {
     );
   };
 
-  // Helper function to inject ads for mobile view
-  const getItemsWithAds = (items: Match[]): CardItem[] => {
-    if (!isFreeTrial) return items;
-
-    const result: CardItem[] = [];
-    let itemCount = 0;
-
-    // Process each item and add ads at position 3 and every 5 items after
-    items.forEach((item) => {
-      if (itemCount === 3 || (itemCount > 3 && (itemCount - 3) % 5 === 0)) {
-        result.push({ isAd: true, image: jobHunterMobileAds });
-      }
-      result.push(item);
-      itemCount++;
-    });
-
-    return result;
-  };
-
   return (
     <BookmarkLimitHandler
-    isFreeTrial={isFreeTrial}
-    maxBookmarks={3}
-    onUpgradeClick={handleUpgradeClick}
-    limitPopupImage={jobHunterPopAds}
-    limitPopupTitle="Bookmark Limit Reached"
-    limitPopupDescription="Upgrade to bookmark more matches!"
-  >
-    <div className="w-full mt-4 md:mt-8 md:my-2">
-      {/* Application Cards Section - Desktop View */}
-      <div className="hidden md:flex flex-col items-center">
-        <div className="flex justify-center mb-8 w-full">
-          <button
-            className={`font-semibold mr-6 pb-2 text-[17px] inline-flex items-center gap-2 transition-all duration-200 relative group ${
-              selectedTab === "perfectMatch"
-                ? "text-orange-500"
-                : "text-[#AEADAD] hover:text-orange-500"
-            }`}
-            onClick={() => handleTabChange("perfectMatch")}
-            disabled={isLoading}
-          >
-            <div
-              className="absolute bottom-0 left-0 w-full h-0.5 bg-orange-500 transform origin-left transition-transform duration-200 ease-out"
-              style={{
-                transform:
-                  selectedTab === "perfectMatch" ? "scaleX(1)" : "scaleX(0)",
-              }}
-            />
-            <img
-              src={sparkeIcon}
-              alt="Sparkle Icon"
-              className={`w-5 h-5 transition-all duration-200 ${
+      isFreeTrial={isFreeTrial}
+      maxBookmarks={3}
+      onUpgradeClick={handleUpgradeClick}
+      limitPopupImage={jobHunterPopAds}
+      limitPopupTitle="Bookmark Limit Reached"
+      limitPopupDescription="Upgrade to bookmark more matches!"
+    >
+      <div className="w-full mt-4 md:mt-8 md:my-2">
+        <div className="flex flex-col items-center">
+          <div className="flex justify-center mb-8 w-full">
+            <button
+              className={`font-semibold mr-6 pb-2 text-[17px] inline-flex items-center gap-2 transition-all duration-200 relative group ${
                 selectedTab === "perfectMatch"
-                  ? "filter grayscale-0"
-                  : "filter grayscale group-hover:grayscale-0"
+                  ? "text-orange-500"
+                  : "text-[#AEADAD] hover:text-orange-500"
               }`}
-            />
-            PERFECT MATCH
-          </button>
-
-          <button
-            className={`font-semibold pb-2 text-[17px] transition-all duration-200 relative ${
-              selectedTab === "otherApplications"
-                ? "text-orange-500"
-                : "text-[#AEADAD] hover:text-orange-500"
-            }`}
-            onClick={() => handleTabChange("otherApplications")}
-            disabled={isLoading}
-          >
-            <div
-              className="absolute bottom-0 right-0 w-full h-0.5 bg-orange-500 transform origin-right transition-transform duration-200 ease-out"
-              style={{
-                transform:
-                  selectedTab === "otherApplications"
-                    ? "scaleX(1)"
-                    : "scaleX(0)",
-              }}
-            />
-            OTHER OPPORTUNITIES
-          </button>
-        </div>
-
-        <div className="w-full max-w-[932px] mx-auto px-4">
-          {isLoading ? (
-            <LoadingGrid />
-          ) : (
-            <div className="w-full">
-              {selectedTab === "perfectMatch" ? (
-                <PerfectMatch
-                  setSelectedTab={handleTabChange}
-                  isFreeTrial={isFreeTrial}
-                />
-              ) : (
-                <OtherApplications
-                  setSelectedTab={handleTabChange}
-                  isFreeTrial={isFreeTrial}
-                />
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Mobile Carousel View */}
-      <div className="block md:hidden w-full p-6 flex-grow overflow-x-hidden">
-        <h3 className="flex justify-center items-center mt-2 gap-2 text-[17px] text-[#F5722E] text-center font-semibold pb-2">
-          <img
-            src={sparkeIcon}
-            alt="Sparkle Icon"
-            className="w-[22px] h-[24px]"
-          />
-          PERFECT MATCH
-        </h3>
-
-        <Swiper
-          grabCursor={true}
-          centeredSlides={true}
-          slidesPerView={"auto"}
-          initialSlide={0}
-          modules={[]}
-          className="!pt-5 !pb-12 custom-swiper"
-        >
-          {getItemsWithAds(perfectMatch).map((item, index) => (
-            <SwiperSlide
-              key={index}
-              className="!w-[320px] flex justify-center items-center custom-slide"
+              onClick={() => handleTabChange("perfectMatch")}
+              disabled={isLoading}
             >
-              {"isAd" in item ? (
-                <img
-                  src={item.image}
-                  alt="Job Hunter Ad"
-                  className="w-[308px] mr-3"
-                />
-              ) : (
-                <div className="relative w-full max-w-[320px]">
-                  <JobCardMobile
-                    match={item}
+              <div
+                className="absolute bottom-0 left-0 w-full h-0.5 bg-orange-500 transform origin-left transition-transform duration-200 ease-out"
+                style={{
+                  transform:
+                    selectedTab === "perfectMatch" ? "scaleX(1)" : "scaleX(0)",
+                }}
+              />
+              <img
+                src={sparkeIcon}
+                alt="Sparkle Icon"
+                className={`w-5 h-5 transition-all duration-200 ${
+                  selectedTab === "perfectMatch"
+                    ? "filter grayscale-0"
+                    : "filter grayscale group-hover:grayscale-0"
+                }`}
+              />
+              PERFECT MATCH
+            </button>
+
+            <button
+              className={`font-semibold pb-2 text-[17px] transition-all duration-200 relative ${
+                selectedTab === "otherApplications"
+                  ? "text-orange-500"
+                  : "text-[#AEADAD] hover:text-orange-500"
+              }`}
+              onClick={() => handleTabChange("otherApplications")}
+              disabled={isLoading}
+            >
+              <div
+                className="absolute bottom-0 right-0 w-full h-0.5 bg-orange-500 transform origin-right transition-transform duration-200 ease-out"
+                style={{
+                  transform:
+                    selectedTab === "otherApplications"
+                      ? "scaleX(1)"
+                      : "scaleX(0)",
+                }}
+              />
+              OTHER OPPORTUNITIES
+            </button>
+          </div>
+
+          <div className="w-full max-w-[932px] mx-auto px-4">
+            {isLoading ? (
+              <LoadingGrid />
+            ) : (
+              <div className="w-full">
+                {selectedTab === "perfectMatch" ? (
+                  <PerfectMatch
+                    setSelectedTab={handleTabChange}
                     isFreeTrial={isFreeTrial}
                   />
-                </div>
-              )}
-            </SwiperSlide>
-          ))}
-          <SwiperSlide className="!w-[320px] flex justify-center items-center custom-slide">
-            <EndCard type="perfectMatch" />
-          </SwiperSlide>
-        </Swiper>
-
-        <h3 className="flex justify-center items-center mt-2 gap-2 text-[17px] text-[#AEADAD] text-center font-semibold pb-2">
-          OTHER APPLICATION CARDS
-        </h3>
-
-        <Swiper
-          grabCursor={true}
-          centeredSlides={true}
-          slidesPerView={"auto"}
-          initialSlide={0}
-          modules={[]}
-          className="!pt-5 !pb-12 custom-swiper"
-        >
-          {getItemsWithAds(others).map((item, index) => (
-            <SwiperSlide
-              key={index}
-              className="!w-[320px] flex justify-center items-center custom-slide"
-            >
-              {"isAd" in item ? (
-                <img
-                  src={item.image}
-                  alt="Job Hunter Ad"
-                  className="w-[308px] mr-3"
-                />
-              ) : (
-                <div className="relative w-full max-w-[320px]">
-                  <JobCardMobile
-                    match={item}
+                ) : (
+                  <OtherApplications
+                    setSelectedTab={handleTabChange}
                     isFreeTrial={isFreeTrial}
                   />
-                </div>
-              )}
-            </SwiperSlide>
-          ))}
-          <SwiperSlide className="!w-[320px] flex justify-center items-center custom-slide">
-            <EndCard type="otherOpportunities" />
-          </SwiperSlide>
-        </Swiper>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
-    </div>
     </BookmarkLimitHandler>
   );
 };

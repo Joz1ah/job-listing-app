@@ -28,7 +28,7 @@ const EmployerFeedLayout: FC = () => {
         
         <ScrollArea className="flex-1">
           <div className="flex flex-col min-h-full">
-            <main className="flex-1 flex flex-col bg-[#242625] w-full px-6 xl:px-12 md:py-16">
+            <main className="flex-1 flex flex-col bg-[#242625] w-full px-4 xl:px-12 md:py-16">
               <EmployerHeader isFreeTrial={isFreeTrial}/>
               <div className="flex flex-col md:flex-row">
                 {/* Sidebar */}

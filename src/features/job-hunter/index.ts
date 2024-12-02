@@ -1,5 +1,4 @@
 export { ApplicationCardForm} from 'features/job-hunter/ApplicationForm/ApplicationCardForm'
-export { JobCardDesktop, JobCardMobile } from 'features/job-hunter/JobCard/JobCard'
 export { JobHunterFeed } from 'features/job-hunter/JobHunterFeed/JobHunterFeed'
 
 export { GeneralSettings } from 'features/job-hunter/JobHunterSettings/general'
@@ -25,4 +24,6 @@ export { AcceptedCard } from 'features/job-hunter/JobHunterInterviews/interview-
 export { AcceptModal } from 'features/job-hunter/JobHunterInterviews/modals/interview-modal/AcceptModal'
 export { DeclineModal } from 'features/job-hunter/JobHunterInterviews/modals/interview-modal/DeclineModal'
 export { RescheduleModal } from 'features/job-hunter/JobHunterInterviews/modals/interview-modal/RescheduleModal'
+
+export { JobCard } from 'features/job-hunter/JobCard/JobCard'
 

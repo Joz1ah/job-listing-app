@@ -19,7 +19,7 @@ interface Skill {
 interface Match {
   name: string;
   location: string;
-  job: string
+  job: string;
   skills: Skill[];
   appliedAgo: string;
   experience: string;
@@ -28,7 +28,7 @@ interface Match {
   language: string[];
 }
 
-interface MatchCardProps {
+interface AppCardProps {
   match: Match;
   bookmarked?: boolean;
   onBookmark?: () => void;
@@ -58,17 +58,13 @@ const SecureNameDisplay: FC<{ isFreeTrial: boolean; realName: string }> = ({
 };
 
 const getAvailabilityStyle = (type: string) => {
-  if (type.toLowerCase() === 'part time') {
-    return 'bg-[#BF532C]'; // Darker orange for Part Time
-  }
-  return 'bg-[#F5722E]'; // Default orange for other options
+  return type.toLowerCase() === 'part time' ? 'bg-[#BF532C]' : 'bg-[#F5722E]';
 };
 
 const generateCardId = (match: Match): string => {
   return `${match.name}-${match.job}-${match.location}`.toLowerCase().replace(/\s+/g, '-');
 };
 
-// Updated BookmarkButton to use the unified context
 const BookmarkButton: FC<{ 
   cardId: string;
   className?: string;
@@ -96,15 +92,14 @@ const LanguageTag: FC<{ language: string }> = ({ language }) => (
   </span>
 );
 
-const AppCardDesktop: FC<MatchCardProps> = ({
+const AppCard: FC<AppCardProps> = ({
   match,
   isFreeTrial = false,
 }) => {
-
   const cardId = generateCardId(match);
 
   return (
-    <Card className="bg-[#FFFFFF] border-none w-full md:w-[436px] h-auto md:h-[275px]">
+    <Card className="bg-[#FFFFFF] border-none w-full max-w-[436px] h-[275px] relative">
       <CardHeader className="flex flex-col justify-between items-start pb-0">
         <div className="flex flex-row -mt-4 justify-between w-full relative">
           <span className="text-[13px] text-orange-500 font-semibold">
@@ -128,10 +123,12 @@ const AppCardDesktop: FC<MatchCardProps> = ({
           </div>
         </div>
       </CardHeader>
+
       <CardContent>
         <div className="h-[55px]">
           <SkillsWithEllipsis skills={match.skills} />
         </div>
+
         <div className="flex flex-col gap-1 mt-2">
           <div className="flex gap-2">
             <span className="text-[13px] font-light">Experience:</span>
@@ -139,7 +136,7 @@ const AppCardDesktop: FC<MatchCardProps> = ({
               {match.experience}
             </span>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 gap-y-0 flex-wrap">
             <span className="text-[13px] font-light">Looking for:</span>
             {match.lookingFor.map((type, index) => (
               <span
@@ -151,7 +148,7 @@ const AppCardDesktop: FC<MatchCardProps> = ({
             ))}
           </div>
           <div className="flex gap-2">
-            <span className="text-[13px] font-light">Salary Expectation:</span>
+            <span className="text-[13px] font-light">Salary:</span>
             <span className="bg-[#F5722E] text-white rounded-[4px] text-[12px] px-1.5 h-[18px] flex justify-center items-center">
               {match.salaryExpectation}
             </span>
@@ -164,9 +161,10 @@ const AppCardDesktop: FC<MatchCardProps> = ({
           </div>
         </div>
       </CardContent>
-      <CardFooter className="flex flex-row justify-end -mt-4 -mr-4 space-x-1">
+
+      <CardFooter className="absolute bottom-0 right-0 flex flex-row justify-end items-center space-x-1 p-2">
         <Button
-          className= "text-[12px] font-semibold px-0 w-[133px] h-[27px] bg-orange-500"
+          className="text-[12px] font-semibold px-0 w-[133px] h-[27px] bg-orange-500"
         >
           Schedule Interview
         </Button>
@@ -180,95 +178,4 @@ const AppCardDesktop: FC<MatchCardProps> = ({
   );
 };
 
-const AppCardMobile: FC<MatchCardProps> = ({
-  match,
-  isFreeTrial = false,
-}) => {
-
-  const cardId = generateCardId(match)
-
-return (  
-  <Card className="bg-[#F5F5F7] w-[308px] h-[395px] p-4 transition-all duration-300 hover:shadow-lg relative flex flex-col">
-    <CardHeader className="flex-1 overflow-y-auto p-0">
-      <div className="w-full">
-        <div className="flex flex-col items-end justify-end">
-          <div className="flex-1">
-            <span className="text-[11px] text-gray-600 font-light">
-              Applied {match.appliedAgo}
-            </span>
-          </div>
-          <div className="absolute top-10">
-            <BookmarkButton 
-              cardId={cardId}
-            />
-          </div>
-        </div>
-
-        <div className="pt-2 pl-2">
-          <SecureNameDisplay isFreeTrial={isFreeTrial} realName={match.name} />
-          <p className="text-[13px] text-black flex items-center mb-2 font-light">
-            <MapPin size={14} className="mr-1 text-[#F5722E]" />
-            Based in {match.location}
-          </p>
-
-          <div className="flex flex-col gap-2">
-            <div className="h-[60px]">
-              <SkillsWithEllipsis skills={match.skills} />
-            </div>
-
-            <div className="flex flex-col gap-1 mt-4">
-            <div className="flex gap-2">
-              <span className="text-[13px] font-light">Experience:</span>
-              <span className="text-[12px] text-[#F5722E] font-light border border-[#F5722E] items-center rounded-[2px] px-1">{match.experience}</span>
-            </div>
-
-            <div className="flex gap-y-0.5 gap-x-1 flex-wrap">
-              <span className="text-[13px] font-light">Looking for:</span>
-              {match.lookingFor.map((type, index) => (
-                <span
-                  key={index}
-                  className={`${getAvailabilityStyle(type)} text-white rounded-[4px] text-[12px] px-1 h-[18px] flex justify-center items-center`}
-                >
-                  {type}
-                </span>
-              ))}
-            </div>
-
-            <div className="flex gap-2">
-              <span className="text-[13px] font-light">
-                Salary Expectation:
-              </span>
-              <span className="bg-[#F5722E] text-white rounded-[4px] text-[12px] px-1 h-[18px] flex justify-center items-center">
-                {match.salaryExpectation}
-              </span>
-            </div>
-
-            <div className="flex gap-2 flex-wrap">
-              <span className="text-[13px] font-light">Language:</span>
-              {match.language.map((lang, index) => (
-                <LanguageTag key={index} language={lang} />
-              ))}
-            </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </CardHeader>
-    <CardContent className="p-0 mt-auto flex flex-col items-center">
-      <Button
-        variant="default"
-        className= "text-[12px] font-semibold bg-orange-500"
-      >
-        Schedule Interview
-      </Button>
-      <MoreVertical
-        size={12}
-        className="text-gray-700 cursor-pointer absolute bottom-2 right-2"
-        onClick={(e) => e.stopPropagation()}
-      />
-    </CardContent>
-  </Card>
-);
-};
-
-export { AppCardDesktop, AppCardMobile };
+export { AppCard }

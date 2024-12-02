@@ -1,4 +1,4 @@
-export { AppCardDesktop, AppCardMobile } from 'features/employer/AppCard/AppCard'
+export { AppCard } from 'features/employer/AppCard/AppCard'
 export { AppCardPreview } from 'features/employer/AppCard/AppCardPreview'
 export { EmployerFeed } from 'features/employer/EmployerFeed/EmployerFeed'
 export { Sidebar } from 'features/employer/EmployerFeed/Sidebar'

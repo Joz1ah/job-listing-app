@@ -1,5 +1,4 @@
 import { FC } from "react";
-
 import {
   Card,
   CardContent,
@@ -11,8 +10,7 @@ import { Skeleton } from "components";
 
 const JobCardSkeleton: FC = () => {
   return (
-    <>
-      <Card className="bg-white border-none w-[436px] h-[275px] relative">
+    <Card className="bg-white border-none w-full max-w-[436px] h-[275px] relative">
       <CardHeader className="flex flex-col justify-between items-start pb-0">
         <div className="flex flex-row -mt-4 justify-between w-full">
           <Skeleton className="h-[19px] w-14 bg-gray-300" />
@@ -73,7 +71,6 @@ const JobCardSkeleton: FC = () => {
         <Skeleton className="h-[12px] w-[12px] bg-gray-300" />
       </CardFooter>
     </Card>
-    </>
   );
 };
 
