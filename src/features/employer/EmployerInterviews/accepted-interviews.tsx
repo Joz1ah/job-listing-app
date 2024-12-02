@@ -1,5 +1,5 @@
 import { FC, useState, useEffect, useRef } from "react";
-import { AcceptedCard } from "features";
+import { AcceptedCard } from "features/employer";
 import { AcceptedCardSkeleton } from "components";
 
 interface Interview {

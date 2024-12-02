@@ -31,3 +31,5 @@ export { InterviewAnalytics } from 'features/employer/ReportsAnalytics/interview
 export { InterviewSidebarEmployer } from 'features/employer/Sidebar/interviews-sidebar-employer'
 
 export { EditEmployerProfile } from 'features/employer/EmployerProfile/EditEmployerProfile'
+
+export { AcceptedCard } from 'features/employer/EmployerInterviews/interview-card/accepted-card'

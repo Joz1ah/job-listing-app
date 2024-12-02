@@ -1,52 +1,138 @@
 import React from 'react';
 import { Label } from "components";
-import { cn } from "lib/utils";
 import { AlertTriangle, CircleAlert } from 'lucide-react';
 import { Tooltip } from 'components';
+import { cva, type VariantProps } from "class-variance-authority";
 
-interface InputFieldProps {
+const inputWrapperVariants = cva(
+  "relative pt-4 w-full",
+  {
+    variants: {
+      variant: {
+        default: "",
+        primary: "",
+        secondary: "",
+      }
+    },
+    defaultVariants: {
+      variant: "default"
+    }
+  }
+);
+
+const labelVariants = cva(
+  "font-normal",
+  {
+    variants: {
+      variant: {
+        default: "text-white",
+        primary: "text-white",
+        secondary: "text-black"
+      },
+      size: {
+        sm: "text-sm",
+        md: "text-base",
+        lg: "text-lg"
+      }
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "md"
+    }
+  }
+);
+
+const labelWrapperVariants = cva(
+  "absolute -top-3 left-4 px-2 z-20",
+  {
+    variants: {
+      variant: {
+        default: "bg-[#242625] md:bg-[#2D3A41]",
+        primary: "bg-primary",
+        secondary: "bg-white"
+      }
+    },
+    defaultVariants: {
+      variant: "default"
+    }
+  }
+);
+
+const tooltipIconVariants = cva(
+  "relative -top-1 cursor-pointer",
+  {
+    variants: {
+      variant: {
+        default: "text-[#2D3A41] fill-gray-400",
+        primary: "text-primary fill-gray-300",
+        secondary: "text-gray-600 fill-gray-400"
+      },
+      size: {
+        sm: "",
+        md: "",
+        lg: ""
+      }
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "md"
+    }
+  }
+);
+
+interface InputFieldProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof inputWrapperVariants> {
   label: string;
-  children: React.ReactNode;
-  className?: string;
   error?: string | string[];
   touched?: boolean;
   showIcon?: boolean;
   tooltipContent?: string | React.ReactNode;
+  size?: "sm" | "md" | "lg";
+  children: React.ReactNode;
 }
 
 const InputField = React.forwardRef<HTMLDivElement, InputFieldProps>(
   ({ 
-    label, 
-    children, 
-    className, 
-    error, 
-    touched, 
-    showIcon, 
-    tooltipContent 
+    label,
+    children,
+    className,
+    variant,
+    size = "md",
+    error,
+    touched,
+    showIcon,
+    tooltipContent,
+    ...props
   }, ref) => {
     const showError = touched && error;
     const errorMessage = Array.isArray(error) ? error[0] : error;
 
+    // Icon sizes based on the size prop
+    const iconSizes = {
+      sm: 12,
+      md: 14,
+      lg: 16
+    };
+
     return (
-      <div 
-        ref={ref} 
-        className={cn(
-          "relative pt-4 w-full",
-          className
-        )}
+      <div
+        ref={ref}
+        className={inputWrapperVariants({ variant, className })}
+        {...props}
       >
         <div className="relative">
-          <div className="absolute -top-3 left-4 bg-[#242625] md:bg-[#2D3A41] px-2 z-20">
+          <div className={labelWrapperVariants({ variant })}>
             <div className="flex items-center gap-2">
-              <Label className="text-sm md:text-base font-normal text-white">
+              <Label className={labelVariants({ variant, size })}>
                 {label}
               </Label>
               {showIcon && tooltipContent && (
                 <Tooltip content={tooltipContent} delay={100}>
                   <CircleAlert
-                    className="relative -top-1 cursor-pointer fill-gray-400 text-[#2D3A41]"
+                    className={tooltipIconVariants({ variant, size })}
                     strokeWidth={1.5}
-                    size={14}
+                    size={iconSizes[size]}
                   />
                 </Tooltip>
               )}
@@ -67,7 +153,7 @@ const InputField = React.forwardRef<HTMLDivElement, InputFieldProps>(
         </div>
         
         {showError && (
-          <div className="absolute text-xs md:text-sm italic text-red-500 mt-1">
+          <div className="text-xs md:text-sm italic text-red-500 mt-1">
             {errorMessage}
           </div>
         )}
@@ -78,4 +164,4 @@ const InputField = React.forwardRef<HTMLDivElement, InputFieldProps>(
 
 InputField.displayName = "InputField";
 
-export { InputField }
+export { InputField };
