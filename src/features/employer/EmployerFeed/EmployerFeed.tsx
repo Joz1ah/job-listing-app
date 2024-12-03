@@ -182,7 +182,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
   };
 
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 justify-items-center w-full max-w-[436px] xl:max-w-[900px] mx-auto px-0">
+    <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 xl:gap-5 justify-items-center w-full md:min-w-[436px] xl:w-[900px] mx-auto px-0">
       {displayedItems.map((item, index) =>
         "isAd" in item ? (
           <div
@@ -375,7 +375,7 @@ const OtherApplications: FC<selectedProps> = ({
   };
 
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 justify-items-center w-full max-w-[436px] xl:max-w-[900px] mx-auto px-0">
+    <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 xl:gap-5 justify-items-center w-full md:min-w-[436px] xl:w-[900px] mx-auto px-0">
       {displayedItems.map((item, index) =>
         "isAd" in item ? (
           <div
@@ -483,7 +483,7 @@ const EmployerFeed: FC<EmployerSectionProps> = () => {
       limitPopupDescription="Upgrade to bookmark more matches!"
     >
     <div>
-      <div className="flex flex-col items-center mb-8">
+      <div className="flex flex-col items-center mb-8 w-full">
         {/* Tab Buttons */}
         <div className="flex justify-center mb-8 md:mb-12">
           <button
