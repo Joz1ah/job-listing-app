@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
 import {
   Select,
@@ -10,6 +10,9 @@ import {
 import { Button } from "components";
 import gmeet from "images/google-meet.svg?url";
 import { InputField } from "components";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
+import { Calendar } from "components";
 
 interface ScheduleInterviewModalProps {
   isOpen: boolean;
@@ -24,6 +27,24 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
   onClose,
   jobTitle,
 }) => {
+  const [date, setDate] = useState<Date>();
+  const [selectedTime, setSelectedTime] = useState<string>();
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+
+  // Generate time slots for 24 hours (48 half-hour slots)
+const timeSlots = Array.from({ length: 48 }, (_, i) => {
+  const hour = Math.floor(i / 2);
+  const minutes = i % 2 === 0 ? "00" : "30";
+  const ampm = hour >= 12 ? "PM" : "AM";
+  const formattedHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+  return `${formattedHour}:${minutes} ${ampm}`;
+});
+
+  const handleDateSelect = (selectedDate: Date) => {
+    setDate(selectedDate);
+    setIsCalendarOpen(false); // Close calendar popover after selection
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="w-full max-w-3xl h-[90vh] md:h-[822px] p-0 flex flex-col">
@@ -87,48 +108,53 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                 {/* Date and Time Selection */}
                 <div className="grid grid-cols-2 gap-4 mt-8">
                   <div>
-                    <InputField label="Date" variant="secondary">
-                      <Select>
-                        <SelectTrigger className="w-full border-2 rounded bg-transparent border-black h-[56px]">
-                          <SelectValue placeholder="Select A Date" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none">
-                          <SelectItem
-                            value="date1"
-                            className="rounded-none justify-start pl-3 h-[55px]"
+                  <InputField label="Date" variant="secondary">
+                      <div className="relative" tabIndex={-1}>
+                        <Button
+                          variant="outline"
+                          tabIndex={-1}
+                          className="w-full border-2 rounded bg-transparent border-black h-[56px] justify-start text-left font-normal text-black hover:bg-transparent hover:border-black focus:outline-none focus:border-orange-500"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setIsCalendarOpen(!isCalendarOpen);
+                          }}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {date ? format(date, "PPP") : "Select a date"}
+                        </Button>
+                        {isCalendarOpen && (
+                          <div
+                            className="absolute z-50 mt-1 left-1/2 -translate-x-1/2"
+                            onClick={(e) => e.stopPropagation()}
                           >
-                            Date 1
-                          </SelectItem>
-                          <SelectItem
-                            value="date2"
-                            className="rounded-none justify-start pl-3 h-[55px]"
-                          >
-                            Date 2
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
+                            <Calendar
+                              onDateSelect={handleDateSelect}
+                              variant="secondary"
+                              isOpen={isCalendarOpen}
+                              onClose={() => setIsCalendarOpen(false)}
+                            />
+                          </div>
+                        )}
+                      </div>
                     </InputField>
                   </div>
 
                   <div>
-                    <InputField label="Time" variant="secondary">
-                      <Select>
+                  <InputField label="Time" variant="secondary">
+                      <Select value={selectedTime} onValueChange={setSelectedTime}>
                         <SelectTrigger className="w-full border-2 rounded bg-transparent border-black h-[56px]">
                           <SelectValue placeholder="Select a time" />
                         </SelectTrigger>
-                        <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none">
-                          <SelectItem
-                            value="time1"
-                            className="rounded-none justify-start pl-3 h-[55px]"
-                          >
-                            9:00 AM
-                          </SelectItem>
-                          <SelectItem
-                            value="time2"
-                            className="rounded-none justify-start pl-3 h-[55px]"
-                          >
-                            10:00 AM
-                          </SelectItem>
+                        <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none max-h-[200px]">
+                          {timeSlots.map((time) => (
+                            <SelectItem
+                              key={time}
+                              value={time}
+                              className="rounded-none justify-start pl-3 h-[55px]"
+                            >
+                              {time}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </InputField>
