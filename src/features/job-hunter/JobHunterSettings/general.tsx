@@ -11,7 +11,7 @@ import {
 } from "components";
 import { Tooltip } from "components";
 import { Switch } from "components";
-import googleLogo from 'images/google-logo.svg?url'
+import googleLogo from 'images/google-logo.svg?url';
 import { useJobHunterContext } from "components";
 
 interface FormFieldProps {
@@ -19,6 +19,42 @@ interface FormFieldProps {
   children: React.ReactNode;
   className?: string;
 }
+
+interface NotificationOption {
+  key: string;
+  label: string;
+  tooltip?: string;
+}
+
+interface TimezoneOption {
+  value: string;
+  label: string;
+}
+
+interface NotificationState {
+  muteAll: boolean;
+  email: boolean;
+  push: boolean;
+  sms: boolean;
+}
+
+const POPULAR_TIMEZONES: TimezoneOption[] = [
+  { value: 'America/New_York', label: '(GMT-05:00) Eastern Time' },
+  { value: 'America/Chicago', label: '(GMT-06:00) Central Time' },
+  { value: 'America/Denver', label: '(GMT-07:00) Mountain Time' },
+  { value: 'America/Los_Angeles', label: '(GMT-08:00) Pacific Time' },
+  { value: 'America/Anchorage', label: '(GMT-09:00) Alaska Time' },
+  { value: 'Pacific/Honolulu', label: '(GMT-10:00) Hawaii Time' },
+  { value: 'Europe/London', label: '(GMT+00:00) London' },
+  { value: 'Europe/Paris', label: '(GMT+01:00) Paris' },
+  { value: 'Europe/Berlin', label: '(GMT+01:00) Berlin' },
+  { value: 'Asia/Dubai', label: '(GMT+04:00) Dubai' },
+  { value: 'Asia/Singapore', label: '(GMT+08:00) Singapore' },
+  { value: 'Asia/Tokyo', label: '(GMT+09:00) Tokyo' },
+  { value: 'Asia/Shanghai', label: '(GMT+08:00) China' },
+  { value: 'Australia/Sydney', label: '(GMT+11:00) Sydney' },
+  { value: 'Pacific/Auckland', label: '(GMT+13:00) Auckland' }
+];
 
 const FormField: FC<FormFieldProps> = ({ label, children, className }) => {
   return (
@@ -33,12 +69,6 @@ const FormField: FC<FormFieldProps> = ({ label, children, className }) => {
   );
 };
 
-interface NotificationOption {
-  key: string;
-  label: string;
-  tooltip?: string;
-}
-
 const NOTIFICATION_OPTIONS: NotificationOption[] = [
   { key: "muteAll", label: "Mute All Notifications" },
   { key: "email", label: "Email Notifications" },
@@ -46,32 +76,55 @@ const NOTIFICATION_OPTIONS: NotificationOption[] = [
   { key: "sms", label: "SMS Notifications" },
 ];
 
-const TIMEZONE_OPTIONS = [
-  { value: "GMT+0800", label: "(GMT+08:00) China Standard Time" },
-  { value: "GMT+0900", label: "(GMT+09:00) Japan Standard Time" },
-  { value: "GMT+0000", label: "(GMT+00:00) UTC" },
-];
+// Function to generate timezone options
+const generateTimezoneOptions = (): TimezoneOption[] => {
+  return POPULAR_TIMEZONES.map(zone => {
+    try {
+      return {
+        value: zone.value,
+        label: zone.label
+      };
+    } catch (error) {
+      console.error(`Error formatting timezone ${zone}:`, error);
+      return null;
+    }
+  }).filter((option): option is TimezoneOption => option !== null);
+};
 
 const THEME_OPTIONS = [
   { value: "dark", label: "Dark" },
   { value: "light", label: "Light" },
-];
+] as const;
+
+type ThemeOption = typeof THEME_OPTIONS[number]['value'];
 
 const GeneralSettings: FC = () => {
   const { isFreeTrial } = useJobHunterContext();
-  const [notifications, setNotifications] = useState({
+  const [notifications, setNotifications] = useState<NotificationState>({
     muteAll: false,
     email: false,
     push: false,
     sms: false,
   });
-  const [theme, setTheme] = useState("dark");
-  const [timeZone, setTimeZone] = useState("GMT+0800");
+  const [theme, setTheme] = useState<ThemeOption>("dark");
+  const [timeZone, setTimeZone] = useState(() => {
+    try {
+      return Intl.DateTimeFormat().resolvedOptions().timeZone;
+    } catch (error) {
+      console.error('Error detecting timezone:', error);
+      return 'UTC';
+    }
+  });
+  const [timezoneOptions] = useState<TimezoneOption[]>(() => generateTimezoneOptions());
   const [email, setEmail] = useState("john.smith@abc.com");
   const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [tempEmail, setTempEmail] = useState(email);
 
-  const handleNotificationToggle = (type: keyof typeof notifications) => {
+  const handleTimeZoneChange = (newTimeZone: string) => {
+    setTimeZone(newTimeZone);
+  };
+
+  const handleNotificationToggle = (type: keyof NotificationState) => {
     if (isFreeTrial) return;
     setNotifications((prev) => ({
       ...prev,
@@ -81,11 +134,9 @@ const GeneralSettings: FC = () => {
 
   const handleEmailEdit = () => {
     if (!isEditingEmail) {
-      // Start editing
       setIsEditingEmail(true);
       setTempEmail(email);
     } else {
-      // Save changes
       setEmail(tempEmail);
       setIsEditingEmail(false);
     }
@@ -95,7 +146,8 @@ const GeneralSettings: FC = () => {
     googleAccount: "Link or unlink your Google account to easily manage your profile and settings seamlessly.",
     theme: "Switch between light and dark mode for your preference",
     notifications: "Manage notifications. Mute All notifications, or enable preferred notifications for better experience.",
-  };
+    timezone: "Select your preferred timezone. Times across the application will be displayed according to this setting."
+  } as const;
 
   return (
     <div className="w-full">
@@ -129,8 +181,8 @@ const GeneralSettings: FC = () => {
                 <div key={key} className="flex items-center justify-between mr-4">
                   <span className="text-white text-[15px]">{label}</span>
                   <Switch
-                    checked={notifications[key as keyof typeof notifications]}
-                    onCheckedChange={() => handleNotificationToggle(key as keyof typeof notifications)}
+                    checked={notifications[key as keyof NotificationState]}
+                    onCheckedChange={() => handleNotificationToggle(key as keyof NotificationState)}
                     disabled={isFreeTrial}
                     className={cn(
                       "data-[state=checked]:bg-orange-500 data-[state=unchecked]:bg-gray-600/70 h-5 w-9 [&>span]:h-4 [&>span]:w-4 [&>span[data-state=checked]]:translate-x-4",
@@ -146,12 +198,12 @@ const GeneralSettings: FC = () => {
         {/* Time Zone */}
         <div className="w-full md:w-[330px]">
           <FormField label="Time zone">
-            <Select value={timeZone} onValueChange={setTimeZone}>
+            <Select value={timeZone} onValueChange={handleTimeZoneChange}>
               <SelectTrigger className="bg-transparent text-white border-[#AEADAD] h-[56px] border-2">
                 <SelectValue placeholder="Select timezone" />
               </SelectTrigger>
               <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none">
-                {TIMEZONE_OPTIONS.map(({ value, label }) => (
+                {timezoneOptions.map(({ value, label }) => (
                   <SelectItem
                     key={value}
                     value={value}
@@ -170,21 +222,21 @@ const GeneralSettings: FC = () => {
       <div className="space-y-8">
         {/* Google Account Section */}
         <div className="space-y-3">
-        <div className="flex items-center gap-1">
-      <h3 className="text-white text-2xl font-normal flex items-center">
-        <div className="flex items-center">
-          <img 
-            src={googleLogo}
-            alt="G"
-            className="w-5 h-5"
-          />
-          <span>oogle Account</span>
-        </div>
-      </h3>
-      <Tooltip content={tooltips.googleAccount}>
-        <Info className="w-3 h-3 text-[#2D3A41] fill-white mb-2" />
-      </Tooltip>
-    </div>
+          <div className="flex items-center gap-1">
+            <h3 className="text-white text-2xl font-normal flex items-center">
+              <div className="flex items-center">
+                <img 
+                  src={googleLogo}
+                  alt="G"
+                  className="w-5 h-5"
+                />
+                <span>oogle Account</span>
+              </div>
+            </h3>
+            <Tooltip content={tooltips.googleAccount}>
+              <Info className="w-3 h-3 text-[#2D3A41] fill-white mb-2" />
+            </Tooltip>
+          </div>
           <div className="flex items-center gap-2">
             <span className="text-white text-[15px]">
               Unlink your Google Account
