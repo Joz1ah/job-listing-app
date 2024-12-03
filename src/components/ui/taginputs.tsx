@@ -285,15 +285,29 @@ const InterpersonalSkillsTagInput: React.FC<Omit<TagInputProps, 'options'>> = (p
 
 const LanguageTagInput: React.FC<Omit<TagInputProps, 'options'>> = (props) => {
   const languages = [
+    { label: "Arabic", value: "ar" },
+    { label: "Bengali", value: "bn" },
+    { label: "Chinese (Cantonese)", value: "zh-hk" },
+    { label: "Chinese (Mandarin)", value: "zh" },
+    { label: "Dutch", value: "nl" },
     { label: "English", value: "en" },
+    { label: "Finnish", value: "fi" },
     { label: "French", value: "fr" },
     { label: "German", value: "de" },
-    { label: "Spanish", value: "es" },
-    { label: "Portuguese", value: "pt" },
-    { label: "Russian", value: "ru" },
+    { label: "Hindi", value: "hi" },
+    { label: "Italian", value: "it" },
     { label: "Japanese", value: "ja" },
     { label: "Korean", value: "ko" },
-    { label: "Chinese", value: "zh" },
+    { label: "Malay", value: "ms" },
+    { label: "Polish", value: "pl" },
+    { label: "Portuguese", value: "pt" },
+    { label: "Russian", value: "ru" },
+    { label: "Spanish", value: "es" },
+    { label: "Swedish", value: "sv" },
+    { label: "Tagalog", value: "tl" },
+    { label: "Thai", value: "th" },
+    { label: "Turkish", value: "tr" },
+    { label: "Vietnamese", value: "vi" }
   ];
 
   return (

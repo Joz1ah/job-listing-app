@@ -55,7 +55,6 @@ export { Label } from "components/ui/label";
 export { useFormField, Form, FormItem, FormLabel, FormControl, FormDescription, FormMessage, FormField } from 'components/ui/form'
 export { Input } from 'components/ui/input'
 export { Textarea } from 'components/ui/textarea'
-export { TagInput } from 'components/ui/taginput'
 export { Checkbox } from 'components/ui/checkbox'
 export { Popover, PopoverTrigger, PopoverContent } from 'components/ui/popover'
 export {
