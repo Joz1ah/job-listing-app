@@ -20,6 +20,8 @@ interface ScheduleInterviewModalProps {
   jobTitle: string;
   skills: Array<{ name: string; isMatch: boolean }>;
   certificate?: string;
+  candidateName?: string; // Add this
+  location?: string; // Add this
 }
 
 const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
@@ -28,6 +30,8 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
   jobTitle,
   skills,
   certificate,
+  candidateName,
+  location,
 }) => {
   const [date, setDate] = useState<Date>();
   const [selectedTime, setSelectedTime] = useState<string>();
@@ -49,7 +53,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-full max-w-3xl h-[90vh] md:h-[822px] p-0 flex flex-col">
+      <DialogContent className="w-full max-w-3xl h-[530px] p-0 flex flex-col">
         <div
           className="flex flex-col h-full"
           onClick={(e) => e.stopPropagation()}
@@ -57,7 +61,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
           <div className="flex-1 overflow-y-auto">
             <DialogHeader className="p-4 md:p-6">
               {/* Header Title */}
-              <DialogTitle className="text-center text-orange-500 mb-8 mt-2">
+              <DialogTitle className="text-center text-orange-500 mb-8 mt-6">
                 Schedule an interview for the candidate below for the{" "}
                 <span className="text-orange-500">{jobTitle}</span> position
               </DialogTitle>
@@ -68,12 +72,12 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                   {/* Left Column - Name and Location */}
                   <div>
                     <span className="text-sm block mb-2">
-                      Name of Job Hunter
+                      {candidateName || "Name of Job Hunter"}
                     </span>
                     <div className="flex items-center gap-2">
                       <span className="text-orange-500">*</span>
                       <span className="text-sm text-black">
-                        Based in (Country)
+                        Based in {location || "(Country)"}
                       </span>
                     </div>
                   </div>
@@ -125,7 +129,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                         </Button>
                         {isCalendarOpen && (
                           <div
-                            className="absolute z-50 mt-1 left-1/2 -translate-x-1/2"
+                            className="fixed z-50 left-[40%] md:left-[26%] -translate-x-1/2"
                             onClick={(e) => e.stopPropagation()}
                           >
                             <Calendar

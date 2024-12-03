@@ -20,25 +20,31 @@ interface ScheduleInterviewModalProps {
   jobTitle: string;
   skills: Array<{ name: string; isMatch: boolean }>;
   certificate?: string;
+  company: string;
+  location: string;
 }
 
 const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
   isOpen,
   onClose,
   jobTitle,
+  skills,
+  certificate,
+  company,
+  location,
 }) => {
   const [date, setDate] = useState<Date>();
   const [selectedTime, setSelectedTime] = useState<string>();
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
   // Generate time slots for 24 hours (48 half-hour slots)
-const timeSlots = Array.from({ length: 48 }, (_, i) => {
-  const hour = Math.floor(i / 2);
-  const minutes = i % 2 === 0 ? "00" : "30";
-  const ampm = hour >= 12 ? "PM" : "AM";
-  const formattedHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
-  return `${formattedHour}:${minutes} ${ampm}`;
-});
+  const timeSlots = Array.from({ length: 48 }, (_, i) => {
+    const hour = Math.floor(i / 2);
+    const minutes = i % 2 === 0 ? "00" : "30";
+    const ampm = hour >= 12 ? "PM" : "AM";
+    const formattedHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+    return `${formattedHour}:${minutes} ${ampm}`;
+  });
 
   const handleDateSelect = (selectedDate: Date) => {
     setDate(selectedDate);
@@ -47,12 +53,12 @@ const timeSlots = Array.from({ length: 48 }, (_, i) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-full max-w-3xl h-[90vh] md:h-[822px] p-0 flex flex-col">
+      <DialogContent className="w-full max-w-3xl h-[530px] p-0 flex flex-col">
         <div className="flex flex-col h-full">
           <div className="flex-1 overflow-y-auto">
             <DialogHeader className="p-4 md:p-6">
               {/* Header Title */}
-              <DialogTitle className="text-center mb-8">
+              <DialogTitle className="text-center mb-8 mt-6">
                 Schedule an interview for the{" "}
                 <span className="text-orange-500">({jobTitle})</span> position
               </DialogTitle>
@@ -62,13 +68,11 @@ const timeSlots = Array.from({ length: 48 }, (_, i) => {
                 <div className="grid grid-cols-2">
                   {/* Left Column - Name and Location */}
                   <div>
-                    <span className="text-sm block mb-2">
-                      Name of Job Hunter
-                    </span>
+                    <span className="text-sm block mb-2">{company}</span>
                     <div className="flex items-center gap-2">
                       <span className="text-orange-500">*</span>
                       <span className="text-sm text-black">
-                        Based in (Country)
+                        Based in {location}
                       </span>
                     </div>
                   </div>
@@ -78,28 +82,23 @@ const timeSlots = Array.from({ length: 48 }, (_, i) => {
                     <div>
                       <span className="text-sm block mb-2">Core Skills:</span>
                       <div className="flex flex-wrap gap-1.5">
-                        <span className="bg-[#184E77] text-white px-2 py-0.5 text-xs rounded">
-                          Angular
-                        </span>
-                        <span className="bg-[#168AAD] text-white px-2 py-0.5 text-xs rounded">
-                          Javascript
-                        </span>
-                        <span className="bg-[#184E77] text-white px-2 py-0.5 text-xs rounded">
-                          Flutter
-                        </span>
-                        <span className="bg-[#168AAD] text-white px-2 py-0.5 text-xs rounded">
-                          Node.JS
-                        </span>
-                        <span className="bg-[#184E77] text-white px-2 py-0.5 text-xs rounded">
-                          HTML5
-                        </span>
+                        {skills.map((skill, index) => (
+                          <span
+                            key={index}
+                            className={`${
+                              index % 2 === 0 ? "bg-[#184E77]" : "bg-[#168AAD]"
+                            } text-white px-2 py-0.5 text-xs rounded`}
+                          >
+                            {skill.name}
+                          </span>
+                        ))}
                       </div>
                     </div>
 
                     <div>
                       <span className="text-sm block mb-2">Certificate:</span>
                       <span className="text-orange-500 border border-orange-500 px-2 py-0.5 text-xs rounded">
-                        Microsoft Certified: Azure Developer Associate
+                        {certificate || "None required"}
                       </span>
                     </div>
                   </div>
@@ -108,7 +107,7 @@ const timeSlots = Array.from({ length: 48 }, (_, i) => {
                 {/* Date and Time Selection */}
                 <div className="grid grid-cols-2 gap-4 mt-8">
                   <div>
-                  <InputField label="Date" variant="secondary">
+                    <InputField label="Date" variant="secondary">
                       <div className="relative" tabIndex={-1}>
                         <Button
                           variant="outline"
@@ -124,7 +123,7 @@ const timeSlots = Array.from({ length: 48 }, (_, i) => {
                         </Button>
                         {isCalendarOpen && (
                           <div
-                            className="absolute z-50 mt-1 left-1/2 -translate-x-1/2"
+                            className="fixed z-50 left-[40%] md:left-[26%] -translate-x-1/2"
                             onClick={(e) => e.stopPropagation()}
                           >
                             <Calendar
@@ -140,8 +139,11 @@ const timeSlots = Array.from({ length: 48 }, (_, i) => {
                   </div>
 
                   <div>
-                  <InputField label="Time" variant="secondary">
-                      <Select value={selectedTime} onValueChange={setSelectedTime}>
+                    <InputField label="Time" variant="secondary">
+                      <Select
+                        value={selectedTime}
+                        onValueChange={setSelectedTime}
+                      >
                         <SelectTrigger className="w-full border-2 rounded bg-transparent border-black h-[56px]">
                           <SelectValue placeholder="Select a time" />
                         </SelectTrigger>

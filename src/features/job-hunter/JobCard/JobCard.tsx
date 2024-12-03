@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "components";
 import { Button } from "components";
-import { SkillsWithEllipsis } from "components";  
+import { SkillsWithEllipsis } from "components";
 import { JobPreviewModal } from "features/job-hunter";
 import { useBookmarks } from "components";
 import { ScheduleInterviewModal } from "features/job-hunter";
@@ -67,7 +67,7 @@ const generateCardId = (match: Match): string => {
     .replace(/\s+/g, "-");
 };
 
-const BookmarkButton: FC<{ 
+const BookmarkButton: FC<{
   cardId: string;
   className?: string;
 }> = ({ cardId, className = "" }) => {
@@ -93,24 +93,28 @@ const JobCard: FC<JobCardProps> = ({ match, isFreeTrial = false }) => {
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const cardId = generateCardId(match);
 
+  const handleCardClick = () => {
+    if (isFreeTrial) return;
+    // Only open preview if schedule modal isn't open
+    if (!isScheduleModalOpen) {
+      setIsModalOpen(true);
+    }
+  };
+
   const handleInterested = (e?: React.MouseEvent) => {
     if (e) {
       e.stopPropagation();
     }
     if (isFreeTrial) return;
-    setIsScheduleModalOpen(true); // Open schedule modal instead of console.log
-  };
-
-  const handleCardClick = () => {
-    if (isFreeTrial) return;
-    setIsModalOpen(true);
+    setIsScheduleModalOpen(true);
+    setIsModalOpen(false);
   };
 
   return (
     <>
-      <Card 
+      <Card
         className={`bg-white border-none h-[275px] relative w-full max-w-[436px] transition-shadow duration-200 ${
-          isFreeTrial ? 'cursor-not-allowed' : 'cursor-pointer hover:shadow-lg'
+          isFreeTrial ? "cursor-not-allowed" : "cursor-pointer hover:shadow-lg"
         }`}
         onClick={handleCardClick}
       >
@@ -126,12 +130,17 @@ const JobCard: FC<JobCardProps> = ({ match, isFreeTrial = false }) => {
             </div>
           </div>
           <div className="w-full relative">
-            <CardTitle className="text-sm font-semibold">{match.position}</CardTitle>
+            <CardTitle className="text-sm font-semibold">
+              {match.position}
+            </CardTitle>
             <BookmarkButton
               cardId={cardId}
-              className="absolute top-0 right-[-8px]" 
+              className="absolute top-0 right-[-8px]"
             />
-            <SecureCompanyDisplay isFreeTrial={isFreeTrial} company={match.company} />
+            <SecureCompanyDisplay
+              isFreeTrial={isFreeTrial}
+              company={match.company}
+            />
             <div className="flex flex-row items-center gap-1">
               <MapPin size={14} className="text-orange-500" />
               <p className="text-[13px] font-light mt-0">
@@ -174,14 +183,14 @@ const JobCard: FC<JobCardProps> = ({ match, isFreeTrial = false }) => {
         </CardContent>
 
         <CardFooter className="absolute bottom-0 right-0 flex flex-row justify-end items-center space-x-1 p-2">
-          <Button 
+          <Button
             className="text-[10px] sm:text-[12px] font-semibold px-0 w-[100px] sm:w-[133px] h-[24px] sm:h-[27px] bg-orange-500"
             onClick={(e) => handleInterested(e)}
           >
             Schedule Interview
           </Button>
-          <MoreVertical 
-            size={12} 
+          <MoreVertical
+            size={12}
             onClick={(e) => {
               e.stopPropagation();
               if (isFreeTrial) return;
@@ -193,16 +202,20 @@ const JobCard: FC<JobCardProps> = ({ match, isFreeTrial = false }) => {
 
       {!isFreeTrial && (
         <>
-          <JobPreviewModal 
+          <JobPreviewModal
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}
             job={match}
+            onSchedule={handleInterested}
           />
           <ScheduleInterviewModal
             isOpen={isScheduleModalOpen}
             onClose={() => setIsScheduleModalOpen(false)}
             jobTitle={match.position}
             skills={match.skills}
+            company={match.company}
+            location={match.location}
+            certificate="None required" // Or get from match if available
           />
         </>
       )}

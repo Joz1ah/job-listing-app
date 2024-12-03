@@ -103,13 +103,17 @@ const AppCard: FC<AppCardProps> = ({ match, isFreeTrial = false }) => {
 
   const handleCardClick = () => {
     if (isFreeTrial) return;
-    setIsModalOpen(true);
+    // Only open preview if schedule modal isn't open
+    if (!isScheduleModalOpen) {
+      setIsModalOpen(true);
+    }
   };
 
   const handleScheduleInterview = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (isFreeTrial) return;
     setIsScheduleModalOpen(true);
+    setIsModalOpen(false); // Close preview when scheduling
   };
 
   return (
@@ -212,6 +216,7 @@ const AppCard: FC<AppCardProps> = ({ match, isFreeTrial = false }) => {
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}
             app={match}
+            onSchedule={handleScheduleInterview}
           />
           <ScheduleInterviewModal
             isOpen={isScheduleModalOpen}
@@ -219,6 +224,8 @@ const AppCard: FC<AppCardProps> = ({ match, isFreeTrial = false }) => {
             jobTitle={match.job}
             skills={match.skills}
             certificate="None required"
+            candidateName={match.name}
+            location={match.location}
           />
         </>
       )}
