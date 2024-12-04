@@ -10,9 +10,7 @@ import {
 import { Button } from "components";
 import gmeet from "images/google-meet.svg?url";
 import { InputField } from "components";
-import { Calendar as CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
-import { Calendar } from "components";
+import { DatePicker } from "components";
 
 interface ScheduleInterviewModalProps {
   isOpen: boolean;
@@ -20,8 +18,8 @@ interface ScheduleInterviewModalProps {
   jobTitle: string;
   skills: Array<{ name: string; isMatch: boolean }>;
   certificate?: string;
-  candidateName?: string; // Add this
-  location?: string; // Add this
+  candidateName?: string;
+  location?: string;
 }
 
 const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
@@ -35,7 +33,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
 }) => {
   const [date, setDate] = useState<Date>();
   const [selectedTime, setSelectedTime] = useState<string>();
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
 
   // Generate time slots for 24 hours (48 half-hour slots)
   const timeSlots = Array.from({ length: 48 }, (_, i) => {
@@ -46,11 +44,6 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
     return `${formattedHour}:${minutes} ${ampm}`;
   });
 
-  const handleDateSelect = (selectedDate: Date) => {
-    setDate(selectedDate);
-    setIsCalendarOpen(false); // Close calendar popover after selection
-  };
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="w-full max-w-3xl h-[530px] p-0 flex flex-col">
@@ -60,7 +53,6 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
         >
           <div className="flex-1 overflow-y-auto">
             <DialogHeader className="p-4 md:p-6">
-              {/* Header Title */}
               <DialogTitle className="text-center text-orange-500 mb-8 mt-6">
                 Schedule an interview for the candidate below for the{" "}
                 <span className="text-orange-500">{jobTitle}</span> position
@@ -69,7 +61,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
               <div className="space-y-6">
                 {/* Name and Skills Grid */}
                 <div className="grid grid-cols-2">
-                  {/* Left Column - Name and Location */}
+                  {/* Left Column */}
                   <div>
                     <span className="text-sm block mb-2">
                       {candidateName || "Name of Job Hunter"}
@@ -82,7 +74,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                     </div>
                   </div>
 
-                  {/* Right Column - Skills and Certificate */}
+                  {/* Right Column */}
                   <div className="space-y-4">
                     <div>
                       <span className="text-sm block mb-2">Core Skills:</span>
@@ -114,29 +106,24 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <InputField label="Date" variant="secondary">
-                      <div className="relative" tabIndex={-1}>
-                        <Button
-                          variant="outline"
-                          tabIndex={-1}
-                          className="w-full border-2 rounded bg-transparent border-black h-[56px] justify-start text-left font-normal text-black hover:bg-transparent hover:border-black focus:outline-none focus:border-orange-500"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setIsCalendarOpen(!isCalendarOpen);
-                          }}
+                      <div className="relative">
+                        <div
+                          className="w-full border-2 rounded bg-transparent border-black h-[56px] px-3 flex items-center cursor-pointer"
+                          onClick={() => setIsDatePickerOpen(true)}
                         >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {date ? format(date, "PPP") : "Select a date"}
-                        </Button>
-                        {isCalendarOpen && (
-                          <div
-                            className="fixed z-50 left-[40%] md:left-[26%] -translate-x-1/2"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <Calendar
-                              onDateSelect={handleDateSelect}
+                          {date ? date.toLocaleDateString() : "Select a date"}
+                        </div>
+                        {isDatePickerOpen && (
+                          <div className="fixed z-50 left-[40%] md:left-[26%] -translate-x-1/2">
+                            <DatePicker
+                              isOpen={isDatePickerOpen}
+                              onClose={() => setIsDatePickerOpen(false)}
+                              onDateSelect={(selectedDate) => {
+                                setDate(selectedDate);
+                                setIsDatePickerOpen(false);
+                              }}
+                              initialDate={date}
                               variant="secondary"
-                              isOpen={isCalendarOpen}
-                              onClose={() => setIsCalendarOpen(false)}
                             />
                           </div>
                         )}
