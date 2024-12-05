@@ -6,7 +6,7 @@ import { Tooltip } from "components";
 
 interface Interview {
   position: string;
-  company: string;
+  name: string;
   date: string;
   time: string;
   location: string;
@@ -48,9 +48,9 @@ const AcceptedCard: FC<InterviewCardProps> = ({
           </div>
         </div>
         <div className="w-full relative mt-2">
-          <h3 className="text-[14px] font-semibold">{interview.position}</h3>
+          <h3 className="text-[14px] font-semibold">{interview.name}</h3>
           <p className="text-[13px] text-black underline">
-            {interview.company}
+            {interview.position}
           </p>
           <div className="flex flex-row items-center">
             <MapPin size={14} className="text-orange-500" />

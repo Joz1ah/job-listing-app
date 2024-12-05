@@ -14,7 +14,7 @@ import { Tooltip } from "components";
 
 interface Interview {
   position: string;
-  name: string;
+  company: string;
   date: string;
   time: string;
   location: string;
@@ -63,10 +63,10 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
               : "Requested Reschedule by:"}
           </span>
           <h3 className="text-[14px] font-semibold mt-1">
-            {interview.name}
+            {interview.position}
           </h3>
           <p className="text-[13px] text-black underline">
-            {interview.position}
+            {interview.company}
           </p>
           <div className="flex items-center mt-1">
             <MapPin size={14} className="text-orange-500" />

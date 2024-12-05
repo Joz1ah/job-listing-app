@@ -45,5 +45,6 @@ export { AcceptModal } from 'features/employer/EmployerInterviews/modals/AcceptM
 export { DeclineModal } from 'features/employer/EmployerInterviews/modals/DeclineModal'
 export { RescheduleModal } from 'features/employer/EmployerInterviews/modals/RescheduleModal'
 export { RescheduleCard } from 'features/employer/EmployerInterviews/interview-card/reschedule-card'
-export { DeclineCard } from 'features/employer/EmployerInterviews/interview-card/decline-card'
+export { DeclinedCard } from 'features/employer/EmployerInterviews/interview-card/declined-card'
 export { CompletedCard } from 'features/employer/EmployerInterviews/interview-card/completed-card'
+export { SettingsSidebar } from 'features/employer/Sidebar/settings-sidebar-employer'

@@ -1,6 +1,6 @@
 import { FC } from "react";
-import { MapPin, Info, Check, Bookmark } from "lucide-react";
-import { Card, CardHeader, CardContent, CardFooter } from "components";
+import { MapPin, Star, Info, Bookmark } from "lucide-react";
+import { Card, CardHeader, CardContent } from "components";
 import { Button } from "components";
 import { Tooltip } from "components";
 
@@ -12,21 +12,22 @@ interface Interview {
   location: string;
   receivedTime?: string;
   isNew?: boolean;
+  rating?: number;
 }
-
-import gmeet from "images/google-meet.svg?url";
 
 interface InterviewCardProps {
   interview: Interview;
-  onJoinInterview?: () => void;
-  onPreviewJob?: () => void;
+  onRateInterview?: () => void;
+  onViewRating?: () => void;
 }
 
-const AcceptedCard: FC<InterviewCardProps> = ({
+const CompletedCard: FC<InterviewCardProps> = ({
   interview,
-  onJoinInterview,
-  onPreviewJob,
+  onRateInterview,
+  onViewRating,
 }) => {
+  const hasRatings = !!interview.rating;
+
   return (
     <Card className="bg-[#FFFFFF] border-none w-full md:w-[436px] h-auto md:h-[275px]">
       <CardHeader className="flex flex-col justify-between items-start pb-0">
@@ -63,6 +64,9 @@ const AcceptedCard: FC<InterviewCardProps> = ({
 
       <CardContent className="pt-1">
         <div className="flex flex-col gap-1">
+          <span className="text-[13px] text-orange-500 font-semibold">
+            Interview on:
+          </span>
           <div className="flex items-center gap-1">
             <span className="text-[13px] min-w-[40px]">Date:</span>
             <span className="text-[13px] font-semibold px-1 rounded-[2px] bg-[#184E77] text-white w-[135px] h-[17px] flex justify-center">
@@ -75,42 +79,52 @@ const AcceptedCard: FC<InterviewCardProps> = ({
               {interview.time}
             </span>
           </div>
+
+          <div className="flex flex-col items-start gap-2 pt-2">
+            {hasRatings ? (
+              <div className="flex items-center gap-1">
+                <div className="flex items-center">
+                  <span className="text-black text-sm">You rated: </span>
+                  <span className="text-sm text-black ml-1">
+                    {interview.rating}
+                  </span>
+                  <div className="flex ml-1">
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <Star
+                        key={index}
+                        className="w-4 h-4 text-orange-500 fill-orange-500"
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <div className="border border-dashed border-orange-500 px-2">
+                  <span className="text-[15px] text-black">
+                    No ratings submitted yet
+                  </span>
+                </div>
+                <Tooltip content="Please evaluate this candidate's interview performance and help refine your hiring process.">
+                  <Info className="w-4 h-4 fill-orange-500 text-white mb-4" />
+                </Tooltip>
+              </div>
+            )}
+            <Button
+              onClick={hasRatings ? onViewRating : onRateInterview}
+              className={`text-xs h-[26px] w-[205px] rounded ${
+                hasRatings
+                  ? "bg-white border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white"
+                  : "bg-orange-500 hover:bg-orange-600 text-white"
+              }`}
+            >
+              {hasRatings ? "View Rating" : "Rate Interview"}
+            </Button>
+          </div>
         </div>
       </CardContent>
-
-      <CardFooter className="flex flex-col items-start space-y-4">
-        <div className="flex flex-row justify-start space-x-6 w-full">
-          <div className="flex items-center gap-1">
-            {" "}
-            {/* Add this wrapper div */}
-            <Button
-              onClick={onJoinInterview}
-              className="text-xs w-[118px] h-[32px] font-normal bg-[#AEADAD] hover:bg-gray-500 text-white p-0 rounded-sm"
-            >
-              <img src={gmeet} alt="google meet" />
-              Join Interview
-            </Button>
-            <Tooltip content="The meeting link will be accesible on the day of the interview">
-              <Info className="w-3 h-3 fill-orange-500 mb-6 text-white" />
-            </Tooltip>
-          </div>
-          <Button
-            onClick={onPreviewJob}
-            variant="outline"
-            className="text-xs w-[108px] h-[32px] font-normal text-orange-500 border-2 border-orange-500 hover:bg-orange-500 hover:text-white rounded-sm"
-          >
-            Preview Job
-          </Button>
-        </div>
-        <div className="flex flex-row justify-start w-full items-center">
-          <span className="text-sm text-black font-normal flex items-center gap-1">
-            Status: <Check className="w-4 h-4 text-[#4BAF66] inline" />{" "}
-            <span className="text-green-600">Accepted</span>
-          </span>
-        </div>
-      </CardFooter>
     </Card>
   );
 };
 
-export { AcceptedCard };
+export { CompletedCard };

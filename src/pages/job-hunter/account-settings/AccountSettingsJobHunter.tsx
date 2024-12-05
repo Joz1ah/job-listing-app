@@ -5,7 +5,7 @@ import { PageMeta, ScrollArea } from "components";
 import { jobHunterDesktopMenu, jobHunterMobileMenu } from "mockData/nav-menus";
 import { JobHunterContext } from "components";
 import { JobHunterMenu, Footer } from "layouts";
-import { SettingsSidebar } from "features";
+import { SettingsSidebar } from "features/job-hunter";
 import { useJobHunterTrialStatus } from "components";
 
 const AccountSettingsJobHunter: FC = () => {

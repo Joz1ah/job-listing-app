@@ -10,9 +10,10 @@ import {
   AcceptData,
   DeclineData,
   RescheduleData,
-} from "features/shared/types";
+} from "features/employer/types";
 
 import gmeet from "images/google-meet.svg?url";
+
 
 interface PendingCardProps {
   interview: Interview;
@@ -55,10 +56,10 @@ const PendingCard: FC<PendingCardProps> = ({
           </div>
           <div className="w-full relative mt-2">
             <h3 className="text-[14px] font-semibold pr-8">
-              {interview.position}
+              {interview.name}
             </h3>
             <p className="text-[13px] text-black underline">
-              {interview.company}
+              {interview.position}
             </p>
             <div className="flex flex-row items-center">
               <MapPin size={14} className="text-orange-500" />

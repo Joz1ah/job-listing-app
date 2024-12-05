@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "components";
 
-import { BaseModalProps, DeclineData } from "features/shared/types";
+import { BaseModalProps, DeclineData } from "features/job-hunter/types";
 import gmeet from "images/google-meet.svg?url";
 
 import { InputField } from "components";

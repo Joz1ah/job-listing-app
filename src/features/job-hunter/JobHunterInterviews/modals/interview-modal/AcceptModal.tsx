@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
 import { Button } from "components";
 import { MapPin } from "lucide-react";
 
-import { BaseModalProps, AcceptData } from "features/shared/types";
+import { BaseModalProps, AcceptData } from "features/job-hunter/types";
 import gmeet from "images/google-meet.svg?url";
 
 interface AcceptModalProps extends BaseModalProps {

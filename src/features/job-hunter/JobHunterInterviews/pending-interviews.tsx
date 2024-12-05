@@ -1,8 +1,9 @@
 import { FC, useState, useEffect, useRef } from "react";
 import { PendingCard } from "features/job-hunter";
 import { InterviewCardSkeleton } from "components";
+import { NavLink } from "react-router-dom";
+import emptyInterview from "images/calendar-empty.svg?url";
 
-// Add the modal action interfaces
 interface AcceptData {
   confirmed: boolean;
   interviewId?: string;
@@ -104,22 +105,15 @@ const PendingInterviews: FC = () => {
   const [initialLoad, setInitialLoad] = useState(true);
   const loaderRef = useRef<HTMLDivElement>(null);
 
-  // Add handlers for modal actions
   const handleAccept = async (interview: Interview, data: AcceptData) => {
     try {
       console.log('Accept:', interview, data);
-      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Remove the accepted interview from the list
       setDisplayedItems(prev => 
         prev.filter(item => item !== interview)
       );
-      
-      // You might want to show a success notification here
     } catch (error) {
       console.error('Error accepting interview:', error);
-      // Handle error (show error notification, etc.)
     }
   };
 
@@ -127,7 +121,6 @@ const PendingInterviews: FC = () => {
     try {
       console.log('Decline:', interview, data);
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
       setDisplayedItems(prev => 
         prev.filter(item => item !== interview)
       );
@@ -140,8 +133,6 @@ const PendingInterviews: FC = () => {
     try {
       console.log('Reschedule:', interview, data);
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Update the interview with new date/time
       setDisplayedItems(prev => 
         prev.map(item => 
           item === interview 
@@ -190,12 +181,10 @@ const PendingInterviews: FC = () => {
     setLoading(false);
   };
 
-  // Initial load with skeleton
   useEffect(() => {
     const loadInitialItems = async () => {
       setLoading(true);
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
-      
+      await new Promise(resolve => setTimeout(resolve, 1000));
       const initialItems = mockInterviews.slice(0, 6);
       setDisplayedItems(initialItems);
       setHasMore(mockInterviews.length > 6);
@@ -234,6 +223,40 @@ const PendingInterviews: FC = () => {
   const showLoadingCards = loading;
   const loadingCardsCount = Math.min(6, mockInterviews.length);
 
+  // Show empty state if there are no pending interviews and we're not loading
+  if (!loading && displayedItems.length === 0) {
+    return (
+      <div className="h-full w-full flex items-center justify-center">
+        <div className="flex flex-col items-center justify-center p-8 text-center">
+          <div className="mb-6">
+            <img src={emptyInterview} alt="Empty Pending List" />
+          </div>
+
+          <h2 className="text-2xl font-normal mb-4 text-orange-500">
+            No Pending Interviews
+          </h2>
+
+          <p className="text-white mb-6">
+            You don't have any pending interview requests. Explore your
+            <br />
+            <span className="text-orange-500 font-medium mx-1">
+              PERFECT MATCHES
+            </span>
+            to connect & fill your job listing seamlessly
+            <br />
+          </p>
+
+          <NavLink
+            to="/job-hunter/feed"
+            className="bg-orange-500 text-white px-6 py-2 rounded-md hover:bg-orange-600 transition-colors"
+          >
+            Go to Feed
+          </NavLink>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col items-center w-full">
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-y-6 gap-x-14 justify-items-center w-full">
@@ -255,16 +278,6 @@ const PendingInterviews: FC = () => {
             ))}
           </>
         )}
-
-        {!hasMore && displayedItems.length > 0 && !loading && (
-          <div className="bg-transparent border-none w-full h-[275px] flex items-center justify-center text-center">
-            <div className="p-10">
-              <p className="text-xl font-semibold text-white">
-                You've reached the end of your pending interviews!
-              </p>
-            </div>
-          </div>
-        )}
         
         <div ref={loaderRef} className="h-px w-px" />
       </div>
@@ -272,4 +285,4 @@ const PendingInterviews: FC = () => {
   );
 };
 
-export { PendingInterviews };
+export { PendingInterviews }

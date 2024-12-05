@@ -5,7 +5,7 @@ import { PageMeta, ScrollArea } from "components";
 import { employerDesktopMenu, employerMobileMenu} from "mockData/nav-menus";
 import { EmployerContext} from "components";
 import { EmployerMenu, Footer } from "layouts";
-import { SettingsSidebar } from "features";
+import { SettingsSidebar } from "features/employer";
 import { useEmployerTrialStatus } from "components";
 
 const AccountSettingsEmployer: FC = () => {

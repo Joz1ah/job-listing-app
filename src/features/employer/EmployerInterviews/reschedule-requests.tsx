@@ -6,7 +6,7 @@ import emptyInterview from "images/calendar-empty.svg?url";
 
 interface Interview {
   position: string;
-  company: string;
+  name: string;
   date: string;
   time: string;
   location: string;
@@ -22,7 +22,7 @@ interface Interview {
 const mockInterviews: Interview[] = [
   {
     position: "Sr. Mobile and Web Developer",
-    company: "MAC Technofirm",
+    name: "Mia Lee",
     location: "USA",
     date: "December 29, 2024",
     time: "8:00 AM EST",
@@ -35,7 +35,7 @@ const mockInterviews: Interview[] = [
   },
   {
     position: "Full Stack Developer",
-    company: "Neutic Labs",
+    name: "William Scott",
     location: "USA",
     date: "January 3, 2025",
     time: "2:00 PM PST",
@@ -48,7 +48,7 @@ const mockInterviews: Interview[] = [
   },
   {
     position: "Junior Front End Developer",
-    company: "TechSphere Solutions",
+    name: "Charlotte Adams",
     location: "India",
     date: "February 1, 2025",
     time: "4:00 PM IST",
@@ -61,7 +61,7 @@ const mockInterviews: Interview[] = [
   },
   {
     position: "Jr. Web Developer",
-    company: "CloudCred Innovations",
+    name: "Vicky Rawkus",
     location: "India",
     date: "February 1, 2025",
     time: "2:00 PM IST",

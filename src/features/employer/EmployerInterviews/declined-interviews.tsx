@@ -1,12 +1,12 @@
 import { FC, useState, useEffect, useRef } from "react";
-import { DeclineCard } from "features/employer";
+import { DeclinedCard } from "features/employer";
 import { InterviewCardSkeleton } from "components";
 import { NavLink } from "react-router-dom";
 import emptyInterview from "images/calendar-empty.svg?url";
 
 interface Interview {
   position: string;
-  candidate: string;
+  name: string;
   date: string;
   time: string;
   location: string;
@@ -19,36 +19,36 @@ interface Interview {
 const mockInterviews: Interview[] = [
   {
     position: "Sr Mobile and Web Developer",
-    candidate: "John Smith",
+    name: "John Smith",
     location: "USA",
     date: "December 20, 2024",
     time: "8:00 AM EST",
     sentTime: "today",
     receivedTime: "today",
     reason: "Not Actively Seeking",
-    isNew: true
+    isNew: true,
   },
   {
     position: "Full Stack Developer",
-    candidate: "Emma Johnson",
+    name: "Emma Johnson",
     location: "Remote",
     date: "December 23, 2024",
     time: "1:00 PM EST",
     sentTime: "yesterday",
     receivedTime: "yesterday",
     reason: "Schedule Conflict",
-    isNew: false
+    isNew: false,
   },
   {
     position: "Frontend Engineer",
-    candidate: "Michael Brown",
+    name: "Michael Brown",
     location: "Canada",
     date: "December 26, 2024",
     time: "11:30 AM EST",
     sentTime: "2 days ago",
     receivedTime: "2 days ago",
     reason: "Accepted Another Offer",
-    isNew: false
+    isNew: false,
   }
 ];
 
@@ -166,7 +166,7 @@ const DeclinedInterviews: FC = () => {
     <div className="flex flex-col items-center w-full">
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-y-6 gap-x-14 justify-items-center w-full">
         {!initialLoad && displayedItems.map((interview, index) => (
-          <DeclineCard
+          <DeclinedCard
             key={index}
             interview={interview}
           />

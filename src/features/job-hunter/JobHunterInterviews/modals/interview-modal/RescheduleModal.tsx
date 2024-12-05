@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "components";
-import { BaseModalProps, RescheduleData } from "features/shared/types";
+import { BaseModalProps, RescheduleData } from "features/job-hunter/types";
 
 import gmeet from "images/google-meet.svg?url";
 

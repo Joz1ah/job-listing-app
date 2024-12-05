@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "components";
-import { BaseModalProps, RescheduleData } from "features/shared/types";
+import { BaseModalProps, RescheduleData } from "features/employer/types";
 
 import gmeet from "images/google-meet.svg?url";
 
@@ -55,7 +55,7 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
               </span>
             </div>
             <p className="text-sm text-black underline cursor-pointer break-words">
-              {interviewData.company}
+              {interviewData.name}
             </p>
             <div className="flex items-center mt-1">
               <MapPin className="text-orange-500" size={12} />

@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
 import { Button } from "components";
 import { MapPin } from "lucide-react";
 
-import { BaseModalProps, AcceptData } from "features/shared/types";
+import { BaseModalProps, AcceptData } from "features/employer/types";
 import gmeet from "images/google-meet.svg?url";
 
 interface AcceptModalProps extends BaseModalProps {
@@ -52,7 +52,7 @@ const AcceptModal: FC<AcceptModalProps> = ({
               </span>
             </div>
             <p className="text-sm text-black underline cursor-pointer break-words">
-              {interviewData.company}
+              {interviewData.name}
             </p>
             <div className="flex items-center mt-1">
               <MapPin className="text-orange-500" size={12} />

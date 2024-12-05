@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "components";
 
-import { BaseModalProps, DeclineData } from "features/shared/types";
+import { BaseModalProps, DeclineData } from "features/employer/types";
 import gmeet from "images/google-meet.svg?url";
 
 import { InputField } from "components";
@@ -58,7 +58,7 @@ const DeclineModal: FC<DeclineModalProps> = ({
               </span>
             </div>
             <p className="text-sm text-black underline cursor-pointer break-words">
-              {interviewData.company}
+              {interviewData.name}
             </p>
             <div className="flex items-center mt-1">
               <MapPin className="text-orange-500" size={12} />

@@ -23,7 +23,7 @@ interface RescheduleData {
 
 interface Interview {
   position: string;
-  company: string;
+  name: string;
   date: string;
   time: string;
   location: string;
@@ -38,7 +38,7 @@ interface Interview {
 const mockInterviews: Interview[] = [
   {
       position: "Frontend Engineer",
-      company: "Google",
+      name: "Olivia Martinez",
       location: "Mountain View, CA",
       date: "December 22, 2024",
       time: "10:00 AM PST",
@@ -48,7 +48,7 @@ const mockInterviews: Interview[] = [
     },
     {
       position: "Backend Developer",
-      company: "Meta",
+      name: "Benjamin Wilson",
       location: "Menlo Park, CA",
       date: "December 25, 2024",
       time: "1:00 PM PST",
@@ -58,7 +58,7 @@ const mockInterviews: Interview[] = [
     },
     {
       position: "Full Stack Developer",
-      company: "Shopify",
+      name: "Isabella Garcia",
       location: "Remote",
       date: "January 5, 2025",
       time: "3:00 PM EST",
@@ -68,7 +68,7 @@ const mockInterviews: Interview[] = [
     },
     {
       position: "UX/UI Designer",
-      company: "Adobe",
+      name: "Ethan Harris",
       location: "San Jose, CA",
       date: "January 10, 2025",
       time: "9:00 AM PST",
@@ -78,7 +78,7 @@ const mockInterviews: Interview[] = [
     },
     {
       position: "Data Scientist",
-      company: "Amazon",
+      name: "Ava White",
       location: "Seattle, WA",
       date: "January 15, 2025",
       time: "11:00 AM PST",
@@ -88,7 +88,7 @@ const mockInterviews: Interview[] = [
     },
     {
       position: "DevOps Engineer",
-      company: "Microsoft",
+      name: "Alexander Walker",
       location: "Redmond, WA",
       date: "January 20, 2025",
       time: "2:00 PM PST",
@@ -262,7 +262,7 @@ const PendingInterviews: FC = () => {
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-y-6 gap-x-14 justify-items-center w-full">
         {!initialLoad && displayedItems.map((interview, index) => (
           <PendingCard 
-            key={`${interview.company}-${interview.position}-${index}`}
+            key={`${interview.position}-${interview.name}-${index}`}
             interview={interview}
             onAccept={(data) => handleAccept(interview, data)}
             onDecline={(data) => handleDecline(interview, data)}
