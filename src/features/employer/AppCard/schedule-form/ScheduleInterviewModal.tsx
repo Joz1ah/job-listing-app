@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "components";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "components";
 import { Button } from "components";
 import gmeet from "images/google-meet.svg?url";
 import { InputField } from "components";
@@ -73,7 +79,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
     handleSubmit,
     setFieldValue,
     resetForm,
-    isValid
+    isValid,
   } = formik;
 
   // Reset form when modal closes
@@ -113,9 +119,11 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
     <>
       <Dialog open={isOpen} onOpenChange={handleModalClose}>
         <DialogContent className="w-full max-w-3xl h-[530px] p-0 flex flex-col">
-          <div 
-            className="flex flex-col h-full" 
-            onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}
+          <div
+            className="flex flex-col h-full"
+            onClick={(e: React.MouseEvent<HTMLDivElement>) =>
+              e.stopPropagation()
+            }
           >
             <div className="flex-1 overflow-y-auto">
               <DialogHeader className="p-4 md:p-6">
@@ -149,7 +157,9 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                             <span
                               key={index}
                               className={`${
-                                index % 2 === 0 ? "bg-[#184E77]" : "bg-[#168AAD]"
+                                index % 2 === 0
+                                  ? "bg-[#184E77]"
+                                  : "bg-[#168AAD]"
                               } text-white px-2 py-0.5 text-xs rounded`}
                             >
                               {skill.name}
@@ -161,7 +171,8 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                       <div>
                         <span className="text-sm block mb-2">Certificate:</span>
                         <span className="text-orange-500 border border-orange-500 px-2 py-0.5 text-xs rounded">
-                          {certificate || "Microsoft Certified: Azure Developer Associate"}
+                          {certificate ||
+                            "Microsoft Certified: Azure Developer Associate"}
                         </span>
                       </div>
                     </div>
@@ -170,19 +181,19 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                   {/* Date and Time Selection */}
                   <div className="grid grid-cols-2 gap-8">
                     <div>
-                      <InputField 
-                        label="Date" 
+                      <InputField
+                        label="Date"
                         variant="secondary"
                         error={errors.interviewDate}
                         touched={touched.interviewDate}
                       >
                         <div className="relative">
                           <div
-                            className="w-full border-2 rounded bg-transparent h-[56px] px-3 flex items-center cursor-pointer border-black"
+                            className="w-full border-2 rounded bg-transparent h-[56px] px-3 flex items-center cursor-pointer border-black text-sm"
                             onClick={() => setIsDatePickerOpen(true)}
                           >
-                            {values.interviewDate 
-                              ? values.interviewDate.toLocaleDateString() 
+                            {values.interviewDate
+                              ? values.interviewDate.toLocaleDateString()
                               : "Select a date"}
                           </div>
                           {isDatePickerOpen && (
@@ -201,8 +212,8 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                     </div>
 
                     <div>
-                      <InputField 
-                        label="Time" 
+                      <InputField
+                        label="Time"
                         variant="secondary"
                         touched={touched.interviewTime}
                         error={errors.interviewTime}
@@ -211,9 +222,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                           value={values.interviewTime}
                           onValueChange={handleTimeSelect}
                         >
-                          <SelectTrigger 
-                            className="w-full border-2 rounded bg-transparent h-[56px] border-black"
-                          >
+                          <SelectTrigger className="w-full border-2 rounded bg-transparent h-[56px] border-black">
                             <SelectValue placeholder="Select a time" />
                           </SelectTrigger>
                           <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none max-h-[200px]">
@@ -221,7 +230,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                               <SelectItem
                                 key={time}
                                 value={time}
-                                className="rounded-none justify-start pl-3 h-[55px]"
+                                className="rounded-none justify-center pl-3 h-[55px]"
                               >
                                 {time}
                               </SelectItem>
@@ -270,8 +279,8 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
         </DialogContent>
       </Dialog>
 
-      <InvitationSentModal 
-        isOpen={showSuccessModal} 
+      <InvitationSentModal
+        isOpen={showSuccessModal}
         onClose={() => {
           setShowSuccessModal(false);
           handleModalClose();

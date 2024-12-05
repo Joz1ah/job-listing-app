@@ -86,8 +86,8 @@ const PendingCard: FC<PendingCardProps> = ({
             </div>
             <div className="flex items-center gap-1">
               <img src={gmeet} alt="gmeet" />
-              <span className="text-[13px] text-gray-400 cursor-pointer">
-                {interview.meetingLink}
+              <span className="text-xs text-orange-500 font-light">
+                via Google meet
               </span>
             </div>
           </div>
@@ -121,7 +121,7 @@ const PendingCard: FC<PendingCardProps> = ({
       <AcceptModal
         isOpen={activeModal === "accept"}
         onClose={() => setActiveModal(null)}
-        interviewData={interview}
+        interview={interview}
         onAccept={(data) => {
           onAccept?.(data);
           setActiveModal(null);
@@ -131,7 +131,7 @@ const PendingCard: FC<PendingCardProps> = ({
       <DeclineModal
         isOpen={activeModal === "decline"}
         onClose={() => setActiveModal(null)}
-        interviewData={interview}
+        interview={interview}
         onDecline={(data) => {
           onDecline?.(data);
           setActiveModal(null);
@@ -141,7 +141,7 @@ const PendingCard: FC<PendingCardProps> = ({
       <RescheduleModal
         isOpen={activeModal === "reschedule"}
         onClose={() => setActiveModal(null)}
-        interviewData={interview}
+        interview={interview}
         onReschedule={(data) => {
           onReschedule?.(data);
           setActiveModal(null);

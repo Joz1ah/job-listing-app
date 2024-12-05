@@ -16,7 +16,7 @@ export interface Interview {
   export interface BaseModalProps {
     isOpen: boolean;
     onClose: () => void;
-    interviewData: Interview;
+    interview: Interview;
   }
   
   export interface AcceptData {

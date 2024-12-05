@@ -13,13 +13,13 @@ interface AcceptModalProps extends BaseModalProps {
 export const AcceptModal: FC<AcceptModalProps> = ({
   isOpen,
   onClose,
-  interviewData,
+  interview,
   onAccept,
 }) => {
   const handleAccept = () => {
     onAccept({
       confirmed: true,
-      interviewId: interviewData.id,
+      interviewId: interview.id,
     });
     onClose();
   };
@@ -45,19 +45,19 @@ export const AcceptModal: FC<AcceptModalProps> = ({
           <div className="mb-4">
             <div className="flex flex-wrap justify-between items-start gap-2">
               <h3 className="text-sm font-medium break-words">
-                {interviewData.position}
+                {interview.position}
               </h3>
               <span className="text-xs text-gray-400">
-                Received {interviewData.receivedTime}
+                Received {interview.receivedTime}
               </span>
             </div>
             <p className="text-sm text-black underline cursor-pointer break-words">
-              {interviewData.company}
+              {interview.company}
             </p>
             <div className="flex items-center mt-1">
               <MapPin className="text-orange-500" size={12} />
               <p className="text-xs text-gray-600 break-words">
-                Based in {interviewData.location}
+                Based in {interview.location}
               </p>
             </div>
           </div>
@@ -67,13 +67,13 @@ export const AcceptModal: FC<AcceptModalProps> = ({
             <div className="flex items-center gap-2">
               <span className="text-xs min-w-[40px]">Date:</span>
               <span className="text-xs font-semibold px-2 py-0.5 rounded-sm bg-[#184E77] text-white min-w-[135px] text-center">
-                {interviewData.date}
+                {interview.date}
               </span>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-xs min-w-[40px]">Time:</span>
               <span className="text-xs font-semibold px-2 py-0.5 rounded-sm bg-[#168AAD] text-white min-w-[135px] text-center">
-                {interviewData.time}
+                {interview.time}
               </span>
             </div>
           </div>
@@ -82,7 +82,7 @@ export const AcceptModal: FC<AcceptModalProps> = ({
           <div className="mt-4 flex items-center gap-2">
             <img src={gmeet} alt="Google Meet" className="h-4 w-4" />
             <span className="text-xs text-gray-400 hover:underline cursor-pointer break-all">
-              {interviewData.meetingLink}
+              {interview.meetingLink}
             </span>
           </div>
         </div>
