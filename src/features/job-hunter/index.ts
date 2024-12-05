@@ -9,7 +9,8 @@ export { PrivacyAndSecuritySettings } from 'features/job-hunter/JobHunterSetting
 export { PendingInterviews } from 'features/job-hunter/JobHunterInterviews/pending-interviews'
 export { AcceptedInterviews } from 'features/job-hunter/JobHunterInterviews/accepted-interviews'
 export { RescheduleRequests } from 'features/job-hunter/JobHunterInterviews/reschedule-requests'
-export { InterviewCalendar } from 'features/job-hunter/JobHunterInterviews/interview-calendar'
+export { DeclinedInterviews } from 'features/job-hunter/JobHunterInterviews/declined-interviews'
+export { CompletedInterviews } from 'features/job-hunter/JobHunterInterviews/completed-interviews'
 
 export { BookmarkSidebar } from 'features/job-hunter/Sidebar/bookmark-sidebar'
 export { SavedJobs } from 'features/job-hunter/BookmarkedJobs/saved-jobs'

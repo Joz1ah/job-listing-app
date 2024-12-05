@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { CalendarFold, X, CheckCircle, RotateCcw, Info, BadgeCheck } from "lucide-react";
+import { Check, X, CheckCircle, RotateCcw, Info, BadgeCheck, Clock } from "lucide-react";
 
 interface MenuItem {
   icon: JSX.Element;
@@ -28,9 +28,9 @@ const InterviewSidebarEmployer: FC<InterviewSidebarEmployerProps> = ({
 
   const interviewMenu: MenuItem[] = [
     {
-      icon: <CalendarFold className="w-5 h-5" />,
-      label: "Interview Calendar",
-      path: `${baseRoute}/interviews/calendar`
+      icon: <Clock className="w-5 h-5" />,
+      label: "Pending Interview",
+      path: `${baseRoute}/interviews/pending`
     },
     {
       icon: <CheckCircle className="w-5 h-5" />,
@@ -46,6 +46,11 @@ const InterviewSidebarEmployer: FC<InterviewSidebarEmployerProps> = ({
       icon: <RotateCcw className="w-5 h-5" />,
       label: "Reschedule Requests",
       path: `${baseRoute}/interviews/reschedule`
+    },
+    {
+      icon: <Check className="w-5 h-5" />,
+      label: "Completed Interviews",
+      path: `${baseRoute}/interviews/completed`
     },
   ];
 

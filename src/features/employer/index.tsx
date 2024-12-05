@@ -13,7 +13,7 @@ export { PrivacyAndSecuritySettings } from 'features/employer/EmployerSettings/p
 export { DeclinedInterviews } from 'features/employer/EmployerInterviews/declined-interviews'
 export { AcceptedInterviews } from 'features/employer/EmployerInterviews/accepted-interviews'
 export { RescheduleRequests } from 'features/employer/EmployerInterviews/reschedule-requests'
-export { InterviewCalendar } from 'features/employer/EmployerInterviews/interview-calendar'
+export { CompletedInterviews } from 'features/employer/EmployerInterviews/completed-interviews'
 
 export { ManageJobListingsSidebar } from 'features/employer/Sidebar/manage-job-listings-sidebar'
 export { ReportsAnalyticsSidebar } from 'features/employer/Sidebar/reports-analytics-sidebar'
@@ -37,3 +37,10 @@ export { AppPreviewModal } from 'features/employer/AppCard/app-preview/AppPrevie
 
 export { ScheduleInterviewModal } from 'features/employer/AppCard/schedule-form/ScheduleInterviewModal'
 export { InvitationSentModal } from 'features/employer/AppCard/schedule-form/InvitationSentModal'
+
+export { PendingInterviews } from 'features/employer/EmployerInterviews/pending-interviews'
+export { PendingCard } from 'features/employer/EmployerInterviews/interview-card/pending-card'
+
+export { AcceptModal } from 'features/employer/EmployerInterviews/modals/AcceptModal'
+export { DeclineModal } from 'features/employer/EmployerInterviews/modals/DeclineModal'
+export { RescheduleModal } from 'features/employer/EmployerInterviews/modals/RescheduleModal'

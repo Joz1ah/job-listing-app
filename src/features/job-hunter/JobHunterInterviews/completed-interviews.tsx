@@ -2,7 +2,7 @@ import { FC } from "react";
 import { NavLink } from "react-router-dom";
 import emptyCalendar from "images/calendar-empty.svg?url";
 
-const InterviewCalendar: FC = () => {
+const CompletedInterviews: FC = () => {
   return (
     <div className="h-full w-full flex items-center justify-center">
       <div className="flex flex-col items-center justify-center p-8 text-center">
@@ -35,4 +35,4 @@ const InterviewCalendar: FC = () => {
   );
 };
 
-export { InterviewCalendar };
+export { CompletedInterviews };

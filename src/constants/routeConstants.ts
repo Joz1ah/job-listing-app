@@ -28,7 +28,7 @@ export const ROUTE_CONSTANTS = {
   ACCEPTED: 'accepted',
   RESCHEDULE: 'reschedule',
   DECLINED: 'declined',
-  CALENDAR: 'calendar',
+  COMPLETED: 'completed',
   ACTIVE: 'active',
   DRAFTS: 'drafts',
   EXPIRED: 'expired',
