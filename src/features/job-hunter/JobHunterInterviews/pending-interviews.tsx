@@ -1,6 +1,6 @@
 import { FC, useState, useEffect, useRef } from "react";
 import { PendingCard } from "features/job-hunter";
-import { PendingCardSkeleton } from "components";
+import { InterviewCardSkeleton } from "components";
 
 // Add the modal action interfaces
 interface AcceptData {
@@ -251,7 +251,7 @@ const PendingInterviews: FC = () => {
         {showLoadingCards && (
           <>
             {Array.from({ length: loadingCardsCount }).map((_, index) => (
-              <PendingCardSkeleton key={`skeleton-${index}`} />
+              <InterviewCardSkeleton key={`skeleton-${index}`} />
             ))}
           </>
         )}

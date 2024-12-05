@@ -1,6 +1,8 @@
 import { FC, useState, useEffect, useRef } from "react";
 import { AcceptedCard } from "features/employer";
-import { AcceptedCardSkeleton } from "components";
+import { InterviewCardSkeleton } from "components";
+import { NavLink } from "react-router-dom";
+import emptyInterview from "images/calendar-empty.svg?url";
 
 interface Interview {
   position: string;
@@ -13,7 +15,6 @@ interface Interview {
   isNew?: boolean;
 }
 
-// Mock Data - 3 specific examples
 const mockInterviews: Interview[] = [
   {
     position: "Senior Frontend Engineer",
@@ -88,7 +89,6 @@ const AcceptedInterviews: FC = () => {
     setLoading(false);
   };
 
-  // Initial load with skeleton
   useEffect(() => {
     const loadInitialItems = async () => {
       setLoading(true);
@@ -132,6 +132,40 @@ const AcceptedInterviews: FC = () => {
   const showLoadingCards = loading;
   const loadingCardsCount = Math.min(6, mockInterviews.length);
 
+  // Show empty state if there are no interviews and we're not loading
+  if (!loading && displayedItems.length === 0) {
+    return (
+      <div className="h-full w-full flex items-center justify-center">
+        <div className="flex flex-col items-center justify-center p-8 text-center">
+          <div className="mb-6">
+            <img src={emptyInterview} alt="Empty Calendar" />
+          </div>
+
+          <h2 className="text-2xl font-normal mb-4 text-orange-500">
+            No Accepted Interviews
+          </h2>
+
+          <p className="text-white mb-6">
+            You haven't accepted any interviews yet. Explore your
+            <br />
+            <span className="text-orange-500 font-medium mx-1">
+              PENDING INTERVIEWS
+            </span>
+            to find and confirm your next interview opportunity.
+            <br />
+          </p>
+
+          <NavLink
+            to="/employer/interviews/pending"
+            className="bg-orange-500 text-white px-6 py-2 rounded-md hover:bg-orange-600 transition-colors"
+          >
+            View Pending Interviews
+          </NavLink>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col items-center w-full">
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-y-6 gap-x-14 justify-items-center w-full">
@@ -147,25 +181,14 @@ const AcceptedInterviews: FC = () => {
         {showLoadingCards && (
           <>
             {Array.from({ length: loadingCardsCount }).map((_, index) => (
-              <AcceptedCardSkeleton key={`skeleton-${index}`} />
+              <InterviewCardSkeleton key={`skeleton-${index}`} />
             ))}
           </>
         )}
-
-        {!hasMore && displayedItems.length > 0 && !loading && (
-          <div className="bg-transparent border-none w-full h-[275px] flex items-center justify-center text-center">
-            <div className="p-10">
-              <p className="text-xl font-semibold text-white">
-                You've reached the end of your accepted interviews!
-              </p>
-            </div>
-          </div>
-        )}
-        
         <div ref={loaderRef} className="h-px w-px" />
       </div>
     </div>
   );
 };
 
-export { AcceptedInterviews };
+export { AcceptedInterviews }

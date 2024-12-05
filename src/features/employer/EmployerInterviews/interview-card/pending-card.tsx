@@ -1,18 +1,18 @@
 import { FC, useState } from "react";
-import { MapPin } from "lucide-react";
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardFooter,
-} from "components";
+import { MapPin, Bookmark } from "lucide-react";
+import { Card, CardHeader, CardContent, CardFooter } from "components";
 import { Button } from "components";
 import { AcceptModal } from "features/employer";
 import { DeclineModal } from "features/employer";
 import { RescheduleModal } from "features/employer";
-import { Interview, AcceptData, DeclineData, RescheduleData } from "features/shared/types";
+import {
+  Interview,
+  AcceptData,
+  DeclineData,
+  RescheduleData,
+} from "features/shared/types";
 
-import gmeet from 'images/google-meet.svg?url'
+import gmeet from "images/google-meet.svg?url";
 
 interface PendingCardProps {
   interview: Interview;
@@ -28,7 +28,9 @@ const PendingCard: FC<PendingCardProps> = ({
   onReschedule,
   onDecline,
 }) => {
-  const [activeModal, setActiveModal] = useState<'accept' | 'decline' | 'reschedule' | null>(null);
+  const [activeModal, setActiveModal] = useState<
+    "accept" | "decline" | "reschedule" | null
+  >(null);
 
   return (
     <>
@@ -37,23 +39,32 @@ const PendingCard: FC<PendingCardProps> = ({
           <div className="flex flex-row -mt-4 justify-between w-full">
             <div className="h-[20px]">
               {interview.isNew && (
-                <span className="text-[13px] text-orange-500 font-semibold">
+                <span className="absolute text-[13px] text-orange-500 font-semibold italic">
                   ★ NEW
                 </span>
               )}
             </div>
-            <div className="flex flex-col items-end">
+            <div className="flex flex-col items-end relative">
               <span className="text-[12px] font-light text-gray-400 -mr-2">
                 Received {interview.receivedTime}
               </span>
+              <div className="absolute top-6 -right-2">
+                <Bookmark className="w-6 h-6 text-orange-500" />
+              </div>
             </div>
           </div>
           <div className="w-full relative mt-2">
-            <h3 className="text-[14px] font-semibold pr-8">{interview.position}</h3>
-            <p className="text-[13px] text-black underline">{interview.company}</p>
+            <h3 className="text-[14px] font-semibold pr-8">
+              {interview.position}
+            </h3>
+            <p className="text-[13px] text-black underline">
+              {interview.company}
+            </p>
             <div className="flex flex-row items-center">
               <MapPin size={14} className="text-orange-500" />
-              <p className="text-[13px] font-light mt-0 ml-2">Based in {interview.location}</p>
+              <p className="text-[13px] font-light mt-0 ml-2">
+                Based in {interview.location}
+              </p>
             </div>
           </div>
         </CardHeader>
@@ -73,7 +84,7 @@ const PendingCard: FC<PendingCardProps> = ({
               </span>
             </div>
             <div className="flex items-center gap-1">
-              <img src={gmeet} alt="gmeet"/>
+              <img src={gmeet} alt="gmeet" />
               <span className="text-[13px] text-gray-400 cursor-pointer">
                 {interview.meetingLink}
               </span>
@@ -83,20 +94,20 @@ const PendingCard: FC<PendingCardProps> = ({
 
         <CardFooter className="flex flex-row justify-center pt-2 space-x-6">
           <Button
-            onClick={() => setActiveModal('accept')}
+            onClick={() => setActiveModal("accept")}
             className="text-[13px] font-semibold w-[100px] h-[32px] bg-orange-500 hover:bg-orange-600 text-white"
           >
             Accept
           </Button>
           <Button
-            onClick={() => setActiveModal('reschedule')}
+            onClick={() => setActiveModal("reschedule")}
             variant="outline"
             className="text-[13px] font-semibold w-[100px] h-[32px] text-orange-500 border-2 border-orange-500 hover:bg-orange-500 hover:text-white"
           >
             Reschedule
           </Button>
           <Button
-            onClick={() => setActiveModal('decline')}
+            onClick={() => setActiveModal("decline")}
             variant="outline"
             className="text-[13px] font-semibold w-[100px] h-[32px] text-orange-500 border-2 border-orange-500 hover:bg-orange-500 hover:text-white"
           >
@@ -106,8 +117,8 @@ const PendingCard: FC<PendingCardProps> = ({
       </Card>
 
       {/* Modals */}
-      <AcceptModal 
-        isOpen={activeModal === 'accept'}
+      <AcceptModal
+        isOpen={activeModal === "accept"}
         onClose={() => setActiveModal(null)}
         interviewData={interview}
         onAccept={(data) => {
@@ -115,9 +126,9 @@ const PendingCard: FC<PendingCardProps> = ({
           setActiveModal(null);
         }}
       />
-      
+
       <DeclineModal
-        isOpen={activeModal === 'decline'}
+        isOpen={activeModal === "decline"}
         onClose={() => setActiveModal(null)}
         interviewData={interview}
         onDecline={(data) => {
@@ -125,9 +136,9 @@ const PendingCard: FC<PendingCardProps> = ({
           setActiveModal(null);
         }}
       />
-      
+
       <RescheduleModal
-        isOpen={activeModal === 'reschedule'}
+        isOpen={activeModal === "reschedule"}
         onClose={() => setActiveModal(null)}
         interviewData={interview}
         onReschedule={(data) => {

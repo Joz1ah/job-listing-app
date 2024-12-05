@@ -1,6 +1,6 @@
 import { FC, useState, useEffect, useRef } from "react";
 import { AcceptedCard } from "features/job-hunter";
-import { AcceptedCardSkeleton } from "components";
+import { InterviewCardSkeleton } from "components";
 
 interface Interview {
   position: string;
@@ -147,7 +147,7 @@ const AcceptedInterviews: FC = () => {
         {showLoadingCards && (
           <>
             {Array.from({ length: loadingCardsCount }).map((_, index) => (
-              <AcceptedCardSkeleton key={`skeleton-${index}`} />
+              <InterviewCardSkeleton key={`skeleton-${index}`} />
             ))}
           </>
         )}
