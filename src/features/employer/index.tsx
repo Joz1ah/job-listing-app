@@ -36,3 +36,4 @@ export { AcceptedCard } from 'features/employer/EmployerInterviews/interview-car
 export { AppPreviewModal } from 'features/employer/AppCard/app-preview/AppPreviewModal'
 
 export { ScheduleInterviewModal } from 'features/employer/AppCard/schedule-form/ScheduleInterviewModal'
+export { InvitationSentModal } from 'features/employer/AppCard/schedule-form/InvitationSentModal'

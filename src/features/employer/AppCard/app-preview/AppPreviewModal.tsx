@@ -28,7 +28,7 @@ interface AppPreviewModalProps {
   app: Match;
 }
 
-export const AppPreviewModal: FC<AppPreviewModalProps> = ({
+const AppPreviewModal: FC<AppPreviewModalProps> = ({
   isOpen,
   onClose,
   onSchedule,
@@ -38,7 +38,7 @@ export const AppPreviewModal: FC<AppPreviewModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-full max-w-3xl h-[90vh] md:h-[822px] p-0 flex flex-col">
+      <DialogContent className="w-full max-w-3xl h-[630px] p-0 flex flex-col">
         <div className="flex flex-col h-full">
           {/* Scrollable Content Area */}
           <div className="flex-1 overflow-y-auto">
@@ -56,9 +56,6 @@ export const AppPreviewModal: FC<AppPreviewModalProps> = ({
 
                 {/* Job Role */}
                 <div className="flex items-start gap-1">
-                  <h4 className="text-base md:text-[17px] text-black mb-1">
-                    Applied For
-                  </h4>
                   <p className="text-base md:text-[17px] break-words">
                     {app.job}
                   </p>
@@ -174,7 +171,7 @@ export const AppPreviewModal: FC<AppPreviewModalProps> = ({
           </div>
 
           {/* Fixed Button Area */}
-          <div className="p-4 md:p-6">
+          <div className="flex justify-center p-4 md:p-6">
             <Button
               className="bg-[#F5722E] w-[133px] hover:bg-[#BF532C] text-white text-xs md:text-[12px] h-8 p-0"
               onClick={onSchedule} // Add onClick handler
@@ -197,3 +194,5 @@ export const AppPreviewModal: FC<AppPreviewModalProps> = ({
     </Dialog>
   );
 };
+
+export { AppPreviewModal }

@@ -1,7 +1,6 @@
 import { FC } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { CalendarFold, X, CheckCircle, RotateCcw, Info, BadgeCheck } from "lucide-react";
-import { Calendar } from "components";
 
 interface MenuItem {
   icon: JSX.Element;
@@ -92,9 +91,6 @@ const InterviewSidebarEmployer: FC<InterviewSidebarEmployerProps> = ({
             ))}
           </div>
         </div>
-        <div className="px-4 flex justify-center mt-6">
-          <Calendar />
-        </div>
       </div>
 
       {/* Desktop View */}
@@ -119,13 +115,8 @@ const InterviewSidebarEmployer: FC<InterviewSidebarEmployerProps> = ({
                 {item.label}
               </Link>
             ))}
-          </div>
-          {/* Render the Calendar component below the navigation */}
-          
+          </div>    
         </div>
-        <div className="mt-8 pl-8">
-            <Calendar/>
-          </div>
       </div>
     </>
   );

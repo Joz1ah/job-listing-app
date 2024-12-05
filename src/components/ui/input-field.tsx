@@ -58,6 +58,22 @@ const labelWrapperVariants = cva(
   }
 );
 
+const alertIconVariants = cva(
+  "fill-red-500",
+  {
+    variants: {
+      variant: {
+        default: "text-[#242625] md:text-[#2D3A41]",
+        primary: "text-primary",
+        secondary: "text-white"
+      }
+    },
+    defaultVariants: {
+      variant: "default"
+    }
+  }
+);
+
 const tooltipIconVariants = cva(
   "relative -top-1 cursor-pointer",
   {
@@ -144,7 +160,7 @@ const InputField = React.forwardRef<HTMLDivElement, InputFieldProps>(
             {showError && (
               <div className="absolute -right-6 top-1/2 -translate-y-1/2">
                 <AlertTriangle
-                  className="fill-red-500 text-[#242625] md:text-[#2D3A41]"
+                  className={alertIconVariants({variant})}
                   size={20}
                 />
               </div>
@@ -153,7 +169,7 @@ const InputField = React.forwardRef<HTMLDivElement, InputFieldProps>(
         </div>
         
         {showError && (
-          <div className="text-xs md:text-sm italic text-red-500 mt-1">
+          <div className="absolute right-1 text-xs md:text-sm italic text-red-500 mt-1">
             {errorMessage}
           </div>
         )}

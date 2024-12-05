@@ -30,3 +30,4 @@ export { JobCard } from 'features/job-hunter/JobCard/JobCard'
 export { JobPreviewModal } from 'features/job-hunter/JobCard/job-preview/JobPreviewModal'
 
 export { ScheduleInterviewModal } from 'features/job-hunter/JobCard/schedule-form/ScheduleInterviewModal'
+export { InvitationSentModal } from 'features/job-hunter/JobCard/schedule-form/InvitationSentModal'

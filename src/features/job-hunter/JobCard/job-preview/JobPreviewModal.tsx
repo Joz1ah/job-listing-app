@@ -28,7 +28,7 @@ interface JobPreviewModalProps {
   job: Match;
 }
 
-export const JobPreviewModal: FC<JobPreviewModalProps> = ({
+const JobPreviewModal: FC<JobPreviewModalProps> = ({
   isOpen,
   onClose,
   onSchedule,
@@ -203,3 +203,5 @@ export const JobPreviewModal: FC<JobPreviewModalProps> = ({
     </Dialog>
   );
 };
+
+export { JobPreviewModal }

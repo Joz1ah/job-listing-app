@@ -16,36 +16,68 @@ const Calendar: React.FC<CalendarProps> = ({
   variant = 'default'
 }) => {
   const today = new Date();
-  const [currentDate, setCurrentDate] = useState<Date>(initialDate || today);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(initialDate || null);
+  today.setHours(0, 0, 0, 0); // Normalize today's date
+  const twoMonthsFromToday = new Date(today.getFullYear(), today.getMonth() + 2, today.getDate());
   
-  const daysInMonth: number = new Date(
+  // Ensure initialDate is within valid range
+  const validInitialDate = initialDate ? 
+    (initialDate < today ? today : 
+     initialDate > twoMonthsFromToday ? twoMonthsFromToday : 
+     initialDate) : 
+    today;
+
+  const [currentDate, setCurrentDate] = useState<Date>(validInitialDate);
+  const [selectedDate, setSelectedDate] = useState<Date>(validInitialDate);
+  
+  const daysInMonth = new Date(
     currentDate.getFullYear(),
     currentDate.getMonth() + 1,
     0
   ).getDate();
   
-  const firstDayOfMonth: number = new Date(
+  const firstDayOfMonth = new Date(
     currentDate.getFullYear(),
     currentDate.getMonth(),
     1
   ).getDay();
   
-  const monthNames: string[] = [
+  const monthNames = [
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
   ];
   
-  const dayNames: string[] = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+  const dayNames = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+
+  const isDateInRange = (date: Date): boolean => {
+    const normalizedDate = new Date(date);
+    normalizedDate.setHours(0, 0, 0, 0);
+    return normalizedDate >= today && normalizedDate <= twoMonthsFromToday;
+  };
+
+  const canGoToPreviousMonth = (): boolean => {
+    // Check if the first day of the previous month is before today's month
+    const lastDayOfPreviousMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0);
+    return lastDayOfPreviousMonth >= today;
+  };
+
+  const canGoToNextMonth = (): boolean => {
+    // Check if the first day of the next month is after the last valid date
+    const firstDayOfNextMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
+    return firstDayOfNextMonth <= twoMonthsFromToday;
+  };
   
   const previousMonth = (e: React.MouseEvent): void => {
     e.stopPropagation();
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1));
+    if (canGoToPreviousMonth()) {
+      setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1));
+    }
   };
   
   const nextMonth = (e: React.MouseEvent): void => {
     e.stopPropagation();
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1));
+    if (canGoToNextMonth()) {
+      setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1));
+    }
   };
 
   const isToday = (date: Date): boolean => {
@@ -55,28 +87,29 @@ const Calendar: React.FC<CalendarProps> = ({
   };
 
   const isSelected = (date: Date): boolean => {
-    if (!selectedDate) return false;
     return date.getDate() === selectedDate.getDate() &&
            date.getMonth() === selectedDate.getMonth() &&
            date.getFullYear() === selectedDate.getFullYear();
   };
 
   const handleDateSelect = (date: Date): void => {
-    setSelectedDate(date);
-    if (onDateSelect) {
-      onDateSelect(date);
+    if (isDateInRange(date)) {
+      setSelectedDate(date);
+      if (onDateSelect) {
+        onDateSelect(date);
+      }
     }
   };
   
   const generateDays = (): JSX.Element[] => {
     const days: JSX.Element[] = [];
-    const totalDays: number = firstDayOfMonth + daysInMonth;
-    const totalCells: number = Math.ceil(totalDays / 7) * 7;
+    const totalDays = firstDayOfMonth + daysInMonth;
+    const totalCells = Math.ceil(totalDays / 7) * 7;
     
     for (let i = 0; i < totalCells; i++) {
-      const dayNumber: number = i - firstDayOfMonth + 1;
-      const isCurrentMonth: boolean = dayNumber > 0 && dayNumber <= daysInMonth;
-      const currentDayDate: Date = new Date(
+      const dayNumber = i - firstDayOfMonth + 1;
+      const isCurrentMonth = dayNumber > 0 && dayNumber <= daysInMonth;
+      const currentDayDate = new Date(
         currentDate.getFullYear(), 
         currentDate.getMonth(), 
         dayNumber
@@ -85,19 +118,17 @@ const Calendar: React.FC<CalendarProps> = ({
       if (isCurrentMonth) {
         const isCurrentDateToday = isToday(currentDayDate);
         const isCurrentDateSelected = isSelected(currentDayDate);
+        const isInRange = isDateInRange(currentDayDate);
         
         const dayClasses = cn(
-          'h-8 w-8 text-sm rounded-full flex items-center justify-center cursor-pointer transition-colors duration-200',
+          'h-8 w-8 text-sm rounded-full flex items-center justify-center transition-colors duration-200',
           {
-            // Selected date styling - always orange for both variants
             'bg-orange-500 text-white hover:bg-orange-600': isCurrentDateSelected,
-            
-            // Today's date styling when not selected
             'ring-2 ring-orange-500 ring-offset-2': isCurrentDateToday && !isCurrentDateSelected,
-            
-            // Variant-specific styling for non-selected, non-today dates
-            'text-gray-100 hover:bg-gray-700 ring-offset-zinc-900': variant === 'default' && !isCurrentDateSelected,
-            'text-gray-900 hover:bg-gray-100 ring-offset-white': variant === 'secondary' && !isCurrentDateSelected,
+            'cursor-pointer': isInRange,
+            'cursor-not-allowed opacity-40': !isInRange,
+            'text-gray-100 hover:bg-gray-700 ring-offset-zinc-900': variant === 'default' && !isCurrentDateSelected && isInRange,
+            'text-gray-900 hover:bg-gray-100 ring-offset-white': variant === 'secondary' && !isCurrentDateSelected && isInRange,
           }
         );
 
@@ -105,7 +136,7 @@ const Calendar: React.FC<CalendarProps> = ({
           <div
             key={i}
             className={dayClasses}
-            onClick={() => handleDateSelect(currentDayDate)}
+            onClick={() => isInRange && handleDateSelect(currentDayDate)}
           >
             {dayNumber}
           </div>
@@ -123,9 +154,14 @@ const Calendar: React.FC<CalendarProps> = ({
     className
   );
 
-  const navigationButtonClasses = cn(
-    'p-1 rounded-lg cursor-pointer',
-    variant === 'default' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+  const navigationButtonClasses = (enabled: boolean) => cn(
+    'p-1 rounded-lg',
+    {
+      'cursor-pointer': enabled,
+      'cursor-not-allowed opacity-40': !enabled,
+      'hover:bg-gray-700': variant === 'default' && enabled,
+      'hover:bg-gray-100': variant === 'secondary' && enabled
+    }
   );
 
   const dayNameClasses = cn(
@@ -138,7 +174,7 @@ const Calendar: React.FC<CalendarProps> = ({
       <div className="flex items-center justify-between mb-4">
         <div
           onClick={previousMonth}
-          className={navigationButtonClasses}
+          className={navigationButtonClasses(canGoToPreviousMonth())}
           aria-label="Previous month"
         >
           <ChevronLeft className="w-5 h-5" />
@@ -150,7 +186,7 @@ const Calendar: React.FC<CalendarProps> = ({
         
         <div
           onClick={nextMonth}
-          className={navigationButtonClasses}
+          className={navigationButtonClasses(canGoToNextMonth())}
           aria-label="Next month"
         >
           <ChevronRight className="w-5 h-5" />
@@ -172,4 +208,4 @@ const Calendar: React.FC<CalendarProps> = ({
   );
 };
 
-export { Calendar };
+export { Calendar }
