@@ -41,8 +41,6 @@ export { InvitationSentModal } from 'features/employer/AppCard/schedule-form/Inv
 export { PendingInterviews } from 'features/employer/EmployerInterviews/pending-interviews'
 export { PendingCard } from 'features/employer/EmployerInterviews/interview-card/pending-card'
 
-export { AcceptModal } from 'features/employer/EmployerInterviews/modals/AcceptModal'
-export { DeclineModal } from 'features/employer/EmployerInterviews/modals/DeclineModal'
 export { RescheduleModal } from 'features/employer/EmployerInterviews/modals/RescheduleModal'
 export { RescheduleCard } from 'features/employer/EmployerInterviews/interview-card/reschedule-card'
 export { DeclinedCard } from 'features/employer/EmployerInterviews/interview-card/declined-card'
