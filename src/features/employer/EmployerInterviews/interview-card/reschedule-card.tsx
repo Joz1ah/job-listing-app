@@ -112,7 +112,7 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
                   <Button
                     onClick={onReschedule}
                     variant="outline"
-                    className="h-7 rounded text-xs border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white"
+                    className="border-2 h-7 rounded text-xs border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white"
                   >
                     <RefreshCcw className="w-4 h-4 mr-1" />
                     Reschedule
@@ -126,7 +126,7 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
                 <Button
                   onClick={onAccept}
                   variant="outline"
-                  className="border-green-500 text-green-500 hover:bg-green-500 hover:text-white h-[26px] min-w-[100px] rounded text-xs flex items-center justify-center gap-1"
+                  className="border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-white h-[26px] min-w-[100px] rounded text-xs flex items-center justify-center gap-1"
                 >
                   <Check className="w-4 h-4" />
                   Accept
@@ -134,7 +134,7 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
                 <Button
                   onClick={onDecline}
                   variant="outline"
-                  className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white h-[26px] min-w-[100px] rounded text-xs flex items-center justify-center gap-1"
+                  className="border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white h-[26px] min-w-[100px] rounded text-xs flex items-center justify-center gap-1"
                 >
                   <X className="w-4 h-4" />
                   Decline
@@ -143,7 +143,7 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
                   <Button
                     onClick={onReschedule}
                     variant="outline"
-                    className="border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white h-[26px] min-w-[100px] rounded text-xs flex items-center justify-center gap-1"
+                    className="border-2 border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white h-[26px] min-w-[100px] rounded text-xs flex items-center justify-center gap-1"
                   >
                     <RefreshCcw className="w-4 h-4" />
                     Reschedule

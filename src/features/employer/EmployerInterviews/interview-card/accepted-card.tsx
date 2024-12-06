@@ -28,7 +28,7 @@ const AcceptedCard: FC<InterviewCardProps> = ({
   onPreviewJob,
 }) => {
   return (
-    <Card className="bg-[#FFFFFF] border-none w-full md:w-[436px] h-auto md:h-[275px]">
+    <Card className="bg-[#FFFFFF] border-none w-full md:w-[436px] h-auto md:h-[275px] relative">
       <CardHeader className="flex flex-col justify-between items-start pb-0">
         <div className="flex flex-row -mt-4 justify-between w-full">
           <div className="h-[20px]">

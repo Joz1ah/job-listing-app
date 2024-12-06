@@ -278,7 +278,7 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
                   type="button"
                   variant="outline"
                   onClick={() => {}}
-                  className="text-xs font-semibold h-[32px] px-6 border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white"
+                  className="border-2 text-xs font-semibold h-[32px] px-6 border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white"
                 >
                   View Calendar
                 </Button>

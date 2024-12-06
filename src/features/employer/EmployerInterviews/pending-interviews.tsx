@@ -104,6 +104,7 @@ const PendingInterviews: FC = () => {
   const [hasMore, setHasMore] = useState(true);
   const [initialLoad, setInitialLoad] = useState(true);
   const loaderRef = useRef<HTMLDivElement>(null);
+  const [declineReason, setDeclineReason] = useState<string>("");
 
   const handleAccept = async (interview: Interview, data: AcceptData) => {
     try {
@@ -134,11 +135,7 @@ const PendingInterviews: FC = () => {
       console.log('Reschedule:', interview, data);
       await new Promise(resolve => setTimeout(resolve, 1000));
       setDisplayedItems(prev => 
-        prev.map(item => 
-          item === interview 
-            ? { ...item, date: data.date, time: data.time }
-            : item
-        )
+        prev.filter(item => item !== interview)
       );
     } catch (error) {
       console.error('Error rescheduling interview:', error);
@@ -268,6 +265,8 @@ const PendingInterviews: FC = () => {
             onDecline={(data) => handleDecline(interview, data)}
             onReschedule={(data) => handleReschedule(interview, data)}
             onBookmark={() => handleBookmark(interview)}
+            value={declineReason}
+            onValueChange={setDeclineReason}
           />
         ))}
 

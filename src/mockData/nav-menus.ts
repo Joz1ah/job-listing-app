@@ -15,8 +15,8 @@ interface NavItem {
   ];
   
   export const employerMobileMenu: NavItem[] = [
-    { name: 'CREATE JOB LISTING', path: '/employer/manage-job-listings' },
-    { name: 'MANAGE JOB LISTINGS', path: '/employer' },
+    { name: 'CREATE JOB LISTING', path: '/employer/job-listing' },
+    { name: 'MANAGE JOB LISTINGS', path: '/employer/manage-job-listings/active' },
     { name: 'EDIT COMPANY PROFILE', path: '/employer/edit-profile' },
     { name: 'REPORTS & ANALYTICS', path: '/employer/reports-and-analytics' },
     { name: 'INTERVIEWS', path: '/employer/interviews' },
