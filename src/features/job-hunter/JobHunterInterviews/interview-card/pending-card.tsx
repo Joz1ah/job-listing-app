@@ -1,9 +1,10 @@
 import { FC, useState } from "react";
-import { MapPin, Bookmark, X } from "lucide-react";
+import { MapPin, Bookmark, X, Check, LoaderCircle } from "lucide-react";
 import { Card, CardHeader, CardContent, CardFooter } from "components";
 import { Button } from "components";
 import { RescheduleModal } from "features/job-hunter";
 import { Interview } from "features/job-hunter/types";
+import { useNavigate } from "react-router-dom";
 import {
   Select,
   SelectContent,
@@ -80,18 +81,51 @@ const PendingCard: FC<PendingCardProps> = ({
   >(null);
   const [modalView, setModalView] = useState<"accept" | "decline" | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [isAccepted, setIsAccepted] = useState(false);
+  const [isDeclined, setIsDeclined] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const formik = useFormik<FormValues>({
     initialValues: {
       reason: "",
     },
     validationSchema,
-    onSubmit: (values) => {
-      onDecline?.({ reason: values.reason } as DeclineData);
-      handleClose();
+    onSubmit: async (values) => {
+      setIsLoading(true);
+      onDecline?.({
+        reason: values.reason,
+        interviewId: interview.id,
+      } as DeclineData);
+
+      // Wait for 2 seconds to show the loading spinner
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      setIsLoading(false);
+      setIsDeclined(true);
+
+      // Wait for 1 second before redirecting
+      setTimeout(() => {
+        navigate("/job-hunter/interviews/declined");
+      }, 1000);
     },
   });
 
+  const handleAccept = async () => {
+    setIsLoading(true);
+    onAccept?.({ confirmed: true, interviewId: interview.id } as AcceptData);
+
+    // Wait for 2 seconds to show the loading spinner
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    setIsLoading(false);
+    setIsAccepted(true);
+
+    // Wait for 3 seconds before redirecting
+    setTimeout(() => {
+      navigate("/job-hunter/interviews/accepted");
+    }, 1000);
+  };
   const { values, touched, errors, handleSubmit, setFieldValue, resetForm } =
     formik;
 
@@ -303,43 +337,72 @@ const PendingCard: FC<PendingCardProps> = ({
 
   const AcceptingFooter = () => (
     <CardFooter className="flex flex-row justify-start pt-2 space-x-4">
-      <Button
-        onClick={() => {
-          onAccept?.({} as AcceptData);
-          handleClose();
-        }}
-        className="text-[13px] font-semibold w-[100px] h-[32px] bg-orange-500 hover:bg-orange-600 text-white"
-      >
-        Accept
-      </Button>
-      <Button
-        variant="outline"
-        className="border-2 text-[13px] font-semibold w-[130px] h-[32px] border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white px-1"
-        onClick={() => window.open("https://calendar.google.com")}
-      >
-        View Calendar
-      </Button>
+      {isLoading ? (
+        <div className="flex items-center gap-2 pt-2 text-orange-500">
+          <LoaderCircle className="w-5 h-5 animate-spin" />
+          <span className="text-sm font-medium">Accepting interview...</span>
+        </div>
+      ) : isAccepted ? (
+        <div className="flex items-center gap-2 pt-2 text-green-600">
+          <Check className="w-5 h-5" />
+          <span className="text-sm font-medium">
+            You've successfully accepted the interview!
+          </span>
+        </div>
+      ) : (
+        <>
+          <Button
+            onClick={handleAccept}
+            className="text-[13px] font-semibold w-[100px] h-[32px] bg-orange-500 hover:bg-orange-600 text-white"
+          >
+            Accept
+          </Button>
+          <Button
+            variant="outline"
+            className="border-2 text-[13px] font-semibold w-[130px] h-[32px] border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white px-1"
+            onClick={() => window.open("https://calendar.google.com")}
+          >
+            View Calendar
+          </Button>
+        </>
+      )}
     </CardFooter>
   );
 
   const DecliningFooter = () => (
-    <CardFooter className="flex flex-row justify-start pt-2 space-x-4">
-      <Button
-        onClick={(e) => {
-          e.preventDefault();
-          handleSubmit();
-        }}
-        className="text-[13px] font-semibold w-[100px] h-[32px] bg-red-500 hover:bg-red-600 text-white disabled:bg-gray-300 disabled:cursor-not-allowed"
-      >
-        Decline
-      </Button>
-      <Button
-        variant="outline"
-        className="border-2 text-[13px] font-semibold w-[130px] h-[32px] border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white px-1"
-        onClick={() => window.open("https://calendar.google.com")}
-      >
-        View Calendar
-      </Button>
+    <CardFooter className="flex flex-row justify-start space-x-4">
+      {isLoading ? (
+        <div className="flex items-center gap-2 text-red-500">
+          <LoaderCircle className="w-5 h-5 animate-spin" />
+          <span className="text-sm font-medium">Declining interview...</span>
+        </div>
+      ) : isDeclined ? (
+        <div className="flex items-center gap-2 text-red-600">
+          <Check className="w-5 h-5" />
+          <span className="text-sm font-medium">
+            You've successfully declined this interview!
+          </span>
+        </div>
+      ) : (
+        <>
+          <Button
+            onClick={(e) => {
+              e.preventDefault();
+              handleSubmit();
+            }}
+            className="text-[13px] font-semibold w-[100px] h-[32px] bg-red-500 hover:bg-red-600 text-white disabled:bg-gray-300 disabled:cursor-not-allowed"
+          >
+            Decline
+          </Button>
+          <Button
+            variant="outline"
+            className="border-2 text-[13px] font-semibold w-[130px] h-[32px] border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white px-1"
+            onClick={() => window.open("https://calendar.google.com")}
+          >
+            View Calendar
+          </Button>
+        </>
+      )}
     </CardFooter>
   );
 
@@ -382,7 +445,6 @@ const PendingCard: FC<PendingCardProps> = ({
         interview={interview}
         onReschedule={(data) => {
           onReschedule?.(data);
-          setActiveModal(null);
         }}
       />
 

@@ -193,7 +193,7 @@ const PendingInterviews: FC = () => {
   const handleAccept = async (interview: Interview, data: AcceptData) => {
     try {
       console.log("Accept:", interview, data);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 3000));
       setDisplayedItems((prev) => prev.filter((item) => item !== interview));
     } catch (error) {
       console.error("Error accepting interview:", error);
@@ -203,7 +203,7 @@ const PendingInterviews: FC = () => {
   const handleDecline = async (interview: Interview, data: DeclineData) => {
     try {
       console.log("Decline:", interview, data);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 3000));
       setDisplayedItems((prev) => prev.filter((item) => item !== interview));
     } catch (error) {
       console.error("Error declining interview:", error);
@@ -216,7 +216,7 @@ const PendingInterviews: FC = () => {
   ) => {
     try {
       console.log("Reschedule:", interview, data);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 5000));
       setDisplayedItems((prev) => prev.filter((item) => item !== interview));
     } catch (error) {
       console.error("Error rescheduling interview:", error);

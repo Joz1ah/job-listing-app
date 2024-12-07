@@ -1,7 +1,7 @@
 import { FC, useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
 import { Button } from "components";
-import { MapPin } from "lucide-react";
+  import { MapPin, LoaderCircle, Check } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -15,6 +15,7 @@ import * as Yup from "yup";
 import { DatePicker } from "components";
 import gmeet from "images/google-meet.svg?url";
 import { InputField } from "components";
+import { useNavigate } from "react-router-dom";
 
 interface RescheduleReason {
   id: string;
@@ -74,6 +75,9 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
   onReschedule,
 }) => {
   const [isDatePickerOpen, setIsDatePickerOpen] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isRescheduled, setIsRescheduled] = useState(false);
+  const navigate = useNavigate();
 
   // Generate time slots for 24 hours (48 half-hour slots)
   const timeSlots: string[] = Array.from({ length: 48 }, (_, i) => {
@@ -91,13 +95,26 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
       interviewTime: undefined,
     },
     validationSchema,
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
+      setIsLoading(true);
+
       onReschedule({
         date: values.interviewDate?.toISOString() ?? "",
         time: values.interviewTime ?? "",
         interviewId: interview.id,
       });
-      onClose();
+
+      // Wait for 2 seconds to show the loading spinner
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      setIsLoading(false);
+      setIsRescheduled(true);
+
+      // Close the modal after 3 seconds
+      setTimeout(() => {
+        onClose();
+        navigate("/job-hunter/interviews/reschedule");
+      }, 1000);
     },
   });
 
@@ -106,11 +123,11 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
 
   // Reset form when modal closes
   useEffect(() => {
-    if (!isOpen) {
+    if (!isOpen && !isLoading && !isRescheduled) {
       resetForm();
       setIsDatePickerOpen(false);
     }
-  }, [isOpen, resetForm]);
+  }, [isOpen, resetForm, isLoading, isRescheduled]);
 
   const handleDateSelect = (selectedDate: Date): void => {
     setFieldValue("interviewDate", selectedDate);
@@ -130,7 +147,13 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
             </div>
           </DialogHeader>
 
-          <form onSubmit={handleSubmit} className="flex flex-col flex-1">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit(e);
+            }}
+            className="flex flex-col flex-1"
+          >
             <div className="px-6 flex-1 overflow-auto">
               {/* Job Details */}
               <div className="mb-4">
@@ -274,20 +297,36 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
             {/* Footer */}
             <div className="p-6 mt-auto">
               <div className="flex flex-wrap gap-3 justify-start">
-                <Button
-                  type="submit"
-                  className="text-xs font-semibold h-[32px] px-6 bg-[#FF6B35] hover:bg-[#ff855b] text-white"
-                >
-                  Reschedule
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => {}}
-                  className="border-2 text-xs font-semibold h-[32px] px-6 border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white"
-                >
-                  View Calendar
-                </Button>
+                {isLoading ? (
+                  <div className="flex items-center gap-2 text-orange-500">
+                    <LoaderCircle className="w-5 h-5 animate-spin" />
+                    <span className="text-sm font-medium">Rescheduling interview...</span>
+                  </div>
+                ) : isRescheduled ? (
+                  <div className="flex items-center gap-2 text-green-600">
+                    <Check className="w-5 h-5" />
+                    <span className="text-sm font-medium">
+                      Your request to reschedule the interview is sent!
+                    </span>
+                  </div>
+                ) : (
+                  <>
+                    <Button
+                      type="submit"
+                      className="text-xs font-semibold h-[32px] px-6 bg-[#FF6B35] hover:bg-[#ff855b] text-white"
+                    >
+                      Reschedule
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => window.open("https://calendar.google.com")}
+                      className="border-2 text-xs font-semibold h-[32px] px-6 border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white"
+                    >
+                      View Calendar
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </form>
