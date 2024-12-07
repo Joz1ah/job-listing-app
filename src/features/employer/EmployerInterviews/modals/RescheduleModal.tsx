@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "components";
-import { BaseModalProps, RescheduleData } from "features/employer/types";
+import { BaseModalProps } from "features/employer/types";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { DatePicker } from "components";
@@ -19,6 +19,12 @@ import { InputField } from "components";
 interface RescheduleReason {
   id: string;
   label: string;
+}
+
+interface RescheduleData {
+  date: string;
+  time: string;
+  interviewId?: string;
 }
 
 const rescheduleReasons: RescheduleReason[] = [
@@ -37,7 +43,7 @@ const rescheduleReasons: RescheduleReason[] = [
   {
     id: "preparation",
     label: "Unforseen Circumstances (e.g.outage/weather/travelling)",
-  }
+  },
 ];
 
 interface RescheduleModalProps extends BaseModalProps {
@@ -291,4 +297,4 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
   );
 };
 
-export { RescheduleModal }
+export { RescheduleModal };

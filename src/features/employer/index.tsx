@@ -46,3 +46,4 @@ export { RescheduleCard } from 'features/employer/EmployerInterviews/interview-c
 export { DeclinedCard } from 'features/employer/EmployerInterviews/interview-card/declined-card'
 export { CompletedCard } from 'features/employer/EmployerInterviews/interview-card/completed-card'
 export { SettingsSidebar } from 'features/employer/Sidebar/settings-sidebar-employer'
+export { CandidatePreviewModal } from 'features/employer/EmployerInterviews/interview-card/preview/CandidatePreviewModal'

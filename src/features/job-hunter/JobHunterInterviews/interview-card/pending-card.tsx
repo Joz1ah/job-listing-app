@@ -3,12 +3,7 @@ import { MapPin, Bookmark, X } from "lucide-react";
 import { Card, CardHeader, CardContent, CardFooter } from "components";
 import { Button } from "components";
 import { RescheduleModal } from "features/job-hunter";
-import {
-  Interview,
-  AcceptData,
-  DeclineData,
-  RescheduleData,
-} from "features/job-hunter/types";
+import { Interview } from "features/job-hunter/types";
 import {
   Select,
   SelectContent,
@@ -17,12 +12,30 @@ import {
   SelectTrigger,
   SelectValue,
 } from "components";
+import { CompanyPreviewModal } from "features/job-hunter";
 
 import { InputField } from "components";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
 import gmeet from "images/google-meet.svg?url";
+
+interface AcceptData {
+  confirmed: boolean;
+  interviewId?: string;
+}
+
+interface DeclineData {
+  reason: string;
+  message: string;
+  interviewId?: string;
+}
+
+interface RescheduleData {
+  date: string;
+  time: string;
+  interviewId?: string;
+}
 
 interface DeclineReason {
   value: string;
@@ -66,6 +79,7 @@ const PendingCard: FC<PendingCardProps> = ({
     "accept" | "decline" | "reschedule" | null
   >(null);
   const [modalView, setModalView] = useState<"accept" | "decline" | null>(null);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const formik = useFormik<FormValues>({
     initialValues: {
@@ -78,7 +92,8 @@ const PendingCard: FC<PendingCardProps> = ({
     },
   });
 
-  const { values, touched, errors, handleSubmit, setFieldValue, resetForm } = formik;
+  const { values, touched, errors, handleSubmit, setFieldValue, resetForm } =
+    formik;
 
   const handleClose = () => {
     setModalView(null);
@@ -105,7 +120,12 @@ const PendingCard: FC<PendingCardProps> = ({
         </div>
       </div>
       <div className="w-full relative mt-2">
-        <h3 className="text-[14px] font-semibold pr-8">{interview.position}</h3>
+        <h3
+          className="text-[14px] font-semibold pr-8 cursor-pointer hover:underline"
+          onClick={() => setIsPreviewOpen(true)}
+        >
+          {interview.position}
+        </h3>
         <p className="text-[13px] text-black underline">{interview.company}</p>
         <div className="flex flex-row items-center">
           <MapPin size={14} className="text-orange-500" />
@@ -217,9 +237,9 @@ const PendingCard: FC<PendingCardProps> = ({
         </span>
       </div>
       <form onSubmit={handleSubmit}>
-        <InputField 
-          label="Decline Reason" 
-          variant="secondary" 
+        <InputField
+          label="Decline Reason"
+          variant="secondary"
           size="sm"
           error={errors.reason}
           touched={touched.reason}
@@ -228,9 +248,11 @@ const PendingCard: FC<PendingCardProps> = ({
             value={values.reason}
             onValueChange={(value) => setFieldValue("reason", value)}
           >
-            <SelectTrigger 
+            <SelectTrigger
               className={`w-full border-2 rounded bg-transparent h-[40px] ${
-                touched.reason && errors.reason ? 'border-red-500' : 'border-black'
+                touched.reason && errors.reason
+                  ? "border-red-500"
+                  : "border-black"
               }`}
             >
               <SelectValue placeholder="Select A Reason" />
@@ -362,6 +384,12 @@ const PendingCard: FC<PendingCardProps> = ({
           onReschedule?.(data);
           setActiveModal(null);
         }}
+      />
+
+      <CompanyPreviewModal
+        isOpen={isPreviewOpen}
+        onClose={() => setIsPreviewOpen(false)}
+        interview={interview}
       />
     </>
   );

@@ -3,20 +3,7 @@ import { RescheduleCard } from "features/job-hunter";
 import { InterviewCardSkeleton } from "components";
 import { NavLink } from "react-router-dom";
 import emptyInterview from "images/calendar-empty.svg?url";
-
-interface Interview {
-  position: string;
-  company: string;
-  date: string;
-  time: string;
-  location: string;
-  receivedTime: string;
-  sentTime: string;
-  isNew?: boolean;
-  status: 'pending';
-  isRequesterMe: boolean;
-  hasRescheduled?: boolean;
-}
+import { Interview } from "../types";
 
 // Mock Data
 const mockInterviews: Interview[] = [
@@ -29,9 +16,29 @@ const mockInterviews: Interview[] = [
     receivedTime: "today",
     sentTime: "Today",
     isNew: true,
-    status: 'pending',
+    status: "pending",
     isRequesterMe: true,
-    hasRescheduled: false
+    hasRescheduled: false,
+    coreSkills: [
+      "Python",
+      "Machine Learning",
+      "TensorFlow",
+      "SQL",
+      "Data Visualization",
+    ],
+    experience: "4-6 years",
+    employmentPreference: ["Full Time"],
+    salaryExpectation: "$150,000-$180,000",
+    languages: ["English", "French"],
+    education: "Ph.D. in Data Science",
+    certificate: "TensorFlow Developer Certificate",
+    interpersonalSkills: [
+      "Statistical Analysis",
+      "Research",
+      "Data Storytelling",
+      "Cross-functional Communication",
+      "Problem Solving",
+    ],
   },
   {
     position: "Full Stack Developer",
@@ -42,9 +49,23 @@ const mockInterviews: Interview[] = [
     receivedTime: "yesterday",
     sentTime: "yesterday",
     isNew: false,
-    status: 'pending',
+    status: "pending",
     isRequesterMe: true,
-    hasRescheduled: true
+    hasRescheduled: true,
+    coreSkills: ["React", "Node.js", "MongoDB", "Express", "AWS"],
+    experience: "4-6 years",
+    employmentPreference: ["Full Time", "Remote"],
+    salaryExpectation: "$130,000-$160,000",
+    languages: ["English", "Portuguese"],
+    education: "Master's in Web Technologies",
+    certificate: "MERN Stack Developer Certification",
+    interpersonalSkills: [
+      "Full-cycle Development",
+      "Project Management",
+      "Cross-functional Collaboration",
+      "Code Review",
+      "Mentoring",
+    ],
   },
   {
     position: "Junior Front End Developer",
@@ -55,9 +76,29 @@ const mockInterviews: Interview[] = [
     receivedTime: "2 days ago",
     sentTime: "",
     isNew: true,
-    status: 'pending',
+    status: "pending",
     isRequesterMe: false,
-    hasRescheduled: false
+    hasRescheduled: false,
+    coreSkills: [
+      "Python",
+      "Machine Learning",
+      "TensorFlow",
+      "SQL",
+      "Data Visualization",
+    ],
+    experience: "4-6 years",
+    employmentPreference: ["Full Time"],
+    salaryExpectation: "$150,000-$180,000",
+    languages: ["English", "French"],
+    education: "Ph.D. in Data Science",
+    certificate: "TensorFlow Developer Certificate",
+    interpersonalSkills: [
+      "Statistical Analysis",
+      "Research",
+      "Data Storytelling",
+      "Cross-functional Communication",
+      "Problem Solving",
+    ],
   },
   {
     position: "Jr. Web Developer",
@@ -68,10 +109,24 @@ const mockInterviews: Interview[] = [
     receivedTime: "2 days ago",
     sentTime: "",
     isNew: false,
-    status: 'pending',
+    status: "pending",
     isRequesterMe: false,
-    hasRescheduled: false
-  }
+    hasRescheduled: false,
+    coreSkills: ["React", "TypeScript", "Next.js", "CSS3", "GraphQL"],
+    experience: "3-5 years",
+    employmentPreference: ["Full Time"],
+    salaryExpectation: "$120,000-$150,000",
+    languages: ["English", "Spanish"],
+    education: "Master's in Computer Science",
+    certificate: "AWS Certified Developer",
+    interpersonalSkills: [
+      "Leadership",
+      "Communication",
+      "Problem Solving",
+      "Team Collaboration",
+      "Agile Methodologies",
+    ],
+  },
 ];
 
 const RescheduleRequests: FC = () => {
@@ -82,30 +137,32 @@ const RescheduleRequests: FC = () => {
   const [initialLoad, setInitialLoad] = useState(true);
 
   const handleAccept = (interview: Interview) => {
-    console.log('Accepted interview:', interview.position);
+    console.log("Accepted interview:", interview.position);
     // Remove the accepted interview from the list
-    setDisplayedItems(prev => prev.filter(item => item !== interview));
+    setDisplayedItems((prev) => prev.filter((item) => item !== interview));
   };
 
   const handleDecline = (interview: Interview) => {
-    console.log('Declined interview:', interview.position);
+    console.log("Declined interview:", interview.position);
     // Remove the declined interview from the list
-    setDisplayedItems(prev => prev.filter(item => item !== interview));
+    setDisplayedItems((prev) => prev.filter((item) => item !== interview));
   };
 
   const handleReschedule = (interview: Interview) => {
-    console.log('Reschedule requested for:', interview.position);
+    console.log("Reschedule requested for:", interview.position);
     // Update the interview's hasRescheduled status
-    setDisplayedItems(prev => prev.map(item => 
-      item === interview ? { ...item, hasRescheduled: true } : item
-    ));
+    setDisplayedItems((prev) =>
+      prev.map((item) =>
+        item === interview ? { ...item, hasRescheduled: true } : item,
+      ),
+    );
   };
 
   const loadMore = async () => {
     if (loading || !hasMore) return;
 
     setLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     const currentCount = displayedItems.length;
     const remainingItems = mockInterviews.length - currentCount;
@@ -117,8 +174,11 @@ const RescheduleRequests: FC = () => {
     }
 
     const itemsToLoad = Math.min(2, remainingItems);
-    const newItems = mockInterviews.slice(currentCount, currentCount + itemsToLoad);
-    setDisplayedItems(prev => [...prev, ...newItems]);
+    const newItems = mockInterviews.slice(
+      currentCount,
+      currentCount + itemsToLoad,
+    );
+    setDisplayedItems((prev) => [...prev, ...newItems]);
 
     if (currentCount + itemsToLoad >= mockInterviews.length) {
       setHasMore(false);
@@ -130,8 +190,8 @@ const RescheduleRequests: FC = () => {
   useEffect(() => {
     const loadInitialItems = async () => {
       setLoading(true);
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       const initialItems = mockInterviews.slice(0, 6);
       setDisplayedItems(initialItems);
       setHasMore(mockInterviews.length > 6);
@@ -153,7 +213,7 @@ const RescheduleRequests: FC = () => {
       {
         threshold: 0.1,
         rootMargin: "20px",
-      }
+      },
     );
 
     if (loaderRef.current) {
@@ -204,21 +264,24 @@ const RescheduleRequests: FC = () => {
   return (
     <div className="flex flex-col items-center w-full">
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-y-6 gap-x-14 justify-items-center w-full">
-        {!initialLoad && displayedItems.map((interview, index) => (
-          <RescheduleCard
-            key={index}
-            interview={interview}
-            onAccept={() => handleAccept(interview)}
-            onDecline={() => handleDecline(interview)}
-            onReschedule={() => handleReschedule(interview)}
-          />
-        ))}
+        {!initialLoad &&
+          displayedItems.map((interview, index) => (
+            <RescheduleCard
+              key={index}
+              interview={interview}
+              onAccept={() => handleAccept(interview)}
+              onDecline={() => handleDecline(interview)}
+              onReschedule={() => handleReschedule(interview)}
+            />
+          ))}
 
         {loading && (
           <>
-            {Array.from({ length: Math.min(6, mockInterviews.length) }).map((_, index) => (
-              <InterviewCardSkeleton key={`skeleton-${index}`} />
-            ))}
+            {Array.from({ length: Math.min(6, mockInterviews.length) }).map(
+              (_, index) => (
+                <InterviewCardSkeleton key={`skeleton-${index}`} />
+              ),
+            )}
           </>
         )}
         <div ref={loaderRef} className="h-px w-px" />
@@ -227,4 +290,4 @@ const RescheduleRequests: FC = () => {
   );
 };
 
-export { RescheduleRequests }
+export { RescheduleRequests };

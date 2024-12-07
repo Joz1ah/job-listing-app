@@ -3,18 +3,7 @@ import { DeclinedCard } from "features/job-hunter";
 import { InterviewCardSkeleton } from "components";
 import { NavLink } from "react-router-dom";
 import emptyInterview from "images/calendar-empty.svg?url";
-
-interface Interview {
-  position: string;
-  company: string;
-  date: string;
-  time: string;
-  location: string;
-  sentTime: string;
-  receivedTime: string;
-  reason: string;
-  isNew?: boolean;
-}
+import { Interview } from "../types";
 
 const mockInterviews: Interview[] = [
   {
@@ -26,7 +15,21 @@ const mockInterviews: Interview[] = [
     sentTime: "today",
     receivedTime: "today",
     reason: "Not Actively Seeking",
-    isNew: true
+    isNew: true,
+    coreSkills: ["Kubernetes", "AWS", "CI/CD", "Terraform", "Python"],
+    experience: "5-7 years",
+    employmentPreference: ["Full Time", "Remote"],
+    salaryExpectation: "$140,000-$170,000",
+    languages: ["English", "German"],
+    education: "Bachelor's in Computer Engineering",
+    certificate: "Certified Kubernetes Administrator (CKA)",
+    interpersonalSkills: [
+      "Infrastructure Planning",
+      "Security Best Practices",
+      "System Architecture",
+      "Team Collaboration",
+      "Incident Response",
+    ],
   },
   {
     position: "Full Stack Developer",
@@ -37,7 +40,27 @@ const mockInterviews: Interview[] = [
     sentTime: "yesterday",
     receivedTime: "yesterday",
     reason: "Schedule Conflict",
-    isNew: false
+    isNew: false,
+    coreSkills: [
+      "Python",
+      "Machine Learning",
+      "TensorFlow",
+      "SQL",
+      "Data Visualization",
+    ],
+    experience: "4-6 years",
+    employmentPreference: ["Full Time"],
+    salaryExpectation: "$150,000-$180,000",
+    languages: ["English", "French"],
+    education: "Ph.D. in Data Science",
+    certificate: "TensorFlow Developer Certificate",
+    interpersonalSkills: [
+      "Statistical Analysis",
+      "Research",
+      "Data Storytelling",
+      "Cross-functional Communication",
+      "Problem Solving",
+    ],
   },
   {
     position: "Frontend Engineer",
@@ -48,8 +71,22 @@ const mockInterviews: Interview[] = [
     sentTime: "2 days ago",
     receivedTime: "2 days ago",
     reason: "Accepted Another Offer",
-    isNew: false
-  }
+    isNew: false,
+    coreSkills: ["Figma", "Adobe XD", "Sketch", "Prototyping", "User Research"],
+    experience: "3-5 years",
+    employmentPreference: ["Full Time", "Hybrid"],
+    salaryExpectation: "$110,000-$140,000",
+    languages: ["English", "Mandarin"],
+    education: "Bachelor's in Interaction Design",
+    certificate: "Google UX Design Professional Certificate",
+    interpersonalSkills: [
+      "User-Centered Design",
+      "Design Thinking",
+      "Stakeholder Management",
+      "Visual Communication",
+      "Design Systems",
+    ],
+  },
 ];
 
 const DeclinedInterviews: FC = () => {
@@ -63,7 +100,7 @@ const DeclinedInterviews: FC = () => {
     if (loading || !hasMore) return;
 
     setLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     const currentCount = displayedItems.length;
     const remainingItems = mockInterviews.length - currentCount;
@@ -75,8 +112,11 @@ const DeclinedInterviews: FC = () => {
     }
 
     const itemsToLoad = Math.min(2, remainingItems);
-    const newItems = mockInterviews.slice(currentCount, currentCount + itemsToLoad);
-    setDisplayedItems(prev => [...prev, ...newItems]);
+    const newItems = mockInterviews.slice(
+      currentCount,
+      currentCount + itemsToLoad,
+    );
+    setDisplayedItems((prev) => [...prev, ...newItems]);
 
     if (currentCount + itemsToLoad >= mockInterviews.length) {
       setHasMore(false);
@@ -88,8 +128,8 @@ const DeclinedInterviews: FC = () => {
   useEffect(() => {
     const loadInitialItems = async () => {
       setLoading(true);
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       const initialItems = mockInterviews.slice(0, 6);
       setDisplayedItems(initialItems);
       setHasMore(mockInterviews.length > 6);
@@ -111,7 +151,7 @@ const DeclinedInterviews: FC = () => {
       {
         threshold: 0.1,
         rootMargin: "20px",
-      }
+      },
     );
 
     if (loaderRef.current) {
@@ -165,12 +205,10 @@ const DeclinedInterviews: FC = () => {
   return (
     <div className="flex flex-col items-center w-full">
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-y-6 gap-x-14 justify-items-center w-full">
-        {!initialLoad && displayedItems.map((interview, index) => (
-          <DeclinedCard
-            key={index}
-            interview={interview}
-          />
-        ))}
+        {!initialLoad &&
+          displayedItems.map((interview, index) => (
+            <DeclinedCard key={index} interview={interview} />
+          ))}
 
         {showLoadingCards && (
           <>
@@ -185,4 +223,4 @@ const DeclinedInterviews: FC = () => {
   );
 };
 
-export { DeclinedInterviews }
+export { DeclinedInterviews };

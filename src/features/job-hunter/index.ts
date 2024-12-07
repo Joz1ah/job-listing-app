@@ -25,8 +25,6 @@ export { DeclinedCard } from 'features/job-hunter/JobHunterInterviews/interview-
 export { CompletedCard } from 'features/job-hunter/JobHunterInterviews/interview-card/completed-card'
 export { RescheduleCard } from 'features/job-hunter/JobHunterInterviews/interview-card/reschedule-card'
 
-export { AcceptModal } from 'features/job-hunter/JobHunterInterviews/modals/interview-modal/AcceptModal'
-export { DeclineModal } from 'features/job-hunter/JobHunterInterviews/modals/interview-modal/DeclineModal'
 export { RescheduleModal } from 'features/job-hunter/JobHunterInterviews/modals/interview-modal/RescheduleModal'
 
 export { JobCard } from 'features/job-hunter/JobCard/JobCard'
@@ -36,3 +34,4 @@ export { JobPreviewModal } from 'features/job-hunter/JobCard/job-preview/JobPrev
 export { ScheduleInterviewModal } from 'features/job-hunter/JobCard/schedule-form/ScheduleInterviewModal'
 export { InvitationSentModal } from 'features/job-hunter/JobCard/schedule-form/InvitationSentModal'
 export { SettingsSidebar } from 'features/job-hunter/Sidebar/settings-sidebar-job-hunter'
+export { CompanyPreviewModal } from 'features/job-hunter/JobHunterInterviews/interview-card/preview/CompanyPreviewModal'

@@ -3,6 +3,7 @@ import { PendingCard } from "features/job-hunter";
 import { InterviewCardSkeleton } from "components";
 import { NavLink } from "react-router-dom";
 import emptyInterview from "images/calendar-empty.svg?url";
+import { Interview } from "../types";
 
 interface AcceptData {
   confirmed: boolean;
@@ -21,19 +22,6 @@ interface RescheduleData {
   interviewId?: string;
 }
 
-interface Interview {
-  position: string;
-  company: string;
-  date: string;
-  time: string;
-  location: string;
-  meetingLink: string;
-  receivedTime: string;
-  isNew?: boolean;
-  bookmarked?: boolean;
-  description?: string;
-}
-
 // Mock Data
 const mockInterviews: Interview[] = [
   {
@@ -45,6 +33,20 @@ const mockInterviews: Interview[] = [
     meetingLink: "https://meet.google.com/abc-defg-hij",
     receivedTime: "yesterday",
     isNew: true,
+    coreSkills: ["React", "TypeScript", "Next.js", "CSS3", "GraphQL"],
+    experience: "3-5 years",
+    employmentPreference: ["Full Time"],
+    salaryExpectation: "$120,000-$150,000",
+    languages: ["English", "Spanish"],
+    education: "Master's in Computer Science",
+    certificate: "AWS Certified Developer",
+    interpersonalSkills: [
+      "Leadership",
+      "Communication",
+      "Problem Solving",
+      "Team Collaboration",
+      "Agile Methodologies",
+    ],
   },
   {
     position: "Backend Developer",
@@ -55,46 +57,128 @@ const mockInterviews: Interview[] = [
     meetingLink: "https://meet.google.com/uvw-xyzq-rst",
     receivedTime: "two days ago",
     isNew: false,
+    coreSkills: [
+      "Java",
+      "Spring Boot",
+      "PostgreSQL",
+      "Microservices",
+      "Docker",
+    ],
+    experience: "5-7 years",
+    employmentPreference: ["Full Time", "Remote"],
+    salaryExpectation: "$140,000-$170,000",
+    languages: ["English"],
+    education: "Bachelor's in Software Engineering",
+    certificate: "Oracle Certified Professional Java Developer",
+    interpersonalSkills: [
+      "System Design",
+      "Technical Leadership",
+      "Mentoring",
+      "Problem Solving",
+      "Documentation",
+    ],
   },
   {
     position: "Full Stack Developer",
-    company: "Shopify",
+    company: "Citadel",
     location: "Remote",
     date: "January 5, 2025",
     time: "3:00 PM EST",
     meetingLink: "https://meet.google.com/jkl-mnop-qrs",
     receivedTime: "today",
     isNew: true,
+    coreSkills: ["React", "Node.js", "MongoDB", "Express", "AWS"],
+    experience: "4-6 years",
+    employmentPreference: ["Full Time", "Remote"],
+    salaryExpectation: "$130,000-$160,000",
+    languages: ["English", "Portuguese"],
+    education: "Master's in Web Technologies",
+    certificate: "MERN Stack Developer Certification",
+    interpersonalSkills: [
+      "Full-cycle Development",
+      "Project Management",
+      "Cross-functional Collaboration",
+      "Code Review",
+      "Mentoring",
+    ],
   },
   {
     position: "UX/UI Designer",
-    company: "Adobe",
+    company: "Nvidia Inc.",
     location: "San Jose, CA",
     date: "January 10, 2025",
     time: "9:00 AM PST",
     meetingLink: "https://meet.google.com/stu-vwxy-zab",
     receivedTime: "last week",
     isNew: false,
+    coreSkills: ["Figma", "Adobe XD", "Sketch", "Prototyping", "User Research"],
+    experience: "3-5 years",
+    employmentPreference: ["Full Time", "Hybrid"],
+    salaryExpectation: "$110,000-$140,000",
+    languages: ["English", "Mandarin"],
+    education: "Bachelor's in Interaction Design",
+    certificate: "Google UX Design Professional Certificate",
+    interpersonalSkills: [
+      "User-Centered Design",
+      "Design Thinking",
+      "Stakeholder Management",
+      "Visual Communication",
+      "Design Systems",
+    ],
   },
   {
     position: "Data Scientist",
-    company: "Amazon",
+    company: "Open AI",
     location: "Seattle, WA",
     date: "January 15, 2025",
     time: "11:00 AM PST",
     meetingLink: "https://meet.google.com/ghi-klmn-opq",
     receivedTime: "two hours ago",
     isNew: true,
+    coreSkills: [
+      "Python",
+      "Machine Learning",
+      "TensorFlow",
+      "SQL",
+      "Data Visualization",
+    ],
+    experience: "4-6 years",
+    employmentPreference: ["Full Time"],
+    salaryExpectation: "$150,000-$180,000",
+    languages: ["English", "French"],
+    education: "Ph.D. in Data Science",
+    certificate: "TensorFlow Developer Certificate",
+    interpersonalSkills: [
+      "Statistical Analysis",
+      "Research",
+      "Data Storytelling",
+      "Cross-functional Communication",
+      "Problem Solving",
+    ],
   },
   {
     position: "DevOps Engineer",
-    company: "Microsoft",
+    company: "Youtube",
     location: "Redmond, WA",
     date: "January 20, 2025",
     time: "2:00 PM PST",
     meetingLink: "https://meet.google.com/qrs-tuvw-xyz",
     receivedTime: "yesterday",
     isNew: true,
+    coreSkills: ["Kubernetes", "AWS", "CI/CD", "Terraform", "Python"],
+    experience: "5-7 years",
+    employmentPreference: ["Full Time", "Remote"],
+    salaryExpectation: "$140,000-$170,000",
+    languages: ["English", "German"],
+    education: "Bachelor's in Computer Engineering",
+    certificate: "Certified Kubernetes Administrator (CKA)",
+    interpersonalSkills: [
+      "Infrastructure Planning",
+      "Security Best Practices",
+      "System Architecture",
+      "Team Collaboration",
+      "Incident Response",
+    ],
   },
 ];
 
@@ -126,15 +210,16 @@ const PendingInterviews: FC = () => {
     }
   };
 
-  const handleReschedule = async (interview: Interview, data: RescheduleData) => {
+  const handleReschedule = async (
+    interview: Interview,
+    data: RescheduleData,
+  ) => {
     try {
-      console.log('Reschedule:', interview, data);
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setDisplayedItems(prev => 
-        prev.filter(item => item !== interview)
-      );
+      console.log("Reschedule:", interview, data);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      setDisplayedItems((prev) => prev.filter((item) => item !== interview));
     } catch (error) {
-      console.error('Error rescheduling interview:', error);
+      console.error("Error rescheduling interview:", error);
     }
   };
 
