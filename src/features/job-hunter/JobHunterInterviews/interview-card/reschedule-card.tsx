@@ -7,18 +7,27 @@ import {
   RefreshCcw,
   Clock,
   Bookmark,
+  LoaderCircle
 } from "lucide-react";
 import { Card, CardHeader, CardContent } from "components";
 import { Button } from "components";
 import { Tooltip } from "components";
 import { Interview } from "features/job-hunter/types";
 import { CompanyPreviewModal } from "./preview/CompanyPreviewModal";
+import { RescheduleModal } from "features/job-hunter";
+import { useNavigate } from "react-router-dom";
+
+interface RescheduleData {
+  date: string;
+  time: string;
+  interviewId?: string;
+}
 
 interface RescheduleCardProps {
   interview: Interview;
   onAccept?: () => void;
   onDecline?: () => void;
-  onReschedule?: () => void;
+  onReschedule?: (data: RescheduleData) => void;
 }
 
 const RescheduleCard: FC<RescheduleCardProps> = ({
@@ -28,6 +37,48 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
   onReschedule,
 }) => {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isAccepted, setIsAccepted] = useState(false);
+  const [isDeclined, setIsDeclined] = useState(false);
+  const [activeModal, setActiveModal] = useState<"reschedule" | null>(null);
+  const navigate = useNavigate();
+
+  const handleAccept = async () => {
+    setIsLoading(true);
+    onAccept?.();
+
+    // Wait for 2 seconds to show the loading spinner
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    setIsLoading(false);
+    setIsAccepted(true);
+
+    // Wait for 1 second before redirecting
+    setTimeout(() => {
+      navigate("/job-hunter/interviews/accepted");
+    }, 1000);
+  };
+
+  const handleDecline = async () => {
+    setIsLoading(true);
+    onDecline?.();
+
+    // Wait for 2 seconds to show the loading spinner
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    setIsLoading(false);
+    setIsDeclined(true);
+
+    // Wait for 1 second before redirecting
+    setTimeout(() => {
+      navigate("/job-hunter/interviews/declined");
+    }, 1000);
+  };
+
+  const handleOpenReschedule = (event: React.MouseEvent) => {
+    event.preventDefault();
+    setActiveModal("reschedule");
+  };
 
   return (
     <>
@@ -86,13 +137,34 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
             </div>
 
             <div className="flex justify-center mt-3 w-full">
-              {interview.isRequesterMe ? (
+              {isLoading ? (
+                <div className="flex items-center gap-2">
+                  <LoaderCircle className="w-5 h-5 animate-spin text-orange-500" />
+                  <span className="text-sm font-medium text-orange-500">
+                    {isAccepted ? "Accepting..." : isDeclined ? "Declining..." : "Processing..."}
+                  </span>
+                </div>
+              ) : isAccepted ? (
+                <div className="flex items-center gap-2 text-green-600">
+                  <Check className="w-5 h-5" />
+                  <span className="text-sm font-medium">
+                    You've successfully accepted the interview!
+                  </span>
+                </div>
+              ) : isDeclined ? (
+                <div className="flex items-center gap-2 text-red-600">
+                  <Check className="w-5 h-5" />
+                  <span className="text-sm font-medium">
+                    You've successfully declined this interview!
+                  </span>
+                </div>
+              ) : interview.isRequesterMe ? (
                 // My request layout
                 <div className="flex items-center gap-2 flex-wrap justify-center">
                   {interview.hasRescheduled ? (
                     <Tooltip content="You've already exceeded the limit to reschedule">
                       <Button
-                        onClick={onReschedule}
+                        onClick={handleOpenReschedule}
                         variant="outline"
                         disabled={interview.hasRescheduled}
                         className="h-7 rounded text-xs bg-gray-100 text-gray-400 cursor-not-allowed"
@@ -103,7 +175,7 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
                     </Tooltip>
                   ) : (
                     <Button
-                      onClick={onReschedule}
+                      onClick={handleOpenReschedule}
                       variant="outline"
                       className="border-2 h-7 rounded text-xs border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white"
                     >
@@ -117,7 +189,7 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
                 // Their request layout
                 <div className="flex items-center gap-2">
                   <Button
-                    onClick={onAccept}
+                    onClick={handleAccept}
                     variant="outline"
                     className="border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-white h-[26px] min-w-[100px] rounded text-xs flex items-center justify-center gap-1"
                   >
@@ -125,7 +197,7 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
                     Accept
                   </Button>
                   <Button
-                    onClick={onDecline}
+                    onClick={handleDecline}
                     variant="outline"
                     className="border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white h-[26px] min-w-[100px] rounded text-xs flex items-center justify-center gap-1"
                   >
@@ -134,7 +206,7 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
                   </Button>
                   <div className="flex items-center gap-2">
                     <Button
-                      onClick={onReschedule}
+                      onClick={handleOpenReschedule}
                       variant="outline"
                       className="border-2 border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white h-[26px] min-w-[100px] rounded text-xs flex items-center justify-center gap-1"
                     >
@@ -163,6 +235,16 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
         isOpen={isPreviewOpen}
         onClose={() => setIsPreviewOpen(false)}
         interview={interview}
+      />
+
+      {/* Reschedule Modal */}
+      <RescheduleModal
+        isOpen={activeModal === "reschedule"}
+        onClose={() => setActiveModal(null)}
+        interview={interview}
+        onReschedule={(data: RescheduleData) => {
+          onReschedule?.(data);
+        }}
       />
     </>
   );

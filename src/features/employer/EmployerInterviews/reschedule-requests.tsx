@@ -136,14 +136,16 @@ const RescheduleRequests: FC = () => {
   const loaderRef = useRef<HTMLDivElement>(null);
   const [initialLoad, setInitialLoad] = useState(true);
 
-  const handleAccept = (interview: Interview) => {
+  const handleAccept = async (interview: Interview) => {
     console.log("Accepted interview:", interview.position);
+    await new Promise((resolve) => setTimeout(resolve, 3000));
     // Remove the accepted interview from the list
     setDisplayedItems((prev) => prev.filter((item) => item !== interview));
   };
 
-  const handleDecline = (interview: Interview) => {
+  const handleDecline = async (interview: Interview) => {
     console.log("Declined interview:", interview.position);
+    await new Promise((resolve) => setTimeout(resolve, 3000));
     // Remove the declined interview from the list
     setDisplayedItems((prev) => prev.filter((item) => item !== interview));
   };

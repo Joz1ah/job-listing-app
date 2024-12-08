@@ -17,7 +17,6 @@ interface InterviewCardProps {
 const AcceptedCard: FC<InterviewCardProps> = ({
   interview,
   onJoinInterview,
-  onPreviewJob,
 }) => {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
@@ -44,8 +43,7 @@ const AcceptedCard: FC<InterviewCardProps> = ({
           </div>
           <div className="w-full relative mt-2">
             <h3
-              className="text-[14px] font-semibold cursor-pointer hover:underline"
-              onClick={() => setIsPreviewOpen(true)}
+              className="text-[14px] font-semibold"
             >
               {interview.position}
             </h3>
@@ -95,7 +93,7 @@ const AcceptedCard: FC<InterviewCardProps> = ({
               </Tooltip>
             </div>
             <Button
-              onClick={onPreviewJob}
+              onClick={() => setIsPreviewOpen(true)}
               variant="outline"
               className="text-xs w-[108px] h-[32px] font-normal text-orange-500 border-2 border-orange-500 hover:bg-orange-500 hover:text-white rounded-sm"
             >
