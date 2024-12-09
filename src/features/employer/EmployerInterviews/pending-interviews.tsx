@@ -30,7 +30,6 @@ const mockInterviews: Interview[] = [
     location: "Mountain View, CA",
     date: "December 22, 2024",
     time: "10:00 AM PST",
-    meetingLink: "https://meet.google.com/abc-defg-hij",
     receivedTime: "yesterday",
     isNew: true,
     coreSkills: ["React", "TypeScript", "Next.js", "CSS3", "GraphQL"],
@@ -47,6 +46,17 @@ const mockInterviews: Interview[] = [
       "Team Collaboration",
       "Agile Methodologies",
     ],
+    existingMeetings: [
+      {
+        position: "DevOps Engineer",
+        companyName: "Accenture Inc.",
+        timeSlot: {
+          date: "2024-12-09",
+          startTime: "12:00",
+          endTime: "13:00",
+        },
+      },
+    ],
   },
   {
     position: "Backend Developer",
@@ -54,7 +64,6 @@ const mockInterviews: Interview[] = [
     location: "Menlo Park, CA",
     date: "December 25, 2024",
     time: "1:00 PM PST",
-    meetingLink: "https://meet.google.com/uvw-xyzq-rst",
     receivedTime: "two days ago",
     isNew: false,
     coreSkills: [
@@ -77,6 +86,26 @@ const mockInterviews: Interview[] = [
       "Problem Solving",
       "Documentation",
     ],
+    existingMeetings: [
+      {
+        position: "Senior Frontend Developer",
+        companyName: "TechCorp Inc",
+        timeSlot: {
+          date: "2024-12-09",
+          startTime: "8:00",
+          endTime: "9:00",
+        },
+      },
+      {
+        position: "Full Stack Developer",
+        companyName: "Google Inc.",
+        timeSlot: {
+          date: "2024-12-10",
+          startTime: "12:00",
+          endTime: "13:00",
+        },
+      },
+    ],
   },
   {
     position: "Full Stack Developer",
@@ -84,7 +113,6 @@ const mockInterviews: Interview[] = [
     location: "Remote",
     date: "January 5, 2025",
     time: "3:00 PM EST",
-    meetingLink: "https://meet.google.com/jkl-mnop-qrs",
     receivedTime: "today",
     isNew: true,
     coreSkills: ["React", "Node.js", "MongoDB", "Express", "AWS"],
@@ -101,6 +129,17 @@ const mockInterviews: Interview[] = [
       "Code Review",
       "Mentoring",
     ],
+    existingMeetings: [
+      {
+        position: "UI/UX Designer",
+        companyName: "Accenture Inc.",
+        timeSlot: {
+          date: "2024-12-12",
+          startTime: "6:00",
+          endTime: "7:00",
+        },
+      },
+    ],
   },
   {
     position: "UX/UI Designer",
@@ -108,7 +147,6 @@ const mockInterviews: Interview[] = [
     location: "San Jose, CA",
     date: "January 10, 2025",
     time: "9:00 AM PST",
-    meetingLink: "https://meet.google.com/stu-vwxy-zab",
     receivedTime: "last week",
     isNew: false,
     coreSkills: ["Figma", "Adobe XD", "Sketch", "Prototyping", "User Research"],
@@ -132,7 +170,6 @@ const mockInterviews: Interview[] = [
     location: "Seattle, WA",
     date: "January 15, 2025",
     time: "11:00 AM PST",
-    meetingLink: "https://meet.google.com/ghi-klmn-opq",
     receivedTime: "two hours ago",
     isNew: true,
     coreSkills: [
@@ -162,7 +199,6 @@ const mockInterviews: Interview[] = [
     location: "Redmond, WA",
     date: "January 20, 2025",
     time: "2:00 PM PST",
-    meetingLink: "https://meet.google.com/qrs-tuvw-xyz",
     receivedTime: "yesterday",
     isNew: true,
     coreSkills: ["Kubernetes", "AWS", "CI/CD", "Terraform", "Python"],

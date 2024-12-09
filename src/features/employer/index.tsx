@@ -47,3 +47,4 @@ export { DeclinedCard } from 'features/employer/EmployerInterviews/interview-car
 export { CompletedCard } from 'features/employer/EmployerInterviews/interview-card/completed-card'
 export { SettingsSidebar } from 'features/employer/Sidebar/settings-sidebar-employer'
 export { CandidatePreviewModal } from 'features/employer/EmployerInterviews/interview-card/preview/CandidatePreviewModal'
+export { InterviewCalendarModal } from 'features/employer/EmployerInterviews/modals/InterviewCalendarModal'

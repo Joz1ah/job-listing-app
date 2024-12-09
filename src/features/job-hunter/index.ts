@@ -35,3 +35,4 @@ export { ScheduleInterviewModal } from 'features/job-hunter/JobCard/schedule-for
 export { InvitationSentModal } from 'features/job-hunter/JobCard/schedule-form/InvitationSentModal'
 export { SettingsSidebar } from 'features/job-hunter/Sidebar/settings-sidebar-job-hunter'
 export { CompanyPreviewModal } from 'features/job-hunter/JobHunterInterviews/interview-card/preview/CompanyPreviewModal'
+export { InterviewCalendarModal } from 'features/job-hunter/JobHunterInterviews/modals/interview-modal/InterviewCalendarModal'

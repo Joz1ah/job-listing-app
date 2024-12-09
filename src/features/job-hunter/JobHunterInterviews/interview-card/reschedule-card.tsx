@@ -7,7 +7,7 @@ import {
   RefreshCcw,
   Clock,
   Bookmark,
-  LoaderCircle
+  LoaderCircle,
 } from "lucide-react";
 import { Card, CardHeader, CardContent } from "components";
 import { Button } from "components";
@@ -16,6 +16,7 @@ import { Interview } from "features/job-hunter/types";
 import { CompanyPreviewModal } from "./preview/CompanyPreviewModal";
 import { RescheduleModal } from "features/job-hunter";
 import { useNavigate } from "react-router-dom";
+import { InterviewCalendarModal } from "features/job-hunter";
 
 interface RescheduleData {
   date: string;
@@ -41,6 +42,8 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
   const [isAccepted, setIsAccepted] = useState(false);
   const [isDeclined, setIsDeclined] = useState(false);
   const [activeModal, setActiveModal] = useState<"reschedule" | null>(null);
+  const [isCalendarModalOpen, setIsCalendarModalOpen] =
+    useState<boolean>(false);
   const navigate = useNavigate();
 
   const handleAccept = async () => {
@@ -141,7 +144,11 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
                 <div className="flex items-center gap-2">
                   <LoaderCircle className="w-5 h-5 animate-spin text-orange-500" />
                   <span className="text-sm font-medium text-orange-500">
-                    {isAccepted ? "Accepting..." : isDeclined ? "Declining..." : "Processing..."}
+                    {isAccepted
+                      ? "Accepting..."
+                      : isDeclined
+                        ? "Declining..."
+                        : "Processing..."}
                   </span>
                 </div>
               ) : isAccepted ? (
@@ -183,7 +190,10 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
                       Reschedule
                     </Button>
                   )}
-                  <Calendar className="w-4 h-4 text-blue-500" />
+                  <Calendar
+                    className="w-4 h-4 text-blue-500 hover:cursor-pointer"
+                    onClick={() => setIsCalendarModalOpen(true)}
+                  />
                 </div>
               ) : (
                 // Their request layout
@@ -213,7 +223,10 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
                       <RefreshCcw className="w-4 h-4" />
                       Reschedule
                     </Button>
-                    <Calendar className="w-4 h-4 text-blue-500" />
+                    <Calendar
+                      className="w-4 h-4 text-blue-500 cursor-pointer"
+                      onClick={() => setIsCalendarModalOpen(true)}
+                    />
                   </div>
                 </div>
               )}
@@ -245,6 +258,12 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
         onReschedule={(data: RescheduleData) => {
           onReschedule?.(data);
         }}
+      />
+
+      <InterviewCalendarModal
+        isOpen={isCalendarModalOpen}
+        onClose={() => setIsCalendarModalOpen(false)}
+        company={interview.company}
       />
     </>
   );

@@ -47,6 +47,17 @@ const mockInterviews: Interview[] = [
       "Team Collaboration",
       "Agile Methodologies",
     ],
+    existingMeetings: [
+      {
+        position: "UI/UX Designer",
+        companyName: "Accenture Inc.",
+        timeSlot: {
+          date: "2024-12-12",
+          startTime: "6:00",
+          endTime: "7:00"
+        }
+      }
+    ]
   },
   {
     position: "Backend Developer",
@@ -77,6 +88,26 @@ const mockInterviews: Interview[] = [
       "Problem Solving",
       "Documentation",
     ],
+    existingMeetings: [
+      {
+        position: "Senior Frontend Developer",
+        companyName: "TechCorp Inc",
+        timeSlot: {
+          date: "2024-12-09",
+          startTime: "8:00",
+          endTime: "9:00"
+        }
+      },
+      {
+        position: "Full Stack Developer",
+        companyName: "Google Inc.",
+        timeSlot: {
+          date: "2024-12-10",
+          startTime: "12:00",
+          endTime: "13:00"
+        }
+      }
+    ]
   },
   {
     position: "Full Stack Developer",

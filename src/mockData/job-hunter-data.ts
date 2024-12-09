@@ -34,7 +34,7 @@ export const perfectMatch: Match[] = [
     salaryExpectation: "$51,000-$70,000",
     language: ["English"],
     interpersonalSkills: ["Team Collaboration", "Adaptability", "Problem Solving"],
-    certificates: ["Certified JavaScript Developer", "Certified JavaScript Developer"]
+    certificates: ["Certified JavaScript Developer"]
   },
   {
     id: 2,
