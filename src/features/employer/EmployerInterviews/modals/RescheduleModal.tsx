@@ -159,7 +159,7 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
               <div className="mb-4">
                 <div className="flex flex-wrap justify-between items-start gap-2">
                   <h3 className="text-sm font-medium break-words">
-                    {interview.name}
+                    {interview.candidate}
                   </h3>
                   <span className="text-xs text-gray-500 font-light">
                     Received {interview.receivedTime}

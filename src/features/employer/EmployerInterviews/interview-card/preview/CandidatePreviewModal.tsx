@@ -25,7 +25,7 @@ const CandidatePreviewModal: FC<CandidatePreviewModalProps> = ({
                 {/* Name */}
                 <div className="flex flex-col items-start">
                   <DialogTitle className="text-xl font-semibold text-black mb-1">
-                    {interview.name}
+                    {interview.candidate}
                   </DialogTitle>
                 </div>
 

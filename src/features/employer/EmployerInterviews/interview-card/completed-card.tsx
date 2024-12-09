@@ -46,7 +46,7 @@ const CompletedCard: FC<InterviewCardProps> = ({
               className="text-[14px] font-semibold cursor-pointer hover:underline"
               onClick={() => setIsPreviewOpen(true)}
             >
-              {interview.name}
+              {interview.candidate}
             </h3>
             <p className="text-[13px] text-black underline">
               {interview.position}

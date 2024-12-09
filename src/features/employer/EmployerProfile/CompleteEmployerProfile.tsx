@@ -73,7 +73,11 @@ const validationSchema = Yup.object().shape({
   city: Yup.string().required("City is required"),
   state: Yup.string().required("State is required"),
   postalCode: Yup.string().required("Postal code is required"),
-  country: Yup.string().required("Country is required"),
+  country: Yup.string()
+    .required("Country is required")
+    .test("validCountry", "Please select a valid country", function(value) {
+      return selectOptions.country.some(option => option.value === value);
+    }),
   companyOverview: Yup.string().required("This field is required"),
 });
 

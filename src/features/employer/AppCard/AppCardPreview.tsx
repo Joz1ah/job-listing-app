@@ -25,11 +25,6 @@ interface SelectOptions {
   coreSkills: SelectOption[];
 }
 
-interface Skill {
-  name: string;
-  isMatch: boolean;
-}
-
 interface FormValues {
   firstName: string;
   lastName: string;
@@ -70,11 +65,9 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({ values, selectOptions }) =
     return option?.label || value;
   };
 
-  const formattedSkills: Skill[] =
-    values.coreSkills?.map((skillValue) => ({
-      name: (getLabel("coreSkills", skillValue) as string) || skillValue,
-      isMatch: false,
-    })) || [];
+  const formattedSkills = values.coreSkills?.map(
+    (skillValue) => (getLabel("coreSkills", skillValue) as string) || skillValue
+  ) || [];
 
   const hasName = values.firstName || values.lastName;
   const hasCountry = values.country;
@@ -148,7 +141,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({ values, selectOptions }) =
                         i % 2 === 0 ? "bg-[#168AAD]" : "bg-[#184E77]"
                       }`}
                     >
-                      {skill ? skill.name : "Skills"}
+                      {skill || "Skills"}
                     </span>
                   );
                 })}
@@ -300,7 +293,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({ values, selectOptions }) =
                             i % 2 === 0 ? "bg-[#168AAD]" : "bg-[#184E77]"
                           }`}
                         >
-                          {skill ? skill.name : "Skills"}
+                          {skill || "Skills"}
                         </span>
                       );
                     })}

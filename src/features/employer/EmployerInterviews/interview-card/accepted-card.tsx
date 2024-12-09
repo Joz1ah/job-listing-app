@@ -45,7 +45,7 @@ const AcceptedCard: FC<InterviewCardProps> = ({
             <h3
               className="text-[14px] font-semibold"
             >
-              {interview.name}
+              {interview.candidate}
             </h3>
             <p className="text-[13px] text-black underline">
               {interview.position}

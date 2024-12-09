@@ -56,7 +56,10 @@ const validationSchema = Yup.object().shape({
   firstName: Yup.string().required("This field is required"),
   lastName: Yup.string().required("This field is required"),
   birthday: Yup.string()
-    .matches(/^(1[0-2]|[1-9])\/(3[01]|[12][0-9]|[1-9])$/, "Invalid date format")
+    .matches(
+        /^(January|February|March|April|May|June|July|August|September|October|November|December)\s(3[01]|[12][0-9]|[1-9])$/,
+        "Day is required"
+    )
     .required("Birthday is required"),
   emailAddress: Yup.string()
     .required("This field is required")

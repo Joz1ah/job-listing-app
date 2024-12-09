@@ -2,7 +2,7 @@
 export interface Interview {
     id?:string;
     position: string;
-    name: string;
+    candidate: string;
     date: string;
     time: string;
     location: string;

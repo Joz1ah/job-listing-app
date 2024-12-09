@@ -9,7 +9,7 @@ import { Interview } from "../types";
 const mockInterviews: Interview[] = [
   {
     position: "Sr. Mobile and Web Developer",
-    name: "Mia Lee",
+    candidate: "Mia Lee",
     location: "USA",
     date: "December 29, 2024",
     time: "8:00 AM EST",
@@ -42,7 +42,7 @@ const mockInterviews: Interview[] = [
   },
   {
     position: "Full Stack Developer",
-    name: "William Scott",
+    candidate: "William Scott",
     location: "USA",
     date: "January 3, 2025",
     time: "2:00 PM PST",
@@ -69,7 +69,7 @@ const mockInterviews: Interview[] = [
   },
   {
     position: "Junior Front End Developer",
-    name: "Charlotte Adams",
+    candidate: "Charlotte Adams",
     location: "India",
     date: "February 1, 2025",
     time: "4:00 PM IST",
@@ -102,7 +102,7 @@ const mockInterviews: Interview[] = [
   },
   {
     position: "Jr. Web Developer",
-    name: "Vicky Rawkus",
+    candidate: "Vicky Rawkus",
     location: "India",
     date: "February 1, 2025",
     time: "2:00 PM IST",

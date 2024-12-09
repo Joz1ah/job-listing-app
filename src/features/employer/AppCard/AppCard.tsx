@@ -48,7 +48,7 @@ const getAvailabilityStyle = (type: string) => {
 };
 
 const generateCardId = (match: Match): string => {
-  return `${match.name}-${match.position}-${match.location}`
+  return `${match.firstName}-${match.lastName}-${match.position}-${match.location}`
     .toLowerCase()
     .replace(/\s+/g, "-");
 };
@@ -122,7 +122,7 @@ const AppCard: FC<AppCardProps> = ({ match, isFreeTrial = false }) => {
           <div className="w-full relative">
             <SecureNameDisplay
               isFreeTrial={isFreeTrial}
-              realName={match.name}
+              realName={`${match.firstName} ${match.lastName}`}
             />
             <BookmarkButton
               cardId={cardId}
@@ -208,7 +208,7 @@ const AppCard: FC<AppCardProps> = ({ match, isFreeTrial = false }) => {
             position={match.position}
             coreSkills={match.coreSkills}
             certificate={match.certificates}
-            candidateName={match.name}
+            candidateName={`${match.firstName} ${match.lastName}`}
             location={match.location}
           />
         </>

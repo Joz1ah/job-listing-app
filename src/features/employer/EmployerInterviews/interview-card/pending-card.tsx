@@ -159,7 +159,7 @@ const PendingCard: FC<PendingCardProps> = ({
           className="text-[14px] font-semibold pr-8 cursor-pointer hover:underline"
           onClick={() => setIsPreviewOpen(true)}
         >
-          {interview.name}
+          {interview.candidate}
         </h3>
         <p className="text-[13px] text-black underline">{interview.position}</p>
         <div className="flex flex-row items-center">
@@ -185,7 +185,7 @@ const PendingCard: FC<PendingCardProps> = ({
       </span>
       <div className="w-full mt-2">
         <div className="flex flex-row justify-between relative">
-          <h4 className="text-[14px] font-semibold pt-1">{interview.name}</h4>
+          <h4 className="text-[14px] font-semibold pt-1">{interview.candidate}</h4>
           <span className="text-[12px] font-light text-gray-400 -mr-2">
             Received {interview.receivedTime}
           </span>
@@ -214,7 +214,7 @@ const PendingCard: FC<PendingCardProps> = ({
       </h3>
       <div className="w-full mt-2">
         <div className="flex flex-row justify-between relative">
-          <h4 className="text-[14px] font-semibold pt-1">{interview.name}</h4>
+          <h4 className="text-[14px] font-semibold pt-1">{interview.candidate}</h4>
           <span className="text-[12px] font-light text-gray-400 -mr-2">
             Received {interview.receivedTime}
           </span>

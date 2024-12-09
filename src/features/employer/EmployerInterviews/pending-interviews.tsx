@@ -26,7 +26,7 @@ interface RescheduleData {
 const mockInterviews: Interview[] = [
   {
     position: "Frontend Engineer",
-    name: "Olivia Martinez",
+    candidate: "Olivia Martinez",
     location: "Mountain View, CA",
     date: "December 22, 2024",
     time: "10:00 AM PST",
@@ -50,7 +50,7 @@ const mockInterviews: Interview[] = [
   },
   {
     position: "Backend Developer",
-    name: "Benjamin Wilson",
+    candidate: "Benjamin Wilson",
     location: "Menlo Park, CA",
     date: "December 25, 2024",
     time: "1:00 PM PST",
@@ -80,7 +80,7 @@ const mockInterviews: Interview[] = [
   },
   {
     position: "Full Stack Developer",
-    name: "Isabella Garcia",
+    candidate: "Isabella Garcia",
     location: "Remote",
     date: "January 5, 2025",
     time: "3:00 PM EST",
@@ -104,7 +104,7 @@ const mockInterviews: Interview[] = [
   },
   {
     position: "UX/UI Designer",
-    name: "Ethan Harris",
+    candidate: "Ethan Harris",
     location: "San Jose, CA",
     date: "January 10, 2025",
     time: "9:00 AM PST",
@@ -128,7 +128,7 @@ const mockInterviews: Interview[] = [
   },
   {
     position: "Data Scientist",
-    name: "Ava White",
+    candidate: "Ava White",
     location: "Seattle, WA",
     date: "January 15, 2025",
     time: "11:00 AM PST",
@@ -158,7 +158,7 @@ const mockInterviews: Interview[] = [
   },
   {
     position: "DevOps Engineer",
-    name: "Alexander Walker",
+    candidate: "Alexander Walker",
     location: "Redmond, WA",
     date: "January 20, 2025",
     time: "2:00 PM PST",
@@ -342,7 +342,7 @@ const PendingInterviews: FC = () => {
         {!initialLoad &&
           displayedItems.map((interview, index) => (
             <PendingCard
-              key={`${interview.position}-${interview.name}-${index}`}
+              key={`${interview.position}-${interview.candidate}-${index}`}
               interview={interview}
               onAccept={(data) => handleAccept(interview, data)}
               onDecline={(data) => handleDecline(interview, data)}

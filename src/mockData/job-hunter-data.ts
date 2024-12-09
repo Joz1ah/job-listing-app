@@ -1,5 +1,9 @@
 export interface Match {
-  name: string;
+  id: number;
+  firstName: string;
+  lastName: string;
+  phoneNumber: number;
+  birthday: string;
   location: string;
   position: string;
   education: string;
@@ -15,7 +19,11 @@ export interface Match {
 
 export const perfectMatch: Match[] = [
   {
-    name: "Olivia Davis",
+    id: 1,
+    firstName: "Olivia",
+    lastName: "Davis",
+    phoneNumber: 639275454434,
+    birthday: "March 15",
     location: "United Kingdom",
     position: "Junior Front End Developer",
     education: "Bachelor's Degree",
@@ -29,7 +37,11 @@ export const perfectMatch: Match[] = [
     certificates: ["Certified JavaScript Developer", "Certified JavaScript Developer"]
   },
   {
-    name: "Mason Green",
+    id: 2,
+    firstName: "Mason",
+    lastName: "Green",
+    phoneNumber: 639275454435,
+    birthday: "April 22",
     location: "Canada",
     position: "Frontend Engineer",
     education: "Master's Degree",
@@ -43,7 +55,11 @@ export const perfectMatch: Match[] = [
     certificates: ["AWS Certified Developer", "TypeScript Mastery"]
   },
   {
-    name: "Ava Martinez",
+    id: 3,
+    firstName: "Ava",
+    lastName: "Martinez",
+    phoneNumber: 639275454436,
+    birthday: "July 8",
     location: "Germany",
     position: "Junior JavaScript Developer",
     education: "Bachelor's Degree",
@@ -57,7 +73,11 @@ export const perfectMatch: Match[] = [
     certificates: ["Certified Vue.js Developer"]
   },
   {
-    name: "Ethan Clark",
+    id: 4,
+    firstName: "Ethan",
+    lastName: "Clark",
+    phoneNumber: 639275454437,
+    birthday: "October 5",
     location: "United States of America",
     position: "Frontend Developer",
     education: "Master's Degree",
@@ -71,7 +91,11 @@ export const perfectMatch: Match[] = [
     certificates: ["Google UX Design Professional Certificate"]
   },
   {
-    name: "Sophia Brown",
+    id: 5,
+    firstName: "Sophia",
+    lastName: "Brown",
+    phoneNumber: 639275454438,
+    birthday: "May 17",
     location: "Australia",
     position: "UI Developer",
     education: "Bachelor's Degree",
@@ -85,7 +109,11 @@ export const perfectMatch: Match[] = [
     certificates: ["Certified UI/UX Designer"]
   },
   {
-    name: "James Wilson",
+    id: 6,
+    firstName: "James",
+    lastName: "Wilson",
+    phoneNumber: 639275454439,
+    birthday: "December 12",
     location: "United States of America",
     position: "React Developer",
     education: "Master's Degree",
@@ -99,7 +127,11 @@ export const perfectMatch: Match[] = [
     certificates: ["React Professional Developer"]
   },
   {
-    name: "Lucas Evans",
+    id: 7,
+    firstName: "Lucas",
+    lastName: "Evans",
+    phoneNumber: 639275454440,
+    birthday: "February 28",
     location: "Spain",
     position: "Junior Web Developer",
     education: "Associate Degree",
@@ -113,7 +145,11 @@ export const perfectMatch: Match[] = [
     certificates: ["Full Stack Web Development Certificates"]
   },
   {
-    name: "Isabella Hill",
+    id: 8,
+    firstName: "Isabella",
+    lastName: "Hill",
+    phoneNumber: 639275454441,
+    birthday: "August 9",
     location: "France",
     position: "Junior Front End Developer",
     education: "Bachelor's Degree",
@@ -127,7 +163,11 @@ export const perfectMatch: Match[] = [
     certificates: ["Certified React Developer"]
   },
   {
-    name: "Liam Parker",
+    id: 9,
+    firstName: "Liam",
+    lastName: "Parker",
+    phoneNumber: 639275454442,
+    birthday: "November 3",
     location: "Canada",
     position: "Full Stack Developer",
     education: "Master's Degree",
@@ -141,7 +181,11 @@ export const perfectMatch: Match[] = [
     certificates: ["Full Stack Developer Professional Certificate"]
   },
   {
-    name: "Sophia Martinez",
+    id: 10,
+    firstName: "Sophia",
+    lastName: "Martinez",
+    phoneNumber: 639275454443,
+    birthday: "January 25",
     location: "Spain",
     position: "UI/UX Designer",
     education: "Bachelor's Degree",
@@ -158,7 +202,11 @@ export const perfectMatch: Match[] = [
 
 export const others: Match[] = [
   {
-    name: "Lily Thompson",
+    id: 11,
+    firstName: "Lily",
+    lastName: "Thompson",
+    phoneNumber: 639275454444,
+    birthday: "September 3",
     location: "United States of America",
     position: "Full Stack Developer",
     education: "Master's Degree",
@@ -172,7 +220,11 @@ export const others: Match[] = [
     certificates: ["Full Stack Professional Developer"]
   },
   {
-    name: "Jack Baker",
+    id: 12,
+    firstName: "Jack",
+    lastName: "Baker",
+    phoneNumber: 639275454445,
+    birthday: "January 12",
     location: "United States of America",
     position: "Backend Developer",
     education: "Bachelor's Degree",
@@ -186,7 +238,11 @@ export const others: Match[] = [
     certificates: ["Certified Backend Developer"]
   },
   {
-    name: "Emma Johnson",
+    id: 13,
+    firstName: "Emma",
+    lastName: "Johnson",
+    phoneNumber: 639275454446,
+    birthday: "June 28",
     location: "Ireland",
     position: "Software Engineer",
     education: "Master's Degree",
@@ -200,7 +256,11 @@ export const others: Match[] = [
     certificates: ["Certified Software Engineer"]
   },
   {
-    name: "Noah Lee",
+    id: 14,
+    firstName: "Noah",
+    lastName: "Lee",
+    phoneNumber: 639275454447,
+    birthday: "April 15",
     location: "South Korea",
     position: "Frontend Engineer",
     education: "Bachelor's Degree",
@@ -214,7 +274,11 @@ export const others: Match[] = [
     certificates: ["Frontend Developer Certificates"]
   },
   {
-    name: "Amelia Roberts",
+    id: 15,
+    firstName: "Amelia",
+    lastName: "Roberts",
+    phoneNumber: 639275454448,
+    birthday: "July 20",
     location: "Japan",
     position: "Junior Software Developer",
     education: "Associate Degree",
@@ -228,7 +292,11 @@ export const others: Match[] = [
     certificates: ["Certified Junior Developer"]
   },
   {
-    name: "Amelia Brown",
+    id: 16,
+    firstName: "Amelia",
+    lastName: "Brown",
+    phoneNumber: 639275454449,
+    birthday: "March 8",
     location: "Australia",
     position: "Data Analyst",
     education: "Bachelor's Degree",
@@ -242,7 +310,11 @@ export const others: Match[] = [
     certificates: ["Data Analytics Professional Certificate"]
   },
   {
-    name: "Lucas Nguyen",
+    id: 17,
+    firstName: "Lucas",
+    lastName: "Nguyen",
+    phoneNumber: 639275454450,
+    birthday: "October 30",
     location: "Vietnam",
     position: "Front End Developer",
     education: "Bachelor's Degree",
@@ -256,7 +328,11 @@ export const others: Match[] = [
     certificates: ["Certified Vue.js Developer"]
   },
   {
-    name: "Mia Patel",
+    id: 18,
+    firstName: "Mia",
+    lastName: "Patel",
+    phoneNumber: 639275454451,
+    birthday: "May 5",
     location: "India",
     position: "Cloud Engineer",
     education: "Master's Degree",
@@ -270,7 +346,11 @@ export const others: Match[] = [
     certificates: ["AWS Certified Solutions Architect"]
   },
   {
-    name: "Ethan Kim",
+    id: 19,
+    firstName: "Ethan",
+    lastName: "Kim",
+    phoneNumber: 639275454452,
+    birthday: "December 1",
     location: "United States of America",
     position: "Machine Learning Engineer",
     education: "Doctorate/PhD",
@@ -283,18 +363,4 @@ export const others: Match[] = [
     interpersonalSkills: ["Analytical Thinking", "Decision Making", "Innovation"],
     certificates: ["Certified Machine Learning Specialist"]
   },
-  {
-    name: "Ava Davies",
-    location: "United Kingdom",
-    position: "Cybersecurity Specialist",
-    education: "Master's Degree",
-    coreSkills: ["Penetration Testing", "Network Security", "Ethical Hacking", "Linux", "Python"],
-    appliedAgo: "2 weeks ago",
-    experience: "5-7 years",
-    lookingFor: ["Contract only"],
-    salaryExpectation: "$90,000-$110,000",
-    language: ["English"],
-    interpersonalSkills: ["Critical Thinking", "Problem Solving", "Leadership"],
-    certificates: ["Certified Ethical Hacker"]
-  }
 ];

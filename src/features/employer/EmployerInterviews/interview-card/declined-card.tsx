@@ -46,7 +46,7 @@ const DeclinedCard: FC<InterviewCardProps> = ({ interview }) => {
               className="text-sm font-medium cursor-pointer hover:underline"
               onClick={() => setIsPreviewOpen(true)}
             >
-              {interview.name}
+              {interview.candidate}
             </p>
             <p className="text-sm text-gray-700 underline">
               {interview.position}

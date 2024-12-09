@@ -34,7 +34,7 @@ const AppPreviewModal: FC<AppPreviewModalProps> = ({
                     Applicant Name
                   </DialogTitle>
                   <p className="text-base md:text-xl font-bold break-words max-w-[80%]">
-                    {app.name}
+                  {`${app.firstName} ${app.lastName}`}
                   </p>
                 </div>
 
@@ -197,7 +197,7 @@ const AppPreviewModal: FC<AppPreviewModalProps> = ({
           position={app.position}
           coreSkills={app.coreSkills}
           certificate={app.certificates}
-          candidateName={app.name}
+          candidateName={`${app.firstName} ${app.lastName}`}
           location={app.location}
         />
       </DialogContent>

@@ -121,7 +121,7 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
               className="text-[14px] font-semibold mt-1 cursor-pointer hover:underline"
               onClick={() => setIsPreviewOpen(true)}
             >
-              {interview.name}
+              {interview.candidate}
             </h3>
             <p className="text-[13px] text-black underline">
               {interview.position}
