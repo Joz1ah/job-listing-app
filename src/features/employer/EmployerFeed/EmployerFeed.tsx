@@ -1,6 +1,6 @@
 import { FC, useState, useEffect, useRef } from "react";
 import sparkeIcon from "images/sparkle-icon.png";
-import { perfectMatch, others } from "mockData/job-hunter-data";
+import { perfectMatch, others, Match } from "mockData/job-hunter-data";
 import { Button } from "components";
 import { AppCardSkeleton, BookmarkLimitHandler } from "components";
 import { AppCard } from "features/employer";
@@ -12,23 +12,6 @@ import { useEmployerContext } from "components";
 interface selectedProps {
   setSelectedTab: (tab: string) => void;
   isFreeTrial?: boolean;
-}
-
-interface Skill {
-  name: string;
-  isMatch: boolean;
-}
-
-interface Match {
-  name: string;
-  location: string;
-  job: string;
-  skills: Skill[];
-  appliedAgo: string;
-  experience: string;
-  lookingFor: string[];
-  salaryExpectation: string;
-  language: string[];
 }
 
 interface AdItem {

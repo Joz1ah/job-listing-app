@@ -19,8 +19,8 @@ interface ScheduleInterviewModalProps {
   isOpen: boolean;
   onClose: () => void;
   jobTitle: string;
-  skills: Array<{ name: string; isMatch: boolean }>;
-  certificate?: string;
+  coreSkills: string[];
+  certificate?: string[];
   company: string;
   location: string;
 }
@@ -44,8 +44,8 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
   isOpen,
   onClose,
   jobTitle,
-  skills,
-  certificate,
+  coreSkills,
+  certificate = [],
   company,
   location,
 }) => {
@@ -139,7 +139,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                       <div>
                         <span className="text-sm block mb-2">Core Skills:</span>
                         <div className="flex flex-wrap gap-1.5">
-                          {skills.map((skill, index) => (
+                          {coreSkills.map((skill, index) => (
                             <span
                               key={index}
                               className={`${
@@ -148,17 +148,30 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                                   : "bg-[#168AAD]"
                               } text-white px-2 py-0.5 text-xs rounded`}
                             >
-                              {skill.name}
+                              {skill}
                             </span>
                           ))}
                         </div>
                       </div>
 
                       <div>
-                        <span className="text-sm block mb-2">Certificate:</span>
-                        <span className="text-orange-500 border border-orange-500 px-2 py-0.5 text-xs rounded">
-                          {certificate || "None required"}
-                        </span>
+                        <span className="text-sm block mb-2">Certificates:</span>
+                        <div className="flex flex-wrap gap-1.5">
+                          {certificate && certificate.length > 0 ? (
+                            certificate.map((cert, index) => (
+                              <span
+                                key={index}
+                                className="text-orange-500 border border-orange-500 px-2 py-0.5 text-xs rounded"
+                              >
+                                {cert}
+                              </span>
+                            ))
+                          ) : (
+                            <span className="text-gray-400 text-xs">
+                              None required
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>

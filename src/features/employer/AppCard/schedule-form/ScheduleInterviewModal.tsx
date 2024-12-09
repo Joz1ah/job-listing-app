@@ -18,9 +18,9 @@ import * as Yup from "yup";
 interface ScheduleInterviewModalProps {
   isOpen: boolean;
   onClose: () => void;
-  jobTitle: string;
-  skills: Array<{ name: string; isMatch: boolean }>;
-  certificate?: string;
+  position: string;
+  coreSkills: string[];
+  certificate?: string[];
   candidateName?: string;
   location?: string;
 }
@@ -43,9 +43,9 @@ const validationSchema = Yup.object().shape({
 const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
   isOpen,
   onClose,
-  jobTitle,
-  skills,
-  certificate,
+  position,
+  coreSkills,
+  certificate = [],
   candidateName,
   location,
 }) => {
@@ -129,7 +129,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
               <DialogHeader className="p-4 md:p-6">
                 <DialogTitle className="text-center text-orange-500 mb-8 mt-6">
                   Schedule an interview for the candidate below for the{" "}
-                  <span className="text-orange-500">{jobTitle}</span> position
+                  <span className="text-orange-500">{position}</span> position
                 </DialogTitle>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -153,7 +153,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                       <div>
                         <span className="text-sm block mb-2">Core Skills:</span>
                         <div className="flex flex-wrap gap-1.5">
-                          {skills.map((skill, index) => (
+                          {coreSkills.map((skill, index) => (
                             <span
                               key={index}
                               className={`${
@@ -162,18 +162,30 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                                   : "bg-[#168AAD]"
                               } text-white px-2 py-0.5 text-xs rounded`}
                             >
-                              {skill.name}
+                              {skill}
                             </span>
                           ))}
                         </div>
                       </div>
 
                       <div>
-                        <span className="text-sm block mb-2">Certificate:</span>
-                        <span className="text-orange-500 border border-orange-500 px-2 py-0.5 text-xs rounded">
-                          {certificate ||
-                            "Microsoft Certified: Azure Developer Associate"}
-                        </span>
+                        <span className="text-sm block mb-2">Certificates:</span>
+                        <div className="flex flex-wrap gap-1.5">
+                          {certificate.length > 0 ? (
+                            certificate.map((cert, index) => (
+                              <span
+                                key={index}
+                                className="text-orange-500 border border-orange-500 px-2 py-0.5 text-xs rounded"
+                              >
+                                {cert}
+                              </span>
+                            ))
+                          ) : (
+                            <span className="text-gray-400 text-xs">
+                              No certificates provided
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>

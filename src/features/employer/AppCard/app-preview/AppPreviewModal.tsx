@@ -3,23 +3,7 @@ import { MapPin } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
 import { Button } from "components";
 import { ScheduleInterviewModal } from "features/employer";
-
-interface Skill {
-  name: string;
-  isMatch: boolean;
-}
-
-interface Match {
-  name: string;
-  location: string;
-  job: string;
-  skills: Skill[];
-  appliedAgo: string;
-  experience: string;
-  lookingFor: string[];
-  salaryExpectation: string;
-  language: string[];
-}
+import { Match } from "mockData/job-hunter-data";
 
 interface AppPreviewModalProps {
   isOpen: boolean;
@@ -57,7 +41,7 @@ const AppPreviewModal: FC<AppPreviewModalProps> = ({
                 {/* Job Role */}
                 <div className="flex items-start gap-1">
                   <p className="text-base md:text-[17px] break-words">
-                    {app.job}
+                    {app.position}
                   </p>
                 </div>
 
@@ -75,14 +59,14 @@ const AppPreviewModal: FC<AppPreviewModalProps> = ({
                     Core Skills:
                   </h4>
                   <div className="flex flex-wrap gap-1 items-start">
-                    {app.skills.map((skill, index) => (
+                    {app.coreSkills.map((skill, index) => (
                       <span
                         key={index}
                         className={`${
                           index % 2 === 0 ? "bg-[#184E77]" : "bg-[#168AAD]"
                         } text-white px-1.5 py-0.5 font-semibold text-sm md:text-[17px] rounded inline-block`}
                       >
-                        {skill.name}
+                        {skill}
                       </span>
                     ))}
                   </div>
@@ -148,24 +132,50 @@ const AppPreviewModal: FC<AppPreviewModalProps> = ({
                     Education:
                   </h4>
                   <span className="px-1 text-sm md:text-[17px] text-[#F5722E] outline outline-1 outline-[#F5722E] rounded">
-                    Bachelor's Degree
+                    {app.education}
                   </span>
                 </div>
 
                 {/* Interpersonal Skills */}
-                <div className="flex flex-col items-start">
-                  <h4 className="text-base md:text-[17px] text-black">
-                    Interpersonal Skills:
-                  </h4>
-                  <div className="flex flex-wrap gap-1">
-                    <span className="bg-[#168AAD] text-white px-1.5 py-0.5 font-semibold text-sm md:text-[17px] rounded inline-block">
-                      Communication
-                    </span>
-                    <span className="bg-[#184E77] text-white px-1.5 py-0.5 font-semibold text-sm md:text-[17px] rounded inline-block">
-                      Teamwork
-                    </span>
+                {app.interpersonalSkills && app.interpersonalSkills.length > 0 && (
+                  <div className="flex flex-col items-start">
+                    <h4 className="text-base md:text-[17px] text-black">
+                      Interpersonal Skills:
+                    </h4>
+                    <div className="flex flex-wrap gap-1">
+                      {app.interpersonalSkills.map((skill, index) => (
+                        <span
+                          key={index}
+                          className={`${
+                            index % 2 === 0 ? "bg-[#184E77]" : "bg-[#168AAD]"
+                          } text-white px-1.5 py-0.5 font-semibold text-sm md:text-[17px] rounded inline-block`}
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
+
+                {/* Certificates */}
+                {app.certificates && app.certificates.length > 0 && (
+                  <div className="flex flex-col items-start">
+                    <h4 className="text-base md:text-[17px] text-black">
+                      Certificates:
+                    </h4>
+                    <div className="flex flex-wrap gap-1">
+                      {app.certificates.map((cert, index) => (
+                        <span
+                          key={index}
+                          className="px-1 text-sm md:text-[17px] bg-[#168AAD] text-white rounded-sm"
+                        >
+                          {cert}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
               </div>
             </DialogHeader>
           </div>
@@ -174,7 +184,7 @@ const AppPreviewModal: FC<AppPreviewModalProps> = ({
           <div className="flex justify-center p-4 md:p-6">
             <Button
               className="bg-[#F5722E] w-[133px] hover:bg-[#BF532C] text-white text-xs md:text-[12px] h-8 p-0"
-              onClick={onSchedule} // Add onClick handler
+              onClick={onSchedule}
             >
               Schedule Interview
             </Button>
@@ -184,9 +194,9 @@ const AppPreviewModal: FC<AppPreviewModalProps> = ({
         <ScheduleInterviewModal
           isOpen={isScheduleModalOpen}
           onClose={() => setIsScheduleModalOpen(false)}
-          jobTitle={app.job}
-          skills={app.skills}
-          certificate="None required"
+          position={app.position}
+          coreSkills={app.coreSkills}
+          certificate={app.certificates}
           candidateName={app.name}
           location={app.location}
         />

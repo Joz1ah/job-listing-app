@@ -1,13 +1,10 @@
 import { FC, useRef, useEffect, useState } from "react";
 
-interface Skill {
-  name: string;
-}
 
 const skillColors = ["#184E77", "#168AAD"];
 
 interface SkillsWithEllipsisProps {
-  skills: Skill[];
+  skills: string[];
 }
 
 const SkillsWithEllipsis: FC<SkillsWithEllipsisProps> = ({ skills }) => {
@@ -46,7 +43,7 @@ const SkillsWithEllipsis: FC<SkillsWithEllipsisProps> = ({ skills }) => {
               backgroundColor: skillColors[skillIndex % 2],
             }}
           >
-            {skill.name}
+            {skill}
           </span>
         ))}
         {showEllipsis && (

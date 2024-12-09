@@ -12,23 +12,7 @@ import { Button } from "components";
 import { useBookmarks } from "components/context/BookmarkContext";
 import { AppPreviewModal } from "features/employer";
 import { ScheduleInterviewModal } from "features/employer";
-
-interface Skill {
-  name: string;
-  isMatch: boolean;
-}
-
-interface Match {
-  name: string;
-  location: string;
-  job: string;
-  skills: Skill[];
-  appliedAgo: string;
-  experience: string;
-  lookingFor: string[];
-  salaryExpectation: string;
-  language: string[];
-}
+import { Match } from "mockData/job-hunter-data";
 
 interface AppCardProps {
   match: Match;
@@ -64,7 +48,7 @@ const getAvailabilityStyle = (type: string) => {
 };
 
 const generateCardId = (match: Match): string => {
-  return `${match.name}-${match.job}-${match.location}`
+  return `${match.name}-${match.position}-${match.location}`
     .toLowerCase()
     .replace(/\s+/g, "-");
 };
@@ -155,7 +139,7 @@ const AppCard: FC<AppCardProps> = ({ match, isFreeTrial = false }) => {
 
         <CardContent>
           <div className="h-[55px]">
-            <SkillsWithEllipsis skills={match.skills} />
+            <SkillsWithEllipsis skills={match.coreSkills} />
           </div>
 
           <div className="flex flex-col gap-1 mt-2">
@@ -221,9 +205,9 @@ const AppCard: FC<AppCardProps> = ({ match, isFreeTrial = false }) => {
           <ScheduleInterviewModal
             isOpen={isScheduleModalOpen}
             onClose={() => setIsScheduleModalOpen(false)}
-            jobTitle={match.job}
-            skills={match.skills}
-            certificate="None required"
+            position={match.position}
+            coreSkills={match.coreSkills}
+            certificate={match.certificates}
             candidateName={match.name}
             location={match.location}
           />

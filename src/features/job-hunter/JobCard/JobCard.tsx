@@ -12,23 +12,7 @@ import { SkillsWithEllipsis } from "components";
 import { JobPreviewModal } from "features/job-hunter";
 import { useBookmarks } from "components";
 import { ScheduleInterviewModal } from "features/job-hunter";
-
-interface Skill {
-  name: string;
-  isMatch: boolean;
-}
-
-interface Match {
-  position: string;
-  company: string;
-  location: string;
-  description: string;
-  skills: Skill[];
-  appliedAgo: string;
-  experience: string;
-  lookingFor: string[];
-  salaryExpectation: string;
-}
+import { Match } from "mockData/jobs-data";
 
 interface JobCardProps {
   match: Match;
@@ -152,7 +136,7 @@ const JobCard: FC<JobCardProps> = ({ match, isFreeTrial = false }) => {
 
         <CardContent>
           <div className="h-[60px]">
-            <SkillsWithEllipsis skills={match.skills} />
+            <SkillsWithEllipsis skills={match.coreSkills} />
           </div>
 
           <div className="flex flex-col gap-1 mt-2">
@@ -212,10 +196,10 @@ const JobCard: FC<JobCardProps> = ({ match, isFreeTrial = false }) => {
             isOpen={isScheduleModalOpen}
             onClose={() => setIsScheduleModalOpen(false)}
             jobTitle={match.position}
-            skills={match.skills}
+            coreSkills={match.coreSkills}
             company={match.company}
             location={match.location}
-            certificate="None required" // Or get from match if available
+            certificate={match.certificates}
           />
         </>
       )}

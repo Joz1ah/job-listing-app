@@ -17,21 +17,17 @@ interface selectedProps {
   isFreeTrial?: boolean;
 }
 
-interface Skill {
-  name: string;
-  isMatch: boolean;
-}
-
 interface Match {
   position: string;
   company: string;
   location: string;
-  description: string;
-  skills: Skill[];
+  coreSkills: string[];
   appliedAgo: string;
   experience: string;
-  lookingFor: string[];
+  description: string;
+  lookingFor: ("Full Time" | "Part Time" | "Contract only")[];
   salaryExpectation: string;
+  language?: string[];
 }
 
 interface AdItem {
