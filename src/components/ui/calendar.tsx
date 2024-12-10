@@ -33,17 +33,9 @@ const Calendar: React.FC<CalendarProps> = ({
 }) => {
   const today = new Date();
   today.setHours(0, 0, 0, 0); // Normalize today's date
-  const twoMonthsFromToday = new Date(today.getFullYear(), today.getMonth() + 2, today.getDate());
   
-  // Ensure initialDate is within valid range
-  const validInitialDate = initialDate ? 
-    (initialDate < today ? today : 
-     initialDate > twoMonthsFromToday ? twoMonthsFromToday : 
-     initialDate) : 
-    today;
-
-  const [currentDate, setCurrentDate] = useState<Date>(validInitialDate);
-  const [selectedDate, setSelectedDate] = useState<Date>(validInitialDate);
+  const [currentDate, setCurrentDate] = useState<Date>(initialDate || today);
+  const [selectedDate, setSelectedDate] = useState<Date>(initialDate || today);
   
   const daysInMonth = new Date(
     currentDate.getFullYear(),
@@ -64,14 +56,7 @@ const Calendar: React.FC<CalendarProps> = ({
   
   const dayNames = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 
-  const isDateInRange = (date: Date): boolean => {
-    const normalizedDate = new Date(date);
-    normalizedDate.setHours(0, 0, 0, 0);
-    return normalizedDate >= today && normalizedDate <= twoMonthsFromToday;
-  };
-
   const hasMeetings = (date: Date): boolean => {
-    // Normalize the date to YYYY-MM-DD format for comparison
     const dateString = new Date(
       date.getFullYear(),
       date.getMonth(),
@@ -79,7 +64,6 @@ const Calendar: React.FC<CalendarProps> = ({
     ).toISOString().split('T')[0];
     
     return meetings.some(meeting => {
-      // Compare the normalized date strings
       const meetingDate = new Date(meeting.timeSlot.date);
       const meetingDateString = new Date(
         meetingDate.getFullYear(),
@@ -90,29 +74,15 @@ const Calendar: React.FC<CalendarProps> = ({
       return dateString === meetingDateString;
     });
   };
-
-  const canGoToPreviousMonth = (): boolean => {
-    const lastDayOfPreviousMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0);
-    return lastDayOfPreviousMonth >= today;
-  };
-
-  const canGoToNextMonth = (): boolean => {
-    const firstDayOfNextMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
-    return firstDayOfNextMonth <= twoMonthsFromToday;
-  };
   
   const previousMonth = (e: React.MouseEvent): void => {
     e.stopPropagation();
-    if (canGoToPreviousMonth()) {
-      setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1));
-    }
+    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1));
   };
   
   const nextMonth = (e: React.MouseEvent): void => {
     e.stopPropagation();
-    if (canGoToNextMonth()) {
-      setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1));
-    }
+    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1));
   };
 
   const isToday = (date: Date): boolean => {
@@ -128,11 +98,9 @@ const Calendar: React.FC<CalendarProps> = ({
   };
 
   const handleDateSelect = (date: Date): void => {
-    if (isDateInRange(date)) {
-      setSelectedDate(date);
-      if (onDateSelect) {
-        onDateSelect(date);
-      }
+    setSelectedDate(date);
+    if (onDateSelect) {
+      onDateSelect(date);
     }
   };
   
@@ -153,25 +121,22 @@ const Calendar: React.FC<CalendarProps> = ({
       if (isCurrentMonth) {
         const isCurrentDateToday = isToday(currentDayDate);
         const isCurrentDateSelected = isSelected(currentDayDate);
-        const isInRange = isDateInRange(currentDayDate);
         const hasScheduledMeetings = hasMeetings(currentDayDate);
         
         days.push(
           <div
             key={i}
             className="relative"
-            onClick={() => isInRange && handleDateSelect(currentDayDate)}
+            onClick={() => handleDateSelect(currentDayDate)}
           >
             <div
               className={cn(
-                'h-8 w-8 text-sm rounded-full flex flex-col items-center transition-colors duration-200',
+                'h-8 w-8 text-sm rounded-full flex flex-col items-center transition-colors duration-200 cursor-pointer',
                 {
                   'bg-orange-500 text-white hover:bg-orange-600': isCurrentDateSelected,
                   'ring-2 ring-orange-500 ring-offset-2': isCurrentDateToday && !isCurrentDateSelected,
-                  'cursor-pointer': isInRange,
-                  'cursor-not-allowed opacity-40': !isInRange,
-                  'text-gray-100 hover:bg-gray-700 ring-offset-zinc-900': variant === 'default' && !isCurrentDateSelected && isInRange,
-                  'text-gray-900 hover:bg-gray-100 ring-offset-white': variant === 'secondary' && !isCurrentDateSelected && isInRange,
+                  'text-gray-100 hover:bg-gray-700 ring-offset-zinc-900': variant === 'default' && !isCurrentDateSelected,
+                  'text-gray-900 hover:bg-gray-100 ring-offset-white': variant === 'secondary' && !isCurrentDateSelected,
                 }
               )}
             >
@@ -195,13 +160,11 @@ const Calendar: React.FC<CalendarProps> = ({
     className
   );
 
-  const navigationButtonClasses = (enabled: boolean) => cn(
-    'p-1 rounded-lg',
+  const navigationButtonClasses = cn(
+    'p-1 rounded-lg cursor-pointer',
     {
-      'cursor-pointer': enabled,
-      'cursor-not-allowed opacity-40': !enabled,
-      'hover:bg-gray-700': variant === 'default' && enabled,
-      'hover:bg-gray-100': variant === 'secondary' && enabled
+      'hover:bg-gray-700': variant === 'default',
+      'hover:bg-gray-100': variant === 'secondary'
     }
   );
 
@@ -215,7 +178,7 @@ const Calendar: React.FC<CalendarProps> = ({
       <div className="flex items-center justify-between mb-4">
         <div
           onClick={previousMonth}
-          className={navigationButtonClasses(canGoToPreviousMonth())}
+          className={navigationButtonClasses}
           aria-label="Previous month"
         >
           <ChevronLeft className="w-5 h-5" />
@@ -227,7 +190,7 @@ const Calendar: React.FC<CalendarProps> = ({
         
         <div
           onClick={nextMonth}
-          className={navigationButtonClasses(canGoToNextMonth())}
+          className={navigationButtonClasses}
           aria-label="Next month"
         >
           <ChevronRight className="w-5 h-5" />
