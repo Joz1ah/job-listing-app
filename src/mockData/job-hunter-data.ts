@@ -201,7 +201,7 @@ export const perfectMatch: Match[] = [
 ];
 
 export const others: Match[] = [
-  {
+  /* {
     id: 11,
     firstName: "Lily",
     lastName: "Thompson",
@@ -362,5 +362,5 @@ export const others: Match[] = [
     language: ["English", "Korean"],
     interpersonalSkills: ["Analytical Thinking", "Decision Making", "Innovation"],
     certificates: ["Certified Machine Learning Specialist"]
-  },
+  }, */
 ];

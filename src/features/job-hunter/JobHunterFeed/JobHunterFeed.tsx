@@ -3,6 +3,7 @@ import sparkeIcon from "images/sparkle-icon.png";
 import { perfectMatch, others } from "mockData/jobs-data";
 import jobHunterAds from "images/job-hunter-ads.svg?url";
 import jobHunterPopAds from "images/popup-hunter.svg?url";
+import { PerfectMatchEmptyState, OtherOpportunitiesEmptyState } from "features/job-hunter";
 
 import { Button } from "components";
 import { JobCardSkeleton } from "components";
@@ -179,6 +180,21 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
       behavior: "smooth",
     });
   };
+
+  const showEmptyState = !loading && displayedItems.length === 0;
+  if (showEmptyState) {
+    return (
+      <PerfectMatchEmptyState
+        onExploreClick={() => {
+          setSelectedTab("otherApplications");
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+          });
+        }}
+      />
+    );
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 justify-items-center w-full max-w-[436px] md:max-w-[900px] mx-auto px-0">
@@ -372,6 +388,11 @@ const OtherApplications: FC<selectedProps> = ({
     });
   };
 
+  const showEmptyState = !loading && displayedItems.length === 0;
+  if (showEmptyState) {
+    return <OtherOpportunitiesEmptyState />;
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 justify-items-center w-full max-w-[436px] md:max-w-[900px] mx-auto px-0">
       {displayedItems.map((item, index) =>
@@ -463,9 +484,21 @@ const JobHunterFeed: FC<JobHunterSectionProps> = () => {
   }, []);
 
   const LoadingGrid = () => {
+    // Calculate number of skeleton cards based on actual data
+    const dataLength = selectedTab === "perfectMatch" 
+      ? Math.min(perfectMatch.length, isFreeTrial ? 5 : 6)
+      : Math.min(others.length, isFreeTrial ? 5 : 6);
+
+    // If there's no data, don't show loading state
+    if (dataLength === 0) {
+      return selectedTab === "perfectMatch" 
+        ? <PerfectMatchEmptyState onExploreClick={() => handleTabChange("otherApplications")} />
+        : <OtherOpportunitiesEmptyState />;
+    }
+
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 justify-items-center w-full max-w-[436px] md:max-w-[900px] mx-auto px-4 md:px-0">
-        {[1, 2, 3, 4, 5, 6].map((i) => (
+        {Array.from({ length: dataLength }).map((_, i) => (
           <JobCardSkeleton key={i} />
         ))}
       </div>

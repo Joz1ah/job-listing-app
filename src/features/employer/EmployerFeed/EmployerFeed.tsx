@@ -6,6 +6,7 @@ import { AppCardSkeleton, BookmarkLimitHandler } from "components";
 import { AppCard } from "features/employer";
 import employerAds from "images/employer-ads.svg?url";
 import employerPopAds from "images/popup-employer.svg?url";
+import { PerfectMatchEmptyState, OtherApplicationEmptyState } from "features/employer";
 
 import { useEmployerContext } from "components";
 
@@ -163,6 +164,21 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
       behavior: "smooth",
     });
   };
+
+  const showEmptyState = !loading && displayedItems.length === 0;
+  if (showEmptyState) {
+    return (
+      <PerfectMatchEmptyState
+        onExploreClick={() => {
+          setSelectedTab("otherApplications");
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+          });
+        }}
+      />
+    );
+  }
 
   return (
     <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 xl:gap-5 justify-items-center w-full md:min-w-[436px] xl:w-[900px] mx-auto px-0">
@@ -357,6 +373,11 @@ const OtherApplications: FC<selectedProps> = ({
     });
   };
 
+  const showEmptyState = !loading && displayedItems.length === 0;
+  if (showEmptyState) {
+    return <OtherApplicationEmptyState />;
+  }
+
   return (
     <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 xl:gap-5 justify-items-center w-full md:min-w-[436px] xl:w-[900px] mx-auto px-0">
       {displayedItems.map((item, index) =>
@@ -447,9 +468,21 @@ const EmployerFeed: FC<EmployerSectionProps> = () => {
   }, []);
 
   const LoadingGrid = () => {
+    // Calculate number of skeleton cards based on actual data
+    const dataLength = selectedTab === "perfectMatch" 
+      ? Math.min(perfectMatch.length, isFreeTrial ? 5 : 6)
+      : Math.min(others.length, isFreeTrial ? 5 : 6);
+
+    // If there's no data, don't show loading state
+    if (dataLength === 0) {
+      return selectedTab === "perfectMatch" 
+        ? <PerfectMatchEmptyState onExploreClick={() => handleTabChange("otherApplications")} />
+        : <OtherApplicationEmptyState />;
+    }
+
     return (
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 xl:gap-5 justify-items-center w-full md:min-w-[436px] xl:w-[900px] mx-auto px-0">
-        {[1, 2, 3, 4, 5, 6].map((i) => (
+        {Array.from({ length: dataLength }).map((_, i) => (
           <AppCardSkeleton key={i} />
         ))}
       </div>
@@ -465,77 +498,78 @@ const EmployerFeed: FC<EmployerSectionProps> = () => {
       limitPopupTitle="Bookmark Limit Reached"
       limitPopupDescription="Upgrade to bookmark more matches!"
     >
-    <div>
-      <div className="flex flex-col items-center mb-8 w-full">
-        {/* Tab Buttons */}
-        <div className="flex justify-center mb-8 md:mb-12">
-          <button
-            className={`font-semibold mr-6 pb-2 text-[17px] inline-flex items-center gap-2 transition-all duration-200 relative group
-          ${selectedTab === "perfectMatch" ? "text-orange-500" : "text-[#AEADAD] hover:text-orange-500"}`}
-            onClick={() => handleTabChange("perfectMatch")}
-            disabled={isLoading}
-          >
-            <div
-              className="absolute bottom-0 left-0 w-full h-0.5 bg-orange-500 transform origin-left transition-transform duration-200 ease-out"
-              style={{
-                transform:
-                  selectedTab === "perfectMatch" ? "scaleX(1)" : "scaleX(0)",
-              }}
-            />
-            <img
-              src={sparkeIcon}
-              alt="Sparkle Icon"
-              className={`w-5 h-5 transition-all duration-200 ${
-                selectedTab === "perfectMatch"
-                  ? "filter grayscale-0"
-                  : "filter grayscale group-hover:grayscale-0"
-              }`}
-            />
-            PERFECT MATCH
-          </button>
+      <div>
+        <div className="flex flex-col items-center mb-8 w-full">
+          {/* Tab Buttons */}
+          <div className="flex justify-center mb-8 md:mb-12">
+            <button
+              className={`font-semibold mr-6 pb-2 text-[17px] inline-flex items-center gap-2 transition-all duration-200 relative group
+              ${selectedTab === "perfectMatch" ? "text-orange-500" : "text-[#AEADAD] hover:text-orange-500"}`}
+              onClick={() => handleTabChange("perfectMatch")}
+              disabled={isLoading}
+            >
+              <div
+                className="absolute bottom-0 left-0 w-full h-0.5 bg-orange-500 transform origin-left transition-transform duration-200 ease-out"
+                style={{
+                  transform:
+                    selectedTab === "perfectMatch" ? "scaleX(1)" : "scaleX(0)",
+                }}
+              />
+              <img
+                src={sparkeIcon}
+                alt="Sparkle Icon"
+                className={`w-5 h-5 transition-all duration-200 ${
+                  selectedTab === "perfectMatch"
+                    ? "filter grayscale-0"
+                    : "filter grayscale group-hover:grayscale-0"
+                }`}
+              />
+              PERFECT MATCH
+            </button>
 
-          <button
-            className={`font-semibold pb-2 text-[17px] transition-all duration-200 relative
-          ${selectedTab === "otherApplications" ? "text-orange-500" : "text-[#AEADAD] hover:text-orange-500"}`}
-            onClick={() => handleTabChange("otherApplications")}
-            disabled={isLoading}
-          >
-            <div
-              className="absolute bottom-0 right-0 w-full h-0.5 bg-orange-500 transform origin-right transition-transform duration-200 ease-out"
-              style={{
-                transform:
-                  selectedTab === "otherApplications"
-                    ? "scaleX(1)"
-                    : "scaleX(0)",
-              }}
-            />
-            OTHER OPPORTUNITIES
-          </button>
-        </div>
+            <button
+              className={`font-semibold pb-2 text-[17px] transition-all duration-200 relative
+              ${selectedTab === "otherApplications" ? "text-orange-500" : "text-[#AEADAD] hover:text-orange-500"}`}
+              onClick={() => handleTabChange("otherApplications")}
+              disabled={isLoading}
+            >
+              <div
+                className="absolute bottom-0 right-0 w-full h-0.5 bg-orange-500 transform origin-right transition-transform duration-200 ease-out"
+                style={{
+                  transform:
+                    selectedTab === "otherApplications"
+                      ? "scaleX(1)"
+                      : "scaleX(0)",
+                }}
+              />
+              OTHER OPPORTUNITIES
+            </button>
+          </div>
 
-        {/* Content Section */}
-        <div className="w-full">
-          {isLoading ? (
-            <LoadingGrid />
-          ) : (
-            <div className="w-full">
-              {selectedTab === "perfectMatch" ? (
-                <PerfectMatch
-                  setSelectedTab={handleTabChange}
-                  isFreeTrial={isFreeTrial}
-                />
-              ) : (
-                <OtherApplications
-                  setSelectedTab={handleTabChange}
-                  isFreeTrial={isFreeTrial}
-                />
-              )}
-            </div>
-          )}
+          {/* Content Section */}
+          <div className="w-full">
+            {isLoading ? (
+              <LoadingGrid />
+            ) : (
+              <div className="w-full">
+                {selectedTab === "perfectMatch" ? (
+                  <PerfectMatch
+                    setSelectedTab={handleTabChange}
+                    isFreeTrial={isFreeTrial}
+                  />
+                ) : (
+                  <OtherApplications
+                    setSelectedTab={handleTabChange}
+                    isFreeTrial={isFreeTrial}
+                  />
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </div>
     </BookmarkLimitHandler>
   );
 };
+
 export { EmployerFeed };
