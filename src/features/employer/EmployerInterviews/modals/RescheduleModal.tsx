@@ -59,6 +59,12 @@ interface FormValues {
 }
 
 const validationSchema = Yup.object().shape({
+  reason: Yup.string()
+    .required("Please select a reason")
+    .oneOf(
+      rescheduleReasons.map(reason => reason.id),
+      "Please select a valid reason"
+    ),
   interviewDate: Yup.date()
     .required("Please select a date")
     .min(new Date(), "Cannot select a past date")
