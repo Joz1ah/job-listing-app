@@ -60,7 +60,7 @@ const App: FC = (): ReactElement => {
   return (
     <ErrorBoundary>
       <TrialProviders 
-      employerInitialStatus={true}
+      employerInitialStatus={false}
       jobHunterInitialStatus={false}
       >
       <div

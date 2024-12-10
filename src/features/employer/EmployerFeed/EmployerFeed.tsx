@@ -24,10 +24,14 @@ type CardItem = Match | AdItem;
 
 const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
   const [displayedItems, setDisplayedItems] = useState<CardItem[]>(() => {
+    if (perfectMatch.length === 0) {
+      return [];
+    }
+
     // Initial load of 5 items
     const initialItems = perfectMatch.slice(0, 5);
-    if (isFreeTrial) {
-      // Insert first ad at position 3
+    if (isFreeTrial && initialItems.length >= 3) {
+      // Only insert ad if we have at least 3 real items
       return [
         ...initialItems.slice(0, 3),
         { isAd: true, image: employerAds },
@@ -107,10 +111,16 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
     setLoading(false);
   };
 
-  // Reset when switching tabs
   useEffect(() => {
+    if (perfectMatch.length === 0) {
+      setDisplayedItems([]);
+      setHasMore(false);
+      setLoading(false);
+      return;
+    }
+  
     const initialItems = perfectMatch.slice(0, isFreeTrial ? 5 : 6);
-    if (isFreeTrial) {
+    if (isFreeTrial && initialItems.length >= 3) {
       setDisplayedItems([
         ...initialItems.slice(0, 3),
         { isAd: true, image: employerAds },
@@ -236,10 +246,14 @@ const OtherApplications: FC<selectedProps> = ({
   isFreeTrial,
 }) => {
   const [displayedItems, setDisplayedItems] = useState<CardItem[]>(() => {
+    if (others.length === 0) {
+      return [];
+    }
+
     // Initial load of 5 items
-    const initialItems = others.slice(0, isFreeTrial ? 5 : 6);
-    if (isFreeTrial) {
-      // Insert first ad at position 3
+    const initialItems = others.slice(0, 5);
+    if (isFreeTrial && initialItems.length >= 3) {
+      // Only insert ad if we have at least 3 real items
       return [
         ...initialItems.slice(0, 3),
         { isAd: true, image: employerAds },
@@ -318,8 +332,15 @@ const OtherApplications: FC<selectedProps> = ({
 
   // Reset when switching tabs
   useEffect(() => {
+    if (others.length === 0) {
+      setDisplayedItems([]);
+      setHasMore(false);
+      setLoading(false);
+      return;
+    }
+  
     const initialItems = others.slice(0, isFreeTrial ? 5 : 6);
-    if (isFreeTrial) {
+    if (isFreeTrial && initialItems.length >= 3) {
       setDisplayedItems([
         ...initialItems.slice(0, 3),
         { isAd: true, image: employerAds },

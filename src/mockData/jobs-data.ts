@@ -14,7 +14,7 @@ export interface Match {
 }
 
 export const perfectMatch: Match[] = [
-  /* {
+  {
     position: "Software Engineer",
     company: "Fintech Solutions Ltd",
     location: "United Kingdom",
@@ -153,7 +153,7 @@ export const perfectMatch: Match[] = [
     salaryExpectation: "$85,000-$105,000",
     interpersonalSkills: ["Problem-solving", "Communication", "Technical Leadership"],
     certificates: ["AWS Certified Solutions Architect"]
-  }, */
+  },
 ];
 
 export const others: Match[] = [
