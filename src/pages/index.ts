@@ -18,3 +18,7 @@ export { BookmarkedJobs } from 'pages/job-hunter/bookmarked-jobs/BookmarkedJobs'
 export { CompleteProfile } from 'pages/employer/employer-profile-form/CompleteProfile'
 export { JobListingFormLayout } from 'pages/employer/job-listing-form/JobListingFormLayout'
 export { EditProfile} from 'pages/employer/employer-profile-form/EditProfile'
+
+export { EmployerNotFound } from 'pages/not-found-page/EmployerNotFound'
+export { JobHunterNotFound } from 'pages/not-found-page/JobHunterNotFound'
+export { NotFoundPage } from 'pages/not-found-page/NotFoundPage'

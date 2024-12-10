@@ -7,7 +7,6 @@ import {
 import { jobHunterDesktopMenu, jobHunterMobileMenu } from "mockData/nav-menus";
 import { JobHunterContext } from 'components';
 import { JobHunterMenu, JobHunterHeader, Footer } from "layouts";
-/* import { Outlet } from "react-router-dom"; */
 import { useJobHunterTrialStatus } from "components";
 import { JobHunterFeed } from "features/job-hunter";
 

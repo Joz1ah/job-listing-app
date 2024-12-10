@@ -12,11 +12,14 @@ const LoadingFallback = () => (
 const Home = lazy(() => import('pages').then(module => ({ default: module.Home })))
 const Fetch = lazy(() => import('pages').then(module => ({ default: module.Fetch })))
 const About = lazy(() => import('pages').then(module => ({ default: module.About })))
-const NotFound = lazy(() => import('pages').then(module => ({ default: module.NotFound })))
+const NotFound = lazy(() => import('pages').then(module => ({ default: module.NotFoundPage })))
 const EmployerFeedLayout = lazy(() => import('pages').then(module => ({ default: module.EmployerFeedLayout })))
 const JobHunterFeedLayout = lazy(() => import('pages').then(module => ({ default: module.JobHunterFeedLayout })))
 const CreateAppCard = lazy(() => import('pages').then(module => ({ default: module.CreateAppCard })))
 const EditAppCard = lazy(() => import('pages').then(module => ({ default: module.EditAppCard })))
+
+const EmployerNotFound = lazy(() => import('pages').then(module => ({ default: module.EmployerNotFound })))
+const JobHunterNotFound = lazy(() => import('pages').then(module => ({ default: module.JobHunterNotFound })))
 
 // Employer feature imports
 const EmployerFeed = lazy(() => import('features/employer').then(module => ({ default: module.EmployerFeed })))
@@ -104,10 +107,6 @@ const routes: RouteObject[] = [
   {
     path: ROUTE_CONSTANTS.ABOUT,
     element: <LazyComponent component={About} />
-  },
-  {
-    path: ROUTE_CONSTANTS.NOT_FOUND,
-    element: <LazyComponent component={NotFound} />
   },
   {
     path: ROUTE_CONSTANTS.EMPLOYER,
@@ -338,6 +337,18 @@ const routes: RouteObject[] = [
         element: <LazyComponent component={AppliedJobs} />
       }
     ]
+  },
+  {
+    path: `${ROUTE_CONSTANTS.EMPLOYER}/*`,
+    element: <LazyComponent component={EmployerNotFound} />
+  },
+  {
+    path: `${ROUTE_CONSTANTS.JOB_HUNTER}/*`,
+    element: <LazyComponent component={JobHunterNotFound} />
+  },
+  {
+    path: '*',
+    element: <LazyComponent component={NotFound} />
   },
   {
     path: 'sw.js',
