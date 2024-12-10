@@ -23,7 +23,7 @@ const EmployerNotFound: FC = () => {
           isFreeTrial={isFreeTrial}
         />
 
-        <div className="flex flex-col items-center justify-center w-full mx-auto text-center px-4">
+        <div className="flex flex-col items-center justify-center w-full mx-auto my-auto text-center px-4">
           <h1 className="text-4xl sm:text-6xl md:text-8xl font-normal mb-4 text-white">
             Whoops!
           </h1>

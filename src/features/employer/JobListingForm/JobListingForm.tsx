@@ -11,8 +11,9 @@ import { selectOptions } from "mockData/job-listing-form-options";
 
 import {
   MultiSelect,
-  PreviewModal,
 } from "components";
+
+import { JobListingPreview } from "./JobListingPreview";
 
 import {
   CoreSkillsTagInput,
@@ -141,7 +142,7 @@ const JobListingForm: FC = () => {
 
   return (
     <>
-      <PreviewModal
+      <JobListingPreview
         isOpen={showPreview}
         onClose={() => setShowPreview(false)}
         formData={values}

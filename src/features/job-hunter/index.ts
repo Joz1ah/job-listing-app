@@ -37,3 +37,4 @@ export { SettingsSidebar } from 'features/job-hunter/Sidebar/settings-sidebar-jo
 export { JobInterviewPreviewModal } from 'features/job-hunter/JobHunterInterviews/interview-card/preview/JobInterviewPreviewModal'
 export { InterviewCalendarModal } from 'features/job-hunter/JobHunterInterviews/modals/interview-modal/InterviewCalendarModal'
 export { PerfectMatchEmptyState, OtherOpportunitiesEmptyState } from 'features/job-hunter/JobHunterFeed/JobHunterEmptyState'
+export { ApplicationFormPreview } from 'features/job-hunter/ApplicationForm/ApplicationFormPreview'

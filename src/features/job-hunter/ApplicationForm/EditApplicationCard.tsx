@@ -19,7 +19,7 @@ import {
   MultiSelect,
 } from "components";
 
-import { PreviewAppCard } from "components";
+import { ApplicationFormPreview } from "./ApplicationFormPreview";
 
 import {
   Select,
@@ -154,7 +154,7 @@ const EditApplicationCard: FC = () => {
 
   return (
     <>
-      <PreviewAppCard
+      <ApplicationFormPreview
         isOpen={showPreview}
         onClose={() => setShowPreview(false)}
         formData={values}

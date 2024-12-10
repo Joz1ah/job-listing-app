@@ -1,3 +1,20 @@
+export interface FormData {
+  firstName: string;
+  lastName: string;
+  birthday: string;
+  emailAddress: string;
+  mobileNumber: string;
+  employmentType: string[];
+  salaryRange: string;
+  yearsOfExperience: string;
+  coreSkills: string[];
+  interpersonalSkills: string[];
+  education: string;
+  languages: string[];
+  country: string;
+  certifications: string[];
+}
+
 interface SelectOption {
   value: string;
   label: string;

@@ -49,3 +49,4 @@ export { SettingsSidebar } from 'features/employer/Sidebar/settings-sidebar-empl
 export { CandidatePreviewModal } from 'features/employer/EmployerInterviews/interview-card/preview/CandidatePreviewModal'
 export { InterviewCalendarModal } from 'features/employer/EmployerInterviews/modals/InterviewCalendarModal'
 export { PerfectMatchEmptyState, OtherApplicationEmptyState } from 'features/employer/EmployerFeed/EmployerEmptyState'
+export { JobListingPreview } from 'features/employer/JobListingForm/JobListingPreview'

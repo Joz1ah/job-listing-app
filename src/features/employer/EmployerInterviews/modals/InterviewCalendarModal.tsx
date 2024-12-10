@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ChevronLeft, BadgeCheck, Video } from "lucide-react";
+import { ChevronLeft, BadgeCheck, Video, Clock } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
 import { Calendar } from "components";
 
@@ -255,7 +255,7 @@ const InterviewCalendarModal: React.FC<InterviewCalendarModalProps> = ({
                           return (
                             <div
                               key={index}
-                              className={`absolute left-0 right-0 px-1.5 py-0.5 mx-1 overflow-hidden shadow-sm hover:shadow rounded-sm border-l-2 ${
+                              className={`absolute left-0 right-0 px-2 py-1 mx-1 overflow-hidden shadow-sm hover:shadow rounded-sm border-l-2 flex flex-col gap-0.5 ${
                                 isPast
                                   ? "bg-red-50 border-red-500"
                                   : "bg-orange-50 border-orange-500"
@@ -266,30 +266,35 @@ const InterviewCalendarModal: React.FC<InterviewCalendarModalProps> = ({
                                 transform: "translateY(-1px)",
                               }}
                             >
-                              <div
-                                className={`text-[10px] ${
-                                  isPast ? "text-red-500" : "text-gray-500"
-                                } leading-tight`}
-                              >
-                                {meeting.candidateName}
-                              </div>
-                              <div
-                                className={`text-[10px] font-medium ${
-                                  isPast ? "text-red-900" : "text-gray-900"
-                                } leading-tight`}
-                              >
-                                {meeting.position}
+                              <div className="flex flex-col gap-0.5 flex-grow">
+                                <div
+                                  className={`text-xs font-medium truncate ${
+                                    isPast ? "text-red-900" : "text-gray-900"
+                                  } leading-tight`}
+                                >
+                                  {meeting.candidateName}
+                                </div>
+                                <div
+                                  className={`text-[10px] underline truncate ${
+                                    isPast ? "text-red-500" : "text-gray-800"
+                                  } leading-tight`}
+                                >
+                                  {meeting.position}
+                                </div>
                               </div>
                               <div
                                 className={`text-[9px] ${
-                                  isPast ? "text-red-400" : "text-gray-400"
-                                } flex items-center gap-0.5 leading-tight`}
+                                  isPast ? "text-red-400" : "text-gray-600"
+                                } flex items-center justify-between leading-tight mt-auto`}
                               >
-                                <Video className="w-2.5 h-2.5" />
-                                <span>
-                                  {meeting.timeSlot.startTime} -{" "}
-                                  {meeting.timeSlot.endTime}
-                                </span>
+                                <div className="flex items-center gap-1">
+                                  <Clock className="w-3 h-3" />
+                                  <span className="py-1">
+                                    {meeting.timeSlot.startTime} -{" "}
+                                    {meeting.timeSlot.endTime}
+                                  </span>
+                                </div>
+                                <Video className="w-3 h-3" />
                               </div>
                             </div>
                           );
@@ -301,9 +306,9 @@ const InterviewCalendarModal: React.FC<InterviewCalendarModalProps> = ({
             </div>
           </div>
 
-          <div className="flex flex-col bg-gray-50 p-4 gap-4">
-            <div className="w-full">
-              <div className="bg-white rounded-lg shadow-sm p-3 w-full max-w-sm mx-auto mt-6">
+          <div className="flex flex-col bg-[#FFFFFF] p-4 gap-4">
+            <div className="w-full flex justify-center">
+              <div className="bg-gray-100 shadow-md p-3 w-[306px] h-[99px] max-w-sm mx-auto flex items-center">
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-medium">ABC Incorporated</span>
                   <BadgeCheck className="w-4 h-4 text-orange-500 flex-shrink-0" />
@@ -316,7 +321,7 @@ const InterviewCalendarModal: React.FC<InterviewCalendarModalProps> = ({
                 variant="secondary"
                 initialDate={selectedDate}
                 onDateSelect={(date: Date) => setSelectedDate(date)}
-                className="bg-white rounded-lg shadow-sm w-full max-w-sm"
+                className="bg-gray-100 shadow-md"
                 meetings={existingMeetings}
               />
             </div>

@@ -2,99 +2,22 @@ import React from "react";
 import { MapPin, Mail, Phone, Calendar } from "lucide-react";
 import { Card, CardFooter } from "components";
 import { Button } from "components";
-
-interface FormData {
-    firstName: string;
-    lastName: string;
-    birthday: string;
-    emailAddress: string;
-    mobileNumber: string;
-    employmentType: string[];
-    salaryRange: string;
-    yearsOfExperience: string;
-    coreSkills: string[];
-    interpersonalSkills: string[];
-    education: string;
-    languages: string[];
-    country: string;
-    certifications: string[];
-  }
+import { selectOptions, FormData } from "mockData/app-form-options";
   
-  interface PreviewAppCardProps {
+  interface ApplicationFormPreviewProps {
     isOpen: boolean;
     onClose: () => void;
     formData: FormData;
     onConfirm: () => void;
   }
   
-  const PreviewAppCard: React.FC<PreviewAppCardProps> = ({
+  const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
     isOpen,
     formData,
     onConfirm,
     onClose,
   }) => {
     if (!isOpen) return null;
-  
-    // Options mapping
-    const selectOptions = {
-      employmentType: [
-        { value: "full-time", label: "Full Time" },
-        { value: "part-time", label: "Part Time" },
-        { value: "contract", label: "Contract only" },
-      ],
-      salaryRange: [
-        { value: "nego", label: "Negotiable" },
-        { value: "0-30", label: "$0 - $30,000" },
-        { value: "31-50", label: "$31,000 - $50,000" },
-        { value: "51-70", label: "$51,000 - $70,000" },
-        { value: "71-100", label: "$71,000 - $100,000" },
-        { value: "100-120", label: "$100,000 - $120,000" },
-        { value: "121+", label: "$121,000 or more" },
-      ],
-      yearsOfExperience: [
-        { value: "noExp", label: "No experience" },
-        { value: "-1", label: "under a year" },
-        { value: "1-3", label: "1-3 years" },
-        { value: "3-5", label: "3-5 years" },
-        { value: "5-10", label: "5-10 years" },
-        { value: "10+", label: "10+ years" },
-      ],
-      education: [
-        { value: "bachelors", label: "Bachelor's Degree" },
-        { value: "high-school", label: "High School Diploma" },
-        { value: "masters", label: "Master's Degree" },
-        { value: "associate", label: "Associate Degree" },
-        { value: "professional", label: "Professional Certification only" },
-        { value: "techvoc", label: "Vocational/Technical Training only" },
-        { value: "phd", label: "Doctorate/PhD" },
-        { value: "inc", label: "Incomplete College Degree" },
-      ],
-      country: [
-        { value: "us", label: "United States" },
-        { value: "ca", label: "Canada" },
-        { value: "gb", label: "United Kingdom" },
-        { value: "au", label: "Australia" },
-        { value: "de", label: "Germany" },
-        { value: "fr", label: "France" },
-        { value: "jp", label: "Japan" },
-        { value: "sg", label: "Singapore" },
-        { value: "ae", label: "United Arab Emirates" },
-        { value: "in", label: "India" },
-        { value: "ph", label: "Philippines" },
-        { value: "cn", label: "China" },
-      ],
-      languages: [
-        { value: "en", label: "English" },
-        { label: "French", value: "fr" },
-        { label: "German", value: "de" },
-        { label: "Spanish", value: "es" },
-        { label: "Portuguese", value: "pt" },
-        { label: "Russian", value: "ru" },
-        { label: "Japanese", value: "ja" },
-        { label: "Korean", value: "ko" },
-        { label: "Chinese", value: "zh" },
-      ],
-    };
   
     // Helper functions to get labels
     const getLabel = (
@@ -283,4 +206,4 @@ interface FormData {
     );
   };
   
-  export { PreviewAppCard };
+  export { ApplicationFormPreview };
