@@ -2,18 +2,34 @@ import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from 'lib/utils';
 
+interface TimeSlot {
+  date: string;
+  startTime: string;
+  endTime: string;
+}
+
+interface Meeting {
+  id: string;
+  companyName?: string;
+  candidateName?: string;
+  position: string;
+  timeSlot: TimeSlot;
+}
+
 interface CalendarProps {
   className?: string;
   onDateSelect?: (date: Date) => void;
   initialDate?: Date;
   variant?: 'default' | 'secondary';
+  meetings?: Meeting[];
 }
 
 const Calendar: React.FC<CalendarProps> = ({ 
   className, 
   onDateSelect, 
   initialDate,
-  variant = 'default'
+  variant = 'default',
+  meetings = []
 }) => {
   const today = new Date();
   today.setHours(0, 0, 0, 0); // Normalize today's date
@@ -54,14 +70,33 @@ const Calendar: React.FC<CalendarProps> = ({
     return normalizedDate >= today && normalizedDate <= twoMonthsFromToday;
   };
 
+  const hasMeetings = (date: Date): boolean => {
+    // Normalize the date to YYYY-MM-DD format for comparison
+    const dateString = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate()
+    ).toISOString().split('T')[0];
+    
+    return meetings.some(meeting => {
+      // Compare the normalized date strings
+      const meetingDate = new Date(meeting.timeSlot.date);
+      const meetingDateString = new Date(
+        meetingDate.getFullYear(),
+        meetingDate.getMonth(),
+        meetingDate.getDate()
+      ).toISOString().split('T')[0];
+      
+      return dateString === meetingDateString;
+    });
+  };
+
   const canGoToPreviousMonth = (): boolean => {
-    // Check if the first day of the previous month is before today's month
     const lastDayOfPreviousMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0);
     return lastDayOfPreviousMonth >= today;
   };
 
   const canGoToNextMonth = (): boolean => {
-    // Check if the first day of the next month is after the last valid date
     const firstDayOfNextMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
     return firstDayOfNextMonth <= twoMonthsFromToday;
   };
@@ -119,26 +154,32 @@ const Calendar: React.FC<CalendarProps> = ({
         const isCurrentDateToday = isToday(currentDayDate);
         const isCurrentDateSelected = isSelected(currentDayDate);
         const isInRange = isDateInRange(currentDayDate);
+        const hasScheduledMeetings = hasMeetings(currentDayDate);
         
-        const dayClasses = cn(
-          'h-8 w-8 text-sm rounded-full flex items-center justify-center transition-colors duration-200',
-          {
-            'bg-orange-500 text-white hover:bg-orange-600': isCurrentDateSelected,
-            'ring-2 ring-orange-500 ring-offset-2': isCurrentDateToday && !isCurrentDateSelected,
-            'cursor-pointer': isInRange,
-            'cursor-not-allowed opacity-40': !isInRange,
-            'text-gray-100 hover:bg-gray-700 ring-offset-zinc-900': variant === 'default' && !isCurrentDateSelected && isInRange,
-            'text-gray-900 hover:bg-gray-100 ring-offset-white': variant === 'secondary' && !isCurrentDateSelected && isInRange,
-          }
-        );
-
         days.push(
           <div
             key={i}
-            className={dayClasses}
+            className="relative"
             onClick={() => isInRange && handleDateSelect(currentDayDate)}
           >
-            {dayNumber}
+            <div
+              className={cn(
+                'h-8 w-8 text-sm rounded-full flex flex-col items-center transition-colors duration-200',
+                {
+                  'bg-orange-500 text-white hover:bg-orange-600': isCurrentDateSelected,
+                  'ring-2 ring-orange-500 ring-offset-2': isCurrentDateToday && !isCurrentDateSelected,
+                  'cursor-pointer': isInRange,
+                  'cursor-not-allowed opacity-40': !isInRange,
+                  'text-gray-100 hover:bg-gray-700 ring-offset-zinc-900': variant === 'default' && !isCurrentDateSelected && isInRange,
+                  'text-gray-900 hover:bg-gray-100 ring-offset-white': variant === 'secondary' && !isCurrentDateSelected && isInRange,
+                }
+              )}
+            >
+              <span className="flex items-center justify-center h-8">{dayNumber}</span>
+              {hasScheduledMeetings && !isCurrentDateSelected && (
+                <div className="w-1 h-1 rounded-full bg-orange-500 -mt-1.5" />
+              )}
+            </div>
           </div>
         );
       } else {

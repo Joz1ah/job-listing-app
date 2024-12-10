@@ -276,7 +276,6 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
       <InterviewCalendarModal
         isOpen={isCalendarModalOpen}
         onClose={() => setIsCalendarModalOpen(false)}
-        candidateName={interview.candidate}
       />
     </>
   );

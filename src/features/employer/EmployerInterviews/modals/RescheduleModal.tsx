@@ -347,8 +347,6 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
       <InterviewCalendarModal
         isOpen={isCalendarModalOpen}
         onClose={() => setIsCalendarModalOpen(false)}
-        candidateName={interview.candidate}
-        existingMeetings={interview.existingMeetings}
       />
     </>
   );

@@ -1,12 +1,3 @@
-export interface ExistingMeeting {
-  position: string;
-  companyName: string;
-  timeSlot: {
-    date: string;
-    startTime: string;
-    endTime: string;
-  };
-}
 
 export interface Interview {
     id?:string;
@@ -34,7 +25,6 @@ export interface Interview {
     education?: string;
     certificate?: string;
     interpersonalSkills?: string[];
-    existingMeetings?: ExistingMeeting[];
   }
   
   export interface BaseModalProps {
