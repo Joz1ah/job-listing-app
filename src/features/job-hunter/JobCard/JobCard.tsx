@@ -104,7 +104,7 @@ const JobCard: FC<JobCardProps> = ({ match, isFreeTrial = false }) => {
       >
         <CardHeader className="flex flex-col justify-between items-start pb-0">
           <div className="flex flex-row -mt-4 justify-between w-full">
-            <span className="text-[13px] text-orange-500 font-semibold">
+            <span className="text-[13px] text-orange-500 font-bold italic">
               ☆ NEW
             </span>
             <div className="flex flex-col items-end">

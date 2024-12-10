@@ -110,7 +110,7 @@ const AppCard: FC<AppCardProps> = ({ match, isFreeTrial = false }) => {
       >
         <CardHeader className="flex flex-col justify-between items-start pb-0">
           <div className="flex flex-row -mt-4 justify-between w-full relative">
-            <span className="text-[13px] text-orange-500 font-semibold">
+            <span className="text-[13px] text-orange-500 font-bold italic">
               ☆ NEW
             </span>
             <div className="flex flex-col items-end">
@@ -177,7 +177,7 @@ const AppCard: FC<AppCardProps> = ({ match, isFreeTrial = false }) => {
 
         <CardFooter className="absolute bottom-0 right-0 flex flex-row justify-end items-center space-x-1 p-2">
           <Button
-            className="text-[12px] font-semibold px-0 w-[133px] h-[27px] bg-orange-500"
+            className="text-[10px] md:text-[12px] font-semibold px-0 w-[133px] h-[27px] bg-orange-500"
             onClick={handleScheduleInterview}
           >
             Schedule Interview
