@@ -17,7 +17,7 @@ const JobHunterHeader: FC = () => {
   );
 
   return (
-    <div className="w-full px-6 md:px-16 py-8 md:pt-16 md:mt-16">
+    <div className="w-full px-6 md:px-16 py-8 md:mt-16">
       <div className="flex flex-col space-y-4 md:space-y-6">
         <div className="flex flex-col space-y-2 md:space-y-4">
           <h1 className="text-3xl text-white font-normal">

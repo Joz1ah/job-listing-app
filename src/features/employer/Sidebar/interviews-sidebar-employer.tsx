@@ -73,7 +73,7 @@ const InterviewSidebarEmployer: FC<InterviewSidebarEmployerProps> = ({
         <div className="px-4 md:px-6 py-4 md:mt-6 space-y-4">
           {userInfo}
         </div>
-        <div className="w-full px-4 overflow-x-auto">
+        <div className="w-full p-4 m-4 overflow-x-auto">
           <div className="flex space-x-8 md:gap-x-4 w-full items-center justify-center">
             {interviewMenu.map((item) => (
               <Link
