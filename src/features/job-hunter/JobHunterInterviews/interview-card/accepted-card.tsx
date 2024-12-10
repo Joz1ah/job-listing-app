@@ -4,7 +4,7 @@ import { Card, CardHeader, CardContent, CardFooter } from "components";
 import { Button } from "components";
 import { Tooltip } from "components";
 import { Interview } from "features/job-hunter/types";
-import { CompanyPreviewModal } from "./preview/CompanyPreviewModal";
+import { JobInterviewPreviewModal } from "./preview/JobInterviewPreviewModal";
 
 import gmeet from "images/google-meet.svg?url";
 
@@ -109,7 +109,7 @@ const AcceptedCard: FC<InterviewCardProps> = ({
         </CardFooter>
       </Card>
 
-      <CompanyPreviewModal
+      <JobInterviewPreviewModal
         isOpen={isPreviewOpen}
         onClose={() => setIsPreviewOpen(false)}
         interview={interview}

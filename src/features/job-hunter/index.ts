@@ -34,5 +34,5 @@ export { JobPreviewModal } from 'features/job-hunter/JobCard/job-preview/JobPrev
 export { ScheduleInterviewModal } from 'features/job-hunter/JobCard/schedule-form/ScheduleInterviewModal'
 export { InvitationSentModal } from 'features/job-hunter/JobCard/schedule-form/InvitationSentModal'
 export { SettingsSidebar } from 'features/job-hunter/Sidebar/settings-sidebar-job-hunter'
-export { CompanyPreviewModal } from 'features/job-hunter/JobHunterInterviews/interview-card/preview/CompanyPreviewModal'
+export { JobInterviewPreviewModal } from 'features/job-hunter/JobHunterInterviews/interview-card/preview/JobInterviewPreviewModal'
 export { InterviewCalendarModal } from 'features/job-hunter/JobHunterInterviews/modals/interview-modal/InterviewCalendarModal'

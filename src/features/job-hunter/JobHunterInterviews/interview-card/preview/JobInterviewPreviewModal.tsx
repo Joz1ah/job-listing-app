@@ -3,13 +3,13 @@ import { MapPin } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
 import { Interview } from "features/job-hunter/types";
 
-interface CompanyPreviewModalProps {
+interface JobInterviewPreviewModalProps {
   isOpen: boolean;
   onClose: () => void;
   interview: Interview;
 }
 
-const CompanyPreviewModal: FC<CompanyPreviewModalProps> = ({
+const JobInterviewPreviewModal: FC<JobInterviewPreviewModalProps> = ({
   isOpen,
   onClose,
   interview,
@@ -157,6 +157,16 @@ const CompanyPreviewModal: FC<CompanyPreviewModalProps> = ({
                     </div>
                   </div>
                 )}
+
+                {/* Job Description */}
+                {interview.description && (
+                  <div className="flex flex-col gap-2">
+                    <h4 className="text-base font-medium">Job Description:</h4>
+                    <p className="text-sm text-gray-700 whitespace-pre-wrap border border-gray-200 rounded-md p-4">
+                      {interview.description}
+                    </p>
+                  </div>
+                )}
               </div>
             </DialogHeader>
           </div>
@@ -166,4 +176,4 @@ const CompanyPreviewModal: FC<CompanyPreviewModalProps> = ({
   );
 };
 
-export { CompanyPreviewModal };
+export { JobInterviewPreviewModal };

@@ -35,6 +35,7 @@ const mockInterviews: Interview[] = [
       "Problem Solving",
       "Documentation",
     ],
+    description: "We are seeking a talented Front-end developer to join our developing team. You will be responsible for translating UI/UX designs into real world applications, maintaining high quality code standards, and collaborating with multi-disciplinary teams to define, design, and ship new features."
   },
   {
     position: "Full Stack Developer",
@@ -65,6 +66,7 @@ const mockInterviews: Interview[] = [
       "Cross-functional Communication",
       "Problem Solving",
     ],
+    description: "Join our dynamic team as a Full Stack Developer where you'll work on cutting-edge projects combining front-end and back-end development. You'll be involved in the complete software development lifecycle, from concept and design to testing and deployment."
   },
   {
     position: "Software Engineer",
@@ -89,6 +91,7 @@ const mockInterviews: Interview[] = [
       "Team Collaboration",
       "Incident Response",
     ],
+    description: "We are looking for a Software Engineer to join our infrastructure team. In this role, you'll be responsible for designing and implementing scalable cloud solutions, maintaining our CI/CD pipelines, and ensuring the reliability and security of our systems."
   },
 ];
 

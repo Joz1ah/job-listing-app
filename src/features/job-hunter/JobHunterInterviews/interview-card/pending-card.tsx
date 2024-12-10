@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "components";
-import { CompanyPreviewModal } from "features/job-hunter";
+import { JobInterviewPreviewModal } from "features/job-hunter";
 
 import { InputField } from "components";
 import { useFormik } from "formik";
@@ -448,7 +448,7 @@ const PendingCard: FC<PendingCardProps> = ({
         }}
       />
 
-      <CompanyPreviewModal
+      <JobInterviewPreviewModal
         isOpen={isPreviewOpen}
         onClose={() => setIsPreviewOpen(false)}
         interview={interview}

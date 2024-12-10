@@ -2,7 +2,7 @@ import { FC, useState } from "react";
 import { MapPin, X, Bookmark } from "lucide-react";
 import { Card, CardHeader, CardContent } from "components";
 import { Interview } from "features/job-hunter/types";
-import { CompanyPreviewModal } from "./preview/CompanyPreviewModal";
+import { JobInterviewPreviewModal } from "./preview/JobInterviewPreviewModal";
 
 interface InterviewCardProps {
   interview: Interview;
@@ -77,7 +77,7 @@ const DeclinedCard: FC<InterviewCardProps> = ({ interview }) => {
           </div>
         </CardContent>
       </Card>
-      <CompanyPreviewModal
+      <JobInterviewPreviewModal
         isOpen={isPreviewOpen}
         onClose={() => setIsPreviewOpen(false)}
         interview={interview}

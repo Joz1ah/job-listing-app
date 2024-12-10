@@ -13,7 +13,7 @@ import { Card, CardHeader, CardContent } from "components";
 import { Button } from "components";
 import { Tooltip } from "components";
 import { Interview } from "features/job-hunter/types";
-import { CompanyPreviewModal } from "./preview/CompanyPreviewModal";
+import { JobInterviewPreviewModal } from "./preview/JobInterviewPreviewModal";
 import { RescheduleModal } from "features/job-hunter";
 import { useNavigate } from "react-router-dom";
 import { InterviewCalendarModal } from "features/job-hunter";
@@ -244,7 +244,7 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
         </div>
       </Card>
 
-      <CompanyPreviewModal
+      <JobInterviewPreviewModal
         isOpen={isPreviewOpen}
         onClose={() => setIsPreviewOpen(false)}
         interview={interview}

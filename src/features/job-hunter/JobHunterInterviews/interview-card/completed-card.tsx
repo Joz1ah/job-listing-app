@@ -4,7 +4,7 @@ import { Card, CardHeader, CardContent } from "components";
 import { Button } from "components";
 import { Tooltip } from "components";
 import { Interview } from "features/job-hunter/types";
-import { CompanyPreviewModal } from "./preview/CompanyPreviewModal";
+import { JobInterviewPreviewModal } from "./preview/JobInterviewPreviewModal";
 
 interface InterviewCardProps {
   interview: Interview;
@@ -122,7 +122,7 @@ const CompletedCard: FC<InterviewCardProps> = ({
           </div>
         </CardContent>
       </Card>
-      <CompanyPreviewModal
+      <JobInterviewPreviewModal
         isOpen={isPreviewOpen}
         onClose={() => setIsPreviewOpen(false)}
         interview={interview}
