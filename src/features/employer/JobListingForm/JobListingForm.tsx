@@ -88,10 +88,6 @@ const JobListingForm: FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPreview, setShowPreview] = useState<boolean>(false);
 
-  const handleSaveChanges = (): void => {
-    setShowPreview(true);
-  };
-
   const handlePreviewConfirm = (): void => {
     setShowPreview(false);
     setIsLoading(true);
@@ -459,15 +455,7 @@ const JobListingForm: FC = () => {
           </div>
 
           {/* Footer Buttons */}
-          <div className="col-span-full flex flex-col md:flex-row justify-end gap-4 mt-8 md:mt-12">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleSaveChanges}
-              className="w-full md:w-auto border-orange-500 text-orange-500 bg-[#242625] md:bg-[#2D3A41] hover:bg-orange-500 hover:text-white"
-            >
-              Save Changes
-            </Button>
+          <div className="col-span-full flex justify-end mt-8 md:mt-12">
             <Button
               type="submit"
               className={cn(

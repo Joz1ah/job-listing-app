@@ -7,7 +7,7 @@ const JobListingFormLayout: FC = () => {
   const { isFreeTrial } = useEmployerTrialStatus();
 
   return (
-    <main className="flex-1 flex flex-col bg-[#242625] w-full xl:px-12 md:py-16">
+    <main className="flex-1 flex flex-col bg-[#242625] w-full md:p-6 xl:px-12 md:py-16">
       <EmployerHeader isFreeTrial={isFreeTrial}/>
       <div className="flex flex-col md:flex-row">
         <div className="flex-shrink-0">
