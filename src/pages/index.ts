@@ -19,6 +19,8 @@ export { CompleteProfile } from 'pages/employer/employer-profile-form/CompletePr
 export { JobListingFormLayout } from 'pages/employer/job-listing-form/JobListingFormLayout'
 export { EditProfile} from 'pages/employer/employer-profile-form/EditProfile'
 
-export { EmployerNotFound } from 'pages/not-found-page/EmployerNotFound'
-export { JobHunterNotFound } from 'pages/not-found-page/JobHunterNotFound'
+export { EmployerNotFound } from 'pages/employer/not-found/EmployerNotFound'
+export { JobHunterNotFound } from 'pages/job-hunter/not-found/JobHunterNotFound'
 export { NotFoundPage } from 'pages/not-found-page/NotFoundPage'
+export { JobHunterBaseLayout } from 'pages/job-hunter/based-layout/JobHunterBaseLayout'
+export { EmployerBaseLayout } from 'pages/employer/base-layout/EmployerBaseLayout'
