@@ -13,15 +13,15 @@ const Home = lazy(() => import('pages').then(module => ({ default: module.Home }
 const Fetch = lazy(() => import('pages').then(module => ({ default: module.Fetch })))
 const About = lazy(() => import('pages').then(module => ({ default: module.About })))
 const NotFound = lazy(() => import('pages').then(module => ({ default: module.NotFound })))
-const JobHunterMobile = lazy(() => import('pages').then(module => ({ default: module.JobHunterMobile })))
-const EmployerMobile = lazy(() => import('pages').then(module => ({ default: module.EmployerMobile })))
-const EmployerDesktop = lazy(() => import('pages').then(module => ({ default: module.EmployerDesktop })))
-const JobHunterDesktop = lazy(() => import('pages').then(module => ({ default: module.JobHunterDesktop })))
+const Employer = lazy(() => import('pages').then(module => ({ default: module.EmployerDesktop })))
+const JobHunter = lazy(() => import('pages').then(module => ({ default: module.JobHunterDesktop })))
+const CompleteProfile = lazy(() => import('pages').then(module => ({ default: module.CreateAppCard })))
 
 // Components imports
-const EmployerSectionDesktop = lazy(() => import('components').then(module => ({ default: module.EmployerSectionDesktop })))
-const MatchCreation = lazy(() => import('components').then(module => ({ default: module.MatchCreation })))
-const ResponsiveLayout = lazy(() => import('components').then(module => ({ default: module.ResponsiveLayout })))
+const EmployerSection = lazy(() => import('features').then(module => ({ default: module.EmployerFeed})))
+const JobListingForm = lazy(() => import('features').then(module => ({ default: module.JobListingForm   })))
+const EmployerProfile = lazy(() => import('features').then(module => ({ default: module.EmployerProfile })))
+
 
 interface LazyComponentProps {
   component: ComponentType<any>;
@@ -57,35 +57,29 @@ const routes: RouteObject[] = [
   },
   {
     path: ROUTE_CONSTANTS.EMPLOYER,
-    element: (
-      <Suspense fallback={<LoadingFallback />}>
-        <ResponsiveLayout
-          mobileComponent={<LazyComponent component={EmployerMobile} />}
-          desktopComponent={<LazyComponent component={EmployerDesktop} />}
-        />
-      </Suspense>
-    ),
+    element: <LazyComponent component={Employer} />,
     children: [
       {
         path: '',
-        element: <LazyComponent component={EmployerSectionDesktop} />
+        element: <LazyComponent component={EmployerSection} />
       },
       {
         path: ROUTE_CONSTANTS.JOB_LISTING,
-        element: <LazyComponent component={MatchCreation} />
-      }
+        element: <LazyComponent component={JobListingForm} />
+      },
+      {
+        path: ROUTE_CONSTANTS.EMPLOYER_PROFILE,
+        element: <LazyComponent component={EmployerProfile} />,
+      },
     ]
   },
   {
     path: ROUTE_CONSTANTS.JOB_HUNTER,
-    element: (
-      <Suspense fallback={<LoadingFallback />}>
-        <ResponsiveLayout
-          mobileComponent={<LazyComponent component={JobHunterMobile} />}
-          desktopComponent={<LazyComponent component={JobHunterDesktop} />}
-        />
-      </Suspense>
-    )
+    element: <LazyComponent component={JobHunter} />,
+  },
+  {
+    path: ROUTE_CONSTANTS.CREATE_APPLICATION,
+    element: <LazyComponent component={CompleteProfile} />,
   },
   {
     path: 'sw.js',
