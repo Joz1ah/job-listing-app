@@ -311,14 +311,14 @@ const PendingInterviews: FC = () => {
             <img src={emptyInterview} alt="Empty Pending List" />
           </div>
 
-          <h2 className="text-2xl font-normal mb-4 text-orange-500">
+          <h2 className="text-2xl font-normal mb-4 text-[#F5722E]">
             No Pending Interviews
           </h2>
 
           <p className="text-white mb-6">
             You don't have any pending interview requests. Explore your
             <br />
-            <span className="text-orange-500 font-medium mx-1">
+            <span className="text-[#F5722E] font-medium mx-1">
               PERFECT MATCHES
             </span>
             to connect & fill your job listing seamlessly
@@ -327,7 +327,7 @@ const PendingInterviews: FC = () => {
 
           <NavLink
             to="/job-hunter/feed"
-            className="bg-orange-500 text-white px-6 py-2 rounded-md hover:bg-orange-600 transition-colors"
+            className="bg-[#F5722E] text-white px-6 py-2 rounded-md hover:bg-orange-600 transition-colors"
           >
             Go to Feed
           </NavLink>

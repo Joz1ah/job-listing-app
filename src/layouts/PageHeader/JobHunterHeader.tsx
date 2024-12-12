@@ -27,7 +27,7 @@ const JobHunterHeader: FC = () => {
           <div className="flex items-center justify-between md:justify-start md:gap-8">
             <div className="flex items-center space-x-2 text-white font-light">
               <MapPin className="text-[#F5722E]" size={19} />
-              <span className="text-[13px] md:text-[15px]">Philippines</span>
+              <span className="text-[13px] md:text-[17px]">Philippines</span>
             </div>
             
             {/* Mobile rating */}
@@ -63,7 +63,7 @@ const JobHunterHeader: FC = () => {
           <div className="hidden md:flex items-center space-x-2">
             <DesktopTooltip content="This is how employer rated your interview">
               <div className="flex items-center space-x-2 font-light text-white">
-                <span className="border-2 border-dotted border-orange-500 text-[15px] px-2 py-1 border-opacity-70 whitespace-nowrap">
+                <span className="border-2 border-dotted border-[#F5722E] text-[15px] px-2 py-1 border-opacity-70 whitespace-nowrap">
                   Your interview from rating employers
                 </span>
                 <Info className="fill-[#D6D6D6] text-[#263238]" size={14} />
@@ -74,9 +74,9 @@ const JobHunterHeader: FC = () => {
 
         <div className="flex flex-col space-y-3">
           <div className="flex items-center space-x-2 text-white">
-            <DollarSign className="text-orange-500" size={14} strokeWidth={4} />
+            <DollarSign className="text-[#F5722E]" size={14} strokeWidth={4} />
             <span className="text-[13px] md:text-[15px]">Expected Salary: </span>
-            <span className="outline outline-1 outline-orange-500 text-orange-500 px-1 font-semibold text-[13px] md:text-[15px] rounded-[2px]">
+            <span className="outline outline-1 outline-[#F5722E] text-[#F5722E] px-1 font-semibold text-[13px] md:text-[15px] rounded-[2px]">
               $100,000
             </span>
             <span className="outline outline-1 outline-white px-1 ml-1 text-[13px] md:text-[15px] rounded-[2px]">
@@ -87,16 +87,16 @@ const JobHunterHeader: FC = () => {
           <DesktopTooltip content="Your preferred types of employment">
             <div className="flex items-center space-x-2 text-white">
               <BriefcaseBusiness
-                className="fill-orange-500 text-[#263238]"
+                className="fill-[#F5722E] text-[#263238]"
                 size={14}
               />
               <span className="text-[13px] md:text-[15px]">
                 Employment Preference:{" "}
               </span>
-              <span className="outline outline-1 outline-orange-500 text-orange-500 px-1 text-[13px] md:text-[15px] rounded-[2px]">
+              <span className="outline outline-1 outline-[#F5722E] text-[#F5722E] px-1 text-[13px] md:text-[15px] rounded-[2px]">
                 Full Time
               </span>
-              <span className="outline outline-1 outline-orange-500 text-orange-500 px-1 text-[13px] md:text-[15px] rounded-[2px]">
+              <span className="outline outline-1 outline-[#F5722E] text-[#F5722E] px-1 text-[13px] md:text-[15px] rounded-[2px]">
                 Part Time
               </span>
             </div>

@@ -81,7 +81,7 @@ const JobHunterMenu: FC<MenuProps> = ({
     if (isFreeTrial) {
       return <Info className="w-4 h-4 text-[#2D3A41] fill-white" />;
     }
-    return <BadgeCheck className="w-4 h-4 text-[#2D3A41] fill-orange-500" />;
+    return <BadgeCheck className="w-4 h-4 text-[#2D3A41] fill-[#F5722E]" />;
   };
 
   return (
@@ -102,22 +102,22 @@ const JobHunterMenu: FC<MenuProps> = ({
           </NavLink>
           <nav className="flex-shrink">
             <ul className="flex gap-4 lg:gap-8 text-white text-[14px] lg:text-[16px] font-light whitespace-nowrap">
-              <li className="hover:text-orange-500">
+              <li className="hover:text-[#F5722E]">
                 <NavLink to="#" onClick={handleNavLinkClick}>
                   About us
                 </NavLink>
               </li>
-              <li className="hover:text-orange-500">
+              <li className="hover:text-[#F5722E]">
                 <NavLink to="#" onClick={handleNavLinkClick}>
                   Contact us
                 </NavLink>
               </li>
-              <li className="hover:text-orange-500">
+              <li className="hover:text-[#F5722E]">
                 <NavLink to="#" onClick={handleNavLinkClick}>
                   Subscription plans
                 </NavLink>
               </li>
-              <li className="hover:text-orange-500">
+              <li className="hover:text-[#F5722E]">
                 <NavLink to="#" onClick={handleNavLinkClick}>
                   FAQ
                 </NavLink>
@@ -208,7 +208,7 @@ const JobHunterMenu: FC<MenuProps> = ({
                       onClick={handleNavLinkClick}
                       className={`${
                         item.isSpecial
-                          ? "text-orange-500 hover:text-orange-600"
+                          ? "text-[#F5722E] hover:text-orange-600"
                           : "hover:text-[#F5722E]"
                       } py-3 sm:py-2 inline-block text-sm`}
                     >

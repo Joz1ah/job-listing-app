@@ -72,11 +72,11 @@ const ExpiredListings = lazy(() => import('features/employer').then(module => ({
 const ClosedListings = lazy(() => import('features/employer').then(module => ({ default: module.ClosedListings })))
 
 // Reports and analytics imports
-const ReportsAnalytics = lazy(() => import('pages').then(module => ({ default: module.ReportsAnalytics })))
+/* const ReportsAnalytics = lazy(() => import('pages').then(module => ({ default: module.ReportsAnalytics })))
 const JobPerformance = lazy(() => import('features/employer').then(module => ({ default: module.JobPerformance })))
 const CandidateAnalytics = lazy(() => import('features/employer').then(module => ({ default: module.CandidateAnalytics })))
 const InterviewAnalytics = lazy(() => import('features/employer').then(module => ({ default: module.InterviewAnalytics })))
-const CostAnalytics = lazy(() => import('features/employer').then(module => ({ default: module.CostAnalytics })))
+const CostAnalytics = lazy(() => import('features/employer').then(module => ({ default: module.CostAnalytics }))) */
 
 // Bookmarked jobs imports
 const BookmarkedJobs = lazy(() => import('pages').then(module => ({ default: module.BookmarkedJobs })))
@@ -226,7 +226,7 @@ const routes: RouteObject[] = [
           }
         ]
       },
-      {
+      /* {
         path: ROUTE_CONSTANTS.REPORTS_ANALYTICS,
         element: <LazyComponent component={ReportsAnalytics} />,
         children: [
@@ -251,7 +251,7 @@ const routes: RouteObject[] = [
             element: <LazyComponent component={CostAnalytics} />
           }
         ]
-      },
+      }, */
       {
         path: '*',
         element: <LazyComponent component={EmployerNotFound} />

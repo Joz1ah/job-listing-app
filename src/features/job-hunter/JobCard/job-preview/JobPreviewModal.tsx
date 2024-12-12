@@ -51,7 +51,7 @@ const JobPreviewModal: FC<JobPreviewModalProps> = ({
 
                 {/* Location */}
                 <div className="flex items-start gap-2 text-black">
-                  <MapPin className="h-4 w-4 flex-shrink-0 mt-1 text-orange-500" />
+                  <MapPin className="h-4 w-4 flex-shrink-0 mt-1 text-[#F5722E]" />
                   <span className="text-base md:text-[17px]">
                     Based in {job.location}
                   </span>
@@ -81,7 +81,7 @@ const JobPreviewModal: FC<JobPreviewModalProps> = ({
                   <h4 className="text-base md:text-[17px] text-black">
                     Experience:
                   </h4>
-                  <span className="px-1 text-sm md:text-[17px] text-orange-500 outline outline-1 outline-orange-500 rounded-sm">
+                  <span className="px-1 text-sm md:text-[17px] text-[#F5722E] outline outline-1 outline-[#F5722E] rounded-sm">
                     {job.experience}
                   </span>
                 </div>
@@ -95,7 +95,7 @@ const JobPreviewModal: FC<JobPreviewModalProps> = ({
                     {job.lookingFor.map((item, index) => (
                       <span
                         key={index}
-                        className="bg-orange-500 text-white px-1.5 py-0.5 text-sm md:text-[17px] rounded inline-block"
+                        className="bg-[#F5722E] text-white px-1.5 py-0.5 text-sm md:text-[17px] rounded inline-block"
                       >
                         {item}
                       </span>
@@ -108,7 +108,7 @@ const JobPreviewModal: FC<JobPreviewModalProps> = ({
                   <h4 className="text-base md:text-[17px] text-black">
                     Salary Expectation:
                   </h4>
-                  <span className="px-1 text-sm md:text-[17px] bg-orange-500 text-white rounded-sm">
+                  <span className="px-1 text-sm md:text-[17px] bg-[#F5722E] text-white rounded-sm">
                     {job.salaryExpectation}
                   </span>
                 </div>
@@ -123,7 +123,7 @@ const JobPreviewModal: FC<JobPreviewModalProps> = ({
                       {job.certificates.map((cert, index) => (
                         <span
                           key={index}
-                          className="px-1 text-sm md:text-[17px] text-orange-500 outline outline-1 outline-orange-500 rounded"
+                          className="px-1 text-sm md:text-[17px] text-[#F5722E] outline outline-1 outline-[#F5722E] rounded"
                         >
                           {cert}
                         </span>
@@ -171,7 +171,7 @@ const JobPreviewModal: FC<JobPreviewModalProps> = ({
           {/* Fixed Button Area */}
           <div className="p-4 md:p-6">
             <Button
-              className="bg-orange-500 w-[133px] hover:bg-orange-600 text-white text-xs md:text-[12px] h-8 p-0"
+              className="bg-[#F5722E] w-[133px] hover:bg-orange-600 text-white text-xs md:text-[12px] h-8 p-0"
               onClick={onSchedule}
             >
               Schedule Interview

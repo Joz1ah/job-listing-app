@@ -27,32 +27,32 @@ const AcceptedCard: FC<InterviewCardProps> = ({
           <div className="flex flex-row -mt-4 justify-between w-full">
             <div className="h-[20px]">
               {interview.isNew && (
-                <span className="absolute text-[13px] text-orange-500 font-semibold italic">
+                <span className="absolute text-[13px] text-[#F5722E] font-bold italic">
                   ★ NEW
                 </span>
               )}
             </div>
             <div className="flex flex-col items-end relative">
-              <span className="text-[12px] font-light text-gray-400 -mr-2">
+              <span className="text-[12px] font-light text-[#717171] -mr-2">
                 Received {interview.receivedTime}
               </span>
               <div className="absolute top-6 -right-2">
-                <Bookmark className="w-6 h-6 text-orange-500" />
+                <Bookmark className="w-6 h-6 text-[#F5722E]" />
               </div>
             </div>
           </div>
           <div className="w-full relative mt-2">
             <h3
-              className="text-[14px] font-semibold"
+              className="text-[14px] font-semibold text-[#263238]"
             >
               {interview.position}
             </h3>
-            <p className="text-[13px] text-black underline">
+            <p className="text-[13px] text-[#263238] underline">
               {interview.company}
             </p>
             <div className="flex flex-row items-center">
-              <MapPin size={14} className="text-orange-500" />
-              <p className="text-[13px] font-light mt-0 ml-2">
+              <MapPin size={14} className="text-[#F5722E]" />
+              <p className="text-[13px] font-light mt-0 ml-2 text-[#263238]">
                 Based in {interview.location}
               </p>
             </div>
@@ -62,13 +62,13 @@ const AcceptedCard: FC<InterviewCardProps> = ({
         <CardContent className="pt-1">
           <div className="flex flex-col gap-1">
             <div className="flex items-center gap-1">
-              <span className="text-[13px] min-w-[40px]">Date:</span>
+              <span className="text-[13px] min-w-[40px] text-[#263238]">Date:</span>
               <span className="text-[13px] font-semibold px-1 rounded-[2px] bg-[#184E77] text-white w-[135px] h-[17px] flex justify-center">
                 {interview.date}
               </span>
             </div>
             <div className="flex items-center gap-1">
-              <span className="text-[13px] min-w-[40px]">Time:</span>
+              <span className="text-[13px] min-w-[40px] text-[#263238]">Time:</span>
               <span className="text-[13px] font-semibold px-1 rounded-[2px] bg-[#168AAD] text-white w-[135px] h-[17px] flex justify-center">
                 {interview.time}
               </span>
@@ -89,21 +89,21 @@ const AcceptedCard: FC<InterviewCardProps> = ({
                 Join Interview
               </Button>
               <Tooltip content="The meeting link will be accesible on the day of the interview">
-                <Info className="w-3 h-3 fill-orange-500 mb-6 text-white" />
+                <Info className="w-3 h-3 fill-[#F5722E] mb-6 text-white" />
               </Tooltip>
             </div>
             <Button
               onClick={() => setIsPreviewOpen(true)}
               variant="outline"
-              className="text-xs w-[108px] h-[32px] font-normal text-orange-500 border-2 border-orange-500 hover:bg-orange-500 hover:text-white rounded-sm"
+              className="text-xs w-[108px] h-[32px] font-normal text-[#F5722E] border-2 border-[#F5722E] hover:bg-[#F5722E] hover:text-white rounded-sm"
             >
               Preview Job
             </Button>
           </div>
           <div className="flex flex-row justify-start w-full items-center">
-            <span className="text-sm text-black font-normal flex items-center gap-1">
+            <span className="text-sm text-[#263238] font-normal flex items-center gap-1">
               Status: <Check className="w-4 h-4 text-[#4BAF66] inline" />{" "}
-              <span className="text-green-600">Accepted</span>
+              <span className="text-[#4BAF66]">Accepted</span>
             </span>
           </div>
         </CardFooter>

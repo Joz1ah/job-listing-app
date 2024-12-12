@@ -70,8 +70,8 @@ const BirthdayInput: React.FC<BirthdayInputProps> = ({ name, value, onChange }) 
 
   return (
     <div 
-      className={`flex items-center justify-between h-14 px-4 py-2 bg-transparent border-2 rounded-md cursor-pointer transition-colors ${
-        isActive || isMonthOpen || isDayOpen ? 'border-orange-500' : 'border-[#AEADAD]'
+      className={`flex items-center justify-between h-14 px-4 py-2 bg-transparent border-2 rounded-[10px] cursor-pointer transition-colors ${
+        isActive || isMonthOpen || isDayOpen ? 'border-[#F5722E]' : 'border-[#AEADAD]'
       }`}
       onClick={handleContainerFocus}
       onFocus={handleContainerFocus}

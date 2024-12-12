@@ -65,7 +65,7 @@ const CircularPagination: FC<CircularPaginationProps> = ({ api, color = "#F5722E
         <button
           key={pageNum}
           onClick={() => api?.scrollTo(pageNum)}
-          className="flex items-center justify-center w-[7px] h-[7px] p-0 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
+          className="flex items-center justify-center w-[7px] h-[7px] p-0 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#F5722E]"
           aria-label={`Page ${pageNum + 1} of ${totalPages}`}
         >
           <div 

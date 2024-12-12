@@ -32,10 +32,7 @@ interface TimezoneOption {
 }
 
 interface NotificationState {
-  muteAll: boolean;
-  email: boolean;
   push: boolean;
-  sms: boolean;
 }
 
 const POPULAR_TIMEZONES: TimezoneOption[] = [
@@ -70,10 +67,7 @@ const FormField: FC<FormFieldProps> = ({ label, children, className }) => {
 };
 
 const NOTIFICATION_OPTIONS: NotificationOption[] = [
-  { key: "muteAll", label: "Mute All Notifications" },
-  { key: "email", label: "Email Notifications" },
   { key: "push", label: "Push Notifications" },
-  { key: "sms", label: "SMS Notifications" },
 ];
 
 // Function to generate timezone options
@@ -101,10 +95,7 @@ type ThemeOption = typeof THEME_OPTIONS[number]['value'];
 const GeneralSettings: FC = () => {
   const { isFreeTrial } = useJobHunterContext();
   const [notifications, setNotifications] = useState<NotificationState>({
-    muteAll: false,
-    email: false,
     push: false,
-    sms: false,
   });
   const [theme, setTheme] = useState<ThemeOption>("dark");
   const [timeZone, setTimeZone] = useState(() => {
@@ -145,7 +136,7 @@ const GeneralSettings: FC = () => {
   const tooltips = {
     googleAccount: "Link or unlink your Google account to easily manage your profile and settings seamlessly.",
     theme: "Switch between light and dark mode for your preference",
-    notifications: "Manage notifications. Mute All notifications, or enable preferred notifications for better experience.",
+    notifications: "Enable or disable push notifications for better experience.",
     timezone: "Select your preferred timezone. Times across the application will be displayed according to this setting."
   } as const;
 
@@ -185,7 +176,7 @@ const GeneralSettings: FC = () => {
                     onCheckedChange={() => handleNotificationToggle(key as keyof NotificationState)}
                     disabled={isFreeTrial}
                     className={cn(
-                      "data-[state=checked]:bg-orange-500 data-[state=unchecked]:bg-gray-600/70 h-5 w-9 [&>span]:h-4 [&>span]:w-4 [&>span[data-state=checked]]:translate-x-4",
+                      "data-[state=checked]:bg-[#F5722E] data-[state=unchecked]:bg-gray-600/70 h-5 w-9 [&>span]:h-4 [&>span]:w-4 [&>span[data-state=checked]]:translate-x-4",
                       isFreeTrial && "opacity-50 cursor-not-allowed"
                     )}
                   />
@@ -219,7 +210,7 @@ const GeneralSettings: FC = () => {
       </div>
 
       {/* Full Width Sections */}
-      <div className="space-y-8">
+      <div className="space-y-12 pt-12">
         {/* Google Account Section */}
         <div className="space-y-3">
           <div className="flex items-center gap-1">
@@ -241,7 +232,7 @@ const GeneralSettings: FC = () => {
             <span className="text-white text-[15px]">
               Unlink your Google Account
             </span>
-            <button className="px-3 py-1 border border-red-500 text-red-500 text-sm rounded hover:bg-red-500 hover:text-white transition-colors duration-200">
+            <button className="px-3 py-1 border border-[#E53835] text-[#E53835] text-sm rounded hover:bg-[#E53835] hover:text-white transition-colors duration-200">
               Unlink
             </button>
           </div>
@@ -266,13 +257,13 @@ const GeneralSettings: FC = () => {
               >
                 <span className="relative flex items-center justify-center w-4 h-4">
                   <span
-                    className={`absolute w-4 h-4 rounded-full border-2 hover:border-orange-500 ${
-                      theme === value ? "border-orange-500" : "border-white"
+                    className={`absolute w-4 h-4 rounded-full border-2 hover:border-[#F5722E] ${
+                      theme === value ? "border-[#F5722E]" : "border-white"
                     }`}
                   />
                   <span
                     className={`w-2 h-2 rounded-full ${
-                      theme === value ? "bg-orange-500" : "bg-transparent"
+                      theme === value ? "bg-[#F5722E]" : "bg-transparent"
                     }`}
                   />
                 </span>
@@ -296,7 +287,7 @@ const GeneralSettings: FC = () => {
                   onChange={(e) => isEditingEmail && setTempEmail(e.target.value)}
                   disabled={!isEditingEmail}
                   className={cn(
-                    "w-full bg-transparent border-[#AEADAD] h-[45px] border-2 focus:border-orange-500 text-white",
+                    "w-full bg-transparent border-[#AEADAD] h-[45px] border-2 focus:border-[#F5722E] text-white",
                     !isEditingEmail && "opacity-70"
                   )}
                   placeholder="Enter email address"
@@ -305,7 +296,7 @@ const GeneralSettings: FC = () => {
             </div>
             <button 
               onClick={handleEmailEdit}
-              className="w-full sm:w-[80px] mt-[18px] px-3 py-2 bg-transparent border border-orange-500 text-orange-500 text-sm rounded hover:bg-orange-500 hover:text-white transition-colors duration-200"
+              className="w-full sm:w-[80px] mt-[18px] px-3 py-2 bg-transparent border border-[#F5722E] text-[#F5722E] text-sm rounded hover:bg-[#F5722E] hover:text-white transition-colors duration-200"
             >
               {isEditingEmail ? "Update" : "Change"}
             </button>

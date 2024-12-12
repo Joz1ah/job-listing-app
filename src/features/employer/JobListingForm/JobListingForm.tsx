@@ -155,7 +155,7 @@ const JobListingForm: FC = () => {
             <ChevronLeft strokeWidth={4} className="h-6 w-6" />
           </NavLink>
 
-          <h1 className="flex-1 text-center text-xl md:text-[32px] font-normal text-orange-500">
+          <h1 className="flex-1 text-center text-xl md:text-[32px] font-normal text-[#F5722E]">
             <span className="inline-flex items-center gap-2 justify-center">
               Create Job Listing
             </span>
@@ -179,7 +179,7 @@ const JobListingForm: FC = () => {
                 name="jobTitle"
                 value={values.jobTitle}
                 onChange={handleChange}
-                className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
+                className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
                 placeholder="Provide a Job Title"
               />
             </InputField>
@@ -235,7 +235,7 @@ const JobListingForm: FC = () => {
                 name="jobDescription"
                 value={values.jobDescription}
                 onChange={handleChange}
-                className="bg-transparent border-[#AEADAD] min-h-[150px] md:min-h-[175px] pt-4 resize-none border-2 focus-within:border-orange-500 placeholder:text-white"
+                className="bg-transparent border-[#AEADAD] min-h-[150px] md:min-h-[175px] pt-4 resize-none border-2 focus-within:border-[#F5722E] placeholder:text-[#AEADAD]"
                 placeholder="Please provide a job description"
               />
               <span className="flex left-0 italic text-[11px] absolute">
@@ -255,7 +255,7 @@ const JobListingForm: FC = () => {
                   setFieldValue("yearsOfExperience", value)
                 }
               >
-                <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 ">
+                <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] ">
                   <SelectValue placeholder="Select Years of Experience" />
                 </SelectTrigger>
                 <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none">
@@ -308,7 +308,7 @@ const JobListingForm: FC = () => {
                       alt="Spark Icon"
                       className="w-3 h-3 object-contain"
                     />
-                    <span className="text-orange-500">Perfect Matches</span>
+                    <span className="text-[#F5722E]">Perfect Matches</span>
                   </div>
                   <span>based on the criteria you choose.</span>
                 </div>
@@ -321,7 +321,7 @@ const JobListingForm: FC = () => {
                   setFieldValue("priorityIndicator", value)
                 }
               >
-                <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 ">
+                <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] ">
                   <SelectValue
                     placeholder={
                       <div className="flex items-center gap-1 text-white">
@@ -329,7 +329,7 @@ const JobListingForm: FC = () => {
                         <div className="flex items-center">
                           <img
                             src={sparkeIcon}
-                            className="w-4 h-4 text-orange-500"
+                            className="w-4 h-4 text-[#F5722E]"
                           />
                           <span className="text-[#F5722E] ">Perfect Match</span>
                         </div>
@@ -361,7 +361,7 @@ const JobListingForm: FC = () => {
                 name="location"
                 value={values.location}
                 onChange={handleChange}
-                className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus-within:border-orange-500 placeholder:text-white"
+                className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus-within:border-[#F5722E] placeholder:text-[#AEADAD]"
                 placeholder="Type and enter country"
               />
             </InputField>
@@ -377,7 +377,7 @@ const JobListingForm: FC = () => {
                 value={values.languages || []}
                 onChange={(value) => setFieldValue("languages", value)}
                 className="min-h-[56px] pt-1 px-1"
-                tagClassName="bg-orange-500"
+                tagClassName="bg-[#F5722E]"
                 placeholder="Type and enter to add language"
               />
             </InputField>
@@ -392,7 +392,7 @@ const JobListingForm: FC = () => {
                 value={values.education}
                 onValueChange={(value) => setFieldValue("education", value)}
               >
-                <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500">
+                <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
                   <SelectValue placeholder="Select your Education Level" />
                 </SelectTrigger>
                 <SelectContent className="bg-[#F5F5F7] items-center p-0 [&>*]:p-0 border-none rounded-none">
@@ -461,7 +461,7 @@ const JobListingForm: FC = () => {
               className={cn(
                 "w-full md:w-auto bg-[#AEADAD] text-white hover:bg-[#F5722E]",
                 isValid
-                  ? "bg-orange-500 hover:bg-orange-600"
+                  ? "bg-[#F5722E] hover:bg-orange-600"
                   : "bg-[#AEADAD] hover:bg-[#AEADAD]",
               )}
             >

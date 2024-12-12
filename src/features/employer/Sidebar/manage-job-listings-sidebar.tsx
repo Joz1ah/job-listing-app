@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { CheckCircle2, FileText, History, XCircle, Info, BadgeCheck } from "lucide-react";
+import { List, XCircle, Info, BadgeCheck, CircleCheck } from "lucide-react";
 
 interface MenuItem {
   icon: JSX.Element;
@@ -26,18 +26,13 @@ const ManageJobListingsSidebar: FC<ManageJobsSidebarProps> = ({
 
   const jobListingsMenu: MenuItem[] = [
     {
-      icon: <CheckCircle2 className="w-5 h-5" />,
-      label: "Active Listings",
+      icon: <List className="w-5 h-5" />,
+      label: "All Job Listings",
       path: `${baseRoute}/active`
     },
     {
-      icon: <FileText className="w-5 h-5" />,
-      label: "Draft Listings",
-      path: `${baseRoute}/drafts`
-    },
-    {
-      icon: <History className="w-5 h-5" />,
-      label: "Expired Listings",
+      icon: <CircleCheck className="w-5 h-5" />,
+      label: "Completed Job Listings",
       path: `${baseRoute}/expired`
     },
     {

@@ -161,7 +161,7 @@ const NotificationFeed: FC<NotificationFeedProps> = ({ isFreeTrial = false }) =>
       <div className="group cursor-pointer" onClick={() => markAsRead(notification.id)}>
         <div className="py-4 px-4 hover:bg-[#1E1E1E] relative">
           {notification.unread && (
-            <div className="absolute left-2 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-orange-500" />
+            <div className="absolute left-2 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#F5722E]" />
           )}
           <div className="flex flex-col pl-4">
             <div className="flex items-center justify-between mb-2">
@@ -204,7 +204,7 @@ const NotificationFeed: FC<NotificationFeedProps> = ({ isFreeTrial = false }) =>
           onClick={() => handleOpenChange(!open)}
         >
           <Bell 
-            className="w-[22px] h-[25px] text-orange-500 [transform:rotate(35deg)] cursor-pointer"
+            className="w-[22px] h-[25px] text-[#F5722E] [transform:rotate(35deg)] cursor-pointer"
           />
         </button>
         
@@ -236,7 +236,7 @@ const NotificationFeed: FC<NotificationFeedProps> = ({ isFreeTrial = false }) =>
           <PopoverTrigger asChild>
             <button className="relative p-2 rounded-full">
               <Bell 
-                className="w-[22px] h-[25px] text-orange-500 [transform:rotate(35deg)] cursor-pointer"
+                className="w-[22px] h-[25px] text-[#F5722E] [transform:rotate(35deg)] cursor-pointer"
               />
               {unreadCount > 0 && !hasBeenViewed && (
                 <Badge 
@@ -279,7 +279,7 @@ const NotificationFeed: FC<NotificationFeedProps> = ({ isFreeTrial = false }) =>
 
               <button 
                 onClick={handleClearNotifications}
-                className="w-full py-3 text-center text-[13px] text-orange-500 hover:text-gray-400 hover:bg-[#1E1E1E] transition-colors"
+                className="w-full py-3 text-center text-[13px] text-[#F5722E] hover:text-gray-400 hover:bg-[#1E1E1E] transition-colors"
               >
                 Clear Notification
               </button>

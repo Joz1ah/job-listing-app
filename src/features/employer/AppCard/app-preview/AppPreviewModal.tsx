@@ -47,7 +47,7 @@ const AppPreviewModal: FC<AppPreviewModalProps> = ({
 
                 {/* Location */}
                 <div className="flex items-start gap-2 text-black">
-                  <MapPin className="h-4 w-4 flex-shrink-0 mt-1 text-orange-500" />
+                  <MapPin className="h-4 w-4 flex-shrink-0 mt-1 text-[#F5722E]" />
                   <span className="text-base md:text-[17px]">
                     Based in {app.location}
                   </span>

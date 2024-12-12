@@ -62,6 +62,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
       interviewTime: undefined,
     },
     validationSchema,
+    validateOnMount: true,
     onSubmit: async (values, { setSubmitting }) => {
       try {
         // Add your invite sending logic here
@@ -75,8 +76,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
     },
   });
 
-  const { values, touched, errors, handleSubmit, setFieldValue, resetForm } =
-    formik;
+  const { values, touched, errors, handleSubmit, setFieldValue, resetForm, isValid } = formik;
 
   // Reset form when modal closes
   useEffect(() => {
@@ -111,6 +111,11 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
     setFieldValue("interviewTime", time);
   };
 
+  // Button class based on validation state
+  const sendInviteButtonClass = isValid
+    ? "bg-[#F5722E] hover:bg-[#F5722E]/70 text-white text-[16px] font-normal"
+    : "bg-[#AEADAD] hover:bg-[#AEADAD]/70 text-white text-[16px] font-normal";
+
   return (
     <>
       <Dialog open={isOpen} onOpenChange={handleModalClose}>
@@ -121,7 +126,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                 {/* Header Title */}
                 <DialogTitle className="text-center mb-8 mt-6">
                   Schedule an interview for the{" "}
-                  <span className="text-orange-500">({jobTitle})</span> position
+                  <span className="text-[#F5722E]">({jobTitle})</span> position
                 </DialogTitle>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -131,7 +136,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                     <div>
                       <span className="text-sm block mb-2">{company}</span>
                       <div className="flex items-center gap-2">
-                        <span className="text-orange-500">*</span>
+                        <span className="text-[#F5722E]">*</span>
                         <span className="text-sm text-black">
                           Based in {location}
                         </span>
@@ -165,13 +170,13 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                             certificate.map((cert, index) => (
                               <span
                                 key={index}
-                                className="text-orange-500 border border-orange-500 px-2 py-0.5 text-xs rounded"
+                                className="text-[#F5722E] border border-[#F5722E] px-2 py-0.5 text-xs rounded"
                               >
                                 {cert}
                               </span>
                             ))
                           ) : (
-                            <span className="text-gray-400 text-xs">
+                            <span className="text-[#717171] text-xs">
                               None required
                             </span>
                           )}
@@ -191,7 +196,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                       >
                         <div className="relative">
                           <div
-                            className="w-full border-2 rounded bg-transparent h-[56px] px-3 flex items-center cursor-pointer border-black text-sm"
+                            className="w-full border-2 rounded-[10px] bg-transparent h-[56px] px-3 flex items-center cursor-pointer border-black text-sm"
                             onClick={() => setIsDatePickerOpen(true)}
                           >
                             {values.interviewDate
@@ -224,7 +229,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                           value={values.interviewTime}
                           onValueChange={handleTimeSelect}
                         >
-                          <SelectTrigger className="w-full border-2 rounded bg-transparent h-[56px] border-black">
+                          <SelectTrigger className="w-full border-2 rounded-[10px] bg-transparent h-[56px] border-black">
                             <SelectValue placeholder="Select a time" />
                           </SelectTrigger>
                           <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none max-h-[200px]">
@@ -256,7 +261,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                     <div className="flex gap-2">
                       <Button
                         type="submit"
-                        className="bg-gray-400 hover:bg-gray-500 text-white text-[16px]"
+                        className={sendInviteButtonClass}
                       >
                         Send Invite
                       </Button>

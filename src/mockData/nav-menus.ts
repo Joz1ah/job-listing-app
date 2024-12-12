@@ -7,7 +7,7 @@ interface NavItem {
   export const employerDesktopMenu: NavItem[] = [
     { name: 'MANAGE JOB LISTINGS', path: '/employer/manage-job-listings' },
     { name: 'EDIT COMPANY PROFILE', path: '/employer/edit-profile' },
-    { name: 'REPORTS & ANALYTICS', path: '/employer/reports-and-analytics' },
+    /* { name: 'REPORTS & ANALYTICS', path: '/employer/reports-and-analytics' }, */
     { name: 'INTERVIEWS', path: '/employer/interviews' },
     { name: '✦ SUBSCRIPTION PLANS', path: '#', isSpecial: true },
     { name: 'ACCOUNT SETTINGS', path: '/employer/account-settings' },
@@ -18,7 +18,7 @@ interface NavItem {
     { name: 'CREATE JOB LISTING', path: '/employer/job-listing' },
     { name: 'MANAGE JOB LISTINGS', path: '/employer/manage-job-listings/active' },
     { name: 'EDIT COMPANY PROFILE', path: '/employer/edit-profile' },
-    { name: 'REPORTS & ANALYTICS', path: '/employer/reports-and-analytics' },
+    /* { name: 'REPORTS & ANALYTICS', path: '/employer/reports-and-analytics' }, */
     { name: 'INTERVIEWS', path: '/employer/interviews' },
     { name: 'ABOUT US', path: '#'},
     { name: 'CONTACT US', path: '#'},

@@ -201,7 +201,7 @@ const InterviewCalendarModal: React.FC<InterviewCalendarModalProps> = ({
                         {day.dayName}
                       </div>
                       {isSelected && (
-                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-orange-500" />
+                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#F5722E]" />
                       )}
                     </div>
                   );
@@ -257,8 +257,8 @@ const InterviewCalendarModal: React.FC<InterviewCalendarModalProps> = ({
                               key={index}
                               className={`absolute left-0 right-0 px-2 py-1 mx-1 overflow-hidden shadow-sm hover:shadow rounded-sm border-l-2 flex flex-col gap-0.5 ${
                                 isPast
-                                  ? "bg-red-50 border-red-500"
-                                  : "bg-orange-50 border-orange-500"
+                                  ? "bg-red-50 border-[#E53835]"
+                                  : "bg-orange-50 border-[#F5722E]"
                               }`}
                               style={{
                                 top: `${startPosition}px`,
@@ -276,7 +276,7 @@ const InterviewCalendarModal: React.FC<InterviewCalendarModalProps> = ({
                                 </div>
                                 <div
                                   className={`text-[10px] underline truncate ${
-                                    isPast ? "text-red-500" : "text-gray-800"
+                                    isPast ? "text-[#E53835]" : "text-gray-800"
                                   } leading-tight`}
                                 >
                                   {meeting.position}
@@ -311,7 +311,7 @@ const InterviewCalendarModal: React.FC<InterviewCalendarModalProps> = ({
               <div className="bg-gray-100 shadow-md p-3 w-[306px] h-[99px] max-w-sm mx-auto flex items-center">
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-medium">Michael V.</span>
-                  <BadgeCheck className="w-4 h-4 text-orange-500 flex-shrink-0" />
+                  <BadgeCheck className="w-4 h-4 text-[#F5722E] flex-shrink-0" />
                 </div>
               </div>
             </div>

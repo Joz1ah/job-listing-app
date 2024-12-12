@@ -238,14 +238,14 @@ const RescheduleRequests: FC = () => {
             <img src={emptyInterview} alt="Empty Reschedule List" />
           </div>
 
-          <h2 className="text-2xl font-normal mb-4 text-orange-500">
+          <h2 className="text-2xl font-normal mb-4 text-[#F5722E]">
             No Reschedule Requests
           </h2>
 
           <p className="text-white mb-6">
             You don't have any pending reschedule requests. View your
             <br />
-            <span className="text-orange-500 font-medium mx-1">
+            <span className="text-[#F5722E] font-medium mx-1">
               PENDING INTERVIEWS
             </span>
             to manage your upcoming appointments.
@@ -254,7 +254,7 @@ const RescheduleRequests: FC = () => {
 
           <NavLink
             to="/employer/interviews/pending"
-            className="bg-orange-500 text-white px-6 py-2 rounded-md hover:bg-orange-600 transition-colors"
+            className="bg-[#F5722E] text-white px-6 py-2 rounded-md hover:bg-orange-600 transition-colors"
           >
             View Pending Interviews
           </NavLink>

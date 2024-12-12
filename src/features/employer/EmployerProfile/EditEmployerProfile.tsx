@@ -159,9 +159,9 @@ const EditEmployerProfile: FC = () => {
               <ChevronLeft strokeWidth={4} className="h-6 w-6" />
             </NavLink>
 
-            <h1 className="flex-1 text-center text-xl md:text-[32px] pt-6 font-normal text-orange-500">
+            <h1 className="flex-1 text-center text-xl md:text-[32px] pt-6 font-normal text-[#F5722E]">
               <span className="inline-flex items-center gap-2 justify-center">
-                Edit Your Company Profile
+                Complete Your Company Profile
               </span>
             </h1>
           </div>
@@ -183,7 +183,8 @@ const EditEmployerProfile: FC = () => {
                 name="businessName"
                 value={values.businessName}
                 onChange={handleChange}
-                className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
+                placeholder="Legal Business Name"
+                className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
               />
             </InputField>
 
@@ -200,7 +201,8 @@ const EditEmployerProfile: FC = () => {
                     name="firstName"
                     value={values.firstName}
                     onChange={handleChange}
-                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
+                    placeholder="Representative's First Name"
+                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
                   />
                 </InputField>
 
@@ -214,7 +216,8 @@ const EditEmployerProfile: FC = () => {
                     name="emailAddress"
                     value={values.emailAddress}
                     onChange={handleChange}
-                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
+                    placeholder="Email Address"
+                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
                   />
                 </InputField>
 
@@ -228,7 +231,8 @@ const EditEmployerProfile: FC = () => {
                     name="position"
                     value={values.position}
                     onChange={handleChange}
-                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
+                    placeholder="e.g. Recruitement Supervisor"
+                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
                   />
                 </InputField>
 
@@ -238,12 +242,28 @@ const EditEmployerProfile: FC = () => {
                   error={errors.industry}
                   touched={touched.industry}
                 >
-                  <Input
+                  <Select
                     name="industry"
                     value={values.industry}
-                    onChange={handleChange}
-                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
-                  />
+                    onValueChange={(value) => setFieldValue("industry", value)}
+                  >
+                    <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
+                      <SelectValue placeholder="Select Industry" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-[#F5F5F7] items-center p-0 [&>*]:p-0 border-none rounded-none">
+                      {selectOptions.industry.map(({ value, label }) => (
+                        <SelectItem
+                          key={value}
+                          className={cn(
+                            "rounded-none justify-start pl-3 h-[55px] transition-all duration-500 ease-in-out",
+                          )}
+                          value={value}
+                        >
+                          <div className="py-3 w-full text-center">{label}</div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </InputField>
               </div>
 
@@ -259,7 +279,8 @@ const EditEmployerProfile: FC = () => {
                     name="lastName"
                     value={values.lastName}
                     onChange={handleChange}
-                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
+                    placeholder="Representative's Last Name"
+                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
                   />
                 </InputField>
 
@@ -272,7 +293,7 @@ const EditEmployerProfile: FC = () => {
                     name="mobileNumber"
                     value={values.mobileNumber}
                     onChange={handleChange}
-                    className="bg-transparent border-2 rounded-md border-[#AEADAD] h-[56px] focus-within:border-orange-500 transition-colors flex justify-between"
+                    className="bg-transparent border-2 rounded-[10px] border-[#AEADAD] h-[56px] focus-within:border-[#F5722E] transition-colors flex justify-between"
                     defaultCountry="CA"
                   />
                 </InputField>
@@ -287,7 +308,8 @@ const EditEmployerProfile: FC = () => {
                     name="companyWebsite"
                     value={values.companyWebsite}
                     onChange={handleChange}
-                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
+                    placeholder="Company Website"
+                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
                   />
                 </InputField>
 
@@ -301,7 +323,8 @@ const EditEmployerProfile: FC = () => {
                     name="yearFounded"
                     value={values.yearFounded}
                     onChange={handleChange}
-                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
+                    placeholder="Year Founded"
+                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
                   />
                 </InputField>
               </div>
@@ -321,7 +344,8 @@ const EditEmployerProfile: FC = () => {
                   name="unitAndBldg"
                   value={values.unitAndBldg}
                   onChange={handleChange}
-                  className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
+                  placeholder="Unit No./Building"
+                  className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
                 />
               </InputField>
 
@@ -334,7 +358,8 @@ const EditEmployerProfile: FC = () => {
                   name="streetAddress"
                   value={values.streetAddress}
                   onChange={handleChange}
-                  className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
+                  placeholder="Street Address"
+                  className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
                 />
               </InputField>
 
@@ -347,7 +372,8 @@ const EditEmployerProfile: FC = () => {
                   name="city"
                   value={values.city}
                   onChange={handleChange}
-                  className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
+                  placeholder="City"
+                  className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
                 />
               </InputField>
 
@@ -360,7 +386,8 @@ const EditEmployerProfile: FC = () => {
                   name="state"
                   value={values.state}
                   onChange={handleChange}
-                  className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
+                  placeholder="State/Province/Region"
+                  className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
                 />
               </InputField>
 
@@ -379,8 +406,8 @@ const EditEmployerProfile: FC = () => {
                     value={values.country}
                     onValueChange={(value) => setFieldValue("country", value)}
                   >
-                    <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500">
-                      <SelectValue />
+                    <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
+                      <SelectValue placeholder="Country" />
                     </SelectTrigger>
                     <SelectContent className="bg-[#F5F5F7] items-center p-0 [&>*]:p-0 border-none rounded-none">
                       {selectOptions.country.map(({ value, label }) => (
@@ -410,7 +437,7 @@ const EditEmployerProfile: FC = () => {
                 name="companyOverview"
                 value={values.companyOverview}
                 onChange={handleChange}
-                className="bg-transparent border-[#AEADAD] h-[90px] pt-4 resize-none border-2 focus-within:border-orange-500 placeholder:text-white"
+                className="bg-transparent border-[#AEADAD] h-[90px] pt-4 resize-none border-2 focus-within:border-[#F5722E] placeholder:text-[#AEADAD]"
                 placeholder="Please provide a job description"
               />
               {/* <span className="flex right-0 italic text-[11px] absolute">
@@ -425,7 +452,7 @@ const EditEmployerProfile: FC = () => {
                 className={cn(
                   "block md:w-auto text-white text-[16px] h-8 py-0 rounded-sm font-normal px-8",
                   isValid && !isSubmitting
-                    ? "bg-orange-500 hover:bg-orange-600"
+                    ? "bg-[#F5722E] hover:bg-orange-600"
                     : "bg-[#AEADAD] hover:bg-[#AEADAD]",
                 )}
               >

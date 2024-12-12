@@ -140,8 +140,8 @@ const TagInputs: React.FC<TagInputProps> = ({
     <div ref={containerRef} className="relative w-full">
       <div 
         className={cn(
-          "bg-transparent border-2 border-[#AEADAD] rounded-md min-h-[56px] overflow-hidden",
-          "focus-within:border-orange-500",
+          "bg-transparent border-2 border-[#AEADAD] rounded-[10px] min-h-[56px] overflow-hidden",
+          "focus-within:border-[#F5722E]",
           "transition-all duration-200 ease-in-out",
           disabled && "opacity-50 cursor-not-allowed",
           className
@@ -180,7 +180,7 @@ const TagInputs: React.FC<TagInputProps> = ({
               onKeyDown={handleKeyDown}
               disabled={disabled || remainingTags === 0}
               placeholder={value.length === 0 ? placeholder : ""}
-              className="w-full h-7 py-0 mt-1.5 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent placeholder:text-white disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-full h-7 py-0 mt-1.5 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent placeholder:text-[#AEADAD] disabled:cursor-not-allowed disabled:opacity-50"
             />
           </div>
         </div>
@@ -203,7 +203,7 @@ const TagInputs: React.FC<TagInputProps> = ({
                   onMouseEnter={() => setFocusedIndex(index)}
                   className={cn(
                     "px-2 py-2 cursor-pointer transition-all ease-in-out duration-500",
-                    index === focusedIndex ? "bg-orange-500 text-white" : "hover:bg-orange-500 hover:text-white"
+                    index === focusedIndex ? "bg-[#F5722E] text-white" : "hover:bg-[#F5722E] hover:text-white"
                   )}
                 >
                   {option.label}

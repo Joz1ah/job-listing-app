@@ -173,19 +173,19 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
                 {/* Job Details */}
                 <div className="mb-4">
                   <div className="flex flex-wrap justify-between items-start gap-2">
-                    <h3 className="text-sm font-medium break-words">
+                    <h3 className="text-sm font-medium break-words text-[#263238] ">
                       {interview.position}
                     </h3>
-                    <span className="text-xs text-gray-500 font-light">
+                    <span className="text-xs text-[#717171] font-light">
                       Received {interview.receivedTime}
                     </span>
                   </div>
-                  <p className="text-sm text-black underline cursor-pointer break-words">
+                  <p className="text-sm text-[#263238] underline cursor-pointer break-words">
                     {interview.company}
                   </p>
                   <div className="flex items-center mt-1">
-                    <MapPin className="text-orange-500" size={12} />
-                    <p className="text-xs text-gray-600 break-words">
+                    <MapPin className="text-[#F5722E]" size={12} />
+                    <p className="text-xs text-[#263238]  break-words">
                       Based in {interview.location}
                     </p>
                   </div>
@@ -194,20 +194,20 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
                 {/* Time Details */}
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs min-w-[40px]">Date:</span>
+                    <span className="text-xs min-w-[40px] text-[#263238] ">Date:</span>
                     <span className="text-xs font-semibold px-2 py-0.5 rounded-sm bg-[#184E77] text-white min-w-[135px] text-center">
                       {interview.date}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs min-w-[40px]">Time:</span>
+                    <span className="text-xs min-w-[40px] text-[#263238] ">Time:</span>
                     <span className="text-xs font-semibold px-2 py-0.5 rounded-sm bg-[#168AAD] text-white min-w-[135px] text-center">
                       {interview.time}
                     </span>
                   </div>
                   <div className="mt-4 flex items-center gap-2">
                     <img src={gmeet} alt="Google Meet" className="h-4 w-4" />
-                    <span className="text-xs text-orange-500 font-light">
+                    <span className="text-xs text-[#F5722E] font-light">
                       via Google meet
                     </span>
                   </div>
@@ -229,7 +229,7 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
                           setFieldValue("reason", value)
                         }
                       >
-                        <SelectTrigger className="w-full border-2 rounded bg-transparent h-[56px] border-black">
+                        <SelectTrigger className="w-full border-2 rounded-[10px] bg-transparent h-[56px] border-black">
                           <SelectValue placeholder="Select A Reason" />
                         </SelectTrigger>
                         <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none max-h-[200px]">
@@ -257,7 +257,7 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
                     >
                       <div className="relative">
                         <div
-                          className="-full border-2 rounded bg-transparent h-[56px] px-3 flex items-center cursor-pointer border-black text-sm"
+                          className="-full border-2 rounded-[10px] bg-transparent h-[56px] px-3 flex items-center cursor-pointer border-black text-sm"
                           onClick={() => setIsDatePickerOpen(true)}
                         >
                           {values.interviewDate
@@ -291,7 +291,7 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
                           setFieldValue("interviewTime", value)
                         }
                       >
-                        <SelectTrigger className="w-full border-2 rounded bg-transparent h-[56px] border-black">
+                        <SelectTrigger className="w-full border-2 rounded-[10px] bg-transparent h-[56px] border-black">
                           <SelectValue placeholder="Select a Time" />
                         </SelectTrigger>
                         <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none max-h-[200px]">
@@ -315,14 +315,14 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
               <div className="p-6 mt-auto">
                 <div className="flex flex-wrap gap-3 justify-start">
                   {isLoading ? (
-                    <div className="flex items-center gap-2 text-orange-500">
+                    <div className="flex items-center gap-2 text-[#F5722E]">
                       <LoaderCircle className="w-5 h-5 animate-spin" />
                       <span className="text-sm font-medium">
                         Rescheduling interview...
                       </span>
                     </div>
                   ) : isRescheduled ? (
-                    <div className="flex items-center gap-2 text-green-600">
+                    <div className="flex items-center gap-2 text-[#4BAF66]">
                       <Check className="w-5 h-5" />
                       <span className="text-sm font-medium">
                         Your request to reschedule the interview is sent!
@@ -332,18 +332,18 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
                     <>
                       <Button
                         type="submit"
-                        className="text-xs font-semibold h-[32px] px-6 bg-[#FF6B35] hover:bg-[#ff855b] text-white"
+                        className="text-[13px] font-normal h-[32px] px-6 bg-[#FF6B35] hover:bg-[#ff855b] text-white"
                       >
                         Reschedule
                       </Button>
-                      <Button
+                      {/* <Button
                         type="button"
                         variant="outline"
                         onClick={() => setIsCalendarModalOpen(true)}
-                        className="border-2 text-xs font-semibold h-[32px] px-6 border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white"
+                        className="border-2 text-[13px] font-normal h-[32px] px-6 border-[#168AAD] text-[#168AAD] hover:bg-blue-500 hover:text-white"
                       >
                         View Calendar
-                      </Button>
+                      </Button> */}
                     </>
                   )}
                 </div>

@@ -16,7 +16,7 @@ const PerfectMatchEmptyState: React.FC<EmptyStateProps> = ({ onExploreClick }) =
     
     <div className="text-center max-w-md">
       <h3 className="text-[26px] font-normal text-white mb-8">
-        No <span className="text-orange-500 inline-flex items-center">Perfect Match <img src={sparkleIcon} alt="Sparkle" className="w-4 h-4 ml-1" /></span> just yet, but we're still on the lookout!
+        No <span className="text-[#F5722E] inline-flex items-center">Perfect Match <img src={sparkleIcon} alt="Sparkle" className="w-4 h-4 ml-1" /></span> just yet, but we're still on the lookout!
       </h3>
       
       <p className="text-white mb-6 text-[15px]">
@@ -26,7 +26,7 @@ const PerfectMatchEmptyState: React.FC<EmptyStateProps> = ({ onExploreClick }) =
       <div className="space-y-4">
         <NavLink to="/job-hunter/edit-application">
           <Button 
-            className="bg-orange-500 hover:bg-orange-600 text-white font-medium py-2 px-6 rounded-lg w-full max-w-xs"
+            className="bg-[#F5722E] hover:bg-orange-600 text-white text-[13px] font-normal rounded-sm w-[180px] h-[24px] max-w-xs p-0"
           >
             Update Application Card
           </Button>
@@ -35,7 +35,7 @@ const PerfectMatchEmptyState: React.FC<EmptyStateProps> = ({ onExploreClick }) =
         <Button 
           variant="link" 
           onClick={onExploreClick}
-          className="text-orange-500 hover:text-orange-400 underline font-medium w-full"
+          className="text-[#F5722E] hover:text-orange-400 underline font-light w-full"
         >
           Explore Other Opportunities
         </Button>
@@ -62,7 +62,7 @@ const OtherOpportunitiesEmptyState: React.FC = () => (
       <div className="space-y-4">
         <NavLink to="/job-hunter/edit-application">
           <Button 
-            className="bg-orange-500 hover:bg-orange-600 text-white font-medium py-2 px-6 rounded-lg w-full max-w-xs"
+            className="bg-[#F5722E] hover:bg-orange-600 text-white text-[13px] font-normal rounded-sm w-[180px] h-[24px] max-w-xs p-0"
           >
             Update Application Card
           </Button>

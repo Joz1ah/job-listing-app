@@ -25,7 +25,7 @@ const BillingSettings: FC = () => {
       </div>
 
       <div className="flex justify-end gap-2 mr-6">
-        <button className="px-3 py-1.5 rounded bg-gray-600/50 text-white text-sm hover:bg-gray-600/70 transition-colors">
+        <button className="px-3 py-1.5 rounded bg-[#979797] text-white text-sm hover:bg-[#979797]/70 transition-colors">
           Edit
         </button>
         <Tooltip content={editTooltip}>
@@ -61,7 +61,7 @@ const BillingSettings: FC = () => {
         </Tooltip>
       </div>
 
-      <button className="px-4 py-2 bg-orange-600 text-white rounded text-sm hover:bg-orange-700 transition-colors">
+      <button className="px-4 py-2 bg-[#F5722E] text-white rounded text-sm hover:bg-orange-600 transition-colors">
         Manage
       </button>
     </div>

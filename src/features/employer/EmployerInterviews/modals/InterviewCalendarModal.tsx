@@ -257,7 +257,7 @@ const InterviewCalendarModal: React.FC<InterviewCalendarModalProps> = ({
                               key={index}
                               className={`absolute left-0 right-0 px-2 py-1 mx-1 overflow-hidden shadow-sm hover:shadow rounded-sm border-l-2 flex flex-col gap-0.5 ${
                                 isPast
-                                  ? "bg-red-50 border-red-500"
+                                  ? "bg-red-50 border-[#E53835]"
                                   : "bg-orange-50 border-orange-500"
                               }`}
                               style={{
@@ -276,7 +276,7 @@ const InterviewCalendarModal: React.FC<InterviewCalendarModalProps> = ({
                                 </div>
                                 <div
                                   className={`text-[10px] underline truncate ${
-                                    isPast ? "text-red-500" : "text-gray-800"
+                                    isPast ? "text-[#E53835]" : "text-gray-800"
                                   } leading-tight`}
                                 >
                                   {meeting.position}

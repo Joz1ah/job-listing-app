@@ -30,7 +30,7 @@ const SkillsWithEllipsis: FC<SkillsWithEllipsisProps> = ({ skills }) => {
 
   return (
     <div className="w-full relative">
-      <span className="text-[13px] font-light block">Core Skills:</span>
+      <span className="text-[13px] font-light block text-[#263238]">Core Skills:</span>
       <div
         ref={skillsContainerRef}
         className="flex flex-wrap gap-1 max-h-[45px] overflow-hidden relative w-full"

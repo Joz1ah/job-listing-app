@@ -133,8 +133,8 @@ const Calendar: React.FC<CalendarProps> = ({
               className={cn(
                 'h-8 w-8 text-sm rounded-full flex flex-col items-center transition-colors duration-200 cursor-pointer',
                 {
-                  'bg-orange-500 text-white hover:bg-orange-600': isCurrentDateSelected,
-                  'ring-2 ring-orange-500 ring-offset-2': isCurrentDateToday && !isCurrentDateSelected,
+                  'bg-[#F5722E] text-white hover:bg-orange-600': isCurrentDateSelected,
+                  'ring-2 ring-[#F5722E] ring-offset-2': isCurrentDateToday && !isCurrentDateSelected,
                   'text-gray-100 hover:bg-gray-700 ring-offset-zinc-900': variant === 'default' && !isCurrentDateSelected,
                   'text-gray-900 hover:bg-gray-100 ring-offset-white': variant === 'secondary' && !isCurrentDateSelected,
                 }
@@ -142,7 +142,7 @@ const Calendar: React.FC<CalendarProps> = ({
             >
               <span className="flex items-center justify-center h-8">{dayNumber}</span>
               {hasScheduledMeetings && !isCurrentDateSelected && (
-                <div className="w-1 h-1 rounded-full bg-orange-500 -mt-1.5" />
+                <div className="w-1 h-1 rounded-full bg-[#F5722E] -mt-1.5" />
               )}
             </div>
           </div>

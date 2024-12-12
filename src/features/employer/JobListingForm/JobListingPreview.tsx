@@ -1,5 +1,5 @@
 import React from "react";
-import { MapPin, MoreVertical, Bookmark } from "lucide-react";
+import { MapPin, MoreVertical, Bookmark, X } from "lucide-react";
 import { Card, CardContent, CardFooter, CardHeader } from "components";
 import { Button } from "components";
 import sparkleIcon from "images/sparkle-icon.png";
@@ -19,7 +19,6 @@ const JobListingPreview: React.FC<JobListingPreviewProps> = ({
   onClose,
 }) => {
   if (!isOpen) return null;
-
 
   // Helper functions to get labels
   const getLabel = (
@@ -51,7 +50,7 @@ const JobListingPreview: React.FC<JobListingPreviewProps> = ({
         <span>This is how your</span>
         <div className="flex items-center mx-1">
           <img src={sparkleIcon} className="w-4 h-4 mr-1" alt="spark icon" />
-          <span className="text-orange-500">Perfect Match</span>
+          <span className="text-[#F5722E]">Perfect Match</span>
         </div>
         <span>application card will appear to your future Employers.</span>
       </div>
@@ -65,7 +64,7 @@ const JobListingPreview: React.FC<JobListingPreviewProps> = ({
                   Posted Just Now
                 </span>
               </div>
-              <Bookmark className="absolute text-orange-500 top-7 " size={26} />
+              <Bookmark className="absolute text-[#F5722E] top-7 " size={26} />
             </div>
 
             <div className="px-1">
@@ -148,6 +147,12 @@ const JobListingPreview: React.FC<JobListingPreviewProps> = ({
       </div>
 
       <Card className="bg-[#FFFFFF] w-[400px] min-h-[700px] relative">
+        <button
+          onClick={onClose}
+          className="absolute right-4 top-4 text-gray-500 hover:text-gray-700"
+        >
+          <X size={20} />
+        </button>
         <div className="p-6 space-y-2 ">
           {/* Title and Company */}
           <div>
@@ -157,7 +162,7 @@ const JobListingPreview: React.FC<JobListingPreviewProps> = ({
 
           {/* Location */}
           <div className="flex items-center gap-1 text-[13px]">
-            <MapPin size={14} className="text-orange-500" />
+            <MapPin size={14} className="text-[#F5722E]" />
             <span>Based in {formData.location}</span>
           </div>
 
@@ -181,7 +186,7 @@ const JobListingPreview: React.FC<JobListingPreviewProps> = ({
           {/* Experience Row */}
           <div className="flex items-center gap-1 text-[13px]">
             <span className="text-[#263238]">Experience:</span>
-            <span className="text-[12px] text-orange-500 font-light border border-orange-500 rounded-[4px] px-1.5">
+            <span className="text-[12px] text-[#F5722E] font-light border border-[#F5722E] rounded-[4px] px-1.5">
               {getLabel(formData.yearsOfExperience, "yearsOfExperience")}
             </span>
           </div>
@@ -214,7 +219,7 @@ const JobListingPreview: React.FC<JobListingPreviewProps> = ({
           {/* Education Row */}
           <div className="flex items-center gap-1 text-[13px]">
             <span className="text-[#263238]">Education:</span>
-            <span className="text-[12px] text-orange-500 font-light border border-orange-500 rounded-[4px] px-1.5">
+            <span className="text-[12px] text-[#F5722E] font-light border border-[#F5722E] rounded-[4px] px-1.5">
               {getLabel(formData.education, "education")}
             </span>
           </div>
@@ -290,17 +295,10 @@ const JobListingPreview: React.FC<JobListingPreviewProps> = ({
             />
           </div>
 
-          <CardFooter className="absolute bottom-0 left-0 right-0 flex justify-between gap-4 p-4 bg-transparent">
-            <Button
-              variant="outline"
-              onClick={onClose}
-              className="flex-1 border-gray-300 h-[27px] max-w-[133px]"
-            >
-              Keep Editing
-            </Button>
+          <CardFooter className="absolute bottom-0 left-0 right-0 flex justify-end p-4 bg-transparent">
             <Button
               onClick={onConfirm}
-              className="flex-1 bg-orange-500 text-white hover:bg-orange-600 h-[27px] w-[133px]"
+              className="bg-[#F5722E] text-white hover:bg-orange-600 h-[27px] w-[133px] p-0"
             >
               Go To Job Feed
             </Button>

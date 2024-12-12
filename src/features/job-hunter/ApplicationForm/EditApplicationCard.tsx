@@ -168,9 +168,9 @@ const EditApplicationCard: FC = () => {
               <ChevronLeft strokeWidth={4} className="h-6 w-6 ml-4" />
             </NavLink>
 
-            <h1 className="flex-1 text-center text-xl md:text-[32px] pt-6 font-normal text-orange-500">
+            <h1 className="flex-1 text-center text-xl md:text-[32px] pt-6 font-normal text-[#F5722E]">
               <span className="inline-flex items-center gap-2 justify-center">
-                Edit Your Application Card
+                Complete Your Application Card
               </span>
             </h1>
           </div>
@@ -192,7 +192,8 @@ const EditApplicationCard: FC = () => {
                   name="firstName"
                   value={values.firstName}
                   onChange={handleChange}
-                  className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
+                  placeholder="First Name"
+                  className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
                 />
               </InputField>
 
@@ -217,7 +218,7 @@ const EditApplicationCard: FC = () => {
                   name="mobileNumber"
                   value={values.mobileNumber}
                   onChange={handleChange}
-                  className="bg-transparent border-2 rounded-md border-[#AEADAD] h-[56px] focus-within:border-orange-500 transition-colors flex justify-between"
+                  className="bg-transparent border-2 rounded-md border-[#AEADAD] h-[56px] focus-within:border-[#F5722E] transition-colors flex justify-between"
                   defaultCountry="CA"
                 />
               </InputField>
@@ -232,7 +233,7 @@ const EditApplicationCard: FC = () => {
                   value={values.education}
                   onValueChange={(value) => setFieldValue("education", value)}
                 >
-                  <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500">
+                  <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
                     <SelectValue placeholder="Select your Education Level" />
                   </SelectTrigger>
                   <SelectContent className="bg-[#F5F5F7] items-center p-0 [&>*]:p-0 border-none rounded-none">
@@ -261,7 +262,7 @@ const EditApplicationCard: FC = () => {
                   value={values.salaryRange}
                   onValueChange={(value) => setFieldValue("salaryRange", value)}
                 >
-                  <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500">
+                  <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
                     <SelectValue
                       placeholder="Select Salary Range"
                       className=""
@@ -333,7 +334,8 @@ const EditApplicationCard: FC = () => {
                   name="lastName"
                   value={values.lastName}
                   onChange={handleChange}
-                  className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
+                  placeholder="Last Name"
+                  className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
                 />
               </InputField>
 
@@ -348,7 +350,7 @@ const EditApplicationCard: FC = () => {
                   value={values.languages || []}
                   onChange={(value) => setFieldValue("languages", value)}
                   className="min-h-[56px] pt-1 px-1"
-                  tagClassName="bg-orange-500"
+                  tagClassName="bg-[#F5722E]"
                   placeholder="Type and enter to add language"
                 />
               </InputField>
@@ -363,7 +365,7 @@ const EditApplicationCard: FC = () => {
                   value={values.country}
                   onValueChange={(value) => setFieldValue("country", value)}
                 >
-                  <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500">
+                  <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
                     <SelectValue placeholder="Select your Country of Residence" />
                   </SelectTrigger>
                   <SelectContent className="bg-[#F5F5F7] items-center p-0 [&>*]:p-0 border-none rounded-none">
@@ -392,7 +394,8 @@ const EditApplicationCard: FC = () => {
                   name="emailAddress"
                   value={values.emailAddress}
                   onChange={handleChange}
-                  className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 placeholder:text-white"
+                  placeholder="Email Address"
+                  className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
                 />
               </InputField>
 
@@ -422,7 +425,7 @@ const EditApplicationCard: FC = () => {
                     setFieldValue("yearsOfExperience", value)
                   }
                 >
-                  <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-orange-500 ">
+                  <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] ">
                     <SelectValue placeholder="Select Years of Experience" />
                   </SelectTrigger>
                   <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none">
@@ -472,7 +475,7 @@ const EditApplicationCard: FC = () => {
                 className={cn(
                   "block md:w-auto text-white text-[16px] h-8 py-0 rounded-sm font-normal px-8",
                   isValid
-                    ? "bg-orange-500 hover:bg-orange-600"
+                    ? "bg-[#F5722E] hover:bg-orange-600"
                     : "bg-[#AEADAD] hover:bg-[#AEADAD]",
                 )}
               >

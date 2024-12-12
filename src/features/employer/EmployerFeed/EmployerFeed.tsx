@@ -227,7 +227,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
             </span>
             <Button
               variant="link"
-              className="text-[20px] text-orange-500 font-semibold pl-2 underline pt-0"
+              className="text-[20px] text-[#F5722E] font-semibold pl-2 underline pt-0"
               onClick={handleClick}
             >
               other application cards
@@ -436,7 +436,7 @@ const OtherApplications: FC<selectedProps> = ({
             </span>
             <Button
               variant="link"
-              className="text-[20px] text-orange-500  font-semibold pl-2 underline pt-0"
+              className="text-[20px] text-[#F5722E]  font-semibold pl-2 underline pt-0"
               onClick={handleClick}
             >
               perfect matches
@@ -525,12 +525,12 @@ const EmployerFeed: FC<EmployerSectionProps> = () => {
           <div className="flex justify-center mb-8 md:mb-12">
             <button
               className={`font-semibold mr-6 pb-2 text-[17px] inline-flex items-center gap-2 transition-all duration-200 relative group
-              ${selectedTab === "perfectMatch" ? "text-orange-500" : "text-[#AEADAD] hover:text-orange-500"}`}
+              ${selectedTab === "perfectMatch" ? "text-[#F5722E]" : "text-[#AEADAD] hover:text-[#F5722E]"}`}
               onClick={() => handleTabChange("perfectMatch")}
               disabled={isLoading}
             >
               <div
-                className="absolute bottom-0 left-0 w-full h-0.5 bg-orange-500 transform origin-left transition-transform duration-200 ease-out"
+                className="absolute bottom-0 left-0 w-full h-0.5 bg-[#F5722E] transform origin-left transition-transform duration-200 ease-out"
                 style={{
                   transform:
                     selectedTab === "perfectMatch" ? "scaleX(1)" : "scaleX(0)",
@@ -550,12 +550,12 @@ const EmployerFeed: FC<EmployerSectionProps> = () => {
 
             <button
               className={`font-semibold pb-2 text-[17px] transition-all duration-200 relative
-              ${selectedTab === "otherApplications" ? "text-orange-500" : "text-[#AEADAD] hover:text-orange-500"}`}
+              ${selectedTab === "otherApplications" ? "text-[#F5722E]" : "text-[#AEADAD] hover:text-[#F5722E]"}`}
               onClick={() => handleTabChange("otherApplications")}
               disabled={isLoading}
             >
               <div
-                className="absolute bottom-0 right-0 w-full h-0.5 bg-orange-500 transform origin-right transition-transform duration-200 ease-out"
+                className="absolute bottom-0 right-0 w-full h-0.5 bg-[#F5722E] transform origin-right transition-transform duration-200 ease-out"
                 style={{
                   transform:
                     selectedTab === "otherApplications"

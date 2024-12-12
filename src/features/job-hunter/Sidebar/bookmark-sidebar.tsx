@@ -44,7 +44,7 @@ const BookmarkSidebar: FC<BookmarkSidebarProps> = ({
         {isFreeTrial ? (
           <Info className="w-7 h-7 fill-[#D6D6D6] text-[#212529]" />
         ) : (
-          <BadgeCheck className="w-7 h-7 fill-orange-500 text-[#212529]" />
+          <BadgeCheck className="w-7 h-7 fill-[#F5722E] text-[#212529]" />
         )}
       </h2>
       <p className="text-[17px] text-white mt-1">{subscriptionType}</p>
@@ -64,8 +64,8 @@ const BookmarkSidebar: FC<BookmarkSidebarProps> = ({
                 to={item.path}
                 className={`flex items-center transition-colors ${
                   location.pathname === item.path
-                    ? "text-orange-500"
-                    : "text-white hover:text-orange-500"
+                    ? "text-[#F5722E]"
+                    : "text-white hover:text-[#F5722E]"
                 }`}
               >
                 <div className="flex sm:hidden items-center justify-center">
@@ -86,7 +86,7 @@ const BookmarkSidebar: FC<BookmarkSidebarProps> = ({
         <div className="top-0 pt-6 px-8">
           {userInfo}
           <div className="space-y-1">
-            <span className="text-orange-500 text-[24px] font-normal mb-4 block">
+            <span className="text-[#F5722E] text-[24px] font-normal mb-4 block">
               Bookmarked Jobs
             </span>
             {bookmarkMenu.map((item) => (
@@ -95,8 +95,8 @@ const BookmarkSidebar: FC<BookmarkSidebarProps> = ({
                 to={item.path}
                 className={`flex items-center gap-3 px-3 py-2 text-[15px] ${
                   location.pathname === item.path
-                    ? "text-orange-500"
-                    : "text-white hover:text-orange-500"
+                    ? "text-[#F5722E]"
+                    : "text-white hover:text-[#F5722E]"
                 }`}
               >
                 {item.icon}

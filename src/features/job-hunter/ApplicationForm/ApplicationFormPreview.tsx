@@ -1,5 +1,5 @@
 import React from "react";
-import { MapPin, Mail, Phone, Calendar } from "lucide-react";
+import { MapPin, Mail, Phone, Calendar, X } from "lucide-react";
 import { Card, CardFooter } from "components";
 import { Button } from "components";
 import { selectOptions, FormData } from "mockData/app-form-options";
@@ -46,31 +46,37 @@ import { selectOptions, FormData } from "mockData/app-form-options";
         </div>
   
         <Card className="bg-white w-[400px] min-h-[700px] relative">
+        <button
+          onClick={onClose}
+          className="absolute right-4 top-4 text-gray-500 hover:text-gray-700"
+        >
+          <X size={20} />
+        </button>
           <div className="p-6 space-y-2">
             {/* Personal Information */}
             <div>
-              <h2 className="text-sm font-semibold">
+              <h2 className="text-sm font-semibold text-[#263238]">
                 {formData.firstName} {formData.lastName}
               </h2>
               <div className="flex items-center gap-2 text-[13px] mt-1">
-                <Calendar size={14} className="text-orange-500" />
-                <span>{formData.birthday}</span>
+                <Calendar size={14} className="text-[#F5722E]" />
+                <span className="text-[#263238]">{formData.birthday}</span>
               </div>
             </div>
   
             {/* Contact Information */}
             <div className="space-y-1">
               <div className="flex items-center gap-2 text-[13px]">
-                <Mail size={14} className="text-orange-500" />
-                <span>{formData.emailAddress}</span>
+                <Mail size={14} className="text-[#F5722E]" />
+                <span className="text-[#263238]">{formData.emailAddress}</span>
               </div>
               <div className="flex items-center gap-2 text-[13px]">
-                <Phone size={14} className="text-orange-500" />
-                <span>{formData.mobileNumber}</span>
+                <Phone size={14} className="text-[#F5722E]" />
+                <span className="text-[#263238]">{formData.mobileNumber}</span>
               </div>
               <div className="flex items-center gap-2 text-[13px]">
-                <MapPin size={14} className="text-orange-500" />
-                <span>Based in {getLabel(formData.country, "country")}</span>
+                <MapPin size={14} className="text-[#F5722E]" />
+                <span className="text-[#263238]">Based in {getLabel(formData.country, "country")}</span>
               </div>
             </div>
   
@@ -94,7 +100,7 @@ import { selectOptions, FormData } from "mockData/app-form-options";
             {/* Experience Row */}
             <div className="flex items-center gap-1 text-[13px]">
               <span className="text-[#263238]">Experience:</span>
-              <span className="text-[12px] text-orange-500 font-light border border-orange-500 rounded-[4px] px-1.5">
+              <span className="text-[12px] text-[#F5722E] font-light border border-[#F5722E] rounded-[4px] px-1.5">
                 {getLabel(formData.yearsOfExperience, "yearsOfExperience")}
               </span>
             </div>
@@ -125,7 +131,7 @@ import { selectOptions, FormData } from "mockData/app-form-options";
             {/* Education Row */}
             <div className="flex items-center gap-1 text-[13px]">
               <span className="text-[#263238]">Education:</span>
-              <span className="text-[12px] text-orange-500 font-light border border-orange-500 rounded-[4px] px-1.5">
+              <span className="text-[12px] text-[#F5722E] font-light border border-[#F5722E] rounded-[4px] px-1.5">
                 {getLabel(formData.education, "education")}
               </span>
             </div>
@@ -185,17 +191,10 @@ import { selectOptions, FormData } from "mockData/app-form-options";
               </div>
             </div>
   
-            <CardFooter className="absolute bottom-0 left-0 right-0 flex justify-between gap-4 p-4 bg-transparent">
-              <Button
-                variant="outline"
-                onClick={onClose}
-                className="flex-1 border-gray-300 h-[27px] max-w-[133px]"
-              >
-                Keep Editing
-              </Button>
+            <CardFooter className="absolute bottom-0 left-0 right-0 flex justify-end p-4 bg-transparent">
               <Button
                 onClick={onConfirm}
-                className="flex-1 bg-orange-500 text-white hover:bg-orange-600 h-[27px] w-[133px]"
+                className="bg-[#F5722E] text-white hover:bg-orange-600 h-[27px] min-w-[133px]"
               >
                 Submit Application
               </Button>

@@ -84,7 +84,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({ values, selectOptions }) =
         <span>This is how your</span>
         <div className="flex items-center mx-1">
           <img src={sparkleIcon} className="w-4 h-4 mr-1" alt="spark icon" />
-          <span className="text-orange-500">Perfect Match</span>
+          <span className="text-[#F5722E]">Perfect Match</span>
         </div>
         <span>application card will appear to your future Employers.</span>
       </div>
@@ -94,30 +94,30 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({ values, selectOptions }) =
       <Card className="bg-white border-none w-full md:w-[436px] h-auto md:h-[275px] hidden md:block">
       <CardHeader className="flex flex-col justify-between items-start pb-0">
           <div className="flex flex-row -mt-4 justify-between w-full">
-            <span className="text-[13px] text-orange-500 font-semibold">
+            <span className="text-[13px] text-[#F5722E] font-bold italic">
               ☆ NEW
             </span>
             <div className="flex flex-col items-end">
-              <span className="text-[11px] font-light text-gray-400 -mr-2">
+              <span className="text-[11px] font-light text-[#717171] -mr-2">
                 Applied today
               </span>
             </div>
           </div>
           <div className="w-full relative">
             <CardTitle
-              className={`text-sm ${hasName ? "font-semibold" : "font-semibold text-black"}`}
+              className={`text-sm ${hasName ? "font-semibold text-[#263238]" : "font-semibold text-[#263238]"}`}
             >
               {hasName
                 ? `${values.firstName} ${values.lastName}`
                 : "Your First and Last Name"}
             </CardTitle>
             <Bookmark
-              className="absolute top-0 right-[-8px] cursor-pointer text-orange-500"
+              className="absolute top-0 right-[-8px] cursor-pointer text-[#F5722E]"
               size={26}
             />
             <div className="flex flex-row items-center gap-1 h-[16px]">
-              <MapPin size={14} className="text-orange-500" />
-              <p className="text-[13px] font-light mt-0 text-black">
+              <MapPin size={14} className="text-[#F5722E]" />
+              <p className="text-[13px] font-light mt-0 text-[#263238]">
                 Based in{" "}
                 {hasCountry
                   ? getLabel("country", values.country)
@@ -130,7 +130,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({ values, selectOptions }) =
         <CardContent>
           {hasSkills ? (
             <div className="h-[60px] mb-3">
-              <p className="text-[13px] font-light text-black">Core Skills:</p>
+              <p className="text-[13px] font-light text-[#263238]">Core Skills:</p>
               <div className="flex flex-wrap gap-1 mt-1">
                 {[0, 1, 2, 3, 4].map((i) => {
                   const skill = formattedSkills[i];
@@ -149,7 +149,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({ values, selectOptions }) =
             </div>
           ) : (
             <div className="h-[70px] md:h-[60px] mb-3">
-              <p className="text-[13px] font-light text-black">Core Skills:</p>
+              <p className="text-[13px] font-light text-[#263238]">Core Skills:</p>
               <div className="flex flex-wrap gap-1 mt-1">
                 {[0, 1, 2, 3, 4].map((i) => (
                   <span
@@ -167,7 +167,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({ values, selectOptions }) =
 
           <div className="flex flex-col gap-1">
             <div className="flex gap-2">
-              <span className="text-[13px] font-light text-black">
+              <span className="text-[13px] font-light text-[#263238]">
                 Experience:
               </span>
               <span
@@ -180,7 +180,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({ values, selectOptions }) =
             </div>
 
             <div className="flex gap-2">
-              <span className="text-[13px] font-light text-black">
+              <span className="text-[13px] font-light text-[#263238]">
                 Looking for:
               </span>
               {hasEmploymentType ? (
@@ -200,7 +200,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({ values, selectOptions }) =
             </div>
 
             <div className="flex gap-2">
-              <span className="text-[13px] font-light text-black">
+              <span className="text-[13px] font-light text-[#263238]">
                 Salary Expectation:
               </span>
               {hasSalary ? (
@@ -215,7 +215,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({ values, selectOptions }) =
             </div>
 
             <div className="flex gap-2">
-              <span className="text-[13px] font-light text-black">
+              <span className="text-[13px] font-light text-[#263238]">
                 Language:
               </span>
               {hasLanguages ? (
@@ -260,7 +260,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({ values, selectOptions }) =
               </div>
               <div>
                 <Bookmark
-                  className="text-orange-500 cursor-pointer absolute right-1"
+                  className="text-[#F5722E] cursor-pointer absolute right-1"
                   size={24}
                 />
               </div>
@@ -272,7 +272,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({ values, selectOptions }) =
                   ? `${values.firstName} ${values.lastName}`
                   : "Your First and Last Name"}
               </CardTitle>
-              <p className="text-[13px] text-black flex items-center mb-2">
+              <p className="text-[13px] text-[#263238] flex items-center mb-2">
                 <MapPin size={12} className="mr-1 text-[#F5722E]" />
                 Based in{" "}
                 {hasCountry ? getLabel("country", values.country) : "(Country)"}
@@ -280,7 +280,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({ values, selectOptions }) =
 
               <div className="flex flex-col gap-2">
                 <div className="h-[60px]">
-                  <p className="text-[13px] font-light text-black">
+                  <p className="text-[13px] font-light text-[#263238]">
                     Core Skills:
                   </p>
                   <div className="flex flex-wrap gap-1 mt-1">
@@ -362,7 +362,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({ values, selectOptions }) =
         <CardContent className="p-0 mt-auto flex flex-col items-center relative">
           <Button
             variant="default"
-            className="text-[12px] font-semibold bg-orange-500"
+            className="text-[12px] font-semibold bg-[#F5722E]"
           >
             Schedule Interview
           </Button>

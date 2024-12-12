@@ -119,6 +119,11 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
     setFieldValue("interviewTime", time);
   };
 
+    // Button class based on validation state
+    const sendInviteButtonClass = isValid
+    ? "bg-[#F5722E] hover:bg-[#F5722E]/70 text-white text-[16px] font-normal"
+    : "bg-[#AEADAD] hover:bg-[#AEADAD]/70 text-white text-[16px] font-normal";
+
   return (
     <>
       <Dialog open={isOpen} onOpenChange={handleModalClose}>
@@ -205,7 +210,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                       >
                         <div className="relative">
                           <div
-                            className="w-full border-2 rounded bg-transparent h-[56px] px-3 flex items-center cursor-pointer border-black text-sm"
+                            className="w-full border-2 rounded-[10px] bg-transparent h-[56px] px-3 flex items-center cursor-pointer border-black text-sm"
                             onClick={() => setIsDatePickerOpen(true)}
                           >
                             {values.interviewDate
@@ -238,7 +243,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                           value={values.interviewTime}
                           onValueChange={handleTimeSelect}
                         >
-                          <SelectTrigger className="w-full border-2 rounded bg-transparent h-[56px] border-black">
+                          <SelectTrigger className="w-full border-2 rounded-[10px] bg-transparent h-[56px] border-black">
                             <SelectValue placeholder="Select a time" />
                           </SelectTrigger>
                           <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none max-h-[200px]">
@@ -270,11 +275,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                     <div className="flex gap-2">
                       <Button
                         type="submit"
-                        className={`${
-                          isValid
-                            ? "bg-[#F5722E] hover:bg-[#FF8B5E]"
-                            : "bg-gray-400 hover:bg-gray-500"
-                        } text-white text-[16px]`}
+                        className={sendInviteButtonClass}
                       >
                         Send Invite
                       </Button>

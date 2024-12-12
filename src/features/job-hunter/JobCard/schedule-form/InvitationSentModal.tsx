@@ -25,7 +25,7 @@ const InvitationSentModal: React.FC<InvitationSentModalProps> = ({
         </DialogHeader>
         <div className="h-[535px] flex flex-col items-center justify-center text-center px-6">
           <div className="flex flex-col items-center space-y-6">
-            <h2 className="text-2xl font-semibold text-orange-500">
+            <h2 className="text-2xl font-semibold text-[#F5722E]">
               Invitation sent!
             </h2>
             
@@ -39,7 +39,7 @@ const InvitationSentModal: React.FC<InvitationSentModalProps> = ({
                 onClick={onClose}
               >
                 <Button 
-                  className="w-full bg-orange-500 hover:bg-orange-600 text-white font-normal py-2"
+                  className="w-full bg-[#F5722E] hover:bg-orange-600 text-white font-normal py-2"
                 >
                   View Interviews
                 </Button>
@@ -51,7 +51,7 @@ const InvitationSentModal: React.FC<InvitationSentModalProps> = ({
               >
                 <Button 
                   variant="link" 
-                  className="text-orange-500 hover:text-orange-600"
+                  className="text-[#F5722E] hover:text-orange-600"
                 >
                   Go Back To Job Feed
                 </Button>

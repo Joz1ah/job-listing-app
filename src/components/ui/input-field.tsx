@@ -59,7 +59,7 @@ const labelWrapperVariants = cva(
 );
 
 const alertIconVariants = cva(
-  "fill-red-500",
+  "fill-[#E63946]",
   {
     variants: {
       variant: {
@@ -79,8 +79,8 @@ const tooltipIconVariants = cva(
   {
     variants: {
       variant: {
-        default: "text-[#2D3A41] fill-gray-400",
-        primary: "text-primary fill-gray-300",
+        default: "text-[#2D3A41] fill-[#AEADAD]",
+        primary: "text-primary fill-[#AEADAD]",
         secondary: "text-gray-600 fill-gray-400"
       },
       size: {
@@ -169,7 +169,7 @@ const InputField = React.forwardRef<HTMLDivElement, InputFieldProps>(
         </div>
         
         {showError && (
-          <div className="absolute right-1 text-xs md:text-sm italic text-red-500 mt-1">
+          <div className="absolute right-1 text-xs italic text-[#E63946] mt-1">
             {errorMessage}
           </div>
         )}

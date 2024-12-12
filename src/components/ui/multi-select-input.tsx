@@ -46,8 +46,8 @@ interface EmploymentTypeSelectProps {
           variant="outline"
           role="combobox"
           className={cn(
-            "w-full justify-between bg-transparent border-gray-300 h-14 font-normal hover:bg-transparent hover:text-white border-2",
-            "focus-within:border-orange-500 data-[state=open]:border-orange-500 px-3 relative",
+            "w-full justify-between bg-transparent rounded-[10px] border-gray-300 h-14 font-normal hover:bg-transparent hover:text-white border-2",
+            "focus-within:border-[#F5722E] data-[state=open]:border-[#F5722E] px-3 relative",
             error && "border-red-500",
             className
           )}
@@ -64,8 +64,8 @@ interface EmploymentTypeSelectProps {
                     className={cn(
                       "font-normal text-[13px] rounded-sm whitespace-nowrap overflow-hidden text-ellipsis max-w-[120px]",
                       {
-                        "bg-orange-600 text-white": val === "contract",
-                        "bg-orange-500 text-white": val !== "contract",
+                        "bg-[#BF532C] text-white": val === "part-time",
+                        "bg-[#F5722E] text-white": val !== "part-time",
                       }
                     )}
                   >
@@ -105,7 +105,7 @@ interface EmploymentTypeSelectProps {
                   className={cn(
                     "rounded-none justify-start px-2 h-[55px]",
                     "transition-all duration-500 ease-in-out",
-                    "data-[selected=true]:bg-orange-500 data-[selected=true]:text-white"
+                    "data-[selected=true]:bg-[#F5722E] data-[selected=true]:text-white"
                   )}
                 >
                   <div className="flex items-center">

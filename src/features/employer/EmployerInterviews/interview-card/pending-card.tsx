@@ -140,31 +140,31 @@ const PendingCard: FC<PendingCardProps> = ({
       <div className="flex flex-row -mt-4 justify-between w-full">
         <div className="h-[20px]">
           {interview.isNew && (
-            <span className="absolute text-[13px] text-orange-500 font-semibold italic">
+            <span className="absolute text-[13px] text-[#F5722E] font-bold italic">
               ★ NEW
             </span>
           )}
         </div>
         <div className="flex flex-col items-end relative">
-          <span className="text-[12px] font-light text-gray-400 -mr-2">
+          <span className="text-[12px] font-light text-[#717171] -mr-2">
             Received {interview.receivedTime}
           </span>
           <div className="absolute top-6 -right-2">
-            <Bookmark className="w-6 h-6 text-orange-500" />
+            <Bookmark className="w-6 h-6 text-[#F5722E]" />
           </div>
         </div>
       </div>
       <div className="w-full relative mt-2">
         <h3
-          className="text-[14px] font-semibold pr-8 cursor-pointer hover:underline"
+          className="text-[14px] font-semibold pr-8 cursor-pointer hover:underline text-[#263238]"
           onClick={() => setIsPreviewOpen(true)}
         >
           {interview.candidate}
         </h3>
-        <p className="text-[13px] text-black underline">{interview.position}</p>
+        <p className="text-[13px] text-[#263238] underline">{interview.position}</p>
         <div className="flex flex-row items-center">
-          <MapPin size={14} className="text-orange-500" />
-          <p className="text-[13px] font-light mt-0 ml-2">
+          <MapPin size={14} className="text-[#F5722E]" />
+          <p className="text-[13px] font-light mt-0 ml-2 text-[#263238]">
             Based in {interview.location}
           </p>
         </div>
@@ -180,20 +180,20 @@ const PendingCard: FC<PendingCardProps> = ({
       >
         <X size={18} />
       </button>
-      <span className="w-full flex justify-center text-[15px] text-orange-500 absolute left-1/2 -translate-x-1/2 top-0">
+      <span className="w-full flex justify-center text-[15px] text-[#F5722E] absolute left-1/2 -translate-x-1/2 top-0">
         You are accepting the interview invitation.
       </span>
       <div className="w-full mt-2">
         <div className="flex flex-row justify-between relative">
-          <h4 className="text-[14px] font-semibold pt-1">{interview.candidate}</h4>
-          <span className="text-[12px] font-light text-gray-400 -mr-2">
+          <h4 className="text-[14px] font-semibold pt-1 text-[#263238]">{interview.candidate}</h4>
+          <span className="text-[12px] font-light text-[#717171] -mr-2">
             Received {interview.receivedTime}
           </span>
         </div>
-        <p className="text-[13px] text-black underline">{interview.position}</p>
+        <p className="text-[13px] text-[#263238] underline">{interview.position}</p>
         <div className="flex flex-row items-center">
-          <MapPin size={14} className="text-orange-500" />
-          <p className="text-[13px] font-light mt-0 ml-2">
+          <MapPin size={14} className="text-[#F5722E]" />
+          <p className="text-[13px] font-light mt-0 ml-2 text-[#263238]">
             Based in {interview.location}
           </p>
         </div>
@@ -209,20 +209,20 @@ const PendingCard: FC<PendingCardProps> = ({
       >
         <X size={18} />
       </button>
-      <h3 className="w-full flex justify-center text-[15px] text-red-500 absolute left-1/2 -translate-x-1/2 top-0">
+      <h3 className="w-full flex justify-center text-[15px] text-[#E53835] absolute left-1/2 -translate-x-1/2 top-0">
         You are declining the interview below:
       </h3>
       <div className="w-full mt-2">
         <div className="flex flex-row justify-between relative">
-          <h4 className="text-[14px] font-semibold pt-1">{interview.candidate}</h4>
-          <span className="text-[12px] font-light text-gray-400 -mr-2">
+          <h4 className="text-[14px] font-semibold pt-1 text-[#263238]">{interview.candidate}</h4>
+          <span className="text-[12px] font-light text-[#717171] -mr-2">
             Received {interview.receivedTime}
           </span>
         </div>
-        <p className="text-[13px] text-black underline">{interview.position}</p>
+        <p className="text-[13px] text-[#263238] underline">{interview.position}</p>
         <div className="flex flex-row items-center">
-          <MapPin size={14} className="text-orange-500" />
-          <p className="text-[13px] font-light mt-0 ml-2">
+          <MapPin size={14} className="text-[#F5722E]" />
+          <p className="text-[13px] font-light mt-0 ml-2 text-[#263238]">
             Based in {interview.location}
           </p>
         </div>
@@ -233,20 +233,20 @@ const PendingCard: FC<PendingCardProps> = ({
   const StandardContent = () => (
     <div className="flex flex-col gap-1">
       <div className="flex items-center gap-1">
-        <span className="text-[13px] min-w-[40px]">Date:</span>
+        <span className="text-[13px] min-w-[40px] text-[#263238]">Date:</span>
         <span className="text-[13px] font-semibold px-1 rounded-[2px] bg-[#184E77] text-white w-[135px] h-[17px] flex justify-center">
           {interview.date}
         </span>
       </div>
       <div className="flex items-center gap-1">
-        <span className="text-[13px] min-w-[40px]">Time:</span>
+        <span className="text-[13px] min-w-[40px] text-[#263238]">Time:</span>
         <span className="text-[13px] font-semibold px-1 rounded-[2px] bg-[#168AAD] text-white w-[135px] h-[17px] flex justify-center">
           {interview.time}
         </span>
       </div>
       <div className="flex items-center gap-1">
         <img src={gmeet} alt="gmeet" />
-        <span className="text-xs text-orange-500 font-light">
+        <span className="text-xs text-[#F5722E] font-light">
           via Google meet
         </span>
       </div>
@@ -256,13 +256,13 @@ const PendingCard: FC<PendingCardProps> = ({
   const DecliningContent = () => (
     <div className="flex flex-col gap-1 pb-0">
       <div className="flex items-center gap-1">
-        <span className="text-[13px] min-w-[40px]">Date:</span>
+        <span className="text-[13px] min-w-[40px] text-[#263238]">Date:</span>
         <span className="text-[13px] font-semibold px-1 rounded-[2px] bg-[#184E77] text-white w-[135px] h-[17px] flex justify-center">
           {interview.date}
         </span>
       </div>
       <div className="flex items-center gap-1">
-        <span className="text-[13px] min-w-[40px]">Time:</span>
+        <span className="text-[13px] min-w-[40px] text-[#263238]">Time:</span>
         <span className="text-[13px] font-semibold px-1 rounded-[2px] bg-[#168AAD] text-white w-[135px] h-[17px] flex justify-center">
           {interview.time}
         </span>
@@ -282,7 +282,7 @@ const PendingCard: FC<PendingCardProps> = ({
             <SelectTrigger
               className={`w-full border-2 rounded bg-transparent h-[40px] ${
                 touched.reason && errors.reason
-                  ? "border-red-500"
+                  ? "border-[#E53835]"
                   : "border-black"
               }`}
             >
@@ -311,21 +311,21 @@ const PendingCard: FC<PendingCardProps> = ({
     <CardFooter className="flex flex-row justify-center pt-2 space-x-6">
       <Button
         onClick={() => setModalView("accept")}
-        className="text-[13px] font-semibold w-[100px] h-[32px] bg-orange-500 hover:bg-orange-600 text-white"
+        className="text-[13px] font-semibold w-[100px] h-[32px] bg-[#F5722E] hover:bg-orange-600 text-white"
       >
         Accept
       </Button>
       <Button
         onClick={() => setActiveModal("reschedule")}
         variant="outline"
-        className="text-[13px] font-semibold w-[100px] h-[32px] text-orange-500 border-2 border-orange-500 hover:bg-orange-500 hover:text-white"
+        className="text-[13px] font-semibold w-[100px] h-[32px] text-[#F5722E] border-2 border-[#F5722E] hover:bg-[#F5722E] hover:text-white"
       >
         Reschedule
       </Button>
       <Button
         onClick={() => setModalView("decline")}
         variant="outline"
-        className="text-[13px] font-semibold w-[100px] h-[32px] text-orange-500 border-2 border-orange-500 hover:bg-orange-500 hover:text-white"
+        className="text-[13px] font-semibold w-[100px] h-[32px] text-[#F5722E] border-2 border-[#F5722E] hover:bg-[#F5722E] hover:text-white"
       >
         Decline
       </Button>
@@ -335,12 +335,12 @@ const PendingCard: FC<PendingCardProps> = ({
   const AcceptingFooter = () => (
     <CardFooter className="flex flex-row justify-start pt-2 space-x-4">
       {isLoading ? (
-        <div className="flex items-center gap-2 pt-2 text-orange-500">
+        <div className="flex items-center gap-2 pt-2 text-[#F5722E]">
           <LoaderCircle className="w-5 h-5 animate-spin" />
           <span className="text-sm font-medium">Accepting interview...</span>
         </div>
       ) : isAccepted ? (
-        <div className="flex items-center gap-2 pt-2 text-green-600">
+        <div className="flex items-center gap-2 pt-2 text-[#4BAF66]">
           <Check className="w-5 h-5" />
           <span className="text-sm font-medium">
             You've successfully accepted the interview!
@@ -350,13 +350,13 @@ const PendingCard: FC<PendingCardProps> = ({
         <>
           <Button
             onClick={handleAccept}
-            className="text-[13px] font-semibold w-[100px] h-[32px] bg-orange-500 hover:bg-orange-600 text-white"
+            className="text-[13px] font-semibold w-[100px] h-[32px] bg-[#F5722E] hover:bg-orange-600 text-white"
           >
             Accept
           </Button>
           <Button
             variant="outline"
-            className="border-2 text-[13px] font-semibold w-[130px] h-[32px] border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white px-1"
+            className="border-2 text-[13px] font-semibold w-[130px] h-[32px] border-[#168AAD] text-[#168AAD] hover:bg-[#168AAD] hover:text-white px-1"
             onClick={() => window.open("https://calendar.google.com")}
           >
             View Calendar
@@ -369,12 +369,12 @@ const PendingCard: FC<PendingCardProps> = ({
   const DecliningFooter = () => (
     <CardFooter className="flex flex-row justify-start space-x-4">
       {isLoading ? (
-        <div className="flex items-center gap-2 text-red-500">
+        <div className="flex items-center gap-2 text-[#E53835]">
           <LoaderCircle className="w-5 h-5 animate-spin" />
           <span className="text-sm font-medium">Declining interview...</span>
         </div>
       ) : isDeclined ? (
-        <div className="flex items-center gap-2 text-red-600">
+        <div className="flex items-center gap-2 text-[#E53835]">
           <Check className="w-5 h-5" />
           <span className="text-sm font-medium">
             You've successfully declined this interview!
@@ -387,13 +387,13 @@ const PendingCard: FC<PendingCardProps> = ({
               e.preventDefault();
               handleSubmit();
             }}
-            className="text-[13px] font-semibold w-[100px] h-[32px] bg-red-500 hover:bg-red-600 text-white disabled:bg-gray-300 disabled:cursor-not-allowed"
+            className="text-[13px] font-semibold w-[100px] h-[32px] bg-[#E53835] hover:bg-[#E53835] text-white disabled:bg-gray-300 disabled:cursor-not-allowed"
           >
             Decline
           </Button>
           <Button
             variant="outline"
-            className="border-2 text-[13px] font-semibold w-[130px] h-[32px] border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white px-1"
+            className="border-2 text-[13px] font-semibold w-[130px] h-[32px] border-[#168AAD] text-[#168AAD] hover:bg-[#168AAD] hover:text-white px-1"
             onClick={() => window.open("https://calendar.google.com")}
           >
             View Calendar

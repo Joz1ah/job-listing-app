@@ -19,8 +19,8 @@ const SelectTrigger = React.forwardRef<
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
-      "flex h-10 w-full items-center justify-between rounded-md bg-transparent px-3 py-2 text-sm placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
-      "border border-gray-300 focus:outline-none data-[state=open]:border-orange-500 data-[state=open]:border-2",
+      "flex h-10 w-full items-center justify-between rounded-[10px] bg-transparent px-3 py-2 text-sm placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
+      "border border-gray-300 focus:outline-none data-[state=open]:border-[#F5722E] data-[state=open]:border-2",
       "[&>[data-icon]]:transition-transform [&>[data-icon]]:duration-200",
       "[&[data-state=open]>[data-icon]]:rotate-180",
       className
@@ -124,7 +124,7 @@ const SelectItem = React.forwardRef<
       "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none",
       "transition-colors duration-300",
       "hover:bg-[#D35400] hover:text-white",
-      "data-[state=checked]:bg-orange-500 data-[state=checked]:text-white data-[state=checked]:font-bold",
+      "data-[state=checked]:bg-[#F5722E] data-[state=checked]:text-white data-[state=checked]:font-bold",
       "data-[state=checked]:hover:bg-[#D35400]",
       className
     )}

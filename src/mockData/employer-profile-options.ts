@@ -5,6 +5,7 @@ interface SelectOption {
   
   interface SelectOptions {
     country: SelectOption[];
+    industry: SelectOption[];
   }
 
 export const selectOptions: SelectOptions = {
@@ -22,4 +23,21 @@ export const selectOptions: SelectOptions = {
       { value: "ph", label: "Philippines" },
       { value: "cn", label: "China" },
     ],
+    industry: [
+      { value: "accounting-finance", label: "Accounting and Finance" },
+      { value: "architecture-interior-design", label: "Architecture and Interior Design" },
+      { value: "automotive-engineering", label: "Automotive and Engineering" },
+      { value: "blockchain-cryptocurrency", label: "Blockchain and Cryptocurrency" },
+      { value: "compliance-regulatory", label: "Compliance and Regulatory Affairs" },
+      { value: "consulting", label: "Consulting" },
+      { value: "creative-arts", label: "Creative Arts" },
+      { value: "customer-service-support", label: "Customer Service and Support" },
+      { value: "data-entry-admin", label: "Data Entry and Administrative Work" },
+      { value: "ecommerce", label: "E-Commerce" },
+      { value: "education-tutoring", label: "Education and Tutoring" },
+      { value: "executive-roles", label: "Executive Roles" },
+      { value: "family-child-services", label: "Family and Child Services" },
+      { value: "travel", label: "Travel" },
+      { value: "web-software-development", label: "Web/Software Development" },
+    ]
   };
