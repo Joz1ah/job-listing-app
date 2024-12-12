@@ -1,18 +1,14 @@
 import { RouteObject, Navigate } from 'react-router-dom'
 import { lazy, Suspense, ComponentType } from 'react'
 import { ROUTE_CONSTANTS } from 'constants/routeConstants'
+import { RouteLoader } from './RouterLoader'
 
-const LoadingFallback = () => (
-  <div className="flex items-center justify-center min-h-screen">
-    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
-  </div>
-);
 
 // Common page imports
 const Home = lazy(() => import('pages').then(module => ({ default: module.Home })))
 const Fetch = lazy(() => import('pages').then(module => ({ default: module.Fetch })))
 const About = lazy(() => import('pages').then(module => ({ default: module.About })))
-const NotFound = lazy(() => import('pages').then(module => ({ default: module.NotFoundPage })))
+//const NotFound = lazy(() => import('pages').then(module => ({ default: module.NotFoundPage })))
 const EmployerFeedLayout = lazy(() => import('pages').then(module => ({ default: module.EmployerFeedLayout })))
 const JobHunterFeedLayout = lazy(() => import('pages').then(module => ({ default: module.JobHunterFeedLayout })))
 const CreateAppCard = lazy(() => import('pages').then(module => ({ default: module.CreateAppCard })))
@@ -89,7 +85,7 @@ interface LazyComponentProps {
 }
 
 const LazyComponent = ({ component: Component, ...props }: LazyComponentProps) => (
-  <Suspense fallback={<LoadingFallback />}>
+  <Suspense>
     <Component {...props} />
   </Suspense>
 );
@@ -370,7 +366,7 @@ const routes: RouteObject[] = [
   },
   {
     path: '*',
-    element: <LazyComponent component={NotFound} />
+    element: <RouteLoader />
   },
   {
     path: 'sw.js',
