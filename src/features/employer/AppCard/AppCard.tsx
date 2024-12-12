@@ -104,7 +104,7 @@ const AppCard: FC<AppCardProps> = ({ match, isFreeTrial = false }) => {
     <>
       <Card
         className={`bg-[#FFFFFF] border-none w-full max-w-[436px] h-[275px] relative transition-shadow duration-200 ${
-          isFreeTrial ? "cursor-not-allowed" : "cursor-pointer hover:shadow-lg"
+          isFreeTrial ? "cursor-default" : "cursor-pointer hover:shadow-lg"
         }`}
         onClick={handleCardClick}
       >
@@ -177,7 +177,7 @@ const AppCard: FC<AppCardProps> = ({ match, isFreeTrial = false }) => {
 
         <CardFooter className="absolute bottom-0 right-0 flex flex-row justify-end items-center space-x-1 p-2">
           <Button
-            className="text-[10px] md:text-[12px] font-semibold px-0 w-[133px] h-[27px] bg-[#F5722E]"
+            className="text-[10px] md:text-[12px] font-semibold px-0 w-[133px] h-[27px] bg-[#F5722E] hover:bg-[#F5722E]/90"
             onClick={handleScheduleInterview}
           >
             Schedule Interview

@@ -60,8 +60,8 @@ const App: FC = (): ReactElement => {
   return (
     <ErrorBoundary>
       <TrialProviders 
-      employerInitialStatus={false}
-      jobHunterInitialStatus={false}
+      employerInitialStatus={true}
+      jobHunterInitialStatus={true}
       >
       <div
         /* className={cn(

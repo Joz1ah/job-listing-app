@@ -57,8 +57,8 @@ const validationSchema = Yup.object().shape({
   lastName: Yup.string().required("This field is required"),
   birthday: Yup.string()
     .matches(
-        /^(January|February|March|April|May|June|July|August|September|October|November|December)\s(3[01]|[12][0-9]|[1-9])$/,
-        "Day is required"
+      /^(January|February|March|April|May|June|July|August|September|October|November|December)\s(3[01]|[12][0-9]|[1-9])$/,
+      "Day is required",
     )
     .required("Birthday is required"),
   emailAddress: Yup.string()
@@ -99,16 +99,8 @@ const LoadingOverlay = () => (
 
 const EditApplicationCard: FC = () => {
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPreview, setShowPreview] = useState<boolean>(false);
-
-  const handlePreviewConfirm = (): void => {
-    setShowPreview(false);
-    setIsLoading(true);
-    setTimeout(() => {
-      navigate("/job-hunter/feed");
-    }, 1500);
-  };
 
   const {
     values,
@@ -129,7 +121,11 @@ const EditApplicationCard: FC = () => {
       salaryRange: "",
       yearsOfExperience: "",
       coreSkills: ["React", "JavaScript", "CSS", "HTML", "Git"],
-      interpersonalSkills: ["Leadership", "Team Collaboration", "Problem Solving"],
+      interpersonalSkills: [
+        "Leadership",
+        "Team Collaboration",
+        "Problem Solving",
+      ],
       education: "",
       languages: ["English"],
       country: "",
@@ -158,11 +154,19 @@ const EditApplicationCard: FC = () => {
         isOpen={showPreview}
         onClose={() => setShowPreview(false)}
         formData={values}
-        onConfirm={handlePreviewConfirm}
+        onConfirm={() => {
+          setShowPreview(false);
+          setIsSubmitting(true);
+          // Your existing submission logic here
+          setTimeout(() => {
+            navigate("/employer/feed");
+          }, 1500);
+        }}
       />
-      {isLoading && <LoadingOverlay />}
-      <div className="flex flex-col xl:flex-row gap-8 px-4 md:px-8 lg:px-12 py-6">
-        <div className="w-full xl:w-[800px] min-h-[960px] bg-[#242625] md:bg-[#2D3A41] text-white">
+      {isSubmitting && <LoadingOverlay />}
+      
+      <div className="flex flex-col xl:flex-row gap-8 pt-6">
+        <div className="w-full md:w-[800px] min-h-[960px] bg-[#242625] md:bg-[#2D3A41] text-white">
           <div className="flex items-center relative w-full mb-6 md:mb-10">
             <NavLink to="/job-hunter/feed" className="absolute left-4 top-6">
               <ChevronLeft strokeWidth={4} className="h-6 w-6 ml-4" />
@@ -170,7 +174,7 @@ const EditApplicationCard: FC = () => {
 
             <h1 className="flex-1 text-center text-xl md:text-[32px] pt-6 font-normal text-[#F5722E]">
               <span className="inline-flex items-center gap-2 justify-center">
-                Complete Your Application Card
+                Edit Your Application Card
               </span>
             </h1>
           </div>
@@ -485,9 +489,7 @@ const EditApplicationCard: FC = () => {
           </form>
         </div>
         <div className="w-auto flex justify-center">
-          <div className="scale-[0.85] sm:scale-100 origin-center transition-transform duration-300">
-            <AppCardPreview values={values} selectOptions={selectOptions} />
-          </div>
+          <AppCardPreview values={values} selectOptions={selectOptions} />
         </div>
       </div>
     </>

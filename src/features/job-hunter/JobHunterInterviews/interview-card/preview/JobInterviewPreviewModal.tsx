@@ -25,33 +25,33 @@ const JobInterviewPreviewModal: FC<JobInterviewPreviewModalProps> = ({
                 {/* Name */}
                 <div className="flex flex-col items-start">
                   <DialogTitle className=" mb-1">
-                    <h2 className="text-xl font-semibold text-black">
+                    <h2 className="text-xl font-medium text-[#263238]">
                       {interview.position}
                     </h2>
-                    <p className="text-lg text-black font-normal underline">
+                    <p className="text-lg text-[#263238] font-normal underline">
                       {interview.company}
                     </p>
                   </DialogTitle>
                 </div>
 
                 {/* Location */}
-                <div className="flex items-center gap-2 text-black">
+                <div className="flex items-center gap-2 text-[#263238]">
                   <MapPin className="h-4 w-4 text-[#F5722E]" />
-                  <span className="text-base">
+                  <span className="text-[17px] text-[#263238]">
                     Based in {interview.location}
                   </span>
                 </div>
 
                 {/* Core Skills */}
                 <div className="flex flex-col gap-2">
-                  <h4 className="text-base font-medium">Core Skills:</h4>
+                  <h4 className="text-[17px] font-normal text-[#263238]">Core Skills:</h4>
                   <div className="flex flex-wrap gap-2">
                     {interview.coreSkills?.map((skill, index) => (
                       <span
                         key={skill}
                         className={`${
                           index % 2 === 0 ? "bg-[#184E77]" : "bg-[#168AAD]"
-                        } text-white px-3 py-1 text-sm rounded`}
+                        } text-white px-2 text-[17px] rounded font-medium`}
                       >
                         {skill}
                       </span>
@@ -62,8 +62,8 @@ const JobInterviewPreviewModal: FC<JobInterviewPreviewModalProps> = ({
                 {/* Experience */}
                 {interview.experience && (
                   <div className="flex items-center gap-2">
-                    <h4 className="text-base font-medium">Experience:</h4>
-                    <span className="text-[#F5722E] border border-[#F5722E] px-2 py-0.5 rounded-sm">
+                    <h4 className="text-[17px] font-normal text-[#263238]">Experience:</h4>
+                    <span className="text-[#F5722E] border border-[#F5722E] px-2 rounded-sm">
                       {interview.experience}
                     </span>
                   </div>
@@ -72,14 +72,14 @@ const JobInterviewPreviewModal: FC<JobInterviewPreviewModalProps> = ({
                 {/* Employment Preference */}
                 {interview.employmentPreference && (
                   <div className="flex items-center gap-2">
-                    <h4 className="text-base font-medium">
+                    <h4 className="text-[17px] font-normal text-[#263238]">
                       Employment Preference:
                     </h4>
                     <div className="flex gap-2">
                       {interview.employmentPreference.map((pref) => (
                         <span
                           key={pref}
-                          className="bg-[#F5722E] text-white px-2 py-0.5 rounded-sm"
+                          className="bg-[#F5722E] text-white px-2 rounded-sm"
                         >
                           {pref}
                         </span>
@@ -91,10 +91,10 @@ const JobInterviewPreviewModal: FC<JobInterviewPreviewModalProps> = ({
                 {/* Salary Expectation */}
                 {interview.salaryExpectation && (
                   <div className="flex items-center gap-2">
-                    <h4 className="text-base font-medium">
+                    <h4 className="text-[17px] font-normal text-[#263238]">
                       Salary Expectation:
                     </h4>
-                    <span className="text-[#F5722E] border border-[#F5722E] px-2 py-0.5 rounded-sm">
+                    <span className="bg-[#8C4227] text-white px-2 rounded-sm">
                       {interview.salaryExpectation}
                     </span>
                   </div>
@@ -103,12 +103,12 @@ const JobInterviewPreviewModal: FC<JobInterviewPreviewModalProps> = ({
                 {/* Language */}
                 {interview.languages && (
                   <div className="flex items-center gap-2">
-                    <h4 className="text-base font-medium">Language:</h4>
+                    <h4 className="text-[17px] font-normal text-[#263238]">Language:</h4>
                     <div className="flex gap-2">
                       {interview.languages.map((lang) => (
                         <span
                           key={lang}
-                          className="text-[#F5722E] border border-[#F5722E] px-2 py-0.5 rounded-sm"
+                          className="text-[#F5722E] border border-[#F5722E] px-2 rounded-sm"
                         >
                           {lang}
                         </span>
@@ -120,8 +120,8 @@ const JobInterviewPreviewModal: FC<JobInterviewPreviewModalProps> = ({
                 {/* Education */}
                 {interview.education && (
                   <div className="flex items-center gap-2">
-                    <h4 className="text-base font-medium">Education:</h4>
-                    <span className="text-[#F5722E] border border-[#F5722E] px-2 py-0.5 rounded-sm">
+                    <h4 className="text-[17px] font-normal text-[#263238]">Education:</h4>
+                    <span className="text-[#F5722E] border border-[#F5722E] px-2 rounded-sm">
                       {interview.education}
                     </span>
                   </div>
@@ -130,8 +130,8 @@ const JobInterviewPreviewModal: FC<JobInterviewPreviewModalProps> = ({
                 {/* Certificate */}
                 {interview.certificate && (
                   <div className="flex items-center gap-2">
-                    <h4 className="text-base font-medium">Certificate:</h4>
-                    <span className="text-[#F5722E] border border-[#F5722E] px-2 py-0.5 rounded-sm">
+                    <h4 className="text-[17px] font-normal text-[#263238]">Certificate:</h4>
+                    <span className="bg-[#F5722E] text-white px-2 rounded-sm">
                       {interview.certificate}
                     </span>
                   </div>
@@ -140,7 +140,7 @@ const JobInterviewPreviewModal: FC<JobInterviewPreviewModalProps> = ({
                 {/* Interpersonal Skills */}
                 {interview.interpersonalSkills && (
                   <div className="flex flex-col gap-2">
-                    <h4 className="text-base font-medium">
+                    <h4 className="text-[17px] font-normal text-[#263238]">
                       Interpersonal Skills:
                     </h4>
                     <div className="flex flex-wrap gap-2">
@@ -149,7 +149,7 @@ const JobInterviewPreviewModal: FC<JobInterviewPreviewModalProps> = ({
                           key={skill}
                           className={`${
                             index % 2 === 0 ? "bg-[#184E77]" : "bg-[#168AAD]"
-                          } text-white px-3 py-1 text-sm rounded`}
+                          } text-white px-2 text-[17px] rounded font-medium`}
                         >
                           {skill}
                         </span>
@@ -161,7 +161,7 @@ const JobInterviewPreviewModal: FC<JobInterviewPreviewModalProps> = ({
                 {/* Job Description */}
                 {interview.description && (
                   <div className="flex flex-col gap-2">
-                    <h4 className="text-base font-medium">Job Description:</h4>
+                    <h4 className="text-[17px] font-normal text-[#263238]">Job Description:</h4>
                     <p className="text-sm text-gray-700 whitespace-pre-wrap border border-gray-200 rounded-md p-4">
                       {interview.description}
                     </p>

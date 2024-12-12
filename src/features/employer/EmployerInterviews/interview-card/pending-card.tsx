@@ -280,11 +280,7 @@ const PendingCard: FC<PendingCardProps> = ({
             onValueChange={(value) => setFieldValue("reason", value)}
           >
             <SelectTrigger
-              className={`w-full border-2 rounded bg-transparent h-[40px] ${
-                touched.reason && errors.reason
-                  ? "border-[#E53835]"
-                  : "border-black"
-              }`}
+              className="w-full border-2 rounded-[10px] bg-transparent h-[40px] border-[#263238]"
             >
               <SelectValue placeholder="Select A Reason" />
             </SelectTrigger>
@@ -354,13 +350,13 @@ const PendingCard: FC<PendingCardProps> = ({
           >
             Accept
           </Button>
-          <Button
+          {/* <Button
             variant="outline"
             className="border-2 text-[13px] font-semibold w-[130px] h-[32px] border-[#168AAD] text-[#168AAD] hover:bg-[#168AAD] hover:text-white px-1"
             onClick={() => window.open("https://calendar.google.com")}
           >
             View Calendar
-          </Button>
+          </Button> */}
         </>
       )}
     </CardFooter>
@@ -391,13 +387,13 @@ const PendingCard: FC<PendingCardProps> = ({
           >
             Decline
           </Button>
-          <Button
+          {/* <Button
             variant="outline"
             className="border-2 text-[13px] font-semibold w-[130px] h-[32px] border-[#168AAD] text-[#168AAD] hover:bg-[#168AAD] hover:text-white px-1"
             onClick={() => window.open("https://calendar.google.com")}
           >
             View Calendar
-          </Button>
+          </Button> */}
         </>
       )}
     </CardFooter>

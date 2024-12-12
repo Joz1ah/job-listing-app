@@ -12,7 +12,6 @@ const AccountSettingsJobHunter: FC = () => {
         <div className="flex flex-col lg:flex-row w-full pt-8">
           <SettingsSidebar
             userName="John Doe"
-            subscriptionType="Free Trial"
             userType="job-hunter"
             isFreeTrial={isFreeTrial}
             className="w-[395px]"

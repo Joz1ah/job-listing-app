@@ -12,7 +12,6 @@ const ReportsAnalytics: FC = () => {
         <div className="flex flex-col lg:flex-row w-full pt-8">
           <ReportsAnalyticsSidebar
             userName="ABC Incorporated"
-            subscriptionType="Monthly Subscriber"
             isFreeTrial={isFreeTrial}
             className="w-[395px]"
           />

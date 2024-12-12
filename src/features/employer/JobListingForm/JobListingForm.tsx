@@ -300,7 +300,7 @@ const JobListingForm: FC = () => {
               touched={touched.priorityIndicator}
               showIcon={true}
               tooltipContent={
-                <div className="flex flex-wrap items-center justify-start text-[9px]">
+                <div className="flex flex-wrap items-center justify-start">
                   <span>This will sort your</span>
                   <div className="flex items-center">
                     <img

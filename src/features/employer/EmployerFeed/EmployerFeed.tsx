@@ -6,7 +6,11 @@ import { AppCardSkeleton, BookmarkLimitHandler } from "components";
 import { AppCard } from "features/employer";
 import employerAds from "images/employer-ads.svg?url";
 import employerPopAds from "images/popup-employer.svg?url";
-import { PerfectMatchEmptyState, OtherApplicationEmptyState } from "features/employer";
+import {
+  PerfectMatchEmptyState,
+  OtherApplicationEmptyState,
+} from "features/employer";
+import { AdDialogWrapper } from "components";
 
 import { useEmployerContext } from "components";
 
@@ -118,7 +122,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
       setLoading(false);
       return;
     }
-  
+
     const initialItems = perfectMatch.slice(0, isFreeTrial ? 5 : 6);
     if (isFreeTrial && initialItems.length >= 3) {
       setDisplayedItems([
@@ -194,16 +198,11 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
     <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 xl:gap-5 justify-items-center w-full md:min-w-[436px] xl:w-[900px] mx-auto px-0">
       {displayedItems.map((item, index) =>
         "isAd" in item ? (
-          <div
+          <AdDialogWrapper
             key={`ad-${index}`}
-            className="bg-white border-none h-[275px] w-full max-w-[436px] rounded-lg overflow-hidden"
-          >
-            <img
-              src={item.image}
-              alt="Job Hunter Ad"
-              className="w-full h-[275px] object-cover"
-            />
-          </div>
+            adImage={item.image}
+            popupImage={employerPopAds}
+          />
         ) : (
           <AppCard key={index} match={item} isFreeTrial={isFreeTrial} />
         ),
@@ -338,7 +337,7 @@ const OtherApplications: FC<selectedProps> = ({
       setLoading(false);
       return;
     }
-  
+
     const initialItems = others.slice(0, isFreeTrial ? 5 : 6);
     if (isFreeTrial && initialItems.length >= 3) {
       setDisplayedItems([
@@ -403,16 +402,11 @@ const OtherApplications: FC<selectedProps> = ({
     <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 xl:gap-5 justify-items-center w-full md:min-w-[436px] xl:w-[900px] mx-auto px-0">
       {displayedItems.map((item, index) =>
         "isAd" in item ? (
-          <div
+          <AdDialogWrapper
             key={`ad-${index}`}
-            className="bg-white border-none h-[275px] w-full max-w-[436px] rounded-lg overflow-hidden"
-          >
-            <img
-              src={item.image}
-              alt="Job Hunter Ad"
-              className="w-full h-[275px] object-cover"
-            />
-          </div>
+            adImage={item.image}
+            popupImage={employerPopAds}
+          />
         ) : (
           <AppCard key={index} match={item} isFreeTrial={isFreeTrial} />
         ),
@@ -490,15 +484,20 @@ const EmployerFeed: FC<EmployerSectionProps> = () => {
 
   const LoadingGrid = () => {
     // Calculate number of skeleton cards based on actual data
-    const dataLength = selectedTab === "perfectMatch" 
-      ? Math.min(perfectMatch.length, isFreeTrial ? 5 : 6)
-      : Math.min(others.length, isFreeTrial ? 5 : 6);
+    const dataLength =
+      selectedTab === "perfectMatch"
+        ? Math.min(perfectMatch.length, isFreeTrial ? 5 : 6)
+        : Math.min(others.length, isFreeTrial ? 5 : 6);
 
     // If there's no data, don't show loading state
     if (dataLength === 0) {
-      return selectedTab === "perfectMatch" 
-        ? <PerfectMatchEmptyState onExploreClick={() => handleTabChange("otherApplications")} />
-        : <OtherApplicationEmptyState />;
+      return selectedTab === "perfectMatch" ? (
+        <PerfectMatchEmptyState
+          onExploreClick={() => handleTabChange("otherApplications")}
+        />
+      ) : (
+        <OtherApplicationEmptyState />
+      );
     }
 
     return (
@@ -563,7 +562,7 @@ const EmployerFeed: FC<EmployerSectionProps> = () => {
                       : "scaleX(0)",
                 }}
               />
-              OTHER OPPORTUNITIES
+              OTHER APPLICATION CARDS
             </button>
           </div>
 

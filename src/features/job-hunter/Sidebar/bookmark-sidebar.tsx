@@ -1,6 +1,8 @@
 import { FC } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Bookmark, Send, Info, BadgeCheck } from "lucide-react";
+import { Bookmark, Send, Info } from "lucide-react";
+import verifiedIcon from 'images/verified.svg?url'
+import userCheck from 'images/user-check.svg?url'
 
 interface MenuItem {
   icon: JSX.Element;
@@ -10,14 +12,12 @@ interface MenuItem {
 
 interface BookmarkSidebarProps {
   userName: string;
-  subscriptionType: string;
   isFreeTrial: boolean;
   className?: string;
 }
 
 const BookmarkSidebar: FC<BookmarkSidebarProps> = ({
   userName,
-  subscriptionType,
   isFreeTrial,
   className = "",
 }) => {
@@ -44,10 +44,21 @@ const BookmarkSidebar: FC<BookmarkSidebarProps> = ({
         {isFreeTrial ? (
           <Info className="w-7 h-7 fill-[#D6D6D6] text-[#212529]" />
         ) : (
-          <BadgeCheck className="w-7 h-7 fill-[#F5722E] text-[#212529]" />
+          <img src={verifiedIcon} className="w-7 h-7" />
         )}
       </h2>
-      <p className="text-[17px] text-white mt-1">{subscriptionType}</p>
+      <p className="text-[17px] text-white mt-1 flex items-center gap-2">
+        {isFreeTrial ? (
+          <>
+            <span>Free Trial</span>
+          </>
+        ) : (
+          <>
+            <img src={userCheck} className="w-6 h-6 fill-orange-500 text-orange-500" />
+            <span>Monthly Subscriber</span>
+          </>
+        )}
+      </p>
     </div>
   );
 

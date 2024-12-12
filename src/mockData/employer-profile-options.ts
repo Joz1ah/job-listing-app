@@ -8,6 +8,26 @@ interface SelectOption {
     industry: SelectOption[];
   }
 
+  export interface FormData {
+    businessName: string;
+    firstName: string;
+    lastName: string;
+    position: string;
+    industry: string;
+    emailAddress: string;
+    mobileNumber: string;
+    companyWebsite: string;
+    yearFounded: string;
+    unitAndBldg: string;
+    buildingName: string;
+    streetAddress: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+    companyOverview: string;
+  }
+
 export const selectOptions: SelectOptions = {
     country: [
       { value: "us", label: "United States" },

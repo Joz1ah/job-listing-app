@@ -3,7 +3,11 @@ import sparkeIcon from "images/sparkle-icon.png";
 import { perfectMatch, others } from "mockData/jobs-data";
 import jobHunterAds from "images/job-hunter-ads.svg?url";
 import jobHunterPopAds from "images/popup-hunter.svg?url";
-import { PerfectMatchEmptyState, OtherOpportunitiesEmptyState } from "features/job-hunter";
+import {
+  PerfectMatchEmptyState,
+  OtherOpportunitiesEmptyState,
+} from "features/job-hunter";
+import { AdDialogWrapper } from "components";
 
 import { Button } from "components";
 import { JobCardSkeleton } from "components";
@@ -212,16 +216,11 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 justify-items-center w-full max-w-[436px] md:max-w-[900px] mx-auto px-0">
       {displayedItems.map((item, index) =>
         "isAd" in item ? (
-          <div
+          <AdDialogWrapper
             key={`ad-${index}`}
-            className="bg-white border-none h-[275px] w-full max-w-[436px] rounded-lg overflow-hidden"
-          >
-            <img
-              src={item.image}
-              alt="Job Hunter Ad"
-              className="w-full h-[275px] object-cover"
-            />
-          </div>
+            adImage={item.image}
+            popupImage={jobHunterPopAds}
+          />
         ) : (
           <JobCard key={index} match={item} isFreeTrial={isFreeTrial} />
         ),
@@ -421,16 +420,11 @@ const OtherApplications: FC<selectedProps> = ({
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 justify-items-center w-full max-w-[436px] md:max-w-[900px] mx-auto px-0">
       {displayedItems.map((item, index) =>
         "isAd" in item ? (
-          <div
+          <AdDialogWrapper
             key={`ad-${index}`}
-            className="bg-white border-none h-[275px] w-full max-w-[436px] rounded-lg overflow-hidden"
-          >
-            <img
-              src={item.image}
-              alt="Job Hunter Ad"
-              className="w-full h-[275px] object-cover"
-            />
-          </div>
+            adImage={item.image}
+            popupImage={jobHunterPopAds}
+          />
         ) : (
           <JobCard key={index} match={item} isFreeTrial={isFreeTrial} />
         ),
@@ -509,15 +503,20 @@ const JobHunterFeed: FC<JobHunterSectionProps> = () => {
 
   const LoadingGrid = () => {
     // Calculate number of skeleton cards based on actual data
-    const dataLength = selectedTab === "perfectMatch" 
-      ? Math.min(perfectMatch.length, isFreeTrial ? 5 : 6)
-      : Math.min(others.length, isFreeTrial ? 5 : 6);
+    const dataLength =
+      selectedTab === "perfectMatch"
+        ? Math.min(perfectMatch.length, isFreeTrial ? 5 : 6)
+        : Math.min(others.length, isFreeTrial ? 5 : 6);
 
     // If there's no data, don't show loading state
     if (dataLength === 0) {
-      return selectedTab === "perfectMatch" 
-        ? <PerfectMatchEmptyState onExploreClick={() => handleTabChange("otherApplications")} />
-        : <OtherOpportunitiesEmptyState />;
+      return selectedTab === "perfectMatch" ? (
+        <PerfectMatchEmptyState
+          onExploreClick={() => handleTabChange("otherApplications")}
+        />
+      ) : (
+        <OtherOpportunitiesEmptyState />
+      );
     }
 
     return (

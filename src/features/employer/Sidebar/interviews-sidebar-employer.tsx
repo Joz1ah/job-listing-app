@@ -1,6 +1,8 @@
 import { FC } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Check, X, CheckCircle, RotateCcw, Info, BadgeCheck, Clock } from "lucide-react";
+import { Check, X, CheckCircle, RotateCcw, Info, Clock } from "lucide-react";
+import verifiedIcon from 'images/verified.svg?url'
+import userCheck from 'images/user-check.svg?url'
 
 interface MenuItem {
   icon: JSX.Element;
@@ -10,7 +12,6 @@ interface MenuItem {
 
 interface InterviewSidebarEmployerProps {
   userName: string;
-  subscriptionType: string;
   userType: 'employer' | 'job-hunter';
   isFreeTrial: boolean;
   className?: string;
@@ -18,7 +19,6 @@ interface InterviewSidebarEmployerProps {
 
 const InterviewSidebarEmployer: FC<InterviewSidebarEmployerProps> = ({ 
   userName,
-  subscriptionType,
   userType,
   isFreeTrial,
   className = ''
@@ -56,13 +56,24 @@ const InterviewSidebarEmployer: FC<InterviewSidebarEmployerProps> = ({
 
   const userInfo = (
     <div className="mb-8">
-      <span className="text-[30px] font-normal flex items-center gap-1 text-white">
+      <span className="text-[30px] font-normal flex items-center gap-2 text-white">
         {userName} {isFreeTrial ? 
           <Info className="w-7 h-7 fill-[#D6D6D6] text-[#212529]" /> : 
-          <BadgeCheck className="w-7 h-7 fill-orange-500 text-[#212529]" />
+          <img src={verifiedIcon} className="w-7 h-7" />
         }
       </span>
-      <p className="text-[17px] text-white mt-1">{subscriptionType}</p>
+      <p className="text-[17px] text-white mt-1 flex items-center gap-2">
+        {isFreeTrial ? (
+          <>
+            <span>Free Trial</span>
+          </>
+        ) : (
+          <>
+            <img src={userCheck} className="w-6 h-6 fill-orange-500 text-orange-500" />
+            <span>Monthly Subscriber</span>
+          </>
+        )}
+      </p>
     </div>
   );
 

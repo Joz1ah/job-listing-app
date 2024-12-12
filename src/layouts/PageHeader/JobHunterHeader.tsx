@@ -1,5 +1,11 @@
 import { FC } from "react";
-import {BriefcaseBusiness, DollarSign, Info, Star, MapPin } from "lucide-react";
+import {
+  BriefcaseBusiness,
+  DollarSign,
+  Info,
+  Star,
+  MapPin,
+} from "lucide-react";
 import { Tooltip } from "components";
 
 const JobHunterHeader: FC = () => {
@@ -7,7 +13,13 @@ const JobHunterHeader: FC = () => {
   const fullStars = Math.floor(rating);
   const hasHalfStar = rating % 1 !== 0;
 
-  const DesktopTooltip = ({ content, children }: { content: string, children: React.ReactNode }) => (
+  const DesktopTooltip = ({
+    content,
+    children,
+  }: {
+    content: string;
+    children: React.ReactNode;
+  }) => (
     <>
       <div className="md:hidden">{children}</div>
       <div className="hidden md:block">
@@ -29,7 +41,7 @@ const JobHunterHeader: FC = () => {
               <MapPin className="text-[#F5722E]" size={19} />
               <span className="text-[13px] md:text-[17px]">Philippines</span>
             </div>
-            
+
             {/* Mobile rating */}
             <div className="flex items-center md:hidden">
               <span className="text-[#AEADAD] mx-4">•</span>
@@ -49,7 +61,10 @@ const JobHunterHeader: FC = () => {
                       <div className="relative ml-1">
                         <Star size={16} className="text-[#F5722E]" />
                         <div className="absolute inset-0 overflow-hidden w-1/2">
-                          <Star size={16} className="text-[#F5722E] fill-[#F5722E]" />
+                          <Star
+                            size={16}
+                            className="text-[#F5722E] fill-[#F5722E]"
+                          />
                         </div>
                       </div>
                     )}
@@ -75,32 +90,29 @@ const JobHunterHeader: FC = () => {
         <div className="flex flex-col space-y-3">
           <div className="flex items-center space-x-2 text-white">
             <DollarSign className="text-[#F5722E]" size={14} strokeWidth={4} />
-            <span className="text-[13px] md:text-[15px]">Expected Salary: </span>
-            <span className="outline outline-1 outline-[#F5722E] text-[#F5722E] px-1 font-semibold text-[13px] md:text-[15px] rounded-[2px]">
-              $100,000
+            <span className="text-[13px] md:text-[15px]">
+              Expected Salary:{" "}
             </span>
-            <span className="outline outline-1 outline-white px-1 ml-1 text-[13px] md:text-[15px] rounded-[2px]">
-              per year
+            <span className="outline outline-1 outline-[#F5722E] text-[#F5722E] px-1 font-semibold text-[13px] md:text-[15px] rounded-[2px]">
+              $100,000 - $120,000
             </span>
           </div>
 
-          <DesktopTooltip content="Your preferred types of employment">
-            <div className="flex items-center space-x-2 text-white">
-              <BriefcaseBusiness
-                className="fill-[#F5722E] text-[#263238]"
-                size={14}
-              />
-              <span className="text-[13px] md:text-[15px]">
-                Employment Preference:{" "}
-              </span>
-              <span className="outline outline-1 outline-[#F5722E] text-[#F5722E] px-1 text-[13px] md:text-[15px] rounded-[2px]">
-                Full Time
-              </span>
-              <span className="outline outline-1 outline-[#F5722E] text-[#F5722E] px-1 text-[13px] md:text-[15px] rounded-[2px]">
-                Part Time
-              </span>
-            </div>
-          </DesktopTooltip>
+          <div className="flex items-center space-x-2 text-white">
+            <BriefcaseBusiness
+              className="fill-[#F5722E] text-[#263238]"
+              size={14}
+            />
+            <span className="text-[13px] md:text-[15px]">
+              Employment Preference:{" "}
+            </span>
+            <span className="outline outline-1 outline-[#F5722E] text-[#F5722E] px-1 text-[13px] md:text-[15px] rounded-[2px]">
+              Full Time
+            </span>
+            <span className="outline outline-1 outline-[#F5722E] text-[#F5722E] px-1 text-[13px] md:text-[15px] rounded-[2px]">
+              Part Time
+            </span>
+          </div>
         </div>
       </div>
     </div>

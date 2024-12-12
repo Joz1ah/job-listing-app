@@ -12,7 +12,6 @@ const AccountSettingsEmployer: FC = () => {
         <div className="flex flex-col lg:flex-row w-full pt-8">
           <SettingsSidebar
             userName="ABC Incorporated"
-            subscriptionType="Monthly Subscriber"
             userType="employer"
             isFreeTrial={isFreeTrial}
             className="w-[395px]"

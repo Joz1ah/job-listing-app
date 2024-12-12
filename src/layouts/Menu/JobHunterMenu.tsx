@@ -1,11 +1,12 @@
 import { FC, useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { Button } from "components/ui/buttons";
-import { BadgeCheck, ChevronDown, Info, ChevronUp } from "lucide-react";
+import { ChevronDown, Info, ChevronUp } from "lucide-react";
 import companyLogo from "images/company-logo.png";
 import akazaLogoWhite from "images/akaza-logo-white.png";
 import menuButton from "images/menu-button.png";
 import { NotificationFeed } from "components/ui/notification-feed";
+import verifiedIcon from 'images/verified.svg?url'
 
 interface NavItem {
   name: string;
@@ -81,7 +82,7 @@ const JobHunterMenu: FC<MenuProps> = ({
     if (isFreeTrial) {
       return <Info className="w-4 h-4 text-[#2D3A41] fill-white" />;
     }
-    return <BadgeCheck className="w-4 h-4 text-[#2D3A41] fill-[#F5722E]" />;
+    return <img src={verifiedIcon} className="w-4 h-4" />;
   };
 
   return (

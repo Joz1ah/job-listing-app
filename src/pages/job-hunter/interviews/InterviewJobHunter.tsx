@@ -12,7 +12,6 @@ const InterviewJobHunter: FC = () => {
         <div className="flex flex-col lg:flex-row w-full pt-8">
           <InterviewSidebarJobHunter
             userName="John Doe"
-            subscriptionType="Free Trial"
             userType="job-hunter"
             isFreeTrial={isFreeTrial}
             className="w-[395px]"

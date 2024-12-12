@@ -12,7 +12,6 @@ const BookmarkedJobs: FC = () => {
         <div className="flex flex-col lg:flex-row w-full pt-8">
           <BookmarkSidebar
             userName="John Doe"
-            subscriptionType="Free Trial"
             isFreeTrial={isFreeTrial}
             className="w-[395px]"
           />

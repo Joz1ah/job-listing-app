@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState, useRef } from "react";
 import { Info } from "lucide-react";
 import { cn } from "lib/utils";
 import { Label, Input } from "components";
@@ -13,6 +13,8 @@ import { Tooltip } from "components";
 import { Switch } from "components";
 import googleLogo from 'images/google-logo.svg?url';
 import { useEmployerContext} from "components";
+import { AdDialogWrapper } from "components";
+import employerPopAds from "images/popup-employer.svg?url";
 
 interface FormFieldProps {
   label: string;
@@ -110,13 +112,18 @@ const GeneralSettings: FC = () => {
   const [email, setEmail] = useState("john.smith@abc.com");
   const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [tempEmail, setTempEmail] = useState(email);
+   const adTriggerRef = useRef<HTMLDivElement>(null);
 
   const handleTimeZoneChange = (newTimeZone: string) => {
     setTimeZone(newTimeZone);
   };
 
   const handleNotificationToggle = (type: keyof NotificationState) => {
-    if (isFreeTrial) return;
+    if (isFreeTrial) {
+      // Trigger the ad dialog by clicking its trigger
+      adTriggerRef.current?.click();
+      return;
+    }
     setNotifications((prev) => ({
       ...prev,
       [type]: !prev[type],
@@ -158,33 +165,40 @@ const GeneralSettings: FC = () => {
       <div className="flex flex-col md:flex-row md:justify-between mb-8 gap-6 md:gap-4">
         {/* Notifications */}
         <div className="w-full md:w-1/2">
-          <div className="space-y-3">
-            <div className="flex items-center gap-1">
-              <h3 className="text-white text-[24px] font-normal flex items-center">
-                Notifications
-              </h3>
-              <Tooltip content={tooltips.notifications}>
-                <Info className="w-3 h-3 text-[#2D3A41] fill-white mb-2" />
-              </Tooltip>
-            </div>
-            <div className="space-y-3">
-              {NOTIFICATION_OPTIONS.map(({ key, label }) => (
-                <div key={key} className="flex items-center justify-between mr-4">
-                  <span className="text-white text-[15px]">{label}</span>
-                  <Switch
-                    checked={notifications[key as keyof NotificationState]}
-                    onCheckedChange={() => handleNotificationToggle(key as keyof NotificationState)}
-                    disabled={isFreeTrial}
-                    className={cn(
-                      "data-[state=checked]:bg-[#F5722E] data-[state=unchecked]:bg-gray-600/70 h-5 w-9 [&>span]:h-4 [&>span]:w-4 [&>span[data-state=checked]]:translate-x-4",
-                      isFreeTrial && "opacity-50 cursor-not-allowed"
-                    )}
+      <div className="space-y-3">
+        <div className="flex items-center gap-1">
+          <h3 className="text-white text-[24px] font-normal flex items-center">
+            Notifications
+          </h3>
+          <Tooltip content="Enable or disable push notifications for better experience.">
+            <Info className="w-3 h-3 text-[#2D3A41] fill-white mb-2" />
+          </Tooltip>
+        </div>
+        <div className="space-y-3">
+          {NOTIFICATION_OPTIONS.map(({ key, label }) => (
+            <div key={key} className="flex items-center justify-between mr-4">
+              <span className="text-white text-[15px]">{label}</span>
+              <div className="flex items-center">
+                <Switch
+                  checked={notifications[key as keyof NotificationState]}
+                  onCheckedChange={() => handleNotificationToggle(key as keyof NotificationState)}
+                  className={cn(
+                    "data-[state=checked]:bg-[#F5722E] data-[state=unchecked]:bg-gray-600/70 h-5 w-9 [&>span]:h-4 [&>span]:w-4 [&>span[data-state=checked]]:translate-x-4",
+                    isFreeTrial && "cursor-pointer"
+                  )}
+                />
+                <div className="hidden">
+                  <AdDialogWrapper
+                    popupImage={employerPopAds}
+                    ref={adTriggerRef}
                   />
                 </div>
-              ))}
+              </div>
             </div>
-          </div>
+          ))}
         </div>
+      </div>
+    </div>
 
         {/* Time Zone */}
         <div className="w-full md:w-[330px]">

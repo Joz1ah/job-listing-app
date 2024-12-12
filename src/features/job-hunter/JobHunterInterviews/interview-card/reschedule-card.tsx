@@ -139,7 +139,7 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
               </span>
             </div>
 
-            <div className="flex justify-center mt-4 w-full">
+            <div className="flex justify-start mt-4 w-full">
               {isLoading ? (
                 <div className="flex items-center gap-2">
                   <LoaderCircle className="w-5 h-5 animate-spin text-[#F5722E]" />

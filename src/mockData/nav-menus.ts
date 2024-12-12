@@ -9,7 +9,7 @@ interface NavItem {
     { name: 'EDIT COMPANY PROFILE', path: '/employer/edit-profile' },
     /* { name: 'REPORTS & ANALYTICS', path: '/employer/reports-and-analytics' }, */
     { name: 'INTERVIEWS', path: '/employer/interviews' },
-    { name: '✦ SUBSCRIPTION PLANS', path: '#', isSpecial: true },
+    { name: '✦ YOUR SUBSCRIPTION', path: '/employer/account-settings/subscription', isSpecial: true },
     { name: 'ACCOUNT SETTINGS', path: '/employer/account-settings' },
     { name: 'SIGN OUT', path: '#' }
   ];
@@ -22,7 +22,7 @@ interface NavItem {
     { name: 'INTERVIEWS', path: '/employer/interviews' },
     { name: 'ABOUT US', path: '#'},
     { name: 'CONTACT US', path: '#'},
-    { name: '✦ SUBSCRIPTION PLANS', path: '#', isSpecial: true },
+    { name: '✦ YOUR SUBSCRIPTION', path: '/employer/account-settings/subscription', isSpecial: true },
     { name: 'ACCOUNT SETTINGS', path: '/employer/account-settings'},
     { name: 'SIGN OUT', path: '#'}
   ];
@@ -31,7 +31,7 @@ interface NavItem {
     { name: 'EDIT APPLICATION CARD', path: '/job-hunter/edit-application' },
     { name: 'BOOKMARKED JOBS', path: '/job-hunter/bookmarked-jobs'},
     { name: 'INTERVIEWS', path: '/job-hunter/interviews'},
-    { name: '✦ SUBSCRIPTION PLANS', path: '#', isSpecial: true },
+    { name: '✦ YOUR SUBSCRIPTION', path: '/job-hunter/account-settings/subscription', isSpecial: true },
     { name: 'ACCOUNT SETTINGS', path: '/job-hunter/account-settings'},
     { name: 'SIGN OUT', path: '#'}
   ];
@@ -42,7 +42,7 @@ interface NavItem {
     { name: 'INTERVIEWS', path: '/job-hunter/interviews'},
     { name: 'ABOUT US', path: '#'},
     { name: 'CONTACT US', path: '#' },
-    { name: '✦ SUBSCRIPTION PLANS', path: '#', isSpecial: true },
+    { name: '✦ YOUR SUBSCRIPTION', path: '/job-hunter/account-settings/subscription', isSpecial: true },
     { name: 'FAQ', path: '#'},
     { name: 'ACCOUNT SETTINGS', path: '/job-hunter/account-settings'},
     { name: 'SIGN OUT', path: '#'}

@@ -12,7 +12,6 @@ const InterviewEmployer: FC = () => {
         <div className="flex flex-col lg:flex-row w-full pt-8">
           <InterviewSidebarEmployer
             userName="ABC Incorporated"
-            subscriptionType="Monthly Subscriber"
             userType="employer"
             isFreeTrial={isFreeTrial}
             className="w-[395px]"

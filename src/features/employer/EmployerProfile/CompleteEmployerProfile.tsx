@@ -2,14 +2,14 @@ import React, { FC, useState } from "react";
 import { ChevronLeft } from "lucide-react";
 import { Input, Button, Textarea, InputField } from "components";
 
-import employerProfileCard from "images/EmployerProfileCard.svg?url";
 import saveChanges from "images/save-changes.svg?url";
 
 import { NavLink, useNavigate } from "react-router-dom";
 
 import { PhoneInput } from "components";
 
-import { selectOptions } from "mockData/employer-profile-options";
+import { selectOptions, FormData } from "mockData/employer-profile-options";
+import { EmployerProfilePreview } from "./EmployerProfilePreview";
 
 import {
   Select,
@@ -24,26 +24,6 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 
 import { isValidPhoneNumber } from "react-phone-number-input";
-
-interface FormData {
-  businessName: string;
-  firstName: string;
-  lastName: string;
-  position: string;
-  industry: string;
-  emailAddress: string;
-  mobileNumber: string;
-  companyWebsite: string;
-  yearFounded: string;
-  unitAndBldg: string;
-  buildingName: string;
-  streetAddress: string;
-  city: string;
-  state: string;
-  postalCode: number;
-  country: string;
-  companyOverview: string;
-}
 
 const validationSchema = Yup.object().shape({
   businessName: Yup.string().required("This field is required"),
@@ -89,7 +69,9 @@ const LoadingOverlay = () => (
 );
 
 const CompleteEmployerProfile: FC = () => {
+  const [showPreview, setShowPreview] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
   const navigate = useNavigate();
 
   const {
@@ -117,24 +99,14 @@ const CompleteEmployerProfile: FC = () => {
       streetAddress: "",
       city: "",
       state: "",
-      postalCode: 0,
+      postalCode: "",
       country: "",
       companyOverview: "",
     },
     validationSchema,
     validateOnMount: true,
-    onSubmit: async (values) => {
-      setIsSubmitting(true);
-      try {
-        // Simulate API call with setTimeout
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        console.log(values);
-        // After successful submission, navigate to job feed
-        navigate("/employer/feed");
-      } catch (error) {
-        console.error("Error submitting form:", error);
-        setIsSubmitting(false);
-      }
+    onSubmit: () => {
+      setShowPreview(true);
     },
   });
 
@@ -150,10 +122,23 @@ const CompleteEmployerProfile: FC = () => {
 
   return (
     <>
+      <EmployerProfilePreview
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        formData={values}
+        onConfirm={() => {
+          setShowPreview(false);
+          setIsSubmitting(true);
+          // Your existing submission logic here
+          setTimeout(() => {
+            navigate("/job-hunter/feed");
+          }, 1500);
+        }}
+      />
       {isSubmitting && <LoadingOverlay />}
 
-      <div className="flex flex-col xl:flex-row gap-8 px-4 md:px-8 lg:px-12 py-6">
-        <div className="w-full xl:w-[800px] min-h-[825px] bg-[#242625] md:bg-[#2D3A41] text-white">
+      <div className="flex gap-8 px-4 md:px-8 lg:px-12 py-6 justify-center">
+        <div className="w-full md:w-[800px] min-h-[825px] bg-[#242625] md:bg-[#2D3A41] text-white">
           <div className="flex items-center relative w-full mb-6 md:mb-10">
             <NavLink to="/employer/feed" className="absolute left-4 top-6">
               <ChevronLeft strokeWidth={4} className="h-6 w-6" />
@@ -460,9 +445,6 @@ const CompleteEmployerProfile: FC = () => {
               </Button>
             </div>
           </form>
-        </div>
-        <div className="w-full xl:w-auto flex xl:block justify-center">
-          <img src={employerProfileCard} alt="Employer Profile" />
         </div>
       </div>
     </>

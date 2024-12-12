@@ -1,6 +1,8 @@
 import { FC } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { BarChart2, Users, Calendar, DollarSign, Info, BadgeCheck } from "lucide-react";
+import { BarChart2, Users, Calendar, DollarSign, Info } from "lucide-react";
+import verifiedIcon from 'images/verified.svg?url'
+import userCheck from 'images/user-check.svg?url'
 
 interface MenuItem {
   icon: JSX.Element;
@@ -10,14 +12,12 @@ interface MenuItem {
 
 interface AnalyticsSidebarProps {
   userName: string;
-  subscriptionType: string;
   isFreeTrial: boolean;
   className?: string;
 }
 
 const ReportsAnalyticsSidebar: FC<AnalyticsSidebarProps> = ({ 
   userName,
-  subscriptionType,
   isFreeTrial,
   className=''
 }) => {
@@ -49,13 +49,24 @@ const ReportsAnalyticsSidebar: FC<AnalyticsSidebarProps> = ({
 
   const userInfo = (
     <div className="mb-8">
-      <h2 className="text-[30px] font-normal flex items-center gap-2 text-white">
+      <span className="text-[30px] font-normal flex items-center gap-2 text-white">
         {userName} {isFreeTrial ? 
           <Info className="w-7 h-7 fill-[#D6D6D6] text-[#212529]" /> : 
-          <BadgeCheck className="w-7 h-7 fill-orange-500 text-[#212529]" />
+          <img src={verifiedIcon} className="w-7 h-7" />
         }
-      </h2>
-      <p className="text-[17px] text-white mt-1">{subscriptionType}</p>
+      </span>
+      <p className="text-[17px] text-white mt-1 flex items-center gap-2">
+        {isFreeTrial ? (
+          <>
+            <span>Free Trial</span>
+          </>
+        ) : (
+          <>
+            <img src={userCheck} className="w-6 h-6 fill-orange-500 text-orange-500" />
+            <span>Monthly Subscriber</span>
+          </>
+        )}
+      </p>
     </div>
   );
 

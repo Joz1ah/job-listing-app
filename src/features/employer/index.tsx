@@ -50,3 +50,4 @@ export { CandidatePreviewModal } from 'features/employer/EmployerInterviews/inte
 export { InterviewCalendarModal } from 'features/employer/EmployerInterviews/modals/InterviewCalendarModal'
 export { PerfectMatchEmptyState, OtherApplicationEmptyState } from 'features/employer/EmployerFeed/EmployerEmptyState'
 export { JobListingPreview } from 'features/employer/JobListingForm/JobListingPreview'
+export { EmployerProfilePreview } from 'features/employer/EmployerProfile/EmployerProfilePreview'

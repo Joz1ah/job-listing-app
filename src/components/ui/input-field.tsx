@@ -27,7 +27,7 @@ const labelVariants = cva(
       variant: {
         default: "text-white",
         primary: "text-white",
-        secondary: "text-black"
+        secondary: "text-[#263238]"
       },
       size: {
         sm: "text-sm",
