@@ -10,6 +10,7 @@ const LoadingFallback = () => (
 
 // Adjust imports to match your file structure and add type assertions
 const Home = lazy(() => import('pages').then(module => ({ default: module.Home })))
+const Landing = lazy(() => import('pages').then(module => ({ default: module.Landing })))
 const Fetch = lazy(() => import('pages').then(module => ({ default: module.Fetch })))
 const About = lazy(() => import('pages').then(module => ({ default: module.About })))
 const NotFound = lazy(() => import('pages').then(module => ({ default: module.NotFound })))
@@ -37,7 +38,12 @@ const LazyComponent = ({ component: Component, ...props }: LazyComponentProps) =
 const routes: RouteObject[] = [
   {
     path: '',
-    element: <Navigate to={ROUTE_CONSTANTS.EMPLOYER} replace />
+    //element: <LazyComponent component={Home} />
+    element: <Navigate to={ROUTE_CONSTANTS.LANDING} replace />
+  },
+  {
+    path: ROUTE_CONSTANTS.LANDING,
+    element: <LazyComponent component={Landing} />
   },
   {
     path: ROUTE_CONSTANTS.HOME,
