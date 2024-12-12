@@ -7,8 +7,9 @@ import { ChunkExtractor } from '@loadable/server'
 import { csp, serverRenderer, nonce } from 'server/middlewares'
 import { IS_RENDER_TO_STREAM, SERVER_PORT } from 'server/constants'
 import { DIST_DIR, IS_DEV, SRC_DIR } from '_webpack/constants'
-
+import cors from 'cors'
 const { PORT = SERVER_PORT } = process.env
+const allowedOrigins = ['http://localhost:8080'];
 
 const runServer = (hotReload?: () => RequestHandler[]): void => {
   const app = express()
@@ -16,6 +17,17 @@ const runServer = (hotReload?: () => RequestHandler[]): void => {
   const chunkExtractor = new ChunkExtractor({ statsFile })
 
   app
+    .use(cors({
+      origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+          callback(null, origin); // Allow the request
+        } else {
+          callback(new Error('Not allowed by CORS')); // Reject the request
+        }
+      },
+      methods: ['GET', 'POST', 'OPTIONS'],
+      credentials: true,
+    }))
     .use(nonce)
     .use(csp)
     .use(express.json())
@@ -23,6 +35,18 @@ const runServer = (hotReload?: () => RequestHandler[]): void => {
     .use(express.static(path.resolve(DIST_DIR)))
     .use(cookieParser())
 
+    app
+    .options('*', (req, res) => {
+      const origin:any = req.headers.origin;
+    
+      if (allowedOrigins.includes(origin)) {
+        res.setHeader('Access-Control-Allow-Origin', 'origin');
+        res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
+      }
+      res.status(200).end(); // Always respond with HTTP 200 OK
+    })
   if (IS_DEV) {
     if (hotReload != null) {
       app.get('/*', [...hotReload()])

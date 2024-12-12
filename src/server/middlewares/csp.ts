@@ -13,7 +13,7 @@ const csp = (req: Request, res: Response, next: NextFunction): void => {
     contentSecurityPolicy: {
       useDefaults: true,
       directives: {
-        defaultSrc: ["'self'", 'pokeapi.co', 'localhost:*'],
+        defaultSrc: ["'self'", 'pokeapi.co', 'localhost:*', 'akaza-sit-api-gateway---rev-2-2tninhtd.uk.gateway.dev', 'api-sit.akaza.xyz'],
         imgSrc: ["'self'", 'raw.githubusercontent.com'],
         scriptSrc: [
           "'self'",

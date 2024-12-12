@@ -16,7 +16,7 @@ if (process.env.NO_SSR === 'true') {
   }
 }
 
-// Add Tailwind and PostCSS configuration to all configs
+// Tailwind and PostCSS Configuration
 const tailwindConfig = {
   module: {
     rules: [
@@ -28,7 +28,8 @@ const tailwindConfig = {
   }
 }
 
-// Merge tailwindConfig with each existing config
+
+// Merge TailwindConfig and VideoConfig with Each Existing Config
 const mergedConfigs = configs.map(config => merge(config, tailwindConfig))
 
 module.exports = mergedConfigs

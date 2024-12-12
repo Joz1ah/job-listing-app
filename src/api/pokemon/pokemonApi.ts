@@ -40,3 +40,66 @@ export const pokemonApi = createApiFunction({
     })
   })
 })
+
+export const akazaApi = createApiFunction({
+  reducerPath: 'api',
+  baseQuery: fetchBaseQuery({ 
+    baseUrl: 'https://akaza-sit-api-gateway---rev-2-2tninhtd.uk.gateway.dev/' ,
+    credentials: "include", 
+    prepareHeaders: (headers) => {
+      /*
+        const accessToken = localStorage.getItem("token");
+        if (accessToken) {
+            headers.set("authorization", `Bearer ${accessToken}`);
+            headers.set("Content-Type", "application/json");
+        }
+*/
+        return headers;
+    },
+  }), 
+  endpoints: (builder) => ({
+    login: builder.mutation({
+      query: (credentials) => ({
+        url: 'login',
+        method: 'POST',
+        body: credentials,
+      }),
+    }),
+    signUp: builder.mutation({
+      query: (credentials) => ({
+        url: 'signup',
+        method: 'POST',
+        body: credentials,
+      }),
+    }),
+  }),
+});
+export const akazaApiAuth = createApiFunction({
+  reducerPath: 'apiAuth',
+  baseQuery: fetchBaseQuery({ 
+    baseUrl: 'https://api-sit.akaza.xyz/' ,
+    credentials: "include", 
+    prepareHeaders: (headers) => {
+      /*
+        const accessToken = localStorage.getItem("token");
+        if (accessToken) {
+            headers.set("authorization", `Bearer ${accessToken}`);
+            headers.set("Content-Type", "application/json");
+        }
+*/
+        return headers;
+    },
+  }), 
+  endpoints: (builder) => ({
+    signUpMS: builder.mutation({
+      query: (credentials) => ({
+        url: 'signup',
+        method: 'POST',
+        body: credentials,
+      }),
+    }),
+  }),
+});
+
+export const {useLoginMutation,useSignUpMutation} = akazaApi
+export const {useSignUpMSMutation} = akazaApiAuth

@@ -1,0 +1,12 @@
+<svg width="130" height="130" viewBox="0 0 130 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Spinner">
+<path id="Ellipse 80" d="M130 65C130 100.899 100.899 130 65 130C29.1015 130 0 100.899 0 65C0 29.1015 29.1015 0 65 0C100.899 0 130 29.1015 130 65ZM9.91339 65C9.91339 95.4235 34.5765 120.087 65 120.087C95.4235 120.087 120.087 95.4235 120.087 65C120.087 34.5765 95.4235 9.91339 65 9.91339C34.5765 9.91339 9.91339 34.5765 9.91339 65Z" fill="url(#paint0_angular_4759_7716)"/>
+<circle id="Ellipse 81" cx="65" cy="125" r="5" fill="#F5722E"/>
+</g>
+<defs>
+<radialGradient id="paint0_angular_4759_7716" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(65 65) rotate(90) scale(65)">
+<stop stop-color="#F5722E"/>
+<stop offset="1" stop-color="white" stop-opacity="0"/>
+</radialGradient>
+</defs>
+</svg>

@@ -1,0 +1,61 @@
+.col-title {
+    font-weight: 700;
+    margin-bottom: 26px;
+}
+
+footer{
+    background-color: #2D3A41;
+    font-family: Poppins-L;
+    color:#F5F7FA;
+    padding: 105px 224px 105px 271px;
+
+    @media (max-width: 768px) {
+    }
+    .footer-desc{
+        display: flex;
+        flex-direction: row;
+        align-items:start;
+        text-align: center;
+        justify-content: center;
+        flex-wrap: wrap; // Allow items to wrap to the next line
+        justify-content: space-between; // Distribute space evenly
+        gap: 50px;
+        @media (max-width: 768px) {
+                flex-direction: column; // Stack items vertically
+                align-items: center;
+                gap: 10px;
+
+        
+            > div {
+                flex: 1 1 calc(50% - 10px); // Two items per row
+            }
+        
+            // Center the fifth item at the bottom
+            > nav:nth-child(5) {
+                flex: 0 0 100%; // Make the fifth item take full width
+                margin: 0 auto; // Center the item
+            }
+        }
+        > div{
+            box-sizing: border-box; // Ensure padding/margins don't affect width
+        }
+        > div:nth-child(1){
+            @media (max-width: 768px) {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+        > div > :nth-child(1){
+            @extend .col-title;
+        }
+        > nav > :nth-child(1){
+            @extend .col-title;
+        }
+    } 
+    .footer-desc > :nth-child(4) > :nth-child(2){
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
+    }
+}

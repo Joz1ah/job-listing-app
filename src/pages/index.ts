@@ -1,3 +1,4 @@
+export { Landing } from 'pages/landing/Landing'
 export { About } from 'pages/about/About'
 export { Fetch } from 'pages/fetch/Fetch'
 export { Home } from 'pages/home/Home'

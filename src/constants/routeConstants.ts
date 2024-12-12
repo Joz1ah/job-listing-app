@@ -1,7 +1,8 @@
 export const ROUTE_CONSTANTS = {
+  LANDING: '/landing',
   ABOUT: '/about',
   FETCH: '/fetch',
-  HOME: '/',
+  HOME: '/home',
   NOT_FOUND: '/404',
   JOB_HUNTER: '/job-feed-hunter',
   EMPLOYER: '/job-feed-employer',
