@@ -229,7 +229,7 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
                           setFieldValue("reason", value)
                         }
                       >
-                        <SelectTrigger className="w-full border-2 rounded-[10px] bg-transparent h-[56px] border-black">
+                        <SelectTrigger className="w-full border-2 rounded-[10px] bg-transparent h-[56px] border-[#263238]">
                           <SelectValue placeholder="Select A Reason" />
                         </SelectTrigger>
                         <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none max-h-[200px]">
@@ -257,7 +257,7 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
                     >
                       <div className="relative">
                         <div
-                          className="-full border-2 rounded-[10px] bg-transparent h-[56px] px-3 flex items-center cursor-pointer border-black text-sm"
+                          className="-full border-2 rounded-[10px] bg-transparent h-[56px] px-3 flex items-center cursor-pointer border-[#263238] text-sm"
                           onClick={() => setIsDatePickerOpen(true)}
                         >
                           {values.interviewDate
@@ -291,7 +291,7 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
                           setFieldValue("interviewTime", value)
                         }
                       >
-                        <SelectTrigger className="w-full border-2 rounded-[10px] bg-transparent h-[56px] border-black">
+                        <SelectTrigger className="w-full border-2 rounded-[10px] bg-transparent h-[56px] border-[#263238]">
                           <SelectValue placeholder="Select a Time" />
                         </SelectTrigger>
                         <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none max-h-[200px]">
