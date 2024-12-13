@@ -2,12 +2,33 @@ import { RouteObject, Navigate } from 'react-router-dom'
 import { lazy, Suspense, ComponentType } from 'react'
 import { ROUTE_CONSTANTS } from 'constants/routeConstants'
 
-// Common pages
-const Home = lazy(() => import('pages').then(module => ({ default: module.Home })))
-const Landing = lazy(() => import('pages').then(module => ({ default: module.Landing })))
-const Fetch = lazy(() => import('pages').then(module => ({ default: module.Fetch })))
-const About = lazy(() => import('pages').then(module => ({ default: module.About })))
-const NotFound = lazy(() => import('pages').then(module => ({ default: module.NotFound })))
+// Common page imports
+import { Home } from 'pages'
+import { Fetch } from 'pages'
+import { About } from 'pages'
+import { Landing } from 'pages'
+import { NotFoundPage as NotFound } from 'pages'
+import { EmployerFeedLayout } from 'pages'
+import { JobHunterFeedLayout } from 'pages'
+import { CreateAppCard } from 'pages'
+import { EditAppCard } from 'pages'
+import { JobHunterBaseLayout } from 'pages'
+import { EmployerBaseLayout } from 'pages'
+import { EmployerNotFound } from 'pages'
+import { JobHunterNotFound } from 'pages'
+
+// Adjust imports to match your file structure and add type assertions
+//const Home = lazy(() => import('pages').then(module => ({ default: module.Home })))
+//const Landing = lazy(() => import('pages').then(module => ({ default: module.Landing })))
+//const Fetch = lazy(() => import('pages').then(module => ({ default: module.Fetch })))
+//const About = lazy(() => import('pages').then(module => ({ default: module.About })))
+//const NotFound = lazy(() => import('pages').then(module => ({ default: module.NotFound })))
+//const CompleteProfile = lazy(() => import('pages').then(module => ({ default: module.CreateAppCard })))
+// Employer feature imports
+import { EmployerFeed } from 'features/employer'
+import { JobListingFormLayout } from 'pages'
+import { CompleteProfile } from 'pages'
+import { EditProfile } from 'pages'
 
 // Employer pages
 const EmployerBaseLayout = lazy(() => import('pages').then(module => ({ default: module.EmployerBaseLayout })))
@@ -100,7 +121,7 @@ const routes: RouteObject[] = [
   },
   {
     path: ROUTE_CONSTANTS.LANDING,
-    element: <LazyComponent component={Landing} />
+    element: <Landing />
   },
   {
     path: ROUTE_CONSTANTS.HOME,

@@ -905,6 +905,7 @@ color: #F5F5F7;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+  color:red;
 }
 
 
@@ -1604,6 +1605,37 @@ div.main [hidden]{
   stroke-dashoffset: 48;
   animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
 }
+
+.stripe-payment-container{
+  display: flex;
+  flex-direction: column;
+
+  .credit-card-container{
+    margin-top:18px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap:16px;
+  }
+
+  .stripe-form-container{
+    
+  }
+
+  .security-privacy-container{
+
+  }
+
+  .action-buttons{
+
+  }
+
+  .stripe-footer{
+
+  }
+}
+
+
 
 @keyframes stroke {
   100% {

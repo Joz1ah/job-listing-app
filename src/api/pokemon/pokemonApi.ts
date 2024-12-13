@@ -72,6 +72,13 @@ export const akazaApi = createApiFunction({
         body: credentials,
       }),
     }),
+    otpGenerate: builder.mutation({
+      query: (email) => ({
+        url: 'otp/generate',
+        method: 'POST',
+        body: email,
+      }),
+    }),
   }),
 });
 export const akazaApiAuth = createApiFunction({
@@ -98,8 +105,15 @@ export const akazaApiAuth = createApiFunction({
         body: credentials,
       }),
     }),
+    otpGenerate: builder.mutation({
+      query: (email) => ({
+        url: 'otp/generate',
+        method: 'POST',
+        body: email,
+      }),
+    }),
   }),
 });
 
-export const {useLoginMutation,useSignUpMutation} = akazaApi
-export const {useSignUpMSMutation} = akazaApiAuth
+export const {useLoginMutation, useSignUpMutation} = akazaApi
+export const {useSignUpMSMutation, useOtpGenerateMutation} = akazaApiAuth
