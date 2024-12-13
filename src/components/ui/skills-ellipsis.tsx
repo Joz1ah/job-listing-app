@@ -1,13 +1,10 @@
 import { FC, useRef, useEffect, useState } from "react";
 
-interface Skill {
-  name: string;
-}
 
 const skillColors = ["#184E77", "#168AAD"];
 
 interface SkillsWithEllipsisProps {
-  skills: Skill[];
+  skills: string[];
 }
 
 const SkillsWithEllipsis: FC<SkillsWithEllipsisProps> = ({ skills }) => {
@@ -33,7 +30,7 @@ const SkillsWithEllipsis: FC<SkillsWithEllipsisProps> = ({ skills }) => {
 
   return (
     <div className="w-full relative">
-      <span className="text-[13px] font-light block">Core Skills:</span>
+      <span className="text-[13px] font-light block text-[#263238]">Core Skills:</span>
       <div
         ref={skillsContainerRef}
         className="flex flex-wrap gap-1 max-h-[45px] overflow-hidden relative w-full"
@@ -46,7 +43,7 @@ const SkillsWithEllipsis: FC<SkillsWithEllipsisProps> = ({ skills }) => {
               backgroundColor: skillColors[skillIndex % 2],
             }}
           >
-            {skill.name}
+            {skill}
           </span>
         ))}
         {showEllipsis && (

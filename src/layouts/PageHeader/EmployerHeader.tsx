@@ -1,13 +1,20 @@
 import { FC } from "react";
-import { BadgeCheck, Building, Info, Star } from "lucide-react";
+import { Building, Info, Star } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { Tooltip } from "components";
+import verifiedIcon from "images/verified.svg?url";
 
 interface Props {
   isFreeTrial?: boolean;
 }
 
-const DesktopTooltip = ({ content, children }: { content: string, children: React.ReactNode }) => (
+const DesktopTooltip = ({
+  content,
+  children,
+}: {
+  content: string;
+  children: React.ReactNode;
+}) => (
   <>
     <div className="md:hidden">{children}</div>
     <div className="hidden md:block">
@@ -23,15 +30,13 @@ const EmployerHeader: FC<Props> = ({ isFreeTrial = false }) => {
 
   const location = useLocation();
   const hideOnPagesMobile = [
-    "/job-feed-employer/job-listing",
-    "/job-feed-employer/employer-profile",
+    "/employer/job-listing",
+    "/employer/employer-profile",
   ];
-  const hideOnPagesDesktop = ["/job-feed-employer/employer-profile"];
+  const hideOnPagesDesktop = ["/employer/employer-profile"];
 
   const hideOnMobile = hideOnPagesMobile.includes(location.pathname);
   const hideOnDesktop = hideOnPagesDesktop.includes(location.pathname);
-
-  const VerificationIcon = isFreeTrial ? Info : BadgeCheck;
 
   return (
     <div
@@ -42,15 +47,20 @@ const EmployerHeader: FC<Props> = ({ isFreeTrial = false }) => {
       <div className="flex flex-col items-center md:flex-row md:justify-between md:items-start">
         <div className="flex flex-col space-y-2 md:space-y-4">
           <div className="flex items-center">
-            <h1 className="text-3xl text-white font-normal">ABC Incorporated</h1>
-            <VerificationIcon
-              className={`ml-2 ${
-                isFreeTrial
-                  ? "fill-[#F5F5F7] text-[#263238]"
-                  : "fill-[#F5722E] text-[#263238]"
-              }`}
-              size={34}
-            />
+            <h1 className="text-3xl text-white font-normal">
+              ABC Incorporated
+            </h1>
+            {isFreeTrial ? (
+              <Info className="ml-2 fill-[#F5F5F7] text-[#263238]" size={34} />
+            ) : (
+              <img
+                src={verifiedIcon}
+                className="ml-2"
+                width={34}
+                height={34}
+                alt="Verified"
+              />
+            )}
           </div>
 
           <div className="flex flex-col space-y-3">
@@ -64,10 +74,10 @@ const EmployerHeader: FC<Props> = ({ isFreeTrial = false }) => {
             {/* Desktop view - interview rating */}
             <DesktopTooltip content="This is how job hunters rated your interview">
               <div className="hidden md:flex items-center space-x-2">
-                <div className="border-2 border-dotted border-orange-500 text-white text-[15px] px-2 py-1 border-opacity-70 whitespace-nowrap">
+                <div className="border-2 border-dotted border-[#F5722E] text-white text-[15px] px-2 py-1 border-opacity-70 whitespace-nowrap">
                   Your interview from rating employers
                 </div>
-                <Info className="fill-[#D6D6D6] text-[#263238]" size={14}/>
+                <Info className="fill-[#D6D6D6] text-[#263238]" size={14} />
               </div>
             </DesktopTooltip>
           </div>

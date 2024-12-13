@@ -7,14 +7,25 @@ const months = [
   'July', 'August', 'September', 'October', 'November', 'December'
 ];
 
-const getDaysInMonth = (month?: number) => {
-  if (!month) return Array.from({ length: 31 }, (_, i) => i + 1);
+const getDaysInMonth = (month: string): number[] => {
+  if (!month) return [];
   
-  const daysMap = {
-    1: 31, 2: 29, 3: 31, 4: 30, 5: 31, 6: 30,
-    7: 31, 8: 31, 9: 30, 10: 31, 11: 30, 12: 31
+  const daysMap: { [key: string]: number } = {
+    'January': 31,
+    'February': 29,
+    'March': 31,
+    'April': 30,
+    'May': 31,
+    'June': 30,
+    'July': 31,
+    'August': 31,
+    'September': 30,
+    'October': 31,
+    'November': 30,
+    'December': 31
   };
-  return Array.from({ length: daysMap[month as keyof typeof daysMap] }, (_, i) => i + 1);
+  
+  return Array.from({ length: daysMap[month] || 31 }, (_, i) => i + 1);
 };
 
 interface BirthdayInputProps {
@@ -24,28 +35,27 @@ interface BirthdayInputProps {
 }
 
 const BirthdayInput: React.FC<BirthdayInputProps> = ({ name, value, onChange }) => {
-  // Parse the current value into month and day
-  const [currentMonth, currentDay] = value?.split('/') || ['', ''];
+  // Parse the current value in Month Day format
+  const [monthName, day] = value?.split(' ') || ['', ''];
+  
   const [isActive, setIsActive] = useState(false);
   const [isMonthOpen, setIsMonthOpen] = useState(false);
   const [isDayOpen, setIsDayOpen] = useState(false);
 
-  const handleMonthChange = (month: string) => {
-    const monthNumber = months.indexOf(month) + 1;
-    
-    if (currentDay) {
-      const daysInNewMonth = getDaysInMonth(monthNumber).length;
-      const adjustedDay = parseInt(currentDay) > daysInNewMonth ? daysInNewMonth : currentDay;
-      onChange(name, `${monthNumber}/${adjustedDay}`);
+  const handleMonthChange = (selectedMonth: string) => {
+    if (day) {
+      const daysInNewMonth = getDaysInMonth(selectedMonth).length;
+      const adjustedDay = parseInt(day) > daysInNewMonth ? daysInNewMonth : day;
+      onChange(name, `${selectedMonth} ${adjustedDay}`);
     } else {
-      onChange(name, `${monthNumber}/`);
+      onChange(name, selectedMonth);
     }
   };
 
-  const handleDayChange = (day: string) => {
-    const monthPart = currentMonth || '';
-    const newValue = monthPart ? `${monthPart}/${day}` : `/${day}`;
-    onChange(name, newValue);
+  const handleDayChange = (selectedDay: string) => {
+    if (monthName) {
+      onChange(name, `${monthName} ${selectedDay}`);
+    }
   };
 
   const handleContainerFocus = () => {
@@ -60,8 +70,8 @@ const BirthdayInput: React.FC<BirthdayInputProps> = ({ name, value, onChange }) 
 
   return (
     <div 
-      className={`flex items-center justify-between h-14 px-4 py-2 bg-transparent border-2 rounded-md cursor-pointer transition-colors ${
-        isActive || isMonthOpen || isDayOpen ? 'border-orange-500' : 'border-[#AEADAD]'
+      className={`flex items-center justify-between h-14 px-4 py-2 bg-transparent border-2 rounded-[10px] cursor-pointer transition-colors ${
+        isActive || isMonthOpen || isDayOpen ? 'border-[#F5722E]' : 'border-[#AEADAD]'
       }`}
       onClick={handleContainerFocus}
       onFocus={handleContainerFocus}
@@ -70,7 +80,7 @@ const BirthdayInput: React.FC<BirthdayInputProps> = ({ name, value, onChange }) 
     >
       <Select
         onValueChange={handleMonthChange}
-        value={currentMonth ? months[parseInt(currentMonth) - 1] : undefined}
+        value={monthName || undefined}
         onOpenChange={(open) => {
           setIsMonthOpen(open);
           if (open) setIsActive(true);
@@ -95,20 +105,21 @@ const BirthdayInput: React.FC<BirthdayInputProps> = ({ name, value, onChange }) 
 
       <Select
         onValueChange={handleDayChange}
-        value={currentDay}
+        value={day || undefined}
+        disabled={!monthName}
         onOpenChange={(open) => {
           setIsDayOpen(open);
           if (open) setIsActive(true);
         }}
       >
         <SelectTrigger 
-          className="w-full border-none bg-transparent focus:ring-0 text-sm"
+          className={`w-full border-none bg-transparent focus:ring-0 text-sm ${!monthName ? 'cursor-not-allowed opacity-50' : ''}`}
           onFocus={() => setIsActive(true)}
         >
           <SelectValue placeholder="Day" />
         </SelectTrigger>
         <SelectContent>
-          {getDaysInMonth(currentMonth ? parseInt(currentMonth) : undefined).map((day) => (
+          {getDaysInMonth(monthName).map((day) => (
             <SelectItem key={day} value={day.toString()}>
               {day}
             </SelectItem>

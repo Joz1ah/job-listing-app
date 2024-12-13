@@ -12,7 +12,7 @@ const Tooltip = ({
   children
 }: TooltipProps) => {
   const [isVisible, setIsVisible] = useState(false);
-  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
+  const [timeoutId, setTimeoutId] = useState<ReturnType<typeof setTimeout> | null>(null);
 
   const handleMouseEnter = () => {
     const id = setTimeout(() => {
@@ -38,11 +38,12 @@ const Tooltip = ({
       {isVisible && (
         <div 
           className="
-            absolute z-50 px-4 py-3 
-            text-[9px] text-black bg-white
+            absolute z-99 px-4 py-3 
+            text-xs text-[#263238] bg-white
             border border-gray-200 shadow-sm text-left
-            w-[200px] h-[65px]
-            -top-[70px] -right-[210px]
+            w-52 min-h-[2rem]
+            -top-20 -right-52
+            break-words whitespace-normal
           "
           role="tooltip"
         >

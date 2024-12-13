@@ -1,45 +1,22 @@
 import { FC, useState, useEffect, useRef } from "react";
 import sparkeIcon from "images/sparkle-icon.png";
-import { perfectMatch, others } from "mockData/job-hunter-data";
+import { perfectMatch, others, Match } from "mockData/job-hunter-data";
 import { Button } from "components";
 import { AppCardSkeleton, BookmarkLimitHandler } from "components";
-import { AppCardDesktop, AppCardMobile } from "features";
+import { AppCard } from "features/employer";
 import employerAds from "images/employer-ads.svg?url";
-import employerMobileAds from "images/employer-mobile-ads.svg?url";
-import bulb from "images/bulb.svg?url";
 import employerPopAds from "images/popup-employer.svg?url";
-
 import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselPrevious,
-  CarouselNext,
-} from "components";
+  PerfectMatchEmptyState,
+  OtherApplicationEmptyState,
+} from "features/employer";
+import { AdDialogWrapper } from "components";
 
 import { useEmployerContext } from "components";
 
 interface selectedProps {
   setSelectedTab: (tab: string) => void;
   isFreeTrial?: boolean;
-}
-
-interface Skill {
-  name: string;
-  isMatch: boolean;
-}
-
-interface Match {
-  
-  name: string;
-  location: string;
-  job: string;
-  skills: Skill[];
-  appliedAgo: string;
-  experience: string;
-  lookingFor: string[];
-  salaryExpectation: string;
-  language: string[];
 }
 
 interface AdItem {
@@ -51,10 +28,14 @@ type CardItem = Match | AdItem;
 
 const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
   const [displayedItems, setDisplayedItems] = useState<CardItem[]>(() => {
+    if (perfectMatch.length === 0) {
+      return [];
+    }
+
     // Initial load of 5 items
     const initialItems = perfectMatch.slice(0, 5);
-    if (isFreeTrial) {
-      // Insert first ad at position 3
+    if (isFreeTrial && initialItems.length >= 3) {
+      // Only insert ad if we have at least 3 real items
       return [
         ...initialItems.slice(0, 3),
         { isAd: true, image: employerAds },
@@ -89,7 +70,9 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
 
     if (isFreeTrial) {
       // Calculate if we need an ad in the next 2 positions
-      const realItemsCount = displayedItems.filter(item => !("isAd" in item)).length;
+      const realItemsCount = displayedItems.filter(
+        (item) => !("isAd" in item),
+      ).length;
       const nextPositionNeedsAd = (realItemsCount + 1 - 3) % 5 === 0;
       const secondPositionNeedsAd = (realItemsCount + 2 - 3) % 5 === 0;
 
@@ -99,7 +82,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
         setDisplayedItems((prev) => [
           ...prev,
           ...newItems,
-          { isAd: true, image: employerAds }
+          { isAd: true, image: employerAds },
         ]);
       } else if (secondPositionNeedsAd) {
         // Load 2 real items + ad
@@ -107,12 +90,15 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
         setDisplayedItems((prev) => [
           ...prev,
           newItems[0],
-          { isAd: true, image: employerAds }
+          { isAd: true, image: employerAds },
         ]);
       } else {
         // Load 2 regular items
         const itemsToLoad = Math.min(2, remainingItems);
-        const newItems = perfectMatch.slice(startIndex, startIndex + itemsToLoad);
+        const newItems = perfectMatch.slice(
+          startIndex,
+          startIndex + itemsToLoad,
+        );
         setDisplayedItems((prev) => [...prev, ...newItems]);
       }
     } else {
@@ -129,10 +115,16 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
     setLoading(false);
   };
 
-  // Reset when switching tabs
   useEffect(() => {
+    if (perfectMatch.length === 0) {
+      setDisplayedItems([]);
+      setHasMore(false);
+      setLoading(false);
+      return;
+    }
+
     const initialItems = perfectMatch.slice(0, isFreeTrial ? 5 : 6);
-    if (isFreeTrial) {
+    if (isFreeTrial && initialItems.length >= 3) {
       setDisplayedItems([
         ...initialItems.slice(0, 3),
         { isAd: true, image: employerAds },
@@ -150,7 +142,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
     ? perfectMatch.length -
       displayedItems.filter((item) => !("isAd" in item)).length
     : perfectMatch.length - displayedItems.length;
-    
+
   const showLoadingCards = loading && remainingItems > 0;
   const loadingCardsCount = Math.min(2, remainingItems);
 
@@ -187,49 +179,44 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
     });
   };
 
-  return (
-    <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 min-[1400px]:gap-8 2xl:gap-12 justify-items-center w-full max-w-[932px]">
-      <BookmarkLimitHandler
-        isFreeTrial={isFreeTrial}
-        maxBookmarks={3}
-        onUpgradeClick={() => {
-          console.log("Upgrade clicked");
+  const showEmptyState = !loading && displayedItems.length === 0;
+  if (showEmptyState) {
+    return (
+      <PerfectMatchEmptyState
+        onExploreClick={() => {
+          setSelectedTab("otherApplications");
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+          });
         }}
-        limitPopupImage={employerPopAds}
-        limitPopupTitle="Job Hunter Bookmark Limit"
-        limitPopupDescription="Upgrade to bookmark more job matches!"
-      >
-        {displayedItems.map((item, index) =>
-          "isAd" in item ? (
-            <div
-              key={`ad-${index}`}
-              className="w-[436px] h-[275px] rounded-lg overflow-hidden"
-            >
-              <img
-                src={item.image}
-                alt="Job Hunter Ad"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          ) : (
-            <AppCardDesktop
-              key={index}
-              match={item}
-              isFreeTrial={isFreeTrial}
-            />
-          )
-        )}
-      </BookmarkLimitHandler>
+      />
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 xl:gap-5 justify-items-center w-full md:min-w-[436px] xl:w-[900px] mx-auto px-0">
+      {displayedItems.map((item, index) =>
+        "isAd" in item ? (
+          <AdDialogWrapper
+            key={`ad-${index}`}
+            adImage={item.image}
+            popupImage={employerPopAds}
+          />
+        ) : (
+          <AppCard key={index} match={item} isFreeTrial={isFreeTrial} />
+        ),
+      )}
 
       {showLoadingCards && (
         <>
-          <AppCardSkeleton/>
+          <AppCardSkeleton />
           {loadingCardsCount > 1 && <AppCardSkeleton />}
         </>
       )}
 
       {!hasMore && displayedItems.length > 0 && (
-        <div className="bg-transparent border-none w-full h-[275px] flex items-center justify-center text-center">
+        <div className="w-full md:w-[436px] h-auto md:h-[275px] flex items-center justify-center text-center">
           <div className="p-10">
             <p className="text-xl font-semibold text-white">
               You've reached the end of your perfect matches for now!
@@ -239,7 +226,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
             </span>
             <Button
               variant="link"
-              className="text-[20px] text-orange-500 font-semibold pl-2 underline pt-0"
+              className="text-[20px] text-[#F5722E] font-semibold pl-2 underline pt-0"
               onClick={handleClick}
             >
               other application cards
@@ -250,7 +237,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
 
       <div ref={loaderRef} className="h-px w-px" />
     </div>
-);
+  );
 };
 
 const OtherApplications: FC<selectedProps> = ({
@@ -258,10 +245,14 @@ const OtherApplications: FC<selectedProps> = ({
   isFreeTrial,
 }) => {
   const [displayedItems, setDisplayedItems] = useState<CardItem[]>(() => {
+    if (others.length === 0) {
+      return [];
+    }
+
     // Initial load of 5 items
-    const initialItems = others.slice(0, isFreeTrial ? 5 : 6);
-    if (isFreeTrial) {
-      // Insert first ad at position 3
+    const initialItems = others.slice(0, 5);
+    if (isFreeTrial && initialItems.length >= 3) {
+      // Only insert ad if we have at least 3 real items
       return [
         ...initialItems.slice(0, 3),
         { isAd: true, image: employerAds },
@@ -296,7 +287,9 @@ const OtherApplications: FC<selectedProps> = ({
 
     if (isFreeTrial) {
       // Calculate if we need an ad in the next 2 positions
-      const realItemsCount = displayedItems.filter(item => !("isAd" in item)).length;
+      const realItemsCount = displayedItems.filter(
+        (item) => !("isAd" in item),
+      ).length;
       const nextPositionNeedsAd = (realItemsCount + 1 - 3) % 5 === 0;
       const secondPositionNeedsAd = (realItemsCount + 2 - 3) % 5 === 0;
 
@@ -306,7 +299,7 @@ const OtherApplications: FC<selectedProps> = ({
         setDisplayedItems((prev) => [
           ...prev,
           ...newItems,
-          { isAd: true, image: employerAds }
+          { isAd: true, image: employerAds },
         ]);
       } else if (secondPositionNeedsAd) {
         // Load 2 real items + ad
@@ -314,7 +307,7 @@ const OtherApplications: FC<selectedProps> = ({
         setDisplayedItems((prev) => [
           ...prev,
           newItems[0],
-          { isAd: true, image: employerAds }
+          { isAd: true, image: employerAds },
         ]);
       } else {
         // Load 2 regular items
@@ -338,8 +331,15 @@ const OtherApplications: FC<selectedProps> = ({
 
   // Reset when switching tabs
   useEffect(() => {
+    if (others.length === 0) {
+      setDisplayedItems([]);
+      setHasMore(false);
+      setLoading(false);
+      return;
+    }
+
     const initialItems = others.slice(0, isFreeTrial ? 5 : 6);
-    if (isFreeTrial) {
+    if (isFreeTrial && initialItems.length >= 3) {
       setDisplayedItems([
         ...initialItems.slice(0, 3),
         { isAd: true, image: employerAds },
@@ -354,10 +354,9 @@ const OtherApplications: FC<selectedProps> = ({
 
   // Calculate loading cards
   const remainingItems = isFreeTrial
-    ? others.length -
-      displayedItems.filter((item) => !("isAd" in item)).length
+    ? others.length - displayedItems.filter((item) => !("isAd" in item)).length
     : others.length - displayedItems.length;
-    
+
   const showLoadingCards = loading && remainingItems > 0;
   const loadingCardsCount = Math.min(2, remainingItems);
 
@@ -394,40 +393,24 @@ const OtherApplications: FC<selectedProps> = ({
     });
   };
 
-  return (
-    <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 min-[1400px]:gap-8 2xl:gap-12 justify-items-center w-full max-w-[932px]">
-      <BookmarkLimitHandler
-        isFreeTrial={isFreeTrial}
-        maxBookmarks={3}
-        onUpgradeClick={() => {
-          console.log("Upgrade clicked");
-        }}
-        limitPopupImage={employerPopAds}
-        limitPopupTitle="Employer Bookmark Limit"
-        limitPopupDescription="Upgrade to bookmark more candidate matches!"
-      >
-        {displayedItems.map((item, index) =>
-          "isAd" in item ? (
-            <div
-              key={`ad-${index}`}
-              className="w-full md:w-[436px] h-[275px] rounded-lg overflow-hidden"
-            >
-              <img
-                src={item.image}
-                alt="Job Hunter Ad"
-                className="w-[436px] h-[275px] rounded-lg overflow-hidden"
-              />
-            </div>
-          ) : (
-            <AppCardDesktop
-              key={index}
-              match={item}
-              isFreeTrial={isFreeTrial}
-            />
-          ),
-        )}
-      </BookmarkLimitHandler>
+  const showEmptyState = !loading && displayedItems.length === 0;
+  if (showEmptyState) {
+    return <OtherApplicationEmptyState />;
+  }
 
+  return (
+    <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 xl:gap-5 justify-items-center w-full md:min-w-[436px] xl:w-[900px] mx-auto px-0">
+      {displayedItems.map((item, index) =>
+        "isAd" in item ? (
+          <AdDialogWrapper
+            key={`ad-${index}`}
+            adImage={item.image}
+            popupImage={employerPopAds}
+          />
+        ) : (
+          <AppCard key={index} match={item} isFreeTrial={isFreeTrial} />
+        ),
+      )}
       {/* Dynamic Loading Cards */}
       {showLoadingCards && (
         <>
@@ -437,7 +420,7 @@ const OtherApplications: FC<selectedProps> = ({
       )}
 
       {!hasMore && displayedItems.length > 0 && (
-        <div className="bg-transparent border-none w-full md:w-[436px] h-auto md:h-[275px] flex items-center justify-center text-center p-0">
+        <div className="w-full md:w-[436px] h-auto md:h-[275px] flex items-center justify-center text-center">
           <div className="p-10">
             <p className="text-xl font-semibold text-white">
               You've reached the end of your other application cards for now!
@@ -447,7 +430,7 @@ const OtherApplications: FC<selectedProps> = ({
             </span>
             <Button
               variant="link"
-              className="text-[20px] text-orange-500  font-semibold pl-2 underline pt-0"
+              className="text-[20px] text-[#F5722E]  font-semibold pl-2 underline pt-0"
               onClick={handleClick}
             >
               perfect matches
@@ -461,58 +444,6 @@ const OtherApplications: FC<selectedProps> = ({
   );
 };
 
-interface EndCardProps {
-  type: "perfectMatch" | "otherApplication";
-}
-
-const EndCard: React.FC<EndCardProps> = ({ type }) => {
-  const cardContent = {
-    perfectMatch: {
-      mainText: "perfect matches",
-      exploreText: "Explore more options below",
-    },
-    otherApplication: {
-      mainText: "other application card",
-      exploreText: "Explore your perfect matches",
-    },
-  };
-
-  const content = cardContent[type];
-
-  return (
-    <div className="flex flex-col items-center w-[308px] h-[420px] bg-transparent rounded-lg text-center">
-      <div className="px-10 pt-[55px] flex flex-col items-center w-full">
-        <div className="text-xl font-semibold text-white">
-          <div>You've reached the</div>
-          <div>
-            end of your{" "}
-            <span className="text-[#F5722E] font-semibold">
-              {type === "perfectMatch" ? "perfect" : content.mainText}
-            </span>
-          </div>
-          {type === "perfectMatch" && (
-            <div>
-              <span className="text-[#F5722E] font-semibold">matches</span>{" "}
-              for now!
-            </div>
-          )}
-          {type === "otherApplication" && <div>for now!</div>}
-        </div>
-        <div className="text-xl font-semibold text-white mt-0.5">
-          <div>{content.exploreText}</div>
-        </div>
-        <div className="flex justify-center w-full mt-6">
-          <img
-            src={bulb}
-            alt="Bulb"
-            className="w-[55px] h-[75px] fill-orange-500"
-          />
-        </div>
-      </div>
-    </div>
-  );
-};
-
 interface EmployerSectionProps {
   isFreeTrial?: boolean;
 }
@@ -520,27 +451,24 @@ interface EmployerSectionProps {
 const EmployerFeed: FC<EmployerSectionProps> = () => {
   const [selectedTab, setSelectedTab] = useState("perfectMatch");
   const [isLoading, setIsLoading] = useState(true);
-  const [bookmarkedCards, setBookmarkedCards] = useState(new Set());
   const { isFreeTrial } = useEmployerContext();
 
-  const toggleBookmark = (section: string, index: number) => {
-    const combinedId = `${section}-${index}`;
-    setBookmarkedCards((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(combinedId)) {
-        newSet.delete(combinedId);
-      } else {
-        newSet.add(combinedId);
-      }
-      return newSet;
-    });
+  const handleUpgradeClick = () => {
+    console.log("Upgrade clicked");
+    // Implement your upgrade logic here
   };
 
   const handleTabChange = (tab: string) => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    const scrollViewport = document.querySelector(
+      "[data-radix-scroll-area-viewport]",
+    );
+    if (scrollViewport) {
+      scrollViewport.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
+
     setSelectedTab(tab);
     setIsLoading(true);
     setTimeout(() => {
@@ -555,173 +483,113 @@ const EmployerFeed: FC<EmployerSectionProps> = () => {
   }, []);
 
   const LoadingGrid = () => {
+    // Calculate number of skeleton cards based on actual data
+    const dataLength =
+      selectedTab === "perfectMatch"
+        ? Math.min(perfectMatch.length, isFreeTrial ? 5 : 6)
+        : Math.min(others.length, isFreeTrial ? 5 : 6);
+
+    // If there's no data, don't show loading state
+    if (dataLength === 0) {
+      return selectedTab === "perfectMatch" ? (
+        <PerfectMatchEmptyState
+          onExploreClick={() => handleTabChange("otherApplications")}
+        />
+      ) : (
+        <OtherApplicationEmptyState />
+      );
+    }
+
     return (
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 min-[1400px]:gap-8 2xl:gap-12 justify-items-center w-full max-w-[932px]">
-        {[1, 2, 3, 4, 5, 6].map((i) => (
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 xl:gap-5 justify-items-center w-full md:min-w-[436px] xl:w-[900px] mx-auto px-0">
+        {Array.from({ length: dataLength }).map((_, i) => (
           <AppCardSkeleton key={i} />
         ))}
       </div>
     );
   };
 
-  // Helper function to inject ads for mobile view
-  const getItemsWithAds = (items: Match[]): CardItem[] => {
-    if (!isFreeTrial) return items;
-
-    const result: CardItem[] = [];
-    let itemCount = 0;
-
-    items.forEach((item) => {
-      if (itemCount === 3 || (itemCount > 3 && (itemCount - 3) % 5 === 0)) {
-        result.push({ isAd: true, image: employerMobileAds });
-      }
-      result.push(item);
-      itemCount++;
-    });
-
-    return result;
-  };
-
   return (
-    <div>
-      <div className="hidden md:flex flex-col items-center mx-3 mb-8">
-        {/* Tab Buttons */}
-        <div className="flex justify-center mb-8 md:mb-12">
-          <button
-            className={`font-semibold mr-6 pb-2 text-[17px] inline-flex items-center gap-2 ${
-              selectedTab === "perfectMatch"
-                ? "text-orange-500 border-b-2 border-orange-500"
-                : "text-[#AEADAD]"
-            }`}
-            onClick={() => handleTabChange("perfectMatch")}
-            disabled={isLoading}
-          >
-            <img
-              src={sparkeIcon}
-              alt="Sparkle Icon"
-              className={`w-5 h-5 ${
-                selectedTab === "perfectMatch"
-                  ? "filter grayscale-0"
-                  : "filter grayscale"
-              }`}
-            />
-            PERFECT MATCH
-          </button>
-          <button
-            className={`font-semibold pb-2 text-[17px] ${
-              selectedTab === "otherApplications"
-                ? "text-orange-500 border-b-2 border-orange-500"
-                : "text-[#AEADAD]"
-            }`}
-            onClick={() => handleTabChange("otherApplications")}
-            disabled={isLoading}
-          >
-            OTHER APPLICATION CARDS
-          </button>
-        </div>
+    <BookmarkLimitHandler
+      isFreeTrial={isFreeTrial}
+      maxBookmarks={3}
+      onUpgradeClick={handleUpgradeClick}
+      limitPopupImage={employerPopAds}
+      limitPopupTitle="Bookmark Limit Reached"
+      limitPopupDescription="Upgrade to bookmark more matches!"
+    >
+      <div>
+        <div className="flex flex-col items-center mb-8 w-full">
+          {/* Tab Buttons */}
+          <div className="flex justify-center mb-8 md:mb-12">
+            <button
+              className={`font-semibold mr-6 pb-2 text-[17px] inline-flex items-center gap-2 transition-all duration-200 relative group
+              ${selectedTab === "perfectMatch" ? "text-[#F5722E]" : "text-[#AEADAD] hover:text-[#F5722E]"}`}
+              onClick={() => handleTabChange("perfectMatch")}
+              disabled={isLoading}
+            >
+              <div
+                className="absolute bottom-0 left-0 w-full h-0.5 bg-[#F5722E] transform origin-left transition-transform duration-200 ease-out"
+                style={{
+                  transform:
+                    selectedTab === "perfectMatch" ? "scaleX(1)" : "scaleX(0)",
+                }}
+              />
+              <img
+                src={sparkeIcon}
+                alt="Sparkle Icon"
+                className={`w-5 h-5 transition-all duration-200 ${
+                  selectedTab === "perfectMatch"
+                    ? "filter grayscale-0"
+                    : "filter grayscale group-hover:grayscale-0"
+                }`}
+              />
+              PERFECT MATCH
+            </button>
 
-        {/* Content Section */}
-        <div className="w-full">
-          {isLoading ? (
-            <LoadingGrid />
-          ) : (
-            <div className="w-full">
-              {selectedTab === "perfectMatch" ? (
-                <PerfectMatch
-                  setSelectedTab={handleTabChange}
-                  isFreeTrial={isFreeTrial}
-                />
-              ) : (
-                <OtherApplications
-                  setSelectedTab={handleTabChange}
-                  isFreeTrial={isFreeTrial}
-                />
-              )}
-            </div>
-          )}
-        </div>
-      </div>
+            <button
+              className={`font-semibold pb-2 text-[17px] transition-all duration-200 relative
+              ${selectedTab === "otherApplications" ? "text-[#F5722E]" : "text-[#AEADAD] hover:text-[#F5722E]"}`}
+              onClick={() => handleTabChange("otherApplications")}
+              disabled={isLoading}
+            >
+              <div
+                className="absolute bottom-0 right-0 w-full h-0.5 bg-[#F5722E] transform origin-right transition-transform duration-200 ease-out"
+                style={{
+                  transform:
+                    selectedTab === "otherApplications"
+                      ? "scaleX(1)"
+                      : "scaleX(0)",
+                }}
+              />
+              OTHER APPLICATION CARDS
+            </button>
+          </div>
 
-      {/* Mobile Carousel View */}
-      <div className="block md:hidden w-full p-6 flex-grow overflow-x-hidden">
-        <div id="perfect-match-mobile">
-          <h3 className="flex justify-center items-center mt-2 gap-2 text-[17px] text-[#F5722E] text-center font-semibold pb-2">
-            <img
-              src={sparkeIcon}
-              alt="Sparkle Icon"
-              className="w-[22px] h-[24px]"
-            />
-            PERFECT MATCH
-          </h3>
-
-          <Carousel className="w-full max-w-[320px] mx-auto">
-            <CarouselContent>
-              {getItemsWithAds(perfectMatch).map((item, index) => (
-                <CarouselItem key={index} className="flex justify-center">
-                  {"isAd" in item ? (
-                    <img
-                      src={item.image}
-                      alt="Employer Ad"
-                      className="w-[308px]"
-                    />
-                  ) : (
-                    <div className="relative w-full max-w-[320px]">
-                      <AppCardMobile
-                        match={item}
-                        isFreeTrial={isFreeTrial}
-                        bookmarked={bookmarkedCards.has(`perfectMatch-${index}`)}
-                        onBookmark={() => toggleBookmark("perfectMatch", index)}
-                      />
-                    </div>
-                  )}
-                </CarouselItem>
-              ))}
-              <CarouselItem className="flex justify-center">
-                <EndCard type="perfectMatch" />
-              </CarouselItem>
-            </CarouselContent>
-            <CarouselPrevious className="hidden" />
-            <CarouselNext className="hidden" />
-          </Carousel>
-        </div>
-
-        <div id="other-applications-mobile" className="pt-12 pb-6">
-          <h3 className="flex justify-center items-center mt-2 gap-2 text-[17px] text-[#AEADAD] text-center font-semibold pb-2">
-            OTHER APPLICATION CARDS
-          </h3>
-
-          <Carousel className="w-full max-w-[320px] mx-auto">
-            <CarouselContent>
-              {getItemsWithAds(others).map((item, index) => (
-                <CarouselItem key={index} className="flex justify-center">
-                  {"isAd" in item ? (
-                    <img
-                      src={item.image}
-                      alt="Employer Ad"
-                      className="w-[308px]"
-                    />
-                  ) : (
-                    <div className="relative w-full max-w-[320px]">
-                      <AppCardMobile
-                        match={item}
-                        isFreeTrial={isFreeTrial}
-                        bookmarked={bookmarkedCards.has(`others-${index}`)}
-                        onBookmark={() => toggleBookmark("others", index)}
-                      />
-                    </div>
-                  )}
-                </CarouselItem>
-              ))}
-              <CarouselItem className="flex justify-center">
-                <EndCard type="otherApplication" />
-              </CarouselItem>
-            </CarouselContent>
-            <CarouselPrevious className="hidden" />
-            <CarouselNext className="hidden" />
-          </Carousel>
+          {/* Content Section */}
+          <div className="w-full">
+            {isLoading ? (
+              <LoadingGrid />
+            ) : (
+              <div className="w-full">
+                {selectedTab === "perfectMatch" ? (
+                  <PerfectMatch
+                    setSelectedTab={handleTabChange}
+                    isFreeTrial={isFreeTrial}
+                  />
+                ) : (
+                  <OtherApplications
+                    setSelectedTab={handleTabChange}
+                    isFreeTrial={isFreeTrial}
+                  />
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </BookmarkLimitHandler>
   );
 };
+
 export { EmployerFeed };

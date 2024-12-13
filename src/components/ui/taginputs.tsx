@@ -140,8 +140,8 @@ const TagInputs: React.FC<TagInputProps> = ({
     <div ref={containerRef} className="relative w-full">
       <div 
         className={cn(
-          "bg-transparent border-2 border-[#AEADAD] rounded-md min-h-[56px] overflow-hidden",
-          "focus-within:border-orange-500",
+          "bg-transparent border-2 border-[#AEADAD] rounded-[10px] min-h-[56px] overflow-hidden",
+          "focus-within:border-[#F5722E]",
           "transition-all duration-200 ease-in-out",
           disabled && "opacity-50 cursor-not-allowed",
           className
@@ -180,7 +180,7 @@ const TagInputs: React.FC<TagInputProps> = ({
               onKeyDown={handleKeyDown}
               disabled={disabled || remainingTags === 0}
               placeholder={value.length === 0 ? placeholder : ""}
-              className="w-full h-7 py-0 mt-1.5 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent placeholder:text-white disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-full h-7 py-0 mt-1.5 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent placeholder:text-[#AEADAD] disabled:cursor-not-allowed disabled:opacity-50"
             />
           </div>
         </div>
@@ -203,7 +203,7 @@ const TagInputs: React.FC<TagInputProps> = ({
                   onMouseEnter={() => setFocusedIndex(index)}
                   className={cn(
                     "px-2 py-2 cursor-pointer transition-all ease-in-out duration-500",
-                    index === focusedIndex ? "bg-orange-500 text-white" : "hover:bg-orange-500 hover:text-white"
+                    index === focusedIndex ? "bg-[#F5722E] text-white" : "hover:bg-[#F5722E] hover:text-white"
                   )}
                 >
                   {option.label}
@@ -285,15 +285,29 @@ const InterpersonalSkillsTagInput: React.FC<Omit<TagInputProps, 'options'>> = (p
 
 const LanguageTagInput: React.FC<Omit<TagInputProps, 'options'>> = (props) => {
   const languages = [
+    { label: "Arabic", value: "ar" },
+    { label: "Bengali", value: "bn" },
+    { label: "Chinese (Cantonese)", value: "zh-hk" },
+    { label: "Chinese (Mandarin)", value: "zh" },
+    { label: "Dutch", value: "nl" },
     { label: "English", value: "en" },
+    { label: "Finnish", value: "fi" },
     { label: "French", value: "fr" },
     { label: "German", value: "de" },
-    { label: "Spanish", value: "es" },
-    { label: "Portuguese", value: "pt" },
-    { label: "Russian", value: "ru" },
+    { label: "Hindi", value: "hi" },
+    { label: "Italian", value: "it" },
     { label: "Japanese", value: "ja" },
     { label: "Korean", value: "ko" },
-    { label: "Chinese", value: "zh" },
+    { label: "Malay", value: "ms" },
+    { label: "Polish", value: "pl" },
+    { label: "Portuguese", value: "pt" },
+    { label: "Russian", value: "ru" },
+    { label: "Spanish", value: "es" },
+    { label: "Swedish", value: "sv" },
+    { label: "Tagalog", value: "tl" },
+    { label: "Thai", value: "th" },
+    { label: "Turkish", value: "tr" },
+    { label: "Vietnamese", value: "vi" }
   ];
 
   return (
