@@ -1,5 +1,5 @@
 import { FC, useState } from "react";
-import { MapPin, Bookmark, X, Check, LoaderCircle } from "lucide-react";
+import { MapPin, Bookmark, X, Check, CircleX, LoaderCircle } from "lucide-react";
 import { Card, CardHeader, CardContent, CardFooter } from "components";
 import { Button } from "components";
 import { RescheduleModal } from "features/job-hunter";
@@ -374,7 +374,7 @@ const PendingCard: FC<PendingCardProps> = ({
         </div>
       ) : isDeclined ? (
         <div className="flex items-center gap-2 text-[#E53835]">
-          <Check className="w-5 h-5" />
+          <CircleX className="w-5 h-5 text-white fill-[#E53835]" />
           <span className="text-sm font-medium">
             You've successfully declined this interview!
           </span>

@@ -168,7 +168,7 @@ const JobCard: FC<JobCardProps> = ({ match, isFreeTrial = false }) => {
 
         <CardFooter className="absolute bottom-0 right-0 flex flex-row justify-end items-center space-x-1 p-2">
           <Button
-            className="text-[10px] sm:text-[12px] font-semibold px-0 w-[100px] sm:w-[133px] h-[24px] sm:h-[27px] bg-[#F5722E] hover:bg-[#F5722E]/90"
+            className="text-[10px] md:text-[12px] font-semibold px-0 w-[133px] h-[27px] bg-[#F5722E] hover:bg-[#F5722E]/90"
             onClick={(e) => handleInterested(e)}
           >
             Schedule Interview

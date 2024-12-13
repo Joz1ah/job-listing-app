@@ -48,7 +48,7 @@ const labelWrapperVariants = cva(
     variants: {
       variant: {
         default: "bg-[#242625] md:bg-[#2D3A41]",
-        primary: "bg-primary",
+        primary: "bg-[#2D3A41]",
         secondary: "bg-white"
       }
     },

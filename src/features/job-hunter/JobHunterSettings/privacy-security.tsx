@@ -92,6 +92,7 @@ const PrivacyAndSecuritySettings: FC = () => {
                   label="Original Password"
                   error={errors.originalPassword}
                   touched={touched.originalPassword}
+                  variant="primary"
                 >
                   <div className="relative">
                     <Input
@@ -106,7 +107,7 @@ const PrivacyAndSecuritySettings: FC = () => {
                       onClick={() =>
                         setShowOriginalPassword(!showOriginalPassword)
                       }
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors duration-200 bg-[#242625] md:bg-[#2D3A41] p-0.5"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors duration-200 bg-[#2D3A41] p-0.5"
                     >
                       {showOriginalPassword ? (
                         <EyeOff size={18} />
@@ -123,6 +124,7 @@ const PrivacyAndSecuritySettings: FC = () => {
                   touched={touched.newPassword}
                   showIcon={true}
                   tooltipContent={passwordTooltipContent}
+                  variant="primary"
                 >
                   <div className="relative">
                     <Input
@@ -135,7 +137,7 @@ const PrivacyAndSecuritySettings: FC = () => {
                     <button
                       type="button"
                       onClick={() => setShowNewPassword(!showNewPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors duration-200 bg-[#242625] md:bg-[#2D3A41] p-0.5"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors duration-200 bg-[#2D3A41] p-0.5"
                     >
                       {showNewPassword ? (
                         <EyeOff size={18} />
@@ -150,6 +152,7 @@ const PrivacyAndSecuritySettings: FC = () => {
                   label="Confirm Password"
                   error={errors.confirmPassword}
                   touched={touched.confirmPassword}
+                  variant="primary"
                 >
                   <div className="relative">
                     <Input
@@ -164,7 +167,7 @@ const PrivacyAndSecuritySettings: FC = () => {
                       onClick={() =>
                         setShowConfirmPassword(!showConfirmPassword)
                       }
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors duration-200 bg-[#242625] md:bg-[#2D3A41] p-0.5"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors duration-200 bg-[#2D3A41] p-0.5"
                     >
                       {showConfirmPassword ? (
                         <EyeOff size={18} />

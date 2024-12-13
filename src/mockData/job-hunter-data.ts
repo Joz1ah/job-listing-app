@@ -18,7 +18,7 @@ export interface Match {
 }
 
 export const perfectMatch: Match[] = [
-  {
+  /* {
     id: 1,
     firstName: "Olivia",
     lastName: "Davis",
@@ -197,7 +197,7 @@ export const perfectMatch: Match[] = [
     language: ["Spanish", "English"],
     interpersonalSkills: ["Flexibility", "Empathy", "Persuasion"],
     certificates: ["Certified UI/UX Designer"]
-  }
+  } */
 ];
 
 export const others: Match[] = [
