@@ -11,7 +11,7 @@ import {
 } from "components";
 import { Tooltip } from "components";
 import { Switch } from "components";
-import googleLogo from 'images/google-logo.svg?url';
+import googleLogo from 'images/google-logo-icon.svg?url';
 import { useJobHunterContext } from "components";
 import { AdDialogWrapper } from "components";
 import jobHunterPopAds from "images/popup-hunter.svg?url";
