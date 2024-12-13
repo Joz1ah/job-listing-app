@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { Button } from "components/ui/buttons";
 import { ChevronDown, Info, Plus, ChevronUp } from "lucide-react";
@@ -25,12 +25,9 @@ interface MenuProps {
 const EmployerMenu: FC<MenuProps> = ({
   isMenuOpen,
   onToggleMenu,
-  desktopMenuItems,
   mobileMenuItems,
   isFreeTrial,
 }) => {
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 1024);
   const location = useLocation();
 
   useEffect(() => {
@@ -40,30 +37,19 @@ const EmployerMenu: FC<MenuProps> = ({
   }, [location.pathname]);
 
   useEffect(() => {
-    const handleResize = () => {
-      const mobile = window.innerWidth < 768;
-      const smallScreen = window.innerWidth <= 1100;
-      setIsMobile(mobile);
-      setIsSmallScreen(smallScreen);
+    if (isMenuOpen) {
+      document.body.style.overflow = "hidden";
+      document.body.style.paddingRight = `${window.innerWidth - document.documentElement.clientWidth}px`;
+    } else {
+      document.body.style.overflow = "";
+      document.body.style.paddingRight = "";
+    }
 
-      if (!mobile) {
-        document.body.style.overflow = "";
-        document.body.style.paddingRight = "";
-      } else if (isMenuOpen) {
-        document.body.style.overflow = "hidden";
-        document.body.style.paddingRight = `${window.innerWidth - document.documentElement.clientWidth}px`;
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
     return () => {
       document.body.style.overflow = "";
       document.body.style.paddingRight = "";
-      window.removeEventListener("resize", handleResize);
     };
   }, [isMenuOpen]);
-
-  const currentMenuItems = isMobile ? mobileMenuItems : desktopMenuItems;
 
   const handleNavLinkClick = () => {
     if (isMenuOpen) {
@@ -124,17 +110,13 @@ const EmployerMenu: FC<MenuProps> = ({
                     className="flex-shrink-0"
                   >
                     <Button
-                      className={`bg-[#F5722E] hover:bg-[#F5722E]/90 rounded-sm flex items-center justify-center p-0
-                      ${isSmallScreen ? "w-10 h-10" : "w-[172px] h-[44px]"}
-                    `}
+                      className="bg-[#F5722E] hover:bg-[#F5722E]/90 rounded-sm flex items-center justify-center p-0
+                        w-10 h-10 lg:w-[172px] lg:h-[44px]"
                     >
-                      {isSmallScreen ? (
-                        <Plus className="text-white" size={16} />
-                      ) : (
-                        <span className="text-white font-light">
-                          Create Job listing
-                        </span>
-                      )}
+                      <Plus className="text-white lg:hidden" size={16} />
+                      <span className="hidden lg:block text-white font-light">
+                        Create Job listing
+                      </span>
                     </Button>
                   </NavLink>
                 </li>
@@ -214,11 +196,11 @@ const EmployerMenu: FC<MenuProps> = ({
           className={`fixed top-0 right-0 h-screen w-full md:w-[440px] bg-black text-white shadow-xl transition-transform duration-500 ease-in-out z-[999] ${
             isMenuOpen ? "translate-x-0" : "translate-x-full"
           }`}
-          style={{ marginTop: isMobile ? "64px" : "73px" }}
+          style={{ marginTop: "73px" }}
         >
           <div className="h-full overflow-y-auto">
             <nav className="flex flex-col text-white w-full pt-6">
-              {currentMenuItems.map((item, index) => (
+              {(mobileMenuItems).map((item, index) => (
                 <div key={item.path + index}>
                   <div className="w-full text-end px-2 sm:pr-4 sm:pl-0">
                     <NavLink
@@ -233,7 +215,7 @@ const EmployerMenu: FC<MenuProps> = ({
                       {item.name}
                     </NavLink>
                   </div>
-                  {index < currentMenuItems.length - 1 && (
+                  {index < mobileMenuItems.length - 1 && (
                     <div className="flex justify-center w-full">
                       <hr className="border-t border-white w-full my-0" />
                     </div>

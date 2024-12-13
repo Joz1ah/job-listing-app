@@ -3,11 +3,11 @@ import { Outlet } from "react-router-dom";
 import { useMenu } from "hooks";
 import { ScrollArea } from "components";
 import { employerDesktopMenu, employerMobileMenu } from "mockData/nav-menus";
-import { EmployerContext } from "components";
+import { EmployerContext, TrialProviders } from "components";
 import { EmployerMenu, Footer } from "layouts";
 import { useEmployerTrialStatus } from "components";
 
-const EmployerBaseLayout: FC = () => {
+const EmployerBaseLayoutContent: FC = () => {
   const { menuOpen, toggleMenu } = useMenu();
   const { isFreeTrial } = useEmployerTrialStatus();
   const [mounted, setMounted] = useState(false);
@@ -37,6 +37,16 @@ const EmployerBaseLayout: FC = () => {
         </ScrollArea>
       </div>
     </EmployerContext.Provider>
+  );
+};
+
+const EmployerBaseLayout: FC = () => {
+  return (
+    <TrialProviders
+      employerInitialStatus={false}
+    >
+      <EmployerBaseLayoutContent />
+    </TrialProviders>
   );
 };
 

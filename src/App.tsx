@@ -1,6 +1,5 @@
 import { FC, ReactElement, useEffect } from 'react'
 import { useRoutes } from 'react-router-dom'
-import { TrialProviders } from 'components'
 //import cn from 'classnames'
 
 import {
@@ -59,10 +58,6 @@ const App: FC = (): ReactElement => {
 
   return (
     <ErrorBoundary>
-      <TrialProviders 
-      employerInitialStatus={false}
-      jobHunterInitialStatus={false}
-      >
       <div
         /* className={cn(
           'app-wrapper',
@@ -74,7 +69,6 @@ const App: FC = (): ReactElement => {
         <Offline /> */}
         {content}
       </div>
-      </TrialProviders>
     </ErrorBoundary>
   )
 }

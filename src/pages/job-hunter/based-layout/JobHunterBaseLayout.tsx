@@ -1,13 +1,13 @@
 import { FC, useState, useEffect } from "react";
-import { Outlet } from "react-router-dom"; // Add this import
+import { Outlet } from "react-router-dom";
 import { useMenu } from "hooks";
 import { ScrollArea } from "components";
 import { jobHunterDesktopMenu, jobHunterMobileMenu } from "mockData/nav-menus";
-import { JobHunterContext } from "components";
+import { JobHunterContext, TrialProviders } from "components";
 import { JobHunterMenu, Footer } from "layouts";
 import { useJobHunterTrialStatus } from "components";
 
-const JobHunterBaseLayout: FC = () => {
+const JobHunterBaseLayoutContent: FC = () => {
     const { menuOpen, toggleMenu } = useMenu();
     const { isFreeTrial } = useJobHunterTrialStatus();
     const [mounted, setMounted] = useState(false);
@@ -38,6 +38,16 @@ const JobHunterBaseLayout: FC = () => {
         </div>
       </JobHunterContext.Provider>
     );
-  };
+};
 
-export { JobHunterBaseLayout }
+const JobHunterBaseLayout: FC = () => {
+  return (
+    <TrialProviders
+      jobHunterInitialStatus={false}
+    >
+      <JobHunterBaseLayoutContent />
+    </TrialProviders>
+  );
+};
+
+export { JobHunterBaseLayout };

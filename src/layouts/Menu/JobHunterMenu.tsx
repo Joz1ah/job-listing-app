@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { Button } from "components/ui/buttons";
 import { ChevronDown, Info, ChevronUp } from "lucide-react";
@@ -25,11 +25,9 @@ interface MenuProps {
 const JobHunterMenu: FC<MenuProps> = ({
   isMenuOpen,
   onToggleMenu,
-  desktopMenuItems,
   mobileMenuItems,
   isFreeTrial,
 }) => {
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const location = useLocation();
 
   useEffect(() => {
@@ -39,38 +37,19 @@ const JobHunterMenu: FC<MenuProps> = ({
   }, [location.pathname]);
 
   useEffect(() => {
-    const handleResize = () => {
-      const mobile = window.innerWidth < 768;
-      setIsMobile(mobile);
-
-      if (!mobile) {
-        document.body.style.overflow = "";
-        document.body.style.paddingRight = "";
-      } else if (isMenuOpen) {
-        document.body.style.overflow = "hidden";
-        document.body.style.paddingRight = `${window.innerWidth - document.documentElement.clientWidth}px`;
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => {
-      document.body.style.overflow = "";
-      document.body.style.paddingRight = "";
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [isMenuOpen]);
-
-  useEffect(() => {
-    if (isMenuOpen && isMobile) {
+    if (isMenuOpen) {
       document.body.style.overflow = "hidden";
       document.body.style.paddingRight = `${window.innerWidth - document.documentElement.clientWidth}px`;
     } else {
       document.body.style.overflow = "";
       document.body.style.paddingRight = "";
     }
-  }, [isMenuOpen, isMobile]);
 
-  const currentMenuItems = isMobile ? mobileMenuItems : desktopMenuItems;
+    return () => {
+      document.body.style.overflow = "";
+      document.body.style.paddingRight = "";
+    };
+  }, [isMenuOpen]);
 
   const handleNavLinkClick = () => {
     if (isMenuOpen) {
@@ -194,14 +173,13 @@ const JobHunterMenu: FC<MenuProps> = ({
         />
 
         <div
-          className={`fixed top-0 right-0 h-screen w-full md:w-[440px] bg-black text-white shadow-xl transition-transform duration-500 ease-in-out z-[999] ${
+          className={`fixed top-0 right-0 h-screen w-full md:w-[440px] bg-black text-white shadow-xl transition-transform duration-500 ease-in-out z-[999] mt-[64px] md:mt-[73px] ${
             isMenuOpen ? "translate-x-0" : "translate-x-full"
           }`}
-          style={{ marginTop: isMobile ? "64px" : "73px" }}
         >
           <div className="h-full overflow-y-auto">
             <nav className="flex flex-col text-white w-full pt-6">
-              {currentMenuItems.map((item, index) => (
+              {mobileMenuItems.map((item, index) => (
                 <div key={item.path + index}>
                   <div className="w-full text-end px-2 sm:pr-4 sm:pl-0">
                     <NavLink
@@ -216,7 +194,7 @@ const JobHunterMenu: FC<MenuProps> = ({
                       {item.name}
                     </NavLink>
                   </div>
-                  {index < currentMenuItems.length - 1 && (
+                  {index < mobileMenuItems.length - 1 && (
                     <div className="flex justify-center w-full">
                       <hr className="border-t border-white w-full my-0" />
                     </div>
