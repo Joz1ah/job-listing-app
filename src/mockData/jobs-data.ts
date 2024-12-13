@@ -157,7 +157,7 @@ export const perfectMatch: Match[] = [
 ];
 
 export const others: Match[] = [
-  /* {
+  {
     position: "Lead Software Engineer",
     company: "InnovateTech Solutions",
     location: "USA",
@@ -226,5 +226,5 @@ export const others: Match[] = [
     salaryExpectation: "$71,000-$100,000",
     interpersonalSkills: ["Problem-solving", "Communication", "Team Collaboration"],
     certificates: ["None required"]
-  }, */
+  },
 ];
