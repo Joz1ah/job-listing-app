@@ -19,7 +19,6 @@ const EmployerProfilePreview: React.FC<EmployerProfilePreviewProps> = ({
 }) => {
   if (!isOpen) return null;
 
-  // Helper function to get label from value
   const getLabel = (
     value: string,
     optionType: keyof typeof selectOptions
@@ -28,7 +27,6 @@ const EmployerProfilePreview: React.FC<EmployerProfilePreviewProps> = ({
     return option?.label || value;
   };
 
-  // Format address
   const formatAddress = () => {
     const parts = [
       formData.unitAndBldg,
@@ -42,12 +40,8 @@ const EmployerProfilePreview: React.FC<EmployerProfilePreviewProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 flex flex-col items-center overflow-y-auto pt-20">
-      <div className="flex items-center flex-wrap text-white text-base mb-2 p-4">
-        <span>Preview of your company profile</span>
-      </div>
-
-      <Card className="bg-white w-[400px] min-h-[700px] relative">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 flex flex-col items-center overflow-y-auto p-4 pt-8">
+      <Card className="bg-white w-full md:w-[760px] min-h-[600px] md:min-h-[825px] relative mt-12">
         <button
           onClick={onClose}
           className="absolute right-4 top-4 text-gray-500 hover:text-gray-700"
@@ -55,14 +49,14 @@ const EmployerProfilePreview: React.FC<EmployerProfilePreviewProps> = ({
           <X size={20} />
         </button>
 
-        <div className="p-6 space-y-4">
+        <div className="p-4 md:p-8 space-y-3">
           {/* Company Name and Industry */}
           <div>
-            <h2 className="text-sm font-semibold text-[#263238]">
+            <h2 className="text-lg md:text-[17px] font-semibold text-[#263238]">
               {formData.businessName}
             </h2>
-            <div className="flex items-center gap-2 text-[13px] mt-1">
-              <Building2 size={14} className="text-[#F5722E]" />
+            <div className="flex items-center gap-2 text-sm md:text-[17px] mt-1">
+              <Building2 size={16} className="text-[#F5722E]" />
               <span className="text-[#263238]">
                 {getLabel(formData.industry, 'industry')}
               </span>
@@ -71,14 +65,14 @@ const EmployerProfilePreview: React.FC<EmployerProfilePreviewProps> = ({
 
           {/* Company Details */}
           <div className="space-y-2">
-            <div className="flex items-center gap-2 text-[13px]">
-              <Calendar size={14} className="text-[#F5722E]" />
+            <div className="flex items-center gap-2 text-sm md:text-[17px]">
+              <Calendar size={16} className="text-[#F5722E]" />
               <span className="text-[#263238]">
                 Founded in {formData.yearFounded}
               </span>
             </div>
-            <div className="flex items-center gap-2 text-[13px]">
-              <Globe size={14} className="text-[#F5722E]" />
+            <div className="flex items-center gap-2 text-sm md:text-[17px]">
+              <Globe size={16} className="text-[#F5722E]" />
               <span className="text-[#263238]">
                 {formData.companyWebsite}
               </span>
@@ -86,48 +80,48 @@ const EmployerProfilePreview: React.FC<EmployerProfilePreviewProps> = ({
           </div>
 
           {/* Contact Person */}
-          <div className="space-y-2 pt-2">
-            <h3 className="text-[13px] font-semibold text-[#263238]">
+          <div className="space-y-2">
+            <h3 className="text-sm md:text-[17px] font-semibold text-[#263238]">
               Company Representative
             </h3>
-            <p className="text-[13px] text-[#263238]">
+            <p className="text-sm md:text-[17px] text-[#263238]">
               {formData.firstName} {formData.lastName}
             </p>
-            <p className="text-[13px] text-[#263238] italic">
+            <p className="text-sm md:text-[17px] text-[#263238] italic">
               {formData.position}
             </p>
           </div>
 
           {/* Contact Information */}
           <div className="space-y-2">
-            <div className="flex items-center gap-2 text-[13px]">
-              <Mail size={14} className="text-[#F5722E]" />
+            <div className="flex items-center gap-2 text-sm md:text-[17px]">
+              <Mail size={16} className="text-[#F5722E]" />
               <span className="text-[#263238]">{formData.emailAddress}</span>
             </div>
-            <div className="flex items-center gap-2 text-[13px]">
-              <Phone size={14} className="text-[#F5722E]" />
+            <div className="flex items-center gap-2 text-sm md:text-[17px]">
+              <Phone size={16} className="text-[#F5722E]" />
               <span className="text-[#263238]">{formData.mobileNumber}</span>
             </div>
-            <div className="flex items-center gap-2 text-[13px]">
-              <MapPin size={14} className="text-[#F5722E]" />
+            <div className="flex items-center gap-2 text-sm md:text-[17px]">
+              <MapPin size={16} className="text-[#F5722E]" />
               <span className="text-[#263238]">{formatAddress()}</span>
             </div>
           </div>
 
           {/* Company Overview */}
-          <div className="space-y-2 pt-2">
-            <h3 className="text-[13px] font-semibold text-[#263238]">
+          <div className="space-y-2">
+            <h3 className="text-sm md:text-[17px] font-semibold text-[#263238]">
               Company Overview
             </h3>
-            <p className="text-[13px] text-[#263238] whitespace-pre-wrap">
+            <div className="w-full p-3 md:p-4 text-xs md:text-sm border border-gray-200 rounded-md min-h-[120px]">
               {formData.companyOverview}
-            </p>
+            </div>
           </div>
 
-          <CardFooter className="absolute bottom-0 left-0 right-0 flex justify-end p-4 bg-transparent">
+          <CardFooter className="absolute bottom-0 left-0 right-0 flex justify-start p-4 md:p-8 bg-transparent">
             <Button
               onClick={onConfirm}
-              className="bg-[#F5722E] text-white hover:bg-orange-600 h-[27px] min-w-[133px]"
+              className="bg-[#F5722E] text-white hover:bg-orange-600 px-6 md:px-8 py-2"
             >
               Confirm Profile
             </Button>
