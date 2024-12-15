@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { MapPin } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
-import { Interview } from "features/employer/types";
+import { Interview } from "mockData/employer-interviews-data";
 
 interface CandidatePreviewModalProps {
   isOpen: boolean;

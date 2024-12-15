@@ -3,7 +3,7 @@ import { MapPin, Bookmark, X, Check, CircleX, LoaderCircle } from "lucide-react"
 import { Card, CardHeader, CardContent, CardFooter } from "components";
 import { Button } from "components";
 import { RescheduleModal } from "features/employer";
-import { Interview } from "features/employer/types";
+import { Interview } from "mockData/employer-interviews-data";
 import { useNavigate } from "react-router-dom";
 import {
   Select,

@@ -2,11 +2,11 @@ export interface Match {
   id: number;
   firstName: string;
   lastName: string;
-  phoneNumber: number;
-  birthday: string;
+  phoneNumber?: number;
+  birthday?: string;
   location: string;
   position: string;
-  education: string;
+  education?: string;
   coreSkills: string[];
   appliedAgo: string;
   experience: string;

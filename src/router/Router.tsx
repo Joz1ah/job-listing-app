@@ -72,8 +72,7 @@ const JobHunterSubscriptionSettings = lazy(() => import('features/job-hunter').t
 const JobHunterPrivacySettings = lazy(() => import('features/job-hunter').then(module => ({ default: module.PrivacyAndSecuritySettings })))
 
 // Bookmarked jobs
-const SavedJobs = lazy(() => import('features/job-hunter').then(module => ({ default: module.SavedJobs })))
-const AppliedJobs = lazy(() => import('features/job-hunter').then(module => ({ default: module.AppliedJobs })))
+const YourBookmarkedJobs = lazy(() => import('features/job-hunter').then(module => ({ default: module.YourBookmarkedJobs })))
 
 const LoadingFallback = () => (
   <div className="flex items-center justify-center w-full h-screen">
@@ -346,15 +345,11 @@ const routes: RouteObject[] = [
         children: [
           {
             path: '',
-            element: <Navigate to={`${ROUTE_CONSTANTS.BOOKMARKED_JOBS}/${ROUTE_CONSTANTS.SAVED}`} replace />
+            element: <Navigate to={`${ROUTE_CONSTANTS.BOOKMARKED_JOBS}/${ROUTE_CONSTANTS.BOOKMARKED}`} replace />
           },
           {
-            path: ROUTE_CONSTANTS.SAVED,
-            element: <LazyComponent component={SavedJobs} />
-          },
-          {
-            path: ROUTE_CONSTANTS.APPLIED,
-            element: <LazyComponent component={AppliedJobs} />
+            path: ROUTE_CONSTANTS.BOOKMARKED,
+            element: <LazyComponent component={YourBookmarkedJobs} />
           }
         ]
       },

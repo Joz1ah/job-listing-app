@@ -3,7 +3,7 @@ import { MapPin, Info, Check, Bookmark } from "lucide-react";
 import { Card, CardHeader, CardContent, CardFooter } from "components";
 import { Button } from "components";
 import { Tooltip } from "components";
-import { Interview } from "features/employer/types";
+import { Interview } from "mockData/employer-interviews-data";
 import { CandidatePreviewModal } from "./preview/CandidatePreviewModal";
 
 import gmeet from "images/google-meet.svg?url";

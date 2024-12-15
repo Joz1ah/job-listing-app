@@ -6,7 +6,7 @@ import companyLogo from "images/company-logo.png";
 import akazaLogoWhite from "images/akaza-logo-white.png";
 import menuButton from "images/menu-button.png";
 import { NotificationFeed } from "components";
-import verifiedIcon from 'images/verified.svg?url'
+import verifiedIcon from "images/verified.svg?url";
 
 interface NavItem {
   name: string;
@@ -221,17 +221,28 @@ const EmployerMenu: FC<MenuProps> = ({
               {currentMenuItems.map((item, index) => (
                 <div key={item.path + index}>
                   <div className="w-full text-end px-2 sm:pr-4 sm:pl-0">
-                    <NavLink
-                      to={item.path}
-                      onClick={handleNavLinkClick}
-                      className={`${
-                        item.isSpecial
-                          ? "text-[#F5722E] hover:text-orange-600"
-                          : "hover:text-[#F5722E]"
-                      } py-3 sm:py-2 inline-block text-sm`}
-                    >
-                      {item.name}
-                    </NavLink>
+                    {index === 0 && isMobile ? (
+                      <NavLink to="/employer/job-listing">
+                        <Button
+                          onClick={handleNavLinkClick}
+                          className="w-[160px] h-[36px] bg-[#F5722E] hover:bg-[#F5722E]/90 text-white p-0 text-xs font-normal mb-2"
+                        >
+                          {item.name}
+                        </Button>
+                      </NavLink>
+                    ) : (
+                      <NavLink
+                        to={item.path}
+                        onClick={handleNavLinkClick}
+                        className={`${
+                          item.isSpecial
+                            ? "text-[#F5722E] hover:text-orange-600"
+                            : "hover:text-[#F5722E]"
+                        } py-3 sm:py-2 inline-block text-sm`}
+                      >
+                        {item.name}
+                      </NavLink>
+                    )}
                   </div>
                   {index < currentMenuItems.length - 1 && (
                     <div className="flex justify-center w-full">

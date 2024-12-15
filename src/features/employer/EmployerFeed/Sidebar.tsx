@@ -89,7 +89,7 @@ const Sidebar: FC = () => {
 
       {/* Desktop View */}
       {shouldShowDesktopView && (
-        <div className="hidden md:block w-[280px] lg:w-[311px] h-[652px] bg-[#2D3A41] rounded py-6 px-3">
+        <div className="hidden md:block w-[311px] h-[652px] bg-[#2D3A41] rounded py-6 px-3">
           <h4 className="font-semibold mb-4 text-center text-sm md:text-base text-white">
             All Job Listings
           </h4>

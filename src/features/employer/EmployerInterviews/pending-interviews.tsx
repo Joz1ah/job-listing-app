@@ -3,7 +3,7 @@ import { PendingCard } from "features/employer";
 import { InterviewCardSkeleton } from "components";
 import { NavLink } from "react-router-dom";
 import emptyInterview from "images/calendar-empty.svg?url";
-import { Interview } from "../types";
+import { pendingInterviewsData, Interview } from "mockData/employer-interviews-data";
 
 interface AcceptData {
   confirmed: boolean;
@@ -21,160 +21,6 @@ interface RescheduleData {
   time: string;
   interviewId?: string;
 }
-
-// Mock Data
-const mockInterviews: Interview[] = [
-  {
-    position: "Frontend Engineer",
-    candidate: "Olivia Martinez",
-    location: "Mountain View, CA",
-    date: "December 22, 2024",
-    time: "10:00 AM PST",
-    receivedTime: "yesterday",
-    isNew: true,
-    coreSkills: ["React", "TypeScript", "Next.js", "CSS3", "GraphQL"],
-    experience: "3-5 years",
-    employmentPreference: ["Full Time"],
-    salaryExpectation: "$120,000-$150,000",
-    languages: ["English", "Spanish"],
-    education: "Master's in Computer Science",
-    certificate: "AWS Certified Developer",
-    interpersonalSkills: [
-      "Leadership",
-      "Communication",
-      "Problem Solving",
-      "Team Collaboration",
-      "Agile Methodologies",
-    ],
-  },
-  {
-    position: "Backend Developer",
-    candidate: "Benjamin Wilson",
-    location: "Menlo Park, CA",
-    date: "December 25, 2024",
-    time: "1:00 PM PST",
-    receivedTime: "two days ago",
-    isNew: false,
-    coreSkills: [
-      "Java",
-      "Spring Boot",
-      "PostgreSQL",
-      "Microservices",
-      "Docker",
-    ],
-    experience: "5-7 years",
-    employmentPreference: ["Full Time", "Remote"],
-    salaryExpectation: "$140,000-$170,000",
-    languages: ["English"],
-    education: "Bachelor's in Software Engineering",
-    certificate: "Oracle Certified Professional Java Developer",
-    interpersonalSkills: [
-      "System Design",
-      "Technical Leadership",
-      "Mentoring",
-      "Problem Solving",
-      "Documentation",
-    ],
-  },
-  {
-    position: "Full Stack Developer",
-    candidate: "Isabella Garcia",
-    location: "Remote",
-    date: "January 5, 2025",
-    time: "3:00 PM EST",
-    receivedTime: "today",
-    isNew: true,
-    coreSkills: ["React", "Node.js", "MongoDB", "Express", "AWS"],
-    experience: "4-6 years",
-    employmentPreference: ["Full Time", "Remote"],
-    salaryExpectation: "$130,000-$160,000",
-    languages: ["English", "Portuguese"],
-    education: "Master's in Web Technologies",
-    certificate: "MERN Stack Developer Certification",
-    interpersonalSkills: [
-      "Full-cycle Development",
-      "Project Management",
-      "Cross-functional Collaboration",
-      "Code Review",
-      "Mentoring",
-    ],
-  },
-  {
-    position: "UX/UI Designer",
-    candidate: "Ethan Harris",
-    location: "San Jose, CA",
-    date: "January 10, 2025",
-    time: "9:00 AM PST",
-    receivedTime: "last week",
-    isNew: false,
-    coreSkills: ["Figma", "Adobe XD", "Sketch", "Prototyping", "User Research"],
-    experience: "3-5 years",
-    employmentPreference: ["Full Time", "Hybrid"],
-    salaryExpectation: "$110,000-$140,000",
-    languages: ["English", "Mandarin"],
-    education: "Bachelor's in Interaction Design",
-    certificate: "Google UX Design Professional Certificate",
-    interpersonalSkills: [
-      "User-Centered Design",
-      "Design Thinking",
-      "Stakeholder Management",
-      "Visual Communication",
-      "Design Systems",
-    ],
-  },
-  {
-    position: "Data Scientist",
-    candidate: "Ava White",
-    location: "Seattle, WA",
-    date: "January 15, 2025",
-    time: "11:00 AM PST",
-    receivedTime: "two hours ago",
-    isNew: true,
-    coreSkills: [
-      "Python",
-      "Machine Learning",
-      "TensorFlow",
-      "SQL",
-      "Data Visualization",
-    ],
-    experience: "4-6 years",
-    employmentPreference: ["Full Time"],
-    salaryExpectation: "$150,000-$180,000",
-    languages: ["English", "French"],
-    education: "Ph.D. in Data Science",
-    certificate: "TensorFlow Developer Certificate",
-    interpersonalSkills: [
-      "Statistical Analysis",
-      "Research",
-      "Data Storytelling",
-      "Cross-functional Communication",
-      "Problem Solving",
-    ],
-  },
-  {
-    position: "DevOps Engineer",
-    candidate: "Alexander Walker",
-    location: "Redmond, WA",
-    date: "January 20, 2025",
-    time: "2:00 PM PST",
-    receivedTime: "yesterday",
-    isNew: true,
-    coreSkills: ["Kubernetes", "AWS", "CI/CD", "Terraform", "Python"],
-    experience: "5-7 years",
-    employmentPreference: ["Full Time", "Remote"],
-    salaryExpectation: "$140,000-$170,000",
-    languages: ["English", "German"],
-    education: "Bachelor's in Computer Engineering",
-    certificate: "Certified Kubernetes Administrator (CKA)",
-    interpersonalSkills: [
-      "Infrastructure Planning",
-      "Security Best Practices",
-      "System Architecture",
-      "Team Collaboration",
-      "Incident Response",
-    ],
-  },
-];
 
 const PendingInterviews: FC = () => {
   const [displayedItems, setDisplayedItems] = useState<Interview[]>([]);
@@ -232,7 +78,7 @@ const PendingInterviews: FC = () => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     const currentCount = displayedItems.length;
-    const remainingItems = mockInterviews.length - currentCount;
+    const remainingItems = pendingInterviewsData.length - currentCount;
 
     if (remainingItems <= 0) {
       setHasMore(false);
@@ -241,13 +87,13 @@ const PendingInterviews: FC = () => {
     }
 
     const itemsToLoad = Math.min(2, remainingItems);
-    const newItems = mockInterviews.slice(
+    const newItems = pendingInterviewsData.slice(
       currentCount,
       currentCount + itemsToLoad,
     );
     setDisplayedItems((prev) => [...prev, ...newItems]);
 
-    if (currentCount + itemsToLoad >= mockInterviews.length) {
+    if (currentCount + itemsToLoad >= pendingInterviewsData.length) {
       setHasMore(false);
     }
 
@@ -258,9 +104,9 @@ const PendingInterviews: FC = () => {
     const loadInitialItems = async () => {
       setLoading(true);
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      const initialItems = mockInterviews.slice(0, 6);
+      const initialItems = pendingInterviewsData.slice(0, 6);
       setDisplayedItems(initialItems);
-      setHasMore(mockInterviews.length > 6);
+      setHasMore(pendingInterviewsData.length > 6);
       setLoading(false);
       setInitialLoad(false);
     };
@@ -294,7 +140,7 @@ const PendingInterviews: FC = () => {
   }, [loading, hasMore, initialLoad]);
 
   const showLoadingCards = loading;
-  const loadingCardsCount = Math.min(6, mockInterviews.length);
+  const loadingCardsCount = Math.min(6, pendingInterviewsData.length);
 
   // Show empty state if there are no pending interviews and we're not loading
   if (!loading && displayedItems.length === 0) {

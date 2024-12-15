@@ -55,6 +55,5 @@ export const ROUTE_CONSTANTS = {
   COSTS: 'costs',
   
   // Application status
-  SAVED: 'saved',
-  APPLIED: 'applied'
+  BOOKMARKED: 'bookmarked',
 };

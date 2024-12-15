@@ -3,88 +3,7 @@ import { AcceptedCard } from "features/employer";
 import { InterviewCardSkeleton } from "components";
 import { NavLink } from "react-router-dom";
 import emptyInterview from "images/calendar-empty.svg?url";
-import { Interview } from "../types";
-
-const mockInterviews: Interview[] = [
-  {
-    position: "Senior Frontend Engineer",
-    candidate: "Michael Thompson",
-    location: "Mountain View, CA",
-    date: "December 22, 2024",
-    time: "10:00 AM PST",
-    meetingLink: "meet.google.com/abc-defg-hij",
-    receivedTime: "2 hours ago",
-    isNew: true,
-    coreSkills: ["React", "TypeScript", "Next.js", "CSS3", "GraphQL"],
-    experience: "3-5 years",
-    employmentPreference: ["Full Time"],
-    salaryExpectation: "$120,000-$150,000",
-    languages: ["English", "Spanish"],
-    education: "Master's in Computer Science",
-    certificate: "AWS Certified Developer",
-    interpersonalSkills: [
-      "Leadership",
-      "Communication",
-      "Problem Solving",
-      "Team Collaboration",
-      "Agile Methodologies",
-    ],
-  },
-  {
-    position: "Full Stack Developer",
-    candidate: "Eric Johnson",
-    location: "Remote",
-    date: "December 25, 2024",
-    time: "1:00 PM PST",
-    meetingLink: "meet.google.com/uvw-xyzq-rst",
-    receivedTime: "yesterday",
-    isNew: false,
-    coreSkills: [
-      "Java",
-      "Spring Boot",
-      "PostgreSQL",
-      "Microservices",
-      "Docker",
-    ],
-    experience: "5-7 years",
-    employmentPreference: ["Full Time", "Remote"],
-    salaryExpectation: "$140,000-$170,000",
-    languages: ["English"],
-    education: "Bachelor's in Software Engineering",
-    certificate: "Oracle Certified Professional Java Developer",
-    interpersonalSkills: [
-      "System Design",
-      "Technical Leadership",
-      "Mentoring",
-      "Problem Solving",
-      "Documentation",
-    ],
-  },
-  {
-    position: "Software Engineer",
-    candidate: "Sophia Carter",
-    location: "Cupertino, CA",
-    date: "December 28, 2024",
-    time: "11:30 AM PST",
-    meetingLink: "meet.google.com/jkl-mnop-qrs",
-    receivedTime: "3 days ago",
-    isNew: false,
-    coreSkills: ["React", "Node.js", "MongoDB", "Express", "AWS"],
-    experience: "4-6 years",
-    employmentPreference: ["Full Time", "Remote"],
-    salaryExpectation: "$130,000-$160,000",
-    languages: ["English", "Portuguese"],
-    education: "Master's in Web Technologies",
-    certificate: "MERN Stack Developer Certification",
-    interpersonalSkills: [
-      "Full-cycle Development",
-      "Project Management",
-      "Cross-functional Collaboration",
-      "Code Review",
-      "Mentoring",
-    ],
-  },
-];
+import { acceptedInterviewsData, Interview } from "mockData/employer-interviews-data";
 
 const AcceptedInterviews: FC = () => {
   const [displayedItems, setDisplayedItems] = useState<Interview[]>([]);
@@ -108,7 +27,7 @@ const AcceptedInterviews: FC = () => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     const currentCount = displayedItems.length;
-    const remainingItems = mockInterviews.length - currentCount;
+    const remainingItems = acceptedInterviewsData.length - currentCount;
 
     if (remainingItems <= 0) {
       setHasMore(false);
@@ -117,13 +36,13 @@ const AcceptedInterviews: FC = () => {
     }
 
     const itemsToLoad = Math.min(2, remainingItems);
-    const newItems = mockInterviews.slice(
+    const newItems = acceptedInterviewsData.slice(
       currentCount,
       currentCount + itemsToLoad,
     );
     setDisplayedItems((prev) => [...prev, ...newItems]);
 
-    if (currentCount + itemsToLoad >= mockInterviews.length) {
+    if (currentCount + itemsToLoad >= acceptedInterviewsData.length) {
       setHasMore(false);
     }
 
@@ -135,9 +54,9 @@ const AcceptedInterviews: FC = () => {
       setLoading(true);
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      const initialItems = mockInterviews.slice(0, 6);
+      const initialItems = acceptedInterviewsData.slice(0, 6);
       setDisplayedItems(initialItems);
-      setHasMore(mockInterviews.length > 6);
+      setHasMore(acceptedInterviewsData.length > 6);
       setLoading(false);
       setInitialLoad(false);
     };
@@ -171,7 +90,7 @@ const AcceptedInterviews: FC = () => {
   }, [loading, hasMore, initialLoad]);
 
   const showLoadingCards = loading;
-  const loadingCardsCount = Math.min(6, mockInterviews.length);
+  const loadingCardsCount = Math.min(6, acceptedInterviewsData.length);
 
   // Show empty state if there are no interviews and we're not loading
   if (!loading && displayedItems.length === 0) {

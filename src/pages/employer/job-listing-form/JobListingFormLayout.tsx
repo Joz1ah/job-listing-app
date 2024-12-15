@@ -7,17 +7,23 @@ const JobListingFormLayout: FC = () => {
   const { isFreeTrial } = useEmployerTrialStatus();
 
   return (
-    <main className="flex-1 flex flex-col bg-[#242625] w-full md:p-6 xl:px-12 md:py-16">
-      <EmployerHeader isFreeTrial={isFreeTrial}/>
-      <div className="flex flex-col md:flex-row">
-        <div className="flex-shrink-0">
-          <Sidebar />
-        </div>
-        <div className="flex-1 flex justify-center">
-          <JobListingForm />
+    <div className="min-h-screen bg-[#242625]">
+      <div className="md:px-4 xl:px-12 md:pt-20 md:pb-6">
+        {/* Main content area with two columns */}
+        <div className="flex flex-col md:flex-row md:space-x-6">
+          {/* Left column - contains header and sidebar */}
+          <div className="md:w-[311px] flex-shrink-0">
+            <EmployerHeader isFreeTrial={isFreeTrial} />
+            <Sidebar />
+          </div>
+          
+          {/* Right column - contains job listing form */}
+          <div className="flex-1 md:pt-8 flex justify-center">
+            <JobListingForm />
+          </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 };
 

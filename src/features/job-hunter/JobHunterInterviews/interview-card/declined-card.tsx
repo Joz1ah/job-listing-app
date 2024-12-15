@@ -1,7 +1,7 @@
 import { FC, useState } from "react";
 import { MapPin, X, Bookmark } from "lucide-react";
 import { Card, CardHeader, CardContent } from "components";
-import { Interview } from "features/job-hunter/types";
+import { Interview } from "mockData/job-hunter-interviews-data";
 import { JobInterviewPreviewModal } from "./preview/JobInterviewPreviewModal";
 
 interface InterviewCardProps {

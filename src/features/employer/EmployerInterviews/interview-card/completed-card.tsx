@@ -3,12 +3,18 @@ import { MapPin, Star, Info, Bookmark } from "lucide-react";
 import { Card, CardHeader, CardContent } from "components";
 import { Button } from "components";
 import { Tooltip } from "components";
-import { Interview } from "features/employer/types";
+import { Interview } from "mockData/employer-interviews-data";
 import { CandidatePreviewModal } from "./preview/CandidatePreviewModal";
+import { RatingModal } from "../modals/RatingModal";
+
+interface RatingData {
+  rating: number;
+  feedback: string;
+}
 
 interface InterviewCardProps {
   interview: Interview;
-  onRateInterview?: () => void;
+  onRateInterview?: (data: RatingData) => void;
   onViewRating?: () => void;
 }
 
@@ -19,6 +25,22 @@ const CompletedCard: FC<InterviewCardProps> = ({
 }) => {
   const hasRatings = !!interview.rating;
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
+  const [isViewRatingModalOpen, setIsViewRatingModalOpen] = useState(false);
+
+  const handleRatingSubmit = (data: RatingData) => {
+    onRateInterview?.(data);
+    setIsRatingModalOpen(false);
+  };
+
+  const handleRatingClick = () => {
+    if (hasRatings) {
+      setIsViewRatingModalOpen(true);
+      onViewRating?.();
+    } else {
+      setIsRatingModalOpen(true);
+    }
+  };
 
   return (
     <>
@@ -109,7 +131,7 @@ const CompletedCard: FC<InterviewCardProps> = ({
                 </div>
               )}
               <Button
-                onClick={hasRatings ? onViewRating : onRateInterview}
+                onClick={handleRatingClick}
                 className={`text-xs h-[26px] w-[205px] rounded ${
                   hasRatings
                     ? "bg-white border border-[#F5722E] text-[#F5722E] hover:bg-[#F5722E] hover:text-white"
@@ -122,10 +144,27 @@ const CompletedCard: FC<InterviewCardProps> = ({
           </div>
         </CardContent>
       </Card>
+      
       <CandidatePreviewModal
         isOpen={isPreviewOpen}
         onClose={() => setIsPreviewOpen(false)}
         interview={interview}
+      />
+
+      <RatingModal
+        isOpen={isRatingModalOpen}
+        onClose={() => setIsRatingModalOpen(false)}
+        interview={interview}
+        mode="create"
+        onSubmit={handleRatingSubmit}
+      />
+
+      <RatingModal
+        isOpen={isViewRatingModalOpen}
+        onClose={() => setIsViewRatingModalOpen(false)}
+        interview={interview}
+        mode="view"
+        onSubmit={handleRatingSubmit}
       />
     </>
   );

@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "components";
-import { BaseModalProps } from "features/employer/types";
+import { BaseModalProps } from "mockData/employer-interviews-data";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { DatePicker } from "components";

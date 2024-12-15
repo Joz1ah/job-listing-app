@@ -12,7 +12,7 @@ import {
 import { Card, CardHeader, CardContent } from "components";
 import { Button } from "components";
 import { Tooltip } from "components";
-import { Interview } from "features/employer/types";
+import { Interview } from "mockData/employer-interviews-data";
 import { CandidatePreviewModal } from "./preview/CandidatePreviewModal";
 import { RescheduleModal } from "features/employer";
 import { useNavigate } from "react-router-dom";

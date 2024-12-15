@@ -519,7 +519,7 @@ const EmployerFeed: FC<EmployerSectionProps> = () => {
       limitPopupDescription="Upgrade to bookmark more matches!"
     >
       <div>
-        <div className="flex flex-col items-center mb-8 w-full">
+        <div className="flex flex-col items-center my-8 pt-8 w-full">
           {/* Tab Buttons */}
           <div className="flex justify-center mb-8 md:mb-12">
             <button
