@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { Button } from "components/ui/buttons";
+import { Button } from "components/ui/shadcn/buttons";
 import { ChevronDown, Info, Plus, ChevronUp } from "lucide-react";
 import companyLogo from "images/company-logo.png";
 import akazaLogoWhite from "images/akaza-logo-white.png";

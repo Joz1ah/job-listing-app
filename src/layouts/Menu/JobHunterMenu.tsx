@@ -1,11 +1,11 @@
 import { FC, useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { Button } from "components/ui/buttons";
+import { Button } from "components/ui/shadcn/buttons";
 import { ChevronDown, Info, ChevronUp } from "lucide-react";
 import companyLogo from "images/company-logo.png";
 import akazaLogoWhite from "images/akaza-logo-white.png";
 import menuButton from "images/menu-button.png";
-import { NotificationFeed } from "components/ui/notification-feed";
+import { NotificationFeed } from "components/ui/custom/notification-feed";
 import verifiedIcon from 'images/verified.svg?url'
 
 interface NavItem {
