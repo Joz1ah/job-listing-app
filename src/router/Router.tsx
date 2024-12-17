@@ -4,9 +4,9 @@ import { ROUTE_CONSTANTS } from 'constants/routeConstants'
 
 // Common page imports
 import { Home } from 'pages'
-import { Fetch } from 'pages'
-import { About } from 'pages'
-import { NotFoundPage as NotFound } from 'pages'
+//import { Fetch } from 'pages'
+//import { About } from 'pages'
+//import { NotFoundPage as NotFound } from 'pages'
 
 
 // Adjust imports to match your file structure and add type assertions
