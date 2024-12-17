@@ -1,12 +1,59 @@
 export const ROUTE_CONSTANTS = {
+  // Core routes
+  HOME: '/',
   LANDING: '/landing',
   ABOUT: '/about',
   FETCH: '/fetch',
-  HOME: '/home',
   NOT_FOUND: '/404',
-  JOB_HUNTER: '/job-feed-hunter',
-  EMPLOYER: '/job-feed-employer',
-  JOB_LISTING: 'job-listing',
-  CREATE_APPLICATION: '/create-application',
-  EMPLOYER_PROFILE: 'employer-profile'
-}
+  
+  // Authentication and Profile
+  COMPLETE_PROFILE: '/employer/complete-profile',
+  EDIT_PROFILE: '/employer/edit-profile',
+  
+  // Job Hunter routes
+  JOB_HUNTER: '/job-hunter',
+  CREATE_APPLICATION: '/job-hunter/create-application',
+  EDIT_APPLICATION: '/job-hunter/edit-application',
+  BOOKMARKED_JOBS: '/job-hunter/bookmarked-jobs',
+  INTERVIEWS_JOB_HUNTER: '/job-hunter/interviews',
+  ACCOUNT_SETTINGS_JOB_HUNTER: '/job-hunter/account-settings',
+  
+  // Employer routes
+  EMPLOYER: '/employer',
+  JOB_LISTING: '/employer/job-listing',
+  MANAGE_JOB_LISTINGS: '/employer/manage-job-listings',
+  INTERVIEWS_EMPLOYER: '/employer/interviews',
+  REPORTS_ANALYTICS: '/employer/reports-and-analytics',
+  ACCOUNT_SETTINGS_EMPLOYER: '/employer/account-settings',
+  
+  // Feed and General sections
+  FEED: 'feed',
+  GENERAL: 'general',
+  
+  // Account and Billing
+  BILLING: 'billing',
+  SUBSCRIPTION: 'subscription',
+  PRIVACY: 'privacy',
+  
+  // Interview status
+  PENDING: 'pending',
+  ACCEPTED: 'accepted',
+  RESCHEDULE: 'reschedule',
+  DECLINED: 'declined',
+  COMPLETED: 'completed',
+  
+  // Job listing status
+  ACTIVE: 'active',
+  DRAFTS: 'drafts',
+  EXPIRED: 'expired',
+  CLOSED: 'closed',
+  
+  // Analytics and Reports
+  JOB_PERFORMANCE: 'job-performance',
+  CANDIDATES: 'candidates',
+  INTERVIEWS: 'interviews',
+  COSTS: 'costs',
+  
+  // Application status
+  BOOKMARKED: 'bookmarked',
+};

@@ -1,413 +1,386 @@
-interface Skill {
-  name: string;
-  isMatch: boolean;
-}
-
-interface Match {
-  name: string;
+export interface Match {
+  id: number;
+  firstName: string;
+  lastName: string;
+  phoneNumber?: number;
+  birthday?: string;
+  posted: string;
   location: string;
-  job: string;
-  skills: Skill[];
-  appliedAgo: string;
+  position: string;
+  education?: string;
+  coreSkills: string[];
   experience: string;
   lookingFor: ("Full Time" | "Part Time" | "Contract only")[];
   salaryExpectation: string;
   language: string[];
+  interpersonalSkills?: string[];
+  certificates?: string[];
+  isNew?: boolean;
 }
 
 export const perfectMatch: Match[] = [
   {
-    name: "Olivia Davis",
+    id: 1,
+    firstName: "Olivia",
+    lastName: "Davis",
+    phoneNumber: 639275454434,
+    birthday: "March 15",
     location: "United Kingdom",
-    job: "Junior Front End Developer",
-    skills: [
-      { name: "React", isMatch: true },
-      { name: "JavaScript", isMatch: true },
-      { name: "CSS", isMatch: true },
-      { name: "HTML", isMatch: true },
-      { name: "Git", isMatch: true }
-    ],
-    appliedAgo: "3 days ago",
+    position: "Junior Front End Developer",
+    education: "Bachelor's Degree",
+    coreSkills: ["React", "JavaScript", "HTML", "CSS", "Bootstrap"],
+    posted: "1 day",
     experience: "under a year",
     lookingFor: ["Full Time", "Part Time", "Contract only"],
     salaryExpectation: "$51,000-$70,000",
-    language: ["English"]
+    language: ["English"],
+    interpersonalSkills: ["Team Collaboration", "Adaptability", "Problem Solving"],
+    certificates: ["Certified JavaScript Developer"],
+    isNew: true
   },
   {
-    name: "Mason Green",
+    id: 2,
+    firstName: "Mason",
+    lastName: "Green",
+    phoneNumber: 639275454435,
+    birthday: "April 22",
     location: "Canada",
-    job: "Frontend Engineer",
-    skills: [
-      { name: "React", isMatch: true },
-      { name: "JavaScript", isMatch: true },
-      { name: "CSS", isMatch: true },
-      { name: "HTML", isMatch: true },
-      { name: "TypeScript", isMatch: true }
-    ],
-    appliedAgo: "1 week ago",
-    experience: "3-5years",
+    position: "Frontend Engineer",
+    education: "Master's Degree",
+    coreSkills: ["React", "JavaScript", "CSS", "HTML", "TypeScript"],
+    posted: "1 day",
+    experience: "3 - 5 years",
     lookingFor: ["Full Time", "Contract only"],
     salaryExpectation: "$71,000-$100,000",
-    language: ["English", "French"]
+    language: ["English", "French"],
+    interpersonalSkills: ["Communication", "Time Management", "Critical Thinking"],
+    certificates: ["AWS Certified Developer", "TypeScript Mastery"],
+    isNew: true
   },
   {
-    name: "Ava Martinez",
+    id: 3,
+    firstName: "Ava",
+    lastName: "Martinez",
+    phoneNumber: 639275454436,
+    birthday: "July 8",
     location: "Germany",
-    job: "Junior JavaScript Developer",
-    skills: [
-      { name: "JavaScript", isMatch: true },
-      { name: "React", isMatch: true },
-      { name: "Vue.js", isMatch: true },
-      { name: "CSS", isMatch: true },
-      { name: "HTML", isMatch: true }
-    ],
-    appliedAgo: "4 days ago",
-    experience: "1-3years",
+    position: "Junior JavaScript Developer",
+    education: "Bachelor's Degree",
+    coreSkills: ["JavaScript", "React", "Vue.js", "CSS", "HTML"],
+    posted: "2 days",
+    experience: "1 - 3 years",
     lookingFor: ["Full Time"],
     salaryExpectation: "$51,000-$70,000",
-    language: ["English", "Spanish"]
+    language: ["English", "Spanish"],
+    interpersonalSkills: ["Creativity", "Empathy", "Conflict Resolution"],
+    certificates: ["Certified Vue.js Developer"],
+    isNew: false
   },
   {
-    name: "Ethan Clark",
+    id: 4,
+    firstName: "Ethan",
+    lastName: "Clark",
+    phoneNumber: 639275454437,
+    birthday: "October 5",
     location: "United States of America",
-    job: "Frontend Developer",
-    skills: [
-      { name: "React", isMatch: true },
-      { name: "JavaScript", isMatch: true },
-      { name: "SCSS", isMatch: true },
-      { name: "Responsive Design", isMatch: true },
-      { name: "Git", isMatch: true }
-    ],
-    appliedAgo: "5 days ago",
-    experience: "3-5years",
+    position: "Frontend Developer",
+    education: "Master's Degree",
+    coreSkills: ["React", "JavaScript", "SCSS", "Responsive Design", "Git"],
+    posted: "3 days",
+    experience: "3 - 5 years",
     lookingFor: ["Full Time"],
     salaryExpectation: "$71,000-$100,000",
-    language: ["English"]
+    language: ["English"],
+    interpersonalSkills: ["Leadership", "Emotional Intelligence", "Negotiation"],
+    certificates: ["Google UX Design Professional Certificate"],
+    isNew: false
   },
   {
-    name: "Sophia Brown",
+    id: 5,
+    firstName: "Sophia",
+    lastName: "Brown",
+    phoneNumber: 639275454438,
+    birthday: "May 17",
     location: "Australia",
-    job: "UI Developer",
-    skills: [
-      { name: "React", isMatch: true },
-      { name: "JavaScript", isMatch: true },
-      { name: "CSS", isMatch: true },
-      { name: "Tailwind CSS", isMatch: true },
-      { name: "HTML", isMatch: true }
-    ],
-    appliedAgo: "6 days ago",
-    experience: "1-3years",
+    position: "UI Developer",
+    education: "Bachelor's Degree",
+    coreSkills: ["React", "JavaScript", "CSS", "Tailwind CSS", "HTML"],
+    posted: "5 days",
+    experience: "1 - 3 years",
     lookingFor: ["Full Time", "Part Time"],
     salaryExpectation: "$51,000-$70,000",
-    language: ["English"]
+    language: ["English"],
+    interpersonalSkills: ["Team Collaboration", "Flexibility", "Persuasion"],
+    certificates: ["Certified UI/UX Designer"],
+    isNew: false
   },
   {
-    name: "James Wilson",
+    id: 6,
+    firstName: "James",
+    lastName: "Wilson",
+    phoneNumber: 639275454439,
+    birthday: "December 12",
     location: "United States of America",
-    job: "React Developer",
-    skills: [
-      { name: "React", isMatch: true },
-      { name: "JavaScript", isMatch: true },
-      { name: "Redux", isMatch: true },
-      { name: "TypeScript", isMatch: true },
-      { name: "CSS", isMatch: true }
-    ],
-    appliedAgo: "2 weeks ago",
-    experience: "5-10years",
+    position: "React Developer",
+    education: "Master's Degree",
+    coreSkills: ["React", "JavaScript", "Redux", "TypeScript", "CSS"],
+    posted: "1 week",
+    experience: "5 - 10 years",
     lookingFor: ["Full Time"],
     salaryExpectation: "$100,000-$120,000",
-    language: ["English"]
+    language: ["English"],
+    interpersonalSkills: ["Decision Making", "Strategic Thinking", "Innovation"],
+    certificates: ["React Professional Developer"],
+    isNew: false
   },
   {
-    name: "Lucas Evans",
+    id: 7,
+    firstName: "Lucas",
+    lastName: "Evans",
+    phoneNumber: 639275454440,
+    birthday: "February 28",
     location: "Spain",
-    job: "Junior Web Developer",
-    skills: [
-      { name: "React", isMatch: true },
-      { name: "JavaScript", isMatch: true },
-      { name: "HTML", isMatch: true },
-      { name: "CSS", isMatch: true },
-      { name: "Git", isMatch: true }
-    ],
-    appliedAgo: "3 weeks ago",
+    position: "Junior Web Developer",
+    education: "Associate Degree",
+    coreSkills: ["React", "JavaScript", "HTML", "CSS", "Git"],
+    posted: "3 weeks",
     experience: "under a year",
     lookingFor: ["Full Time", "Part Time"],
     salaryExpectation: "negotiable",
-    language: ["English", "Spanish"]
+    language: ["English", "Spanish"],
+    interpersonalSkills: ["Time Management", "Problem Solving", "Empathy"],
+    certificates: ["Full Stack Web Development Certificates"],
+    isNew: false
   },
   {
-    name: "Isabella Hill",
+    id: 8,
+    firstName: "Isabella",
+    lastName: "Hill",
+    phoneNumber: 639275454441,
+    birthday: "August 9",
     location: "France",
-    job: "Junior Front End Developer",
-    skills: [
-      { name: "React", isMatch: true },
-      { name: "JavaScript", isMatch: true },
-      { name: "CSS", isMatch: true },
-      { name: "HTML", isMatch: true },
-      { name: "Git", isMatch: true }
-    ],
-    appliedAgo: "1 month ago",
-    experience: "1-3years",
+    position: "Junior Front End Developer",
+    education: "Bachelor's Degree",
+    coreSkills: ["React", "JavaScript", "CSS", "HTML", "Git"],
+    posted: "3 weeks",
+    experience: "1 - 3 years",
     lookingFor: ["Full Time"],
     salaryExpectation: "$51,000-$70,000",
-    language: ["English", "French"]
+    language: ["English", "French"],
+    interpersonalSkills: ["Adaptability", "Conflict Resolution", "Leadership"],
+    certificates: ["Certified React Developer"],
+    isNew: false
   },
   {
-    name: "Liam Parker",
+    id: 9,
+    firstName: "Liam",
+    lastName: "Parker",
+    phoneNumber: 639275454442,
+    birthday: "November 3",
     location: "Canada",
-    job: "Full Stack Developer",
-    skills: [
-      { name: "React", isMatch: true },
-      { name: "Node.js", isMatch: true },
-      { name: "Express", isMatch: true },
-      { name: "MongoDB", isMatch: true },
-      { name: "Git", isMatch: true }
-    ],
-    appliedAgo: "2 weeks ago",
-    experience: "3-5years",
+    position: "Full Stack Developer",
+    education: "Master's Degree",
+    coreSkills: ["React", "Node.js", "Express", "MongoDB", "Git"],
+    posted: "3 weeks",
+    experience: "3 - 5 years",
     lookingFor: ["Full Time", "Part Time"],
     salaryExpectation: "$75,000-$90,000",
-    language: ["English"]
+    language: ["English"],
+    interpersonalSkills: ["Creativity", "Strategic Thinking", "Emotional Intelligence"],
+    certificates: ["Full Stack Developer Professional Certificate"],
+    isNew: false
   },
   {
-    name: "Sophia Martinez",
+    id: 10,
+    firstName: "Sophia",
+    lastName: "Martinez",
+    phoneNumber: 639275454443,
+    birthday: "January 25",
     location: "Spain",
-    job: "UI/UX Designer",
-    skills: [
-      { name: "Figma", isMatch: true },
-      { name: "Sketch", isMatch: true },
-      { name: "Adobe XD", isMatch: true },
-      { name: "CSS", isMatch: true },
-      { name: "HTML", isMatch: true }
-    ],
-    appliedAgo: "3 days ago",
-    experience: "1-3years",
+    position: "UI/UX Designer",
+    education: "Bachelor's Degree",
+    coreSkills: ["Figma", "Sketch", "Adobe XD", "CSS", "HTML"],
+    posted: "1 month",
+    experience: "1 - 3 years",
     lookingFor: ["Part Time", "Contract only"],
     salaryExpectation: "$45,000-$55,000",
-    language: ["Spanish", "English"]
-  },
-  {
-    name: "Oliver Johnson",
-    location: "United States of America",
-    job: "Backend Developer",
-    skills: [
-      { name: "Node.js", isMatch: true },
-      { name: "Python", isMatch: true },
-      { name: "Django", isMatch: true },
-      { name: "PostgreSQL", isMatch: true },
-      { name: "Docker", isMatch: true }
-    ],
-    appliedAgo: "1 week ago",
-    experience: "5-7years",
-    lookingFor: ["Full Time"],
-    salaryExpectation: "$100,000-$120,000",
-    language: ["English"]
-  },
-  {
-    name: "Emma Lee",
-    location: "South Korea",
-    job: "Mobile App Developer",
-    skills: [
-      { name: "React Native", isMatch: true },
-      { name: "Flutter", isMatch: true },
-      { name: "Kotlin", isMatch: true },
-      { name: "Java", isMatch: true },
-      { name: "Redux", isMatch: true }
-    ],
-    appliedAgo: "2 months ago",
-    experience: "3-5years",
-    lookingFor: ["Contract only"],
-    salaryExpectation: "$60,000-$80,000",
-    language: ["Korean", "English"]
-  },
-  {
-    name: "Noah Williams",
-    location: "Germany",
-    job: "DevOps Engineer",
-    skills: [
-      { name: "AWS", isMatch: true },
-      { name: "Terraform", isMatch: true },
-      { name: "Docker", isMatch: true },
-      { name: "Kubernetes", isMatch: true },
-      { name: "Jenkins", isMatch: true }
-    ],
-    appliedAgo: "5 days ago",
-    experience: "5-7years",
-    lookingFor: ["Full Time", "Part Time"],
-    salaryExpectation: "$85,000-$100,000",
-    language: ["German", "English"]
+    language: ["Spanish", "English"],
+    interpersonalSkills: ["Flexibility", "Empathy", "Persuasion"],
+    certificates: ["Certified UI/UX Designer"],
+    isNew: false
   }
 ];
 
 export const others: Match[] = [
   {
-    name: "Lily Thompson",
+    id: 11,
+    firstName: "Lily",
+    lastName: "Thompson",
+    phoneNumber: 639275454444,
+    birthday: "September 3",
     location: "United States of America",
-    job: "Full Stack Developer",
-    skills: [
-      { name: "JavaScript", isMatch: true },
-      { name: "React", isMatch: true },
-      { name: "GraphQL", isMatch: true },
-      { name: "MongoDB", isMatch: true },
-      { name: "TypeScript", isMatch: true }
-    ],
-    appliedAgo: "2 days ago",
-    experience: "5-10 years",
+    position: "Full Stack Developer",
+    education: "Master's Degree",
+    coreSkills: ["JavaScript", "React", "GraphQL", "MongoDB", "TypeScript"],
+    posted: "1 day",
+    experience: "5 - 10 years",
     lookingFor: ["Full Time", "Contract only"],
     salaryExpectation: "$100,000-$120,000",
-    language: ["English"]
+    language: ["English"],
+    interpersonalSkills: ["Problem Solving", "Team Collaboration", "Adaptability"],
+    certificates: ["Full Stack Professional Developer"],
+    isNew: true
   },
   {
-    name: "Jack Baker",
+    id: 12,
+    firstName: "Jack",
+    lastName: "Baker",
+    phoneNumber: 639275454445,
+    birthday: "January 12",
     location: "United States of America",
-    job: "Backend Developer",
-    skills: [
-      { name: "Express", isMatch: true },
-      { name: "MongoDB", isMatch: true },
-      { name: "JavaScript", isMatch: true },
-      { name: "Docker", isMatch: true },
-      { name: "REST API", isMatch: true }
-    ],
-    appliedAgo: "5 days ago",
-    experience: "3-5 years",
+    position: "Backend Developer",
+    education: "Bachelor's Degree",
+    coreSkills: ["Express", "MongoDB", "JavaScript", "Docker", "REST API"],
+    posted: "2 days",
+    experience: "3 - 5 years",
     lookingFor: ["Full Time"],
     salaryExpectation: "$71,000-$100,000",
-    language: ["English"]
+    language: ["English"],
+    interpersonalSkills: ["Critical Thinking", "Time Management", "Creativity"],
+    certificates: ["Certified Backend Developer"],
+    isNew: false
   },
   {
-    name: "Emma Johnson",
+    id: 13,
+    firstName: "Emma",
+    lastName: "Johnson",
+    phoneNumber: 639275454446,
+    birthday: "June 28",
     location: "Ireland",
-    job: "Software Engineer",
-    skills: [
-      { name: "JavaScript", isMatch: true },
-      { name: "React", isMatch: true },
-      { name: "GraphQL", isMatch: true },
-      { name: "CSS", isMatch: true },
-      { name: "MySQL", isMatch: true }
-    ],
-    appliedAgo: "1 week ago",
-    experience: "3-5 years",
+    position: "Software Engineer",
+    education: "Master's Degree",
+    coreSkills: ["JavaScript", "React", "GraphQL", "CSS", "MySQL"],
+    posted: "1 week",
+    experience: "3 - 5 years",
     lookingFor: ["Full Time", "Contract only"],
     salaryExpectation: "$71,000-$100,000",
-    language: ["English"]
+    language: ["English"],
+    interpersonalSkills: ["Leadership", "Decision Making", "Strategic Thinking"],
+    certificates: ["Certified Software Engineer"],
+    isNew: false
   },
   {
-    name: "Noah Lee",
+    id: 14,
+    firstName: "Noah",
+    lastName: "Lee",
+    phoneNumber: 639275454447,
+    birthday: "April 15",
     location: "South Korea",
-    job: "Frontend Engineer",
-    skills: [
-      { name: "JavaScript", isMatch: true },
-      { name: "React", isMatch: true },
-      { name: "CSS", isMatch: true },
-      { name: "HTML", isMatch: true },
-      { name: "TypeScript", isMatch: true }
-    ],
-    appliedAgo: "2 weeks ago",
-    experience: "3-5 years",
+    position: "Frontend Engineer",
+    education: "Bachelor's Degree",
+    coreSkills: ["JavaScript", "React", "CSS", "HTML", "TypeScript"],
+    posted: "2 weeks",
+    experience: "3 - 5 years",
     lookingFor: ["Full Time"],
     salaryExpectation: "$71,000-$100,000",
-    language: ["English"]
+    language: ["English"],
+    interpersonalSkills: ["Communication", "Emotional Intelligence", "Flexibility"],
+    certificates: ["Frontend Developer Certificates"],
+    isNew: false
   },
   {
-    name: "Amelia Roberts",
+    id: 15,
+    firstName: "Amelia",
+    lastName: "Roberts",
+    phoneNumber: 639275454448,
+    birthday: "July 20",
     location: "Japan",
-    job: "Junior Software Developer",
-    skills: [
-      { name: "JavaScript", isMatch: true },
-      { name: "React", isMatch: true },
-      { name: "HTML", isMatch: true },
-      { name: "CSS", isMatch: true },
-      { name: "Git", isMatch: true }
-    ],
-    appliedAgo: "3 weeks ago",
-    experience: "1-3 years",
+    position: "Junior Software Developer",
+    education: "Associate Degree",
+    coreSkills: ["JavaScript", "React", "HTML", "CSS", "Git"],
+    posted: "3 weeks",
+    experience: "1 - 3 years",
     lookingFor: ["Full Time", "Part Time"],
     salaryExpectation: "Negotiable",
-    language: ["English"]
+    language: ["English"],
+    interpersonalSkills: ["Conflict Resolution", "Creativity", "Adaptability"],
+    certificates: ["Certified Junior Developer"],
+    isNew: false
   },
   {
-    name: "Amelia Brown",
+    id: 16,
+    firstName: "Amelia",
+    lastName: "Brown",
+    phoneNumber: 639275454449,
+    birthday: "March 8",
     location: "Australia",
-    job: "Data Analyst",
-    skills: [
-      { name: "Python", isMatch: true },
-      { name: "SQL", isMatch: true },
-      { name: "Tableau", isMatch: true },
-      { name: "Excel", isMatch: true },
-      { name: "Git", isMatch: true }
-    ],
-    appliedAgo: "4 days ago",
-    experience: "1-3 years",
+    position: "Data Analyst",
+    education: "Bachelor's Degree",
+    coreSkills: ["Python", "SQL", "Tableau", "Excel", "Git"],
+    posted: "1 month",
+    experience: "1 - 3 years",
     lookingFor: ["Full Time", "Contract only"],
     salaryExpectation: "$50,000-$65,000",
-    language: ["English"]
+    language: ["English"],
+    interpersonalSkills: ["Attention to Detail", "Analytical Thinking", "Problem Solving"],
+    certificates: ["Data Analytics Professional Certificate"],
+    isNew: false
   },
   {
-    name: "Lucas Nguyen",
+    id: 17,
+    firstName: "Lucas",
+    lastName: "Nguyen",
+    phoneNumber: 639275454450,
+    birthday: "October 30",
     location: "Vietnam",
-    job: "Front End Developer",
-    skills: [
-      { name: "Vue.js", isMatch: true },
-      { name: "JavaScript", isMatch: true },
-      { name: "CSS", isMatch: true },
-      { name: "HTML", isMatch: true },
-      { name: "TypeScript", isMatch: true }
-    ],
-    appliedAgo: "3 weeks ago",
-    experience: "3-5 years",
-    lookingFor: ["Part Time", "Part Time"],
+    position: "Front End Developer",
+    education: "Bachelor's Degree",
+    coreSkills: ["Vue.js", "JavaScript", "CSS", "HTML", "TypeScript"],
+    posted: "1 month",
+    experience: "3 - 5 years",
+    lookingFor: ["Part Time", "Contract only"],
     salaryExpectation: "$40,000-$55,000",
-    language: ["Vietnamese", "English"]
+    language: ["Vietnamese", "English"],
+    interpersonalSkills: ["Empathy", "Adaptability", "Creativity"],
+    certificates: ["Certified Vue.js Developer"],
+    isNew: false
   },
   {
-    name: "Mia Patel",
+    id: 18,
+    firstName: "Mia",
+    lastName: "Patel",
+    phoneNumber: 639275454451,
+    birthday: "May 5",
     location: "India",
-    job: "Cloud Engineer",
-    skills: [
-      { name: "AWS", isMatch: true },
-      { name: "Docker", isMatch: true },
-      { name: "Kubernetes", isMatch: true },
-      { name: "Terraform", isMatch: true },
-      { name: "Linux", isMatch: true }
-    ],
-    appliedAgo: "1 month ago",
-    experience: "5-7 years",
+    position: "Cloud Engineer",
+    education: "Master's Degree",
+    coreSkills: ["AWS", "Docker", "Kubernetes", "Terraform", "Linux"],
+    posted: "1 month",
+    experience: "5 - 7 years",
     lookingFor: ["Full Time"],
     salaryExpectation: "$70,000-$85,000",
-    language: ["English", "Hindi"]
+    language: ["English", "Hindi"],
+    interpersonalSkills: ["Problem Solving", "Leadership", "Strategic Thinking"],
+    certificates: ["AWS Certified Solutions Architect"],
+    isNew: false
   },
   {
-    name: "Ethan Kim",
+    id: 19,
+    firstName: "Ethan",
+    lastName: "Kim",
+    phoneNumber: 639275454452,
+    birthday: "December 1",
     location: "United States of America",
-    job: "Machine Learning Engineer",
-    skills: [
-      { name: "Python", isMatch: true },
-      { name: "TensorFlow", isMatch: true },
-      { name: "PyTorch", isMatch: true },
-      { name: "Scikit-learn", isMatch: true },
-      { name: "SQL", isMatch: true }
-    ],
-    appliedAgo: "2 months ago",
-    experience: "3-5 years",
+    position: "Machine Learning Engineer",
+    education: "Doctorate/PhD",
+    coreSkills: ["Python", "TensorFlow", "PyTorch", "Scikit-learn", "SQL"],
+    posted: "2 months",
+    experience: "3 - 5 years",
     lookingFor: ["Full Time"],
     salaryExpectation: "$110,000-$130,000",
-    language: ["English", "Korean"]
+    language: ["English", "Korean"],
+    interpersonalSkills: ["Analytical Thinking", "Decision Making", "Innovation"],
+    certificates: ["Certified Machine Learning Specialist"],
+    isNew: false
   },
-  {
-    name: "Ava Davies",
-    location: "United Kingdom",
-    job: "Cybersecurity Specialist",
-    skills: [
-      { name: "Penetration Testing", isMatch: true },
-      { name: "Network Security", isMatch: true },
-      { name: "Ethical Hacking", isMatch: true },
-      { name: "Linux", isMatch: true },
-      { name: "Python", isMatch: true }
-    ],
-    appliedAgo: "2 weeks ago",
-    experience: "5-7 years",
-    lookingFor: ["Contract only"],
-    salaryExpectation: "$90,000-$110,000",
-    language: ["English"]
-  }
 ];
