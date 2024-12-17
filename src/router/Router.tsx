@@ -1,6 +1,8 @@
 import { RouteObject, Navigate } from 'react-router-dom'
 import { lazy, Suspense, ComponentType } from 'react'
 import { ROUTE_CONSTANTS } from 'constants/routeConstants'
+import { useEffect, useState } from 'react'
+import spinner_loading_fallback from 'assets/images/spinner-loading-akaza.svg?url'
 
 // Common page imports
 import { Home } from 'pages'
@@ -82,8 +84,8 @@ const JobHunterPrivacySettings = lazy(() => import('features/job-hunter').then(m
 const YourBookmarkedJobs = lazy(() => import('features/job-hunter').then(module => ({ default: module.YourBookmarkedJobs })))
 
 const LoadingFallback = () => (
-  <div className="flex items-center justify-center w-full h-screen">
-    <div className="w-8 h-8 border-4 border-gray-200 rounded-full animate-spin border-t-blue-600"></div>
+  <div className="flex items-center justify-center h-screen">
+    <img src={spinner_loading_fallback} alt="spinners" className='w-20 h-20'/>
   </div>
 );
 
@@ -92,11 +94,24 @@ interface LazyComponentProps {
   [key: string]: any;
 }
 
-const LazyComponent = ({ component: Component, ...props }: LazyComponentProps) => (
-  <Suspense fallback={<LoadingFallback />}>
-    <Component {...props} />
-  </Suspense>
-);
+const LazyComponent = ({ component: Component, ...props }: LazyComponentProps) => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const minLoadingTime = 500;
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, minLoadingTime);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      {isLoading ? <LoadingFallback /> : <Component {...props} />}
+    </Suspense>
+  );
+};
 
 const RedirectTo = ({ to }: { to: string }) => {
   if (typeof window === 'undefined') {
@@ -128,6 +143,10 @@ const routes: RouteObject[] = [
   {
     path: ROUTE_CONSTANTS.ABOUT,
     element: <LazyComponent component={About} />
+  },
+  {
+    path: '*',
+    element: <LazyComponent component={NotFound} />
   },
   {
     path: ROUTE_CONSTANTS.EMPLOYER,
@@ -375,10 +394,6 @@ const routes: RouteObject[] = [
       }
     ]
   },
-  {
-    path: '*',
-    element: <LazyComponent component={NotFound} />
-  }
 ]
 
 export { routes }
