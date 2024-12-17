@@ -9,6 +9,8 @@ import { IS_RENDER_TO_STREAM, SERVER_PORT } from 'server/constants'
 import { DIST_DIR, IS_DEV, SRC_DIR } from '_webpack/constants'
 import cors from 'cors'
 const { PORT = SERVER_PORT } = process.env
+import dotenv from 'dotenv';
+dotenv.config();
 const allowedOrigins = ['http://localhost:8080'];
 
 const runServer = (hotReload?: () => RequestHandler[]): void => {

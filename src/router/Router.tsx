@@ -6,29 +6,16 @@ import { ROUTE_CONSTANTS } from 'constants/routeConstants'
 import { Home } from 'pages'
 import { Fetch } from 'pages'
 import { About } from 'pages'
-import { Landing } from 'pages'
 import { NotFoundPage as NotFound } from 'pages'
-import { EmployerFeedLayout } from 'pages'
-import { JobHunterFeedLayout } from 'pages'
-import { CreateAppCard } from 'pages'
-import { EditAppCard } from 'pages'
-import { JobHunterBaseLayout } from 'pages'
-import { EmployerBaseLayout } from 'pages'
-import { EmployerNotFound } from 'pages'
-import { JobHunterNotFound } from 'pages'
+
 
 // Adjust imports to match your file structure and add type assertions
 //const Home = lazy(() => import('pages').then(module => ({ default: module.Home })))
-//const Landing = lazy(() => import('pages').then(module => ({ default: module.Landing })))
+const Landing = lazy(() => import('pages').then(module => ({ default: module.Landing })))
 //const Fetch = lazy(() => import('pages').then(module => ({ default: module.Fetch })))
 //const About = lazy(() => import('pages').then(module => ({ default: module.About })))
 //const NotFound = lazy(() => import('pages').then(module => ({ default: module.NotFound })))
 //const CompleteProfile = lazy(() => import('pages').then(module => ({ default: module.CreateAppCard })))
-// Employer feature imports
-import { EmployerFeed } from 'features/employer'
-import { JobListingFormLayout } from 'pages'
-import { CompleteProfile } from 'pages'
-import { EditProfile } from 'pages'
 
 // Employer pages
 const EmployerBaseLayout = lazy(() => import('pages').then(module => ({ default: module.EmployerBaseLayout })))
@@ -113,15 +100,24 @@ const LazyComponent = ({ component: Component, ...props }: LazyComponentProps) =
   </Suspense>
 );
 
+const RedirectTo = ({ to }: { to: string }) => {
+  if (typeof window === 'undefined') {
+    // SSR: Render nothing
+    return null;
+  }
+
+  // Client-side: Use <Navigate>
+  return <Navigate to={to} replace />;
+};
 
 const routes: RouteObject[] = [
   {
     path: '',
-    element: <Navigate to={ROUTE_CONSTANTS.LANDING} replace />
+    element: <RedirectTo to={ROUTE_CONSTANTS.LANDING} />,
   },
   {
     path: ROUTE_CONSTANTS.LANDING,
-    element: <Landing />
+    element: <LazyComponent component={Landing} />
   },
   {
     path: ROUTE_CONSTANTS.HOME,

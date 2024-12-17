@@ -2,9 +2,10 @@ import React, { FC, useEffect, useState, useRef, ReactElement } from 'react'
 import { FooterEngagement as Footer} from "layouts";
 import { PageMeta } from "components";
 import { LandingContext } from 'components';
-import { useLoginMutation, useSignUpMSMutation, useOtpGenerateMutation } from 'api/pokemon/pokemonApi';
+import { useLoginMutation, useSignUpMutation, useOtpGenerateMutation, useOtpVerifyMutation, usePaymentCreateMutation } from 'api/akaza/akazaAPI';
 import { useNavigate } from "react-router-dom";
-import * as yup from 'yup';
+import { Formik, Form, FieldProps, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
 
 import video1 from 'assets/mp4/Landing-Page-hero-1.mp4';
 import video2 from 'assets/mp4/video-conference-call-1.mp4';
@@ -31,12 +32,13 @@ import orange_check from 'assets/orange-check.svg?url';
 import akazalogo_dark from 'assets/akazalogo-dark.svg?url';
 import close_icon from 'assets/close.svg?url';
 import eye_off_outline from 'assets/eye-off-outline.svg?url';
-import google_logo from 'images/google-logo.svg?url';
+import google_logo from 'assets/google-logo.svg?url';
 import philippines_flag from 'assets/country-icons/philippines.svg?url';
 import chevron_down from 'assets/chevron-down.svg?url';
 import unchecked_green from 'assets/toggles/unchecked-green.svg?url';
 import checked_green from 'assets/toggles/checked-green.svg?url';
 import sparkle_icon from 'assets/sparkle-icon.svg?url';
+import green_lock_icon from 'assets/green-lock.svg?url';
 
 import subscription_sparkle_icon from 'assets/subscription-plan-icons/sparkle.svg?url';
 import subscription_thumbsup_icon from 'assets/subscription-plan-icons/thumbsup.svg?url';
@@ -67,7 +69,8 @@ const Landing: FC = (): ReactElement => {
   const [modalState, setModalState] = useState(9);
   const [heroState, setHeroState] = useState(1);
   const [dataStates, setDataStates] = useState({
-    selectedUserType: ''
+    selectedUserType: '',
+    email: ''
   });
   const heroStates = {
       'PERFECT_MATCH_ALGO' : 1,
@@ -86,7 +89,7 @@ const Landing: FC = (): ReactElement => {
       'SIGNUP_STEP3' : 4,
       'SIGNUP_STEP4' : 5,
       'SIGNUP_STEP5' : 6,
-      'SIGNUP_STEP6' : 7,
+      'LOADING' : 7,
       'SIGNUP_CONGRATULATIONS' : 8,
       'STRIPE_PAYMENT' : 9
   }
@@ -207,7 +210,7 @@ const Landing: FC = (): ReactElement => {
     const [credentials, setCredentials] = useState({ email: '', password: '', });
     const [loginSubmit] = useLoginMutation()
     const [isLoginError, setIsLoginError] = useState(false);
-    const [errorMessage, seterrorMessage] = useState('');
+    const [_errorMessage, set_errorMessage] = useState('');
     //console.log(data,error, isLoading)
     //akazaApi.
 
@@ -221,7 +224,7 @@ const Landing: FC = (): ReactElement => {
       .catch((err) => {
         console.log(err)
         setIsLoginError(true)
-        seterrorMessage('Invalid Username or Password')
+        set_errorMessage('Invalid Username or Password')
       })
     };
   
@@ -255,7 +258,7 @@ const Landing: FC = (): ReactElement => {
         </div>
         
         <div id="label_login" className={`${styles['error-label']} ${styles['color_error']}`} hidden={isLoginError}>
-          {errorMessage}
+          {_errorMessage}
         </div>
         <div className={`${styles['login-options']}`}>
             <div>
@@ -278,23 +281,23 @@ const Landing: FC = (): ReactElement => {
     const [organizedErrors, setOrganizedErrors] =  useState({ email: '', password: '', passwordConfirm: '' });
 
   
-    const [signUpSubmit] = useSignUpMSMutation()
+    const [signUpSubmit] = useSignUpMutation()
     const [generateOTP] = useOtpGenerateMutation()
 
-    const schema = yup.object().shape({
-      email: yup
+    const schema = Yup.object().shape({
+      email: Yup
         .string()
         .email('Invalid email address')
         .required('Email is required'),
       
-      password: yup
+      password: Yup
         .string()
         .min(6, 'Password must be at least 6 characters long')
         .required('Password is required'),
       
-      passwordConfirm: yup
+      passwordConfirm: Yup
         .string()
-        .oneOf([yup.ref('password'), undefined], 'Passwords must match')
+        .oneOf([Yup.ref('password'), undefined], 'Passwords must match')
         .required('Please confirm your password')
         .nullable(), 
     });
@@ -311,8 +314,9 @@ const Landing: FC = (): ReactElement => {
         .unwrap()
         .then((res)=>{
           setTimeout( ()=> {
-            setModalState(modalStates.SIGNUP_STEP3)
+            setDataStates({...dataStates, email:credentials.email})
             generateOTP( { email:credentials.email } )
+            setModalState(modalStates.SIGNUP_STEP3)
           }
           , 1000 )
           console.log(res)
@@ -320,7 +324,7 @@ const Landing: FC = (): ReactElement => {
         .catch((err) => {
           console.log(err)
           //setIsSignupError(true)
-          //seterrorMessage('Invalid Username or Password')
+          //set_errorMessage('Invalid Username or Password')
         })
       })
       .catch(err => {
@@ -328,7 +332,7 @@ const Landing: FC = (): ReactElement => {
 
         if (err.inner) {
           let _organizedErrors:any = { email: '', password: '', passwordConfirm: '' };
-          err.inner.forEach((error: yup.ValidationError) => {
+          err.inner.forEach((error: Yup.ValidationError) => {
             if (error.path) {
               _organizedErrors[error.path] = error.message;
             }
@@ -406,8 +410,8 @@ const Landing: FC = (): ReactElement => {
                 </div>
             </div>
             <div className={`${styles['action-buttons']}`}>
-                <button id="btn_signup_step2_previous" className={`${styles['button-custom-basic']}`}>Previous</button>
-                <button id="btn_signup_step2_next" type="submit" className={`${styles['button-custom-orange']}`}>Next</button>
+                <button className={`${styles['button-custom-basic']}`}>Previous</button>
+                <button type="submit" className={`${styles['button-custom-orange']}`}>Next</button>
             </div>  
           </form>
         </div>    
@@ -417,6 +421,7 @@ const Landing: FC = (): ReactElement => {
 
 const OTPSignUp = () => {
   const buttonContinue = useRef<HTMLButtonElement>(null);
+  const [submitOTP] = useOtpVerifyMutation();
   //const buttonCancel = useRef<HTMLButtonElement>(null);
   const buttonPrevious = useRef<HTMLDivElement>(null);
   const ib1 = useRef<HTMLInputElement>(null);
@@ -427,7 +432,6 @@ const OTPSignUp = () => {
   const ib6 = useRef<HTMLInputElement>(null);
   const handleOnInput = (ref:any, nextRef:any) =>{
     let currentInput = ref.current
-    console.log(ref)
     if(currentInput.value.length > currentInput.maxLength)
        currentInput.value = currentInput.value.slice(0, currentInput.maxLength);
     if(currentInput.value.length >= currentInput.maxLength)
@@ -442,7 +446,38 @@ const OTPSignUp = () => {
   const handleContinue = () => {
     if (buttonContinue.current) {
       buttonContinue.current.onclick = () => {
-        setModalState(modalStates.SIGNUP_CONGRATULATIONS)
+        const otp =
+        (ib1.current?.value || '') +
+        (ib2.current?.value || '') +
+        (ib3.current?.value || '') +
+        (ib4.current?.value || '') +
+        (ib5.current?.value || '') +
+        (ib6.current?.value || '');
+
+      console.log('OTP:', otp); // Log the concatenated OTP
+
+      // Example submission logic
+      if (otp.length === 6) {
+        submitOTP({
+          email: dataStates.email,
+          otp: otp
+        })
+        .unwrap()
+        .then((res)=>{
+          setTimeout( ()=> {
+            setModalState(modalStates.SIGNUP_CONGRATULATIONS);
+          }
+          , 1000 )
+          console.log(res)
+        })
+        .catch((err) => {
+          console.log(err)
+          //setIsSignupError(true)
+          //set_errorMessage('Invalid Username or Password')
+        })
+      } else {
+        alert('Please complete the OTP');
+      }
       };
     }
   }
@@ -463,8 +498,8 @@ const OTPSignUp = () => {
             <div><input onInput={()=>handleOnInput(ib6,ib6)} onKeyDown={(e)=>handleOnKeyDown(e, ib6, ib5)} ref={ib6} type="number" maxLength={1}></input></div>
         </div>
         <div className={`${styles['action-buttons']}`}>
-            <button ref={buttonContinue} id="btn_signup_step3_continue" className={`${styles['button-custom-orange']}`}>Continue</button>
-            <button id="btn_signup_step3_cancel" className={`${styles['button-custom-basic']}`}>Cancel</button>
+            <button ref={buttonContinue} className={`${styles['button-custom-orange']}`}>Continue</button>
+            <button className={`${styles['button-custom-basic']}`}>Cancel</button>
         </div>
         <div className={`${styles['resend-container']}`}>
             <label className={`${styles['resend-label1']}`}>Didn’t receive the email?</label>
@@ -536,8 +571,6 @@ const SubscriptionPlanSelection = () =>{
   const subscription_plan2 = useRef<HTMLDivElement>(null);
   const subscription_plan3 = useRef<HTMLDivElement>(null);
   const buttonSubscribe = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
-
   const PLAN_SELECTION_ITEMS = {
     'FREE' : 1,
     'MONTHLY' : 2,
@@ -548,10 +581,7 @@ const SubscriptionPlanSelection = () =>{
     if (buttonSubscribe.current) {
       buttonSubscribe.current.onclick = () => {
         setSelectedModalHeader(1);
-        setModalState(modalStates.SIGNUP_STEP6)
-        setTimeout(()=>{
-          navigate("/job-hunter");
-        },5000)
+        setModalState(modalStates.STRIPE_PAYMENT)
       };
     }
     if (subscription_plan1.current) {
@@ -618,7 +648,18 @@ const SubscriptionPlanSelection = () =>{
               </div>
           </div>
           <div id="outline_container" className={`${styles['subscription-selection-description-container']}`}>
-              <div className={`${styles['selection-description-title']}`}>Your Yearly Plan includes:</div>
+              <div className={`${styles['selection-description-title']}`}>
+                {
+                  currentSelectedPlan == PLAN_SELECTION_ITEMS.FREE ?
+                    'Your Free Trial includes:' :
+                    currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY ?
+                      'Your Monthly Plan includes:' :
+                      currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL ?
+                        'Your Yearly Plan includes:' : ''
+
+                }
+                
+              </div>
               <div className={`${styles['selection-description-outline-container']}`}>
                   <div className={`${styles['selection-description-outline']}`}>
                       <img src={subscription_sparkle_icon}></img>
@@ -667,7 +708,7 @@ const SubscriptionPlanSelection = () =>{
 
 const LoadingModal = () => {
   return(
-    <div id="step6_signup" className={`${styles['modal-content']}`} hidden={modalState !== modalStates.SIGNUP_STEP6}>
+    <div id="step6_signup" className={`${styles['modal-content']}`} hidden={modalState !== modalStates.LOADING}>
       <div className={`${styles['modal-loading-container']}`}>
           <div className={`${styles['loading-description']}`}>
               <div>
@@ -732,39 +773,162 @@ const CongratulationsModal = () => {
     </div> 
   )
 }
-const StripePaymentModal = () => {
-  const nextButton = useRef<HTMLButtonElement>(null);
-  const handleNext = () => {
-    if (nextButton.current) {
-      nextButton.current.onclick = () => {
-        setModalState(modalStates.SIGNUP_STEP4)
+interface CustomInputProps extends FieldProps {
+  placeholder?: string;
+  type?: string;
+}
+
+const CustomInput: React.FC<CustomInputProps> = ({ field, form, ...props }) => {
+  return (
+    <div className={`${styles['transparent-input-field']}`}>
+      <div className={`${styles['input-container']}`}>
+        <input type="password" 
+        {...field} {...props}
+        required>
+        </input>
+        {
+          (props.type=='password') ?
+            <img src={eye_off_outline}></img>
+            : ''
+        }
+      </div>
+    </div>
+  )
+
+};
+
+const CreditCardForm = () => {
+  const [paymentSubmit] = usePaymentCreateMutation();
+  const previousButton = useRef<HTMLButtonElement>(null);
+  const navigate = useNavigate();
+
+  const handlePrevious = () => {
+    if (previousButton.current) {
+      previousButton.current.onclick = () => {
+        setModalState(modalStates.SIGNUP_STEP5)
       };
     }
   }
 
-  useEffect(handleNext,[])
+  useEffect(handlePrevious,[])
+  console.log(previousButton)
+
+  const validationSchema = Yup.object({
+    cardNumber: Yup.string()
+      .matches(/^\d{16}$/, 'Card number must be 16 digits')
+      .required('Card number is required'),
+    cardholderName: Yup.string()
+      .matches(/^[a-zA-Z\s]+$/, 'Name must only contain letters and spaces')
+      .required('Cardholder name is required'),
+    expirationDate: Yup.string()
+      .matches(
+        /^(0[1-9]|1[0-2])\/\d{2}$/,
+        'Expiration date must be in MM/YY format'
+      )
+      .required('Expiration date is required'),
+    cvv: Yup.string()
+      .matches(/^\d{3,4}$/, 'CVV/CVC must be 3 or 4 digits')
+      .required('CVV/CVC is required'),
+  });
+
+  const handleSubmit = (values: { cardNumber: string; cardholderName: string; expirationDate: string; cvv: string }) => {
+    console.log(`Submitted values: ${JSON.stringify(values, null, 2)}`);
+    setModalState(modalStates.LOADING)
+    setTimeout(()=>{
+      navigate("/job-hunter");
+    },5000)
+    paymentSubmit(
+      {
+        "provider": "stripe",
+        "userId": 10,
+        "plan": "price_1QMumHFCh69SpK2kBuCiBQI2",
+        "amount": 1,
+        "paymentMethodId": "pm_1QSiGYFCh69SpK2kcccrnWHL",
+        "daysTrial": 0
+      }
+    )
+  };
+
+  return (
+    <Formik
+      initialValues={{
+        cardNumber: '',
+        cardholderName: '',
+        expirationDate: '',
+        cvv: '',
+      }}
+      validationSchema={validationSchema}
+      onSubmit={handleSubmit}
+    >
+      {() => (
+        <Form>
+          <div className={`${styles['stripe-form-inputs-container']}`}>
+            <div className={`${styles['stripe-form-upper-inputs']}`}>
+              <div>
+                <Field component={CustomInput} id="cardNumber" placeholder="Card Number *" name="cardNumber" type="text" />
+                <ErrorMessage className={`${styles['error-label']}`} name="cardNumber" component="div" />
+              </div>
+
+              <div>
+                <Field component={CustomInput} id="cardholderName" placeholder="Cardholder Name *"  name="cardholderName" type="text" />
+                <ErrorMessage className={`${styles['error-label']}`} name="cardholderName" component="div" />
+              </div>
+
+            </div>
+            <div className={`${styles['stripe-form-lower-inputs']}`}>
+              <div>
+                <Field component={CustomInput} id="expirationDate" placeholder="Expiration Date *" name="expirationDate" type="text" />
+                <ErrorMessage className={`${styles['error-label']}`} name="expirationDate" component="div" />
+              </div>
+              <div>
+                <Field component={CustomInput} id="cvv" placeholder="CVV/CVC *" name="cvv"  type="text" />
+                <ErrorMessage className={`${styles['error-label']}`} name="cvv" component="div" />
+              </div>
+            </div>
+          </div>
+
+
+
+          <div className={`${styles['security-privacy-container']}`}>
+            <div>
+              <img src={green_lock_icon}/>
+            </div>
+            <div>
+              <div>Security & Privacy</div>
+              <div>We maintain industry-standard physical, technical, and administrative</div> 
+              <div>measures to safeguard your personal information</div>
+            </div>
+          </div>
+          <div className={`${styles['action-buttons']}`}>
+                <button ref={previousButton} type="button" className={`${styles['button-custom-basic']}`}>Previous</button>
+                <button type="submit" className={`${styles['button-custom-orange']}`}>Next</button>
+          </div>  
+        </Form>
+      )}
+    </Formik>
+  );
+};
+
+const StripePaymentModal = () => {
+
   return(
     <div className={`${styles['modal-content']}`} hidden={modalState !== modalStates.STRIPE_PAYMENT}>
         <div className={`${styles['stripe-payment-container']}`}>
-          <div className={`${styles['credit-card-container']}`}>
-            <img src={visa_icon}></img>
-            <img src={amex_icon}></img>
-            <img src={mastercard_icon}></img>
-            <img src={discover_icon}></img>
+          <div className={`${styles['stripe-payment-form']}`}>
+            <div className={`${styles['credit-card-container']}`}>
+              <img src={visa_icon}></img>
+              <img src={amex_icon}></img>
+              <img src={mastercard_icon}></img>
+              <img src={discover_icon}></img>
+            </div>
+            <div className={`${styles['stripe-form-container']}`}>
+              <CreditCardForm />
+            </div>
           </div>
-          <div className={`${styles['stripe-form-container']}`}>
-
-          </div>
-          <div className={`${styles['security-privacy-container']}`}>
-
-          </div>
-          <div className={`${styles['action-buttons']}`}>
-                <button id="btn_signup_step2_previous" className={`${styles['button-custom-basic']}`}>Previous</button>
-                <button id="btn_signup_step2_next" type="submit" className={`${styles['button-custom-orange']}`}>Next</button>
-          </div>  
           <div className={`${styles['stripe-footer']}`}>
             <div className={`${styles['stripe-footer-desc']}`}>
-                Akaza integrates seamlessly with Stripe, a leading payment processor, to provide secure and efficient online payment solutions.
+                <label>Akaza{"\u00A0"}</label>
+                <label>integrates seamlessly with Stripe, a leading payment processor, to provide secure and efficient online payment solutions.</label> 
             </div>
             <div className={`${styles['powered-by-stripe-wrapper']}`}>
                 <img src={powered_by_stripe}/>

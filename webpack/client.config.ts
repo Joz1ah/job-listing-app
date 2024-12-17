@@ -4,7 +4,7 @@ import {
   Configuration,
   HotModuleReplacementPlugin,
   WebpackPluginInstance,
-  DefinePlugin
+  DefinePlugin,
 } from 'webpack'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin'
@@ -38,7 +38,13 @@ const filename = (ext: string): string =>
 
 const plugins: WebpackPluginInstance[] = [
   new DefinePlugin({
-    NO_SSR: process.env.NO_SSR === 'true'
+    NO_SSR: process.env.NO_SSR === 'true',
+    'process.env.REACT_APP_SIGNUP_API_URL': JSON.stringify(process.env.REACT_APP_SIGNUP_API_URL),
+    'process.env.REACT_APP_AUTH_API_URL': JSON.stringify(process.env.REACT_APP_AUTH_API_URL),
+    'process.env.REACT_APP_SEARCH_API_URL': JSON.stringify(process.env.REACT_APP_SEARCH_API_URL),
+    'process.env.REACT_APP_PAYMENT_API_URL': JSON.stringify(process.env.REACT_APP_PAYMENT_API_URL),
+    'process.env.REACT_APP_JOBFEED_API_URL': JSON.stringify(process.env.REACT_APP_JOBFEED_API_URL),
+    'process.env.REACT_APP_PERFECTMATCH_API_URL': JSON.stringify(process.env.REACT_APP_PERFECTMATCH_API_URL),
   }),
   ...(process.env.NO_SSR === 'true'
     ? [
