@@ -1,3 +1,10 @@
-export { pokemonApi } from 'api/pokemon/pokemonApi'
-export { akazaApi } from 'api/pokemon/pokemonApi';
-export { akazaApiAuth } from 'api/pokemon/pokemonApi';
+export { pokemonApi } from 'api/akaza/akazaAPI'
+//export { akazaApi } from 'api/akaza/akazaAPI';
+export { 
+    akazaApiSignUp,
+    akazaApiAuth,
+    akazaApiJobFeed,
+    akazaApiPayment,
+    akazaApiPerfectMatch,
+    akazaApiSearch
+ } from 'api/akaza/akazaAPI';

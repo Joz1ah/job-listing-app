@@ -3,7 +3,14 @@ import { combineReducers, UnknownAction } from '@reduxjs/toolkit'
 import { counterReducer } from './counter/counterSlice'
 import { themeReducer } from './theme/themeSlice'
 import { i18nReducer } from 'i18n/i18nSlice'
-import { pokemonApi, akazaApi, akazaApiAuth } from 'api'
+import { 
+  pokemonApi,
+  akazaApiSignUp,
+  akazaApiAuth,
+  akazaApiJobFeed,
+  akazaApiPayment,
+  akazaApiPerfectMatch,
+  akazaApiSearch  } from 'api'
 
 import { reduxHydrationAction } from 'constants/commonConstants'
 
@@ -12,8 +19,12 @@ export const rootReducer = {
   counter: counterReducer,
   i18n: i18nReducer,
   [pokemonApi.reducerPath]: pokemonApi.reducer,
-  [akazaApi.reducerPath]: pokemonApi.reducer,
-  [akazaApiAuth.reducerPath]: pokemonApi.reducer
+  [akazaApiSignUp.reducerPath]: akazaApiSignUp.reducer,
+  [akazaApiAuth.reducerPath]: akazaApiAuth.reducer,
+  [akazaApiJobFeed.reducerPath]: akazaApiJobFeed.reducer,
+  [akazaApiPayment.reducerPath]: akazaApiPayment.reducer,
+  [akazaApiPerfectMatch.reducerPath]: akazaApiPerfectMatch.reducer,
+  [akazaApiSearch.reducerPath]: akazaApiSearch.reducer,
 }
 
 export const appReducer = combineReducers(rootReducer)

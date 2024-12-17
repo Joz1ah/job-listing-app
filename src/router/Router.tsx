@@ -2,8 +2,15 @@ import { RouteObject, Navigate } from 'react-router-dom'
 import { lazy, Suspense, ComponentType } from 'react'
 import { ROUTE_CONSTANTS } from 'constants/routeConstants'
 
-// Common pages
-const Home = lazy(() => import('pages').then(module => ({ default: module.Home })))
+// Common page imports
+import { Home } from 'pages'
+//import { Fetch } from 'pages'
+//import { About } from 'pages'
+//import { NotFoundPage as NotFound } from 'pages'
+
+
+// Adjust imports to match your file structure and add type assertions
+//const Home = lazy(() => import('pages').then(module => ({ default: module.Home })))
 const Landing = lazy(() => import('pages').then(module => ({ default: module.Landing })))
 const Fetch = lazy(() => import('pages').then(module => ({ default: module.Fetch })))
 const About = lazy(() => import('pages').then(module => ({ default: module.About })))
@@ -91,11 +98,20 @@ const LazyComponent = ({ component: Component, ...props }: LazyComponentProps) =
   </Suspense>
 );
 
+const RedirectTo = ({ to }: { to: string }) => {
+  if (typeof window === 'undefined') {
+    // SSR: Render nothing
+    return null;
+  }
+
+  // Client-side: Use <Navigate>
+  return <Navigate to={to} replace />;
+};
 
 const routes: RouteObject[] = [
   {
     path: '',
-    element: <Navigate to={ROUTE_CONSTANTS.LANDING} replace />
+    element: <RedirectTo to={ROUTE_CONSTANTS.LANDING} />,
   },
   {
     path: ROUTE_CONSTANTS.LANDING,

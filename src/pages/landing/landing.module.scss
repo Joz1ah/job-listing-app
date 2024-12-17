@@ -816,7 +816,7 @@ color: #F5F5F7;
 }
 
 .modal-divider{
-  border-top: 2px solid #AEADAD;
+  border-top: 1px solid #AEADAD;
 }
 
 .modal-title{
@@ -905,6 +905,7 @@ color: #F5F5F7;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+  color:red;
 }
 
 
@@ -1107,11 +1108,15 @@ color: #F5F5F7;
   display: flex;
   padding-bottom: 8px;
   border-bottom: 1px solid #AEADAD;
+  position: relative;
 }
 
 .country-mobtel-container > .input-fields-container > .input-container > .input-image-container{
+  position: absolute;
   display: flex;
   gap: 13px;
+  justify-content: end;
+  width: 100%;
 }
 
 .country-mobtel-container > .input-fields-container > .input-container > .input-title-label-container{
@@ -1178,6 +1183,7 @@ color: #F5F5F7;
 }
 
 .subscription-selection-items > .subscription-item.selected{
+  box-sizing: border-box;
   border-image: linear-gradient(to right, #FFC9AD 0%, #8F431B 100%) 1;
   border-width: 4px;
   border-style: solid;
@@ -1278,7 +1284,7 @@ color: #F5F5F7;
 .subscription-selection-description-container > .selection-description-title{
   color: #FFF;
   font-family: Poppins-R;
-  font-size: 15px;
+  font-size: 14px;
   font-style: normal;
   font-weight: 600;
   line-height: 22px; /* 137.5% */
@@ -1604,6 +1610,162 @@ div.main [hidden]{
   stroke-dashoffset: 48;
   animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
 }
+
+.stripe-payment-container{
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+
+  .stripe-payment-form{
+    margin: 4px 64px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    
+    .credit-card-container{
+      margin-top:18px;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      gap:16px;
+    }
+  
+    .stripe-form-container{
+      display: flex;
+      flex-basis: 100%;
+      width: 100%;
+      margin-top:5px;
+      Form{
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        .stripe-form-inputs-container{
+          display: flex;
+          flex-direction: column;
+          gap: 30px;
+
+          .stripe-form-upper-inputs{
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+
+          }
+          .stripe-form-lower-inputs{
+            display: flex;
+            flex-direction: row;
+            gap:22px;
+
+            > :nth-child(1){
+              width: 100%;
+              max-width: 50%;
+            }
+            > :nth-child(2){
+              width: 100%;
+              max-width: 50%;
+            }
+          }
+
+          .error-label{    
+            margin-top:4px;
+            font-family: Poppins-R;
+            font-size: 10px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            color:red;
+            margin-bottom: -20px;
+          }
+        }
+        .security-privacy-container{
+          margin-top:26px;
+          display: flex;
+          flex-direction: row;
+          font-family: Poppins-R;
+          font-size: 9px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: normal;
+          gap: 9px;
+          >div:nth-child(2){
+            :nth-child(1){
+              color:#4BAF66;
+              text-decoration: underline;
+            }
+            :nth-child(2){
+              color:#000000;
+            }
+          }
+        }
+        .transparent-input-field input{
+          width: 100%;
+          border: none;
+          background: transparent;
+          color: #263238;
+          font-family: Poppins-R;
+          font-size: 14px;
+          font-style: normal;
+          font-weight: 500;
+          line-height: normal;
+        }
+
+        .transparent-input-field > .input-container{
+          display: flex;
+          padding-bottom: 8px;
+          border-bottom: 1px solid #AEADAD;
+        }
+
+        .transparent-input-field > .input-container > img{
+          width: 24px;
+          height: 24px;
+        }
+        
+        .action-buttons{
+          flex-basis: 100%;
+          display: flex;
+          align-items: end;
+          justify-content: center;
+          flex-direction: row;
+          margin-bottom:30px;
+          gap:10px;
+          
+          button{
+            width: 100%;
+          }
+        }
+      }  
+    }
+
+  }
+
+
+  .stripe-footer{
+    padding: 10px 66px 10px 66px;
+    display: flex;
+    background-color: #32325D;
+    color: #fff;
+    gap:41px;
+    justify-content: center;
+    align-items: center;
+      
+    .stripe-footer-desc{
+      font-family: Poppins-R;
+      font-size: 9px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 15px;
+    }
+
+    .powered-by-stripe-wrapper{
+      img{
+        height: 60px;
+      }
+    }
+  }
+
+
+}
+
+
 
 @keyframes stroke {
   100% {

@@ -13,15 +13,26 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import { ThunkAction } from 'redux-thunk'
 
 import { rootReducer, mainReducer } from './rootReducer'
-import { pokemonApi,akazaApi,akazaApiAuth } from 'api'
+import {
+  pokemonApi,
+  akazaApiSignUp,
+  akazaApiAuth,
+  akazaApiJobFeed,
+  akazaApiPayment,
+  akazaApiPerfectMatch,
+  akazaApiSearch } from 'api'
 import { persistStateToLocalStorage } from './middlewares'
 import { isServer } from 'utils'
 
 const middlewares = [
   ...(!isServer ? [persistStateToLocalStorage(['counter', 'pokemonApi'])] : []),
   pokemonApi.middleware,
-  akazaApi.middleware,
-  akazaApiAuth.middleware
+  akazaApiSignUp.middleware,
+  akazaApiAuth.middleware,
+  akazaApiJobFeed.middleware,
+  akazaApiPayment.middleware,
+  akazaApiPerfectMatch.middleware,
+  akazaApiSearch.middleware,
 ]
 
 const initStore = (preloadedState?: Partial<RootState>): EnhancedStore =>

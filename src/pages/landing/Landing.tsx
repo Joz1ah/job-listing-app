@@ -2,8 +2,10 @@ import React, { FC, useEffect, useState, useRef, ReactElement } from 'react'
 import { FooterEngagement as Footer} from "layouts";
 import { PageMeta } from "components";
 import { LandingContext } from 'components';
-import { useLoginMutation, useSignUpMSMutation } from 'api/pokemon/pokemonApi';
+import { useLoginMutation, useSignUpMutation, useOtpGenerateMutation, useOtpVerifyMutation, usePaymentCreateMutation } from 'api/akaza/akazaAPI';
 import { useNavigate } from "react-router-dom";
+import { Formik, Form, FieldProps, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
 
 import video1 from 'assets/mp4/Landing-Page-hero-1.mp4';
 import video2 from 'assets/mp4/video-conference-call-1.mp4';
@@ -21,6 +23,7 @@ import jobhunter_icon from 'assets/jobhunter-icon.png';
 import employer_icon from 'assets/employer-icon.png';
 import arrow_left_icon from 'assets/Keyboard-arrow-left.svg?url';
 import girl_with_dog_smiling_at_laptop from 'assets/girl-with-dog-smiling-at-laptop.jpg';
+import powered_by_stripe from 'assets/powered_by_stripe.svg?url';
 
 import icon_search from 'assets/search.svg?url';
 import _5dollarspermonth from 'assets/5dollarspermonth.svg?url';
@@ -35,6 +38,7 @@ import chevron_down from 'assets/chevron-down.svg?url';
 import unchecked_green from 'assets/toggles/unchecked-green.svg?url';
 import checked_green from 'assets/toggles/checked-green.svg?url';
 import sparkle_icon from 'assets/sparkle-icon.svg?url';
+import green_lock_icon from 'assets/green-lock.svg?url';
 
 import subscription_sparkle_icon from 'assets/subscription-plan-icons/sparkle.svg?url';
 import subscription_thumbsup_icon from 'assets/subscription-plan-icons/thumbsup.svg?url';
@@ -45,6 +49,11 @@ import subscription_chat_icon from 'assets/subscription-plan-icons/chat.svg?url'
 import subscription_gift_icon from 'assets/subscription-plan-icons/gift.svg?url';
 import subscription_bolt_icon from 'assets/subscription-plan-icons/bolt.svg?url';
 
+import visa_icon from 'assets/credit-card-icons/cc_visa.svg?url';
+import amex_icon from 'assets/credit-card-icons/cc_american-express.svg?url';
+import mastercard_icon from 'assets/credit-card-icons/cc_mastercard.svg?url';
+import discover_icon from 'assets/credit-card-icons/cc_discover.svg?url';
+
 //import { useAppSelector, useAppDispatch } from 'store/store'
 //import { increment } from 'store/counter/counterSlice'
 //import useTranslations from 'i18n/useTranslations'
@@ -54,11 +63,15 @@ import subscription_bolt_icon from 'assets/subscription-plan-icons/bolt.svg?url'
 import styles from './landing.module.scss'
 
 const Landing: FC = (): ReactElement => {
-  const [maskHidden, setMaskHidden] = useState(1);
-  const [closeModalActive, setCloseModalActive] = useState(0);
+  const [maskHidden, setMaskHidden] = useState(0);
+  const [closeModalActive, setCloseModalActive] = useState(1);
   const [selectedModalHeader, setSelectedModalHeader] = useState(1);
-  const [modalState, setModalState] = useState(0);
+  const [modalState, setModalState] = useState(9);
   const [heroState, setHeroState] = useState(1);
+  const [dataStates, setDataStates] = useState({
+    selectedUserType: '',
+    email: ''
+  });
   const heroStates = {
       'PERFECT_MATCH_ALGO' : 1,
       'JOB_TITLE_EMPLOYER' : 2,
@@ -76,8 +89,9 @@ const Landing: FC = (): ReactElement => {
       'SIGNUP_STEP3' : 4,
       'SIGNUP_STEP4' : 5,
       'SIGNUP_STEP5' : 6,
-      'SIGNUP_STEP6' : 7,
-      'SIGNUP_CONGRATULATIONS' : 7,
+      'LOADING' : 7,
+      'SIGNUP_CONGRATULATIONS' : 8,
+      'STRIPE_PAYMENT' : 9
   }
   const MODAL_HEADER_TYPE = {
       'WITH_LOGO_AND_CLOSE' : 1,
@@ -162,11 +176,13 @@ const Landing: FC = (): ReactElement => {
     const moveToNext = () => {
       if (ButtonJobHunterRef.current) {
         ButtonJobHunterRef.current.onclick = () => {
+          setDataStates({...dataStates, selectedUserType: 'job_hunter'})
           setModalState(modalStates.SIGNUP_STEP2)
         };
       }
       if (ButtonEmployerRef.current) {
         ButtonEmployerRef.current.onclick = () => {
+          setDataStates({...dataStates, selectedUserType: 'employer'})
           setModalState(modalStates.SIGNUP_STEP2)
         };
       }
@@ -191,16 +207,16 @@ const Landing: FC = (): ReactElement => {
   }
 
   const LoginForm = () =>{
-    const [credentials, setCredentials] = useState({ email: '', password: '' });
+    const [credentials, setCredentials] = useState({ email: '', password: '', });
     const [loginSubmit] = useLoginMutation()
     const [isLoginError, setIsLoginError] = useState(false);
-    const [errorMessage, seterrorMessage] = useState('');
+    const [_errorMessage, set_errorMessage] = useState('');
     //console.log(data,error, isLoading)
     //akazaApi.
 
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-      loginSubmit(credentials)
+      loginSubmit({...credentials})
       .unwrap()
       .then((res)=>{
         console.log(res)
@@ -208,7 +224,7 @@ const Landing: FC = (): ReactElement => {
       .catch((err) => {
         console.log(err)
         setIsLoginError(true)
-        seterrorMessage('Invalid Username or Password')
+        set_errorMessage('Invalid Username or Password')
       })
     };
   
@@ -242,7 +258,7 @@ const Landing: FC = (): ReactElement => {
         </div>
         
         <div id="label_login" className={`${styles['error-label']} ${styles['color_error']}`} hidden={isLoginError}>
-          {errorMessage}
+          {_errorMessage}
         </div>
         <div className={`${styles['login-options']}`}>
             <div>
@@ -257,30 +273,77 @@ const Landing: FC = (): ReactElement => {
     </form>
     )
   }
-
+  
 
   const UserNamePasswordSignup = () => {
-    const [credentials, setCredentials] = useState({ email: '', password: '' });
-    //const [isSignupError, setIsSignupError] = useState(false);
-    //const [errorMessage, seterrorMessage] = useState('');
-    const [signUpSubmit] = useSignUpMSMutation()
+    const [credentials, setCredentials] = useState({ email: '', password: '', passwordConfirm: '' });
+    const [isSignupError, setIsSignupError] = useState(false);
+    const [organizedErrors, setOrganizedErrors] =  useState({ email: '', password: '', passwordConfirm: '' });
+
+  
+    const [signUpSubmit] = useSignUpMutation()
+    const [generateOTP] = useOtpGenerateMutation()
+
+    const schema = Yup.object().shape({
+      email: Yup
+        .string()
+        .email('Invalid email address')
+        .required('Email is required'),
+      
+      password: Yup
+        .string()
+        .min(6, 'Password must be at least 6 characters long')
+        .required('Password is required'),
+      
+      passwordConfirm: Yup
+        .string()
+        .oneOf([Yup.ref('password'), undefined], 'Passwords must match')
+        .required('Please confirm your password')
+        .nullable(), 
+    });
 
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-      setModalState(modalStates.SIGNUP_STEP3)
-      
-      signUpSubmit({...credentials,type:'job_hunter'})
-      .unwrap()
-      .then((res)=>{
-        console.log(res)
+      schema
+      .validate(credentials, { abortEarly: false })
+      .then(validData => {
+        setIsSignupError(false)
+        console.log('Validation successful:', validData);
+
+        signUpSubmit({...credentials,type:dataStates.selectedUserType})
+        .unwrap()
+        .then((res)=>{
+          setTimeout( ()=> {
+            setDataStates({...dataStates, email:credentials.email})
+            generateOTP( { email:credentials.email } )
+            setModalState(modalStates.SIGNUP_STEP3)
+          }
+          , 1000 )
+          console.log(res)
+        })
+        .catch((err) => {
+          console.log(err)
+          //setIsSignupError(true)
+          //set_errorMessage('Invalid Username or Password')
+        })
       })
-      .catch((err) => {
-        console.log(err)
-        //setIsSignupError(true)
-        //seterrorMessage('Invalid Username or Password')
-      })
+      .catch(err => {
+        setIsSignupError(true)
+
+        if (err.inner) {
+          let _organizedErrors:any = { email: '', password: '', passwordConfirm: '' };
+          err.inner.forEach((error: Yup.ValidationError) => {
+            if (error.path) {
+              _organizedErrors[error.path] = error.message;
+            }
+          });
+          setOrganizedErrors(_organizedErrors)
+          console.log('Organized Errors:', organizedErrors);
+        }
+      });
         
     };
+
     return(
       <div id="step2_signup" className={`${styles['modal-content']}`} hidden={modalState !== modalStates.SIGNUP_STEP2}>
           <div className={`${styles['password-confirmation-container']}`}>
@@ -296,34 +359,45 @@ const Landing: FC = (): ReactElement => {
 
                         </input>
                     </div>
-                    <div className={`${styles['error-label']}`} hidden>
-                        Please provide a valid email.
-                    </div>
+                    {
+                      (isSignupError) ?
+                        <div className={`${styles['error-label']}`}>
+                            {organizedErrors.email}
+                        </div> : ''
+                    }
                 </div>
                 <div id="signup_password" className={`${styles['transparent-input-field']}`}>
                     <div className={`${styles['input-container']}`}>
-                        <input type="password" placeholder="Password"
+                        <input type="password" 
+                        placeholder="Password"
                         onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
                         required>
 
                         </input>
                         <img src={eye_off_outline}></img>
                     </div>
-                    <div className={`${styles['error-label']}`} hidden>
-                        Must be at least 8 characters.
-                    </div>
+                    {
+                      (isSignupError) ?
+                        <div className={`${styles['error-label']}`}>
+                            {organizedErrors.password}
+                        </div> : ''
+                    }
                 </div>
                 <div id="signup_password_confirm" className={`${styles['transparent-input-field']}`}>
                     <div className={`${styles['input-container']}`}>
                         <input type="password" 
                         placeholder="Confirm password"
+                        onChange={(e) => setCredentials({ ...credentials, passwordConfirm: e.target.value })}
                         required>
                         </input>
                         <img src={eye_off_outline}></img>
                     </div>
-                    <div className={`${styles['error-label']}`} hidden>
-                        Must be at least 8 characters.
-                    </div>
+                    {
+                      (isSignupError) ?
+                        <div className={`${styles['error-label']}`}>
+                            {organizedErrors.passwordConfirm}
+                        </div> : ''
+                    }
                 </div>
             </div>
             <div className={`${styles['other-signup-option-label']}`}>or sign up with</div>
@@ -336,8 +410,8 @@ const Landing: FC = (): ReactElement => {
                 </div>
             </div>
             <div className={`${styles['action-buttons']}`}>
-                <button id="btn_signup_step2_previous" className={`${styles['button-custom-basic']}`}>Previous</button>
-                <button id="btn_signup_step2_next" type="submit" className={`${styles['button-custom-orange']}`}>Next</button>
+                <button className={`${styles['button-custom-basic']}`}>Previous</button>
+                <button type="submit" className={`${styles['button-custom-orange']}`}>Next</button>
             </div>  
           </form>
         </div>    
@@ -347,6 +421,7 @@ const Landing: FC = (): ReactElement => {
 
 const OTPSignUp = () => {
   const buttonContinue = useRef<HTMLButtonElement>(null);
+  const [submitOTP] = useOtpVerifyMutation();
   //const buttonCancel = useRef<HTMLButtonElement>(null);
   const buttonPrevious = useRef<HTMLDivElement>(null);
   const ib1 = useRef<HTMLInputElement>(null);
@@ -357,7 +432,6 @@ const OTPSignUp = () => {
   const ib6 = useRef<HTMLInputElement>(null);
   const handleOnInput = (ref:any, nextRef:any) =>{
     let currentInput = ref.current
-    console.log(ref)
     if(currentInput.value.length > currentInput.maxLength)
        currentInput.value = currentInput.value.slice(0, currentInput.maxLength);
     if(currentInput.value.length >= currentInput.maxLength)
@@ -372,7 +446,38 @@ const OTPSignUp = () => {
   const handleContinue = () => {
     if (buttonContinue.current) {
       buttonContinue.current.onclick = () => {
-        setModalState(modalStates.SIGNUP_STEP4)
+        const otp =
+        (ib1.current?.value || '') +
+        (ib2.current?.value || '') +
+        (ib3.current?.value || '') +
+        (ib4.current?.value || '') +
+        (ib5.current?.value || '') +
+        (ib6.current?.value || '');
+
+      console.log('OTP:', otp); // Log the concatenated OTP
+
+      // Example submission logic
+      if (otp.length === 6) {
+        submitOTP({
+          email: dataStates.email,
+          otp: otp
+        })
+        .unwrap()
+        .then((res)=>{
+          setTimeout( ()=> {
+            setModalState(modalStates.SIGNUP_CONGRATULATIONS);
+          }
+          , 1000 )
+          console.log(res)
+        })
+        .catch((err) => {
+          console.log(err)
+          //setIsSignupError(true)
+          //set_errorMessage('Invalid Username or Password')
+        })
+      } else {
+        alert('Please complete the OTP');
+      }
       };
     }
   }
@@ -393,8 +498,8 @@ const OTPSignUp = () => {
             <div><input onInput={()=>handleOnInput(ib6,ib6)} onKeyDown={(e)=>handleOnKeyDown(e, ib6, ib5)} ref={ib6} type="number" maxLength={1}></input></div>
         </div>
         <div className={`${styles['action-buttons']}`}>
-            <button ref={buttonContinue} id="btn_signup_step3_continue" className={`${styles['button-custom-orange']}`}>Continue</button>
-            <button id="btn_signup_step3_cancel" className={`${styles['button-custom-basic']}`}>Cancel</button>
+            <button ref={buttonContinue} className={`${styles['button-custom-orange']}`}>Continue</button>
+            <button className={`${styles['button-custom-basic']}`}>Cancel</button>
         </div>
         <div className={`${styles['resend-container']}`}>
             <label className={`${styles['resend-label1']}`}>Didn’t receive the email?</label>
@@ -466,8 +571,6 @@ const SubscriptionPlanSelection = () =>{
   const subscription_plan2 = useRef<HTMLDivElement>(null);
   const subscription_plan3 = useRef<HTMLDivElement>(null);
   const buttonSubscribe = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
-
   const PLAN_SELECTION_ITEMS = {
     'FREE' : 1,
     'MONTHLY' : 2,
@@ -478,10 +581,7 @@ const SubscriptionPlanSelection = () =>{
     if (buttonSubscribe.current) {
       buttonSubscribe.current.onclick = () => {
         setSelectedModalHeader(1);
-        setModalState(modalStates.SIGNUP_STEP6)
-        setTimeout(()=>{
-          navigate("/employer/feed");
-        },5000)
+        setModalState(modalStates.STRIPE_PAYMENT)
       };
     }
     if (subscription_plan1.current) {
@@ -548,7 +648,18 @@ const SubscriptionPlanSelection = () =>{
               </div>
           </div>
           <div id="outline_container" className={`${styles['subscription-selection-description-container']}`}>
-              <div className={`${styles['selection-description-title']}`}>Your Yearly Plan includes:</div>
+              <div className={`${styles['selection-description-title']}`}>
+                {
+                  currentSelectedPlan == PLAN_SELECTION_ITEMS.FREE ?
+                    'Your Free Trial includes:' :
+                    currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY ?
+                      'Your Monthly Plan includes:' :
+                      currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL ?
+                        'Your Yearly Plan includes:' : ''
+
+                }
+                
+              </div>
               <div className={`${styles['selection-description-outline-container']}`}>
                   <div className={`${styles['selection-description-outline']}`}>
                       <img src={subscription_sparkle_icon}></img>
@@ -597,7 +708,7 @@ const SubscriptionPlanSelection = () =>{
 
 const LoadingModal = () => {
   return(
-    <div id="step6_signup" className={`${styles['modal-content']}`} hidden={modalState !== modalStates.SIGNUP_STEP6}>
+    <div id="step6_signup" className={`${styles['modal-content']}`} hidden={modalState !== modalStates.LOADING}>
       <div className={`${styles['modal-loading-container']}`}>
           <div className={`${styles['loading-description']}`}>
               <div>
@@ -628,6 +739,16 @@ const LoadingModal = () => {
 }
 
 const CongratulationsModal = () => {
+  const nextButton = useRef<HTMLButtonElement>(null);
+  const handleNext = () => {
+    if (nextButton.current) {
+      nextButton.current.onclick = () => {
+        setModalState(modalStates.SIGNUP_STEP4)
+      };
+    }
+  }
+
+  useEffect(handleNext,[])
   return(
     <div id="step_congratulations" className={`${styles['modal-content']}`} hidden={modalState !== modalStates.SIGNUP_CONGRATULATIONS}>
         <div className={`${styles['congratulations-container']}`}>
@@ -646,12 +767,179 @@ const CongratulationsModal = () => {
                 </div>
             </div>
             <div className={`${styles['action-buttons']}`}>
-                <button id="btn_signup_congratulations_next" className={`${styles['button-custom-orange']}`}>Next</button>
+                <button ref={nextButton} className={`${styles['button-custom-orange']}`}>Next</button>
             </div>
         </div>
     </div> 
   )
 }
+interface CustomInputProps extends FieldProps {
+  placeholder?: string;
+  type?: string;
+}
+
+const CustomInput: React.FC<CustomInputProps> = ({ field, form, ...props }) => {
+  return (
+    <div className={`${styles['transparent-input-field']}`}>
+      <div className={`${styles['input-container']}`}>
+        <input type="password" 
+        {...field} {...props}
+        required>
+        </input>
+        {
+          (props.type=='password') ?
+            <img src={eye_off_outline}></img>
+            : ''
+        }
+      </div>
+    </div>
+  )
+
+};
+
+const CreditCardForm = () => {
+  const [paymentSubmit] = usePaymentCreateMutation();
+  const previousButton = useRef<HTMLButtonElement>(null);
+  const navigate = useNavigate();
+
+  const handlePrevious = () => {
+    if (previousButton.current) {
+      previousButton.current.onclick = () => {
+        setModalState(modalStates.SIGNUP_STEP5)
+      };
+    }
+  }
+
+  useEffect(handlePrevious,[])
+  console.log(previousButton)
+
+  const validationSchema = Yup.object({
+    cardNumber: Yup.string()
+      .matches(/^\d{16}$/, 'Card number must be 16 digits')
+      .required('Card number is required'),
+    cardholderName: Yup.string()
+      .matches(/^[a-zA-Z\s]+$/, 'Name must only contain letters and spaces')
+      .required('Cardholder name is required'),
+    expirationDate: Yup.string()
+      .matches(
+        /^(0[1-9]|1[0-2])\/\d{2}$/,
+        'Expiration date must be in MM/YY format'
+      )
+      .required('Expiration date is required'),
+    cvv: Yup.string()
+      .matches(/^\d{3,4}$/, 'CVV/CVC must be 3 or 4 digits')
+      .required('CVV/CVC is required'),
+  });
+
+  const handleSubmit = (values: { cardNumber: string; cardholderName: string; expirationDate: string; cvv: string }) => {
+    console.log(`Submitted values: ${JSON.stringify(values, null, 2)}`);
+    setModalState(modalStates.LOADING)
+    setTimeout(()=>{
+      navigate("/job-hunter");
+    },5000)
+    paymentSubmit(
+      {
+        "provider": "stripe",
+        "userId": 10,
+        "plan": "price_1QMumHFCh69SpK2kBuCiBQI2",
+        "amount": 1,
+        "paymentMethodId": "pm_1QSiGYFCh69SpK2kcccrnWHL",
+        "daysTrial": 0
+      }
+    )
+  };
+
+  return (
+    <Formik
+      initialValues={{
+        cardNumber: '',
+        cardholderName: '',
+        expirationDate: '',
+        cvv: '',
+      }}
+      validationSchema={validationSchema}
+      onSubmit={handleSubmit}
+    >
+      {() => (
+        <Form>
+          <div className={`${styles['stripe-form-inputs-container']}`}>
+            <div className={`${styles['stripe-form-upper-inputs']}`}>
+              <div>
+                <Field component={CustomInput} id="cardNumber" placeholder="Card Number *" name="cardNumber" type="text" />
+                <ErrorMessage className={`${styles['error-label']}`} name="cardNumber" component="div" />
+              </div>
+
+              <div>
+                <Field component={CustomInput} id="cardholderName" placeholder="Cardholder Name *"  name="cardholderName" type="text" />
+                <ErrorMessage className={`${styles['error-label']}`} name="cardholderName" component="div" />
+              </div>
+
+            </div>
+            <div className={`${styles['stripe-form-lower-inputs']}`}>
+              <div>
+                <Field component={CustomInput} id="expirationDate" placeholder="Expiration Date *" name="expirationDate" type="text" />
+                <ErrorMessage className={`${styles['error-label']}`} name="expirationDate" component="div" />
+              </div>
+              <div>
+                <Field component={CustomInput} id="cvv" placeholder="CVV/CVC *" name="cvv"  type="text" />
+                <ErrorMessage className={`${styles['error-label']}`} name="cvv" component="div" />
+              </div>
+            </div>
+          </div>
+
+
+
+          <div className={`${styles['security-privacy-container']}`}>
+            <div>
+              <img src={green_lock_icon}/>
+            </div>
+            <div>
+              <div>Security & Privacy</div>
+              <div>We maintain industry-standard physical, technical, and administrative</div> 
+              <div>measures to safeguard your personal information</div>
+            </div>
+          </div>
+          <div className={`${styles['action-buttons']}`}>
+                <button ref={previousButton} type="button" className={`${styles['button-custom-basic']}`}>Previous</button>
+                <button type="submit" className={`${styles['button-custom-orange']}`}>Next</button>
+          </div>  
+        </Form>
+      )}
+    </Formik>
+  );
+};
+
+const StripePaymentModal = () => {
+
+  return(
+    <div className={`${styles['modal-content']}`} hidden={modalState !== modalStates.STRIPE_PAYMENT}>
+        <div className={`${styles['stripe-payment-container']}`}>
+          <div className={`${styles['stripe-payment-form']}`}>
+            <div className={`${styles['credit-card-container']}`}>
+              <img src={visa_icon}></img>
+              <img src={amex_icon}></img>
+              <img src={mastercard_icon}></img>
+              <img src={discover_icon}></img>
+            </div>
+            <div className={`${styles['stripe-form-container']}`}>
+              <CreditCardForm />
+            </div>
+          </div>
+          <div className={`${styles['stripe-footer']}`}>
+            <div className={`${styles['stripe-footer-desc']}`}>
+                <label>Akaza{"\u00A0"}</label>
+                <label>integrates seamlessly with Stripe, a leading payment processor, to provide secure and efficient online payment solutions.</label> 
+            </div>
+            <div className={`${styles['powered-by-stripe-wrapper']}`}>
+                <img src={powered_by_stripe}/>
+            </div>
+          </div>
+        </div>
+    </div> 
+  )
+}
+
+
 const ModalHeader = () =>{
   const closeModal1 = useRef<HTMLImageElement>(null);
   const closeModal2 = useRef<HTMLImageElement>(null);
@@ -709,6 +997,7 @@ const Modal = () =>{
                   <SubscriptionPlanSelection/>
                   <LoadingModal/>
                   <CongratulationsModal/>
+                  <StripePaymentModal/>
               </div>
           </div>
       </div>
@@ -854,7 +1143,7 @@ const HeroSkillSetsEmployer = () => {
               </div>
               <div className={`${styles['search-wrapper']}`}>
                   <input className={`${styles['search-input']}`} placeholder="Type and select your skill set" type="text" />
-                  <img src="assets/search.svg"></img>
+                  <img src={icon_search}></img>
               </div>
               <div className={`${styles['hero-button-container2']}`}>
                   <div ref={heroEmployerButton} className={`${styles['button-custom-orange']} ${styles['noselect']}`}>Next</div>
@@ -953,7 +1242,7 @@ const HeroSkillSetsJobHunter = () => {
                 </div>
                 <div className={`${styles['search-wrapper']}`}>
                     <input className={`${styles['search-input']}`} placeholder="Type and select your skill set" type="text" />
-                    <img src="assets/search.svg"></img>
+                    <img src={icon_search}></img>
                 </div>
                 <div className={`${styles['hero-button-container2']}`}>
                     <div ref={heroNextButton} className={`${styles['button-custom-orange']} ${styles['noselect']}`}>Next</div>
