@@ -30,7 +30,7 @@ const AppPreviewModal: FC<AppPreviewModalProps> = ({
               <div className="space-y-3">
                 {/* Applicant Name */}
                 <div className="flex flex-col items-start">
-                  <DialogTitle className="text-3xl font-medium text-[#263238]">
+                  <DialogTitle className="text-3xl font-semibold text-[#263238]">
                     {`${app.firstName} ${app.lastName}`}
                   </DialogTitle>
                 </div>

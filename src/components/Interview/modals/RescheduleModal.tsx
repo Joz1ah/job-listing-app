@@ -2,7 +2,9 @@ import { FC, useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
 import { Button } from "components";
 import { MapPin, LoaderCircle, Check } from "lucide-react";
-import { InterviewCalendarModal } from "./InterviewCalendarModal";
+import { EmployerInterviewCalendarModal } from "../modals/EmployerInterviewCalendarModal";
+import { HunterInterviewCalendarModal } from "../modals/HunterInterviewCalendarModal";
+
 import {
   Select,
   SelectContent,
@@ -10,13 +12,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "components";
-import { BaseModalProps } from "features/employer/types";
+
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { DatePicker } from "components";
 import gmeet from "images/google-meet.svg?url";
 import { InputField } from "components";
 import { useNavigate } from "react-router-dom";
+import { Interview } from "mockData/employer-interviews-data";
+
+interface BaseModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  interview: Interview;
+  variant: "employer" | "job-hunter";
+}
 
 interface RescheduleReason {
   id: string;
@@ -62,15 +72,15 @@ const validationSchema = Yup.object().shape({
   reason: Yup.string()
     .required("Please select a reason")
     .oneOf(
-      rescheduleReasons.map(reason => reason.id),
-      "Please select a valid reason"
+      rescheduleReasons.map((reason) => reason.id),
+      "Please select a valid reason",
     ),
   interviewDate: Yup.date()
     .required("Please select a date")
     .min(new Date(), "Cannot select a past date")
     .max(
       new Date(new Date().setMonth(new Date().getMonth() + 2)),
-      "Cannot select a date more than 2 months"
+      "Cannot select a date more than 2 months",
     )
     .typeError("Please select a valid date"),
   interviewTime: Yup.string()
@@ -83,6 +93,7 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
   onClose,
   interview,
   onReschedule,
+  variant,
 }) => {
   const [isDatePickerOpen, setIsDatePickerOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -122,10 +133,14 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
       setIsLoading(false);
       setIsRescheduled(true);
 
-      // Close the modal after 3 seconds
+      // Close the modal after 1 second and navigate based on variant
       setTimeout(() => {
         onClose();
-        navigate("/employer/interviews/reschedule");
+        navigate(
+          variant === "employer"
+            ? "/employer/interviews/reschedule"
+            : "/job-hunter/interviews/reschedule",
+        );
       }, 1000);
     },
   });
@@ -145,6 +160,17 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
     setFieldValue("interviewDate", selectedDate);
     setIsDatePickerOpen(false);
   };
+
+  // Determine which fields to show based on variant
+  const primaryField =
+    variant === "employer" ? interview.candidate : interview.position;
+  const secondaryField =
+    variant === "employer" ? interview.position : interview.company;
+
+  const InterviewCalendarModal =
+    variant === "employer"
+      ? EmployerInterviewCalendarModal
+      : HunterInterviewCalendarModal;
 
   return (
     <>
@@ -173,19 +199,19 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
                 {/* Job Details */}
                 <div className="mb-4">
                   <div className="flex flex-wrap justify-between items-start gap-2">
-                    <h3 className="text-sm font-medium break-words text-[#263238] ">
-                      {interview.candidate}
+                    <h3 className="text-sm font-medium break-words text-[#263238]">
+                      {primaryField}
                     </h3>
                     <span className="text-xs text-[#717171] font-light">
                       Received {interview.receivedTime}
                     </span>
                   </div>
                   <p className="text-sm text-[#263238] underline cursor-pointer break-words">
-                    {interview.position}
+                    {secondaryField}
                   </p>
                   <div className="flex items-center mt-1">
-                    <MapPin className="text-orange-500" size={12} />
-                    <p className="text-xs text-[#263238]  break-words">
+                    <MapPin className="text-[#F5722E]" size={12} />
+                    <p className="text-xs text-[#263238] break-words">
                       Based in {interview.location}
                     </p>
                   </div>
@@ -194,20 +220,24 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
                 {/* Time Details */}
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs min-w-[40px] text-[#263238] ">Date:</span>
+                    <span className="text-xs min-w-[40px] text-[#263238]">
+                      Date:
+                    </span>
                     <span className="text-xs font-semibold px-2 py-0.5 rounded-sm bg-[#184E77] text-white min-w-[135px] text-center">
                       {interview.date}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs min-w-[40px] text-[#263238] ">Time:</span>
+                    <span className="text-xs min-w-[40px] text-[#263238]">
+                      Time:
+                    </span>
                     <span className="text-xs font-semibold px-2 py-0.5 rounded-sm bg-[#168AAD] text-white min-w-[135px] text-center">
                       {interview.time}
                     </span>
                   </div>
                   <div className="mt-4 flex items-center gap-2">
                     <img src={gmeet} alt="Google Meet" className="h-4 w-4" />
-                    <span className="text-xs text-orange-500 font-light">
+                    <span className="text-xs text-[#F5722E] font-light">
                       via Google meet
                     </span>
                   </div>
@@ -257,7 +287,7 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
                     >
                       <div className="relative">
                         <div
-                          className="-full border-2 rounded-[10px]  bg-transparent h-[56px] px-3 flex items-center cursor-pointer border-[#263238] text-sm"
+                          className="w-full border-2 rounded-[10px] bg-transparent h-[56px] px-3 flex items-center cursor-pointer border-[#263238] text-sm"
                           onClick={() => setIsDatePickerOpen(true)}
                         >
                           {values.interviewDate
@@ -288,10 +318,10 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
                       <Select
                         value={values.interviewTime}
                         onValueChange={(value) =>
-                          setFieldValue("interviewTime", value) 
+                          setFieldValue("interviewTime", value)
                         }
                       >
-                        <SelectTrigger className="w-full border-2 rounded-[10px]  bg-transparent h-[56px] border-[#263238]">
+                        <SelectTrigger className="w-full border-2 rounded-[10px] bg-transparent h-[56px] border-[#263238]">
                           <SelectValue placeholder="Select a Time" />
                         </SelectTrigger>
                         <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none max-h-[200px]">
@@ -315,7 +345,7 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
               <div className="p-6 mt-auto">
                 <div className="flex flex-wrap gap-3 justify-start">
                   {isLoading ? (
-                    <div className="flex items-center gap-2 text-orange-500">
+                    <div className="flex items-center gap-2 text-[#F5722E]">
                       <LoaderCircle className="w-5 h-5 animate-spin" />
                       <span className="text-sm font-medium">
                         Rescheduling interview...
@@ -340,7 +370,7 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
                         type="button"
                         variant="outline"
                         onClick={() => setIsCalendarModalOpen(true)}
-                        className="border-2 text-[13px] font-normal h-[32px] px-6 border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white"
+                        className="border-2 text-[13px] font-normal h-[32px] px-6 border-[#168AAD] text-[#168AAD] hover:bg-[#168AAD] hover:text-white"
                       >
                         View Calendar
                       </Button> */}

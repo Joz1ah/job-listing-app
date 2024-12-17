@@ -1,7 +1,6 @@
 import { FC, useState } from "react";
 import {
   MapPin,
-  //Calendar,
   Check,
   X,
   RefreshCcw,
@@ -12,11 +11,13 @@ import {
 import { Card, CardHeader, CardContent } from "components";
 import { Button } from "components";
 import { Tooltip } from "components";
-import { Interview } from "features/employer/types";
-import { CandidatePreviewModal } from "./preview/CandidatePreviewModal";
-import { RescheduleModal } from "features/employer";
+import { CandidatePreviewModal } from "../modals/CandidatePreviewModal";
+import { JobInterviewPreviewModal } from "../modals/JobInterviewPreviewModal";
+import { RescheduleModal } from "../modals/RescheduleModal";
 import { useNavigate } from "react-router-dom";
-import { InterviewCalendarModal } from "features/employer";
+import { EmployerInterviewCalendarModal } from "../modals/EmployerInterviewCalendarModal";
+import { HunterInterviewCalendarModal } from "../modals/HunterInterviewCalendarModal";
+import { Interview } from "mockData/employer-interviews-data";
 
 interface AcceptData {
   confirmed: boolean;
@@ -37,6 +38,7 @@ interface RescheduleData {
 
 interface RescheduleCardProps {
   interview: Interview;
+  variant: "employer" | "job-hunter";
   onAccept?: (data: AcceptData) => void;
   onDecline?: (data: DeclineData) => void;
   onReschedule?: (data: RescheduleData) => void;
@@ -44,6 +46,7 @@ interface RescheduleCardProps {
 
 const RescheduleCard: FC<RescheduleCardProps> = ({
   interview,
+  variant,
   onAccept,
   onDecline,
   onReschedule,
@@ -61,15 +64,16 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
     setIsLoading(true);
     onAccept?.({ confirmed: true, interviewId: interview.id } as AcceptData);
 
-    // Wait for 2 seconds to show the loading spinner
     await new Promise((resolve) => setTimeout(resolve, 2000));
-
     setIsLoading(false);
     setIsAccepted(true);
 
-    // Wait for 1 second before redirecting
     setTimeout(() => {
-      navigate("/employer/interviews/accepted");
+      navigate(
+        variant === "employer"
+          ? "/employer/interviews/accepted"
+          : "/job-hunter/interviews/accepted",
+      );
     }, 1000);
   };
 
@@ -79,15 +83,16 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
       interviewId: interview.id,
     } as DeclineData);
 
-    // Wait for 2 seconds to show the loading spinner
     await new Promise((resolve) => setTimeout(resolve, 2000));
-
     setIsLoading(false);
     setIsDeclined(true);
 
-    // Wait for 1 second before redirecting
     setTimeout(() => {
-      navigate("/employer/interviews/declined");
+      navigate(
+        variant === "employer"
+          ? "/employer/interviews/declined"
+          : "/job-hunter/interviews/declined",
+      );
     }, 1000);
   };
 
@@ -95,6 +100,44 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
     event.preventDefault();
     setActiveModal("reschedule");
   };
+
+  const renderTitle = () => {
+    if (variant === "employer") {
+      return (
+        <>
+          <h3
+            className="text-[14px] font-semibold mt-1 cursor-pointer hover:underline text-[#263238]"
+            onClick={() => setIsPreviewOpen(true)}
+          >
+            {interview.candidate}
+          </h3>
+          <p className="text-[13px] text-[#263238] underline">
+            {interview.position}
+          </p>
+        </>
+      );
+    }
+    return (
+      <>
+        <h3
+          className="text-[14px] font-semibold mt-1 cursor-pointer hover:underline text-[#263238]"
+          onClick={() => setIsPreviewOpen(true)}
+        >
+          {interview.position}
+        </h3>
+        <p className="text-[13px] text-[#263238] underline">
+          {interview.company}
+        </p>
+      </>
+    );
+  };
+
+  const PreviewModal =
+    variant === "employer" ? CandidatePreviewModal : JobInterviewPreviewModal;
+  const InterviewCalendarModal =
+    variant === "employer"
+      ? EmployerInterviewCalendarModal
+      : HunterInterviewCalendarModal;
 
   return (
     <>
@@ -107,9 +150,9 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
 
         <CardHeader className="flex flex-col justify-between items-start pb-0 pt-8">
           <div className="flex flex-col gap-1">
-          <span className="bg-orange-100 text-[#F5722E] outline outline-1 px-3 py-1 rounded text-xs flex items-center justify-center gap-1 italic w-[117px] h-[32px]">
+            <span className="bg-orange-100 text-[#F5722E] outline outline-1 px-3 py-1 rounded text-xs flex items-center justify-center gap-1 italic w-[117px] h-[32px]">
               <Clock className="w-3 h-3" />
-              Pending
+              {interview.status}
             </span>
           </div>
 
@@ -119,15 +162,7 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
                 ? "You Requested Reschedule to:"
                 : "Requested Reschedule by:"}
             </span>
-            <h3
-              className="text-[14px] font-semibold mt-1 cursor-pointer hover:underline text-[#263238]"
-              onClick={() => setIsPreviewOpen(true)}
-            >
-              {interview.candidate}
-            </h3>
-            <p className="text-[13px] text-[#263238] underline">
-              {interview.position}
-            </p>
+            {renderTitle()}
             <div className="flex items-center mt-1">
               <MapPin size={14} className="text-[#F5722E]" />
               <p className="text-[13px] text-[#263238] ml-1">
@@ -140,13 +175,17 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
         <CardContent className="pt-2">
           <div className="flex flex-col">
             <div className="flex items-center gap-1">
-              <span className="text-[13px] min-w-[40px] text-[#263238] ">Date:</span>
+              <span className="text-[13px] min-w-[40px] text-[#263238]">
+                Date:
+              </span>
               <span className="text-[13px] font-semibold px-1 rounded-[2px] bg-[#184E77] text-white w-[135px] h-[17px] flex justify-center">
                 {interview.date}
               </span>
             </div>
             <div className="flex items-center gap-1">
-              <span className="text-[13px] min-w-[40px] text-[#263238]">Time:</span>
+              <span className="text-[13px] min-w-[40px] text-[#263238]">
+                Time:
+              </span>
               <span className="text-[13px] font-semibold px-1 rounded-[2px] bg-[#168AAD] text-white w-[135px] h-[17px] flex justify-center">
                 {interview.time}
               </span>
@@ -199,14 +238,10 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
                       variant="outline"
                       className="border-2 rounded text-[13px] border-[#168AAD] text-[#168AAD] hover:bg-[#168AAD] hover:text-white h-[32px] w-[117px] p-0"
                     >
-                      <RefreshCcw className="w-4 h-4 mr-1" strokeWidth={3}/>
+                      <RefreshCcw className="w-4 h-4 mr-1" strokeWidth={3} />
                       Reschedule
                     </Button>
                   )}
-                  {/* <Calendar
-                    className="w-4 h-4 text-blue-500 hover:cursor-pointer"
-                    onClick={() => setIsCalendarModalOpen(true)}
-                  /> */}
                 </div>
               ) : (
                 // Their request layout
@@ -216,7 +251,7 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
                     variant="outline"
                     className="border-2 border-[#4BAF66] text-[#4BAF66] hover:bg-[#4BAF66] p-0 hover:text-white h-[32px] w-[117px] rounded text-[13px] flex items-center justify-center gap-1"
                   >
-                    <Check className="w-4 h-4" strokeWidth={4}/>
+                    <Check className="w-4 h-4" strokeWidth={4} />
                     Accept
                   </Button>
                   <Button
@@ -224,7 +259,7 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
                     variant="outline"
                     className="border-2 border-[#E53835] text-[#E53835] hover:bg-[#E53835] p-0 hover:text-white h-[32px] w-[117px] rounded text-[13px] flex items-center justify-center gap-1"
                   >
-                    <X className="w-4 h-4" strokeWidth={4}/>
+                    <X className="w-4 h-4" strokeWidth={4} />
                     Decline
                   </Button>
                   <div className="flex items-center gap-2">
@@ -233,13 +268,9 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
                       variant="outline"
                       className="border-2 border-[#168AAD] text-[#168AAD] hover:bg-[#168AAD] p-0 hover:text-white h-[32px] w-[117px] rounded text-[13px] flex items-center justify-center gap-1"
                     >
-                      <RefreshCcw className="w-4 h-4" strokeWidth={3}/>
+                      <RefreshCcw className="w-4 h-4" strokeWidth={3} />
                       Reschedule
                     </Button>
-                    {/* <Calendar
-                      className="w-4 h-4 text-blue-500 hover:cursor-pointer"
-                      onClick={() => setIsCalendarModalOpen(true)}
-                    /> */}
                   </div>
                 </div>
               )}
@@ -257,13 +288,12 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
         </div>
       </Card>
 
-      <CandidatePreviewModal
+      <PreviewModal
         isOpen={isPreviewOpen}
         onClose={() => setIsPreviewOpen(false)}
         interview={interview}
       />
 
-      {/* Reschedule Modal */}
       <RescheduleModal
         isOpen={activeModal === "reschedule"}
         onClose={() => setActiveModal(null)}
@@ -271,6 +301,7 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
         onReschedule={(data: RescheduleData) => {
           onReschedule?.(data);
         }}
+        variant={variant === "employer" ? "employer" : "job-hunter"}
       />
 
       <InterviewCalendarModal

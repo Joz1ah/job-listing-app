@@ -6,6 +6,7 @@ import { Button } from "components";
 import { Eye, EyeOff, ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "lib/utils";
 import { InputField } from "components";
+import { DeleteAccountAlert } from "./alerts/DeleteAccountAlert";
 
 interface FormData {
   originalPassword: string;
@@ -17,7 +18,14 @@ const PrivacyAndSecuritySettings: FC = () => {
   const [showOriginalPassword, setShowOriginalPassword] = React.useState(false);
   const [showNewPassword, setShowNewPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
+  const [isDeleteAlertOpen, setIsDeleteAlertOpen] = React.useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = React.useState(false);
+
+  const handleDeleteAccount = () => {
+    console.log("Account deleted");
+    setIsDeleteAlertOpen(false);
+    setIsDeleteOpen(false);
+  };
 
   const validationSchema = Yup.object().shape({
     originalPassword: Yup.string().required("Original password is required"),
@@ -226,15 +234,11 @@ const PrivacyAndSecuritySettings: FC = () => {
                 be undone.
               </p>
               <div className="flex justify-end">
-                <button
-                  type="button"
-                  className="text-[#E53835] hover:text-white hover:bg-[#E53835] border border-[#E53835] rounded px-4 py-2 text-sm font-normal transition-colors duration-200"
-                  onClick={() => {
-                    console.log("Confirm delete account");
-                  }}
-                >
-                  Delete Your Account
-                </button>
+                <DeleteAccountAlert 
+                  onDelete={handleDeleteAccount}
+                  isOpen={isDeleteAlertOpen}
+                  onOpenChange={setIsDeleteAlertOpen}
+                />
               </div>
             </div>
           )}

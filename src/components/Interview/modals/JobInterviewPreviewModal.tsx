@@ -1,15 +1,9 @@
 import { FC } from "react";
 import { MapPin } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
-import { Interview } from "features/employer/types";
+import { BaseModalProps } from "mockData/job-hunter-interviews-data";
 
-interface CandidatePreviewModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  interview: Interview;
-}
-
-const CandidatePreviewModal: FC<CandidatePreviewModalProps> = ({
+const JobInterviewPreviewModal: FC<BaseModalProps> = ({
   isOpen,
   onClose,
   interview,
@@ -24,8 +18,13 @@ const CandidatePreviewModal: FC<CandidatePreviewModalProps> = ({
               <div className="space-y-4">
                 {/* Name */}
                 <div className="flex flex-col items-start">
-                  <DialogTitle className="text-xl font-medium text-[#263238] mb-1">
-                    {interview.candidate}
+                  <DialogTitle className=" mb-1">
+                    <h2 className="text-xl font-semibold text-[#263238]">
+                      {interview.position}
+                    </h2>
+                    <p className="text-lg text-[#263238] font-normal underline">
+                      {interview.company}
+                    </p>
                   </DialogTitle>
                 </div>
 
@@ -39,7 +38,9 @@ const CandidatePreviewModal: FC<CandidatePreviewModalProps> = ({
 
                 {/* Core Skills */}
                 <div className="flex flex-col gap-2">
-                  <h4 className="text-[17px] font-normal text-[#263238]">Core Skills:</h4>
+                  <h4 className="text-[17px] font-normal text-[#263238]">
+                    Core Skills:
+                  </h4>
                   <div className="flex flex-wrap gap-2">
                     {interview.coreSkills?.map((skill, index) => (
                       <span
@@ -57,7 +58,9 @@ const CandidatePreviewModal: FC<CandidatePreviewModalProps> = ({
                 {/* Experience */}
                 {interview.experience && (
                   <div className="flex items-center gap-2">
-                    <h4 className="text-[17px] font-normal text-[#263238]">Experience:</h4>
+                    <h4 className="text-[17px] font-normal text-[#263238]">
+                      Experience:
+                    </h4>
                     <span className="text-[#F5722E] border border-[#F5722E] px-2 rounded-sm">
                       {interview.experience}
                     </span>
@@ -98,7 +101,9 @@ const CandidatePreviewModal: FC<CandidatePreviewModalProps> = ({
                 {/* Language */}
                 {interview.languages && (
                   <div className="flex items-center gap-2">
-                    <h4 className="text-[17px] font-normal text-[#263238]">Language:</h4>
+                    <h4 className="text-[17px] font-normal text-[#263238]">
+                      Language:
+                    </h4>
                     <div className="flex gap-2">
                       {interview.languages.map((lang) => (
                         <span
@@ -115,7 +120,9 @@ const CandidatePreviewModal: FC<CandidatePreviewModalProps> = ({
                 {/* Education */}
                 {interview.education && (
                   <div className="flex items-center gap-2">
-                    <h4 className="text-[17px] font-normal text-[#263238]">Education:</h4>
+                    <h4 className="text-[17px] font-normal text-[#263238]">
+                      Education:
+                    </h4>
                     <span className="text-[#F5722E] border border-[#F5722E] px-2 rounded-sm">
                       {interview.education}
                     </span>
@@ -125,7 +132,9 @@ const CandidatePreviewModal: FC<CandidatePreviewModalProps> = ({
                 {/* Certificate */}
                 {interview.certificate && (
                   <div className="flex items-center gap-2">
-                    <h4 className="text-[17px] font-normal text-[#263238]">Certificate:</h4>
+                    <h4 className="text-[17px] font-normal text-[#263238]">
+                      Certificate:
+                    </h4>
                     <span className="bg-[#F5722E] text-white px-2 rounded-sm">
                       {interview.certificate}
                     </span>
@@ -152,6 +161,18 @@ const CandidatePreviewModal: FC<CandidatePreviewModalProps> = ({
                     </div>
                   </div>
                 )}
+
+                {/* Job Description */}
+                {interview.description && (
+                  <div className="flex flex-col gap-2">
+                    <h4 className="text-[17px] font-normal text-[#263238]">
+                      Job Description:
+                    </h4>
+                    <p className="text-sm text-gray-700 whitespace-pre-wrap border border-gray-200 rounded-md p-4">
+                      {interview.description}
+                    </p>
+                  </div>
+                )}
               </div>
             </DialogHeader>
           </div>
@@ -161,4 +182,4 @@ const CandidatePreviewModal: FC<CandidatePreviewModalProps> = ({
   );
 };
 
-export { CandidatePreviewModal };
+export { JobInterviewPreviewModal };

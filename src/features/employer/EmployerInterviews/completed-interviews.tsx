@@ -1,87 +1,9 @@
 import { FC, useState, useEffect, useRef } from "react";
-import { CompletedCard } from "features/employer";
+import { CompletedCard } from "components";
 import { InterviewCardSkeleton } from "components";
 import { NavLink } from "react-router-dom";
 import emptyInterview from "images/calendar-empty.svg?url";
-import { Interview } from "../types";
-
-const mockInterviews: Interview[] = [
-  {
-    position: "Senior Frontend Engineer",
-    candidate: "Daniel Roberts",
-    location: "Mountain View, CA",
-    date: "December 22, 2024",
-    time: "10:00 AM PST",
-    receivedTime: "2 hours ago",
-    isNew: true,
-    coreSkills: ["Figma", "Adobe XD", "Sketch", "Prototyping", "User Research"],
-    experience: "3-5 years",
-    employmentPreference: ["Full Time", "Hybrid"],
-    salaryExpectation: "$110,000-$140,000",
-    languages: ["English", "Mandarin"],
-    education: "Bachelor's in Interaction Design",
-    certificate: "Google UX Design Professional Certificate",
-    interpersonalSkills: [
-      "User-Centered Design",
-      "Design Thinking",
-      "Stakeholder Management",
-      "Visual Communication",
-      "Design Systems",
-    ],
-  },
-  {
-    position: "Full Stack Developer",
-    candidate: "Emily Bennett",
-    location: "Remote",
-    date: "December 25, 2024",
-    time: "1:00 PM PST",
-    receivedTime: "yesterday",
-    rating: 4.5,
-    coreSkills: [
-      "Python",
-      "Machine Learning",
-      "TensorFlow",
-      "SQL",
-      "Data Visualization",
-    ],
-    experience: "4-6 years",
-    employmentPreference: ["Full Time"],
-    salaryExpectation: "$150,000-$180,000",
-    languages: ["English", "French"],
-    education: "Ph.D. in Data Science",
-    certificate: "TensorFlow Developer Certificate",
-    interpersonalSkills: [
-      "Statistical Analysis",
-      "Research",
-      "Data Storytelling",
-      "Cross-functional Communication",
-      "Problem Solving",
-    ],
-  },
-  {
-    position: "Software Engineer",
-    candidate: "James Anderson",
-    location: "Cupertino, CA",
-    date: "December 28, 2024",
-    time: "11:30 AM PST",
-    receivedTime: "3 days ago",
-    rating: 4.0,
-    coreSkills: ["Kubernetes", "AWS", "CI/CD", "Terraform", "Python"],
-    experience: "5-7 years",
-    employmentPreference: ["Full Time", "Remote"],
-    salaryExpectation: "$140,000-$170,000",
-    languages: ["English", "German"],
-    education: "Bachelor's in Computer Engineering",
-    certificate: "Certified Kubernetes Administrator (CKA)",
-    interpersonalSkills: [
-      "Infrastructure Planning",
-      "Security Best Practices",
-      "System Architecture",
-      "Team Collaboration",
-      "Incident Response",
-    ],
-  },
-];
+import { completedInterviewsData, Interview } from "mockData/employer-interviews-data";
 
 const CompletedInterviews: FC = () => {
   const [displayedItems, setDisplayedItems] = useState<Interview[]>([]);
@@ -97,7 +19,7 @@ const CompletedInterviews: FC = () => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     const currentCount = displayedItems.length;
-    const remainingItems = mockInterviews.length - currentCount;
+    const remainingItems = completedInterviewsData.length - currentCount;
 
     if (remainingItems <= 0) {
       setHasMore(false);
@@ -106,13 +28,13 @@ const CompletedInterviews: FC = () => {
     }
 
     const itemsToLoad = Math.min(2, remainingItems);
-    const newItems = mockInterviews.slice(
+    const newItems = completedInterviewsData.slice(
       currentCount,
       currentCount + itemsToLoad,
     );
     setDisplayedItems((prev) => [...prev, ...newItems]);
 
-    if (currentCount + itemsToLoad >= mockInterviews.length) {
+    if (currentCount + itemsToLoad >= completedInterviewsData.length) {
       setHasMore(false);
     }
 
@@ -124,9 +46,9 @@ const CompletedInterviews: FC = () => {
       setLoading(true);
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      const initialItems = mockInterviews.slice(0, 6);
+      const initialItems = completedInterviewsData.slice(0, 6);
       setDisplayedItems(initialItems);
-      setHasMore(mockInterviews.length > 6);
+      setHasMore(completedInterviewsData.length > 6);
       setLoading(false);
       setInitialLoad(false);
     };
@@ -160,7 +82,7 @@ const CompletedInterviews: FC = () => {
   }, [loading, hasMore, initialLoad]);
 
   const showLoadingCards = loading;
-  const loadingCardsCount = Math.min(6, mockInterviews.length);
+  const loadingCardsCount = Math.min(6, completedInterviewsData.length);
 
   // Show empty state if there are no completed interviews and we're not loading
   if (!loading && displayedItems.length === 0) {
@@ -201,7 +123,7 @@ const CompletedInterviews: FC = () => {
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-y-6 gap-x-14 justify-items-center w-full">
         {!initialLoad &&
           displayedItems.map((interview, index) => (
-            <CompletedCard key={index} interview={interview} />
+            <CompletedCard key={index} interview={interview} variant="employer"/>
           ))}
 
         {showLoadingCards && (

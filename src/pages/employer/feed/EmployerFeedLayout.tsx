@@ -7,17 +7,23 @@ const EmployerFeedLayout: FC = () => {
   const { isFreeTrial } = useEmployerTrialStatus();
 
   return (
-    <main className="flex-1 flex flex-col bg-[#242625] w-full px-4 xl:px-12 md:py-16">
-      <EmployerHeader isFreeTrial={isFreeTrial}/>
-      <div className="flex flex-col md:flex-row">
-        <div className="flex-shrink-0">
-          <Sidebar />
-        </div>
-        <div className="flex-1 flex justify-center">
-          <EmployerFeed />
+    <div className="min-h-screen bg-[#242625]">
+      <div className="px-4 xl:px-12 md:pt-20">
+        {/* Main content area with two columns */}
+        <div className="flex flex-col md:flex-row md:space-x-6">
+          {/* Left column - contains header and sidebar */}
+          <div className="md:w-[311px] flex-shrink-0">
+            <EmployerHeader isFreeTrial={isFreeTrial} />
+            <Sidebar />
+          </div>
+          
+          {/* Right column - contains feed */}
+          <div className="flex-1 md:pt-8">
+            <EmployerFeed />
+          </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 };
 

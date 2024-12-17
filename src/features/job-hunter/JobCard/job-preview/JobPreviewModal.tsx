@@ -8,7 +8,7 @@ import { Match } from "mockData/jobs-data";
 interface JobPreviewModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSchedule: (e: React.MouseEvent) => void;
+  onSchedule?: (e: React.MouseEvent) => void;
   job: Match;
 }
 
@@ -30,7 +30,7 @@ const JobPreviewModal: FC<JobPreviewModalProps> = ({
               <div className="space-y-3">
                 {/* Job Title */}
                 <div className="flex flex-col items-start">
-                  <DialogTitle className="text-3xl font-medium text-[#263238]">
+                  <DialogTitle className="text-3xl font-semibold text-[#263238]">
                     {job.position}
                   </DialogTitle>
                 </div>

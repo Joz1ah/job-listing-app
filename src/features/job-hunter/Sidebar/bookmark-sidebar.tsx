@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Bookmark, Send, Info } from "lucide-react";
+import { Bookmark, Info } from "lucide-react";
 import verifiedIcon from 'images/verified.svg?url'
 import userCheck from 'images/user-check.svg?url'
 
@@ -27,14 +27,9 @@ const BookmarkSidebar: FC<BookmarkSidebarProps> = ({
   const bookmarkMenu: MenuItem[] = [
     {
       icon: <Bookmark className="w-5 h-5" />,
-      label: "Saved Jobs",
-      path: `${baseRoute}/saved`,
-    },
-    {
-      icon: <Send className="w-5 h-5" />,
-      label: "Applied Jobs",
-      path: `${baseRoute}/applied`,
-    },
+      label: "Your Bookmarked Jobs",
+      path: `${baseRoute}/bookmarked`,
+    }
   ];
 
   const userInfo = (

@@ -12,10 +12,9 @@ import { NotFoundPage as NotFound } from 'pages'
 // Adjust imports to match your file structure and add type assertions
 //const Home = lazy(() => import('pages').then(module => ({ default: module.Home })))
 const Landing = lazy(() => import('pages').then(module => ({ default: module.Landing })))
-//const Fetch = lazy(() => import('pages').then(module => ({ default: module.Fetch })))
-//const About = lazy(() => import('pages').then(module => ({ default: module.About })))
-//const NotFound = lazy(() => import('pages').then(module => ({ default: module.NotFound })))
-//const CompleteProfile = lazy(() => import('pages').then(module => ({ default: module.CreateAppCard })))
+const Fetch = lazy(() => import('pages').then(module => ({ default: module.Fetch })))
+const About = lazy(() => import('pages').then(module => ({ default: module.About })))
+const NotFound = lazy(() => import('pages').then(module => ({ default: module.NotFoundPage })))
 
 // Employer pages
 const EmployerBaseLayout = lazy(() => import('pages').then(module => ({ default: module.EmployerBaseLayout })))
@@ -80,8 +79,7 @@ const JobHunterSubscriptionSettings = lazy(() => import('features/job-hunter').t
 const JobHunterPrivacySettings = lazy(() => import('features/job-hunter').then(module => ({ default: module.PrivacyAndSecuritySettings })))
 
 // Bookmarked jobs
-const SavedJobs = lazy(() => import('features/job-hunter').then(module => ({ default: module.SavedJobs })))
-const AppliedJobs = lazy(() => import('features/job-hunter').then(module => ({ default: module.AppliedJobs })))
+const YourBookmarkedJobs = lazy(() => import('features/job-hunter').then(module => ({ default: module.YourBookmarkedJobs })))
 
 const LoadingFallback = () => (
   <div className="flex items-center justify-center w-full h-screen">
@@ -363,15 +361,11 @@ const routes: RouteObject[] = [
         children: [
           {
             path: '',
-            element: <Navigate to={`${ROUTE_CONSTANTS.BOOKMARKED_JOBS}/${ROUTE_CONSTANTS.SAVED}`} replace />
+            element: <Navigate to={`${ROUTE_CONSTANTS.BOOKMARKED_JOBS}/${ROUTE_CONSTANTS.BOOKMARKED}`} replace />
           },
           {
-            path: ROUTE_CONSTANTS.SAVED,
-            element: <LazyComponent component={SavedJobs} />
-          },
-          {
-            path: ROUTE_CONSTANTS.APPLIED,
-            element: <LazyComponent component={AppliedJobs} />
+            path: ROUTE_CONSTANTS.BOOKMARKED,
+            element: <LazyComponent component={YourBookmarkedJobs} />
           }
         ]
       },

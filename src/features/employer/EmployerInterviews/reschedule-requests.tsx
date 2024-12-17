@@ -1,133 +1,9 @@
 import { FC, useState, useEffect, useRef } from "react";
-import { RescheduleCard } from "features/employer";
+import { RescheduleCard } from "components";
 import { InterviewCardSkeleton } from "components";
 import { NavLink } from "react-router-dom";
 import emptyInterview from "images/calendar-empty.svg?url";
-import { Interview } from "../types";
-
-// Mock Data
-const mockInterviews: Interview[] = [
-  {
-    position: "Sr. Mobile and Web Developer",
-    candidate: "Mia Lee",
-    location: "USA",
-    date: "December 29, 2024",
-    time: "8:00 AM EST",
-    receivedTime: "today",
-    sentTime: "Today",
-    isNew: true,
-    status: "pending",
-    isRequesterMe: true,
-    hasRescheduled: false,
-    coreSkills: [
-      "Python",
-      "Machine Learning",
-      "TensorFlow",
-      "SQL",
-      "Data Visualization",
-    ],
-    experience: "4-6 years",
-    employmentPreference: ["Full Time"],
-    salaryExpectation: "$150,000-$180,000",
-    languages: ["English", "French"],
-    education: "Ph.D. in Data Science",
-    certificate: "TensorFlow Developer Certificate",
-    interpersonalSkills: [
-      "Statistical Analysis",
-      "Research",
-      "Data Storytelling",
-      "Cross-functional Communication",
-      "Problem Solving",
-    ],
-  },
-  {
-    position: "Full Stack Developer",
-    candidate: "William Scott",
-    location: "USA",
-    date: "January 3, 2025",
-    time: "2:00 PM PST",
-    receivedTime: "yesterday",
-    sentTime: "yesterday",
-    isNew: false,
-    status: "pending",
-    isRequesterMe: true,
-    hasRescheduled: true,
-    coreSkills: ["React", "Node.js", "MongoDB", "Express", "AWS"],
-    experience: "4-6 years",
-    employmentPreference: ["Full Time", "Remote"],
-    salaryExpectation: "$130,000-$160,000",
-    languages: ["English", "Portuguese"],
-    education: "Master's in Web Technologies",
-    certificate: "MERN Stack Developer Certification",
-    interpersonalSkills: [
-      "Full-cycle Development",
-      "Project Management",
-      "Cross-functional Collaboration",
-      "Code Review",
-      "Mentoring",
-    ],
-  },
-  {
-    position: "Junior Front End Developer",
-    candidate: "Charlotte Adams",
-    location: "India",
-    date: "February 1, 2025",
-    time: "4:00 PM IST",
-    receivedTime: "2 days ago",
-    sentTime: "",
-    isNew: true,
-    status: "pending",
-    isRequesterMe: false,
-    hasRescheduled: false,
-    coreSkills: [
-      "Python",
-      "Machine Learning",
-      "TensorFlow",
-      "SQL",
-      "Data Visualization",
-    ],
-    experience: "4-6 years",
-    employmentPreference: ["Full Time"],
-    salaryExpectation: "$150,000-$180,000",
-    languages: ["English", "French"],
-    education: "Ph.D. in Data Science",
-    certificate: "TensorFlow Developer Certificate",
-    interpersonalSkills: [
-      "Statistical Analysis",
-      "Research",
-      "Data Storytelling",
-      "Cross-functional Communication",
-      "Problem Solving",
-    ],
-  },
-  {
-    position: "Jr. Web Developer",
-    candidate: "Vicky Rawkus",
-    location: "India",
-    date: "February 1, 2025",
-    time: "2:00 PM IST",
-    receivedTime: "2 days ago",
-    sentTime: "",
-    isNew: false,
-    status: "pending",
-    isRequesterMe: false,
-    hasRescheduled: false,
-    coreSkills: ["React", "TypeScript", "Next.js", "CSS3", "GraphQL"],
-    experience: "3-5 years",
-    employmentPreference: ["Full Time"],
-    salaryExpectation: "$120,000-$150,000",
-    languages: ["English", "Spanish"],
-    education: "Master's in Computer Science",
-    certificate: "AWS Certified Developer",
-    interpersonalSkills: [
-      "Leadership",
-      "Communication",
-      "Problem Solving",
-      "Team Collaboration",
-      "Agile Methodologies",
-    ],
-  },
-];
+import { rescheduleInterviewsData, Interview } from "mockData/employer-interviews-data";
 
 const RescheduleRequests: FC = () => {
   const [displayedItems, setDisplayedItems] = useState<Interview[]>([]);
@@ -167,7 +43,7 @@ const RescheduleRequests: FC = () => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     const currentCount = displayedItems.length;
-    const remainingItems = mockInterviews.length - currentCount;
+    const remainingItems = rescheduleInterviewsData.length - currentCount;
 
     if (remainingItems <= 0) {
       setHasMore(false);
@@ -176,13 +52,13 @@ const RescheduleRequests: FC = () => {
     }
 
     const itemsToLoad = Math.min(2, remainingItems);
-    const newItems = mockInterviews.slice(
+    const newItems = rescheduleInterviewsData.slice(
       currentCount,
       currentCount + itemsToLoad,
     );
     setDisplayedItems((prev) => [...prev, ...newItems]);
 
-    if (currentCount + itemsToLoad >= mockInterviews.length) {
+    if (currentCount + itemsToLoad >= rescheduleInterviewsData.length) {
       setHasMore(false);
     }
 
@@ -194,9 +70,9 @@ const RescheduleRequests: FC = () => {
       setLoading(true);
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      const initialItems = mockInterviews.slice(0, 6);
+      const initialItems = rescheduleInterviewsData.slice(0, 6);
       setDisplayedItems(initialItems);
-      setHasMore(mockInterviews.length > 6);
+      setHasMore(rescheduleInterviewsData.length > 6);
       setLoading(false);
       setInitialLoad(false);
     };
@@ -274,12 +150,13 @@ const RescheduleRequests: FC = () => {
               onAccept={() => handleAccept(interview)}
               onDecline={() => handleDecline(interview)}
               onReschedule={() => handleReschedule(interview)}
+              variant="employer"
             />
           ))}
 
         {loading && (
           <>
-            {Array.from({ length: Math.min(6, mockInterviews.length) }).map(
+            {Array.from({ length: Math.min(6, rescheduleInterviewsData.length) }).map(
               (_, index) => (
                 <InterviewCardSkeleton key={`skeleton-${index}`} />
               ),
