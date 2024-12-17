@@ -1,5 +1,5 @@
 import { FC, useState, useEffect, useRef } from "react";
-import { RescheduleCard } from "features/job-hunter";
+import { RescheduleCard } from "components";
 import { InterviewCardSkeleton } from "components";
 import { NavLink } from "react-router-dom";
 import emptyInterview from "images/calendar-empty.svg?url";
@@ -150,6 +150,7 @@ const RescheduleRequests: FC = () => {
               onAccept={() => handleAccept(interview)}
               onDecline={() => handleDecline(interview)}
               onReschedule={() => handleReschedule(interview)}
+              variant="job-hunter"
             />
           ))}
 

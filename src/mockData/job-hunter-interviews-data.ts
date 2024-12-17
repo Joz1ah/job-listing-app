@@ -1,7 +1,8 @@
 export interface Interview {
     id?:string;
+    candidate?: string;
     position: string;
-    company: string;
+    company?: string;
     date: string;
     time: string;
     location: string;
@@ -10,8 +11,10 @@ export interface Interview {
     sentTime?:string;
     isNew?: boolean;
     rating?: number;
+    rated?: boolean;
+    feedback?: string;
     reason?: string;
-    status?: 'pending';
+    status?: 'Accepted' | 'Pending' | 'Declined';
     isRequesterMe?: boolean;
     hasRescheduled?: boolean;
     bookmarked?: boolean;
@@ -42,6 +45,7 @@ export interface Interview {
       meetingLink: "meet.google.com/abc-defg-hij",
       receivedTime: "2 hours ago",
       isNew: true,
+      status: 'Accepted',
       coreSkills: [
         "Java",
         "Spring Boot",
@@ -73,6 +77,7 @@ export interface Interview {
       meetingLink: "meet.google.com/uvw-xyzq-rst",
       receivedTime: "yesterday",
       isNew: false,
+      status: 'Accepted',
       coreSkills: [
         "Python",
         "Machine Learning",
@@ -104,6 +109,7 @@ export interface Interview {
       meetingLink: "meet.google.com/jkl-mnop-qrs",
       receivedTime: "3 days ago",
       isNew: false,
+      status: 'Accepted',
       coreSkills: ["Kubernetes", "AWS", "CI/CD", "Terraform", "Python"],
       experience: "5-7 years",
       employmentPreference: ["Full Time", "Remote"],
@@ -131,6 +137,7 @@ export interface Interview {
       time: "10:00 AM PST",
       receivedTime: "2 hours ago",
       isNew: true,
+      rated: false,
       coreSkills: ["Figma", "Adobe XD", "Sketch", "Prototyping", "User Research"],
       experience: "3-5 years",
       employmentPreference: ["Full Time", "Hybrid"],
@@ -153,7 +160,9 @@ export interface Interview {
       date: "December 25, 2024",
       time: "1:00 PM PST",
       receivedTime: "yesterday",
-      rating: 4.5,
+      rating: 5,
+      rated: true,
+      feedback: 'dawdwdawada',
       coreSkills: [
         "Python",
         "Machine Learning",
@@ -182,7 +191,7 @@ export interface Interview {
       date: "December 28, 2024",
       time: "11:30 AM PST",
       receivedTime: "3 days ago",
-      rating: 4.0,
+      rated: false,
       coreSkills: ["Kubernetes", "AWS", "CI/CD", "Terraform", "Python"],
       experience: "5-7 years",
       employmentPreference: ["Full Time", "Remote"],
@@ -211,6 +220,7 @@ export interface Interview {
       receivedTime: "today",
       reason: "Not Actively Seeking",
       isNew: true,
+      status: 'Declined',
       coreSkills: ["Kubernetes", "AWS", "CI/CD", "Terraform", "Python"],
       experience: "5-7 years",
       employmentPreference: ["Full Time", "Remote"],
@@ -236,6 +246,7 @@ export interface Interview {
       receivedTime: "yesterday",
       reason: "Schedule Conflict",
       isNew: false,
+      status: 'Declined',
       coreSkills: [
         "Python",
         "Machine Learning",
@@ -267,6 +278,7 @@ export interface Interview {
       receivedTime: "2 days ago",
       reason: "Accepted Another Offer",
       isNew: false,
+      status: 'Declined',
       coreSkills: ["Figma", "Adobe XD", "Sketch", "Prototyping", "User Research"],
       experience: "3-5 years",
       employmentPreference: ["Full Time", "Hybrid"],
@@ -453,7 +465,7 @@ export interface Interview {
       receivedTime: "today",
       sentTime: "Today",
       isNew: true,
-      status: "pending",
+      status: "Pending",
       isRequesterMe: true,
       hasRescheduled: false,
       coreSkills: [
@@ -486,7 +498,7 @@ export interface Interview {
       receivedTime: "yesterday",
       sentTime: "yesterday",
       isNew: false,
-      status: "pending",
+      status: "Pending",
       isRequesterMe: true,
       hasRescheduled: true,
       coreSkills: ["React", "Node.js", "MongoDB", "Express", "AWS"],
@@ -513,7 +525,7 @@ export interface Interview {
       receivedTime: "2 days ago",
       sentTime: "",
       isNew: true,
-      status: "pending",
+      status: "Pending",
       isRequesterMe: false,
       hasRescheduled: false,
       coreSkills: [
@@ -546,7 +558,7 @@ export interface Interview {
       receivedTime: "2 days ago",
       sentTime: "",
       isNew: false,
-      status: "pending",
+      status: "Pending",
       isRequesterMe: false,
       hasRescheduled: false,
       coreSkills: ["React", "TypeScript", "Next.js", "CSS3", "GraphQL"],

@@ -23,11 +23,12 @@ interface selectedProps {
 }
 
 interface Match {
+  employerId: number;
   position: string;
   company: string;
   location: string;
   coreSkills: string[];
-  appliedAgo: string;
+  posted: string;
   experience: string;
   description: string;
   lookingFor: ("Full Time" | "Part Time" | "Contract only")[];

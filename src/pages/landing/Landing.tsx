@@ -480,7 +480,7 @@ const SubscriptionPlanSelection = () =>{
         setSelectedModalHeader(1);
         setModalState(modalStates.SIGNUP_STEP6)
         setTimeout(()=>{
-          navigate("/job-feed-employer");
+          navigate("/employer/feed");
         },5000)
       };
     }

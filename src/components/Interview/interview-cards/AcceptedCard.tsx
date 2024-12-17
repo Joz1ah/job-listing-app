@@ -3,26 +3,57 @@ import { MapPin, Info, Check, Bookmark } from "lucide-react";
 import { Card, CardHeader, CardContent, CardFooter } from "components";
 import { Button } from "components";
 import { Tooltip } from "components";
-import { Interview } from "mockData/job-hunter-interviews-data";
-import { JobInterviewPreviewModal } from "./preview/JobInterviewPreviewModal";
+import { Interview } from "mockData/employer-interviews-data";
+import { CandidatePreviewModal } from "../modals/CandidatePreviewModal";
+import { JobInterviewPreviewModal } from "../modals/JobInterviewPreviewModal";
 
 import gmeet from "images/google-meet.svg?url";
 
-interface InterviewCardProps {
+interface AcceptedCardProps {
   interview: Interview;
+  variant: "employer" | "job-hunter";
   onJoinInterview?: () => void;
   onPreviewJob?: () => void;
 }
 
-const AcceptedCard: FC<InterviewCardProps> = ({
+const AcceptedCard: FC<AcceptedCardProps> = ({
   interview,
+  variant,
   onJoinInterview,
 }) => {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
+  const renderTitle = () => {
+    if (variant === "employer") {
+      return (
+        <>
+          <h3 className="text-[14px] font-semibold text-[#263238]">
+            {interview.candidate}
+          </h3>
+          <p className="text-[13px] text-[#263238] underline">
+            {interview.position}
+          </p>
+        </>
+      );
+    }
+    return (
+      <>
+        <h3 className="text-[14px] font-semibold text-[#263238]">
+          {interview.position}
+        </h3>
+        <p className="text-[13px] text-[#263238] underline">
+          {interview.company}
+        </p>
+      </>
+    );
+  };
+
+  const PreviewModal =
+    variant === "employer" ? CandidatePreviewModal : JobInterviewPreviewModal;
+
   return (
     <>
-      <Card className="bg-[#FFFFFF] border-none w-full md:w-[436px] h-auto md:h-[275px]">
+      <Card className="bg-white border-none w-full md:w-[436px] h-auto md:h-[275px] relative">
         <CardHeader className="flex flex-col justify-between items-start pb-0">
           <div className="flex flex-row -mt-4 justify-between w-full">
             <div className="h-[20px]">
@@ -42,14 +73,7 @@ const AcceptedCard: FC<InterviewCardProps> = ({
             </div>
           </div>
           <div className="w-full relative mt-2">
-            <h3
-              className="text-[14px] font-semibold text-[#263238]"
-            >
-              {interview.position}
-            </h3>
-            <p className="text-[13px] text-[#263238] underline">
-              {interview.company}
-            </p>
+            {renderTitle()}
             <div className="flex flex-row items-center">
               <MapPin size={14} className="text-[#F5722E]" />
               <p className="text-[13px] font-light mt-0 ml-2 text-[#263238]">
@@ -62,13 +86,17 @@ const AcceptedCard: FC<InterviewCardProps> = ({
         <CardContent className="pt-1">
           <div className="flex flex-col gap-1">
             <div className="flex items-center gap-1">
-              <span className="text-[13px] min-w-[40px] text-[#263238]">Date:</span>
+              <span className="text-[13px] min-w-[40px] text-[#263238]">
+                Date:
+              </span>
               <span className="text-[13px] font-semibold px-1 rounded-[2px] bg-[#184E77] text-white w-[135px] h-[17px] flex justify-center">
                 {interview.date}
               </span>
             </div>
             <div className="flex items-center gap-1">
-              <span className="text-[13px] min-w-[40px] text-[#263238]">Time:</span>
+              <span className="text-[13px] min-w-[40px] text-[#263238]">
+                Time:
+              </span>
               <span className="text-[13px] font-semibold px-1 rounded-[2px] bg-[#168AAD] text-white w-[135px] h-[17px] flex justify-center">
                 {interview.time}
               </span>
@@ -79,8 +107,6 @@ const AcceptedCard: FC<InterviewCardProps> = ({
         <CardFooter className="flex flex-col items-start space-y-4">
           <div className="flex flex-row justify-start space-x-6 w-full">
             <div className="flex items-center gap-1">
-              {" "}
-              {/* Add this wrapper div */}
               <Button
                 onClick={onJoinInterview}
                 className="text-xs w-[118px] h-[32px] font-normal bg-[#AEADAD] hover:bg-gray-500 text-white p-0 rounded-sm"
@@ -88,7 +114,7 @@ const AcceptedCard: FC<InterviewCardProps> = ({
                 <img src={gmeet} alt="google meet" />
                 Join Interview
               </Button>
-              <Tooltip content="The meeting link will be accesible on the day of the interview">
+              <Tooltip content="The meeting link will be accessible on the day of the interview">
                 <Info className="w-3 h-3 fill-[#F5722E] mb-6 text-white" />
               </Tooltip>
             </div>
@@ -103,13 +129,13 @@ const AcceptedCard: FC<InterviewCardProps> = ({
           <div className="flex flex-row justify-start w-full items-center">
             <span className="text-sm text-[#263238] font-normal flex items-center gap-1">
               Status: <Check className="w-4 h-4 text-[#4BAF66] inline" />{" "}
-              <span className="text-[#4BAF66]">Accepted</span>
+              <span className="text-[#4BAF66]">{interview.status}</span>
             </span>
           </div>
         </CardFooter>
       </Card>
 
-      <JobInterviewPreviewModal
+      <PreviewModal
         isOpen={isPreviewOpen}
         onClose={() => setIsPreviewOpen(false)}
         interview={interview}

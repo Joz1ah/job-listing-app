@@ -23,7 +23,7 @@ const Sidebar: FC = () => {
   const shouldShowDesktopView = !hideOnPagesDesktop.includes(location.pathname);
 
   const jobListings = [
-    { title: "Full Stack Developer", path: "#" },
+    { title: "Web Developer", path: "#" },
     { title: "DevOps Engineer", path: "#" },
     { title: "Virtual Admin Assistant", path: "#" },
     { title: "Sr. Software Engineer", path: "#" },

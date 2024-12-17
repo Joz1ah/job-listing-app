@@ -1,5 +1,5 @@
 import { FC, useState, useEffect, useRef } from "react";
-import { AcceptedCard } from "features/job-hunter";
+import { AcceptedCard } from "components";
 import { InterviewCardSkeleton } from "components";
 import { NavLink } from "react-router-dom";
 import emptyInterview from "images/calendar-empty.svg?url";
@@ -136,6 +136,7 @@ const AcceptedInterviews: FC = () => {
               interview={interview}
               onJoinInterview={() => handleJoinInterview(interview)}
               onPreviewJob={() => handlePreviewJob(interview)}
+              variant="job-hunter"
             />
           ))}
 

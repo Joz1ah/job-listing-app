@@ -38,7 +38,11 @@ const SecureCompanyDisplay: FC<{ isFreeTrial: boolean; company: string }> = ({
     );
   }
 
-  return <p className="text-[13px] text-[#263238] font-light mt-0 underline">{company}</p>;
+  return (
+    <p className="text-[13px] text-[#263238] font-light mt-0 underline">
+      {company}
+    </p>
+  );
 };
 
 const getAvailabilityStyle = (type: string) => {
@@ -104,12 +108,16 @@ const JobCard: FC<JobCardProps> = ({ match, isFreeTrial = false }) => {
       >
         <CardHeader className="flex flex-col justify-between items-start pb-0">
           <div className="flex flex-row -mt-4 justify-between w-full">
-            <span className="text-[13px] text-[#F5722E] font-bold italic">
-              ☆ NEW
-            </span>
+            <div className="h-5">
+              {match.isNew && (
+                <span className="text-[13px] text-[#F5722E] font-bold italic">
+                  ☆ NEW
+                </span>
+              )}
+            </div>
             <div className="flex flex-col items-end">
               <span className="text-[11px] font-light text-[#717171] -mr-2">
-                Applied {match.appliedAgo}
+                Posted {match.posted} ago
               </span>
             </div>
           </div>
@@ -141,13 +149,17 @@ const JobCard: FC<JobCardProps> = ({ match, isFreeTrial = false }) => {
 
           <div className="flex flex-col gap-1 mt-2">
             <div className="flex gap-2 flex-wrap">
-              <span className="text-[13px] font-light text-[#263238]">Experience:</span>
+              <span className="text-[13px] font-light text-[#263238]">
+                Experience:
+              </span>
               <span className="text-[12px] text-[#F5722E] font-light rounded-[4px] px-1.5 border border-[#F5722E]">
                 {match.experience}
               </span>
             </div>
             <div className="flex gap-x-2 gap-y-0 flex-wrap">
-              <span className="text-[13px] font-light text-[#263238]">Available for:</span>
+              <span className="text-[13px] font-light text-[#263238]">
+                Available for:
+              </span>
               {match.lookingFor.map((type, idx) => (
                 <span
                   key={idx}
@@ -158,7 +170,9 @@ const JobCard: FC<JobCardProps> = ({ match, isFreeTrial = false }) => {
               ))}
             </div>
             <div className="flex gap-2 flex-wrap">
-              <span className="text-[13px] font-light text-[#263238]">Salary:</span>
+              <span className="text-[13px] font-light text-[#263238]">
+                Salary:
+              </span>
               <span className="bg-[#F5722E] text-white rounded-[4px] text-[12px] px-1.5 flex justify-center items-center">
                 {match.salaryExpectation}
               </span>

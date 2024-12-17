@@ -1,5 +1,5 @@
 import { FC, useState, useEffect, useRef } from "react";
-import { PendingCard } from "features/employer";
+import { PendingCard } from "components";
 import { InterviewCardSkeleton } from "components";
 import { NavLink } from "react-router-dom";
 import emptyInterview from "images/calendar-empty.svg?url";
@@ -190,6 +190,7 @@ const PendingInterviews: FC = () => {
               onBookmark={() => handleBookmark(interview)}
               value={declineReason}
               onValueChange={setDeclineReason}
+              variant="employer"
             />
           ))}
 

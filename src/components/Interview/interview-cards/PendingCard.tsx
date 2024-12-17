@@ -1,9 +1,15 @@
 import { FC, useState } from "react";
-import { MapPin, Bookmark, X, Check, CircleX, LoaderCircle } from "lucide-react";
+import {
+  MapPin,
+  Bookmark,
+  X,
+  Check,
+  CircleX,
+  LoaderCircle,
+} from "lucide-react";
 import { Card, CardHeader, CardContent, CardFooter } from "components";
 import { Button } from "components";
-import { RescheduleModal } from "features/employer";
-import { Interview } from "mockData/employer-interviews-data";
+import { RescheduleModal } from "../modals/RescheduleModal";
 import { useNavigate } from "react-router-dom";
 import {
   Select,
@@ -13,11 +19,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "components";
-
 import { InputField } from "components";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { CandidatePreviewModal } from "features/employer";
+import { CandidatePreviewModal } from "../modals/CandidatePreviewModal";
+import { JobInterviewPreviewModal } from "../modals/JobInterviewPreviewModal";
+import { Interview } from "mockData/employer-interviews-data";
 
 import gmeet from "images/google-meet.svg?url";
 
@@ -54,6 +61,7 @@ const declineReasons: DeclineReason[] = [
 
 interface PendingCardProps {
   interview: Interview;
+  variant: "employer" | "job-hunter";
   onAccept?: (data: AcceptData) => void;
   onReschedule?: (data: RescheduleData) => void;
   onDecline?: (data: DeclineData) => void;
@@ -72,6 +80,7 @@ const validationSchema = Yup.object().shape({
 
 const PendingCard: FC<PendingCardProps> = ({
   interview,
+  variant,
   onAccept,
   onReschedule,
   onDecline,
@@ -98,15 +107,16 @@ const PendingCard: FC<PendingCardProps> = ({
         interviewId: interview.id,
       } as DeclineData);
 
-      // Wait for 2 seconds to show the loading spinner
       await new Promise((resolve) => setTimeout(resolve, 2000));
-
       setIsLoading(false);
       setIsDeclined(true);
 
-      // Wait for 1 second before redirecting
       setTimeout(() => {
-        navigate("/employer/interviews/declined");
+        navigate(
+          variant === "employer"
+            ? "/employer/interviews/declined"
+            : "/job-hunter/interviews/declined",
+        );
       }, 1000);
     },
   });
@@ -115,15 +125,16 @@ const PendingCard: FC<PendingCardProps> = ({
     setIsLoading(true);
     onAccept?.({ confirmed: true, interviewId: interview.id } as AcceptData);
 
-    // Wait for 2 seconds to show the loading spinner
     await new Promise((resolve) => setTimeout(resolve, 2000));
-
     setIsLoading(false);
     setIsAccepted(true);
 
-    // Wait for 3 seconds before redirecting
     setTimeout(() => {
-      navigate("/employer/interviews/accepted");
+      navigate(
+        variant === "employer"
+          ? "/employer/interviews/accepted"
+          : "/job-hunter/interviews/accepted",
+      );
     }, 1000);
   };
 
@@ -133,6 +144,37 @@ const PendingCard: FC<PendingCardProps> = ({
   const handleClose = () => {
     setModalView(null);
     resetForm();
+  };
+
+  const renderHeaderTitle = () => {
+    if (variant === "employer") {
+      return (
+        <>
+          <h3
+            className="text-[14px] font-semibold pr-8 cursor-pointer hover:underline text-[#263238]"
+            onClick={() => setIsPreviewOpen(true)}
+          >
+            {interview.candidate}
+          </h3>
+          <p className="text-[13px] text-[#263238] underline">
+            {interview.position}
+          </p>
+        </>
+      );
+    }
+    return (
+      <>
+        <h3
+          className="text-[14px] font-semibold pr-8 cursor-pointer hover:underline text-[#263238]"
+          onClick={() => setIsPreviewOpen(true)}
+        >
+          {interview.position}
+        </h3>
+        <p className="text-[13px] text-[#263238] underline">
+          {interview.company}
+        </p>
+      </>
+    );
   };
 
   const StandardHeader = () => (
@@ -155,13 +197,7 @@ const PendingCard: FC<PendingCardProps> = ({
         </div>
       </div>
       <div className="w-full relative mt-2">
-        <h3
-          className="text-[14px] font-semibold pr-8 cursor-pointer hover:underline text-[#263238]"
-          onClick={() => setIsPreviewOpen(true)}
-        >
-          {interview.candidate}
-        </h3>
-        <p className="text-[13px] text-[#263238] underline">{interview.position}</p>
+        {renderHeaderTitle()}
         <div className="flex flex-row items-center">
           <MapPin size={14} className="text-[#F5722E]" />
           <p className="text-[13px] font-light mt-0 ml-2 text-[#263238]">
@@ -185,12 +221,16 @@ const PendingCard: FC<PendingCardProps> = ({
       </span>
       <div className="w-full mt-2">
         <div className="flex flex-row justify-between relative">
-          <h4 className="text-[14px] font-semibold pt-1 text-[#263238]">{interview.candidate}</h4>
+          <h4 className="text-[14px] font-semibold pt-1 text-[#263238]">
+            {variant === "employer" ? interview.candidate : interview.position}
+          </h4>
           <span className="text-[12px] font-light text-[#717171] -mr-2">
             Received {interview.receivedTime}
           </span>
         </div>
-        <p className="text-[13px] text-[#263238] underline">{interview.position}</p>
+        <p className="text-[13px] text-[#263238] underline">
+          {variant === "employer" ? interview.position : interview.company}
+        </p>
         <div className="flex flex-row items-center">
           <MapPin size={14} className="text-[#F5722E]" />
           <p className="text-[13px] font-light mt-0 ml-2 text-[#263238]">
@@ -214,12 +254,16 @@ const PendingCard: FC<PendingCardProps> = ({
       </h3>
       <div className="w-full mt-2">
         <div className="flex flex-row justify-between relative">
-          <h4 className="text-[14px] font-semibold pt-1 text-[#263238]">{interview.candidate}</h4>
+          <h4 className="text-[14px] font-semibold pt-1 text-[#263238]">
+            {variant === "employer" ? interview.candidate : interview.position}
+          </h4>
           <span className="text-[12px] font-light text-[#717171] -mr-2">
             Received {interview.receivedTime}
           </span>
         </div>
-        <p className="text-[13px] text-[#263238] underline">{interview.position}</p>
+        <p className="text-[13px] text-[#263238] underline">
+          {variant === "employer" ? interview.position : interview.company}
+        </p>
         <div className="flex flex-row items-center">
           <MapPin size={14} className="text-[#F5722E]" />
           <p className="text-[13px] font-light mt-0 ml-2 text-[#263238]">
@@ -279,9 +323,7 @@ const PendingCard: FC<PendingCardProps> = ({
             value={values.reason}
             onValueChange={(value) => setFieldValue("reason", value)}
           >
-            <SelectTrigger
-              className="w-full border-2 rounded-[10px] bg-transparent h-[40px] border-[#263238]"
-            >
+            <SelectTrigger className="w-full border-2 rounded-[10px] bg-transparent h-[40px] border-[#263238]">
               <SelectValue placeholder="Select A Reason" />
             </SelectTrigger>
             <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none max-h-[200px]">
@@ -307,7 +349,7 @@ const PendingCard: FC<PendingCardProps> = ({
     <CardFooter className="flex flex-row justify-center pt-2 space-x-6">
       <Button
         onClick={() => setModalView("accept")}
-        className="text-[13px] font-semibold w-[100px] h-[32px] bg-[#F5722E] hover:bg-orange-600 text-white"
+        className="text-[13px] font-semibold w-[100px] h-[32px] bg-[#F5722E] hover:bg-[#F5722E]/90 text-white"
       >
         Accept
       </Button>
@@ -343,21 +385,12 @@ const PendingCard: FC<PendingCardProps> = ({
           </span>
         </div>
       ) : (
-        <>
-          <Button
-            onClick={handleAccept}
-            className="text-[13px] font-semibold w-[100px] h-[32px] bg-[#F5722E] hover:bg-orange-600 text-white"
-          >
-            Accept
-          </Button>
-          {/* <Button
-            variant="outline"
-            className="border-2 text-[13px] font-semibold w-[130px] h-[32px] border-[#168AAD] text-[#168AAD] hover:bg-[#168AAD] hover:text-white px-1"
-            onClick={() => window.open("https://calendar.google.com")}
-          >
-            View Calendar
-          </Button> */}
-        </>
+        <Button
+          onClick={handleAccept}
+          className="text-[13px] font-semibold w-[100px] h-[32px] bg-[#F5722E] hover:bg-[#F5722E]/90 text-white"
+        >
+          Accept
+        </Button>
       )}
     </CardFooter>
   );
@@ -377,27 +410,21 @@ const PendingCard: FC<PendingCardProps> = ({
           </span>
         </div>
       ) : (
-        <>
-          <Button
-            onClick={(e) => {
-              e.preventDefault();
-              handleSubmit();
-            }}
-            className="text-[13px] font-semibold w-[100px] h-[32px] bg-[#E53835] hover:bg-[#E53835] text-white disabled:bg-gray-300 disabled:cursor-not-allowed"
-          >
-            Decline
-          </Button>
-          {/* <Button
-            variant="outline"
-            className="border-2 text-[13px] font-semibold w-[130px] h-[32px] border-[#168AAD] text-[#168AAD] hover:bg-[#168AAD] hover:text-white px-1"
-            onClick={() => window.open("https://calendar.google.com")}
-          >
-            View Calendar
-          </Button> */}
-        </>
+        <Button
+          onClick={(e) => {
+            e.preventDefault();
+            handleSubmit();
+          }}
+          className="text-[13px] font-semibold w-[100px] h-[32px] bg-[#E53835] hover:bg-[#E53835] text-white disabled:bg-gray-300 disabled:cursor-not-allowed"
+        >
+          Decline
+        </Button>
       )}
     </CardFooter>
   );
+
+  const PreviewModal =
+    variant === "employer" ? CandidatePreviewModal : JobInterviewPreviewModal;
 
   return (
     <>
@@ -408,7 +435,9 @@ const PendingCard: FC<PendingCardProps> = ({
 
       {/* Card */}
       <Card
-        className={`bg-[#FFFFFF] border-none w-full md:w-[436px] h-auto md:h-[275px] relative ${modalView ? "z-50" : ""}`}
+        className={`bg-[#FFFFFF] border-none w-full md:w-[436px] h-auto md:h-[275px] relative ${
+          modalView ? "z-50" : ""
+        }`}
       >
         {modalView === "accept" ? (
           <AcceptingHeader />
@@ -431,7 +460,7 @@ const PendingCard: FC<PendingCardProps> = ({
         )}
       </Card>
 
-      {/* Reschedule Modal */}
+      {/* Modals */}
       <RescheduleModal
         isOpen={activeModal === "reschedule"}
         onClose={() => setActiveModal(null)}
@@ -439,9 +468,10 @@ const PendingCard: FC<PendingCardProps> = ({
         onReschedule={(data) => {
           onReschedule?.(data);
         }}
+        variant={variant === "employer" ? "employer" : "job-hunter"}
       />
 
-      <CandidatePreviewModal
+      <PreviewModal
         isOpen={isPreviewOpen}
         onClose={() => setIsPreviewOpen(false)}
         interview={interview}

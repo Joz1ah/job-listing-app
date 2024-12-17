@@ -4,17 +4,18 @@ export interface Match {
   lastName: string;
   phoneNumber?: number;
   birthday?: string;
+  posted: string;
   location: string;
   position: string;
   education?: string;
   coreSkills: string[];
-  appliedAgo: string;
   experience: string;
   lookingFor: ("Full Time" | "Part Time" | "Contract only")[];
   salaryExpectation: string;
   language: string[];
   interpersonalSkills?: string[];
   certificates?: string[];
+  isNew?: boolean;
 }
 
 export const perfectMatch: Match[] = [
@@ -28,13 +29,14 @@ export const perfectMatch: Match[] = [
     position: "Junior Front End Developer",
     education: "Bachelor's Degree",
     coreSkills: ["React", "JavaScript", "HTML", "CSS", "Bootstrap"],
-    appliedAgo: "3 days ago",
+    posted: "1 day",
     experience: "under a year",
     lookingFor: ["Full Time", "Part Time", "Contract only"],
     salaryExpectation: "$51,000-$70,000",
     language: ["English"],
     interpersonalSkills: ["Team Collaboration", "Adaptability", "Problem Solving"],
-    certificates: ["Certified JavaScript Developer"]
+    certificates: ["Certified JavaScript Developer"],
+    isNew: true
   },
   {
     id: 2,
@@ -46,13 +48,14 @@ export const perfectMatch: Match[] = [
     position: "Frontend Engineer",
     education: "Master's Degree",
     coreSkills: ["React", "JavaScript", "CSS", "HTML", "TypeScript"],
-    appliedAgo: "1 week ago",
+    posted: "1 day",
     experience: "3 - 5 years",
     lookingFor: ["Full Time", "Contract only"],
     salaryExpectation: "$71,000-$100,000",
     language: ["English", "French"],
     interpersonalSkills: ["Communication", "Time Management", "Critical Thinking"],
-    certificates: ["AWS Certified Developer", "TypeScript Mastery"]
+    certificates: ["AWS Certified Developer", "TypeScript Mastery"],
+    isNew: true
   },
   {
     id: 3,
@@ -64,13 +67,14 @@ export const perfectMatch: Match[] = [
     position: "Junior JavaScript Developer",
     education: "Bachelor's Degree",
     coreSkills: ["JavaScript", "React", "Vue.js", "CSS", "HTML"],
-    appliedAgo: "4 days ago",
+    posted: "2 days",
     experience: "1 - 3 years",
     lookingFor: ["Full Time"],
     salaryExpectation: "$51,000-$70,000",
     language: ["English", "Spanish"],
     interpersonalSkills: ["Creativity", "Empathy", "Conflict Resolution"],
-    certificates: ["Certified Vue.js Developer"]
+    certificates: ["Certified Vue.js Developer"],
+    isNew: false
   },
   {
     id: 4,
@@ -82,13 +86,14 @@ export const perfectMatch: Match[] = [
     position: "Frontend Developer",
     education: "Master's Degree",
     coreSkills: ["React", "JavaScript", "SCSS", "Responsive Design", "Git"],
-    appliedAgo: "5 days ago",
+    posted: "3 days",
     experience: "3 - 5 years",
     lookingFor: ["Full Time"],
     salaryExpectation: "$71,000-$100,000",
     language: ["English"],
     interpersonalSkills: ["Leadership", "Emotional Intelligence", "Negotiation"],
-    certificates: ["Google UX Design Professional Certificate"]
+    certificates: ["Google UX Design Professional Certificate"],
+    isNew: false
   },
   {
     id: 5,
@@ -100,13 +105,14 @@ export const perfectMatch: Match[] = [
     position: "UI Developer",
     education: "Bachelor's Degree",
     coreSkills: ["React", "JavaScript", "CSS", "Tailwind CSS", "HTML"],
-    appliedAgo: "6 days ago",
+    posted: "5 days",
     experience: "1 - 3 years",
     lookingFor: ["Full Time", "Part Time"],
     salaryExpectation: "$51,000-$70,000",
     language: ["English"],
     interpersonalSkills: ["Team Collaboration", "Flexibility", "Persuasion"],
-    certificates: ["Certified UI/UX Designer"]
+    certificates: ["Certified UI/UX Designer"],
+    isNew: false
   },
   {
     id: 6,
@@ -118,13 +124,14 @@ export const perfectMatch: Match[] = [
     position: "React Developer",
     education: "Master's Degree",
     coreSkills: ["React", "JavaScript", "Redux", "TypeScript", "CSS"],
-    appliedAgo: "2 weeks ago",
+    posted: "1 week",
     experience: "5 - 10 years",
     lookingFor: ["Full Time"],
     salaryExpectation: "$100,000-$120,000",
     language: ["English"],
     interpersonalSkills: ["Decision Making", "Strategic Thinking", "Innovation"],
-    certificates: ["React Professional Developer"]
+    certificates: ["React Professional Developer"],
+    isNew: false
   },
   {
     id: 7,
@@ -136,13 +143,14 @@ export const perfectMatch: Match[] = [
     position: "Junior Web Developer",
     education: "Associate Degree",
     coreSkills: ["React", "JavaScript", "HTML", "CSS", "Git"],
-    appliedAgo: "3 weeks ago",
+    posted: "3 weeks",
     experience: "under a year",
     lookingFor: ["Full Time", "Part Time"],
     salaryExpectation: "negotiable",
     language: ["English", "Spanish"],
     interpersonalSkills: ["Time Management", "Problem Solving", "Empathy"],
-    certificates: ["Full Stack Web Development Certificates"]
+    certificates: ["Full Stack Web Development Certificates"],
+    isNew: false
   },
   {
     id: 8,
@@ -154,13 +162,14 @@ export const perfectMatch: Match[] = [
     position: "Junior Front End Developer",
     education: "Bachelor's Degree",
     coreSkills: ["React", "JavaScript", "CSS", "HTML", "Git"],
-    appliedAgo: "1 month ago",
+    posted: "3 weeks",
     experience: "1 - 3 years",
     lookingFor: ["Full Time"],
     salaryExpectation: "$51,000-$70,000",
     language: ["English", "French"],
     interpersonalSkills: ["Adaptability", "Conflict Resolution", "Leadership"],
-    certificates: ["Certified React Developer"]
+    certificates: ["Certified React Developer"],
+    isNew: false
   },
   {
     id: 9,
@@ -172,13 +181,14 @@ export const perfectMatch: Match[] = [
     position: "Full Stack Developer",
     education: "Master's Degree",
     coreSkills: ["React", "Node.js", "Express", "MongoDB", "Git"],
-    appliedAgo: "2 weeks ago",
+    posted: "3 weeks",
     experience: "3 - 5 years",
     lookingFor: ["Full Time", "Part Time"],
     salaryExpectation: "$75,000-$90,000",
     language: ["English"],
     interpersonalSkills: ["Creativity", "Strategic Thinking", "Emotional Intelligence"],
-    certificates: ["Full Stack Developer Professional Certificate"]
+    certificates: ["Full Stack Developer Professional Certificate"],
+    isNew: false
   },
   {
     id: 10,
@@ -190,13 +200,14 @@ export const perfectMatch: Match[] = [
     position: "UI/UX Designer",
     education: "Bachelor's Degree",
     coreSkills: ["Figma", "Sketch", "Adobe XD", "CSS", "HTML"],
-    appliedAgo: "3 days ago",
+    posted: "1 month",
     experience: "1 - 3 years",
     lookingFor: ["Part Time", "Contract only"],
     salaryExpectation: "$45,000-$55,000",
     language: ["Spanish", "English"],
     interpersonalSkills: ["Flexibility", "Empathy", "Persuasion"],
-    certificates: ["Certified UI/UX Designer"]
+    certificates: ["Certified UI/UX Designer"],
+    isNew: false
   }
 ];
 
@@ -211,13 +222,14 @@ export const others: Match[] = [
     position: "Full Stack Developer",
     education: "Master's Degree",
     coreSkills: ["JavaScript", "React", "GraphQL", "MongoDB", "TypeScript"],
-    appliedAgo: "2 days ago",
+    posted: "1 day",
     experience: "5 - 10 years",
     lookingFor: ["Full Time", "Contract only"],
     salaryExpectation: "$100,000-$120,000",
     language: ["English"],
     interpersonalSkills: ["Problem Solving", "Team Collaboration", "Adaptability"],
-    certificates: ["Full Stack Professional Developer"]
+    certificates: ["Full Stack Professional Developer"],
+    isNew: true
   },
   {
     id: 12,
@@ -229,13 +241,14 @@ export const others: Match[] = [
     position: "Backend Developer",
     education: "Bachelor's Degree",
     coreSkills: ["Express", "MongoDB", "JavaScript", "Docker", "REST API"],
-    appliedAgo: "5 days ago",
+    posted: "2 days",
     experience: "3 - 5 years",
     lookingFor: ["Full Time"],
     salaryExpectation: "$71,000-$100,000",
     language: ["English"],
     interpersonalSkills: ["Critical Thinking", "Time Management", "Creativity"],
-    certificates: ["Certified Backend Developer"]
+    certificates: ["Certified Backend Developer"],
+    isNew: false
   },
   {
     id: 13,
@@ -247,13 +260,14 @@ export const others: Match[] = [
     position: "Software Engineer",
     education: "Master's Degree",
     coreSkills: ["JavaScript", "React", "GraphQL", "CSS", "MySQL"],
-    appliedAgo: "1 week ago",
+    posted: "1 week",
     experience: "3 - 5 years",
     lookingFor: ["Full Time", "Contract only"],
     salaryExpectation: "$71,000-$100,000",
     language: ["English"],
     interpersonalSkills: ["Leadership", "Decision Making", "Strategic Thinking"],
-    certificates: ["Certified Software Engineer"]
+    certificates: ["Certified Software Engineer"],
+    isNew: false
   },
   {
     id: 14,
@@ -265,13 +279,14 @@ export const others: Match[] = [
     position: "Frontend Engineer",
     education: "Bachelor's Degree",
     coreSkills: ["JavaScript", "React", "CSS", "HTML", "TypeScript"],
-    appliedAgo: "2 weeks ago",
+    posted: "2 weeks",
     experience: "3 - 5 years",
     lookingFor: ["Full Time"],
     salaryExpectation: "$71,000-$100,000",
     language: ["English"],
     interpersonalSkills: ["Communication", "Emotional Intelligence", "Flexibility"],
-    certificates: ["Frontend Developer Certificates"]
+    certificates: ["Frontend Developer Certificates"],
+    isNew: false
   },
   {
     id: 15,
@@ -283,13 +298,14 @@ export const others: Match[] = [
     position: "Junior Software Developer",
     education: "Associate Degree",
     coreSkills: ["JavaScript", "React", "HTML", "CSS", "Git"],
-    appliedAgo: "3 weeks ago",
+    posted: "3 weeks",
     experience: "1 - 3 years",
     lookingFor: ["Full Time", "Part Time"],
     salaryExpectation: "Negotiable",
     language: ["English"],
     interpersonalSkills: ["Conflict Resolution", "Creativity", "Adaptability"],
-    certificates: ["Certified Junior Developer"]
+    certificates: ["Certified Junior Developer"],
+    isNew: false
   },
   {
     id: 16,
@@ -301,13 +317,14 @@ export const others: Match[] = [
     position: "Data Analyst",
     education: "Bachelor's Degree",
     coreSkills: ["Python", "SQL", "Tableau", "Excel", "Git"],
-    appliedAgo: "4 days ago",
+    posted: "1 month",
     experience: "1 - 3 years",
     lookingFor: ["Full Time", "Contract only"],
     salaryExpectation: "$50,000-$65,000",
     language: ["English"],
     interpersonalSkills: ["Attention to Detail", "Analytical Thinking", "Problem Solving"],
-    certificates: ["Data Analytics Professional Certificate"]
+    certificates: ["Data Analytics Professional Certificate"],
+    isNew: false
   },
   {
     id: 17,
@@ -319,13 +336,14 @@ export const others: Match[] = [
     position: "Front End Developer",
     education: "Bachelor's Degree",
     coreSkills: ["Vue.js", "JavaScript", "CSS", "HTML", "TypeScript"],
-    appliedAgo: "3 weeks ago",
+    posted: "1 month",
     experience: "3 - 5 years",
     lookingFor: ["Part Time", "Contract only"],
     salaryExpectation: "$40,000-$55,000",
     language: ["Vietnamese", "English"],
     interpersonalSkills: ["Empathy", "Adaptability", "Creativity"],
-    certificates: ["Certified Vue.js Developer"]
+    certificates: ["Certified Vue.js Developer"],
+    isNew: false
   },
   {
     id: 18,
@@ -337,13 +355,14 @@ export const others: Match[] = [
     position: "Cloud Engineer",
     education: "Master's Degree",
     coreSkills: ["AWS", "Docker", "Kubernetes", "Terraform", "Linux"],
-    appliedAgo: "1 month ago",
+    posted: "1 month",
     experience: "5 - 7 years",
     lookingFor: ["Full Time"],
     salaryExpectation: "$70,000-$85,000",
     language: ["English", "Hindi"],
     interpersonalSkills: ["Problem Solving", "Leadership", "Strategic Thinking"],
-    certificates: ["AWS Certified Solutions Architect"]
+    certificates: ["AWS Certified Solutions Architect"],
+    isNew: false
   },
   {
     id: 19,
@@ -355,12 +374,13 @@ export const others: Match[] = [
     position: "Machine Learning Engineer",
     education: "Doctorate/PhD",
     coreSkills: ["Python", "TensorFlow", "PyTorch", "Scikit-learn", "SQL"],
-    appliedAgo: "2 months ago",
+    posted: "2 months",
     experience: "3 - 5 years",
     lookingFor: ["Full Time"],
     salaryExpectation: "$110,000-$130,000",
     language: ["English", "Korean"],
     interpersonalSkills: ["Analytical Thinking", "Decision Making", "Innovation"],
-    certificates: ["Certified Machine Learning Specialist"]
+    certificates: ["Certified Machine Learning Specialist"],
+    isNew: false
   },
 ];

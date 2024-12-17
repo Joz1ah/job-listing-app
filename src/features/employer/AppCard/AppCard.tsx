@@ -40,7 +40,11 @@ const SecureNameDisplay: FC<{ isFreeTrial: boolean; realName: string }> = ({
     );
   }
 
-  return <CardTitle className="text-sm font-semibold text-[#263238]">{realName}</CardTitle>;
+  return (
+    <CardTitle className="text-sm font-semibold text-[#263238]">
+      {realName}
+    </CardTitle>
+  );
 };
 
 const getAvailabilityStyle = (type: string) => {
@@ -110,12 +114,16 @@ const AppCard: FC<AppCardProps> = ({ match, isFreeTrial = false }) => {
       >
         <CardHeader className="flex flex-col justify-between items-start pb-0">
           <div className="flex flex-row -mt-4 justify-between w-full relative">
-            <span className="text-[13px] text-[#F5722E] font-bold italic">
-              ☆ NEW
-            </span>
+            <div className="h-5">
+              {match.isNew && (
+                <span className="text-[13px] text-[#F5722E] font-bold italic">
+                  ☆ NEW
+                </span>
+              )}
+            </div>
             <div className="flex flex-col items-end">
               <span className="text-[11px] font-light text-[#717171] -mr-2">
-                Posted {match.appliedAgo}
+                Posted {match.posted} ago
               </span>
             </div>
           </div>
@@ -144,13 +152,17 @@ const AppCard: FC<AppCardProps> = ({ match, isFreeTrial = false }) => {
 
           <div className="flex flex-col gap-1 mt-2">
             <div className="flex gap-2">
-              <span className="text-[13px] font-light text-[#263238]">Experience:</span>
+              <span className="text-[13px] font-light text-[#263238]">
+                Experience:
+              </span>
               <span className="text-[12px] text-[#F5722E] font-light border border-[#F5722E] items-center rounded-[2px] px-1">
                 {match.experience}
               </span>
             </div>
             <div className="flex gap-2 gap-y-0 flex-wrap">
-              <span className="text-[13px] font-light text-[#263238]">Looking for:</span>
+              <span className="text-[13px] font-light text-[#263238]">
+                Looking for:
+              </span>
               {match.lookingFor.map((type, index) => (
                 <span
                   key={index}
@@ -161,13 +173,17 @@ const AppCard: FC<AppCardProps> = ({ match, isFreeTrial = false }) => {
               ))}
             </div>
             <div className="flex gap-2">
-              <span className="text-[13px] font-light text-[#263238]">Salary:</span>
+              <span className="text-[13px] font-light text-[#263238]">
+                Salary:
+              </span>
               <span className="bg-[#F5722E] text-white rounded-[4px] text-[12px] px-1.5 h-[18px] flex justify-center items-center">
                 {match.salaryExpectation}
               </span>
             </div>
             <div className="flex gap-2 flex-wrap">
-              <span className="text-[13px] font-light text-[#263238]">Language:</span>
+              <span className="text-[13px] font-light text-[#263238]">
+                Language:
+              </span>
               {match.language.map((lang, index) => (
                 <LanguageTag key={index} language={lang} />
               ))}

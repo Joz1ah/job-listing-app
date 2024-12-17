@@ -38,7 +38,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
 }) => {
   return (
     <div 
-      className={`px-6 py-2 rounded-lg transition-all duration-300 ease-in-out hover:scale-105 ${
+      className={`md:w-[360px] px-6 py-2 rounded-lg transition-all duration-300 ease-in-out hover:scale-105 ${
         isHighlighted 
           ? 'bg-[#263238] shadow-[0_0_15px_rgba(249,115,22,0.4)]' 
           : 'bg-[#F5F5F7BF]/75'
@@ -82,7 +82,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
       <button 
         className={`w-full mt-6 py-2 px-4 rounded transition-colors duration-200 ${
           isHighlighted 
-            ? 'bg-[#F5722E] hover:bg-orange-600 text-white' 
+            ? 'bg-[#F5722E] hover:bg-[#F5722E]/90 text-white' 
             : 'border border-[#F5722E] text-[#F5722E] hover:bg-[#F5722E] hover:text-white'
         }`}
       >
@@ -130,7 +130,7 @@ const SubscriptionSettings: React.FC = () => {
           <p className="text-[#F5722E] font-bold text-2xl">Free Trial</p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid md:grid-cols-2 gap-4 justify-items-center">
           <SubscriptionCard
             title="Yearly Plan"
             description="Maximize your reach, save more, and hire the best talent faster"

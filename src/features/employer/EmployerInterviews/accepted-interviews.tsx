@@ -1,5 +1,5 @@
 import { FC, useState, useEffect, useRef } from "react";
-import { AcceptedCard } from "features/employer";
+import { AcceptedCard } from 'components';
 import { InterviewCardSkeleton } from "components";
 import { NavLink } from "react-router-dom";
 import emptyInterview from "images/calendar-empty.svg?url";
@@ -16,9 +16,9 @@ const AcceptedInterviews: FC = () => {
     window.open(interview.meetingLink, "_blank");
   };
 
-  const handlePreviewJob = (interview: Interview) => {
+/*   const handlePreviewJob = (interview: Interview) => {
     console.log("Preview job details for:", interview.position);
-  };
+  }; */
 
   const loadMore = async () => {
     if (loading || !hasMore) return;
@@ -134,8 +134,8 @@ const AcceptedInterviews: FC = () => {
             <AcceptedCard
               key={index}
               interview={interview}
+              variant="employer"
               onJoinInterview={() => handleJoinInterview(interview)}
-              onPreviewJob={() => handlePreviewJob(interview)}
             />
           ))}
 

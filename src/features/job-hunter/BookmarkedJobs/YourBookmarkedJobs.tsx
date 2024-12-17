@@ -3,38 +3,55 @@ import { BookmarkCard } from "features/job-hunter";
 import { InterviewCardSkeleton } from "components";
 import { NavLink } from "react-router-dom";
 import emptyBookmark from "images/bookmark-empty.svg?url";
-import { Match } from "mockData/job-hunter-data";
+import { Match } from "mockData/jobs-data";
 import { BookmarkProvider } from "components/context/BookmarkContext";
 
 // You can replace this with your actual mock data
 const mockBookmarks: Match[] = [
   {
-    id: 1,
-    firstName: "John",
-    lastName: "Doe",
-    position: "Senior Frontend Engineer",
-    location: "Mountain View, CA",
-    appliedAgo: "2 hours ago",
-    coreSkills: ["React", "TypeScript", "NextJS", "TailwindCSS", "GraphQL"],
-    experience: "3-5 years",
-    lookingFor: ["Full Time"],
-    salaryExpectation: "USD 110,000-140,000",
-    language: ["English", "Mandarin"],
-    certificates: ["AWS Certified Developer"],
+    employerId: 1,
+    position: "Software Engineer",
+    company: "Fintech Solutions Ltd",
+    location: "United Kingdom",
+    description:
+      "Looking for a passionate engineer to help build our next-generation financial platform using modern web technologies.",
+    coreSkills: ["React", "JavaScript", "CSS", "HTML", "Git"],
+    posted: "1 day",
+    experience: "under a year",
+    lookingFor: ["Full Time", "Part Time"],
+    salaryExpectation: "$51,000-$70,000",
+    interpersonalSkills: ["Communication", "Team Collaboration", "Problem-solving"],
+    certificates: ["None required"]
   },
   {
-    id: 2,
-    firstName: "John",
-    lastName: "Doe",
+    employerId: 2,
     position: "Senior Frontend Engineer",
-    location: "Mountain View, CA",
-    appliedAgo: "2 hours ago",
-    coreSkills: ["React", "TypeScript", "NextJS", "TailwindCSS", "GraphQL"],
-    experience: "3-5 years",
-    lookingFor: ["Full Time"],
-    salaryExpectation: "USD 110,000-140,000",
-    language: ["English", "Mandarin"],
-    certificates: ["AWS Certified Developer"],
+    company: "TechStack Inc",
+    location: "Canada",
+    description:
+      "Join our rapidly growing team to build scalable web applications and mentor junior developers.",
+    coreSkills: ["Quality Assurance", "JavaScript", "Machine Learning", "Product Management", "TypeScript"],
+    posted: "1 week",
+    experience: "3 - 5 years",
+    lookingFor: ["Full Time", "Contract only"],
+    salaryExpectation: "$71,000-$100,000",
+    interpersonalSkills: ["Leadership", "Mentoring", "Communication", "Team Management"],
+    certificates: ["None required"]
+  },
+  {
+    employerId: 3,
+    position: "Frontend Developer",
+    company: "Digital Innovation GmbH",
+    location: "Germany",
+    description:
+      "Help shape the future of our digital products with modern JavaScript frameworks and cutting-edge technologies.",
+    coreSkills: ["JavaScript", "React", "Vue.js", "CSS", "HTML"],
+    posted: "1 day",
+    experience: "1 - 3 years",
+    lookingFor: ["Full Time", "Part Time", "Contract only"],
+    salaryExpectation: "$51,000-$70,000",
+    interpersonalSkills: ["Communication", "Adaptability", "Problem-solving"],
+    certificates: ["None required"]
   },
   // Add more mock bookmarks as needed
 ];

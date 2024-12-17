@@ -1,5 +1,5 @@
 import { FC, useState, useEffect, useRef } from "react";
-import { CompletedCard } from "features/employer";
+import { CompletedCard } from "components";
 import { InterviewCardSkeleton } from "components";
 import { NavLink } from "react-router-dom";
 import emptyInterview from "images/calendar-empty.svg?url";
@@ -123,7 +123,7 @@ const CompletedInterviews: FC = () => {
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-y-6 gap-x-14 justify-items-center w-full">
         {!initialLoad &&
           displayedItems.map((interview, index) => (
-            <CompletedCard key={index} interview={interview} />
+            <CompletedCard key={index} interview={interview} variant="employer"/>
           ))}
 
         {showLoadingCards && (

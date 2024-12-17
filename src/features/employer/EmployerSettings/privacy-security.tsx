@@ -193,7 +193,7 @@ const PrivacyAndSecuritySettings: FC = () => {
                   className={cn(
                     "w-full md:w-[133px] h-[32px] text-xs p-0 text-white rounded-sm transition-colors duration-200 font-normal",
                     isValid
-                      ? "bg-[#F5722E] hover:bg-orange-600"
+                      ? "bg-[#F5722E] hover:bg-[#F5722E]/90"
                       : "bg-[#AEADAD] hover:bg-[#AEADAD]",
                   )}
                 >

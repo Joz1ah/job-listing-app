@@ -17,57 +17,59 @@ interface TimeSlot {
 
 interface Meeting {
   id: string;
-  companyName: string;
+  candidateName: string;
   position: string;
   timeSlot: TimeSlot;
 }
 
 type DayName = "Sun" | "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat";
 
-interface InterviewCalendarModalProps {
+interface EmployerInterviewCalendarModalProps {
   isOpen: boolean;
   onClose: () => void;
   existingMeetings?: Meeting[];
 }
 
-const InterviewCalendarModal: React.FC<InterviewCalendarModalProps> = ({
+const EmployerInterviewCalendarModal: React.FC<
+  EmployerInterviewCalendarModalProps
+> = ({
   isOpen,
   onClose,
   existingMeetings = [
     {
       id: "1",
-      companyName: "TechCorp Solutions",
-      position: "Senior Developer",
+      candidateName: "Ash Ketchup",
+      position: "Pokemon Trainer",
       timeSlot: {
-        date: "2024-12-09",
-        startTime: "12:00",
-        endTime: "13:00",
+        date: "2024-12-08",
+        startTime: "8:00",
+        endTime: "9:00",
       },
     },
     {
       id: "2",
-      companyName: "Digital Innovations",
-      position: "Product Manager",
+      candidateName: "Tyson Fury",
+      position: "Professional Boxer",
       timeSlot: {
-        date: "2024-12-12",
+        date: "2024-12-11",
         startTime: "14:00",
         endTime: "15:00",
       },
     },
     {
       id: "3",
-      companyName: "Future Systems Inc",
-      position: "Technical Lead",
+      candidateName: "JJ Olatunji",
+      position: "Youtuber/Streamer",
       timeSlot: {
-        date: "2024-12-10",
-        startTime: "14:30",
-        endTime: "15:30",
+        date: "2024-12-13",
+        startTime: "9:30",
+        endTime: "10:30",
       },
     },
   ],
 }) => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const currentDate = new Date("2024-12-10");
+  const currentDate = new Date("2024-12-10"); // Set current date as December 10, 2024
 
   const hours: string[] = Array.from({ length: 24 }, (_, i) => {
     return `${String(i).padStart(2, "0")}:00`;
@@ -201,7 +203,7 @@ const InterviewCalendarModal: React.FC<InterviewCalendarModalProps> = ({
                         {day.dayName}
                       </div>
                       {isSelected && (
-                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#F5722E]" />
+                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-orange-500" />
                       )}
                     </div>
                   );
@@ -258,7 +260,7 @@ const InterviewCalendarModal: React.FC<InterviewCalendarModalProps> = ({
                               className={`absolute left-0 right-0 px-2 py-1 mx-1 overflow-hidden shadow-sm hover:shadow rounded-sm border-l-2 flex flex-col gap-0.5 ${
                                 isPast
                                   ? "bg-red-50 border-[#E53835]"
-                                  : "bg-orange-50 border-[#F5722E]"
+                                  : "bg-orange-50 border-orange-500"
                               }`}
                               style={{
                                 top: `${startPosition}px`,
@@ -272,7 +274,7 @@ const InterviewCalendarModal: React.FC<InterviewCalendarModalProps> = ({
                                     isPast ? "text-red-900" : "text-gray-900"
                                   } leading-tight`}
                                 >
-                                  {meeting.companyName}
+                                  {meeting.candidateName}
                                 </div>
                                 <div
                                   className={`text-[10px] underline truncate ${
@@ -310,8 +312,8 @@ const InterviewCalendarModal: React.FC<InterviewCalendarModalProps> = ({
             <div className="w-full flex justify-center">
               <div className="bg-gray-100 shadow-md p-3 w-[306px] h-[99px] max-w-sm mx-auto flex items-center">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium">Michael V.</span>
-                  <BadgeCheck className="w-4 h-4 text-[#F5722E] flex-shrink-0" />
+                  <span className="text-sm font-medium">ABC Incorporated</span>
+                  <BadgeCheck className="w-4 h-4 text-orange-500 flex-shrink-0" />
                 </div>
               </div>
             </div>
@@ -332,4 +334,4 @@ const InterviewCalendarModal: React.FC<InterviewCalendarModalProps> = ({
   );
 };
 
-export { InterviewCalendarModal };
+export { EmployerInterviewCalendarModal };

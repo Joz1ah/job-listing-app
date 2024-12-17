@@ -1,8 +1,8 @@
-
 export interface Interview {
     id?:string;
     position: string;
-    candidate: string;
+    candidate?: string;
+    company?: string;
     date: string;
     time: string;
     location: string;
@@ -11,8 +11,10 @@ export interface Interview {
     sentTime?:string;
     isNew?: boolean;
     rating?: number;
+    rated?: boolean;
+    feedback?: string;
     reason?: string;
-    status?: 'pending';
+    status?: 'Accepted' | 'Pending' | 'Declined';
     isRequesterMe?: boolean;
     hasRescheduled?: boolean;
     bookmarked?: boolean;
@@ -31,6 +33,7 @@ export interface Interview {
     isOpen: boolean;
     onClose: () => void;
     interview: Interview;
+    variant?: 'employer' | 'job-hunter';
   }
 
 export const acceptedInterviewsData: Interview[] = [
@@ -38,11 +41,12 @@ export const acceptedInterviewsData: Interview[] = [
     position: "Senior Frontend Engineer",
     candidate: "Michael Thompson",
     location: "Mountain View, CA",
-    date: "December 22, 2024",
+    date: "December 22, 2024s",
     time: "10:00 AM PST",
     meetingLink: "meet.google.com/abc-defg-hij",
     receivedTime: "2 hours ago",
     isNew: true,
+    status: 'Accepted',
     coreSkills: ["React", "TypeScript", "Next.js", "CSS3", "GraphQL"],
     experience: "3-5 years",
     employmentPreference: ["Full Time"],
@@ -67,6 +71,7 @@ export const acceptedInterviewsData: Interview[] = [
     meetingLink: "meet.google.com/uvw-xyzq-rst",
     receivedTime: "yesterday",
     isNew: false,
+    status: 'Accepted',
     coreSkills: [
       "Java",
       "Spring Boot",
@@ -97,6 +102,7 @@ export const acceptedInterviewsData: Interview[] = [
     meetingLink: "meet.google.com/jkl-mnop-qrs",
     receivedTime: "3 days ago",
     isNew: false,
+    status: 'Accepted',
     coreSkills: ["React", "Node.js", "MongoDB", "Express", "AWS"],
     experience: "4-6 years",
     employmentPreference: ["Full Time", "Remote"],
@@ -123,6 +129,9 @@ export const completedInterviewsData: Interview[] = [
     time: "10:00 AM PST",
     receivedTime: "2 hours ago",
     isNew: true,
+    rating: 4,
+    rated: true,
+    feedback: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     coreSkills: ["Figma", "Adobe XD", "Sketch", "Prototyping", "User Research"],
     experience: "3-5 years",
     employmentPreference: ["Full Time", "Hybrid"],
@@ -145,7 +154,8 @@ export const completedInterviewsData: Interview[] = [
     date: "December 25, 2024",
     time: "1:00 PM PST",
     receivedTime: "yesterday",
-    rating: 4.5,
+    isNew: false,
+    rated: false,
     coreSkills: [
       "Python",
       "Machine Learning",
@@ -174,7 +184,8 @@ export const completedInterviewsData: Interview[] = [
     date: "December 28, 2024",
     time: "11:30 AM PST",
     receivedTime: "3 days ago",
-    rating: 4.0,
+    isNew: true,
+    rated: false,
     coreSkills: ["Kubernetes", "AWS", "CI/CD", "Terraform", "Python"],
     experience: "5-7 years",
     employmentPreference: ["Full Time", "Remote"],
@@ -203,6 +214,7 @@ export const declinedInterviewsData: Interview[] = [
     receivedTime: "today",
     reason: "Not Actively Seeking",
     isNew: true,
+    status: 'Declined',
     coreSkills: ["Kubernetes", "AWS", "CI/CD", "Terraform", "Python"],
     experience: "5-7 years",
     employmentPreference: ["Full Time", "Remote"],
@@ -228,6 +240,7 @@ export const declinedInterviewsData: Interview[] = [
     receivedTime: "yesterday",
     reason: "Schedule Conflict",
     isNew: false,
+    status: 'Declined',
     coreSkills: ["React", "Node.js", "MongoDB", "Express", "AWS"],
     experience: "4-6 years",
     employmentPreference: ["Full Time", "Remote"],
@@ -253,6 +266,7 @@ export const declinedInterviewsData: Interview[] = [
     receivedTime: "2 days ago",
     reason: "Accepted Another Offer",
     isNew: false,
+    status: 'Declined',
     coreSkills: [
       "Python",
       "Machine Learning",
@@ -439,7 +453,7 @@ export const rescheduleInterviewsData: Interview[] = [
     receivedTime: "today",
     sentTime: "Today",
     isNew: true,
-    status: "pending",
+    status: "Pending",
     isRequesterMe: true,
     hasRescheduled: false,
     coreSkills: [
@@ -472,7 +486,7 @@ export const rescheduleInterviewsData: Interview[] = [
     receivedTime: "yesterday",
     sentTime: "yesterday",
     isNew: false,
-    status: "pending",
+    status: "Pending",
     isRequesterMe: true,
     hasRescheduled: true,
     coreSkills: ["React", "Node.js", "MongoDB", "Express", "AWS"],
@@ -499,7 +513,7 @@ export const rescheduleInterviewsData: Interview[] = [
     receivedTime: "2 days ago",
     sentTime: "",
     isNew: true,
-    status: "pending",
+    status: "Pending",
     isRequesterMe: false,
     hasRescheduled: false,
     coreSkills: [
@@ -532,7 +546,7 @@ export const rescheduleInterviewsData: Interview[] = [
     receivedTime: "2 days ago",
     sentTime: "",
     isNew: false,
-    status: "pending",
+    status: "Pending",
     isRequesterMe: false,
     hasRescheduled: false,
     coreSkills: ["React", "TypeScript", "Next.js", "CSS3", "GraphQL"],
