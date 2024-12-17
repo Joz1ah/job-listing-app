@@ -7,7 +7,7 @@ const Home = lazy(() => import('pages').then(module => ({ default: module.Home }
 const Landing = lazy(() => import('pages').then(module => ({ default: module.Landing })))
 const Fetch = lazy(() => import('pages').then(module => ({ default: module.Fetch })))
 const About = lazy(() => import('pages').then(module => ({ default: module.About })))
-const NotFound = lazy(() => import('pages').then(module => ({ default: module.NotFound })))
+const NotFound = lazy(() => import('pages').then(module => ({ default: module.NotFoundPage })))
 
 // Employer pages
 const EmployerBaseLayout = lazy(() => import('pages').then(module => ({ default: module.EmployerBaseLayout })))
