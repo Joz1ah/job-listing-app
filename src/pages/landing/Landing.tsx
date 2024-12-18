@@ -6,7 +6,6 @@ import { useLoginMutation, useSignUpMutation, useOtpGenerateMutation, useOtpVeri
 import { useNavigate } from "react-router-dom";
 import { Formik, Form, FieldProps, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-//import { createContext, useContext } from 'react';
 
 import video1 from 'assets/mp4/Landing-Page-hero-1.mp4';
 import video2 from 'assets/mp4/video-conference-call-1.mp4';

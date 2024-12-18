@@ -10,16 +10,17 @@ import { Home } from 'pages'
 //import { About } from 'pages'
 //import { NotFoundPage as NotFound } from 'pages'
 
+const BaseLayout = lazy(() => import('pages').then(module => ({ default: module.BaseLayout })))
 
 // Adjust imports to match your file structure and add type assertions
 //const Home = lazy(() => import('pages').then(module => ({ default: module.Home })))
-const Landing = lazy(() => import('pages').then(module => ({ default: module.Landing })))
+//const Landing = lazy(() => import('pages').then(module => ({ default: module.Landing })))
 const Fetch = lazy(() => import('pages').then(module => ({ default: module.Fetch })))
 const About = lazy(() => import('pages').then(module => ({ default: module.About })))
 const NotFound = lazy(() => import('pages').then(module => ({ default: module.NotFoundPage })))
 
 // Employer pages
-const EmployerBaseLayout = lazy(() => import('pages').then(module => ({ default: module.EmployerBaseLayout })))
+//const EmployerBaseLayout = lazy(() => import('pages').then(module => ({ default: module.EmployerBaseLayout })))
 const EmployerFeedLayout = lazy(() => import('pages').then(module => ({ default: module.EmployerFeedLayout })))
 const JobListingFormLayout = lazy(() => import('pages').then(module => ({ default: module.JobListingFormLayout })))
 const CompleteProfile = lazy(() => import('pages').then(module => ({ default: module.CompleteProfile })))
@@ -31,7 +32,7 @@ const ManageJobListings = lazy(() => import('pages').then(module => ({ default: 
 const ReportsAnalytics = lazy(() => import('pages').then(module => ({ default: module.ReportsAnalytics })))
 
 // Job Hunter pages
-const JobHunterBaseLayout = lazy(() => import('pages').then(module => ({ default: module.JobHunterBaseLayout })))
+//const JobHunterBaseLayout = lazy(() => import('pages').then(module => ({ default: module.JobHunterBaseLayout })))
 const JobHunterFeedLayout = lazy(() => import('pages').then(module => ({ default: module.JobHunterFeedLayout })))
 const CreateAppCard = lazy(() => import('pages').then(module => ({ default: module.CreateAppCard })))
 const EditAppCard = lazy(() => import('pages').then(module => ({ default: module.EditAppCard })))
@@ -130,7 +131,7 @@ const routes: RouteObject[] = [
   },
   {
     path: ROUTE_CONSTANTS.LANDING,
-    element: <LazyComponent component={Landing} />
+    element: <LazyComponent component={BaseLayout} userType="guest" />,
   },
   {
     path: ROUTE_CONSTANTS.HOME,
@@ -150,7 +151,7 @@ const routes: RouteObject[] = [
   },
   {
     path: ROUTE_CONSTANTS.EMPLOYER,
-    element: <LazyComponent component={EmployerBaseLayout} />,
+    element: <LazyComponent component={BaseLayout} userType="employer"/>,
     children: [
       {
         path: '',
@@ -294,7 +295,7 @@ const routes: RouteObject[] = [
   },
   {
     path: ROUTE_CONSTANTS.JOB_HUNTER,
-    element: <LazyComponent component={JobHunterBaseLayout} />,
+    element: <LazyComponent component={BaseLayout} useType="job-hunter"/>,
     children: [
       {
         path: '',
