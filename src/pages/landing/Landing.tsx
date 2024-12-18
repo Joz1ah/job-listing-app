@@ -6,6 +6,7 @@ import { useLoginMutation, useSignUpMutation, useOtpGenerateMutation, useOtpVeri
 import { useNavigate } from "react-router-dom";
 import { Formik, Form, FieldProps, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+//import { createContext, useContext } from 'react';
 
 import video1 from 'assets/mp4/Landing-Page-hero-1.mp4';
 import video2 from 'assets/mp4/video-conference-call-1.mp4';
@@ -61,6 +62,36 @@ import discover_icon from 'assets/credit-card-icons/cc_discover.svg?url';
 //import { Button, Counter, Menu, PageMeta } from 'components'
 
 import styles from './landing.module.scss'
+
+interface VideoProps {
+  src: string;
+  className?: string;
+}
+
+const Video: FC<VideoProps> = ({ src, className }) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const videoElement = videoRef.current;
+    if (videoElement) {
+      videoElement.load();
+    }
+  }, []);
+
+  return (
+    <video 
+      ref={videoRef}
+      className={className}
+      autoPlay 
+      muted 
+      loop 
+      playsInline
+    >
+      <source src={src} type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+  );
+};
 
 const Landing: FC = (): ReactElement => {
   const [maskHidden, setMaskHidden] = useState(0);
@@ -1041,10 +1072,10 @@ const HeroPerfectMatchAlgo = () => {
   useEffect(heroScreenActions,[])
   return(
     <div id="step1" className={`${styles['hero-content']}`} hidden={heroState !== heroStates.PERFECT_MATCH_ALGO}>
-    <video key="video1" autoPlay muted loop>
-        <source src={video1} type="video/mp4"/>
-          Your browser does not support the video tag.
-    </video>
+    <Video
+        src={video1}
+        className={styles['hero-video']}
+      />
         <div className={`${styles['hero-container-overlay']} ${styles['sepia']}`}>
             <div className={`${styles['title']} ${styles['text-center']}`}>
                 Let our Perfect Match Algo do the work
@@ -1079,11 +1110,11 @@ const HeroJobTitleEmployer = () => {
 
   useEffect(heroScreenActions,[])
   return(
-    <div id="step1_employer" className={`${styles['hero-content']}}`} hidden={heroState !== heroStates.JOB_TITLE_EMPLOYER}>
-      <video autoPlay muted loop>
-          <source key="video2" src={video2} type="video/mp4"/>
-          Your browser does not support the video tag.
-      </video>
+    <div id="step1_employer" className={`${styles['hero-content']}`} hidden={heroState !== heroStates.JOB_TITLE_EMPLOYER}>
+      <Video
+        src={video2}
+        className={styles['hero-video']}
+      />
       <div className={`${styles['hero-container-overlay']} ${styles['gradient-left-dark']}`}>
           <div className={`${styles['hero-container-content-wrapper']}`}>
               <div className={`${styles['title']} ${styles['orange']} ${styles['text-left']}`}>
@@ -1122,7 +1153,7 @@ const HeroSkillSetsEmployer = () => {
     }
     if (heroPreviousButton.current) {
       heroPreviousButton.current.onclick = () => {
-        setHeroState(heroStates.SKILLSETS_EMPLOYER);
+        setHeroState(heroStates.JOB_TITLE_EMPLOYER);
       };
     }
   };
@@ -1169,7 +1200,7 @@ const HeroYearsOfExperienceEmployer = () => {
     }
     if (heroPreviousButton.current) {
         heroPreviousButton.current.onclick = () => {
-        setHeroState(heroStates.JOB_TITLE_EMPLOYER);
+        setHeroState(heroStates.SKILLSETS_EMPLOYER);
       };
     }
   };
@@ -1229,10 +1260,10 @@ const HeroSkillSetsJobHunter = () => {
   /*${styles['hide-hero-layer']}*/
   return(
     <div id="step1_job_hunter" className={`${styles['hero-content']}`} hidden={heroState !== heroStates.SKILLSETS_JOBHUNTER}>
-        <video autoPlay muted loop>
-            <source src={video3} type="video/mp4"/>
-            Your browser does not support the video tag.
-        </video>
+        <Video
+        src={video3}
+        className={styles['hero-video']}
+      />
         <div className={`${styles['hero-container-overlay']} ${styles['gradient-left-dark']}`}>
             <div className={`${styles['hero-container-content-wrapper']}`}>
                 <div className={`${styles['title']} ${styles['orange']} ${styles['text-left']}`}>
@@ -1320,10 +1351,10 @@ const HeroLoading = () => {
   useEffect(heroScreenActions,[])
   return(
     <div id="last_step" className={`${styles['hero-content']}`} hidden={heroState !== heroStates.LOADING}>
-        <video autoPlay muted loop>
-            <source src={video4} type="video/mp4"/>
-            Your browser does not support the video tag.
-        </video>
+        <Video
+        src={video4}
+        className={styles['hero-video']}
+      />
         <div className={`${styles['hero-container-overlay']} ${styles['gradient-left-dark']}`}>
             <div className={`${styles['hero-container-content-wrapper']}`}>
                 <div className={`${styles['title']} ${styles['orange']} ${styles['text-left']}`}>
