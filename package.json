@@ -101,6 +101,7 @@
   "dependencies": {
     "@apollo/react-ssr": "^4.0.0",
     "@hookform/resolvers": "^3.3.4",
+    "@intercom/messenger-js-sdk": "^0.0.14",
     "@loadable/component": "latest",
     "@loadable/server": "^5.15.2",
     "@loadable/webpack-plugin": "^5.15.2",

@@ -4,11 +4,11 @@ import { JobHunterFeed } from "features/job-hunter";
 
 const JobHunterFeedLayout: FC = () => {
   return (
-    <main className="flex-1 flex flex-col bg-[#242625] w-full">
+    <div className="w-full">
       <JobHunterHeader />
       <JobHunterFeed />
-    </main>
+    </div>
   );
 };
 
-export { JobHunterFeedLayout }
+export { JobHunterFeedLayout };

@@ -30,6 +30,7 @@ const InterviewEmployer = lazy(() => import('pages').then(module => ({ default: 
 const AccountSettingsEmployer = lazy(() => import('pages').then(module => ({ default: module.AccountSettingsEmployer })))
 const ManageJobListings = lazy(() => import('pages').then(module => ({ default: module.ManageJobListings })))
 const ReportsAnalytics = lazy(() => import('pages').then(module => ({ default: module.ReportsAnalytics })))
+const SubscriptionPlan = lazy(() => import('pages').then(module => ({ default: module.SubscriptionPlan })))
 
 // Job Hunter pages
 //const JobHunterBaseLayout = lazy(() => import('pages').then(module => ({ default: module.JobHunterBaseLayout })))
@@ -288,6 +289,10 @@ const routes: RouteObject[] = [
         ]
       },
       {
+        path: ROUTE_CONSTANTS.EMPLOLYER_SUB_PLAN,
+        element: <LazyComponent component={SubscriptionPlan} />,
+      },
+      {
         path: '*',
         element: <LazyComponent component={EmployerNotFound} />
       }
@@ -388,6 +393,10 @@ const routes: RouteObject[] = [
             element: <LazyComponent component={YourBookmarkedJobs} />
           }
         ]
+      },
+      {
+        path: ROUTE_CONSTANTS.JOBHUNTER_SUB_PLAN,
+        element: <LazyComponent component={SubscriptionPlan} />,
       },
       {
         path: '*',

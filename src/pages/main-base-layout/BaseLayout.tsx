@@ -1,7 +1,6 @@
-import { FC, useEffect, useState } from "react";
+import { FC } from "react";
 import { Outlet } from "react-router-dom";
 import { useMenu } from "hooks";
-import { ScrollArea } from "components";
 import { 
   employerDesktopMenu, 
   employerMobileMenu,
@@ -24,21 +23,18 @@ type UserType = 'employer' | 'job-hunter' | 'guest';
 
 interface LayoutContentProps {
   children: React.ReactNode;
-  mounted: boolean;
   menu?: React.ReactNode;
 }
 
-const LayoutContent: FC<LayoutContentProps> = ({ children, mounted, menu }) => (
-  <div className={`flex flex-col h-screen bg-[#212529] ${mounted ? 'min-h-screen' : ''}`}>
+const LayoutContent: FC<LayoutContentProps> = ({ children, menu }) => (
+  <div className="flex flex-col min-h-screen bg-[#212529] relative overflow-hidden h-full">
     {menu}
-    <ScrollArea className="flex-1">
-      <div className="flex flex-col min-h-full">
-        <div className="flex-1">
-          {children}
-        </div>
-        <Footer />
-      </div>
-    </ScrollArea>
+    <div className="flex flex-col flex-1">
+      <main className="flex-1 pb-8">
+        {children}
+      </main>
+      <Footer />
+    </div>
   </div>
 );
 
@@ -48,18 +44,13 @@ interface BaseLayoutContentProps {
 
 const BaseLayoutContent: FC<BaseLayoutContentProps> = ({ userType }) => {
   const { menuOpen, toggleMenu } = useMenu();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const isEmployer = userType === 'employer';
   const isGuest = userType === 'guest';
 
   if (isGuest) {
     return (
-      <LayoutContent mounted={mounted}>
+      <LayoutContent>
         <Landing />
       </LayoutContent>
     );
@@ -84,13 +75,12 @@ const BaseLayoutContent: FC<BaseLayoutContentProps> = ({ userType }) => {
       userType={userType}
       userName={userName}
       feedPath={`/${isEmployer ? 'employer' : 'job-hunter'}/feed`}
-      profilePath={`/${isEmployer ? 'job-hunter' : 'employer'}/feed`}
     />
   );
 
   return (
     <Context.Provider value={{ isFreeTrial }}>
-      <LayoutContent mounted={mounted} menu={menu}>
+      <LayoutContent menu={menu}>
         <Outlet />
       </LayoutContent>
     </Context.Provider>
@@ -112,7 +102,7 @@ const BaseLayout: FC<BaseLayoutProps> = ({ userType }) => {
   return (
     <TrialProviders
       employerInitialStatus={isEmployer ? false : undefined}
-      jobHunterInitialStatus={!isEmployer ? true : undefined}
+      jobHunterInitialStatus={!isEmployer ? false : undefined}
     >
       <BaseLayoutContent userType={userType} />
     </TrialProviders>
