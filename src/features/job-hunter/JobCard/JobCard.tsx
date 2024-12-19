@@ -16,14 +16,14 @@ import { Match } from "mockData/jobs-data";
 
 interface JobCardProps {
   match: Match;
-  isFreeTrial?: boolean;
+  subscriptionTier: "freeTrial" | "monthlyPlan" | "yearlyPlan";
 }
 
-const SecureCompanyDisplay: FC<{ isFreeTrial: boolean; company: string }> = ({
-  isFreeTrial,
+const SecureCompanyDisplay: FC<{ subscriptionTier: "freeTrial" | "monthlyPlan" | "yearlyPlan"; company: string }> = ({
+  subscriptionTier,
   company,
 }) => {
-  if (isFreeTrial) {
+  if (subscriptionTier === "freeTrial") {
     return (
       <div className="relative">
         <div className="select-none pointer-events-none">
@@ -76,13 +76,13 @@ const BookmarkButton: FC<{
   );
 };
 
-const JobCard: FC<JobCardProps> = ({ match, isFreeTrial = false }) => {
+const JobCard: FC<JobCardProps> = ({ match, subscriptionTier }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const cardId = generateCardId(match);
 
   const handleCardClick = () => {
-    if (isFreeTrial) return;
+    if (subscriptionTier === "freeTrial") return;
     // Only open preview if schedule modal isn't open
     if (!isScheduleModalOpen) {
       setIsModalOpen(true);
@@ -93,7 +93,7 @@ const JobCard: FC<JobCardProps> = ({ match, isFreeTrial = false }) => {
     if (e) {
       e.stopPropagation();
     }
-    if (isFreeTrial) return;
+    if (subscriptionTier === "freeTrial") return;
     setIsScheduleModalOpen(true);
     setIsModalOpen(false);
   };
@@ -102,7 +102,9 @@ const JobCard: FC<JobCardProps> = ({ match, isFreeTrial = false }) => {
     <>
       <Card
         className={`bg-white border-none h-[275px] relative w-full max-w-[436px] transition-shadow duration-200 ${
-          isFreeTrial ? "cursor-default" : "cursor-pointer hover:shadow-lg"
+          subscriptionTier === "freeTrial"
+            ? "cursor-default"
+            : "cursor-pointer hover:shadow-lg"
         }`}
         onClick={handleCardClick}
       >
@@ -130,7 +132,7 @@ const JobCard: FC<JobCardProps> = ({ match, isFreeTrial = false }) => {
               className="absolute top-0 right-[-8px]"
             />
             <SecureCompanyDisplay
-              isFreeTrial={isFreeTrial}
+              subscriptionTier={subscriptionTier}
               company={match.company}
             />
             <div className="flex flex-row items-center gap-1">
@@ -192,14 +194,14 @@ const JobCard: FC<JobCardProps> = ({ match, isFreeTrial = false }) => {
             className="text-[#717171]"
             onClick={(e) => {
               e.stopPropagation();
-              if (isFreeTrial) return;
+              if (subscriptionTier === "freeTrial") return;
               // Handle more options
             }}
           />
         </CardFooter>
       </Card>
 
-      {!isFreeTrial && (
+      {subscriptionTier !== "freeTrial" && (
         <>
           <JobPreviewModal
             isOpen={isModalOpen}

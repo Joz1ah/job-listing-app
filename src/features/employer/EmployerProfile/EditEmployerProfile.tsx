@@ -130,7 +130,7 @@ const EditEmployerProfile: FC = () => {
           setIsSubmitting(true);
           // Your existing submission logic here
           setTimeout(() => {
-            navigate("/job-hunter/feed");
+            navigate("/employer/feed");
           }, 1500);
         }}
       />

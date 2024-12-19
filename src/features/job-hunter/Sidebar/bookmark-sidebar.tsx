@@ -12,13 +12,13 @@ interface MenuItem {
 
 interface BookmarkSidebarProps {
   userName: string;
-  isFreeTrial: boolean;
+  subscriptionTier: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
   className?: string;
 }
 
 const BookmarkSidebar: FC<BookmarkSidebarProps> = ({
   userName,
-  isFreeTrial,
+  subscriptionTier,
   className = "",
 }) => {
   const location = useLocation();
@@ -36,14 +36,14 @@ const BookmarkSidebar: FC<BookmarkSidebarProps> = ({
     <div className="mb-8">
       <h2 className="text-[30px] font-normal flex items-center gap-2 text-white">
         {userName}{" "}
-        {isFreeTrial ? (
+        {subscriptionTier === 'freeTrial' ? (
           <Info className="w-7 h-7 fill-[#D6D6D6] text-[#212529]" />
         ) : (
           <img src={verifiedIcon} className="w-7 h-7" />
         )}
       </h2>
       <p className="text-[17px] text-white mt-1 flex items-center gap-2">
-        {isFreeTrial ? (
+        {subscriptionTier === 'freeTrial' ? (
           <>
             <span>Free Trial</span>
           </>

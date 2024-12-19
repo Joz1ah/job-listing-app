@@ -18,14 +18,14 @@ interface AppCardProps {
   match: Match;
   bookmarked?: boolean;
   onBookmark?: () => void;
-  isFreeTrial?: boolean;
+  subscriptionTier: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
 }
 
-const SecureNameDisplay: FC<{ isFreeTrial: boolean; realName: string }> = ({
-  isFreeTrial,
+const SecureNameDisplay: FC<{ subscriptionTier: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan'; realName: string }> = ({
+  subscriptionTier,
   realName,
 }) => {
-  if (isFreeTrial) {
+  if (subscriptionTier === 'freeTrial') {
     return (
       <div className="relative">
         <div className="select-none pointer-events-none">
@@ -84,13 +84,13 @@ const LanguageTag: FC<{ language: string }> = ({ language }) => (
   </span>
 );
 
-const AppCard: FC<AppCardProps> = ({ match, isFreeTrial = false }) => {
+const AppCard: FC<AppCardProps> = ({ match, subscriptionTier }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const cardId = generateCardId(match);
 
   const handleCardClick = () => {
-    if (isFreeTrial) return;
+    if (subscriptionTier === 'freeTrial') return;
     // Only open preview if schedule modal isn't open
     if (!isScheduleModalOpen) {
       setIsModalOpen(true);
@@ -99,7 +99,7 @@ const AppCard: FC<AppCardProps> = ({ match, isFreeTrial = false }) => {
 
   const handleScheduleInterview = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (isFreeTrial) return;
+    if (subscriptionTier === 'freeTrial') return;
     setIsScheduleModalOpen(true);
     setIsModalOpen(false); // Close preview when scheduling
   };
@@ -108,7 +108,7 @@ const AppCard: FC<AppCardProps> = ({ match, isFreeTrial = false }) => {
     <>
       <Card
         className={`bg-[#FFFFFF] border-none w-full max-w-[436px] h-[275px] relative transition-shadow duration-200 ${
-          isFreeTrial ? "cursor-default" : "cursor-pointer hover:shadow-lg"
+          subscriptionTier === 'freeTrial' ? "cursor-default" : "cursor-pointer hover:shadow-lg"
         }`}
         onClick={handleCardClick}
       >
@@ -129,7 +129,7 @@ const AppCard: FC<AppCardProps> = ({ match, isFreeTrial = false }) => {
           </div>
           <div className="w-full relative">
             <SecureNameDisplay
-              isFreeTrial={isFreeTrial}
+              subscriptionTier={subscriptionTier}
               realName={`${match.firstName} ${match.lastName}`}
             />
             <BookmarkButton
@@ -203,14 +203,14 @@ const AppCard: FC<AppCardProps> = ({ match, isFreeTrial = false }) => {
             className="text-gray-700 cursor-pointer"
             onClick={(e) => {
               e.stopPropagation();
-              if (isFreeTrial) return;
+              if (subscriptionTier === 'freeTrial') return;
               // Handle more options
             }}
           />
         </CardFooter>
       </Card>
 
-      {!isFreeTrial && (
+      {subscriptionTier !== 'freeTrial' && (
         <>
           <AppPreviewModal
             isOpen={isModalOpen}

@@ -16,7 +16,7 @@ import { useEmployerContext } from "components";
 
 interface selectedProps {
   setSelectedTab: (tab: string) => void;
-  isFreeTrial?: boolean;
+  subscriptionTier: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
 }
 
 interface AdItem {
@@ -26,7 +26,7 @@ interface AdItem {
 
 type CardItem = Match | AdItem;
 
-const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
+const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, subscriptionTier }) => {
   const [displayedItems, setDisplayedItems] = useState<CardItem[]>(() => {
     if (perfectMatch.length === 0) {
       return [];
@@ -34,7 +34,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
 
     // Initial load of 5 items
     const initialItems = perfectMatch.slice(0, 5);
-    if (isFreeTrial && initialItems.length >= 3) {
+    if (subscriptionTier === 'freeTrial' && initialItems.length >= 3) {
       // Only insert ad if we have at least 3 real items
       return [
         ...initialItems.slice(0, 3),
@@ -56,7 +56,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    const currentItemCount = isFreeTrial
+    const currentItemCount = subscriptionTier === 'freeTrial'
       ? displayedItems.filter((item): item is Match => !("isAd" in item)).length
       : displayedItems.length;
     const startIndex = currentItemCount;
@@ -68,7 +68,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
       return;
     }
 
-    if (isFreeTrial) {
+    if (subscriptionTier === 'freeTrial') {
       // Calculate if we need an ad in the next 2 positions
       const realItemsCount = displayedItems.filter(
         (item) => !("isAd" in item),
@@ -123,8 +123,8 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
       return;
     }
 
-    const initialItems = perfectMatch.slice(0, isFreeTrial ? 5 : 6);
-    if (isFreeTrial && initialItems.length >= 3) {
+    const initialItems = perfectMatch.slice(0, subscriptionTier === 'freeTrial' ? 5 : 6);
+    if (subscriptionTier === 'freeTrial' && initialItems.length >= 3) {
       setDisplayedItems([
         ...initialItems.slice(0, 3),
         { isAd: true, image: employerAds },
@@ -135,10 +135,10 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
     }
     setHasMore(perfectMatch.length > 6);
     setLoading(false);
-  }, [setSelectedTab, isFreeTrial, perfectMatch, employerAds]);
+  }, [setSelectedTab, subscriptionTier, perfectMatch, employerAds]);
 
   // Calculate loading cards
-  const remainingItems = isFreeTrial
+  const remainingItems = subscriptionTier === 'freeTrial'
     ? perfectMatch.length -
       displayedItems.filter((item) => !("isAd" in item)).length
     : perfectMatch.length - displayedItems.length;
@@ -204,7 +204,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
             popupImage={employerPopAds}
           />
         ) : (
-          <AppCard key={index} match={item} isFreeTrial={isFreeTrial} />
+          <AppCard key={index} match={item} subscriptionTier={subscriptionTier} />
         ),
       )}
 
@@ -242,7 +242,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, isFreeTrial }) => {
 
 const OtherApplications: FC<selectedProps> = ({
   setSelectedTab,
-  isFreeTrial,
+  subscriptionTier,
 }) => {
   const [displayedItems, setDisplayedItems] = useState<CardItem[]>(() => {
     if (others.length === 0) {
@@ -251,7 +251,7 @@ const OtherApplications: FC<selectedProps> = ({
 
     // Initial load of 5 items
     const initialItems = others.slice(0, 5);
-    if (isFreeTrial && initialItems.length >= 3) {
+    if (subscriptionTier === 'freeTrial' && initialItems.length >= 3) {
       // Only insert ad if we have at least 3 real items
       return [
         ...initialItems.slice(0, 3),
@@ -273,7 +273,7 @@ const OtherApplications: FC<selectedProps> = ({
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    const currentItemCount = isFreeTrial
+    const currentItemCount = subscriptionTier === 'freeTrial'
       ? displayedItems.filter((item): item is Match => !("isAd" in item)).length
       : displayedItems.length;
     const startIndex = currentItemCount;
@@ -285,7 +285,7 @@ const OtherApplications: FC<selectedProps> = ({
       return;
     }
 
-    if (isFreeTrial) {
+    if (subscriptionTier === 'freeTrial') {
       // Calculate if we need an ad in the next 2 positions
       const realItemsCount = displayedItems.filter(
         (item) => !("isAd" in item),
@@ -338,8 +338,8 @@ const OtherApplications: FC<selectedProps> = ({
       return;
     }
 
-    const initialItems = others.slice(0, isFreeTrial ? 5 : 6);
-    if (isFreeTrial && initialItems.length >= 3) {
+    const initialItems = others.slice(0, subscriptionTier === 'freeTrial' ? 5 : 6);
+    if (subscriptionTier === 'freeTrial' && initialItems.length >= 3) {
       setDisplayedItems([
         ...initialItems.slice(0, 3),
         { isAd: true, image: employerAds },
@@ -350,10 +350,10 @@ const OtherApplications: FC<selectedProps> = ({
     }
     setHasMore(others.length > 6);
     setLoading(false);
-  }, [setSelectedTab, isFreeTrial, others, employerAds]);
+  }, [setSelectedTab, subscriptionTier, others, employerAds]);
 
   // Calculate loading cards
-  const remainingItems = isFreeTrial
+  const remainingItems = subscriptionTier === 'freeTrial'
     ? others.length - displayedItems.filter((item) => !("isAd" in item)).length
     : others.length - displayedItems.length;
 
@@ -408,7 +408,7 @@ const OtherApplications: FC<selectedProps> = ({
             popupImage={employerPopAds}
           />
         ) : (
-          <AppCard key={index} match={item} isFreeTrial={isFreeTrial} />
+          <AppCard key={index} match={item} subscriptionTier={subscriptionTier} />
         ),
       )}
       {/* Dynamic Loading Cards */}
@@ -445,13 +445,13 @@ const OtherApplications: FC<selectedProps> = ({
 };
 
 interface EmployerSectionProps {
-  isFreeTrial?: boolean;
+  subscriptionTier: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
 }
 
 const EmployerFeed: FC<EmployerSectionProps> = () => {
   const [selectedTab, setSelectedTab] = useState("perfectMatch");
   const [isLoading, setIsLoading] = useState(true);
-  const { isFreeTrial } = useEmployerContext();
+  const { subscriptionTier } = useEmployerContext();
 
   const handleUpgradeClick = () => {
     console.log("Upgrade clicked");
@@ -486,8 +486,8 @@ const EmployerFeed: FC<EmployerSectionProps> = () => {
     // Calculate number of skeleton cards based on actual data
     const dataLength =
       selectedTab === "perfectMatch"
-        ? Math.min(perfectMatch.length, isFreeTrial ? 5 : 6)
-        : Math.min(others.length, isFreeTrial ? 5 : 6);
+        ? Math.min(perfectMatch.length, subscriptionTier === 'freeTrial' ? 5 : 6)
+        : Math.min(others.length, subscriptionTier === 'freeTrial' ? 5 : 6);
 
     // If there's no data, don't show loading state
     if (dataLength === 0) {
@@ -511,7 +511,7 @@ const EmployerFeed: FC<EmployerSectionProps> = () => {
 
   return (
     <BookmarkLimitHandler
-      isFreeTrial={isFreeTrial}
+      subscriptionTier={subscriptionTier}
       maxBookmarks={3}
       onUpgradeClick={handleUpgradeClick}
       limitPopupImage={employerPopAds}
@@ -575,12 +575,12 @@ const EmployerFeed: FC<EmployerSectionProps> = () => {
                 {selectedTab === "perfectMatch" ? (
                   <PerfectMatch
                     setSelectedTab={handleTabChange}
-                    isFreeTrial={isFreeTrial}
+                    subscriptionTier={subscriptionTier}
                   />
                 ) : (
                   <OtherApplications
                     setSelectedTab={handleTabChange}
-                    isFreeTrial={isFreeTrial}
+                    subscriptionTier={subscriptionTier}
                   />
                 )}
               </div>

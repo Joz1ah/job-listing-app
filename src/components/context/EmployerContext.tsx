@@ -1,10 +1,30 @@
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useState, ReactNode } from 'react';
+type SubscriptionTier = 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
 
 interface EmployerContextType {
-  isFreeTrial: boolean;
+  subscriptionTier: SubscriptionTier;
+  setSubscriptionTier: (tier: SubscriptionTier) => void;
 }
 
 const EmployerContext = createContext<EmployerContextType | undefined>(undefined);
+
+interface EmployerProviderProps {
+  children: ReactNode;
+  initialTier?: SubscriptionTier;
+}
+
+const EmployerProvider: React.FC<EmployerProviderProps> = ({ 
+  children, 
+  initialTier = 'freeTrial'
+}) => {
+  const [subscriptionTier, setSubscriptionTier] = useState<SubscriptionTier>(initialTier);
+
+  return (
+    <EmployerContext.Provider value={{ subscriptionTier, setSubscriptionTier }}>
+      {children}
+    </EmployerContext.Provider>
+  );
+};
 
 const useEmployerContext = () => {
   const context = useContext(EmployerContext);
@@ -14,4 +34,5 @@ const useEmployerContext = () => {
   return context;
 };
 
-export { EmployerContext, useEmployerContext }
+
+export { EmployerProvider, EmployerContext, useEmployerContext };

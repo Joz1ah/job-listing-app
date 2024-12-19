@@ -19,7 +19,7 @@ interface MenuProps {
   onToggleMenu: () => void;
   desktopMenuItems: NavItem[];
   mobileMenuItems: NavItem[];
-  isFreeTrial?: boolean;
+  subscriptionTier: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
 }
 
 const JobHunterMenu: FC<MenuProps> = ({
@@ -27,7 +27,7 @@ const JobHunterMenu: FC<MenuProps> = ({
   onToggleMenu,
   desktopMenuItems,
   mobileMenuItems,
-  isFreeTrial,
+  subscriptionTier,
 }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const location = useLocation();
@@ -79,7 +79,7 @@ const JobHunterMenu: FC<MenuProps> = ({
   };
 
   const renderStatusIcon = () => {
-    if (isFreeTrial) {
+    if (subscriptionTier === 'freeTrial') {
       return <Info className="w-4 h-4 text-[#2D3A41] fill-white" />;
     }
     return <img src={verifiedIcon} className="w-4 h-4" />;
@@ -127,7 +127,7 @@ const JobHunterMenu: FC<MenuProps> = ({
           </nav>
         </div>
         <div className="flex items-center gap-4 flex-shrink-0">
-          <NotificationFeed isFreeTrial={isFreeTrial} />
+          <NotificationFeed subscriptionTier={subscriptionTier} />
           <div className="flex items-center gap-2 flex-shrink-0 min-w-0">
             <NavLink to="/employer/feed" onClick={handleNavLinkClick}>
               <span className="text-white font-medium text-[14px] lg:text-[18px] truncate block max-w-[100px] lg:max-w-[200px]">
@@ -169,7 +169,7 @@ const JobHunterMenu: FC<MenuProps> = ({
       <header className="md:hidden bg-black py-4 px-2 flex justify-between items-center">
         <img src={akazaLogoWhite} alt="Akaza Logo" className="h-8" />
         <div className="flex items-center">
-          <NotificationFeed isFreeTrial={isFreeTrial} />
+          <NotificationFeed subscriptionTier={subscriptionTier} />
           <Button
             variant="custom"
             className="text-[#F5722E] bg-black"

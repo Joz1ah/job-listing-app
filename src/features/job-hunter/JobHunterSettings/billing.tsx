@@ -6,16 +6,16 @@ import { useJobHunterContext } from "components";
 import rocketIcon from "images/rocket-subscribe.svg?url";
 
 const BillingSettings: FC = () => {
-  const { isFreeTrial } = useJobHunterContext();
+  const { subscriptionTier } = useJobHunterContext();
 
-  const editTooltip = isFreeTrial
+  const editTooltip = subscriptionTier === 'freeTrial'
     ? "Editing is currently unavailable. Subscribe to a plan to unlock this feature and enjoy enhanced capabilities!"
     : "Lorem ipsum odor amet, consectetuer adipiscing elit. Habitasse ante imperdiet congue parturient euismod nec suspendisse.";
     
   const manageTooltip =
     "Lorem ipsum odor amet, consectetuer adipiscing elit. Habitasse ante imperdiet congue parturient euismod nec suspendisse.";
 
-  if (isFreeTrial) {
+  if (subscriptionTier === 'freeTrial') {
     return (
       <div className="flex flex-col min-h-full">
         <div className="flex-1">

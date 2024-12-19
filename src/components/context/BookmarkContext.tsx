@@ -19,14 +19,14 @@ const useBookmarks = () => {
 
 interface BookmarkProviderProps {
   children: React.ReactNode;
-  isFreeTrial?: boolean;
+  subscriptionTier: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
   maxBookmarks?: number;
   onLimitReached?: () => void;
 }
 
 const BookmarkProvider = ({
   children,
-  isFreeTrial = false,
+  subscriptionTier,
   maxBookmarks = 3,
   onLimitReached,
 }: BookmarkProviderProps) => {
@@ -37,7 +37,7 @@ const BookmarkProvider = ({
       const newSet = new Set(prev);
       if (prev.has(id)) {
         newSet.delete(id);
-      } else if (isFreeTrial && prev.size >= maxBookmarks) {
+      } else if (subscriptionTier === 'freeTrial' && prev.size >= maxBookmarks) {
         onLimitReached?.();
         return prev;
       } else {
@@ -45,7 +45,7 @@ const BookmarkProvider = ({
       }
       return newSet;
     });
-  }, [isFreeTrial, maxBookmarks, onLimitReached]);
+  }, [subscriptionTier, maxBookmarks, onLimitReached]);
 
   const isBookmarked = useCallback((id: string) => {
     return bookmarkedItems.has(id);

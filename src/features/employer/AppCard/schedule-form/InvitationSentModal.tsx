@@ -35,7 +35,7 @@ const InvitationSentModal: React.FC<InvitationSentModalProps> = ({
 
             <div className="flex flex-col w-full space-y-3 pt-4">
               <NavLink 
-                to="/employer/interviews/calendar"
+                to="/employer/interviews/pending"
                 onClick={onClose}
               >
                 <Button 
