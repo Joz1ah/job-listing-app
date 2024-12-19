@@ -2,6 +2,8 @@ export const ROUTE_CONSTANTS = {
   // Core routes
   HOME: '/',
   LANDING: '/landing',
+  EMPLOLYER_SUB_PLAN: '/employer/subscription-plan',
+  JOBHUNTER_SUB_PLAN: '/job-hunter/subscription-plan',
   ABOUT: '/about',
   FETCH: '/fetch',
   NOT_FOUND: '/404',

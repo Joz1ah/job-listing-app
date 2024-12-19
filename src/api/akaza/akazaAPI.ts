@@ -5,7 +5,7 @@ import {
   createApi,
   fetchBaseQuery
 } from '@reduxjs/toolkit/query/react'
-
+import Cookies from 'js-cookie';
 import { isServer } from 'utils'
 
 interface TPokemonData {
@@ -141,10 +141,32 @@ export const akazaApiAuth = createApiFunction({
         url: 'login',
         method: 'POST',
         body: {
-          "email": payLoad.email,
-          "password": payLoad.password
-      },
+          email: payLoad.email,
+          password: payLoad.password,
+        },
       }),
+      async onQueryStarted(args,{ queryFulfilled }) {
+        args = args
+        try {
+          // Wait for the API response
+          const { data } = await queryFulfilled;
+          // Set the token as a cookie if the response is successful
+          if (data?.data?.token) {
+            Cookies.set('token', data.data.token, {
+              path: '/', // Cookie is available site-wide
+              secure: true, // Ensures cookie is sent over HTTPS
+              sameSite: 'strict', // Prevents CSRF attacks
+              //expires: 7, // Expires in 7 days
+            });
+            console.log('Login successful and cookie set');
+          } else {
+            console.warn('No token found in the response.');
+          }
+        } catch (error) {
+          // Log the error if the API call fails
+          console.error('Error in login mutation:', error);
+        }
+      },
     }),
     jobHunterContact: builder.mutation({
       query: (payLoad) => ({

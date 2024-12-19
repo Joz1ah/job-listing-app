@@ -92,14 +92,14 @@ const THEME_OPTIONS = [
   { value: "light", label: "Light" },
 ] as const;
 
-type ThemeOption = typeof THEME_OPTIONS[number]['value'];
+//type ThemeOption = typeof THEME_OPTIONS[number]['value'];
 
 const GeneralSettings: FC = () => {
   const { isFreeTrial } = useEmployerContext();
   const [notifications, setNotifications] = useState<NotificationState>({
     push: false,
   });
-  const [theme, setTheme] = useState<ThemeOption>("dark");
+  //const [theme, setTheme] = useState<ThemeOption>("dark");
   const [timeZone, setTimeZone] = useState(() => {
     try {
       return Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -253,36 +253,35 @@ const GeneralSettings: FC = () => {
         </div>
 
         {/* Theme Section */}
-        <div className="space-y-3">
+        <div className="space-y-3 opacity-50">
           <div className="flex items-center gap-1">
             <h3 className="text-white text-2xl font-normal flex items-center">
               Theme
             </h3>
-            <Tooltip content={tooltips.theme}>
+            <Tooltip content="Theme selection is currently disabled">
               <Info className="w-3 h-3 text-[#2D3A41] fill-white mb-2" />
             </Tooltip>
           </div>
           <div className="flex items-center gap-12">
             {THEME_OPTIONS.map(({ value, label }) => (
-              <button
+              <div
                 key={value}
-                onClick={() => setTheme(value)}
-                className="flex items-center group"
+                className="flex items-center cursor-not-allowed"
               >
                 <span className="relative flex items-center justify-center w-4 h-4">
                   <span
-                    className={`absolute w-4 h-4 rounded-full border-2 hover:border-[#F5722E] ${
-                      theme === value ? "border-[#F5722E]" : "border-white"
+                    className={`absolute w-4 h-4 rounded-full border-2 ${
+                      value === "dark" ? "border-[#F5722E]" : "border-white"
                     }`}
                   />
                   <span
                     className={`w-2 h-2 rounded-full ${
-                      theme === value ? "bg-[#F5722E]" : "bg-transparent"
+                      value === "dark" ? "bg-[#F5722E]" : "bg-transparent"
                     }`}
                   />
                 </span>
                 <span className="text-white text-sm ml-2">{label}</span>
-              </button>
+              </div>
             ))}
           </div>
         </div>
