@@ -2,8 +2,8 @@ import React, { FC, useEffect, useState, useRef, ReactElement } from 'react'
 import { FooterEngagement as Footer} from "layouts";
 import { PageMeta } from "components";
 import { LandingContext } from 'components';
-import { useLoginMutation, useSignUpMutation, useOtpGenerateMutation, useOtpVerifyMutation, usePaymentCreateMutation } from 'api/akaza/akazaAPI';
-import { useNavigate } from "react-router-dom";
+import { useLoginMutation, useSignUpMutation, useOtpGenerateMutation, useOtpVerifyMutation, /*usePaymentCreateMutation*/ } from 'api/akaza/akazaAPI';
+//import { useNavigate } from "react-router-dom";
 import { Formik, Form, FieldProps, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
@@ -54,6 +54,9 @@ import amex_icon from 'assets/credit-card-icons/cc_american-express.svg?url';
 import mastercard_icon from 'assets/credit-card-icons/cc_mastercard.svg?url';
 import discover_icon from 'assets/credit-card-icons/cc_discover.svg?url';
 
+import { loadStripe } from '@stripe/stripe-js';
+import { useStripe, useElements, Elements, CardElement } from '@stripe/react-stripe-js';
+const stripePromise = loadStripe('pk_test_51QMsGlFCh69SpK2kpR1Y1qGEkVzVy2gLDHJkLjIx8rQSJhyl8qQwG3nFVqjVL4E4JoeVhez3a0HAkyN94YhqcpKG00PsoOvCI8'); 
 //import { useAppSelector, useAppDispatch } from 'store/store'
 //import { increment } from 'store/counter/counterSlice'
 //import useTranslations from 'i18n/useTranslations'
@@ -96,8 +99,9 @@ const Landing: FC = (): ReactElement => {
   const [maskHidden, setMaskHidden] = useState(0);
   const [closeModalActive, setCloseModalActive] = useState(1);
   const [selectedModalHeader, setSelectedModalHeader] = useState(1);
-  const [modalState, setModalState] = useState(9);
+  const [modalState, setModalState] = useState(10);
   const [heroState, setHeroState] = useState(1);
+  const [currentSelectedPlan, setCurrentSelectedPlan] = useState(3)
   const [dataStates, setDataStates] = useState({
     selectedUserType: '',
     email: ''
@@ -118,10 +122,11 @@ const Landing: FC = (): ReactElement => {
       'SIGNUP_STEP2' : 3,
       'SIGNUP_STEP3' : 4,
       'SIGNUP_STEP4' : 5,
-      'SIGNUP_STEP5' : 6,
-      'LOADING' : 7,
-      'SIGNUP_CONGRATULATIONS' : 8,
-      'STRIPE_PAYMENT' : 9
+      'SIGNUP_STEP4_EMPLOYER' : 6,
+      'SIGNUP_STEP5' : 7,
+      'LOADING' : 8,
+      'SIGNUP_CONGRATULATIONS' : 9,
+      'STRIPE_PAYMENT' : 10,
   }
   const MODAL_HEADER_TYPE = {
       'WITH_LOGO_AND_CLOSE' : 1,
@@ -595,8 +600,71 @@ const MobileCountrySignUp = () => {
   )
 }
 
+
+
+const EmployerAdditionalInformation = () => {
+  const buttonNext = useRef<HTMLButtonElement>(null);
+  const handleContinue = () => {
+    if (buttonNext.current) {
+      buttonNext.current.onclick = () => {
+        setSelectedModalHeader(2)
+        setModalState(modalStates.SIGNUP_STEP5)
+      };
+    }
+  }
+
+  useEffect(handleContinue, []);
+  return(
+    <div id="step4_signup" className={`${styles['modal-content']}`} hidden={modalState !== modalStates.SIGNUP_STEP4_EMPLOYER}>
+        <div className={`${styles['employer-additional-information-container']}`}>
+            <div className={`${styles['title-desc']}`}>
+                Additional Information
+            </div>
+            <div className={`${styles['form-field']}`}>
+              <div className={`${styles['name-field-wrapper']}`}>
+                <div className={`${styles['input-fields-container']}`}>
+                    <div className={`${styles['input-container']}`}>
+                        <input type="text" placeholder="First Name *"></input>
+                    </div>
+                </div>
+                <div className={`${styles['input-fields-container']}`}>
+                    <div className={`${styles['input-container']}`}>
+                        <input type="text" placeholder="Last Name *"></input>
+                    </div>
+                </div>
+              </div>
+              <div className={`${styles['input-fields-container']}`}>
+                  <div className={`${styles['input-container']}`}>
+                      <input type="text" placeholder="Position of the Representative *"></input>
+                  </div>
+              </div>
+              <div className={`${styles['input-fields-container']}`}>
+                  <div className={`${styles['input-container']}`}>
+                      <input type="text" placeholder="Legal Business Name *"></input>
+                  </div>
+              </div>
+              <div className={`${styles['input-fields-container']}`}>
+                  <div className={`${styles['input-container']}`}>
+                      <input type="text" placeholder="Company Address *"></input>
+                  </div>
+              </div>
+              <div className={`${styles['input-fields-container']}`}>
+                  <div className={`${styles['input-container']}`}>
+                      <input type="text" placeholder="Company Website *"></input>
+                  </div>
+              </div>
+            </div>
+            
+            <div className={`${styles['action-buttons']}`}>
+                <button id="btn_signup_step4_previous" className={`${styles['button-custom-basic']}`}>Previous</button>
+                <button ref={buttonNext} className={`${styles['button-custom-orange']}`}>Next</button>
+            </div>
+        </div>
+    </div>
+  )
+}
+
 const SubscriptionPlanSelection = () =>{
-  const [currentSelectedPlan, setCurrentSelectedPlan] = useState(3)
   const subscription_plan1 = useRef<HTMLDivElement>(null);
   const subscription_plan2 = useRef<HTMLDivElement>(null);
   const subscription_plan3 = useRef<HTMLDivElement>(null);
@@ -773,7 +841,10 @@ const CongratulationsModal = () => {
   const handleNext = () => {
     if (nextButton.current) {
       nextButton.current.onclick = () => {
-        setModalState(modalStates.SIGNUP_STEP4)
+        if(dataStates.selectedUserType == 'job_hunter')
+          setModalState(modalStates.SIGNUP_STEP4)
+        else if(dataStates.selectedUserType == 'employer')
+          setModalState(modalStates.SIGNUP_STEP4_EMPLOYER)
       };
     }
   }
@@ -828,9 +899,13 @@ const CustomInput: React.FC<CustomInputProps> = ({ field, form, ...props }) => {
 };
 
 const CreditCardForm = () => {
-  const [paymentSubmit] = usePaymentCreateMutation();
+  //const [paymentSubmit] = usePaymentCreateMutation();
   const previousButton = useRef<HTMLButtonElement>(null);
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
+  const stripe = useStripe();
+  const elements = useElements();
+  const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const handlePrevious = () => {
     if (previousButton.current) {
@@ -839,6 +914,7 @@ const CreditCardForm = () => {
       };
     }
   }
+
 
   useEffect(handlePrevious,[])
   console.log(previousButton)
@@ -861,6 +937,46 @@ const CreditCardForm = () => {
       .required('CVV/CVC is required'),
   });
 
+  const handlePayment = async (values: { cardNumber: string; cardholderName: string; expirationDate: string; cvv: string }) => {
+    //event.preventDefault();
+    console.log(values)
+    if (!stripe || !elements) {
+      console.log(stripe, elements)
+      console.log('stripe or elements not found')
+      return;
+    }
+    console.log('values2')
+
+    const cardElement = elements.getElement(CardElement);
+
+    if (!cardElement) {
+      setError('Card Element not found');
+      console.log('Card Element not found')
+      return;
+    }
+    console.log('pass card element')
+
+    // Create a payment method with the CardElement
+    const { error: stripeError, paymentMethod } = await stripe.createPaymentMethod({
+      type: 'card',
+      card: cardElement, // Pass the CardElement instance
+      billing_details: {
+        name: 'Customer Name', // Optional: Include customer details
+      },
+    });
+
+    if (stripeError) {
+      setError(stripeError.message || 'An error occurred');
+      setSuccessMessage(null);
+      console.log("paymentMethod error")
+    } else {
+      console.log(paymentMethod)
+      setSuccessMessage(`Payment method created: ${paymentMethod.id}`);
+      setError(null);
+      // Optionally send the paymentMethod.id to your server for further processing
+    }
+  };
+  /*
   const handleSubmit = (values: { cardNumber: string; cardholderName: string; expirationDate: string; cvv: string }) => {
     console.log(`Submitted values: ${JSON.stringify(values, null, 2)}`);
     setModalState(modalStates.LOADING)
@@ -877,7 +993,7 @@ const CreditCardForm = () => {
         "daysTrial": 0
       }
     )
-  };
+  };*/
 
   return (
     <Formik
@@ -888,52 +1004,58 @@ const CreditCardForm = () => {
         cvv: '',
       }}
       validationSchema={validationSchema}
-      onSubmit={handleSubmit}
+      onSubmit={handlePayment}
     >
       {() => (
-        <Form>
-          <div className={`${styles['stripe-form-inputs-container']}`}>
-            <div className={`${styles['stripe-form-upper-inputs']}`}>
-              <div>
-                <Field component={CustomInput} id="cardNumber" placeholder="Card Number *" name="cardNumber" type="text" />
-                <ErrorMessage className={`${styles['error-label']}`} name="cardNumber" component="div" />
+            <Form>
+              <div className={`${styles['stripe-form-inputs-container']}`}>
+                <div className={`${styles['stripe-form-upper-inputs']}`}>
+                  <div>
+                  <CardElement />
+                  {error}
+                  {successMessage}
+                  </div>
+                  <div>
+                    <Field component={CustomInput} id="cardNumber" placeholder="Card Number *" name="cardNumber" type="text" />
+                    <ErrorMessage className={`${styles['error-label']}`} name="cardNumber" component="div" />
+                  </div>
+
+                  <div>
+                    <Field component={CustomInput} id="cardholderName" placeholder="Cardholder Name *"  name="cardholderName" type="text" />
+                    <ErrorMessage className={`${styles['error-label']}`} name="cardholderName" component="div" />
+                  </div>
+
+                </div>
+                <div className={`${styles['stripe-form-lower-inputs']}`}>
+                  <div>
+                    <Field component={CustomInput} id="expirationDate" placeholder="Expiration Date *" name="expirationDate" type="text" />
+                    <ErrorMessage className={`${styles['error-label']}`} name="expirationDate" component="div" />
+                  </div>
+                  <div>
+                    <Field component={CustomInput} id="cvv" placeholder="CVV/CVC *" name="cvv"  type="text" />
+                    <ErrorMessage className={`${styles['error-label']}`} name="cvv" component="div" />
+                  </div>
+                </div>
               </div>
 
-              <div>
-                <Field component={CustomInput} id="cardholderName" placeholder="Cardholder Name *"  name="cardholderName" type="text" />
-                <ErrorMessage className={`${styles['error-label']}`} name="cardholderName" component="div" />
+
+
+              <div className={`${styles['security-privacy-container']}`}>
+                <div>
+                  <img src={green_lock_icon}/>
+                </div>
+                <div>
+                  <div>Security & Privacy</div>
+                  <div>We maintain industry-standard physical, technical, and administrative</div> 
+                  <div>measures to safeguard your personal information</div>
+                </div>
               </div>
-
-            </div>
-            <div className={`${styles['stripe-form-lower-inputs']}`}>
-              <div>
-                <Field component={CustomInput} id="expirationDate" placeholder="Expiration Date *" name="expirationDate" type="text" />
-                <ErrorMessage className={`${styles['error-label']}`} name="expirationDate" component="div" />
-              </div>
-              <div>
-                <Field component={CustomInput} id="cvv" placeholder="CVV/CVC *" name="cvv"  type="text" />
-                <ErrorMessage className={`${styles['error-label']}`} name="cvv" component="div" />
-              </div>
-            </div>
-          </div>
-
-
-
-          <div className={`${styles['security-privacy-container']}`}>
-            <div>
-              <img src={green_lock_icon}/>
-            </div>
-            <div>
-              <div>Security & Privacy</div>
-              <div>We maintain industry-standard physical, technical, and administrative</div> 
-              <div>measures to safeguard your personal information</div>
-            </div>
-          </div>
-          <div className={`${styles['action-buttons']}`}>
-                <button ref={previousButton} type="button" className={`${styles['button-custom-basic']}`}>Previous</button>
-                <button type="submit" className={`${styles['button-custom-orange']}`}>Next</button>
-          </div>  
-        </Form>
+              <div className={`${styles['action-buttons']}`}>
+                    <button ref={previousButton} type="button" className={`${styles['button-custom-basic']}`}>Previous</button>
+                    <button type="submit" className={`${styles['button-custom-orange']}`}>Next</button>
+              </div>  
+            </Form>
+        
       )}
     </Formik>
   );
@@ -1024,6 +1146,7 @@ const Modal = () =>{
                   <UserNamePasswordSignup/>
                   <OTPSignUp/>
                   <MobileCountrySignUp/>
+                  <EmployerAdditionalInformation/>
                   <SubscriptionPlanSelection/>
                   <LoadingModal/>
                   <CongratulationsModal/>
@@ -1388,6 +1511,7 @@ const HeroLoading = () => {
 const isFreeTrial = false;
 
   return (
+    <Elements stripe={stripePromise}>
     <LandingContext.Provider value={{ isFreeTrial }}>
         <PageMeta title="Akaza" />
         <div className={styles.main}>
@@ -1527,6 +1651,7 @@ const isFreeTrial = false;
             </div>
         </div>
     </LandingContext.Provider>
+    </Elements>
   )
 }
 

@@ -13,13 +13,14 @@ const csp = (req: Request, res: Response, next: NextFunction): void => {
     contentSecurityPolicy: {
       useDefaults: true,
       directives: {
-        defaultSrc: ["'self'", 'pokeapi.co', 'localhost:*', 'akaza-sit-api-gateway---rev-2-2tninhtd.uk.gateway.dev','api-sit.akaza.xyz', 'api-auth-sit.akaza.xyz', 'api-search-sit.akaza.xyz', 'payment-sit.akaza.xyz', 'api-jobfeed-sit.akaza.xyz', 'perfectmatch-sit.akaza.xyz',],
+        defaultSrc: ["'self'", 'pokeapi.co', 'js.stripe.com', 'localhost:*', 'akaza-sit-api-gateway---rev-2-2tninhtd.uk.gateway.dev','api-sit.akaza.xyz', 'api-auth-sit.akaza.xyz', 'api-search-sit.akaza.xyz', 'payment-sit.akaza.xyz', 'api-jobfeed-sit.akaza.xyz', 'perfectmatch-sit.akaza.xyz',],
         imgSrc: ["'self'", 'raw.githubusercontent.com'],
         scriptSrc: [
           "'self'",
           `'nonce-${String(res.locals.cspNonce)}'`,
+          `https://js.stripe.com`,
           IS_DEV ? "'unsafe-eval'" : ''
-        ]
+        ].filter(Boolean)
       }
     },
     crossOriginEmbedderPolicy: { policy: 'credentialless' },
