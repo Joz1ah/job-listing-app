@@ -3,7 +3,7 @@ import { FooterEngagement as Footer} from "layouts";
 import { PageMeta } from "components";
 import { LandingContext } from 'components';
 import { useLoginMutation, useSignUpMutation, useOtpGenerateMutation, useOtpVerifyMutation, /*usePaymentCreateMutation*/ } from 'api/akaza/akazaAPI';
-//import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Formik, Form, FieldProps, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
@@ -146,8 +146,6 @@ const Landing: FC = (): ReactElement => {
           setSelectedModalHeader(1)
           setMaskHidden((prev) => prev ? 0 : 1);
           setModalState(modalStates.LOGIN);
-          console.log(modalState)
-          console.log(modalStates.LOGIN)
           setCloseModalActive(1);
         };
       }
@@ -246,6 +244,7 @@ const Landing: FC = (): ReactElement => {
     const [loginSubmit] = useLoginMutation()
     const [isLoginError, setIsLoginError] = useState(false);
     const [_errorMessage, set_errorMessage] = useState('');
+    const navigate = useNavigate();
     //console.log(data,error, isLoading)
     //akazaApi.
 
@@ -254,7 +253,8 @@ const Landing: FC = (): ReactElement => {
       loginSubmit({...credentials})
       .unwrap()
       .then((res)=>{
-        console.log(res)
+        console.log(res)    
+        navigate("/job-hunter");
       })
       .catch((err) => {
         console.log(err)
