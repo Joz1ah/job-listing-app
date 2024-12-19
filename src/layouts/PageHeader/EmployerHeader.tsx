@@ -5,7 +5,7 @@ import { Tooltip } from "components";
 import verifiedIcon from "images/verified.svg?url";
 
 interface Props {
-  isFreeTrial?: boolean;
+  subscriptionTier: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
 }
 
 const DesktopTooltip = ({
@@ -23,7 +23,7 @@ const DesktopTooltip = ({
   </>
 );
 
-const EmployerHeader: FC<Props> = ({ isFreeTrial = false }) => {
+const EmployerHeader: FC<Props> = ({ subscriptionTier }) => {
   const rating = 4.5;
   const fullStars = Math.floor(rating);
   const hasHalfStar = rating % 1 !== 0;
@@ -50,7 +50,7 @@ const EmployerHeader: FC<Props> = ({ isFreeTrial = false }) => {
             <h1 className="text-3xl text-white font-normal">
               ABC Incorporated
             </h1>
-            {isFreeTrial ? (
+            {subscriptionTier === 'freeTrial' ? (
               <Info className="ml-2 fill-[#F5F5F7] text-[#263238]" size={34} />
             ) : (
               <img

@@ -8,15 +8,12 @@ import {
   jobHunterMobileMenu 
 } from "mockData/nav-menus";
 import { 
-  EmployerContext, 
-  JobHunterContext, 
-  TrialProviders 
+  EmployerProvider,
+  JobHunterProvider,
+  useEmployerContext,
+  useJobHunterContext
 } from "components";
 import { BaseMenu, Footer } from "layouts";
-import { 
-  useEmployerTrialStatus, 
-  useJobHunterTrialStatus 
-} from "components";
 import { Landing } from "pages/landing/Landing";
 
 type UserType = 'employer' | 'job-hunter' | 'guest';
@@ -42,25 +39,15 @@ interface BaseLayoutContentProps {
   userType: UserType;
 }
 
-const BaseLayoutContent: FC<BaseLayoutContentProps> = ({ userType }) => {
+const AuthenticatedLayoutContent: FC<{ userType: 'employer' | 'job-hunter' }> = ({ userType }) => {
   const { menuOpen, toggleMenu } = useMenu();
-
   const isEmployer = userType === 'employer';
-  const isGuest = userType === 'guest';
+  
+  // Get context based on user type
+  const { subscriptionTier } = isEmployer 
+    ? useEmployerContext() 
+    : useJobHunterContext();
 
-  if (isGuest) {
-    return (
-      <LayoutContent>
-        <Landing />
-      </LayoutContent>
-    );
-  }
-
-  const { isFreeTrial: employerTrialStatus } = useEmployerTrialStatus();
-  const { isFreeTrial: jobHunterTrialStatus } = useJobHunterTrialStatus();
-
-  const isFreeTrial = isEmployer ? employerTrialStatus : jobHunterTrialStatus;
-  const Context = isEmployer ? EmployerContext : JobHunterContext;
   const desktopMenuItems = isEmployer ? employerDesktopMenu : jobHunterDesktopMenu;
   const mobileMenuItems = isEmployer ? employerMobileMenu : jobHunterMobileMenu;
   const userName = isEmployer ? "ABC Incorporated" : "Michael V";
@@ -71,7 +58,7 @@ const BaseLayoutContent: FC<BaseLayoutContentProps> = ({ userType }) => {
       onToggleMenu={toggleMenu}
       desktopMenuItems={desktopMenuItems}
       mobileMenuItems={mobileMenuItems}
-      isFreeTrial={isFreeTrial}
+      subscriptionTier={subscriptionTier}
       userType={userType}
       userName={userName}
       feedPath={`/${isEmployer ? 'employer' : 'job-hunter'}/feed`}
@@ -79,12 +66,25 @@ const BaseLayoutContent: FC<BaseLayoutContentProps> = ({ userType }) => {
   );
 
   return (
-    <Context.Provider value={{ isFreeTrial }}>
-      <LayoutContent menu={menu}>
-        <Outlet />
-      </LayoutContent>
-    </Context.Provider>
+    <LayoutContent menu={menu}>
+      <Outlet />
+    </LayoutContent>
   );
+};
+
+const GuestLayoutContent: FC = () => {
+  return (
+    <LayoutContent>
+      <Landing />
+    </LayoutContent>
+  );
+};
+
+const BaseLayoutContent: FC<BaseLayoutContentProps> = ({ userType }) => {
+  if (userType === 'guest') {
+    return <GuestLayoutContent />;
+  }
+  return <AuthenticatedLayoutContent userType={userType} />;
 };
 
 interface BaseLayoutProps {
@@ -92,20 +92,16 @@ interface BaseLayoutProps {
 }
 
 const BaseLayout: FC<BaseLayoutProps> = ({ userType }) => {
-  const isEmployer = userType === 'employer';
-  const isGuest = userType === 'guest';
-
-  if (isGuest) {
+  if (userType === 'guest') {
     return <BaseLayoutContent userType={userType} />;
   }
 
   return (
-    <TrialProviders
-      employerInitialStatus={isEmployer ? false : undefined}
-      jobHunterInitialStatus={!isEmployer ? false : undefined}
-    >
-      <BaseLayoutContent userType={userType} />
-    </TrialProviders>
+    <EmployerProvider initialTier='yearlyPlan'>
+      <JobHunterProvider initialTier='monthlyPlan'>
+        <BaseLayoutContent userType={userType} />
+      </JobHunterProvider>
+    </EmployerProvider>
   );
 };
 

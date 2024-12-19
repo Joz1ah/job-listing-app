@@ -19,7 +19,7 @@
     onToggleMenu: () => void;
     desktopMenuItems: NavItem[];
     mobileMenuItems: NavItem[];
-    isFreeTrial?: boolean;
+    subscriptionTier: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
     userType: 'employer' | 'job-hunter';
     userName: string;
     feedPath: string;
@@ -30,7 +30,7 @@
     onToggleMenu,
     desktopMenuItems,
     mobileMenuItems,
-    isFreeTrial,
+    subscriptionTier,
     userType,
     userName,
     feedPath,
@@ -81,7 +81,7 @@
     };
 
     const renderStatusIcon = () => {
-      if (isFreeTrial) {
+      if (subscriptionTier === 'freeTrial') {
         return <Info className="w-4 h-4 text-[#2D3A41] fill-white" />;
       }
       return <img src={verifiedIcon} className="w-4 h-4" alt="Verified" />;
@@ -155,7 +155,7 @@
           </div>
 
           <div className="flex items-center gap-4 flex-shrink-0">
-            <NotificationFeed isFreeTrial={isFreeTrial} />
+            <NotificationFeed subscriptionTier={subscriptionTier} />
             <div className="flex items-center gap-2 flex-shrink-0 min-w-0">
                 <span className="text-white font-medium text-[14px] lg:text-[18px] truncate block max-w-[100px] lg:max-w-[200px]">
                   {userName}
@@ -195,7 +195,7 @@
         <header className="md:hidden bg-black py-4 px-2 flex justify-between items-center z-50">
           <img src={akazaLogoWhite} alt="Akaza Logo" className="h-8" />
           <div className="flex items-center space-x-2">
-            <NotificationFeed isFreeTrial={isFreeTrial} />
+            <NotificationFeed subscriptionTier={subscriptionTier} />
             <Button
               variant="custom"
               className="text-[#F5722E] bg-black"

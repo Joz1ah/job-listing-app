@@ -1,10 +1,10 @@
 import { FC } from "react";
 import { EmployerHeader } from "layouts";
 import { JobListingForm, Sidebar } from "features/employer";
-import { useEmployerTrialStatus } from "components";
+import { useEmployerContext } from "components";
 
 const JobListingFormLayout: FC = () => {
-  const { isFreeTrial } = useEmployerTrialStatus();
+  const { subscriptionTier } = useEmployerContext();
 
   return (
     <div className="md:px-4 xl:px-12 md:pt-20 md:pb-6">
@@ -12,7 +12,7 @@ const JobListingFormLayout: FC = () => {
       <div className="flex flex-col md:flex-row md:space-x-6">
         {/* Left column - contains header and sidebar */}
         <div className="md:w-[311px] flex-shrink-0">
-          <EmployerHeader isFreeTrial={isFreeTrial} />
+          <EmployerHeader subscriptionTier={subscriptionTier} />
           <Sidebar />
         </div>
         

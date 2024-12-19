@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+/* import { FC, useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { useMenu } from "hooks";
 import { ScrollArea } from "components";
@@ -50,4 +50,4 @@ const EmployerBaseLayout: FC = () => {
   );
 };
 
-export { EmployerBaseLayout };
+export { EmployerBaseLayout }; */

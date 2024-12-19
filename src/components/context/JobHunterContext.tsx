@@ -1,11 +1,31 @@
-// First create a JobHunterContext.tsx file
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useState, ReactNode } from 'react';
+
+type SubscriptionTier = 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
 
 interface JobHunterContextType {
-  isFreeTrial: boolean;
+  subscriptionTier: SubscriptionTier;
+  setSubscriptionTier: (tier: SubscriptionTier) => void;
 }
 
 const JobHunterContext = createContext<JobHunterContextType | undefined>(undefined);
+
+interface JobHunterProviderProps {
+  children: ReactNode;
+  initialTier?: SubscriptionTier;
+}
+
+const JobHunterProvider: React.FC<JobHunterProviderProps> = ({ 
+  children, 
+  initialTier = 'freeTrial'
+}) => {
+  const [subscriptionTier, setSubscriptionTier] = useState<SubscriptionTier>(initialTier);
+
+  return (
+    <JobHunterContext.Provider value={{ subscriptionTier, setSubscriptionTier }}>
+      {children}
+    </JobHunterContext.Provider>
+  );
+};
 
 const useJobHunterContext = () => {
   const context = useContext(JobHunterContext);
@@ -15,4 +35,4 @@ const useJobHunterContext = () => {
   return context;
 };
 
-export { JobHunterContext, useJobHunterContext }
+export { JobHunterProvider, JobHunterContext, useJobHunterContext };

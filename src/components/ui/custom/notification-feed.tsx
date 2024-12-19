@@ -19,7 +19,7 @@ type NotificationItem = {
 };
 
 interface NotificationFeedProps {
-  isFreeTrial?: boolean;
+  subscriptionTier: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
 }
 
 const initialNewNotifications: NotificationItem[] = [
@@ -99,7 +99,7 @@ const initialOlderNotifications: NotificationItem[] = [
   },
 ];
 
-const NotificationFeed: FC<NotificationFeedProps> = ({ isFreeTrial = false }) => {
+const NotificationFeed: FC<NotificationFeedProps> = ({ subscriptionTier }) => {
   const [expandedNew, setExpandedNew] = useState(false);
   const [newNotifications, setNewNotifications] = useState(initialNewNotifications);
   const [olderNotifications, setOlderNotifications] = useState(initialOlderNotifications);
@@ -197,7 +197,7 @@ const NotificationFeed: FC<NotificationFeedProps> = ({ isFreeTrial = false }) =>
 
   return (
     <div className="relative">
-      {isFreeTrial ? (
+      {subscriptionTier === 'freeTrial' ? (
         <div className="relative">
         <button 
           className="relative p-2 rounded-full z-50"

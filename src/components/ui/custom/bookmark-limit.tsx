@@ -23,12 +23,12 @@ interface MatchCardProps {
   match: Match;
   bookmarked?: boolean;
   onBookmark?: () => void;
-  isFreeTrial?: boolean;
+  subscriptionTier: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
 }
 
 interface BookmarkLimitHandlerProps {
   children: ReactElement<MatchCardProps> | ReactElement<MatchCardProps>[];
-  isFreeTrial?: boolean;
+  subscriptionTier: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
   onUpgradeClick?: () => void;
   maxBookmarks?: number;
   limitPopupImage: string;  // New prop for the popup image
@@ -39,7 +39,7 @@ interface BookmarkLimitHandlerProps {
 
 const BookmarkLimitHandler: React.FC<BookmarkLimitHandlerProps> = ({
   children,
-  isFreeTrial = false,
+  subscriptionTier,
   maxBookmarks = 3,
   onUpgradeClick,
   limitPopupImage,
@@ -51,7 +51,7 @@ const BookmarkLimitHandler: React.FC<BookmarkLimitHandlerProps> = ({
 
   return (
     <BookmarkProvider
-      isFreeTrial={isFreeTrial}
+      subscriptionTier={subscriptionTier}
       maxBookmarks={maxBookmarks}
       onLimitReached={() => setShowLimitPopup(true)}
     >

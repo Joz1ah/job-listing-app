@@ -13,14 +13,14 @@ interface MenuItem {
 interface SettingsSidebarProps {
   userName: string;
   userType: 'employer' | 'job-hunter';
-  isFreeTrial: boolean;
+  subscriptionTier: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
   className?: string;
 }
 
 const SettingsSidebar: FC<SettingsSidebarProps> = ({ 
   userName,
   userType,
-  isFreeTrial,
+  subscriptionTier,
   className = ''
 }) => {
   const location = useLocation();
@@ -52,13 +52,13 @@ const SettingsSidebar: FC<SettingsSidebarProps> = ({
   const userInfo = (
     <div className="mb-8">
       <span className="text-[30px] font-normal flex items-center gap-2 text-white">
-        {userName} {isFreeTrial ? 
+        {userName} {subscriptionTier === 'freeTrial' ? 
           <Info className="w-7 h-7 fill-[#D6D6D6] text-[#212529]" /> : 
           <img src={verifiedIcon} className="w-7 h-7" />
         }
       </span>
       <p className="text-[17px] text-white mt-1 flex items-center gap-2">
-        {isFreeTrial ? (
+        {subscriptionTier === 'freeTrial' ? (
           <>
             <span>Free Trial</span>
           </>
