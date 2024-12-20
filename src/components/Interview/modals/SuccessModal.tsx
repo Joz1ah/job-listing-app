@@ -33,18 +33,18 @@ const SuccessModal: React.FC<SuccessModalProps> = ({
             {messages[variant]}
           </h2>
 
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col items-center space-y-2">
             <Button
               onClick={onClose}
               variant="outline"
-              className="w-full border-2 border-[#F5722E] text-[#F5722E] hover:bg-[#F5722E] hover:text-white"
+              className="w-[140px] h-6 border-2 border-[#F5722E] text-[#F5722E] font-light"
             >
               Go Back
             </Button>
 
-            <Link to={paths[variant]} onClick={onClose} className="w-full">
+            <Link to={paths[variant]} onClick={onClose}>
               <Button
-                className="w-full bg-[#F5722E] text-white hover:bg-[#F5722E]/90"
+                className="w-[140px] h-6 bg-[#F5722E] text-white hover:bg-[#F5722E]/90 font-light"
                 type="button"
               >
                 View Interviews

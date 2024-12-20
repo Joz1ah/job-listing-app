@@ -25,7 +25,7 @@ export const perfectMatch: Match[] = [
     lastName: "Davis",
     phoneNumber: 639275454434,
     birthday: "March 15",
-    location: "United Kingdom",
+    location: "Philippines",
     position: "Junior Front End Developer",
     education: "Bachelor's Degree",
     coreSkills: ["React", "JavaScript", "HTML", "CSS", "Bootstrap"],

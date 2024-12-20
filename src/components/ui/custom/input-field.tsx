@@ -64,7 +64,7 @@ const alertIconVariants = cva(
     variants: {
       variant: {
         default: "text-[#242625] md:text-[#2D3A41]",
-        primary: "text-primary",
+        primary: "text-[#2D3A41]",
         secondary: "text-white"
       }
     },

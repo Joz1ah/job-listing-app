@@ -1,7 +1,8 @@
 import { FC } from "react";
 import { Button } from "components";
-import { Zap, PieChart, BarChart3, Lock, MessageCircle } from "lucide-react";
+import { ThumbsUp, ChartNoAxesCombined, LockKeyhole, MessageCircleMore, Trophy } from "lucide-react";
 import sub_plan_pic from "assets/images/sub-plan-pic.svg?url";
+import sparkle_icon from 'assets/images/sparkle-icon.png'
 
 interface PlanFeature {
   icon: React.ReactNode;
@@ -33,8 +34,8 @@ const PlanCard: FC<PlanProps> = ({
         <div className="flex flex-col justify-end relative">
           <div className="h-[20px]">
             {bestValue && (
-              <span className="text-[#F5722E] text-sm mb-1 absolute top-0">
-                🏆 Best Value
+              <span className="text-[#F5722E] text-sm mb-1 absolute top-0 flex items-center gap-1">
+                <Trophy size={16}/> Best Value
               </span>
             )}
           </div>
@@ -90,11 +91,11 @@ const PlanCard: FC<PlanProps> = ({
 
 const SubscriptionPlan: FC = () => {
   const features = [
-    { icon: <Zap size={16} />, text: "Perfect Match automation" },
-    { icon: <PieChart size={16} />, text: "Insights and Feedback" },
-    { icon: <BarChart3 size={16} />, text: "Analytics Dashboard" },
-    { icon: <Lock size={16} />, text: "Exclusive Employer Resources" },
-    { icon: <MessageCircle size={16} />, text: "Live chat support" },
+    { icon: <img src={sparkle_icon} className="w-4 h-4" />, text: "Perfect Match automation" },
+    { icon: <ThumbsUp size={16} />, text: "Insights and Feedback" },
+    { icon: <ChartNoAxesCombined size={16} />, text: "Analytics Dashboard" },
+    { icon: <LockKeyhole size={16} />, text: "Exclusive Employer Resources" },
+    { icon: <MessageCircleMore size={16} />, text: "Live chat support" },
   ];
 
   return (
@@ -118,7 +119,7 @@ const SubscriptionPlan: FC = () => {
               <img src={sub_plan_pic} alt="Subscription plan illustration" />
             </div>
 
-            <div className="bg-black p-3 rounded-lg">
+            <div className="bg-black/50 p-3 rounded-lg">
               <h2 className="text-xl">
                 <span className="text-[#F5722E] font-bold">Maximum</span>{" "}
                 <span className="text-[#F5F5F7] font-bold">Efficiency</span>{" "}

@@ -87,6 +87,12 @@
       return <img src={verifiedIcon} className="w-4 h-4" alt="Verified" />;
     };
 
+    const handleNotificationClick = () => {
+      if (isMenuOpen) {
+        onToggleMenu();
+      }
+    };
+
     return (
       <>
         {/* Desktop Header */}
@@ -155,7 +161,9 @@
           </div>
 
           <div className="flex items-center gap-4 flex-shrink-0">
+          <div onClick={handleNotificationClick}>
             <NotificationFeed subscriptionTier={subscriptionTier} />
+          </div>
             <div className="flex items-center gap-2 flex-shrink-0 min-w-0">
                 <span className="text-white font-medium text-[14px] lg:text-[18px] truncate block max-w-[100px] lg:max-w-[200px]">
                   {userName}
@@ -195,7 +203,9 @@
         <header className="md:hidden bg-black py-4 px-2 flex justify-between items-center z-50">
           <img src={akazaLogoWhite} alt="Akaza Logo" className="h-8" />
           <div className="flex items-center space-x-2">
-            <NotificationFeed subscriptionTier={subscriptionTier} />
+            <div onClick={handleNotificationClick}>
+              <NotificationFeed subscriptionTier={subscriptionTier} />
+            </div>
             <Button
               variant="custom"
               className="text-[#F5722E] bg-black"

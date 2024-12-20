@@ -15,8 +15,8 @@ export { AcceptedInterviews } from 'features/employer/EmployerInterviews/accepte
 export { RescheduleRequests } from 'features/employer/EmployerInterviews/reschedule-requests'
 export { CompletedInterviews } from 'features/employer/EmployerInterviews/completed-interviews'
 
-export { ManageJobListingsSidebar } from 'features/employer/Sidebar/manage-job-listings-sidebar'
-export { ReportsAnalyticsSidebar } from 'features/employer/Sidebar/reports-analytics-sidebar'
+export { ManageJobListingsSidebar } from 'features/employer/Sidebar/ManageJobListingsSidebar'
+export { ReportsAnalyticsSidebar } from 'features/employer/Sidebar/ReportsAnalyticsSidebar'
 
 export { ActiveListings } from 'features/employer/ManageJobListings/active-listings'
 export { ClosedListings } from 'features/employer/ManageJobListings/closed-listings'
@@ -28,7 +28,7 @@ export { CandidateAnalytics } from 'features/employer/ReportsAnalytics/candidate
 export { CostAnalytics } from 'features/employer/ReportsAnalytics/cost-analytics'
 export { InterviewAnalytics } from 'features/employer/ReportsAnalytics/interview-analytics'
 
-export { InterviewSidebarEmployer } from 'features/employer/Sidebar/interviews-sidebar-employer'
+export { InterviewSidebarEmployer } from 'features/employer/Sidebar/InterviewSidebarEmployer'
 
 export { EditEmployerProfile } from 'features/employer/EmployerProfile/EditEmployerProfile'
 
@@ -40,7 +40,7 @@ export { InvitationSentModal } from 'features/employer/AppCard/schedule-form/Inv
 
 export { PendingInterviews } from 'features/employer/EmployerInterviews/pending-interviews'
 
-export { SettingsSidebar } from 'features/employer/Sidebar/settings-sidebar-employer'
+export { SettingsSidebar } from 'features/employer/Sidebar/SettingsSidebar'
 
 export { EmployerInterviewCalendarModal } from 'components/Interview/modals/EmployerInterviewCalendarModal'
 export { PerfectMatchEmptyState, OtherApplicationEmptyState } from 'features/employer/EmployerFeed/EmployerEmptyState'
@@ -48,3 +48,7 @@ export { JobListingPreview } from 'features/employer/JobListingForm/JobListingPr
 export { EmployerProfilePreview } from 'features/employer/EmployerProfile/EmployerProfilePreview'
 export { DeleteAccountAlert } from 'features/employer/EmployerSettings/alerts/DeleteAccountAlert'
 export { RatingModal } from 'components/Interview/modals/RatingModal'
+
+export { YourBookmarkedJobs } from 'features/employer/BookmarkedJobs/YourBookmarkedJobs'
+export { BookmarkCard } from 'features/employer/BookmarkedJobs/BookmarkCard'
+export { BookmarkSidebar } from 'features/employer/Sidebar/BookmarkSidebar'

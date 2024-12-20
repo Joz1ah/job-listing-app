@@ -12,9 +12,9 @@ export { RescheduleRequests } from 'features/job-hunter/JobHunterInterviews/resc
 export { DeclinedInterviews } from 'features/job-hunter/JobHunterInterviews/declined-interviews'
 export { CompletedInterviews } from 'features/job-hunter/JobHunterInterviews/completed-interviews'
 
-export { BookmarkSidebar } from 'features/job-hunter/Sidebar/bookmark-sidebar'
+export { BookmarkSidebar } from 'features/job-hunter/Sidebar/BookmarkSidebar'
 export { YourBookmarkedJobs } from 'features/job-hunter/BookmarkedJobs/YourBookmarkedJobs'
-export { InterviewSidebarJobHunter } from 'features/job-hunter/Sidebar/interviews-sidebar-hunter'
+export { InterviewSidebarJobHunter } from 'features/job-hunter/Sidebar/InterviewSidebarJobHunter'
 export { EditApplicationCard } from 'features/job-hunter/ApplicationForm/EditApplicationCard'
 
 export { JobCard } from 'features/job-hunter/JobCard/JobCard'
@@ -23,7 +23,7 @@ export { JobPreviewModal } from 'features/job-hunter/JobCard/job-preview/JobPrev
 
 export { ScheduleInterviewModal } from 'features/job-hunter/JobCard/schedule-form/ScheduleInterviewModal'
 export { InvitationSentModal } from 'features/job-hunter/JobCard/schedule-form/InvitationSentModal'
-export { SettingsSidebar } from 'features/job-hunter/Sidebar/settings-sidebar-job-hunter'
+export { SettingsSidebar } from 'features/job-hunter/Sidebar/SettingsSidebar'
 export { HunterInterviewCalendarModal } from 'components/Interview/modals/HunterInterviewCalendarModal'
 export { PerfectMatchEmptyState, OtherOpportunitiesEmptyState } from 'features/job-hunter/JobHunterFeed/JobHunterEmptyState'
 export { ApplicationFormPreview } from 'features/job-hunter/ApplicationForm/ApplicationFormPreview'

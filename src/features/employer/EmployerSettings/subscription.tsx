@@ -1,15 +1,15 @@
 import React from 'react';
 import { 
   Gift, 
-  Mail, 
-  Target, 
+  CalendarCheck, 
   ThumbsUp, 
-  TrendingUp, 
-  FileText, 
-  MessageCircle,
-  Star,
+  ChartNoAxesCombined, 
+  LockKeyhole, 
+  MessageCircleMore,
   Trophy
 } from 'lucide-react';
+
+import sparkle_icon from 'assets/images/sparkle-icon.png'
 
 interface Feature {
   icon: React.ReactNode;
@@ -96,20 +96,20 @@ const SubscriptionSettings: React.FC = () => {
   const features: PlanFeatures = {
     yearly: [
       { icon: <Gift />, text: 'PLUS ONE MONTH FREE' },
-      { icon: <Mail />, text: 'Send up to 3 interview invites' },
-      { icon: <Target />, text: 'Perfect Match automation' },
+      { icon: <CalendarCheck />, text: 'Send up to 3 interview invites' },
+      { icon: <img src={sparkle_icon} className='w-5 h-5' />, text: 'Perfect Match automation' },
       { icon: <ThumbsUp />, text: 'Insights and Feedback' },
-      { icon: <TrendingUp />, text: 'Labour Market Insights' },
-      { icon: <FileText />, text: 'Exclusive resources' },
-      { icon: <MessageCircle />, text: 'Live chat support' }
+      { icon: <ChartNoAxesCombined />, text: 'Labour Market Insights' },
+      { icon: <LockKeyhole />, text: 'Exclusive resources' },
+      { icon: <MessageCircleMore />, text: 'Live chat support' }
     ],
     monthly: [
-      { icon: <Mail />, text: 'Send up to 3 interview invites' },
-      { icon: <Target />, text: 'Perfect Match automation' },
+      { icon: <CalendarCheck />, text: 'Send up to 3 interview invites' },
+      { icon: <img src={sparkle_icon} />, text: 'Perfect Match automation' },
       { icon: <ThumbsUp />, text: 'Insights and Feedback' },
-      { icon: <TrendingUp />, text: 'Labour Market Insights' },
-      { icon: <FileText />, text: 'Exclusive resources' },
-      { icon: <MessageCircle />, text: 'Live chat support' }
+      { icon: <ChartNoAxesCombined />, text: 'Labour Market Insights' },
+      { icon: <LockKeyhole />, text: 'Exclusive resources' },
+      { icon: <MessageCircleMore />, text: 'Live chat support' }
     ]
   };
 
@@ -117,8 +117,7 @@ const SubscriptionSettings: React.FC = () => {
     <div className="w-full">
         <div className="mb-6">
           <h2 className="text-white text-2xl font-normal mb-3">
-            <Star className="inline-block mr-2 stroke-current" size={24} /> 
-            Subscription Plans
+          ✦ Subscription Plans
           </h2>
           <p className="text-gray-400 text-sm">
             Select the perfect plan for your needs: get started with our $5 monthly plan for easy access to all essential features, or save more with our $55 yearly plan, offering full access to premium content and exclusive benefits throughout the year

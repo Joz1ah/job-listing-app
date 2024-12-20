@@ -1,34 +1,51 @@
 import { FC } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Bookmark, Info } from "lucide-react";
+import { User, CreditCard, Shield, Info } from "lucide-react";
 import verifiedIcon from 'images/verified.svg?url'
 import userCheck from 'images/user-check.svg?url'
 
 interface MenuItem {
   icon: JSX.Element;
-  label: string;
+  label: string | JSX.Element;
   path: string;
 }
 
-interface BookmarkSidebarProps {
+interface SettingsSidebarProps {
   userName: string;
+  userType: 'employer' | 'job-hunter';
   subscriptionTier: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
   className?: string;
 }
 
-const BookmarkSidebar: FC<BookmarkSidebarProps> = ({
+const SettingsSidebar: FC<SettingsSidebarProps> = ({ 
   userName,
+  userType,
   subscriptionTier,
-  className = "",
+  className = ''
 }) => {
   const location = useLocation();
-  const baseRoute = "/job-hunter/bookmarked-jobs";
+  const baseRoute = userType === 'employer' ? '/employer' : '/job-hunter';
 
-  const bookmarkMenu: MenuItem[] = [
+  const settingsMenu: MenuItem[] = [
     {
-      icon: <Bookmark className="w-5 h-5" />,
-      label: "Your Bookmarked Jobs",
-      path: `${baseRoute}/bookmarked`,
+      icon: <User className="w-5 h-5" />,
+      label: "General",
+      path: `${baseRoute}/account-settings/general`
+    },
+    {
+      icon: <CreditCard className="w-5 h-5" />,
+      label: "Billing & Information",
+      path: `${baseRoute}/account-settings/billing`
+    },
+    {
+      icon: <span className="text-2xl leading-none mr-1">✦</span>,
+      label: "Your Subscription",
+      path: `${baseRoute}/account-settings/subscription`
+    },
+    {
+      icon: <Shield className="w-5 h-5" />,
+      label: "Privacy & Security",
+      path: `${baseRoute}/account-settings/privacy`
     }
   ];
 
@@ -43,14 +60,27 @@ const BookmarkSidebar: FC<BookmarkSidebarProps> = ({
         )}
       </h2>
       <p className="text-[17px] text-white mt-1 flex items-center gap-2">
-        {subscriptionTier === 'freeTrial' ? (
+      {subscriptionTier === "freeTrial" ? (
           <>
             <span>Free Trial</span>
           </>
+        ) : subscriptionTier === "monthlyPlan" ? (
+          <>
+            <img
+              src={userCheck}
+              className="w-6 h-6 fill-orange-500 text-orange-500"
+              alt="Monthly subscriber"
+            />
+            <span>Monthly Subscriber</span>
+          </>
         ) : (
           <>
-            <img src={userCheck} className="w-6 h-6 fill-orange-500 text-orange-500" />
-            <span>Monthly Subscriber</span>
+            <img
+              src={userCheck}
+              className="w-6 h-6 fill-orange-500 text-orange-500"
+              alt="Yearly subscriber"
+            />
+            <span>Yearly Subscriber</span>
           </>
         )}
       </p>
@@ -61,10 +91,12 @@ const BookmarkSidebar: FC<BookmarkSidebarProps> = ({
     <>
       {/* Mobile/Tablet View */}
       <div className="lg:hidden w-full">
-        <div className="px-4 md:px-6 py-4 md:mt-6 space-y-4">{userInfo}</div>
+        <div className="px-4 md:px-6 py-4 md:mt-6 space-y-4">
+          {userInfo}
+        </div>
         <div className="w-full px-4 overflow-x-auto">
-          <div className="flex space-x-8 md:space-x-6 min-w-max">
-            {bookmarkMenu.map((item) => (
+        <div className="flex space-x-8 md:gap-x-4 w-full items-center justify-center">
+            {settingsMenu.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
@@ -93,9 +125,9 @@ const BookmarkSidebar: FC<BookmarkSidebarProps> = ({
           {userInfo}
           <div className="space-y-1">
             <span className="text-[#F5722E] text-[24px] font-normal mb-4 block">
-              Bookmarked Jobs
+              Account Settings
             </span>
-            {bookmarkMenu.map((item) => (
+            {settingsMenu.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
@@ -116,4 +148,4 @@ const BookmarkSidebar: FC<BookmarkSidebarProps> = ({
   );
 };
 
-export { BookmarkSidebar };
+export { SettingsSidebar };
