@@ -4,7 +4,6 @@ stages:
   - docker_push
   - deployment
 
-# Build Stage
 build:
   stage: build
   image: node:18-alpine
@@ -14,7 +13,6 @@ build:
   only:
     - main
 
-# Docker Build Stage
 docker_build:
   stage: docker_build
   before_script:
@@ -22,12 +20,10 @@ docker_build:
   script:
     - echo "Building Docker image..."
     - echo $CI_COMMIT_SHA
-    - docker build --platform linux/amd64 -t gcr.io/$GOOGLE_PROJECT_ID/akaza-app:$CI_COMMIT_SHA .
+    - docker build --no-cache --platform linux/amd64 -t gcr.io/$GOOGLE_PROJECT_ID/akaza-app:$CI_COMMIT_SHA .
   only:
     - main
-  variables:
-    GOOGLE_APPLICATION_CREDENTIALS: /tmp/sa-key.json 
-# Docker Push Stage
+
 docker_push:
   stage: docker_push
   image: google/cloud-sdk:latest
@@ -46,27 +42,40 @@ docker_push:
     - main
   variables:
     GOOGLE_APPLICATION_CREDENTIALS: /tmp/sa-key.json
-
 deployment:
   stage: deployment
-  image: google/cloud-sdk:latest  
+  image: google/cloud-sdk:latest
   before_script:
     - echo "Setting up SSH key for remote access"
-    - apt-get update && apt-get install -y jq  # Install jq
+    - apt-get update && apt-get install -y jq
     - mkdir -p ~/.ssh
     - echo "$SSH_PRIVATE_KEY" | sed 's/\r$//' > ~/.ssh/id_rsa
-    - chmod 600 ~/.ssh/id_rsa 
+    - chmod 600 ~/.ssh/id_rsa
     - ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
-    - echo "$SERVICE_ACCOUNT_KEYS" > /tmp/key.json       
+    - echo "$SERVICE_ACCOUNT_KEYS" > /tmp/key.json
   script:
     - echo "Please wait deploying to the remote server..."
     - |
-      API_COMMIT_SHA=$(curl --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" "https://git.instance-20240927-104826.com/api/v4/projects/7/pipelines" | jq -r '.[0].sha')
+      API_SIGNUP_COMMIT_SHA=$(curl --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" "https://git.instance-20240927-104826.com/api/v4/projects/7/pipelines" | jq -r '.[0].sha')      
       API_AUTH_COMMIT_SHA=$(curl --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" "https://git.instance-20240927-104826.com/api/v4/projects/10/pipelines" | jq -r '.[0].sha')
-      echo "Retrieved commit API_COMMIT_SHA: $API_COMMIT_SHA"
+      API_PAYMENT_COMMIT_SHA=$(curl --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" "https://git.instance-20240927-104826.com/api/v4/projects/14/pipelines" | jq -r '.[0].sha')      
+      API_SEARCH_COMMIT_SHA=$(curl --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" "https://git.instance-20240927-104826.com/api/v4/projects/15/pipelines" | jq -r '.[0].sha')      
+      API_JOBFEED_COMMIT_SHA=$(curl --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" "https://git.instance-20240927-104826.com/api/v4/projects/12/pipelines" | jq -r '.[0].sha')
+      API_PERFECTMATCH_COMMIT_SHA=$(curl --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" "https://git.instance-20240927-104826.com/api/v4/projects/18/pipelines" | jq -r '.[0].sha')
+      API_NOTIFICATION_COMMIT_SHA=$(curl --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" "https://git.instance-20240927-104826.com/api/v4/projects/21/pipelines" | jq -r '.[0].sha')    
+      API_ACCOUNT_COMMIT_SHA=$(curl --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" "https://git.instance-20240927-104826.com/api/v4/projects/24/pipelines" | jq -r '.[0].sha')
+
+      echo "Retrieved commit API_SIGNUP_COMMIT_SHA: $API_SIGNUP_COMMIT_SHA"
       echo "Retrieved commit API_AUTH_COMMIT_SHA: $API_AUTH_COMMIT_SHA"
-      ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "/home/sit-deployer/sit/akaza-app/deploy.sh $GOOGLE_PROJECT_ID $CI_COMMIT_SHA $API_COMMIT_SHA $API_AUTH_COMMIT_SHA"
+      echo "Retrieved commit API_PAYMENT_COMMIT_SHA: $API_PAYMENT_COMMIT_SHA"
+      echo "Retrieved commit API_SEARCH_COMMIT_SHA: $API_SEARCH_COMMIT_SHA"
+      echo "Retrieved commit API_JOBFEED_COMMIT_SHA: $API_JOBFEED_COMMIT_SHA"
+      echo "Retrieved commit API_PERFECTMATCH_COMMIT_SHA: $API_PERFECTMATCH_COMMIT_SHA"
+      echo "Retrieved commit API_NOTIFICATION_COMMIT_SHA: $API_NOTIFICATION_COMMIT_SHA"
+      echo "Retrieved commit API_ACCOUNT_COMMIT_SHA: $API_ACCOUNT_COMMIT_SHA"
+      
+      ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "/home/sit-deployer/sit/akaza-account-api/deploy.sh $CI_COMMIT_SHA $API_SIGNUP_COMMIT_SHA $API_AUTH_COMMIT_SHA $API_PAYMENT_COMMIT_SHA $API_SEARCH_COMMIT_SHA $API_JOBFEED_COMMIT_SHA $API_PERFECTMATCH_COMMIT_SHA $API_NOTIFICATION_COMMIT_SHA $API_ACCOUNT_COMMIT_SHA"
   only:
     - main
   variables:
-    GOOGLE_APPLICATION_CREDENTIALS: /tmp/sa-key.json
+    GOOGLE_APPLICATION_CREDENTIALS: /tmp/key.json
