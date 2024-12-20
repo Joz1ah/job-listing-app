@@ -44,7 +44,7 @@ export const pokemonApi = createApiFunction({
 export const akazaApiSignUp = createApiFunction({
   reducerPath: 'apiSignUp',
   baseQuery: fetchBaseQuery({ 
-    baseUrl: 'https://api-sit.akaza.xyz/' ,
+    baseUrl: 'https://akaza-sit-api-gateway---rev-2-2tninhtd.uk.gateway.dev/' ,
     //baseUrl: process.env.REACT_APP_SIGNUP_API_URL ,
     credentials: "include", 
     prepareHeaders: (headers) => {
