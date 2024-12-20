@@ -27,10 +27,11 @@ const csp = (req: Request, res: Response, next: NextFunction): void => {
           "'self'",
           `'nonce-${String(res.locals.cspNonce)}'`,
           `https://js.stripe.com`,
+          `http://js.stripe.com`,
           IS_DEV ? "'unsafe-eval'" : ''
         ].filter(Boolean),
-        frameSrc: ["'self'", "https://js.stripe.com"],
-        connectSrc: [...defaultSrc, "https://api.stripe.com"],
+        frameSrc: ["'self'", "https://js.stripe.com", "http://js.stripe.com"],
+        connectSrc: [...defaultSrc, "https://api.stripe.com", "http://api.stripe.com"],
       }
     },
     crossOriginEmbedderPolicy: { policy: 'credentialless' },

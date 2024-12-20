@@ -147,34 +147,30 @@ export const akazaApiAuth = createApiFunction({
       }),
       async onQueryStarted(args,{ queryFulfilled }) {
         args = args
-        console.log(args)
+
         try {
           // Wait for the API response
           const { data } = await queryFulfilled;
-          console.log(data)
+
           // Set the token as a cookie if the response is successful
           if (data?.data?.token) {
+            console.log('setting cookies')
             Cookies.set('token', data.data.token, {
               path: '/', // Cookie is available site-wide
               secure: true, // Ensures cookie is sent over HTTPS
               sameSite: 'None', // Prevents CSRF attacks
-              domain: '.akaza.xyz', 
+              domain: 'akaza.xyz'
               //expires: 7, // Expires in 7 days
             });
-            Cookies.set('testcookie', "cookiedata", {
+            Cookies.set('token', data.data.token, {
               path: '/', // Cookie is available site-wide
               secure: true, // Ensures cookie is sent over HTTPS
               sameSite: 'None', // Prevents CSRF attacks
+              domain: 'localhost'
               //expires: 7, // Expires in 7 days
             });
-            console.log('Login successful and cookie set');
+            console.log('cookies is set')
           } else {
-            Cookies.set('errorcookie', "errorcookiedata", {
-              path: '/', // Cookie is available site-wide
-              secure: true, // Ensures cookie is sent over HTTPS
-              sameSite: 'None', // Prevents CSRF attacks
-              //expires: 7, // Expires in 7 days
-            });
             console.warn('No token found in the response.');
           }
         } catch (error) {

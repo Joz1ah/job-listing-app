@@ -55,7 +55,7 @@ import mastercard_icon from 'assets/credit-card-icons/cc_mastercard.svg?url';
 import discover_icon from 'assets/credit-card-icons/cc_discover.svg?url';
 
 import { Eye, EyeOff } from "lucide-react";
-//import button_loading_spinner from 'assets/loading-spinner-orange.svg?url';
+import button_loading_spinner from 'assets/loading-spinner-orange.svg?url';
 //import { useAppSelector, useAppDispatch } from 'store/store'
 //import { increment } from 'store/counter/counterSlice'
 //import useTranslations from 'i18n/useTranslations'
@@ -326,6 +326,7 @@ const Landing: FC = (): ReactElement => {
 
   const LoginForm = () => {
     const [loginSubmit] = useLoginMutation();
+    const [apiLoginErrorMessage, setApiLoginErrorMessage] = useState('')
     const navigate = useNavigate();
   
     // State to toggle password visibility
@@ -336,9 +337,20 @@ const Landing: FC = (): ReactElement => {
       { setSubmitting, setFieldError }: any
     ) => {
       try {
-        const res = await loginSubmit(values).unwrap();
+        const res = await loginSubmit(values)
+        .unwrap()
+        .then((res)=>{
+          console.log('Success Login')
+          console.log(res)
+          setTimeout(()=>{
+            navigate('/job-hunter');
+          },1000)
+        }).catch((err) => {
+          console.log('err')
+          setApiLoginErrorMessage('Invalid Username or Password')
+          console.log(err)
+        })
         console.log(res);
-        navigate('/job-hunter');
       } catch (err: any) {
         console.error(err);
         setFieldError('general', 'Invalid Username or Password'); // Set general error
@@ -386,6 +398,9 @@ const Landing: FC = (): ReactElement => {
                 </div>
                 <ErrorMessage name="password" component="div" className={styles['error-label']} />
               </div>
+              <div className={styles['outer-error-label']}>
+                {apiLoginErrorMessage ? apiLoginErrorMessage : ''}
+              </div>
             </div>
 
             <div className={styles['login-options']}>
@@ -402,8 +417,13 @@ const Landing: FC = (): ReactElement => {
                 className={styles['button-custom-orange']}
                 disabled={isSubmitting}
               >
-                {isSubmitting && <div className={styles['button-spinner']} />}
-                Login
+                <img
+                  src={button_loading_spinner}
+                  alt="Loading"
+                  className={styles['button-spinner']}
+                  hidden={!isSubmitting}
+                />
+                {isSubmitting ? 'Logging in...' : 'Login'}
               </button>
             </div>
           </Form>
