@@ -10,7 +10,6 @@ RUN npm install
 COPY . .
 
 RUN npm run build:static
-RUN npm run start:server
 
 # Verify build
 RUN ls -la /app/dist
