@@ -13,7 +13,7 @@ RUN npm run build:static
 
 # Verify build
 
-#RUN ls -la /app/dist
+RUN ls -la /app/dist
 
 #FROM nginx:alpine
 
