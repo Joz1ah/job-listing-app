@@ -24,6 +24,7 @@ docker_build:
   only:
     - main
 
+
 docker_push:
   stage: docker_push
   image: google/cloud-sdk:latest
