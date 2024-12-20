@@ -11,7 +11,7 @@ import cors from 'cors'
 const { PORT = SERVER_PORT } = process.env
 import dotenv from 'dotenv';
 dotenv.config();
-const allowedOrigins = ['http://localhost:8080','https://localhost:8080','https://akaza.xyz'];
+const allowedOrigins = ['http://localhost:8080','https://localhost:8080','https://akaza.xyz','https://akaza.io'];
 const stripe = require('stripe')('sk_test_51QMsGlFCh69SpK2k7MgXyBMmMDoS20GbKPtyUzuun2TthNpLxovqjTxk4Pap6h1v52pCFhM48vZE3RQ4EXP8rGVR00VK47STkF');
 
 
