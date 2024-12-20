@@ -63,15 +63,8 @@ import button_loading_spinner from 'assets/loading-spinner-orange.svg?url';
 //import { Button, Counter, Menu, PageMeta } from 'components'
 
 import styles from './landing.module.scss'
-import { StripeProvider } from '../../providers/stripeProvider/stripeProvider';
-import CheckoutForm from 'components/payment/stripeForm';
-/*import {loadStripe} from '@stripe/stripe-js';
-import {
-  EmbeddedCheckoutProvider,
-  EmbeddedCheckout
-} from '@stripe/react-stripe-js';
-const stripePromise = loadStripe("pk_test_51QMsGlFCh69SpK2kpR1Y1qGEkVzVy2gLDHJkLjIx8rQSJhyl8qQwG3nFVqjVL4E4JoeVhez3a0HAkyN94YhqcpKG00PsoOvCI8");
-*/
+import StripeTokenizedForm from 'components/payment/stripeFormEmbed';
+
 interface VideoProps {
   src: string;
   className?: string;
@@ -169,7 +162,6 @@ const CustomInput: React.FC<CustomInputProps> = ({ field, form, ...props }) => {
 
 const Landing: FC = (): ReactElement => {
   getUserInfo()
-
   const [maskHidden, setMaskHidden] = useState(0);
   const [closeModalActive, setCloseModalActive] = useState(1);
   const [selectedModalHeader, setSelectedModalHeader] = useState(1);
@@ -1012,7 +1004,7 @@ const CongratulationsModal = () => {
 const CreditCardForm = () => {
   const [paymentSubmit] = usePaymentCreateMutation();
   const previousButton = useRef<HTMLButtonElement>(null);
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
 
   const handlePrevious = () => {
     if (previousButton.current) {
@@ -1045,12 +1037,45 @@ const CreditCardForm = () => {
   });
 
   
-  const handleSubmit = (values: { cardNumber: string; cardholderName: string; expirationDate: string; cvv: string }) => {
+  const handleSubmit = async (values: { cardNumber: string; cardholderName: string; expirationDate: string; cvv: string }) => {
     console.log(`Submitted values: ${JSON.stringify(values, null, 2)}`);
+
+    console.log('fetching create payment method')
+    const response = await fetch('/api/create-payment-method', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+          number: '4242424242424242',
+          exp_month: 12,
+          exp_year: 2028,
+          cvc: '123',
+          billing_details: {
+              name: 'Test User',
+              email: 'testuser@example.com',
+              address: {
+                  line1: '123 Test Street',
+                  city: 'Test City',
+                  state: 'TS',
+                  postal_code: '12345',
+                  country: 'US',
+              },
+          },
+      }),
+  })
+    const data = await response.json();
+    console.log("done fetching data")
+    console.log(data)
+    if (data.error) {
+        console.error('Error:', data.error);
+    } else {
+        console.log('PaymentMethod created:', data.paymentMethod);
+    }
+ 
     setModalState(modalStates.LOADING)
     setTimeout(()=>{
-      navigate("/job-hunter");
+      //navigate("/job-hunter");
     },5000)
+
     paymentSubmit(
       {
         "provider": "stripe",
@@ -1062,9 +1087,7 @@ const CreditCardForm = () => {
       }
     )
   };
-
   return (
-    <StripeProvider>
     <Formik
       initialValues={{
         cardNumber: '',
@@ -1080,7 +1103,7 @@ const CreditCardForm = () => {
               <div className={`${styles['stripe-form-inputs-container']}`}>
                 <div className={`${styles['stripe-form-upper-inputs']}`}>
                   <div>
-                    <CheckoutForm/>
+                    <StripeTokenizedForm/>
                   </div>
                   <div>
                     <Field component={CustomInput} id="cardNumber" placeholder="Card Number *" name="cardNumber" type="text" />
@@ -1125,7 +1148,6 @@ const CreditCardForm = () => {
         
       )}
     </Formik>
-    </StripeProvider>
   );
 };
 
