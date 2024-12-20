@@ -29,7 +29,7 @@ export const StripeProvider: React.FC<StripeProviderProps> = ({ children }) => {
     ? {
         clientSecret,
         appearance: {
-          theme: 'stripe', // Ensure this matches the expected type: "stripe" | "night" | "flat" | undefined
+          theme: 'flat', // Ensure this matches the expected type: "stripe" | "night" | "flat" | undefined
         },
       }
     : undefined;
