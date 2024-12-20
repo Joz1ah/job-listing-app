@@ -41,11 +41,11 @@ const DeleteAccountAlert: React.FC<DeleteAccountAlertProps> = ({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel className="bg-transparent text-white border-white hover:bg-white text-xs ">
+          <AlertDialogCancel className="w-full md:w-[140px] h-8 bg-transparent text-white hover:text-white border-[#E53835] hover:bg-[#263238]/90 text-[10px] ">
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction
-            className="text-[#E53835] bg-[#263238] hover:text-white hover:bg-[#E53835] border border-[#E53835] rounded px-4 text-xs font-normal transition-colors duration-200"
+            className="w-full md:w-[140px] h-8 text-[#E53835] bg-[#263238] hover:text-white hover:bg-[#E53835] border border-[#E53835] rounded p-0 text-[10px] font-normal transition-colors duration-200"
             onClick={onDelete}
           >
             Yes, Delete My Account

@@ -61,7 +61,7 @@ const AuthenticatedLayoutContent: FC<{ userType: 'employer' | 'job-hunter' }> = 
       subscriptionTier={subscriptionTier}
       userType={userType}
       userName={userName}
-      feedPath={`/${isEmployer ? 'employer' : 'job-hunter'}/feed`}
+      feedPath={`/${isEmployer ? 'employer' : 'job-hunter'}/`}
     />
   );
 
@@ -97,8 +97,8 @@ const BaseLayout: FC<BaseLayoutProps> = ({ userType }) => {
   }
 
   return (
-    <EmployerProvider initialTier='yearlyPlan'>
-      <JobHunterProvider initialTier='monthlyPlan'>
+    <EmployerProvider initialTier='freeTrial'>
+      <JobHunterProvider initialTier='freeTrial'>
         <BaseLayoutContent userType={userType} />
       </JobHunterProvider>
     </EmployerProvider>

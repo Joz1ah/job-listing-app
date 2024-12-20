@@ -15,7 +15,7 @@ export { InterviewJobHunter } from 'pages/job-hunter/interviews/InterviewJobHunt
 export { InterviewEmployer } from 'pages/employer/interviews/InterviewEmployer'
 export { ManageJobListings } from 'pages/employer/manage-job-listings/ManageJobListings'
 export { ReportsAnalytics } from 'pages/employer/reports-analytics/ReportsAnalytics'
-export { BookmarkedJobs } from 'pages/job-hunter/bookmarked-jobs/BookmarkedJobs'
+export { JobHunterBookmarkedJobs } from 'pages/job-hunter/bookmarked-jobs/JobHunterBookmarkedJobs'
 export { CompleteProfile } from 'pages/employer/employer-profile-form/CompleteProfile'
 export { JobListingFormLayout } from 'pages/employer/job-listing-form/JobListingFormLayout'
 export { EditProfile} from 'pages/employer/employer-profile-form/EditProfile'
@@ -27,3 +27,4 @@ export { NotFoundPage } from 'pages/not-found-page/NotFoundPage'
 export { EmployerBaseLayout } from 'pages/employer/base-layout/EmployerBaseLayout' */
 export { BaseLayout } from 'pages/main-base-layout/BaseLayout'
 export { SubscriptionPlan } from 'pages/subscription-plan/SubscriptionPlan'
+export { EmployerBookmarkedJobs } from 'pages/employer/bookmarked-jobs/EmployerBookmarkedJobs'

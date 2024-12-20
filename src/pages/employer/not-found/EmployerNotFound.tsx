@@ -6,7 +6,7 @@ const EmployerNotFound: FC = () => {
   return (
     <>
       <PageMeta title="Not Found" />
-      <div className="flex flex-col items-center justify-center mx-auto md:mt-16 text-center px-4">
+      <div className="flex flex-col items-center justify-center mx-auto md:mt-16 md:pt-16 text-center px-4">
         <h1 className="text-4xl sm:text-6xl md:text-8xl font-normal mb-4 text-white">
           Whoops!
         </h1>

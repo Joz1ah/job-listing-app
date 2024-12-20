@@ -173,12 +173,12 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
         </CardHeader>
 
         <CardContent className="pt-2">
-          <div className="flex flex-col">
+          <div className="flex flex-col gap-1">
             <div className="flex items-center gap-1">
               <span className="text-[13px] min-w-[40px] text-[#263238]">
                 Date:
               </span>
-              <span className="text-[13px] font-semibold px-1 rounded-[2px] bg-[#184E77] text-white w-[135px] h-[17px] flex justify-center">
+              <span className="text-[13px] font-medium px-1 rounded-[2px] bg-[#184E77] text-white w-[135px] h-[17px] flex justify-center items-center">
                 {interview.date}
               </span>
             </div>
@@ -186,12 +186,12 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
               <span className="text-[13px] min-w-[40px] text-[#263238]">
                 Time:
               </span>
-              <span className="text-[13px] font-semibold px-1 rounded-[2px] bg-[#168AAD] text-white w-[135px] h-[17px] flex justify-center">
+              <span className="text-[13px] font-medium px-1 rounded-[2px] bg-[#168AAD] text-white w-[135px] h-[17px] flex justify-center items-center">
                 {interview.time}
               </span>
             </div>
 
-            <div className="flex justify-start mt-4 w-full">
+            <div className="flex justify-start mt-3 w-full">
               {isLoading ? (
                 <div className="flex items-center gap-2">
                   <LoaderCircle className="w-5 h-5 animate-spin text-[#F5722E]" />

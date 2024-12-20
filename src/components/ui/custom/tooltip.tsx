@@ -38,11 +38,11 @@ const Tooltip = ({
       {isVisible && (
         <div 
           className="
-            absolute z-99 px-4 py-3 
+            absolute z-50 px-4 py-3 
             text-xs text-[#263238] bg-white
-            border border-gray-200 shadow-sm text-left
+            border border-gray-200 shadow-md
             w-52 min-h-[2rem]
-            -top-20 -right-52
+            -top-10 -right-56
             break-words whitespace-normal
           "
           role="tooltip"

@@ -8,7 +8,7 @@ import { Match } from "mockData/job-hunter-data";
 interface AppPreviewModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSchedule: (e: React.MouseEvent) => void;
+  onSchedule?: (e: React.MouseEvent) => void;
   app: Match;
 }
 

@@ -159,7 +159,7 @@ const EditApplicationCard: FC = () => {
           setIsSubmitting(true);
           // Your existing submission logic here
           setTimeout(() => {
-            navigate("/employer/feed");
+            navigate("/job-hunter/feed");
           }, 1500);
         }}
       />

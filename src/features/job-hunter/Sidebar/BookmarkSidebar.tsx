@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { User, CreditCard, Package, Shield, Info } from "lucide-react";
+import { Bookmark, Info } from "lucide-react";
 import verifiedIcon from 'images/verified.svg?url'
 import userCheck from 'images/user-check.svg?url'
 
@@ -10,42 +10,25 @@ interface MenuItem {
   path: string;
 }
 
-interface SettingsSidebarProps {
+interface BookmarkSidebarProps {
   userName: string;
-  userType: 'employer' | 'job-hunter';
   subscriptionTier: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
   className?: string;
 }
 
-const SettingsSidebar: FC<SettingsSidebarProps> = ({ 
+const BookmarkSidebar: FC<BookmarkSidebarProps> = ({
   userName,
-  userType,
   subscriptionTier,
-  className = ''
+  className = "",
 }) => {
   const location = useLocation();
-  const baseRoute = userType === 'employer' ? '/employer' : '/job-hunter';
+  const baseRoute = "/job-hunter/bookmarked-jobs";
 
-  const settingsMenu: MenuItem[] = [
+  const bookmarkMenu: MenuItem[] = [
     {
-      icon: <User className="w-5 h-5" />,
-      label: "General",
-      path: `${baseRoute}/account-settings/general`
-    },
-    {
-      icon: <CreditCard className="w-5 h-5" />,
-      label: "Billing & Information",
-      path: `${baseRoute}/account-settings/billing`
-    },
-    {
-      icon: <Package className="w-5 h-5" />,
-      label: "Your Subscription",
-      path: `${baseRoute}/account-settings/subscription`
-    },
-    {
-      icon: <Shield className="w-5 h-5" />,
-      label: "Privacy & Security",
-      path: `${baseRoute}/account-settings/privacy`
+      icon: <Bookmark className="w-5 h-5" />,
+      label: "Your Bookmarked Jobs",
+      path: `${baseRoute}/bookmarked`,
     }
   ];
 
@@ -60,14 +43,27 @@ const SettingsSidebar: FC<SettingsSidebarProps> = ({
         )}
       </h2>
       <p className="text-[17px] text-white mt-1 flex items-center gap-2">
-        {subscriptionTier === 'freeTrial' ? (
+      {subscriptionTier === "freeTrial" ? (
           <>
             <span>Free Trial</span>
           </>
+        ) : subscriptionTier === "monthlyPlan" ? (
+          <>
+            <img
+              src={userCheck}
+              className="w-6 h-6 fill-orange-500 text-orange-500"
+              alt="Monthly subscriber"
+            />
+            <span>Monthly Subscriber</span>
+          </>
         ) : (
           <>
-            <img src={userCheck} className="w-6 h-6 fill-orange-500 text-orange-500" />
-            <span>Monthly Subscriber</span>
+            <img
+              src={userCheck}
+              className="w-6 h-6 fill-orange-500 text-orange-500"
+              alt="Yearly subscriber"
+            />
+            <span>Yearly Subscriber</span>
           </>
         )}
       </p>
@@ -78,12 +74,10 @@ const SettingsSidebar: FC<SettingsSidebarProps> = ({
     <>
       {/* Mobile/Tablet View */}
       <div className="lg:hidden w-full">
-        <div className="px-4 md:px-6 py-4 md:mt-6 space-y-4">
-          {userInfo}
-        </div>
+        <div className="px-4 md:px-6 py-4 md:mt-6 space-y-4">{userInfo}</div>
         <div className="w-full px-4 overflow-x-auto">
-        <div className="flex space-x-8 md:gap-x-4 w-full items-center justify-center">
-            {settingsMenu.map((item) => (
+          <div className="flex space-x-8 md:space-x-6 min-w-max">
+            {bookmarkMenu.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
@@ -112,9 +106,9 @@ const SettingsSidebar: FC<SettingsSidebarProps> = ({
           {userInfo}
           <div className="space-y-1">
             <span className="text-[#F5722E] text-[24px] font-normal mb-4 block">
-              Account Settings
+              Bookmarked Jobs
             </span>
-            {settingsMenu.map((item) => (
+            {bookmarkMenu.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
@@ -135,4 +129,4 @@ const SettingsSidebar: FC<SettingsSidebarProps> = ({
   );
 };
 
-export { SettingsSidebar };
+export { BookmarkSidebar };

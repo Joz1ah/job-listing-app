@@ -1,63 +1,79 @@
 import { FC, useState, useEffect, useRef } from "react";
-import { BookmarkCard } from "features/job-hunter";
+import { BookmarkCard } from "features/employer";
 import { InterviewCardSkeleton } from "components";
 import { NavLink } from "react-router-dom";
 import emptyBookmark from "images/bookmark-empty.svg?url";
-import { Match } from "mockData/jobs-data";
+import { Match } from "mockData/job-hunter-data";
 import { BookmarkProvider } from "components/context/BookmarkContext";
-import { useJobHunterContext } from "components";
+import { useEmployerContext } from "components";
 
 // You can replace this with your actual mock data
 const mockBookmarks: Match[] = [
   {
-    employerId: 1,
-    position: "Software Engineer",
-    company: "Fintech Solutions Ltd",
+    id: 1,
+    firstName: "Olivia",
+    lastName: "Davis",
+    phoneNumber: 639275454434,
+    birthday: "March 15",
     location: "United Kingdom",
-    description:
-      "Looking for a passionate engineer to help build our next-generation financial platform using modern web technologies.",
-    coreSkills: ["React", "JavaScript", "CSS", "HTML", "Git"],
+    position: "Junior Front End Developer",
+    education: "Bachelor's Degree",
+    coreSkills: ["React", "JavaScript", "HTML", "CSS", "Bootstrap"],
     posted: "1 day",
     experience: "under a year",
-    lookingFor: ["Full Time", "Part Time"],
+    lookingFor: ["Full Time", "Part Time", "Contract only"],
     salaryExpectation: "$51,000-$70,000",
-    interpersonalSkills: ["Communication", "Team Collaboration", "Problem-solving"],
-    certificates: ["None required"],
-    isNew: true
+    language: ["English"],
+    interpersonalSkills: [
+      "Team Collaboration",
+      "Adaptability",
+      "Problem Solving",
+    ],
+    certificates: ["Certified JavaScript Developer"],
+    isNew: true,
   },
   {
-    employerId: 2,
-    position: "Senior Frontend Engineer",
-    company: "TechStack Inc",
+    id: 2,
+    firstName: "Mason",
+    lastName: "Green",
+    phoneNumber: 639275454435,
+    birthday: "April 22",
     location: "Canada",
-    description:
-      "Join our rapidly growing team to build scalable web applications and mentor junior developers.",
-    coreSkills: ["Quality Assurance", "JavaScript", "Machine Learning", "Product Management", "TypeScript"],
-    posted: "1 week",
+    position: "Frontend Engineer",
+    education: "Master's Degree",
+    coreSkills: ["React", "JavaScript", "CSS", "HTML", "TypeScript"],
+    posted: "1 day",
     experience: "3 - 5 years",
     lookingFor: ["Full Time", "Contract only"],
     salaryExpectation: "$71,000-$100,000",
-    interpersonalSkills: ["Leadership", "Mentoring", "Communication", "Team Management"],
-    certificates: ["None required"],
-    isNew: false
+    language: ["English", "French"],
+    interpersonalSkills: [
+      "Communication",
+      "Time Management",
+      "Critical Thinking",
+    ],
+    certificates: ["AWS Certified Developer", "TypeScript Mastery"],
+    isNew: true,
   },
   {
-    employerId: 3,
-    position: "Frontend Developer",
-    company: "Digital Innovation GmbH",
+    id: 3,
+    firstName: "Ava",
+    lastName: "Martinez",
+    phoneNumber: 639275454436,
+    birthday: "July 8",
     location: "Germany",
-    description:
-      "Help shape the future of our digital products with modern JavaScript frameworks and cutting-edge technologies.",
+    position: "Junior JavaScript Developer",
+    education: "Bachelor's Degree",
     coreSkills: ["JavaScript", "React", "Vue.js", "CSS", "HTML"],
-    posted: "1 day",
+    posted: "2 days",
     experience: "1 - 3 years",
-    lookingFor: ["Full Time", "Part Time", "Contract only"],
+    lookingFor: ["Full Time"],
     salaryExpectation: "$51,000-$70,000",
-    interpersonalSkills: ["Communication", "Adaptability", "Problem-solving"],
-    certificates: ["None required"],
-    isNew: false
+    language: ["English", "Spanish"],
+    interpersonalSkills: ["Creativity", "Empathy", "Conflict Resolution"],
+    certificates: ["Certified Vue.js Developer"],
+    isNew: false,
   },
-  // Add more mock bookmarks as needed
 ];
 
 const BookmarkedJobsContent: FC = () => {
@@ -66,7 +82,7 @@ const BookmarkedJobsContent: FC = () => {
   const [hasMore, setHasMore] = useState(true);
   const loaderRef = useRef<HTMLDivElement>(null);
   const [initialLoad, setInitialLoad] = useState(true);
-  const { subscriptionTier } = useJobHunterContext();
+  const { subscriptionTier } = useEmployerContext();
 
   const loadMore = async () => {
     if (loading || !hasMore) return;
@@ -173,7 +189,11 @@ const BookmarkedJobsContent: FC = () => {
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-y-6 gap-x-14 justify-items-center w-full">
         {!initialLoad &&
           displayedItems.map((bookmark, index) => (
-            <BookmarkCard key={index} match={bookmark} subscriptionTier={subscriptionTier}/>
+            <BookmarkCard
+              key={index}
+              app={bookmark}
+              subscriptionTier={subscriptionTier}
+            />
           ))}
 
         {showLoadingCards && (
@@ -191,7 +211,7 @@ const BookmarkedJobsContent: FC = () => {
 
 // Wrap the content with BookmarkProvider
 const YourBookmarkedJobs: FC = () => {
-  const { subscriptionTier } = useJobHunterContext();
+  const { subscriptionTier } = useEmployerContext();
 
   return (
     <BookmarkProvider subscriptionTier={subscriptionTier}>

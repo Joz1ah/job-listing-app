@@ -4,6 +4,7 @@ import { InterviewCardSkeleton } from "components";
 import { NavLink } from "react-router-dom";
 import emptyInterview from "images/calendar-empty.svg?url";
 import { declinedInterviewsData, Interview } from "mockData/employer-interviews-data";
+import { useEmployerContext } from "components";
 
 const DeclinedInterviews: FC = () => {
   const [displayedItems, setDisplayedItems] = useState<Interview[]>([]);
@@ -11,6 +12,7 @@ const DeclinedInterviews: FC = () => {
   const [hasMore, setHasMore] = useState(true);
   const loaderRef = useRef<HTMLDivElement>(null);
   const [initialLoad, setInitialLoad] = useState(true);
+  const { subscriptionTier } = useEmployerContext();
 
   const loadMore = async () => {
     if (loading || !hasMore) return;
@@ -85,7 +87,7 @@ const DeclinedInterviews: FC = () => {
   const loadingCardsCount = Math.min(6, declinedInterviewsData.length);
 
   // Show empty state if there are no declined interviews and we're not loading
-  if (!loading && displayedItems.length === 0) {
+  if (!loading && displayedItems.length === 0 || subscriptionTier === 'freeTrial') {
     return (
       <div className="h-full w-full flex items-center justify-center">
         <div className="flex flex-col items-center justify-center p-8 text-center">

@@ -1,16 +1,16 @@
 import { FC } from "react";
 import { Outlet } from "react-router-dom";
-import { BookmarkSidebar } from "features/job-hunter";
-import { useJobHunterContext} from "components";
+import { BookmarkSidebar } from "features/employer";
+import { useEmployerContext} from "components";
 
-const BookmarkedJobs: FC = () => {
-  const { subscriptionTier } = useJobHunterContext();
+const EmployerBookmarkedJobs: FC = () => {
+  const { subscriptionTier } = useEmployerContext();
 
   return (
     <div className="flex justify-center w-full max-w-screen-xl mx-auto md:py-16 py-6">
       <div className="flex flex-col lg:flex-row w-full pt-8">
         <BookmarkSidebar
-          userName="John Doe"
+          userName="ABC Incorporated"
           subscriptionTier={subscriptionTier}
           className="w-[395px]"
         />
@@ -22,4 +22,4 @@ const BookmarkedJobs: FC = () => {
   );
 };
 
-export { BookmarkedJobs };
+export { EmployerBookmarkedJobs };
