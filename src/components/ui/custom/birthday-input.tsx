@@ -58,37 +58,24 @@ const BirthdayInput: React.FC<BirthdayInputProps> = ({ name, value, onChange }) 
     }
   };
 
-  const handleContainerFocus = () => {
-    setIsActive(true);
-  };
-
-  const handleContainerBlur = (e: React.FocusEvent) => {
-    if (!e.currentTarget.contains(e.relatedTarget) && !isMonthOpen && !isDayOpen) {
-      setIsActive(false);
-    }
-  };
-
   return (
     <div 
-      className={`flex items-center justify-between h-14 px-4 py-2 bg-transparent border-2 rounded-[10px] cursor-pointer transition-colors ${
+      className={`flex items-center justify-between h-14 px-4 py-2 bg-transparent border-2 rounded-[10px] cursor-pointer transition-colors outline-none ${
         isActive || isMonthOpen || isDayOpen ? 'border-[#F5722E]' : 'border-[#AEADAD]'
       }`}
-      onClick={handleContainerFocus}
-      onFocus={handleContainerFocus}
-      onBlur={handleContainerBlur}
-      tabIndex={0}
     >
       <Select
         onValueChange={handleMonthChange}
         value={monthName || undefined}
         onOpenChange={(open) => {
           setIsMonthOpen(open);
-          if (open) setIsActive(true);
+          setIsActive(open);
         }}
       >
         <SelectTrigger 
           className="w-full border-none bg-transparent focus:ring-0 text-sm"
           onFocus={() => setIsActive(true)}
+          onBlur={() => !isMonthOpen && !isDayOpen && setIsActive(false)}
         >
           <SelectValue placeholder="Month" />
         </SelectTrigger>
@@ -109,12 +96,13 @@ const BirthdayInput: React.FC<BirthdayInputProps> = ({ name, value, onChange }) 
         disabled={!monthName}
         onOpenChange={(open) => {
           setIsDayOpen(open);
-          if (open) setIsActive(true);
+          setIsActive(open);
         }}
       >
         <SelectTrigger 
           className={`w-full border-none bg-transparent focus:ring-0 text-sm ${!monthName ? 'cursor-not-allowed opacity-50' : ''}`}
           onFocus={() => setIsActive(true)}
+          onBlur={() => !isMonthOpen && !isDayOpen && setIsActive(false)}
         >
           <SelectValue placeholder="Day" />
         </SelectTrigger>

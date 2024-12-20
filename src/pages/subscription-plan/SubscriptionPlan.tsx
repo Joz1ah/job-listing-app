@@ -1,7 +1,6 @@
 import { FC } from "react";
 import { Button } from "components";
 import { ThumbsUp, ChartNoAxesCombined, LockKeyhole, MessageCircleMore, Trophy } from "lucide-react";
-import sub_plan_pic from "assets/images/sub-plan-pic.svg?url";
 import sparkle_icon from 'assets/images/sparkle-icon.png'
 
 interface PlanFeature {
@@ -26,7 +25,7 @@ const PlanCard: FC<PlanProps> = ({
 }) => {
   return (
     <div
-      className={`w-full ${bestValue ? "bg-[#2D3A41]" : "bg-[#F5F5F7BF]"} rounded-lg px-4 py-3 transform transition-transform duration-300 hover:scale-105 mb-6`}
+      className={`w-full ${bestValue ? "bg-[#2D3A41]" : "bg-[#F5F5F7BF]"} rounded-lg px-4 py-3 transform transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_2px_rgba(245,114,46,0.6)] mb-6`}
     >
       {/* Single row with two columns */}
       <div className="flex justify-between h-full">
@@ -100,70 +99,27 @@ const SubscriptionPlan: FC = () => {
 
   return (
     <div className="bg-[#242625] min-h-screen md:pt-20">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="grid md:grid-cols-2 gap-8">
-          {/* Left Column */}
-          <div className="space-y-6 pt-4">
-            <div>
-              <h1 className="text-3xl font-bold text-[#F5722E] mb-4">
-                Unlock Your Full Potential with Our Plans
-              </h1>
-              <p className="text-[#F5F5F7]">
-                Choose a plan that aligns with your goals. Whether you're
-                seeking top talent or your next career opportunity, start
-                achieving smarter and faster today.
-              </p>
-            </div>
-
-            <div className="mb-4">
-              <img src={sub_plan_pic} alt="Subscription plan illustration" />
-            </div>
-
-            <div className="bg-black/50 p-3 rounded-lg">
-              <h2 className="text-xl">
-                <span className="text-[#F5722E] font-bold">Maximum</span>{" "}
-                <span className="text-[#F5F5F7] font-bold">Efficiency</span>{" "}
-                <span className="text-[#F5722E]">&</span>{" "}
-                <span className="text-[#F5F5F7] font-bold">Accountability</span>
-              </h2>
-              <p className="text-[#F5722E] text-xl font-bold mb-1">
-                is what we strive for!
-              </p>
-              <p className="text-[#F5F5F7] text-sm mb-1">
-                We are committed to be the best at what we do. Our CEO is eager
-                to connect with you personally to discuss how we can enhance
-                your experience!
-              </p>
-              <div className="flex justify-end">
-                <Button className="text-[15px] h-8 bg-[#F5722E] text-[#F5F5F7] py-2 px-6 rounded hover:bg-[#F5722E]/90">
-                  Schedule a call
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          {/* Right Column - Plans */}
-          <div className="space-y-6 pt-4">
-            <PlanCard
-              title="Yearly Plan"
-              price="55"
-              period="/year"
-              features={features}
-              bestValue={true}
-            />
-            <PlanCard
-              title="Monthly Plan"
-              price="5"
-              period="/per month"
-              features={features}
-            />
-            <PlanCard
-              title="Free Trial"
-              price="0"
-              period="for 3 days only"
-              features={features}
-            />
-          </div>
+      <div className="max-w-3xl mx-auto px-4">
+        <div className="space-y-6 pt-4">
+          <PlanCard
+            title="Yearly Plan"
+            price="55"
+            period="/year"
+            features={features}
+            bestValue={true}
+          />
+          <PlanCard
+            title="Monthly Plan"
+            price="5"
+            period="/per month"
+            features={features}
+          />
+          <PlanCard
+            title="Free Trial"
+            price="0"
+            period="for 3 days only"
+            features={features}
+          />
         </div>
       </div>
     </div>

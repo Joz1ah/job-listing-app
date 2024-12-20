@@ -97,8 +97,8 @@ const BaseLayout: FC<BaseLayoutProps> = ({ userType }) => {
   }
 
   return (
-    <EmployerProvider initialTier='freeTrial'>
-      <JobHunterProvider initialTier='freeTrial'>
+    <EmployerProvider initialTier='monthlyPlan'>
+      <JobHunterProvider initialTier='monthlyPlan'>
         <BaseLayoutContent userType={userType} />
       </JobHunterProvider>
     </EmployerProvider>
