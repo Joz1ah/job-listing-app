@@ -887,6 +887,10 @@ color: #F5F5F7;
   font-weight: 500;
   line-height: normal;
 }
+.password-input-fields > .outer-error-label{
+  text-align: center;
+  color:red;
+}
 
 .transparent-input-field > .input-container{
   display: flex;
@@ -1900,21 +1904,12 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .button-spinner {
-  width: 32px;
-  height: 32px;
-  border: 4px solid transparent; /* Base border, fully transparent */
-  border-top-color: #f5722e; /* Top section color */
-  border-right-color: #712701; /* Right section color */
-  border-radius: 50%; /* Make it a circle */
+  width: 24px;
+  height: 24px;
   animation: spin 1s linear infinite;
 
-  /* Mask to create the "C" shape */
-  mask: radial-gradient(farthest-side, transparent 65%, black 66%) 
-        conic-gradient(black 60deg, transparent 120deg);
-  -webkit-mask: radial-gradient(farthest-side, transparent 65%, black 66%) 
-                conic-gradient(black 60deg, transparent 120deg);
-  background: linear-gradient(0deg, #712701 0%, #f5722e 100%);
 }
+
 
 @keyframes spin {
   from {
@@ -1924,4 +1919,5 @@ input[type=number]::-webkit-outer-spin-button {
     transform: rotate(360deg);
   }
 }
+
 /*End Custom CSS*/
