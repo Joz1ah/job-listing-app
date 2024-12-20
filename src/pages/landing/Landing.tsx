@@ -2,7 +2,7 @@ import React, { FC, useEffect, useState, useRef, ReactElement } from 'react'
 import { FooterEngagement as Footer} from "layouts";
 import { PageMeta } from "components";
 import { LandingContext } from 'components';
-import { useLoginMutation, useSignUpMutation, useOtpGenerateMutation, useOtpVerifyMutation, /*usePaymentCreateMutation*/ } from 'api/akaza/akazaAPI';
+import { useLoginMutation, useSignUpMutation, useOtpGenerateMutation, useOtpVerifyMutation, useGetUserInfoQuery, usePaymentCreateMutation } from 'api/akaza/akazaAPI';
 import { useNavigate } from "react-router-dom";
 import { Formik, Form, FieldProps, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -54,9 +54,6 @@ import amex_icon from 'assets/credit-card-icons/cc_american-express.svg?url';
 import mastercard_icon from 'assets/credit-card-icons/cc_mastercard.svg?url';
 import discover_icon from 'assets/credit-card-icons/cc_discover.svg?url';
 
-import { loadStripe } from '@stripe/stripe-js';
-import { useStripe, useElements, Elements, CardElement } from '@stripe/react-stripe-js';
-const stripePromise = loadStripe('pk_test_51QMsGlFCh69SpK2kpR1Y1qGEkVzVy2gLDHJkLjIx8rQSJhyl8qQwG3nFVqjVL4E4JoeVhez3a0HAkyN94YhqcpKG00PsoOvCI8'); 
 //import { useAppSelector, useAppDispatch } from 'store/store'
 //import { increment } from 'store/counter/counterSlice'
 //import useTranslations from 'i18n/useTranslations'
@@ -64,6 +61,8 @@ const stripePromise = loadStripe('pk_test_51QMsGlFCh69SpK2kpR1Y1qGEkVzVy2gLDHJkL
 //import { Button, Counter, Menu, PageMeta } from 'components'
 
 import styles from './landing.module.scss'
+import { StripeProvider } from '../../providers/stripeProvider/stripeProvider';
+import CheckoutForm from 'components/payment/stripeForm';
 
 interface VideoProps {
   src: string;
@@ -95,11 +94,37 @@ const Video: FC<VideoProps> = ({ src, className }) => {
   );
 };
 
+const getUserInfo = () => {
+  const { data: userInfo, error, isLoading } = useGetUserInfoQuery(null)
+
+  if (isLoading) {
+    console.log("Loading user info...");
+    return null; // No display, just process the logic
+  }
+
+  if (error) {
+    console.error("Error fetching user info:", error);
+    return null;
+  }
+
+  if (userInfo) {
+    console.log("Fetched user info:", userInfo);
+
+    //const processedData = processUserInfo(userInfo); 
+    //console.log("Processed Data:", processedData);
+  }
+
+  return null; 
+
+}
+
 const Landing: FC = (): ReactElement => {
-  const [maskHidden, setMaskHidden] = useState(0);
+  getUserInfo()
+
+  const [maskHidden, setMaskHidden] = useState(1);
   const [closeModalActive, setCloseModalActive] = useState(1);
   const [selectedModalHeader, setSelectedModalHeader] = useState(1);
-  const [modalState, setModalState] = useState(10);
+  const [modalState, setModalState] = useState(5);
   const [heroState, setHeroState] = useState(1);
   const [currentSelectedPlan, setCurrentSelectedPlan] = useState(3)
   const [dataStates, setDataStates] = useState({
@@ -137,7 +162,7 @@ const Landing: FC = (): ReactElement => {
   //const dispatch = useAppDispatch()
 
   //const [localCount, setCount] = useState(0)
-  
+
   const ButtonLoginNav = () =>{
     const elementRef = useRef<HTMLButtonElement>(null);
     const toggleLogin = () => {
@@ -669,6 +694,7 @@ const SubscriptionPlanSelection = () =>{
   const subscription_plan2 = useRef<HTMLDivElement>(null);
   const subscription_plan3 = useRef<HTMLDivElement>(null);
   const buttonSubscribe = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
   const PLAN_SELECTION_ITEMS = {
     'FREE' : 1,
     'MONTHLY' : 2,
@@ -679,7 +705,15 @@ const SubscriptionPlanSelection = () =>{
     if (buttonSubscribe.current) {
       buttonSubscribe.current.onclick = () => {
         setSelectedModalHeader(1);
-        setModalState(modalStates.STRIPE_PAYMENT)
+        if(currentSelectedPlan == PLAN_SELECTION_ITEMS.FREE){
+          setModalState(modalStates.LOADING)
+          setTimeout(()=>{
+            navigate("/job-hunter");
+          },5000)
+        }
+        else
+          setModalState(modalStates.STRIPE_PAYMENT)
+
       };
     }
     if (subscription_plan1.current) {
@@ -899,13 +933,9 @@ const CustomInput: React.FC<CustomInputProps> = ({ field, form, ...props }) => {
 };
 
 const CreditCardForm = () => {
-  //const [paymentSubmit] = usePaymentCreateMutation();
+  const [paymentSubmit] = usePaymentCreateMutation();
   const previousButton = useRef<HTMLButtonElement>(null);
-  //const navigate = useNavigate();
-  const stripe = useStripe();
-  const elements = useElements();
-  const [error, setError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const handlePrevious = () => {
     if (previousButton.current) {
@@ -937,46 +967,7 @@ const CreditCardForm = () => {
       .required('CVV/CVC is required'),
   });
 
-  const handlePayment = async (values: { cardNumber: string; cardholderName: string; expirationDate: string; cvv: string }) => {
-    //event.preventDefault();
-    console.log(values)
-    if (!stripe || !elements) {
-      console.log(stripe, elements)
-      console.log('stripe or elements not found')
-      return;
-    }
-    console.log('values2')
-
-    const cardElement = elements.getElement(CardElement);
-
-    if (!cardElement) {
-      setError('Card Element not found');
-      console.log('Card Element not found')
-      return;
-    }
-    console.log('pass card element')
-
-    // Create a payment method with the CardElement
-    const { error: stripeError, paymentMethod } = await stripe.createPaymentMethod({
-      type: 'card',
-      card: cardElement, // Pass the CardElement instance
-      billing_details: {
-        name: 'Customer Name', // Optional: Include customer details
-      },
-    });
-
-    if (stripeError) {
-      setError(stripeError.message || 'An error occurred');
-      setSuccessMessage(null);
-      console.log("paymentMethod error")
-    } else {
-      console.log(paymentMethod)
-      setSuccessMessage(`Payment method created: ${paymentMethod.id}`);
-      setError(null);
-      // Optionally send the paymentMethod.id to your server for further processing
-    }
-  };
-  /*
+  
   const handleSubmit = (values: { cardNumber: string; cardholderName: string; expirationDate: string; cvv: string }) => {
     console.log(`Submitted values: ${JSON.stringify(values, null, 2)}`);
     setModalState(modalStates.LOADING)
@@ -993,9 +984,10 @@ const CreditCardForm = () => {
         "daysTrial": 0
       }
     )
-  };*/
+  };
 
   return (
+    <StripeProvider>
     <Formik
       initialValues={{
         cardNumber: '',
@@ -1004,16 +996,14 @@ const CreditCardForm = () => {
         cvv: '',
       }}
       validationSchema={validationSchema}
-      onSubmit={handlePayment}
+      onSubmit={handleSubmit}
     >
       {() => (
             <Form>
               <div className={`${styles['stripe-form-inputs-container']}`}>
                 <div className={`${styles['stripe-form-upper-inputs']}`}>
                   <div>
-                  <CardElement />
-                  {error}
-                  {successMessage}
+                    <CheckoutForm/>
                   </div>
                   <div>
                     <Field component={CustomInput} id="cardNumber" placeholder="Card Number *" name="cardNumber" type="text" />
@@ -1058,6 +1048,7 @@ const CreditCardForm = () => {
         
       )}
     </Formik>
+    </StripeProvider>
   );
 };
 
@@ -1511,7 +1502,6 @@ const HeroLoading = () => {
 const isFreeTrial = false;
 
   return (
-    <Elements stripe={stripePromise}>
     <LandingContext.Provider value={{ isFreeTrial }}>
         <PageMeta title="Akaza" />
         <div className={styles.main}>
@@ -1651,7 +1641,6 @@ const isFreeTrial = false;
             </div>
         </div>
     </LandingContext.Provider>
-    </Elements>
   )
 }
 

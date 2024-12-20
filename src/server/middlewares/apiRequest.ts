@@ -6,7 +6,8 @@ import {
   akazaApiJobFeed,
   akazaApiPayment,
   akazaApiPerfectMatch,
-  akazaApiSearch
+  akazaApiSearch,
+  akazaApiAccount
 } from 'api'
 
 const apiRequest = async (
@@ -47,6 +48,8 @@ const apiRequest = async (
   store.dispatch(akazaApiSearch.endpoints.searchIndustry.initiate(1))
   store.dispatch(akazaApiSearch.endpoints.searchInterPersonal.initiate(1))
 
+  store.dispatch(akazaApiAccount.endpoints.getUserInfo.initiate(1))
+
   return await Promise.all<any>(
     store.dispatch(
       pokemonApi.util.getRunningQueriesThunk(),
@@ -55,7 +58,8 @@ const apiRequest = async (
       akazaApiJobFeed.util.getRunningQueriesThunk(),
       akazaApiPayment.util.getRunningQueriesThunk(),
       akazaApiPerfectMatch.util.getRunningQueriesThunk(),
-      akazaApiSearch.util.getRunningQueriesThunk())
+      akazaApiSearch.util.getRunningQueriesThunk(),
+      akazaApiAccount.util.getRunningQueriesThunk()),
   )
 }
 

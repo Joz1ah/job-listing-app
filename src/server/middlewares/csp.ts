@@ -7,20 +7,30 @@ const nonce = (_req: Request, res: Response, next: NextFunction): void => {
   res.locals.cspNonce = Buffer.from(randomUUID()).toString('base64')
   next()
 }
+const defaultSrc = [
+  "'self'",
+  'pokeapi.co',
+  'js.stripe.com',
+  '*.akaza.xyz',
+  'localhost:*',
+  'akaza-sit-api-gateway---rev-2-2tninhtd.uk.gateway.dev',
+];
 
 const csp = (req: Request, res: Response, next: NextFunction): void => {
   const middleware = helmet({
     contentSecurityPolicy: {
       useDefaults: true,
       directives: {
-        defaultSrc: ["'self'", 'pokeapi.co', 'js.stripe.com', 'localhost:*', 'akaza-sit-api-gateway---rev-2-2tninhtd.uk.gateway.dev','api-sit.akaza.xyz', 'api-auth-sit.akaza.xyz', 'api-search-sit.akaza.xyz', 'payment-sit.akaza.xyz', 'api-jobfeed-sit.akaza.xyz', 'perfectmatch-sit.akaza.xyz',],
+        defaultSrc,        
         imgSrc: ["'self'", 'raw.githubusercontent.com'],
         scriptSrc: [
           "'self'",
           `'nonce-${String(res.locals.cspNonce)}'`,
           `https://js.stripe.com`,
           IS_DEV ? "'unsafe-eval'" : ''
-        ].filter(Boolean)
+        ].filter(Boolean),
+        frameSrc: ["'self'", "https://js.stripe.com"],
+        connectSrc: [...defaultSrc, "https://api.stripe.com"],
       }
     },
     crossOriginEmbedderPolicy: { policy: 'credentialless' },

@@ -20,7 +20,8 @@ import {
   akazaApiJobFeed,
   akazaApiPayment,
   akazaApiPerfectMatch,
-  akazaApiSearch } from 'api'
+  akazaApiSearch,
+  akazaApiAccount, } from 'api'
 import { persistStateToLocalStorage } from './middlewares'
 import { isServer } from 'utils'
 
@@ -33,6 +34,7 @@ const middlewares = [
   akazaApiPayment.middleware,
   akazaApiPerfectMatch.middleware,
   akazaApiSearch.middleware,
+  akazaApiAccount.middleware,
 ]
 
 const initStore = (preloadedState?: Partial<RootState>): EnhancedStore =>
