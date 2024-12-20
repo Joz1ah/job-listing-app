@@ -54,6 +54,8 @@ import amex_icon from 'assets/credit-card-icons/cc_american-express.svg?url';
 import mastercard_icon from 'assets/credit-card-icons/cc_mastercard.svg?url';
 import discover_icon from 'assets/credit-card-icons/cc_discover.svg?url';
 
+import { Eye, EyeOff } from "lucide-react";
+//import button_loading_spinner from 'assets/loading-spinner-orange.svg?url';
 //import { useAppSelector, useAppDispatch } from 'store/store'
 //import { increment } from 'store/counter/counterSlice'
 //import useTranslations from 'i18n/useTranslations'
@@ -63,7 +65,13 @@ import discover_icon from 'assets/credit-card-icons/cc_discover.svg?url';
 import styles from './landing.module.scss'
 import { StripeProvider } from '../../providers/stripeProvider/stripeProvider';
 import CheckoutForm from 'components/payment/stripeForm';
-
+/*import {loadStripe} from '@stripe/stripe-js';
+import {
+  EmbeddedCheckoutProvider,
+  EmbeddedCheckout
+} from '@stripe/react-stripe-js';
+const stripePromise = loadStripe("pk_test_51QMsGlFCh69SpK2kpR1Y1qGEkVzVy2gLDHJkLjIx8rQSJhyl8qQwG3nFVqjVL4E4JoeVhez3a0HAkyN94YhqcpKG00PsoOvCI8");
+*/
 interface VideoProps {
   src: string;
   className?: string;
@@ -118,13 +126,54 @@ const getUserInfo = () => {
 
 }
 
+
+interface CustomInputProps extends FieldProps {
+  placeholder?: string;
+  type?: string;
+}
+
+const CustomInput: React.FC<CustomInputProps> = ({ field, form, ...props }) => {
+  const [inputType, setInputType] = useState('password');
+  const eyeIcon = useRef<HTMLImageElement>(null);
+  const handleEyeIcon = () => {
+    if (eyeIcon.current) {
+      eyeIcon.current.onclick = () => {
+        if(inputType == 'password'){
+          setInputType('text')
+        }
+        else{
+          setInputType('password')
+        }
+      };
+    }
+  }
+  useEffect(handleEyeIcon,[])
+
+  return (
+    <div className={`${styles['transparent-input-field']}`}>
+      <div className={`${styles['input-container']}`}>
+        <input type={inputType} 
+        {...field} {...props}
+        required>
+        </input>
+        {
+          (props.type=='password') ?
+            <Eye/>
+            : ''
+        }
+      </div>
+    </div>
+  )
+
+};
+
 const Landing: FC = (): ReactElement => {
   getUserInfo()
 
-  const [maskHidden, setMaskHidden] = useState(1);
+  const [maskHidden, setMaskHidden] = useState(0);
   const [closeModalActive, setCloseModalActive] = useState(1);
   const [selectedModalHeader, setSelectedModalHeader] = useState(1);
-  const [modalState, setModalState] = useState(5);
+  const [modalState, setModalState] = useState(10);
   const [heroState, setHeroState] = useState(1);
   const [currentSelectedPlan, setCurrentSelectedPlan] = useState(3)
   const [dataStates, setDataStates] = useState({
@@ -264,82 +313,113 @@ const Landing: FC = (): ReactElement => {
     )
   }
 
-  const LoginForm = () =>{
-    const [credentials, setCredentials] = useState({ email: '', password: '', });
-    const [loginSubmit] = useLoginMutation()
-    const [isLoginError, setIsLoginError] = useState(false);
-    const [_errorMessage, set_errorMessage] = useState('');
-    const navigate = useNavigate();
-    //console.log(data,error, isLoading)
-    //akazaApi.
+  interface LoginFormValues {
+    email: string;
+    password: string;
+  }
+  
+  const LoginSchema = Yup.object().shape({
+    email: Yup.string().email('Invalid email').required('Email is required'),
+    password: Yup.string().required('Password is required'),
+  });
+  
 
-    const handleSubmit = async (e: React.FormEvent) => {
-      e.preventDefault();
-      loginSubmit({...credentials})
-      .unwrap()
-      .then((res)=>{
-        console.log(res)    
-        navigate("/job-hunter");
-      })
-      .catch((err) => {
-        console.log(err)
-        setIsLoginError(true)
-        set_errorMessage('Invalid Username or Password')
-      })
+  const LoginForm = () => {
+    const [loginSubmit] = useLoginMutation();
+    const navigate = useNavigate();
+  
+    // State to toggle password visibility
+    const [showPassword, setShowPassword] = useState(false);
+  
+    const handleSubmit = async (
+      values: LoginFormValues,
+      { setSubmitting, setFieldError }: any
+    ) => {
+      try {
+        const res = await loginSubmit(values).unwrap();
+        console.log(res);
+        navigate('/job-hunter');
+      } catch (err: any) {
+        console.error(err);
+        setFieldError('general', 'Invalid Username or Password'); // Set general error
+      } finally {
+        setSubmitting(false);
+      }
     };
   
-  
     return (
-      <form onSubmit={handleSubmit}>
-        <div className={`${styles['password-input-fields']}`}>
-            <div className={`${styles['transparent-input-field']}`}>
-                <div className={`${styles['input-container']}`}>
-                    <input 
-                    value={credentials.email}
+      <Formik<LoginFormValues>
+        initialValues={{ email: '', password: '' }}
+        validationSchema={LoginSchema}
+        onSubmit={handleSubmit}
+      >
+        {({ errors, touched, isSubmitting }) => (
+          <Form>
+            <div className={styles['password-input-fields']}>
+              <div className={styles['transparent-input-field']}>
+                <div className={styles['input-container']}>
+                  <Field
+                    name="email"
                     type="text"
-                    placeholder="Email" 
-                    onChange={(e) => setCredentials({ ...credentials, email: e.target.value })}
-                    required>
-                    </input>
+                    placeholder="Email"
+                    className={`${touched.email && errors.email ? styles['input-error'] : ''}`}
+                  />
                 </div>
-            </div>
-            <div className={`${styles['transparent-input-field']}`}>
-                <div className={`${styles['input-container']}`}>
-                    <input 
-                    value={credentials.password} 
-                    type="password" 
-                    placeholder="Password" 
-                    onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
-                    required>
-                    </input>
-                    <img src={eye_off_outline}></img>
+                <ErrorMessage name="email" component="div" className={styles['error-label']} />
+              </div>
+              <div className={styles['transparent-input-field']}>
+                <div className={styles['input-container']}>
+                  <Field
+                    name="password"
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="Password"
+                    className={`${touched.password && errors.password ? styles['input-error'] : ''}`}
+                  />
+                  <button
+                    type="button"
+                    className={styles['toggle-visibility']}
+                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? 'Hide Password' : 'Show Password'}
+                  >
+                    {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
+                  </button>
                 </div>
+                <ErrorMessage name="password" component="div" className={styles['error-label']} />
+              </div>
             </div>
-        </div>
-        
-        <div id="label_login" className={`${styles['error-label']} ${styles['color_error']}`} hidden={isLoginError}>
-          {_errorMessage}
-        </div>
-        <div className={`${styles['login-options']}`}>
-            <div>
-                <input type="checkbox"></input>
-                <label>remember me</label>
+
+            <div className={styles['login-options']}>
+              <div>
+                <Field type="checkbox" name="rememberMe" />
+                <label>Remember me</label>
+              </div>
+              <div>Forgot password?</div>
             </div>
-            <div>Forgot password?</div>
-        </div>
-        <div className={`${styles['action-buttons']}`}>
-            <button type="submit" className={`${styles['button-custom-basic']}`}>Login</button>
-        </div>
-    </form>
-    )
-  }
+  
+            <div className={styles['action-buttons']}>
+              <button
+                type="submit"
+                className={styles['button-custom-orange']}
+                disabled={isSubmitting}
+              >
+                {isSubmitting && <div className={styles['button-spinner']} />}
+                Login
+              </button>
+            </div>
+          </Form>
+        )}
+      </Formik>
+    );
+  };
+  
+  
   
 
   const UserNamePasswordSignup = () => {
     const [credentials, setCredentials] = useState({ email: '', password: '', passwordConfirm: '' });
     const [isSignupError, setIsSignupError] = useState(false);
     const [organizedErrors, setOrganizedErrors] =  useState({ email: '', password: '', passwordConfirm: '' });
-
+    
   
     const [signUpSubmit] = useSignUpMutation()
     const [generateOTP] = useOtpGenerateMutation()
@@ -908,29 +988,6 @@ const CongratulationsModal = () => {
     </div> 
   )
 }
-interface CustomInputProps extends FieldProps {
-  placeholder?: string;
-  type?: string;
-}
-
-const CustomInput: React.FC<CustomInputProps> = ({ field, form, ...props }) => {
-  return (
-    <div className={`${styles['transparent-input-field']}`}>
-      <div className={`${styles['input-container']}`}>
-        <input type="password" 
-        {...field} {...props}
-        required>
-        </input>
-        {
-          (props.type=='password') ?
-            <img src={eye_off_outline}></img>
-            : ''
-        }
-      </div>
-    </div>
-  )
-
-};
 
 const CreditCardForm = () => {
   const [paymentSubmit] = usePaymentCreateMutation();

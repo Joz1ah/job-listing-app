@@ -224,7 +224,7 @@ body:has(.requires-no-scroll:not([hidden])) {
 }
 
 .button-custom-orange:disabled{
-  filter: grayscale(1);
+  /*filter: grayscale(1);*/
 }
 .button-custom-orange:disabled:active{
   background-color: #F5722E;
@@ -1897,5 +1897,31 @@ input[type=number]::-webkit-outer-spin-button {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.button-spinner {
+  width: 32px;
+  height: 32px;
+  border: 4px solid transparent; /* Base border, fully transparent */
+  border-top-color: #f5722e; /* Top section color */
+  border-right-color: #712701; /* Right section color */
+  border-radius: 50%; /* Make it a circle */
+  animation: spin 1s linear infinite;
+
+  /* Mask to create the "C" shape */
+  mask: radial-gradient(farthest-side, transparent 65%, black 66%) 
+        conic-gradient(black 60deg, transparent 120deg);
+  -webkit-mask: radial-gradient(farthest-side, transparent 65%, black 66%) 
+                conic-gradient(black 60deg, transparent 120deg);
+  background: linear-gradient(0deg, #712701 0%, #f5722e 100%);
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 /*End Custom CSS*/
