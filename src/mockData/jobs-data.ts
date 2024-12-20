@@ -20,7 +20,7 @@ export const perfectMatch: Match[] = [
     employerId: 1,
     position: "Software Engineer",
     company: "Fintech Solutions Ltd",
-    location: "United Kingdom",
+    location: "Philippines",
     description:
       "Looking for a passionate engineer to help build our next-generation financial platform using modern web technologies.",
     coreSkills: ["React", "JavaScript", "CSS", "HTML", "Git"],

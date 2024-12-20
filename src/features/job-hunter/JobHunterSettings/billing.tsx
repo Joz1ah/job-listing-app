@@ -4,18 +4,20 @@ import { Tooltip, Button } from "components";
 import { Info } from "lucide-react";
 import { useJobHunterContext } from "components";
 import rocketIcon from "images/rocket-subscribe.svg?url";
+import { Link } from "react-router-dom";
 
 const BillingSettings: FC = () => {
   const { subscriptionTier } = useJobHunterContext();
 
-  const editTooltip = subscriptionTier === 'freeTrial'
-    ? "Editing is currently unavailable. Subscribe to a plan to unlock this feature and enjoy enhanced capabilities!"
-    : "Lorem ipsum odor amet, consectetuer adipiscing elit. Habitasse ante imperdiet congue parturient euismod nec suspendisse.";
-    
+  const editTooltip =
+    subscriptionTier === "freeTrial"
+      ? "Editing is currently unavailable. Subscribe to a plan to unlock this feature and enjoy enhanced capabilities!"
+      : "Lorem ipsum odor amet, consectetuer adipiscing elit. Habitasse ante imperdiet congue parturient euismod nec suspendisse.";
+
   const manageTooltip =
     "Lorem ipsum odor amet, consectetuer adipiscing elit. Habitasse ante imperdiet congue parturient euismod nec suspendisse.";
 
-  if (subscriptionTier === 'freeTrial') {
+  if (subscriptionTier === "freeTrial") {
     return (
       <div className="flex flex-col min-h-full">
         <div className="flex-1">
@@ -25,16 +27,17 @@ const BillingSettings: FC = () => {
                 Billing & Information
               </h2>
               <p className="text-white text-[15px] font-light">
-                The card details below are the ones currently used for your subscription.
+                The card details below are the ones currently used for your
+                subscription.
               </p>
             </div>
           </div>
 
           {/* Edit Button Section */}
           <div className="flex justify-end gap-2 mr-6">
-            <button className="px-3 py-1.5 rounded bg-[#979797] text-white text-sm hover:bg-[#979797]/70 transition-colors">
+            <Button className="px-3 py-1.5 rounded bg-[#979797] text-white text-sm hover:bg-[#979797]/70 transition-colors">
               Edit
-            </button>
+            </Button>
             <Tooltip content={editTooltip}>
               <Info className="w-3 h-3 text-[#2D3A41] fill-white mb-2" />
             </Tooltip>
@@ -44,21 +47,20 @@ const BillingSettings: FC = () => {
             <div className="w-24 h-24 bg-orange-100 rounded-full flex items-center justify-center mb-6">
               <img src={rocketIcon} alt="Rocket" className="w-12 h-12" />
             </div>
-            
+
             <h3 className="text-[#F5722E] text-xl font-medium mb-4">
               Take the next step—subscribe and explore!
             </h3>
-            
+
             <p className="text-white text-center mb-6 max-w-md">
-              It appears that you are not currently subscribed.
-              Subscribing will give you access to exclusive features,
-              updates, and benefits.
+              It appears that you are not currently subscribed. Subscribing will
+              give you access to exclusive features, updates, and benefits.
             </p>
-            
+
             <p className="text-white text-center mb-8">
               Consider subscribing to make the most of your experience!
             </p>
-            
+
             <button className="px-4 py-2 bg-[#F5722E] text-white rounded text-sm hover:bg-orange-600 transition-colors">
               Subscribe Now
             </button>
@@ -79,7 +81,8 @@ const BillingSettings: FC = () => {
               Billing & Information
             </h2>
             <p className="text-white text-[15px] font-light">
-              The card details below are the ones currently used for your subscription.
+              The card details below are the ones currently used for your
+              subscription.
             </p>
           </div>
         </div>
@@ -115,9 +118,12 @@ const BillingSettings: FC = () => {
           </Tooltip>
         </div>
 
-        <button className="px-4 py-2 bg-[#F5722E] text-white rounded text-sm hover:bg-orange-600 transition-colors">
-          Manage
-        </button>
+        <Link to="/job-hunter/account-settings/subscription" className="inline-block">
+          {" "}
+          <Button className="px-4 py-2 bg-orange-500 text-white rounded text-sm hover:bg-orange-600 transition-colors">
+            Manage
+          </Button>
+        </Link>
       </div>
     </div>
   );

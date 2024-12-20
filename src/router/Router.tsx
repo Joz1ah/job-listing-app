@@ -18,6 +18,7 @@ const BaseLayout = lazy(() => import('pages').then(module => ({ default: module.
 const Fetch = lazy(() => import('pages').then(module => ({ default: module.Fetch })))
 const About = lazy(() => import('pages').then(module => ({ default: module.About })))
 const NotFound = lazy(() => import('pages').then(module => ({ default: module.NotFoundPage })))
+const SubscriptionPlan = lazy(() => import('pages').then(module => ({ default: module.SubscriptionPlan })))
 
 // Employer pages
 //const EmployerBaseLayout = lazy(() => import('pages').then(module => ({ default: module.EmployerBaseLayout })))
@@ -30,7 +31,7 @@ const InterviewEmployer = lazy(() => import('pages').then(module => ({ default: 
 const AccountSettingsEmployer = lazy(() => import('pages').then(module => ({ default: module.AccountSettingsEmployer })))
 const ManageJobListings = lazy(() => import('pages').then(module => ({ default: module.ManageJobListings })))
 const ReportsAnalytics = lazy(() => import('pages').then(module => ({ default: module.ReportsAnalytics })))
-const SubscriptionPlan = lazy(() => import('pages').then(module => ({ default: module.SubscriptionPlan })))
+const EmployerBookmarkedJobs = lazy(() => import('pages').then(module => ({ default: module.EmployerBookmarkedJobs })))
 
 // Job Hunter pages
 //const JobHunterBaseLayout = lazy(() => import('pages').then(module => ({ default: module.JobHunterBaseLayout })))
@@ -40,7 +41,7 @@ const EditAppCard = lazy(() => import('pages').then(module => ({ default: module
 const JobHunterNotFound = lazy(() => import('pages').then(module => ({ default: module.JobHunterNotFound })))
 const InterviewJobHunter = lazy(() => import('pages').then(module => ({ default: module.InterviewJobHunter })))
 const AccountSettingsJobHunter = lazy(() => import('pages').then(module => ({ default: module.AccountSettingsJobHunter })))
-const BookmarkedJobs = lazy(() => import('pages').then(module => ({ default: module.BookmarkedJobs })))
+const JobHunterBookmarkedJobs = lazy(() => import('pages').then(module => ({ default: module.JobHunterBookmarkedJobs })))
 
 // Employer features
 const EmployerFeed = lazy(() => import('features/employer').then(module => ({ default: module.EmployerFeed })))
@@ -83,7 +84,8 @@ const JobHunterSubscriptionSettings = lazy(() => import('features/job-hunter').t
 const JobHunterPrivacySettings = lazy(() => import('features/job-hunter').then(module => ({ default: module.PrivacyAndSecuritySettings })))
 
 // Bookmarked jobs
-const YourBookmarkedJobs = lazy(() => import('features/job-hunter').then(module => ({ default: module.YourBookmarkedJobs })))
+const JobHunterYourBookmarkedJobs = lazy(() => import('features/job-hunter').then(module => ({ default: module.YourBookmarkedJobs })))
+const EmployerYourBookmarkedJobs = lazy(() => import('features/employer').then(module => ({ default: module.YourBookmarkedJobs })))
 
 const LoadingFallback = () => (
   <div className="flex items-center justify-center h-screen">
@@ -289,6 +291,20 @@ const routes: RouteObject[] = [
         ]
       },
       {
+        path: ROUTE_CONSTANTS.BOOKMARKED_JOBS_EMPLOYER,
+        element: <LazyComponent component={EmployerBookmarkedJobs} />,
+        children: [
+          {
+            path: '',
+            element: <Navigate to={`${ROUTE_CONSTANTS.BOOKMARKED_JOBS_EMPLOYER}/${ROUTE_CONSTANTS.BOOKMARKED}`} replace />
+          },
+          {
+            path: ROUTE_CONSTANTS.BOOKMARKED,
+            element: <LazyComponent component={EmployerYourBookmarkedJobs} />
+          }
+        ]
+      },
+      {
         path: ROUTE_CONSTANTS.EMPLOLYER_SUB_PLAN,
         element: <LazyComponent component={SubscriptionPlan} />,
       },
@@ -381,16 +397,16 @@ const routes: RouteObject[] = [
         ]
       },
       {
-        path: ROUTE_CONSTANTS.BOOKMARKED_JOBS,
-        element: <LazyComponent component={BookmarkedJobs} />,
+        path: ROUTE_CONSTANTS.BOOKMARKED_JOBS_JOBHUNTER,
+        element: <LazyComponent component={JobHunterBookmarkedJobs} />,
         children: [
           {
             path: '',
-            element: <Navigate to={`${ROUTE_CONSTANTS.BOOKMARKED_JOBS}/${ROUTE_CONSTANTS.BOOKMARKED}`} replace />
+            element: <Navigate to={`${ROUTE_CONSTANTS.BOOKMARKED_JOBS_JOBHUNTER}/${ROUTE_CONSTANTS.BOOKMARKED}`} replace />
           },
           {
             path: ROUTE_CONSTANTS.BOOKMARKED,
-            element: <LazyComponent component={YourBookmarkedJobs} />
+            element: <LazyComponent component={JobHunterYourBookmarkedJobs} />
           }
         ]
       },

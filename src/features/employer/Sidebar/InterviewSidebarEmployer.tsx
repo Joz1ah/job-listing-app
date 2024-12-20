@@ -1,8 +1,8 @@
 import { FC } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { BarChart2, Users, Calendar, DollarSign, Info } from "lucide-react";
-import verifiedIcon from 'images/verified.svg?url'
-import userCheck from 'images/user-check.svg?url'
+import { Check, X, CheckCircle, RotateCcw, Info, Clock } from "lucide-react";
+import verifiedIcon from "images/verified.svg?url";
+import userCheck from "images/user-check.svg?url";
 
 interface MenuItem {
   icon: JSX.Element;
@@ -10,60 +10,82 @@ interface MenuItem {
   path: string;
 }
 
-interface AnalyticsSidebarProps {
+interface InterviewSidebarEmployerProps {
   userName: string;
-  subscriptionTier: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
+  userType: "employer" | "job-hunter";
+  subscriptionTier: "freeTrial" | "monthlyPlan" | "yearlyPlan";
   className?: string;
 }
 
-const ReportsAnalyticsSidebar: FC<AnalyticsSidebarProps> = ({ 
+const InterviewSidebarEmployer: FC<InterviewSidebarEmployerProps> = ({
   userName,
+  userType,
   subscriptionTier,
-  className=''
+  className = "",
 }) => {
   const location = useLocation();
-  const baseRoute = '/employer/reports-and-analytics';
+  const baseRoute = userType === "employer" ? "/employer" : "/job-hunter";
 
-  const analyticsMenu: MenuItem[] = [
+  const interviewMenu: MenuItem[] = [
     {
-      icon: <BarChart2 className="w-5 h-5" />,
-      label: "Job Performance",
-      path: `${baseRoute}/job-performance`
+      icon: <Clock className="w-5 h-5" />,
+      label: "Pending Interview",
+      path: `${baseRoute}/interviews/pending`,
     },
     {
-      icon: <Users className="w-5 h-5" />,
-      label: "Candidate Analytics",
-      path: `${baseRoute}/candidates`
+      icon: <CheckCircle className="w-5 h-5" />,
+      label: "Accepted Interviews",
+      path: `${baseRoute}/interviews/accepted`,
     },
     {
-      icon: <Calendar className="w-5 h-5" />,
-      label: "Interview Analytics",
-      path: `${baseRoute}/interviews`
+      icon: <X className="w-5 h-5" />,
+      label: "Declined Interviews",
+      path: `${baseRoute}/interviews/declined`,
     },
     {
-      icon: <DollarSign className="w-5 h-5" />,
-      label: "Cost Analytics",
-      path: `${baseRoute}/costs`
-    }
+      icon: <RotateCcw className="w-5 h-5" />,
+      label: "Reschedule Requests",
+      path: `${baseRoute}/interviews/reschedule`,
+    },
+    {
+      icon: <Check className="w-5 h-5" />,
+      label: "Completed Interviews",
+      path: `${baseRoute}/interviews/completed`,
+    },
   ];
 
   const userInfo = (
     <div className="mb-8">
       <span className="text-[30px] font-normal flex items-center gap-2 text-white">
-        {userName} {subscriptionTier === 'freeTrial' ? 
-          <Info className="w-7 h-7 fill-[#D6D6D6] text-[#212529]" /> : 
+        {userName}{" "}
+        {subscriptionTier === "freeTrial" ? (
+          <Info className="w-7 h-7 fill-[#D6D6D6] text-[#212529]" />
+        ) : (
           <img src={verifiedIcon} className="w-7 h-7" />
-        }
+        )}
       </span>
       <p className="text-[17px] text-white mt-1 flex items-center gap-2">
-        {subscriptionTier === 'freeTrial' ? (
+        {subscriptionTier === "freeTrial" ? (
           <>
             <span>Free Trial</span>
           </>
+        ) : subscriptionTier === "monthlyPlan" ? (
+          <>
+            <img
+              src={userCheck}
+              className="w-6 h-6 fill-orange-500 text-orange-500"
+              alt="Monthly subscriber"
+            />
+            <span>Monthly Subscriber</span>
+          </>
         ) : (
           <>
-            <img src={userCheck} className="w-6 h-6 fill-orange-500 text-orange-500" />
-            <span>Monthly Subscriber</span>
+            <img
+              src={userCheck}
+              className="w-6 h-6 fill-orange-500 text-orange-500"
+              alt="Yearly subscriber"
+            />
+            <span>Yearly Subscriber</span>
           </>
         )}
       </p>
@@ -75,13 +97,13 @@ const ReportsAnalyticsSidebar: FC<AnalyticsSidebarProps> = ({
       {/* Mobile/Tablet View */}
       <div className="lg:hidden w-full">
         <div className="px-4 md:px-6 py-4 md:mt-6 space-y-4">{userInfo}</div>
-        <div className="w-full px-4 overflow-x-auto">
-          <div className="flex space-x-8 md:space-x-6 min-w-max">
-            {analyticsMenu.map((item) => (
+        <div className="w-full p-4 m-4 overflow-x-auto">
+          <div className="flex space-x-8 md:gap-x-4 w-full items-center justify-center">
+            {interviewMenu.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex items-center transition-colors ${
+                className={`flex items-center justify-center transition-colors ${
                   location.pathname === item.path
                     ? "text-orange-500"
                     : "text-white hover:text-orange-500"
@@ -102,13 +124,13 @@ const ReportsAnalyticsSidebar: FC<AnalyticsSidebarProps> = ({
 
       {/* Desktop View */}
       <div className={`hidden lg:block h-full ${className}`}>
-        <div className="top-0 pt-6 px-8">
+        <div className="px-8 top-0 pt-6">
           {userInfo}
           <div className="space-y-1">
             <span className="text-orange-500 text-[24px] font-normal mb-4 block">
-              Reports and Analytics
+              Interviews
             </span>
-            {analyticsMenu.map((item) => (
+            {interviewMenu.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
@@ -129,4 +151,4 @@ const ReportsAnalyticsSidebar: FC<AnalyticsSidebarProps> = ({
   );
 };
 
-export { ReportsAnalyticsSidebar };
+export { InterviewSidebarEmployer };

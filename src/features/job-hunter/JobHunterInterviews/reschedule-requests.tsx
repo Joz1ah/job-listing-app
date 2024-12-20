@@ -4,6 +4,7 @@ import { InterviewCardSkeleton } from "components";
 import { NavLink } from "react-router-dom";
 import emptyInterview from "images/calendar-empty.svg?url";
 import { rescheduleInterviewsData, Interview } from "mockData/job-hunter-interviews-data";
+import { useJobHunterContext } from "components";
 
 const RescheduleRequests: FC = () => {
   const [displayedItems, setDisplayedItems] = useState<Interview[]>([]);
@@ -11,6 +12,7 @@ const RescheduleRequests: FC = () => {
   const [hasMore, setHasMore] = useState(true);
   const loaderRef = useRef<HTMLDivElement>(null);
   const [initialLoad, setInitialLoad] = useState(true);
+  const { subscriptionTier } = useJobHunterContext();
 
   const handleAccept = async (interview: Interview) => {
     console.log("Accepted interview:", interview.position);
@@ -106,7 +108,7 @@ const RescheduleRequests: FC = () => {
   }, [loading, hasMore, initialLoad]);
 
   // Show empty state if there are no reschedule requests and we're not loading
-  if (!loading && displayedItems.length === 0) {
+  if (!loading && displayedItems.length === 0 || subscriptionTier === 'freeTrial') {
     return (
       <div className="h-full w-full flex items-center justify-center">
         <div className="flex flex-col items-center justify-center p-8 text-center">

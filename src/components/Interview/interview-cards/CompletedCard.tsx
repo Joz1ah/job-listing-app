@@ -119,7 +119,7 @@ const CompletedCard: FC<CompletedCardProps> = ({
               <span className="text-[13px] min-w-[40px] text-[#263238]">
                 Date:
               </span>
-              <span className="text-[13px] font-semibold px-1 rounded-[2px] bg-[#184E77] text-white w-[135px] h-[17px] flex justify-center">
+              <span className="text-[13px] font-medium px-1 rounded-[2px] bg-[#184E77] text-white w-[135px] h-[17px] flex justify-center items-center">
                 {interview.date}
               </span>
             </div>
@@ -127,7 +127,7 @@ const CompletedCard: FC<CompletedCardProps> = ({
               <span className="text-[13px] min-w-[40px] text-[#263238]">
                 Time:
               </span>
-              <span className="text-[13px] font-semibold px-1 rounded-[2px] bg-[#168AAD] text-white w-[135px] h-[17px] flex justify-center">
+              <span className="text-[13px] font-medium px-1 rounded-[2px] bg-[#168AAD] text-white w-[135px] h-[17px] flex justify-center items-center">
                 {interview.time}
               </span>
             </div>

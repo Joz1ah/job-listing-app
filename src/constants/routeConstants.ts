@@ -16,7 +16,7 @@ export const ROUTE_CONSTANTS = {
   JOB_HUNTER: '/job-hunter',
   CREATE_APPLICATION: '/job-hunter/create-application',
   EDIT_APPLICATION: '/job-hunter/edit-application',
-  BOOKMARKED_JOBS: '/job-hunter/bookmarked-jobs',
+  BOOKMARKED_JOBS_JOBHUNTER: '/job-hunter/bookmarked-jobs',
   INTERVIEWS_JOB_HUNTER: '/job-hunter/interviews',
   ACCOUNT_SETTINGS_JOB_HUNTER: '/job-hunter/account-settings',
   
@@ -27,6 +27,7 @@ export const ROUTE_CONSTANTS = {
   INTERVIEWS_EMPLOYER: '/employer/interviews',
   REPORTS_ANALYTICS: '/employer/reports-and-analytics',
   ACCOUNT_SETTINGS_EMPLOYER: '/employer/account-settings',
+  BOOKMARKED_JOBS_EMPLOYER: '/employer/bookmarked-jobs',
   
   // Feed and General sections
   FEED: 'feed',

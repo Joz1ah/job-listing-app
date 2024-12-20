@@ -89,12 +89,12 @@ const DeclinedCard: FC<DeclinedCardProps> = ({ interview, variant }) => {
         </CardHeader>
 
         <CardContent className="pt-1">
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-1">
             <div className="flex items-center gap-2">
               <span className="text-[13px] min-w-[40px] text-[#263238]">
                 Date:
               </span>
-              <span className="text-[13px] font-semibold px-1 rounded-[2px] bg-[#184E77] text-white w-[135px] h-[17px] flex justify-center">
+              <span className="text-[13px] font-medium px-1 rounded-[2px] bg-[#184E77] text-white w-[135px] h-[17px] flex justify-center items-center">
                 {interview.date}
               </span>
             </div>
@@ -102,7 +102,7 @@ const DeclinedCard: FC<DeclinedCardProps> = ({ interview, variant }) => {
               <span className="text-[13px] min-w-[40px] text-[#263238]">
                 Time:
               </span>
-              <span className="text-[13px] font-semibold px-1 rounded-[2px] bg-[#168AAD] text-white w-[135px] h-[17px] flex justify-center">
+              <span className="text-[13px] font-medium px-1 rounded-[2px] bg-[#168AAD] text-white w-[135px] h-[17px] flex justify-center items-center">
                 {interview.time}
               </span>
             </div>

@@ -3,11 +3,11 @@ import { SkillsWithEllipsis } from "components";
 import { Bookmark, MoreVertical, MapPin } from "lucide-react";
 import { Card, CardHeader, CardContent, CardFooter } from "components";
 import { Button } from "components";
-import { Match } from "mockData/jobs-data";
-import { JobPreviewModal } from "../JobCard/job-preview/JobPreviewModal";
+import { Match } from "mockData/job-hunter-data";
+import { AppPreviewModal } from "../AppCard/app-preview/AppPreviewModal";
 
 interface BookmarkCardProps {
-  match: Match;
+  app: Match;
   bookmarked?: boolean;
   onBookmark?: () => void;
   subscriptionTier: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
@@ -17,7 +17,7 @@ const getAvailabilityStyle = (type: string) => {
   return type.toLowerCase() === "part time" ? "bg-[#BF532C]" : "bg-[#F5722E]";
 };
 
-const BookmarkCard: FC<BookmarkCardProps> = ({ match, subscriptionTier }) => {
+const BookmarkCard: FC<BookmarkCardProps> = ({ app, subscriptionTier }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleCardClick = () => {
@@ -35,7 +35,7 @@ const BookmarkCard: FC<BookmarkCardProps> = ({ match, subscriptionTier }) => {
           <CardHeader className="flex flex-col justify-between items-start pb-0">
             <div className="flex flex-row -mt-4 justify-between w-full">
               <div className="h-[20px]">
-              {match.isNew && (
+              {app.isNew && (
                 <span className="absolute text-[13px] text-[#F5722E] font-bold italic">
                   ★ NEW
                 </span>
@@ -43,7 +43,7 @@ const BookmarkCard: FC<BookmarkCardProps> = ({ match, subscriptionTier }) => {
               </div>
               <div className="flex flex-col items-end relative">
                 <span className="text-[12px] font-light text-[#717171] -mr-2">
-                  Posted {match.posted} ago
+                  Posted {app.posted} ago
                 </span>
                 <div className="absolute top-6 -right-2">
                   <Bookmark className="w-6 h-6 text-[#F5722E]" />
@@ -52,15 +52,15 @@ const BookmarkCard: FC<BookmarkCardProps> = ({ match, subscriptionTier }) => {
             </div>
             <div className="w-full relative mt-2">
               <h3 className="text-[14px] font-semibold text-[#263238]">
-                {match.position}
+                {app.firstName} {app.lastName}
               </h3>
               <p className="text-[13px] text-[#263238] underline">
-                {match.company}
+                {app.position}
               </p>
               <div className="flex flex-row items-center">
                 <MapPin size={14} className="text-[#F5722E]" />
                 <p className="text-[13px] font-light mt-0 ml-2 text-[#263238]">
-                  Based in {match.location}
+                  Based in {app.location}
                 </p>
               </div>
             </div>
@@ -68,7 +68,7 @@ const BookmarkCard: FC<BookmarkCardProps> = ({ match, subscriptionTier }) => {
 
           <CardContent className="pt-1 flex-1">
             <div className="h-[50px]">
-              <SkillsWithEllipsis skills={match.coreSkills} />
+              <SkillsWithEllipsis skills={app.coreSkills} />
             </div>
 
             <div className="flex flex-col gap-2 mt-4">
@@ -77,14 +77,14 @@ const BookmarkCard: FC<BookmarkCardProps> = ({ match, subscriptionTier }) => {
                   Experience:
                 </span>
                 <span className="text-[12px] text-[#F5722E] font-light border border-[#F5722E] items-center rounded-[2px] px-1">
-                  {match.experience}
+                  {app.experience}
                 </span>
               </div>
               <div className="flex gap-2 items-center flex-wrap">
                 <span className="text-[13px] font-light text-[#263238]">
                   Looking for:
                 </span>
-                {match.lookingFor.map((type, index) => (
+                {app.lookingFor.map((type, index) => (
                   <span
                     key={index}
                     className={`${getAvailabilityStyle(type)} text-white rounded-[4px] text-[12px] px-1.5 h-[18px] flex justify-center items-center`}
@@ -98,7 +98,7 @@ const BookmarkCard: FC<BookmarkCardProps> = ({ match, subscriptionTier }) => {
                   Salary:
                 </span>
                 <span className="bg-[#F5722E] text-white rounded-[4px] text-[12px] px-1.5 h-[18px] flex justify-center items-center">
-                  {match.salaryExpectation}
+                  {app.salaryExpectation}
                 </span>
               </div>
             </div>
@@ -136,10 +136,10 @@ const BookmarkCard: FC<BookmarkCardProps> = ({ match, subscriptionTier }) => {
       </Card>
 
       {subscriptionTier !== 'freeTrial' && (
-        <JobPreviewModal
+        <AppPreviewModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          job={match}
+          app={app}
         />
       )}
     </>

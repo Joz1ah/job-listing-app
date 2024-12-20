@@ -190,7 +190,7 @@ const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
               onClick={onConfirm}
               className="bg-[#F5722E] text-white hover:bg-orange-600 px-6 md:px-8 py-2"
             >
-              Submit Application
+              Go To Job Feed
             </Button>
           </CardFooter>
         </div>
