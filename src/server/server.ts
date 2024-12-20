@@ -12,33 +12,13 @@ const { PORT = SERVER_PORT } = process.env
 import dotenv from 'dotenv';
 dotenv.config();
 const allowedOrigins = ['http://localhost:8080','https://localhost:8080','https://akaza.xyz','https://akaza.io','https://app-sit.akaza.xyz'];
-const stripe = require('stripe')('sk_test_51QMsGlFCh69SpK2k7MgXyBMmMDoS20GbKPtyUzuun2TthNpLxovqjTxk4Pap6h1v52pCFhM48vZE3RQ4EXP8rGVR00VK47STkF');
-
 
 const runServer = (hotReload?: () => RequestHandler[]): void => {
   const app = express()
   const statsFile = path.resolve('./dist/stats.json')
   const chunkExtractor = new ChunkExtractor({ statsFile })
-  
-  app.get('/secret', async (req, res) => {
-    try {
-      console.log(req)
-      const intent = await stripe.paymentIntents.create({
-        amount: 2000, // Amount in cents (e.g., $20.00)
-        currency: 'usd',
-      });
-      res.json({ client_secret: intent.client_secret });
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error('Stripe error:', error.message);
-        res.status(500).json({ error: error.message });
-      } else {
-        console.error('Unknown error:', error);
-        res.status(500).json({ error: 'An unknown error occurred' });
-      }
-    }
-  });
-  
+
+
   app
     .use(cors({
       origin: (origin, callback) => {
@@ -70,6 +50,7 @@ const runServer = (hotReload?: () => RequestHandler[]): void => {
       }
       res.status(200).end(); // Always respond with HTTP 200 OK
     })
+
   if (IS_DEV) {
     if (hotReload != null) {
       app.get('/*', [...hotReload()])
