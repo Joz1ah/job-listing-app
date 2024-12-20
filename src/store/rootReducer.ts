@@ -10,7 +10,8 @@ import {
   akazaApiJobFeed,
   akazaApiPayment,
   akazaApiPerfectMatch,
-  akazaApiSearch  } from 'api'
+  akazaApiSearch,
+  akazaApiAccount  } from 'api'
 
 import { reduxHydrationAction } from 'constants/commonConstants'
 
@@ -25,6 +26,7 @@ export const rootReducer = {
   [akazaApiPayment.reducerPath]: akazaApiPayment.reducer,
   [akazaApiPerfectMatch.reducerPath]: akazaApiPerfectMatch.reducer,
   [akazaApiSearch.reducerPath]: akazaApiSearch.reducer,
+  [akazaApiAccount.reducerPath]: akazaApiAccount.reducer,
 }
 
 export const appReducer = combineReducers(rootReducer)

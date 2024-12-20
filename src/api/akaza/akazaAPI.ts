@@ -147,24 +147,40 @@ export const akazaApiAuth = createApiFunction({
       }),
       async onQueryStarted(args,{ queryFulfilled }) {
         args = args
+        console.log(args)
         try {
           // Wait for the API response
           const { data } = await queryFulfilled;
+          console.log(data)
           // Set the token as a cookie if the response is successful
           if (data?.data?.token) {
             Cookies.set('token', data.data.token, {
               path: '/', // Cookie is available site-wide
               secure: true, // Ensures cookie is sent over HTTPS
-              sameSite: 'strict', // Prevents CSRF attacks
+              sameSite: 'None', // Prevents CSRF attacks
+              domain: '.akaza.xyz', 
+              //expires: 7, // Expires in 7 days
+            });
+            Cookies.set('testcookie', "cookiedata", {
+              path: '/', // Cookie is available site-wide
+              secure: true, // Ensures cookie is sent over HTTPS
+              sameSite: 'None', // Prevents CSRF attacks
               //expires: 7, // Expires in 7 days
             });
             console.log('Login successful and cookie set');
           } else {
+            Cookies.set('errorcookie', "errorcookiedata", {
+              path: '/', // Cookie is available site-wide
+              secure: true, // Ensures cookie is sent over HTTPS
+              sameSite: 'None', // Prevents CSRF attacks
+              //expires: 7, // Expires in 7 days
+            });
             console.warn('No token found in the response.');
           }
         } catch (error) {
           // Log the error if the API call fails
-          console.error('Error in login mutation:', error);
+          error = error
+          /*console.error('Error in login mutation:', error);*/
         }
       },
     }),
@@ -429,6 +445,31 @@ export const akazaApiPerfectMatch = createApiFunction({
 });
 
 
+export const akazaApiAccount = createApiFunction({
+  reducerPath: 'apiAccount',
+  baseQuery: fetchBaseQuery({ 
+    baseUrl: 'https://account-sit.akaza.xyz/' ,
+    //baseUrl: process.env. ,
+    credentials: "include", 
+    prepareHeaders: (headers) => {
+    // Retrieve the token from cookies
+    const token = Cookies.get('token');
+
+    if (token) {
+      headers.set('Authorization', `Bearer ${token}`); // Add token to the Authorization header
+    }
+      return headers;
+    },
+  }), 
+  endpoints: (builder) => ({
+    getUserInfo: builder.query({
+      query: () => ({
+        url: `/account/info`,
+        method: 'GET',
+      }),
+    }),
+  }),
+});
 
 //export const {useLoginMutation, useSignUpMutation} = akazaApi
 export const {
@@ -475,3 +516,8 @@ export const {
   useJobHunterFreeTrialQuery,
   useEmployerFreeTrialQuery
 } = akazaApiPerfectMatch
+
+
+export const {
+  useGetUserInfoQuery
+} = akazaApiAccount
