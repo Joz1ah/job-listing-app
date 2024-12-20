@@ -9,11 +9,11 @@ const nonce = (_req: Request, res: Response, next: NextFunction): void => {
 }
 const defaultSrc = [
   "'self'",
-  'pokeapi.co',
-  'js.stripe.com',
   '*.akaza.xyz',
-  'localhost:*',
   'akaza-sit-api-gateway---rev-2-2tninhtd.uk.gateway.dev',
+  'js.stripe.com',
+  'localhost:*',
+  //'pokeapi.co',
 ];
 
 const csp = (req: Request, res: Response, next: NextFunction): void => {
