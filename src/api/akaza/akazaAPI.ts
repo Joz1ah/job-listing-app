@@ -444,7 +444,7 @@ export const akazaApiPerfectMatch = createApiFunction({
 export const akazaApiAccount = createApiFunction({
   reducerPath: 'apiAccount',
   baseQuery: fetchBaseQuery({ 
-    baseUrl: 'https://account-sit.akaza.xyz/' ,
+    baseUrl: 'https://akaza-sit-api-gateway---rev-2-2tninhtd.uk.gateway.dev/' ,
     //baseUrl: process.env. ,
     credentials: "include", 
     prepareHeaders: (headers) => {
