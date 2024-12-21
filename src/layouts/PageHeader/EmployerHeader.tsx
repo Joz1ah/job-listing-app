@@ -5,7 +5,7 @@ import { Tooltip } from "components";
 import verifiedIcon from "images/verified.svg?url";
 
 interface Props {
-  subscriptionTier: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
+  subscriptionTier: "freeTrial" | "monthlyPlan" | "yearlyPlan";
 }
 
 const DesktopTooltip = ({
@@ -50,8 +50,28 @@ const EmployerHeader: FC<Props> = ({ subscriptionTier }) => {
             <h1 className="text-3xl text-white font-normal">
               ABC Incorporated
             </h1>
-            {subscriptionTier === 'freeTrial' ? (
-              <Info className="ml-2 fill-[#F5F5F7] text-[#263238]" size={34} />
+            {subscriptionTier === "freeTrial" ? (
+              <Tooltip
+                content={
+                  <div className="flex flex-col gap-2">
+                    <div className="text-xs">
+                      Subscribe to unlock your verification status.
+                    </div>
+                    <div className="flex items-center text-sm">
+                      ABC Incorporated
+                      <img
+                        src={verifiedIcon}
+                        className="ml-1 w-4 h-4 text-orange-500"
+                      />
+                    </div>
+                  </div>
+                }
+              >
+                <Info
+                  className="ml-2 fill-[#F5F5F7] text-[#263238]"
+                  size={34}
+                />
+              </Tooltip>
             ) : (
               <img
                 src={verifiedIcon}
@@ -71,15 +91,16 @@ const EmployerHeader: FC<Props> = ({ subscriptionTier }) => {
               </span>
             </div>
 
-            {/* Desktop view - interview rating */}
-            <DesktopTooltip content="This is how job hunters rated your interview">
-              <div className="hidden md:flex items-center space-x-2">
-                <div className="border-2 border-dotted border-[#F5722E] text-white text-[15px] px-2 py-1 border-opacity-70 whitespace-nowrap">
-                  Your interview from rating employers
+            {subscriptionTier !== "freeTrial" && (
+              <DesktopTooltip content="This is how job hunters rated your interview">
+                <div className="hidden md:flex items-center space-x-2">
+                  <div className="border-2 border-dotted border-[#F5722E] text-white text-[15px] px-2 py-1 border-opacity-70 whitespace-nowrap">
+                    Your interview from Job Hunters
+                  </div>
+                  <Info className="fill-[#D6D6D6] text-[#263238]" size={14} />
                 </div>
-                <Info className="fill-[#D6D6D6] text-[#263238]" size={14} />
-              </div>
-            </DesktopTooltip>
+              </DesktopTooltip>
+            )}
           </div>
         </div>
 

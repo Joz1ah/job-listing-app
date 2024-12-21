@@ -7,8 +7,10 @@ import {
   MapPin,
 } from "lucide-react";
 import { Tooltip } from "components";
+import { useJobHunterContext } from "components";
 
 const JobHunterHeader: FC = () => {
+  const { subscriptionTier } = useJobHunterContext();
   const rating = 4.5;
   const fullStars = Math.floor(rating);
   const hasHalfStar = rating % 1 !== 0;
@@ -74,17 +76,18 @@ const JobHunterHeader: FC = () => {
             </div>
           </div>
 
-          {/* Desktop interview rating */}
-          <div className="hidden md:flex items-center space-x-2">
-            <DesktopTooltip content="This is how employer rated your interview">
-              <div className="flex items-center space-x-2 font-light text-white">
-                <span className="border-2 border-dotted border-[#F5722E] text-[15px] px-2 py-1 border-opacity-70 whitespace-nowrap">
-                  Your interview from rating employers
-                </span>
-                <Info className="fill-[#D6D6D6] text-[#263238]" size={14} />
-              </div>
-            </DesktopTooltip>
-          </div>
+          {subscriptionTier !== "freeTrial" && (
+            <div className="hidden md:flex items-center space-x-2">
+              <DesktopTooltip content="This is how employer rated your interview">
+                <div className="flex items-center space-x-2 font-light text-white">
+                  <span className="border-2 border-dotted border-[#F5722E] text-[15px] px-2 py-1 border-opacity-70 whitespace-nowrap">
+                    Your interview rating from employers
+                  </span>
+                  <Info className="fill-[#D6D6D6] text-[#263238]" size={14} />
+                </div>
+              </DesktopTooltip>
+            </div>
+          )}
         </div>
 
         <div className="flex flex-col space-y-3">

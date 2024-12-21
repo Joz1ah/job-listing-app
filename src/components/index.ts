@@ -126,3 +126,4 @@ export { CompletedCard } from 'components/Interview/interview-cards/CompletedCar
 export { DeclinedCard } from 'components/Interview/interview-cards/DeclinedCard'
 export { PendingCard } from 'components/Interview/interview-cards/PendingCard'
 export { RescheduleCard } from 'components/Interview/interview-cards/RescheduleCard'
+export { SignOutModal } from 'components/sign-out/SignOutModal'

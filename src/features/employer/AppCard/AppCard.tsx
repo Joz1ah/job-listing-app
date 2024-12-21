@@ -13,18 +13,24 @@ import { useBookmarks } from "components/context/BookmarkContext";
 import { AppPreviewModal } from "features/employer";
 import { ScheduleInterviewModal } from "features/employer";
 import { Match } from "mockData/job-hunter-data";
+import { useEmployerContext } from "components";
 
 interface AppCardProps {
   match: Match;
   bookmarked?: boolean;
   onBookmark?: () => void;
-  subscriptionTier: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
 }
 
-const SecureNameDisplay: FC<{ subscriptionTier: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan'; realName: string }> = ({
-  subscriptionTier,
+interface SecureNameDisplayProps {
+  realName: string;
+}
+
+const SecureNameDisplay: FC<SecureNameDisplayProps> = ({
   realName,
 }) => {
+
+  const { subscriptionTier } = useEmployerContext();
+
   if (subscriptionTier === 'freeTrial') {
     return (
       <div className="relative">
@@ -84,10 +90,11 @@ const LanguageTag: FC<{ language: string }> = ({ language }) => (
   </span>
 );
 
-const AppCard: FC<AppCardProps> = ({ match, subscriptionTier }) => {
+const AppCard: FC<AppCardProps> = ({ match }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const cardId = generateCardId(match);
+  const { subscriptionTier } = useEmployerContext();
 
   const handleCardClick = () => {
     if (subscriptionTier === 'freeTrial') return;
@@ -129,7 +136,6 @@ const AppCard: FC<AppCardProps> = ({ match, subscriptionTier }) => {
           </div>
           <div className="w-full relative">
             <SecureNameDisplay
-              subscriptionTier={subscriptionTier}
               realName={`${match.firstName} ${match.lastName}`}
             />
             <BookmarkButton

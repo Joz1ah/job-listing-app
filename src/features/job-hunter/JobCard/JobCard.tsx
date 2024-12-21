@@ -13,16 +13,21 @@ import { JobPreviewModal } from "features/job-hunter";
 import { useBookmarks } from "components";
 import { ScheduleInterviewModal } from "features/job-hunter";
 import { Match } from "mockData/jobs-data";
+import { useJobHunterContext } from "components";
 
 interface JobCardProps {
   match: Match;
-  subscriptionTier: "freeTrial" | "monthlyPlan" | "yearlyPlan";
 }
 
-const SecureCompanyDisplay: FC<{ subscriptionTier: "freeTrial" | "monthlyPlan" | "yearlyPlan"; company: string }> = ({
-  subscriptionTier,
+interface SecureCompanyDisplayProps {
+  company: string
+}
+
+const SecureCompanyDisplay: FC<SecureCompanyDisplayProps> = ({
   company,
 }) => {
+  const { subscriptionTier } = useJobHunterContext();
+
   if (subscriptionTier === "freeTrial") {
     return (
       <div className="relative">
@@ -76,10 +81,11 @@ const BookmarkButton: FC<{
   );
 };
 
-const JobCard: FC<JobCardProps> = ({ match, subscriptionTier }) => {
+const JobCard: FC<JobCardProps> = ({ match }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const cardId = generateCardId(match);
+  const { subscriptionTier } = useJobHunterContext();
 
   const handleCardClick = () => {
     if (subscriptionTier === "freeTrial") return;
@@ -132,7 +138,6 @@ const JobCard: FC<JobCardProps> = ({ match, subscriptionTier }) => {
               className="absolute top-0 right-[-8px]"
             />
             <SecureCompanyDisplay
-              subscriptionTier={subscriptionTier}
               company={match.company}
             />
             <div className="flex flex-row items-center gap-1">

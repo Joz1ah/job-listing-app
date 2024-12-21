@@ -204,7 +204,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, subscriptionTier }) =
             popupImage={employerPopAds}
           />
         ) : (
-          <AppCard key={index} match={item} subscriptionTier={subscriptionTier} />
+          <AppCard key={index} match={item} />
         ),
       )}
 
@@ -408,7 +408,7 @@ const OtherApplications: FC<selectedProps> = ({
             popupImage={employerPopAds}
           />
         ) : (
-          <AppCard key={index} match={item} subscriptionTier={subscriptionTier} />
+          <AppCard key={index} match={item} />
         ),
       )}
       {/* Dynamic Loading Cards */}

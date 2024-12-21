@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import { useMenu } from "hooks";
 import { 
@@ -15,6 +15,7 @@ import {
 } from "components";
 import { BaseMenu, Footer } from "layouts";
 import { Landing } from "pages/landing/Landing";
+import { SignOutModal } from "components";
 
 type UserType = 'employer' | 'job-hunter' | 'guest';
 
@@ -41,6 +42,8 @@ interface BaseLayoutContentProps {
 
 const AuthenticatedLayoutContent: FC<{ userType: 'employer' | 'job-hunter' }> = ({ userType }) => {
   const { menuOpen, toggleMenu } = useMenu();
+  const [showSignOutModal, setShowSignOutModal] = useState(false);
+  const [shouldRenderModal, setShouldRenderModal] = useState(false);
   const isEmployer = userType === 'employer';
   
   // Get context based on user type
@@ -52,17 +55,46 @@ const AuthenticatedLayoutContent: FC<{ userType: 'employer' | 'job-hunter' }> = 
   const mobileMenuItems = isEmployer ? employerMobileMenu : jobHunterMobileMenu;
   const userName = isEmployer ? "ABC Incorporated" : "Michael V";
 
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    
+    if (showSignOutModal) {
+      timeoutId = setTimeout(() => {
+        setShouldRenderModal(true);
+      }, 200);
+    } else {
+      setShouldRenderModal(false);
+    }
+
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [showSignOutModal]);
+
+
   const menu = (
-    <BaseMenu
-      isMenuOpen={menuOpen}
-      onToggleMenu={toggleMenu}
-      desktopMenuItems={desktopMenuItems}
-      mobileMenuItems={mobileMenuItems}
-      subscriptionTier={subscriptionTier}
-      userType={userType}
-      userName={userName}
-      feedPath={`/${isEmployer ? 'employer' : 'job-hunter'}/`}
-    />
+    <>
+      <BaseMenu
+        isMenuOpen={menuOpen}
+        onToggleMenu={toggleMenu}
+        desktopMenuItems={desktopMenuItems}
+        mobileMenuItems={mobileMenuItems}
+        subscriptionTier={subscriptionTier}
+        userType={userType}
+        userName={userName}
+        feedPath={`/${isEmployer ? 'employer' : 'job-hunter'}/`}
+        onSignOut={() => setShowSignOutModal(true)}
+      />
+      
+      {shouldRenderModal && (
+        <SignOutModal
+          isOpen={showSignOutModal}
+          onClose={() => setShowSignOutModal(false)}
+        />
+      )}
+    </>
   );
 
   return (
@@ -97,7 +129,7 @@ const BaseLayout: FC<BaseLayoutProps> = ({ userType }) => {
   }
 
   return (
-    <EmployerProvider initialTier='monthlyPlan'>
+    <EmployerProvider initialTier='freeTrial'>
       <JobHunterProvider initialTier='monthlyPlan'>
         <BaseLayoutContent userType={userType} />
       </JobHunterProvider>

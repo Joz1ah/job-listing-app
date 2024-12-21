@@ -223,7 +223,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, subscriptionTier }) =
             popupImage={jobHunterPopAds}
           />
         ) : (
-          <JobCard key={index} match={item} subscriptionTier={subscriptionTier} />
+          <JobCard key={index} match={item} />
         ),
       )}
       {showLoadingCards && (
@@ -427,7 +427,7 @@ const OtherApplications: FC<selectedProps> = ({
             popupImage={jobHunterPopAds}
           />
         ) : (
-          <JobCard key={index} match={item} subscriptionTier={subscriptionTier} />
+          <JobCard key={index} match={item} />
         ),
       )}
 
