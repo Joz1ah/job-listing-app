@@ -1,26 +1,26 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
-type SubscriptionTier = 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
+type subscriptionPlan = 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
 
 interface EmployerContextType {
-  subscriptionTier: SubscriptionTier;
-  setSubscriptionTier: (tier: SubscriptionTier) => void;
+  subscriptionPlan: subscriptionPlan;
+  setsubscriptionPlan: (tier: subscriptionPlan) => void;
 }
 
 const EmployerContext = createContext<EmployerContextType | undefined>(undefined);
 
 interface EmployerProviderProps {
   children: ReactNode;
-  initialTier?: SubscriptionTier;
+  initialTier?: subscriptionPlan;
 }
 
 const EmployerProvider: React.FC<EmployerProviderProps> = ({ 
   children, 
   initialTier = 'freeTrial'
 }) => {
-  const [subscriptionTier, setSubscriptionTier] = useState<SubscriptionTier>(initialTier);
+  const [subscriptionPlan, setsubscriptionPlan] = useState<subscriptionPlan>(initialTier);
 
   return (
-    <EmployerContext.Provider value={{ subscriptionTier, setSubscriptionTier }}>
+    <EmployerContext.Provider value={{ subscriptionPlan, setsubscriptionPlan }}>
       {children}
     </EmployerContext.Provider>
   );

@@ -29,9 +29,9 @@ const SecureNameDisplay: FC<SecureNameDisplayProps> = ({
   realName,
 }) => {
 
-  const { subscriptionTier } = useEmployerContext();
+  const { subscriptionPlan } = useEmployerContext();
 
-  if (subscriptionTier === 'freeTrial') {
+  if (subscriptionPlan === 'freeTrial') {
     return (
       <div className="relative">
         <div className="select-none pointer-events-none">
@@ -94,10 +94,10 @@ const AppCard: FC<AppCardProps> = ({ match }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const cardId = generateCardId(match);
-  const { subscriptionTier } = useEmployerContext();
+  const { subscriptionPlan } = useEmployerContext();
 
   const handleCardClick = () => {
-    if (subscriptionTier === 'freeTrial') return;
+    if (subscriptionPlan === 'freeTrial') return;
     // Only open preview if schedule modal isn't open
     if (!isScheduleModalOpen) {
       setIsModalOpen(true);
@@ -106,7 +106,7 @@ const AppCard: FC<AppCardProps> = ({ match }) => {
 
   const handleScheduleInterview = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (subscriptionTier === 'freeTrial') return;
+    if (subscriptionPlan === 'freeTrial') return;
     setIsScheduleModalOpen(true);
     setIsModalOpen(false); // Close preview when scheduling
   };
@@ -115,7 +115,7 @@ const AppCard: FC<AppCardProps> = ({ match }) => {
     <>
       <Card
         className={`bg-[#FFFFFF] border-none w-full max-w-[436px] h-[275px] relative transition-shadow duration-200 ${
-          subscriptionTier === 'freeTrial' ? "cursor-default" : "cursor-pointer hover:shadow-lg"
+          subscriptionPlan === 'freeTrial' ? "cursor-default" : "cursor-pointer hover:shadow-lg"
         }`}
         onClick={handleCardClick}
       >
@@ -209,14 +209,14 @@ const AppCard: FC<AppCardProps> = ({ match }) => {
             className="text-gray-700 cursor-pointer"
             onClick={(e) => {
               e.stopPropagation();
-              if (subscriptionTier === 'freeTrial') return;
+              if (subscriptionPlan === 'freeTrial') return;
               // Handle more options
             }}
           />
         </CardFooter>
       </Card>
 
-      {subscriptionTier !== 'freeTrial' && (
+      {subscriptionPlan !== 'freeTrial' && (
         <>
           <AppPreviewModal
             isOpen={isModalOpen}

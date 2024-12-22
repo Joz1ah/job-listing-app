@@ -66,7 +66,7 @@ const BookmarkedJobsContent: FC = () => {
   const [hasMore, setHasMore] = useState(true);
   const loaderRef = useRef<HTMLDivElement>(null);
   const [initialLoad, setInitialLoad] = useState(true);
-  const { subscriptionTier } = useJobHunterContext();
+  const { subscriptionPlan } = useJobHunterContext();
 
   const loadMore = async () => {
     if (loading || !hasMore) return;
@@ -141,7 +141,7 @@ const BookmarkedJobsContent: FC = () => {
   const loadingCardsCount = Math.min(6, mockBookmarks.length);
 
   // Show empty state if there are no bookmarked jobs and we're not loading
-  if (!loading && displayedItems.length === 0 || subscriptionTier === 'freeTrial') {
+  if (!loading && displayedItems.length === 0 || subscriptionPlan === 'freeTrial') {
     return (
       <div className="h-full w-full flex items-center justify-center">
         <div className="flex flex-col items-center justify-center p-8 text-center">
@@ -173,7 +173,7 @@ const BookmarkedJobsContent: FC = () => {
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-y-6 gap-x-14 justify-items-center w-full">
         {!initialLoad &&
           displayedItems.map((bookmark, index) => (
-            <BookmarkCard key={index} match={bookmark} subscriptionTier={subscriptionTier}/>
+            <BookmarkCard key={index} match={bookmark} />
           ))}
 
         {showLoadingCards && (
@@ -191,10 +191,10 @@ const BookmarkedJobsContent: FC = () => {
 
 // Wrap the content with BookmarkProvider
 const YourBookmarkedJobs: FC = () => {
-  const { subscriptionTier } = useJobHunterContext();
+  const { subscriptionPlan } = useJobHunterContext();
 
   return (
-    <BookmarkProvider subscriptionTier={subscriptionTier}>
+    <BookmarkProvider subscriptionPlan={subscriptionPlan}>
       <BookmarkedJobsContent />
     </BookmarkProvider>
   );

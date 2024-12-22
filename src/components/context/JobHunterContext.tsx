@@ -1,27 +1,27 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
 
-type SubscriptionTier = 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
+type subscriptionPlan = 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
 
 interface JobHunterContextType {
-  subscriptionTier: SubscriptionTier;
-  setSubscriptionTier: (tier: SubscriptionTier) => void;
+  subscriptionPlan: subscriptionPlan;
+  setsubscriptionPlan: (tier: subscriptionPlan) => void;
 }
 
 const JobHunterContext = createContext<JobHunterContextType | undefined>(undefined);
 
 interface JobHunterProviderProps {
   children: ReactNode;
-  initialTier?: SubscriptionTier;
+  initialTier?: subscriptionPlan;
 }
 
 const JobHunterProvider: React.FC<JobHunterProviderProps> = ({ 
   children, 
   initialTier = 'freeTrial'
 }) => {
-  const [subscriptionTier, setSubscriptionTier] = useState<SubscriptionTier>(initialTier);
+  const [subscriptionPlan, setsubscriptionPlan] = useState<subscriptionPlan>(initialTier);
 
   return (
-    <JobHunterContext.Provider value={{ subscriptionTier, setSubscriptionTier }}>
+    <JobHunterContext.Provider value={{ subscriptionPlan, setsubscriptionPlan }}>
       {children}
     </JobHunterContext.Provider>
   );

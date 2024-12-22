@@ -10,7 +10,7 @@ import { Tooltip } from "components";
 import { useJobHunterContext } from "components";
 
 const JobHunterHeader: FC = () => {
-  const { subscriptionTier } = useJobHunterContext();
+  const { subscriptionPlan } = useJobHunterContext();
   const rating = 4.5;
   const fullStars = Math.floor(rating);
   const hasHalfStar = rating % 1 !== 0;
@@ -76,7 +76,7 @@ const JobHunterHeader: FC = () => {
             </div>
           </div>
 
-          {subscriptionTier !== "freeTrial" && (
+          {subscriptionPlan !== "freeTrial" && (
             <div className="hidden md:flex items-center space-x-2">
               <DesktopTooltip content="This is how employer rated your interview">
                 <div className="flex items-center space-x-2 font-light text-white">

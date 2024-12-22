@@ -26,9 +26,9 @@ interface SecureCompanyDisplayProps {
 const SecureCompanyDisplay: FC<SecureCompanyDisplayProps> = ({
   company,
 }) => {
-  const { subscriptionTier } = useJobHunterContext();
+  const { subscriptionPlan } = useJobHunterContext();
 
-  if (subscriptionTier === "freeTrial") {
+  if (subscriptionPlan === "freeTrial") {
     return (
       <div className="relative">
         <div className="select-none pointer-events-none">
@@ -85,10 +85,10 @@ const JobCard: FC<JobCardProps> = ({ match }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const cardId = generateCardId(match);
-  const { subscriptionTier } = useJobHunterContext();
+  const { subscriptionPlan } = useJobHunterContext();
 
   const handleCardClick = () => {
-    if (subscriptionTier === "freeTrial") return;
+    if (subscriptionPlan === "freeTrial") return;
     // Only open preview if schedule modal isn't open
     if (!isScheduleModalOpen) {
       setIsModalOpen(true);
@@ -99,7 +99,7 @@ const JobCard: FC<JobCardProps> = ({ match }) => {
     if (e) {
       e.stopPropagation();
     }
-    if (subscriptionTier === "freeTrial") return;
+    if (subscriptionPlan === "freeTrial") return;
     setIsScheduleModalOpen(true);
     setIsModalOpen(false);
   };
@@ -108,7 +108,7 @@ const JobCard: FC<JobCardProps> = ({ match }) => {
     <>
       <Card
         className={`bg-white border-none h-[275px] relative w-full max-w-[436px] transition-shadow duration-200 ${
-          subscriptionTier === "freeTrial"
+          subscriptionPlan === "freeTrial"
             ? "cursor-default"
             : "cursor-pointer hover:shadow-lg"
         }`}
@@ -199,14 +199,14 @@ const JobCard: FC<JobCardProps> = ({ match }) => {
             className="text-[#717171]"
             onClick={(e) => {
               e.stopPropagation();
-              if (subscriptionTier === "freeTrial") return;
+              if (subscriptionPlan === "freeTrial") return;
               // Handle more options
             }}
           />
         </CardFooter>
       </Card>
 
-      {subscriptionTier !== "freeTrial" && (
+      {subscriptionPlan !== "freeTrial" && (
         <>
           <JobPreviewModal
             isOpen={isModalOpen}

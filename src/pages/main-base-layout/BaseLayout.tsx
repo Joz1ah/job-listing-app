@@ -47,7 +47,7 @@ const AuthenticatedLayoutContent: FC<{ userType: 'employer' | 'job-hunter' }> = 
   const isEmployer = userType === 'employer';
   
   // Get context based on user type
-  const { subscriptionTier } = isEmployer 
+  const { subscriptionPlan } = isEmployer 
     ? useEmployerContext() 
     : useJobHunterContext();
 
@@ -81,7 +81,7 @@ const AuthenticatedLayoutContent: FC<{ userType: 'employer' | 'job-hunter' }> = 
         onToggleMenu={toggleMenu}
         desktopMenuItems={desktopMenuItems}
         mobileMenuItems={mobileMenuItems}
-        subscriptionTier={subscriptionTier}
+        subscriptionPlan={subscriptionPlan}
         userType={userType}
         userName={userName}
         feedPath={`/${isEmployer ? 'employer' : 'job-hunter'}/`}
@@ -129,8 +129,8 @@ const BaseLayout: FC<BaseLayoutProps> = ({ userType }) => {
   }
 
   return (
-    <EmployerProvider initialTier='freeTrial'>
-      <JobHunterProvider initialTier='monthlyPlan'>
+    <EmployerProvider initialTier='monthlyPlan'>
+      <JobHunterProvider initialTier='yearlyPlan'>
         <BaseLayoutContent userType={userType} />
       </JobHunterProvider>
     </EmployerProvider>

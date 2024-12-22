@@ -4,7 +4,7 @@ import { InterviewSidebarEmployer } from "features/employer";
 import { useEmployerContext } from "components";
 
 const InterviewEmployer: FC = () => {
-  const { subscriptionTier } = useEmployerContext();
+  const { subscriptionPlan } = useEmployerContext();
 
   return (
     <div className="flex justify-center w-full max-w-screen-xl mx-auto md:py-16 py-6">
@@ -12,7 +12,7 @@ const InterviewEmployer: FC = () => {
         <InterviewSidebarEmployer
           userName="ABC Incorporated"
           userType="employer"
-          subscriptionTier={subscriptionTier}
+          subscriptionPlan={subscriptionPlan}
           className="w-[395px]"
         />
         <div className="flex-1 m-4">

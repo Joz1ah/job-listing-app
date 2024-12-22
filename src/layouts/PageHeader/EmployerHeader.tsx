@@ -3,10 +3,7 @@ import { Building, Info, Star } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { Tooltip } from "components";
 import verifiedIcon from "images/verified.svg?url";
-
-interface Props {
-  subscriptionTier: "freeTrial" | "monthlyPlan" | "yearlyPlan";
-}
+import { useEmployerContext } from "components";
 
 const DesktopTooltip = ({
   content,
@@ -23,7 +20,8 @@ const DesktopTooltip = ({
   </>
 );
 
-const EmployerHeader: FC<Props> = ({ subscriptionTier }) => {
+const EmployerHeader: FC = () => {
+  const { subscriptionPlan } = useEmployerContext();
   const rating = 4.5;
   const fullStars = Math.floor(rating);
   const hasHalfStar = rating % 1 !== 0;
@@ -50,7 +48,7 @@ const EmployerHeader: FC<Props> = ({ subscriptionTier }) => {
             <h1 className="text-3xl text-white font-normal">
               ABC Incorporated
             </h1>
-            {subscriptionTier === "freeTrial" ? (
+            {subscriptionPlan === "freeTrial" ? (
               <Tooltip
                 content={
                   <div className="flex flex-col gap-2">
@@ -91,7 +89,7 @@ const EmployerHeader: FC<Props> = ({ subscriptionTier }) => {
               </span>
             </div>
 
-            {subscriptionTier !== "freeTrial" && (
+            {subscriptionPlan !== "freeTrial" && (
               <DesktopTooltip content="This is how job hunters rated your interview">
                 <div className="hidden md:flex items-center space-x-2">
                   <div className="border-2 border-dotted border-[#F5722E] text-white text-[15px] px-2 py-1 border-opacity-70 whitespace-nowrap">

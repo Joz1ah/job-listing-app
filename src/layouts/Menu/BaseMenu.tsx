@@ -21,7 +21,7 @@ interface MenuProps {
   onToggleMenu: () => void;
   desktopMenuItems: NavItem[];
   mobileMenuItems: NavItem[];
-  subscriptionTier: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
+  subscriptionPlan: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
   userType: 'employer' | 'job-hunter';
   userName: string;
   feedPath: string;
@@ -33,7 +33,7 @@ const BaseMenu: FC<MenuProps> = ({
   onToggleMenu,
   desktopMenuItems,
   mobileMenuItems,
-  subscriptionTier,
+  subscriptionPlan,
   userType,
   userName,
   feedPath,
@@ -97,7 +97,7 @@ const BaseMenu: FC<MenuProps> = ({
   };
 
   const renderStatusIcon = () => {
-    if (subscriptionTier === 'freeTrial') {
+    if (subscriptionPlan === 'freeTrial') {
       return <Info className="w-4 h-4 text-[#2D3A41] fill-white" />;
     }
     return <img src={verifiedIcon} className="w-4 h-4" alt="Verified" />;
@@ -207,7 +207,7 @@ const BaseMenu: FC<MenuProps> = ({
 
         <div className="flex items-center gap-4 flex-shrink-0">
           <div onClick={handleNotificationClick}>
-            <NotificationFeed subscriptionTier={subscriptionTier} />
+            <NotificationFeed subscriptionPlan={subscriptionPlan} />
           </div>
           <div className="flex items-center gap-2 flex-shrink-0 min-w-0">
             <span className="text-white font-medium text-[14px] lg:text-[18px] truncate block max-w-[100px] lg:max-w-[200px]">
@@ -249,7 +249,7 @@ const BaseMenu: FC<MenuProps> = ({
         <img src={akazaLogoWhite} alt="Akaza Logo" className="h-8" />
         <div className="flex items-center space-x-2">
           <div onClick={handleNotificationClick}>
-            <NotificationFeed subscriptionTier={subscriptionTier} />
+            <NotificationFeed subscriptionPlan={subscriptionPlan} />
           </div>
           <Button
             variant="custom"

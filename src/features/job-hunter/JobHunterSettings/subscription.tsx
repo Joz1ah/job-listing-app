@@ -41,12 +41,12 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   buttonText,
   isCurrentPlan = false,
 }) => {
-  const { subscriptionTier } = useJobHunterContext();
+  const { subscriptionPlan } = useJobHunterContext();
 
   return (
     <div
       className={`md:w-[360px] h-[440px] p-4 rounded transition-all duration-300 ease-in-out flex flex-col ${
-        isCurrentPlan && subscriptionTier !== "freeTrial"
+        isCurrentPlan && subscriptionPlan !== "freeTrial"
           ? "scale-105 group-hover:scale-100 hover:!scale-105"
           : "hover:scale-105"
       } ${
@@ -105,7 +105,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
           }`}
         >
           {isCurrentPlan
-            ? subscriptionTier === "yearlyPlan"
+            ? subscriptionPlan === "yearlyPlan"
               ? "Keep Your Yearly Savings"
               : "Renew"
             : buttonText}
@@ -116,7 +116,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
 };
 
 const SubscriptionSettings: React.FC = () => {
-  const { subscriptionTier } = useJobHunterContext();
+  const { subscriptionPlan } = useJobHunterContext();
 
   const features: PlanFeatures = {
     yearly: [
@@ -150,7 +150,7 @@ const SubscriptionSettings: React.FC = () => {
     let statusText = "";
     let planName = "";
 
-    switch (subscriptionTier) {
+    switch (subscriptionPlan) {
       case "freeTrial":
         statusText = "You're subscribed to the";
         planName = "Free Trial";
@@ -188,7 +188,7 @@ const SubscriptionSettings: React.FC = () => {
       </div>
 
       <div className="h-9">
-        {subscriptionTier !== "freeTrial" && (
+        {subscriptionPlan !== "freeTrial" && (
           <div className="flex justify-end mb-2">
             <SubscriptionDialog />
           </div>
@@ -204,9 +204,9 @@ const SubscriptionSettings: React.FC = () => {
           features={features.yearly}
           isHighlighted={true}
           buttonText={
-            subscriptionTier === "monthlyPlan" ? "Upgrade Today" : "Upgrade Now"
+            subscriptionPlan === "monthlyPlan" ? "Upgrade Today" : "Upgrade Now"
           }
-          isCurrentPlan={subscriptionTier === "yearlyPlan"}
+          isCurrentPlan={subscriptionPlan === "yearlyPlan"}
         />
         <SubscriptionCard
           title="Monthly Plan"
@@ -214,11 +214,11 @@ const SubscriptionSettings: React.FC = () => {
           features={features.monthly}
           isHighlighted={false}
           buttonText={
-            subscriptionTier === "yearlyPlan"
+            subscriptionPlan === "yearlyPlan"
               ? "Switch to Monthly (Less Value)"
               : "Upgrade Now"
           }
-          isCurrentPlan={subscriptionTier === "monthlyPlan"}
+          isCurrentPlan={subscriptionPlan === "monthlyPlan"}
         />
       </div>
     </div>
