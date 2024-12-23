@@ -492,6 +492,7 @@ export const {
   useSearchIndustryQuery,
   useSearchCategoryQuery,
   useSearchCoreQuery,
+  useSearchInterPersonalQuery,
   useSearchCertificationQuery,
   useLazySearchCertificationQuery,
 } = akazaApiSearch

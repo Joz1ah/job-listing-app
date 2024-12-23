@@ -3,6 +3,7 @@ import { cn } from "lib/utils";
 import { Input } from "components";
 import { Label } from "components";
 import { ScrollArea } from "components";
+import { useSearchCoreQuery, useSearchInterPersonalQuery, useSearchCertificationQuery } from 'api/akaza/akazaAPI';
 
 interface Option {
   label: string;
@@ -25,6 +26,15 @@ interface TagInputProps {
     secondColor?: string;
   };
   maxTagLength?: number;
+  onInputChange?: (e: React.ChangeEvent<HTMLInputElement>) => void; // Fixed: Remove comma and add proper type
+}
+
+interface Skill {
+  id: string;
+  keyword: string;
+  type: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 const TagInputs: React.FC<TagInputProps> = ({
@@ -40,6 +50,7 @@ const TagInputs: React.FC<TagInputProps> = ({
   disabled,
   alternateColors,
   maxTagLength = 12,
+  onInputChange,
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -84,7 +95,9 @@ const TagInputs: React.FC<TagInputProps> = ({
     const newValue = e.target.value;
     setInputValue(newValue);
     setShowSuggestions(newValue.length > 0);
+    onInputChange?.(e); // Call the passed onInputChange handler
   };
+
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Backspace' && inputValue === '' && value.length > 0) {
@@ -218,67 +231,67 @@ const TagInputs: React.FC<TagInputProps> = ({
 };
 
 const CoreSkillsTagInput: React.FC<Omit<TagInputProps, 'options'>> = (props) => {
-  const coreSkills = [
-    // Technical/Hard Skills
-    { label: "HTML", value: "html" },
-    { label: "CSS", value: "css" },
-    { label: "Bootstrap", value: "bootstrap" },
-    { label: "Tailwind CSS", value: "tailwind-css" },
-    { label: "JavaScript", value: "javascript" },
-    { label: "Python", value: "python" },
-    { label: "React", value: "react" },
-    { label: "Node.js", value: "nodejs" },
-    { label: "SQL", value: "sql" },
-    { label: "Data Analysis", value: "data-analysis" },
-    { label: "Project Management", value: "project-management" },
-    { label: "DevOps", value: "devops" },
-    { label: "UI/UX Design", value: "uiux-design" },
-    { label: "Machine Learning", value: "machine-learning" },
-    { label: "Cloud Computing", value: "cloud-computing" },
-    { label: "Agile Methodologies", value: "agile" },
-    { label: "Quality Assurance", value: "qa" },
-    { label: "Digital Marketing", value: "digital-marketing" },
-    { label: "Content Writing", value: "content-writing" }
-  ];
+  const [searchQuery, setSearchQuery] = useState('');
+  
+  const { data: searchResults } = useSearchCoreQuery({
+    query: searchQuery,
+    limit: 5
+  }, {
+    skip: !searchQuery
+  });
+
+  // Transform the data correctly based on the API response
+  const options = searchResults?.map((skill: Skill) => ({
+    label: skill.keyword,
+    value: skill.keyword  // Use keyword for the value
+  })) || [];
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+  };
 
   return (
     <TagInputs
       {...props}
-      options={coreSkills}
+      options={options}
       maxTags={5}
       suggestionTitle="Select Core Skills"
       placeholder={props.placeholder || "Type to search core skills"}
+      onInputChange={handleSearch}
     />
   );
 };
 
 const InterpersonalSkillsTagInput: React.FC<Omit<TagInputProps, 'options'>> = (props) => {
-  const interpersonalSkills = [
-    // Soft/Interpersonal Skills
-    { label: "Communication", value: "communication" },
-    { label: "Leadership", value: "leadership" },
-    { label: "Team Collaboration", value: "team-collaboration" },
-    { label: "Problem Solving", value: "problem-solving" },
-    { label: "Critical Thinking", value: "critical-thinking" },
-    { label: "Adaptability", value: "adaptability" },
-    { label: "Time Management", value: "time-management" },
-    { label: "Emotional Intelligence", value: "emotional-intelligence" },
-    { label: "Conflict Resolution", value: "conflict-resolution" },
-    { label: "Active Listening", value: "active-listening" },
-    { label: "Negotiation", value: "negotiation" },
-    { label: "Mentoring", value: "mentoring" },
-    { label: "Public Speaking", value: "public-speaking" },
-    { label: "Decision Making", value: "decision-making" },
-    { label: "Cultural Awareness", value: "cultural-awareness" }
-  ];
+  const [searchQuery, setSearchQuery] = useState('');
+  
+  const { data: searchResults } = useSearchInterPersonalQuery({
+    query: searchQuery,
+    limit: 5
+  }, {
+    skip: !searchQuery
+  });
+
+  // Transform the data correctly based on the API response
+  const options = searchResults?.map((skill: Skill) => ({
+    label: skill.keyword,
+    value: skill.keyword  // Use keyword for the value
+  })) || [];
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+  };
 
   return (
     <TagInputs
       {...props}
-      options={interpersonalSkills}
+      options={options}
       maxTags={5}
       suggestionTitle="Select Interpersonal Skills"
       placeholder={props.placeholder || "Type to search interpersonal skills"}
+      onInputChange={handleSearch}
     />
   );
 };
@@ -322,48 +335,34 @@ const LanguageTagInput: React.FC<Omit<TagInputProps, 'options'>> = (props) => {
 };
 
 const CertificationTagInput: React.FC<Omit<TagInputProps, 'options'>> = (props) => {
-  const certifications = [
-    // Technical Certifications
-    { label: "AWS Certified Solutions Architect", value: "aws-solutions-architect" },
-    { label: "CompTIA A+", value: "comptia-a-plus" },
-    { label: "CompTIA Network+", value: "comptia-network-plus" },
-    { label: "CompTIA Security+", value: "comptia-security-plus" },
-    { label: "Cisco CCNA", value: "cisco-ccna" },
-    { label: "Cisco CCNP", value: "cisco-ccnp" },
-    { label: "Microsoft Azure Administrator", value: "azure-administrator" },
-    { label: "Google Cloud Professional", value: "google-cloud-professional" },
-    
-    // Project Management
-    { label: "Project Management Professional (PMP)", value: "pmp" },
-    { label: "PRINCE2 Practitioner", value: "prince2-practitioner" },
-    { label: "Scrum Master", value: "scrum-master" },
-    { label: "PMI Agile Certified Practitioner", value: "pmi-acp" },
-    
-    // Security
-    { label: "Certified Information Systems Security Professional (CISSP)", value: "cissp" },
-    { label: "Certified Ethical Hacker (CEH)", value: "ceh" },
-    { label: "GIAC Security Essentials (GSEC)", value: "gsec" },
-    
-    // Development
-    { label: "Oracle Certified Professional Java", value: "oracle-java" },
-    { label: "Microsoft Certified: Azure Developer", value: "azure-developer" },
-    { label: "Kubernetes Administrator (CKA)", value: "kubernetes-cka" },
-    { label: "Terraform Associate", value: "terraform-associate" },
-    
-    // Data & AI
-    { label: "Google Data Analytics Professional", value: "google-data-analytics" },
-    { label: "AWS Machine Learning Specialty", value: "aws-ml-specialty" },
-    { label: "TensorFlow Developer Certificate", value: "tensorflow-developer" },
-    { label: "Microsoft Azure AI Engineer", value: "azure-ai-engineer" }
-  ];
+  const [searchQuery, setSearchQuery] = useState('');
+  
+  const { data: searchResults } = useSearchCertificationQuery({
+    query: searchQuery,
+    limit: 5
+  }, {
+    skip: !searchQuery
+  });
+
+  // Transform the data correctly based on the API response
+  const options = searchResults?.map((certificate: Skill) => ({
+    label: certificate.keyword,
+    value: certificate.keyword  // Use keyword for the value
+  })) || [];
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+  };
 
   return (
     <TagInputs
       {...props}
-      options={certifications}
+      options={options}
       maxTags={3}
       suggestionTitle="Select Certifications"
       placeholder={props.placeholder || "Type to search certifications"}
+      onInputChange={handleSearch}
     />
   );
 };
