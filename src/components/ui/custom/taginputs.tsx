@@ -153,7 +153,7 @@ const TagInputs: React.FC<TagInputProps> = ({
     <div ref={containerRef} className="relative w-full">
       <div 
         className={cn(
-          "bg-transparent border-2 border-[#AEADAD] rounded-[10px] min-h-[56px] overflow-hidden",
+          "bg-transparent border-2 border-[#AEADAD] rounded-[10px] min-h-[36px] overflow-hidden",
           "focus-within:border-[#F5722E]",
           "transition-all duration-200 ease-in-out",
           disabled && "opacity-50 cursor-not-allowed",
@@ -241,10 +241,13 @@ const CoreSkillsTagInput: React.FC<Omit<TagInputProps, 'options'>> = (props) => 
   });
 
   // Transform the data correctly based on the API response
-  const options = searchResults?.map((skill: Skill) => ({
-    label: skill.keyword,
-    value: skill.keyword  // Use keyword for the value
-  })) || [];
+  const options = searchResults?.map((skill: Skill) => {
+    const capitalizedKeyword = skill.keyword.charAt(0).toUpperCase() + skill.keyword.slice(1);
+    return {
+      label: capitalizedKeyword,
+      value: skill.keyword  // Keep original keyword for value
+    };
+  }) || [];
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -274,10 +277,13 @@ const InterpersonalSkillsTagInput: React.FC<Omit<TagInputProps, 'options'>> = (p
   });
 
   // Transform the data correctly based on the API response
-  const options = searchResults?.map((skill: Skill) => ({
-    label: skill.keyword,
-    value: skill.keyword  // Use keyword for the value
-  })) || [];
+  const options = searchResults?.map((skill: Skill) => {
+    const capitalizedKeyword = skill.keyword.charAt(0).toUpperCase() + skill.keyword.slice(1);
+    return {
+      label: capitalizedKeyword,
+      value: skill.keyword  // Keep original keyword for value
+    };
+  }) || [];
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -345,10 +351,13 @@ const CertificationTagInput: React.FC<Omit<TagInputProps, 'options'>> = (props) 
   });
 
   // Transform the data correctly based on the API response
-  const options = searchResults?.map((certificate: Skill) => ({
-    label: certificate.keyword,
-    value: certificate.keyword  // Use keyword for the value
-  })) || [];
+  const options = searchResults?.map((certificate: Skill) => {
+    const capitalizedKeyword = certificate.keyword.charAt(0).toUpperCase() + certificate.keyword.slice(1);
+    return {
+      label: capitalizedKeyword,
+      value: certificate.keyword  // Keep original keyword for value
+    };
+  }) || [];
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;

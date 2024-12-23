@@ -11,8 +11,10 @@ import video1 from 'assets/mp4/Landing-Page-hero-1.mp4';
 import video2 from 'assets/mp4/video-conference-call-1.mp4';
 import video3 from 'assets/mp4/glasses-girl-in-meeting.mp4';
 import video4 from 'assets/mp4/girl-laughing-at-monitor.mp4';
+import { BaseMenu } from 'layouts';
+import { CoreSkillsTagInput } from 'components';
 
-import akazaLogo from 'assets/akazalogo.png';
+//import akazaLogo from 'assets/akazalogo.png';
 import akaza_icon from 'assets/akaza-icon.png';
 import akaza_loading from 'assets/akaza-loading.png';
 import group_people_laptop from 'assets/group-people-laptop.jpg'
@@ -1250,19 +1252,11 @@ const Modal = () =>{
 
 const NavigationHeader = () => {
   return(
-    <div className={`${styles.navigation}`}>
-      <div className={`${styles.homelogo}`}>
-          <img src={akazaLogo} width="161px" height="50px" />
-      </div>
-      <div className={`${styles.noselect}`}>About Us</div>
-      <div className={`${styles.noselect}`}>Contact Us</div>
-      <div className={`${styles.noselect}`}>Subscription Plans</div>
-      <div className={`${styles.noselect}`}>FAQ</div>
-      <div className={`${styles['nav-button-container']}`}>
-        <ButtonLoginNav/>
-        <ButtonSignUpNav/>
-      </div>
-  </div>
+    <BaseMenu
+    isAuthenticated={false}
+    ButtonLoginNav={ButtonLoginNav}
+    ButtonSignUpNav={ButtonSignUpNav}
+/>
   )
 }
 const HeroPerfectMatchAlgo = () => {
@@ -1357,6 +1351,8 @@ const HeroJobTitleEmployer = () => {
 const HeroSkillSetsEmployer = () => {
   const heroEmployerButton = useRef<HTMLDivElement>(null);
   const heroPreviousButton = useRef<HTMLDivElement>(null);
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+
   const heroScreenActions = () => {
     if (heroEmployerButton.current) {
       heroEmployerButton.current.onclick = () => {
@@ -1370,7 +1366,7 @@ const HeroSkillSetsEmployer = () => {
     }
   };
   
-  useEffect(heroScreenActions,[])
+  useEffect(heroScreenActions, []);
   return(
     <div id="step2_employer" className={`${styles['hero-content']}`} hidden={heroState !== heroStates.SKILLSETS_EMPLOYER}>
       <img src={group_people_laptop} />
@@ -1385,8 +1381,17 @@ const HeroSkillSetsEmployer = () => {
                   </div>
               </div>
               <div className={`${styles['search-wrapper']}`}>
-                  <input className={`${styles['search-input']}`} placeholder="Type and select your skill set" type="text" />
-                  <img src={icon_search}></img>
+                <CoreSkillsTagInput
+                  value={selectedSkills}
+                  onChange={setSelectedSkills}
+                  placeholder="Type and select your skill set"
+                  className="bg-transparent border-none text-white min-h-9"
+                  alternateColors={{
+                    firstColor: "#168AAD",
+                    secondColor: "#184E77",
+                  }}
+                />
+                <img src={icon_search}></img>
               </div>
               <div className={`${styles['hero-button-container2']}`}>
                   <div ref={heroEmployerButton} className={`${styles['button-custom-orange']} ${styles['noselect']}`}>Next</div>
@@ -1455,6 +1460,8 @@ const HeroYearsOfExperienceEmployer = () => {
 const HeroSkillSetsJobHunter = () => {
   const heroNextButton = useRef<HTMLDivElement>(null);
   const heroPreviousButton = useRef<HTMLDivElement>(null);
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+
   const heroScreenActions = () => {
     if (heroNextButton.current) {
       heroNextButton.current.onclick = () => {
@@ -1484,7 +1491,16 @@ const HeroSkillSetsJobHunter = () => {
                     </div>
                 </div>
                 <div className={`${styles['search-wrapper']}`}>
-                    <input className={`${styles['search-input']}`} placeholder="Type and select your skill set" type="text" />
+                    <CoreSkillsTagInput
+                      value={selectedSkills}
+                      onChange={setSelectedSkills}
+                      placeholder="Type and select your skill set"
+                      className="bg-transparent border-none text-white min-h-[36px]"
+                      alternateColors={{
+                        firstColor: "#168AAD",
+                        secondColor: "#184E77",
+                      }}
+                    />
                     <img src={icon_search}></img>
                 </div>
                 <div className={`${styles['hero-button-container2']}`}>

@@ -41,7 +41,7 @@ export const acceptedInterviewsData: Interview[] = [
     position: "Senior Frontend Engineer",
     candidate: "Michael Thompson",
     location: "Mountain View, CA",
-    date: "December 22, 2024s",
+    date: "December 22, 2024",
     time: "10:00 AM PST",
     meetingLink: "meet.google.com/abc-defg-hij",
     receivedTime: "2 hours ago",

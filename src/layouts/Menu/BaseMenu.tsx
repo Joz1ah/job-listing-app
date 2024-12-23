@@ -2,11 +2,11 @@ import { FC, useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { Button } from "components/ui/shadcn/buttons";
 import { ChevronDown, Info, Plus, ChevronUp } from "lucide-react";
+import { NotificationFeed } from "components";
+import verifiedIcon from "images/verified.svg?url";
 import companyLogo from "images/company-logo.png";
 import akazaLogoWhite from "images/akaza-logo-white.png";
 import menuButton from "images/menu-button.png";
-import { NotificationFeed } from "components";
-import verifiedIcon from "images/verified.svg?url";
 
 interface NavItem {
   name: string;
@@ -17,27 +17,33 @@ interface NavItem {
 }
 
 interface MenuProps {
-  isMenuOpen: boolean;
-  onToggleMenu: () => void;
-  desktopMenuItems: NavItem[];
-  mobileMenuItems: NavItem[];
-  subscriptionPlan: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
-  userType: 'employer' | 'job-hunter';
-  userName: string;
-  feedPath: string;
-  onSignOut: () => void;
+  isMenuOpen?: boolean;
+  onToggleMenu?: () => void;
+  desktopMenuItems?: NavItem[];
+  mobileMenuItems?: NavItem[];
+  subscriptionPlan?: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
+  userType?: 'employer' | 'job-hunter';
+  userName?: string;
+  feedPath?: string;
+  onSignOut?: () => void;
+  isAuthenticated?: boolean;
+  ButtonLoginNav?: FC;
+  ButtonSignUpNav?: FC;
 }
 
 const BaseMenu: FC<MenuProps> = ({
-  isMenuOpen,
-  onToggleMenu,
-  desktopMenuItems,
-  mobileMenuItems,
-  subscriptionPlan,
+  isMenuOpen = false,
+  onToggleMenu = () => {},
+  desktopMenuItems = [],
+  mobileMenuItems = [],
+  subscriptionPlan = 'freeTrial',
   userType,
   userName,
-  feedPath,
+  feedPath = '/',
   onSignOut,
+  isAuthenticated = false,
+  ButtonLoginNav,
+  ButtonSignUpNav,
 }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 1024);
@@ -47,7 +53,7 @@ const BaseMenu: FC<MenuProps> = ({
 
   const handleItemClick = (item: NavItem) => {
     if (item.isAction && item.name === 'SIGN OUT') {
-      onSignOut();
+      onSignOut?.();
     } else if (item.isAction && item.action) {
       item.action();
     }
@@ -79,7 +85,7 @@ const BaseMenu: FC<MenuProps> = ({
     };
 
     window.addEventListener("resize", handleResize);
-    handleResize(); // Call initially to set correct state
+    handleResize();
 
     return () => {
       document.body.style.overflow = "";
@@ -120,7 +126,7 @@ const BaseMenu: FC<MenuProps> = ({
       return (
         <button
           onClick={() => handleItemClick(item)}
-          className={`${baseClassName} w-full text-right px-2 sm:pr-4 sm:pl-0`}
+          className={baseClassName}
         >
           {item.name}
         </button>
@@ -135,6 +141,15 @@ const BaseMenu: FC<MenuProps> = ({
       >
         {item.name}
       </NavLink>
+    );
+  };
+
+  const renderNotificationFeed = () => {
+    if (!subscriptionPlan) return null;
+    return (
+      <div onClick={handleNotificationClick}>
+        <NotificationFeed subscriptionPlan={subscriptionPlan} />
+      </div>
     );
   };
 
@@ -158,26 +173,26 @@ const BaseMenu: FC<MenuProps> = ({
             <nav className="flex-shrink">
               <ul className="flex gap-4 lg:gap-8 text-white text-[14px] lg:text-[16px] font-light whitespace-nowrap items-center">
                 <li className="hover:text-[#F5722E]">
-                  <NavLink to={`/${safeUserType}/about-us`} onClick={handleNavLinkClick}>
+                  <NavLink to={isAuthenticated ? `/${safeUserType}/about-us` : "/about-us"} onClick={handleNavLinkClick}>
                     About us
                   </NavLink>
                 </li>
                 <li className="hover:text-[#F5722E]">
-                  <NavLink to={`/${safeUserType}/contact-us`} onClick={handleNavLinkClick}>
+                  <NavLink to={isAuthenticated ? `/${safeUserType}/contact-us` : "/contact-us"} onClick={handleNavLinkClick}>
                     Contact us
                   </NavLink>
                 </li>
                 <li className="hover:text-[#F5722E]">
-                  <NavLink to={`/${safeUserType}/subscription-plan`} onClick={handleNavLinkClick}>
+                  <NavLink to={isAuthenticated ? `/${safeUserType}/subscription-plan` : "/subscription-plan"} onClick={handleNavLinkClick}>
                     Subscription plans
                   </NavLink>
                 </li>
                 <li className="hover:text-[#F5722E]">
-                  <NavLink to={`/${safeUserType}/faq`} onClick={handleNavLinkClick}>
+                  <NavLink to={isAuthenticated ? `/${safeUserType}/faq` : "/faq"} onClick={handleNavLinkClick}>
                     FAQ
                   </NavLink>
                 </li>
-                {isEmployer && (
+                {isAuthenticated && isEmployer && (
                   <li>
                     <NavLink
                       to="/employer/job-listing"
@@ -206,41 +221,48 @@ const BaseMenu: FC<MenuProps> = ({
         </div>
 
         <div className="flex items-center gap-4 flex-shrink-0">
-          <div onClick={handleNotificationClick}>
-            <NotificationFeed subscriptionPlan={subscriptionPlan} />
-          </div>
-          <div className="flex items-center gap-2 flex-shrink-0 min-w-0">
-            <span className="text-white font-medium text-[14px] lg:text-[18px] truncate block max-w-[100px] lg:max-w-[200px]">
-              {userName}
-            </span>
-            {renderStatusIcon()}
-            <div className="relative w-6 h-6">
-              <div
-                className={`absolute inset-0 transform transition-all duration-300 ease-in-out ${
-                  isMenuOpen
-                    ? "opacity-0 rotate-90 scale-0"
-                    : "opacity-100 rotate-0 scale-100"
-                } hover:scale-90`}
-              >
-                <ChevronDown
-                  onClick={onToggleMenu}
-                  className="w-6 h-6 text-white cursor-pointer transition-transform flex-shrink-0"
-                />
+          {isAuthenticated ? (
+            <>
+              {renderNotificationFeed()}
+              <div className="flex items-center gap-2 flex-shrink-0 min-w-0">
+                <span className="text-white font-medium text-[14px] lg:text-[18px] truncate block max-w-[100px] lg:max-w-[200px]">
+                  {userName}
+                </span>
+                {renderStatusIcon()}
+                <div className="relative w-6 h-6">
+                  <div
+                    className={`absolute inset-0 transform transition-all duration-300 ease-in-out ${
+                      isMenuOpen
+                        ? "opacity-0 rotate-90 scale-0"
+                        : "opacity-100 rotate-0 scale-100"
+                    } hover:scale-90`}
+                  >
+                    <ChevronDown
+                      onClick={onToggleMenu}
+                      className="w-6 h-6 text-white cursor-pointer transition-transform flex-shrink-0"
+                    />
+                  </div>
+                  <div
+                    className={`absolute inset-0 transform transition-all duration-300 ease-in-out ${
+                      isMenuOpen
+                        ? "opacity-100 rotate-0 scale-100"
+                        : "opacity-0 -rotate-90 scale-0"
+                    } hover:scale-90`}
+                  >
+                    <ChevronUp
+                      onClick={onToggleMenu}
+                      className="w-6 h-6 text-white cursor-pointer transition-transform flex-shrink-0"
+                    />
+                  </div>
+                </div>
               </div>
-              <div
-                className={`absolute inset-0 transform transition-all duration-300 ease-in-out ${
-                  isMenuOpen
-                    ? "opacity-100 rotate-0 scale-100"
-                    : "opacity-0 -rotate-90 scale-0"
-                } hover:scale-90`}
-              >
-                <ChevronUp
-                  onClick={onToggleMenu}
-                  className="w-6 h-6 text-white cursor-pointer transition-transform flex-shrink-0"
-                />
-              </div>
+            </>
+          ) : (
+            <div className="flex items-center gap-4">
+              {ButtonLoginNav && <ButtonLoginNav />}
+              {ButtonSignUpNav && <ButtonSignUpNav />}
             </div>
-          </div>
+          )}
         </div>
       </header>
 
@@ -248,67 +270,76 @@ const BaseMenu: FC<MenuProps> = ({
       <header className="md:hidden bg-black py-4 px-2 flex justify-between items-center z-50">
         <img src={akazaLogoWhite} alt="Akaza Logo" className="h-8" />
         <div className="flex items-center space-x-2">
-          <div onClick={handleNotificationClick}>
-            <NotificationFeed subscriptionPlan={subscriptionPlan} />
-          </div>
-          <Button
-            variant="custom"
-            className="text-[#F5722E] bg-black"
-            size="icon"
-            onClick={onToggleMenu}
-            aria-label="Toggle menu"
-          >
-            <img src={menuButton} className="h-12 w-12" alt="Menu" />
-          </Button>
+          {isAuthenticated ? (
+            <>
+              {renderNotificationFeed()}
+              <Button
+                variant="custom"
+                className="text-[#F5722E] bg-black"
+                size="icon"
+                onClick={onToggleMenu}
+                aria-label="Toggle menu"
+              >
+                <img src={menuButton} className="h-12 w-12" alt="Menu" />
+              </Button>
+            </>
+          ) : (
+            <>
+              {ButtonLoginNav && <ButtonLoginNav />}
+              {ButtonSignUpNav && <ButtonSignUpNav />}
+            </>
+          )}
         </div>
       </header>
 
-      {/* Sliding Menu */}
-      <div className="relative">
-        <div
-          className={`fixed top-[72px] left-0 w-full h-full bg-black/80 transition-opacity duration-300 ${
-            isMenuOpen
-              ? "opacity-100 z-[998]"
-              : "opacity-0 pointer-events-none -z-10"
-          }`}
-          onClick={onToggleMenu}
-        />
+      {/* Sliding Menu - Only shown when authenticated */}
+      {isAuthenticated && (
+        <div className="relative">
+          <div
+            className={`fixed top-[72px] left-0 w-full h-full bg-black/80 transition-opacity duration-300 ${
+              isMenuOpen
+                ? "opacity-100 z-[998]"
+                : "opacity-0 pointer-events-none -z-10"
+            }`}
+            onClick={onToggleMenu}
+          />
 
-        <div
-          className={`fixed top-0 right-0 h-screen w-full md:w-[440px] bg-black text-white shadow-xl transition-transform duration-500 ease-in-out z-[999] ${
-            isMenuOpen ? "translate-x-0" : "translate-x-full"
-          }`}
-          style={{ marginTop: isMobile ? "64px" : "73px" }}
-        >
-          <div className="h-full overflow-y-auto">
-            <nav className="flex flex-col text-white w-full pt-6">
-              {currentMenuItems.map((item, index) => (
-                <div key={`${item.path}-${index}`}>
-                  <div className="w-full text-end px-2 sm:pr-4 sm:pl-0">
-                    {index === 0 && isMobile && isEmployer ? (
-                      <NavLink to="/employer/job-listing">
-                        <Button
-                          onClick={() => handleItemClick(item)}
-                          className="w-[160px] h-[36px] bg-[#F5722E] hover:bg-[#F5722E]/90 text-white p-0 text-xs font-normal mb-2"
-                        >
-                          {item.name}
-                        </Button>
-                      </NavLink>
-                    ) : (
-                      renderMenuItem(item)
+          <div
+            className={`fixed top-0 right-0 h-screen w-full md:w-[440px] bg-black text-white shadow-xl transition-transform duration-500 ease-in-out z-[999] ${
+              isMenuOpen ? "translate-x-0" : "translate-x-full"
+            }`}
+            style={{ marginTop: isMobile ? "64px" : "73px" }}
+          >
+            <div className="h-full overflow-y-auto">
+              <nav className="flex flex-col text-white w-full pt-6">
+                {currentMenuItems.map((item, index) => (
+                  <div key={`${item.path}-${index}`}>
+                    <div className="w-full text-end px-2 sm:pr-4 sm:pl-0">
+                      {index === 0 && isMobile && isEmployer ? (
+                        <NavLink to="/employer/job-listing">
+                          <Button
+                            onClick={() => handleItemClick(item)}
+                            className="w-[160px] h-[36px] bg-[#F5722E] hover:bg-[#F5722E]/90 text-white p-0 text-xs font-normal mb-2"
+                          >
+                            {item.name}
+                          </Button>
+                        </NavLink>
+                      ) : (
+                        renderMenuItem(item)
+                      )}
+                    </div>
+                    {index < currentMenuItems.length - 1 && (
+                      <div className="flex justify-center w-full">
+                        <hr className="border-t border-white w-full my-0" />
+                      </div>
                     )}
                   </div>
-                  {index < currentMenuItems.length - 1 && (
-                    <div className="flex justify-center w-full">
-                      <hr className="border-t border-white w-full my-0" />
-                    </div>
-                  )}
-                </div>
-              ))}
-            </nav>
+                ))}
+              </nav>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 };

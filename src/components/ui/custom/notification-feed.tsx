@@ -19,7 +19,7 @@ type NotificationItem = {
 };
 
 interface NotificationFeedProps {
-  subscriptionPlan: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
+  subscriptionPlan?: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
 }
 
 const initialNewNotifications: NotificationItem[] = [

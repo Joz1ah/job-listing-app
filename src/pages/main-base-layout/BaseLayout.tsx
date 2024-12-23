@@ -77,6 +77,7 @@ const AuthenticatedLayoutContent: FC<{ userType: 'employer' | 'job-hunter' }> = 
   const menu = (
     <>
       <BaseMenu
+        isAuthenticated={true}
         isMenuOpen={menuOpen}
         onToggleMenu={toggleMenu}
         desktopMenuItems={desktopMenuItems}
