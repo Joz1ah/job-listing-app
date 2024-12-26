@@ -1,10 +1,8 @@
 import { FC } from "react";
 import { Outlet } from "react-router-dom";
 import { SettingsSidebar } from "features/employer";
-import { useEmployerContext } from "components";
 
 const AccountSettingsEmployer: FC = () => {
-  const { subscriptionPlan } = useEmployerContext();
 
   return (
     <div className="flex justify-center w-full max-w-screen-xl mx-auto md:py-16 py-6">
@@ -12,7 +10,6 @@ const AccountSettingsEmployer: FC = () => {
         <SettingsSidebar
           userName="ABC Incorporated"
           userType="employer"
-          subscriptionPlan={subscriptionPlan}
           className="w-[395px]"
         />
         <div className="w-auto lg:w-full max-w-[855px] min-h-[750px] bg-[#2D3A41] rounded-lg px-5 py-8 m-4">
