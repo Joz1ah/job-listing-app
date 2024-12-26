@@ -13,6 +13,7 @@ import video3 from 'assets/mp4/glasses-girl-in-meeting.mp4';
 import video4 from 'assets/mp4/girl-laughing-at-monitor.mp4';
 import { BaseMenu } from 'layouts';
 import { CoreSkillsTagInput } from 'components';
+import { useMenu } from 'hooks';
 
 //import akazaLogo from 'assets/akazalogo.png';
 import akaza_icon from 'assets/akaza-icon.png';
@@ -1251,9 +1252,13 @@ const Modal = () =>{
 }
 
 const NavigationHeader = () => {
+  const { menuOpen, toggleMenu } = useMenu();
+
   return(
     <BaseMenu
     isAuthenticated={false}
+    isMenuOpen={menuOpen}
+    onToggleMenu={toggleMenu}
     ButtonLoginNav={ButtonLoginNav}
     ButtonSignUpNav={ButtonSignUpNav}
 />

@@ -5,7 +5,7 @@ import { EmployerFeed, Sidebar } from "features/employer";
 const EmployerFeedLayout: FC = () => {
 
   return (
-    <div className="px-4 xl:px-12 md:pt-20">
+    <div className="px-4 xl:px-12 md:pt-20 overflow-hidden relative">
       {/* Main content area with two columns */}
       <div className="flex flex-col md:flex-row md:space-x-6">
         {/* Left column - contains header and sidebar */}

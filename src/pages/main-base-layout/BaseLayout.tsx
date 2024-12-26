@@ -25,7 +25,7 @@ interface LayoutContentProps {
 }
 
 const LayoutContent: FC<LayoutContentProps> = ({ children, menu }) => (
-  <div className="flex flex-col min-h-screen bg-[#212529] relative overflow-hidden h-full">
+  <div className="flex flex-col min-h-screen bg-[#212529] overflow-hidden h-full">
     {menu}
     <div className="flex flex-col flex-1">
       <main className="flex-1 pb-8">
