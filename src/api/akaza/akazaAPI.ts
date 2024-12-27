@@ -327,6 +327,12 @@ export const akazaApiPayment = createApiFunction({
     //baseUrl: process.env.REACT_APP_PAYMENT_API_URL ,
     credentials: "include", 
     prepareHeaders: (headers) => {
+      // Retrieve the token from cookies
+      const token = Cookies.get('token');
+
+      if (token) {
+        headers.set('Authorization', `Bearer ${token}`); // Add token to the Authorization header
+      }
       return headers;
     },
   }), 

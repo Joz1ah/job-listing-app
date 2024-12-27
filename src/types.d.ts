@@ -29,3 +29,8 @@ declare module '*.mov' {
   const src: string;
   export default src;
 }
+
+//for authorize.net
+declare var Accept: {
+  dispatchData(secureData: any, callback: (response: any) => void): void;
+};
