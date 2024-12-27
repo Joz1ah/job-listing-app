@@ -53,10 +53,10 @@ const BaseMenu: FC<MenuProps> = ({
 
   // Default navigation items for unauthenticated state
   const defaultNavItems = [
-    { name: "About us", path: "/about-us" },
-    { name: "Contact us", path: "/contact-us" },
-    { name: "Subscription plans", path: "/subscription-plan" },
-    { name: "FAQ", path: "/faq" }
+    { name: "About us", path: "/landing/about-us" },
+    { name: "Contact us", path: "/landing/contact-us" },
+    { name: "Subscription plans", path: "/landing/subscription-plan" },
+    { name: "FAQ", path: "/landing/faq" }
   ];
 
   const handleItemClick = (item: NavItem) => {
@@ -183,22 +183,22 @@ const BaseMenu: FC<MenuProps> = ({
             <nav className="flex-shrink">
               <ul className="flex gap-4 lg:gap-8 text-white text-[14px] lg:text-[16px] font-light whitespace-nowrap items-center">
                 <li className="hover:text-[#F5722E]">
-                  <NavLink to={isAuthenticated ? `/${safeUserType}/about-us` : "/about-us"} onClick={handleNavLinkClick}>
+                  <NavLink to={isAuthenticated ? `/${safeUserType}/about-us` : "/landing/about-us"} onClick={handleNavLinkClick}>
                     About us
                   </NavLink>
                 </li>
                 <li className="hover:text-[#F5722E]">
-                  <NavLink to={isAuthenticated ? `/${safeUserType}/contact-us` : "/contact-us"} onClick={handleNavLinkClick}>
+                  <NavLink to={isAuthenticated ? `/${safeUserType}/contact-us` : "/landing/contact-us"} onClick={handleNavLinkClick}>
                     Contact us
                   </NavLink>
                 </li>
                 <li className="hover:text-[#F5722E]">
-                  <NavLink to={isAuthenticated ? `/${safeUserType}/subscription-plan` : "/subscription-plan"} onClick={handleNavLinkClick}>
+                  <NavLink to={isAuthenticated ? `/${safeUserType}/subscription-plan` : "/landing/subscription-plan"} onClick={handleNavLinkClick}>
                     Subscription plans
                   </NavLink>
                 </li>
                 <li className="hover:text-[#F5722E]">
-                  <NavLink to={isAuthenticated ? `/${safeUserType}/faq` : "/faq"} onClick={handleNavLinkClick}>
+                  <NavLink to={isAuthenticated ? `/${safeUserType}/faq` : "/landing/faq"} onClick={handleNavLinkClick}>
                     FAQ
                   </NavLink>
                 </li>

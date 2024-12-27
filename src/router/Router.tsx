@@ -18,7 +18,11 @@ const BaseLayout = lazy(() => import('pages').then(module => ({ default: module.
 const Fetch = lazy(() => import('pages').then(module => ({ default: module.Fetch })))
 const About = lazy(() => import('pages').then(module => ({ default: module.About })))
 const NotFound = lazy(() => import('pages').then(module => ({ default: module.NotFoundPage })))
+const Landing = lazy(() => import('pages').then(module => ({ default: module.Landing })))
 const SubscriptionPlan = lazy(() => import('pages').then(module => ({ default: module.SubscriptionPlan })))
+const AboutUs = lazy(() => import('pages').then(module => ({ default: module.AboutUs })))
+const ContactUs = lazy(() => import('pages').then(module => ({ default: module.ContactUs })))
+const Faq = lazy(() => import('pages').then(module => ({ default: module.Faq })))
 
 // Employer pages
 //const EmployerBaseLayout = lazy(() => import('pages').then(module => ({ default: module.EmployerBaseLayout })))
@@ -135,6 +139,28 @@ const routes: RouteObject[] = [
   {
     path: ROUTE_CONSTANTS.LANDING,
     element: <LazyComponent component={BaseLayout} userType="guest" />,
+    children: [
+      {
+        path: '',
+        element: <LazyComponent component={Landing} />
+      },
+      {
+        path: ROUTE_CONSTANTS.ABOUT_US,
+        element: <LazyComponent component={AboutUs} />
+      },
+      {
+        path: ROUTE_CONSTANTS.CONTACT_US,
+        element: <LazyComponent component={ContactUs} />
+      },
+      {
+        path: ROUTE_CONSTANTS.SUBSCRIPTION_PLAN,
+        element: <LazyComponent component={SubscriptionPlan} />
+      },
+      {
+        path: ROUTE_CONSTANTS.FAQ,
+        element: <LazyComponent component={Faq} />
+      }
+    ]
   },
   {
     path: ROUTE_CONSTANTS.HOME,
@@ -148,6 +174,7 @@ const routes: RouteObject[] = [
     path: ROUTE_CONSTANTS.ABOUT,
     element: <LazyComponent component={About} />
   },
+  // ... rest of your routes remain the same
   {
     path: '*',
     element: <LazyComponent component={NotFound} />

@@ -381,7 +381,7 @@ export const akazaApiJobFeed = createApiFunction({
   endpoints: (builder) => ({
     jobListCreate: builder.mutation({
       query: (payLoad) => ({
-        url: 'payments/create',
+        url: '/job',  // Updated to match the correct endpoint
         method: 'POST',
         body: {
           "employerId": payLoad.employerId,

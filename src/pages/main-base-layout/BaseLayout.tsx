@@ -14,8 +14,9 @@ import {
   useJobHunterContext
 } from "components";
 import { BaseMenu, Footer } from "layouts";
-import { Landing } from "pages/landing/Landing";
 import { SignOutModal } from "components";
+import { ScrollArea } from "components";
+import { SubscriptionPlan } from "components/context/types";
 
 type UserType = 'employer' | 'job-hunter' | 'guest';
 
@@ -27,12 +28,14 @@ interface LayoutContentProps {
 const LayoutContent: FC<LayoutContentProps> = ({ children, menu }) => (
   <div className="flex flex-col min-h-screen bg-[#212529] overflow-hidden h-full">
     {menu}
-    <div className="flex flex-col flex-1">
+    <ScrollArea>
+    <div className="flex flex-col flex-1 h-screen">
       <main className="flex-1 pb-8">
         {children}
       </main>
       <Footer />
     </div>
+    </ScrollArea>
   </div>
 );
 
@@ -46,7 +49,6 @@ const AuthenticatedLayoutContent: FC<{ userType: 'employer' | 'job-hunter' }> = 
   const [shouldRenderModal, setShouldRenderModal] = useState(false);
   const isEmployer = userType === 'employer';
   
-  // Get context based on user type
   const { subscriptionPlan, isLoading, error } = isEmployer 
     ? useEmployerContext() 
     : useJobHunterContext();
@@ -115,7 +117,7 @@ const AuthenticatedLayoutContent: FC<{ userType: 'employer' | 'job-hunter' }> = 
 const GuestLayoutContent: FC = () => {
   return (
     <LayoutContent>
-      <Landing />
+      <Outlet />
     </LayoutContent>
   );
 };
@@ -132,20 +134,23 @@ interface BaseLayoutProps {
 }
 
 const BaseLayout: FC<BaseLayoutProps> = ({ userType }) => {
+
+  const storedTier = localStorage.getItem('subscriptionTier') as SubscriptionPlan || 'freeTrial';
+
   if (userType === 'guest') {
     return <BaseLayoutContent userType={userType} />;
   }
 
   if (userType === 'employer') {
     return (
-      <EmployerProvider initialTier='monthlyPlan'>
+      <EmployerProvider initialTier={storedTier}>
         <BaseLayoutContent userType={userType} />
       </EmployerProvider>
     );
   }
 
   return (
-    <JobHunterProvider initialTier='freeTrial'>
+    <JobHunterProvider initialTier={storedTier}>
       <BaseLayoutContent userType={userType} />
     </JobHunterProvider>
   );

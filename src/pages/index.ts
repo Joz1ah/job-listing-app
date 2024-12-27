@@ -28,3 +28,6 @@ export { EmployerBaseLayout } from 'pages/employer/base-layout/EmployerBaseLayou
 export { BaseLayout } from 'pages/main-base-layout/BaseLayout'
 export { SubscriptionPlan } from 'pages/subscription-plan/SubscriptionPlan'
 export { EmployerBookmarkedJobs } from 'pages/employer/bookmarked-jobs/EmployerBookmarkedJobs'
+export { AboutUs } from 'pages/about-us/AboutUs'
+export { ContactUs } from 'pages/contact-us/ContactUs'
+export { Faq } from 'pages/faq/Faq'
