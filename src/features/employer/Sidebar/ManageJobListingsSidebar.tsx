@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { List, XCircle, Info, CircleCheck } from "lucide-react";
 import verifiedIcon from "images/verified.svg?url";
 import userCheck from "images/user-check.svg?url";
+import { useEmployerContext } from "components";
 
 interface MenuItem {
   icon: JSX.Element;
@@ -12,17 +13,16 @@ interface MenuItem {
 
 interface ManageJobsSidebarProps {
   userName: string;
-  subscriptionPlan: "freeTrial" | "monthlyPlan" | "yearlyPlan";
   className?: string;
 }
 
 const ManageJobListingsSidebar: FC<ManageJobsSidebarProps> = ({
   userName,
-  subscriptionPlan,
   className = "",
 }) => {
   const location = useLocation();
   const baseRoute = "/employer/manage-job-listings";
+  const { subscriptionPlan } = useEmployerContext();
 
   const jobListingsMenu: MenuItem[] = [
     {

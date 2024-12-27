@@ -25,7 +25,7 @@ interface LayoutContentProps {
 }
 
 const LayoutContent: FC<LayoutContentProps> = ({ children, menu }) => (
-  <div className="flex flex-col min-h-screen bg-[#212529] relative overflow-hidden h-full">
+  <div className="flex flex-col min-h-screen bg-[#212529] overflow-hidden h-full">
     {menu}
     <div className="flex flex-col flex-1">
       <main className="flex-1 pb-8">
@@ -47,7 +47,7 @@ const AuthenticatedLayoutContent: FC<{ userType: 'employer' | 'job-hunter' }> = 
   const isEmployer = userType === 'employer';
   
   // Get context based on user type
-  const { subscriptionPlan } = isEmployer 
+  const { subscriptionPlan, isLoading, error } = isEmployer 
     ? useEmployerContext() 
     : useJobHunterContext();
 
@@ -73,6 +73,13 @@ const AuthenticatedLayoutContent: FC<{ userType: 'employer' | 'job-hunter' }> = 
     };
   }, [showSignOutModal]);
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
 
   const menu = (
     <>
@@ -129,12 +136,18 @@ const BaseLayout: FC<BaseLayoutProps> = ({ userType }) => {
     return <BaseLayoutContent userType={userType} />;
   }
 
-  return (
-    <EmployerProvider initialTier='monthlyPlan'>
-      <JobHunterProvider initialTier='yearlyPlan'>
+  if (userType === 'employer') {
+    return (
+      <EmployerProvider initialTier='monthlyPlan'>
         <BaseLayoutContent userType={userType} />
-      </JobHunterProvider>
-    </EmployerProvider>
+      </EmployerProvider>
+    );
+  }
+
+  return (
+    <JobHunterProvider initialTier='freeTrial'>
+      <BaseLayoutContent userType={userType} />
+    </JobHunterProvider>
   );
 };
 

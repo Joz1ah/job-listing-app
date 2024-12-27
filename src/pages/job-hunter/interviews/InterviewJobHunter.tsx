@@ -1,10 +1,8 @@
 import { FC } from "react";
 import { Outlet } from "react-router-dom";
 import { InterviewSidebarJobHunter } from "features/job-hunter";
-import { useJobHunterContext } from "components";
 
 const InterviewJobHunter: FC = () => {
-  const { subscriptionPlan } = useJobHunterContext();
 
   return (
     <div className="flex justify-center w-full max-w-screen-xl mx-auto md:py-16 py-6">
@@ -12,7 +10,6 @@ const InterviewJobHunter: FC = () => {
         <InterviewSidebarJobHunter
           userName="John Doe"
           userType="job-hunter"
-          subscriptionPlan={subscriptionPlan}
           className="w-[395px]"
         />
         <div className="flex-1 m-4">

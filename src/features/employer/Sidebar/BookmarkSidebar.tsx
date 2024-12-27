@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Bookmark, Info } from "lucide-react";
 import verifiedIcon from 'images/verified.svg?url'
 import userCheck from 'images/user-check.svg?url'
+import { useEmployerContext } from "components";
 
 interface MenuItem {
   icon: JSX.Element;
@@ -12,17 +13,16 @@ interface MenuItem {
 
 interface BookmarkSidebarProps {
   userName: string;
-  subscriptionPlan: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
   className?: string;
 }
 
 const BookmarkSidebar: FC<BookmarkSidebarProps> = ({
   userName,
-  subscriptionPlan,
   className = "",
 }) => {
   const location = useLocation();
   const baseRoute = "/employer/bookmarked-jobs";
+  const { subscriptionPlan } = useEmployerContext();
 
   const bookmarkMenu: MenuItem[] = [
     {

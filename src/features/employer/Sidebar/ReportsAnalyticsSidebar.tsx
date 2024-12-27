@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { BarChart2, Users, Calendar, DollarSign, Info } from "lucide-react";
 import verifiedIcon from 'images/verified.svg?url'
 import userCheck from 'images/user-check.svg?url'
+import { useEmployerContext } from "components";
 
 interface MenuItem {
   icon: JSX.Element;
@@ -12,17 +13,16 @@ interface MenuItem {
 
 interface AnalyticsSidebarProps {
   userName: string;
-  subscriptionPlan: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
   className?: string;
 }
 
 const ReportsAnalyticsSidebar: FC<AnalyticsSidebarProps> = ({ 
   userName,
-  subscriptionPlan,
   className=''
 }) => {
   const location = useLocation();
   const baseRoute = '/employer/reports-and-analytics';
+  const { subscriptionPlan } = useEmployerContext();
 
   const analyticsMenu: MenuItem[] = [
     {

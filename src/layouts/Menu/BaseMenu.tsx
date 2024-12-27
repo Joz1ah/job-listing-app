@@ -51,6 +51,14 @@ const BaseMenu: FC<MenuProps> = ({
   const isEmployer = userType === 'employer';
   const safeUserType = userType || 'job-hunter';
 
+  // Default navigation items for unauthenticated state
+  const defaultNavItems = [
+    { name: "About us", path: "/about-us" },
+    { name: "Contact us", path: "/contact-us" },
+    { name: "Subscription plans", path: "/subscription-plan" },
+    { name: "FAQ", path: "/faq" }
+  ];
+
   const handleItemClick = (item: NavItem) => {
     if (item.isAction && item.name === 'SIGN OUT') {
       onSignOut?.();
@@ -94,7 +102,9 @@ const BaseMenu: FC<MenuProps> = ({
     };
   }, [isMenuOpen]);
 
-  const currentMenuItems = isMobile ? mobileMenuItems : desktopMenuItems;
+  const currentMenuItems = isMobile 
+    ? (isAuthenticated ? mobileMenuItems : defaultNavItems)
+    : (isAuthenticated ? desktopMenuItems : defaultNavItems);
 
   const handleNavLinkClick = () => {
     if (isMenuOpen) {
@@ -267,15 +277,15 @@ const BaseMenu: FC<MenuProps> = ({
       </header>
 
       {/* Mobile Header */}
-      <header className="md:hidden bg-black py-4 px-2 flex justify-between items-center z-50">
+      <header className="md:hidden bg-[#2D3A41] py-4 px-2 flex justify-between items-center z-50">
         <img src={akazaLogoWhite} alt="Akaza Logo" className="h-8" />
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-4">
           {isAuthenticated ? (
             <>
               {renderNotificationFeed()}
               <Button
                 variant="custom"
-                className="text-[#F5722E] bg-black"
+                className="text-[#F5722E] bg-transparent"
                 size="icon"
                 onClick={onToggleMenu}
                 aria-label="Toggle menu"
@@ -285,61 +295,70 @@ const BaseMenu: FC<MenuProps> = ({
             </>
           ) : (
             <>
-              {ButtonLoginNav && <ButtonLoginNav />}
-              {ButtonSignUpNav && <ButtonSignUpNav />}
+              <div className="flex items-center gap-4">
+                {ButtonLoginNav && <ButtonLoginNav />}
+                {ButtonSignUpNav && <ButtonSignUpNav />}
+              </div>
+              <Button
+                variant="custom"
+                className="text-[#F5722E] bg-transparent"
+                size="icon"
+                onClick={onToggleMenu}
+                aria-label="Toggle menu"
+              >
+                <img src={menuButton} className="h-12 w-12" alt="Menu" />
+              </Button>
             </>
           )}
         </div>
       </header>
 
-      {/* Sliding Menu - Only shown when authenticated */}
-      {isAuthenticated && (
-        <div className="relative">
-          <div
-            className={`fixed top-[72px] left-0 w-full h-full bg-black/80 transition-opacity duration-300 ${
-              isMenuOpen
-                ? "opacity-100 z-[998]"
-                : "opacity-0 pointer-events-none -z-10"
-            }`}
-            onClick={onToggleMenu}
-          />
+      {/* Sliding Menu */}
+      <div className="relative">
+        <div
+          className={`fixed top-[72px] left-0 w-full h-full bg-black/80 transition-opacity duration-300 ${
+            isMenuOpen
+              ? "opacity-100 z-[998]"
+              : "opacity-0 pointer-events-none -z-10"
+          }`}
+          onClick={onToggleMenu}
+        />
 
-          <div
-            className={`fixed top-0 right-0 h-screen w-full md:w-[440px] bg-black text-white shadow-xl transition-transform duration-500 ease-in-out z-[999] ${
-              isMenuOpen ? "translate-x-0" : "translate-x-full"
-            }`}
-            style={{ marginTop: isMobile ? "64px" : "73px" }}
-          >
-            <div className="h-full overflow-y-auto">
-              <nav className="flex flex-col text-white w-full pt-6">
-                {currentMenuItems.map((item, index) => (
-                  <div key={`${item.path}-${index}`}>
-                    <div className="w-full text-end px-2 sm:pr-4 sm:pl-0">
-                      {index === 0 && isMobile && isEmployer ? (
-                        <NavLink to="/employer/job-listing">
-                          <Button
-                            onClick={() => handleItemClick(item)}
-                            className="w-[160px] h-[36px] bg-[#F5722E] hover:bg-[#F5722E]/90 text-white p-0 text-xs font-normal mb-2"
-                          >
-                            {item.name}
-                          </Button>
-                        </NavLink>
-                      ) : (
-                        renderMenuItem(item)
-                      )}
-                    </div>
-                    {index < currentMenuItems.length - 1 && (
-                      <div className="flex justify-center w-full">
-                        <hr className="border-t border-white w-full my-0" />
-                      </div>
+        <div
+          className={`fixed top-0 right-0 h-screen w-full md:w-[440px] bg-black text-white shadow-xl transition-transform duration-500 ease-in-out z-[999] ${
+            isMenuOpen ? "translate-x-0" : "translate-x-full"
+          }`}
+          style={{ marginTop: isMobile ? "72px" : "72px" }}
+        >
+          <div className="h-full overflow-y-auto">
+            <nav className="flex flex-col text-white w-full pt-6">
+              {currentMenuItems.map((item, index) => (
+                <div key={`${item.path}-${index}`}>
+                  <div className="w-full text-end px-2 sm:pr-4 sm:pl-0">
+                    {index === 0 && isMobile && isEmployer && isAuthenticated ? (
+                      <NavLink to="/employer/job-listing">
+                        <Button
+                          onClick={() => handleItemClick(item)}
+                          className="w-[160px] h-[36px] bg-[#F5722E] hover:bg-[#F5722E]/90 text-white p-0 text-xs font-normal mb-2"
+                        >
+                          {item.name}
+                        </Button>
+                      </NavLink>
+                    ) : (
+                      renderMenuItem(item)
                     )}
                   </div>
-                ))}
-              </nav>
-            </div>
+                  {index < currentMenuItems.length - 1 && (
+                    <div className="flex justify-center w-full">
+                      <hr className="border-t border-white w-full my-0" />
+                    </div>
+                  )}
+                </div>
+              ))}
+            </nav>
           </div>
         </div>
-      )}
+      </div>
     </>
   );
 };
