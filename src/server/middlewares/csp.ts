@@ -12,6 +12,9 @@ const defaultSrc = [
   '*.akaza.xyz',
   'akaza-sit-api-gateway---rev-2-2tninhtd.uk.gateway.dev',
   'js.stripe.com',
+  'js.authorize.net',
+  'jstest.authorize.net',
+  'api2.authorize.net',
   'localhost:*',
   //'pokeapi.co',
 ];
@@ -28,10 +31,13 @@ const csp = (req: Request, res: Response, next: NextFunction): void => {
           `'nonce-${String(res.locals.cspNonce)}'`,
           `https://js.stripe.com`,
           `http://js.stripe.com`,
+          'https://js.authorize.net',
+          'http://js.authorize.net',
+          'https://jstest.authorize.net',
           IS_DEV ? "'unsafe-eval'" : ''
         ].filter(Boolean),
         frameSrc: ["'self'", "https://js.stripe.com", "http://js.stripe.com"],
-        connectSrc: [...defaultSrc, "https://api.stripe.com", "http://api.stripe.com"],
+        connectSrc: [...defaultSrc, "https://api.stripe.com", "http://api.stripe.com",'https://api2.authorize.net', 'https://apitest.authorize.net'],
       }
     },
     crossOriginEmbedderPolicy: { policy: 'credentialless' },
