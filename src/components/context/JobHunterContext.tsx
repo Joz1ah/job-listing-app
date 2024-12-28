@@ -1,27 +1,44 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode, useMemo } from 'react';
+import { SubscriptionPlan, BaseContextType } from './types';
 
-type SubscriptionTier = 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
-
-interface JobHunterContextType {
-  subscriptionTier: SubscriptionTier;
-  setSubscriptionTier: (tier: SubscriptionTier) => void;
-}
-
-const JobHunterContext = createContext<JobHunterContextType | undefined>(undefined);
+const JobHunterContext = createContext<BaseContextType | undefined>(undefined);
 
 interface JobHunterProviderProps {
   children: ReactNode;
-  initialTier?: SubscriptionTier;
+  initialTier?: SubscriptionPlan;
 }
 
 const JobHunterProvider: React.FC<JobHunterProviderProps> = ({ 
   children, 
   initialTier = 'freeTrial'
 }) => {
-  const [subscriptionTier, setSubscriptionTier] = useState<SubscriptionTier>(initialTier);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+  const [subscriptionPlan, setSubscriptionPlan] = useState<SubscriptionPlan>(initialTier);
+
+  const updateSubscriptionPlan = async (newPlan: SubscriptionPlan) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      // Simulating an API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setSubscriptionPlan(newPlan);
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error('Failed to update subscription'));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const value = useMemo(() => ({
+    subscriptionPlan,
+    setSubscriptionPlan: updateSubscriptionPlan,
+    isLoading,
+    error
+  }), [subscriptionPlan, isLoading, error]);
 
   return (
-    <JobHunterContext.Provider value={{ subscriptionTier, setSubscriptionTier }}>
+    <JobHunterContext.Provider value={value}>
       {children}
     </JobHunterContext.Provider>
   );
@@ -34,5 +51,4 @@ const useJobHunterContext = () => {
   }
   return context;
 };
-
 export { JobHunterProvider, JobHunterContext, useJobHunterContext };

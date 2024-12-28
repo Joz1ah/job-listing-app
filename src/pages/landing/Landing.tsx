@@ -2,7 +2,16 @@ import React, { FC, useEffect, useState, useRef, ReactElement } from 'react'
 import { FooterEngagement as Footer} from "layouts";
 import { PageMeta } from "components";
 import { LandingContext } from 'components';
-import { useLoginMutation, useSignUpMutation, useOtpGenerateMutation, useOtpVerifyMutation, useGetUserInfoQuery, usePaymentCreateMutation } from 'api/akaza/akazaAPI';
+import { 
+  useLoginMutation,
+  useSignUpMutation,
+  useOtpGenerateMutation,
+  useOtpVerifyMutation,
+  useGetUserInfoQuery,
+  usePaymentCreateMutation,
+  akazaApiAccount } from 'api/akaza/akazaAPI';
+
+import { useDispatch } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 import { Formik, Form, FieldProps, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -11,8 +20,11 @@ import video1 from 'assets/mp4/Landing-Page-hero-1.mp4';
 import video2 from 'assets/mp4/video-conference-call-1.mp4';
 import video3 from 'assets/mp4/glasses-girl-in-meeting.mp4';
 import video4 from 'assets/mp4/girl-laughing-at-monitor.mp4';
+import { BaseMenu } from 'layouts';
+import { CoreSkillsTagInput } from 'components';
+import { useMenu } from 'hooks';
 
-import akazaLogo from 'assets/akazalogo.png';
+//import akazaLogo from 'assets/akazalogo.png';
 import akaza_icon from 'assets/akaza-icon.png';
 import akaza_loading from 'assets/akaza-loading.png';
 import group_people_laptop from 'assets/group-people-laptop.jpg'
@@ -63,7 +75,7 @@ import button_loading_spinner from 'assets/loading-spinner-orange.svg?url';
 //import { Button, Counter, Menu, PageMeta } from 'components'
 
 import styles from './landing.module.scss'
-import StripeTokenizedForm from 'components/payment/stripeFormEmbed';
+//import StripeTokenizedForm from 'components/payment/stripeFormEmbed';
 
 interface VideoProps {
   src: string;
@@ -97,6 +109,7 @@ const Video: FC<VideoProps> = ({ src, className }) => {
 
 const getUserInfo = () => {
   const { data: userInfo, error, isLoading } = useGetUserInfoQuery(null)
+  const dispatch = useDispatch();
 
   if (isLoading) {
     console.log("Loading user info...");
@@ -109,8 +122,7 @@ const getUserInfo = () => {
   }
 
   if (userInfo) {
-    console.log("Fetched user info:", userInfo);
-
+    dispatch(akazaApiAccount.util.resetApiState());
     //const processedData = processUserInfo(userInfo); 
     //console.log("Processed Data:", processedData);
   }
@@ -162,7 +174,7 @@ const CustomInput: React.FC<CustomInputProps> = ({ field, form, ...props }) => {
 
 const Landing: FC = (): ReactElement => {
   getUserInfo()
-  const [maskHidden, setMaskHidden] = useState(0);
+  const [maskHidden, setMaskHidden] = useState(1);
   const [closeModalActive, setCloseModalActive] = useState(1);
   const [selectedModalHeader, setSelectedModalHeader] = useState(1);
   const [modalState, setModalState] = useState(10);
@@ -170,8 +182,10 @@ const Landing: FC = (): ReactElement => {
   const [currentSelectedPlan, setCurrentSelectedPlan] = useState(3)
   const [dataStates, setDataStates] = useState({
     selectedUserType: '',
-    email: ''
+    email: '',
+    userId: 0
   });
+
   const heroStates = {
       'PERFECT_MATCH_ALGO' : 1,
       'JOB_TITLE_EMPLOYER' : 2,
@@ -197,6 +211,11 @@ const Landing: FC = (): ReactElement => {
   const MODAL_HEADER_TYPE = {
       'WITH_LOGO_AND_CLOSE' : 1,
       'WITH_CLOSE' : 2,
+  }
+  const PLAN_SELECTION_ITEMS = {
+    'FREE' : 1,
+    'MONTHLY' : 2,
+    'ANNUAL' : 3
   }
   //const globalCount = useAppSelector((state) => state.counter.value)
   //const { t } = useTranslations()
@@ -329,23 +348,43 @@ const Landing: FC = (): ReactElement => {
       { setSubmitting, setFieldError }: any
     ) => {
       try {
-        const res = await loginSubmit(values)
-        .unwrap()
-        .then((res)=>{
-          console.log('Success Login')
-          console.log(res)
-          setTimeout(()=>{
-            navigate('/job-hunter');
-          },1000)
-        }).catch((err) => {
-          console.log('err')
-          setApiLoginErrorMessage('Invalid Username or Password')
-          console.log(err)
-        })
-        console.log(res);
+        await loginSubmit(values)
+          .unwrap()
+          .then((response) => {
+            console.log('Success Login')
+            console.log(response)
+            
+            setTimeout(() => {
+              const userType = response?.data?.user?.type;
+              const isFreeTrial = response?.data?.user?.freeTrial;
+              
+              const subscriptionTier = isFreeTrial ? 'freeTrial' : 'monthlyPlan';
+              
+              localStorage.setItem('userType', userType);
+              localStorage.setItem('subscriptionTier', subscriptionTier);
+    
+              if (userType === 'employer') {
+                navigate('/employer', { 
+                  state: { initialTier: subscriptionTier }
+                });
+              } else {
+                const basePath = isFreeTrial ? '/job-hunter/feed' : '/job-hunter';
+                  
+                navigate(basePath, {
+                  state: { initialTier: subscriptionTier }
+                });
+              }
+            }, 1000);
+          })
+          .catch((err) => {
+            console.log('err')
+            setApiLoginErrorMessage('Invalid Username or Password')
+            console.log(err)
+          });
+    
       } catch (err: any) {
         console.error(err);
-        setFieldError('general', 'Invalid Username or Password'); // Set general error
+        setFieldError('general', 'Invalid Username or Password');
       } finally {
         setSubmitting(false);
       }
@@ -431,8 +470,6 @@ const Landing: FC = (): ReactElement => {
     const [credentials, setCredentials] = useState({ email: '', password: '', passwordConfirm: '' });
     const [isSignupError, setIsSignupError] = useState(false);
     const [organizedErrors, setOrganizedErrors] =  useState({ email: '', password: '', passwordConfirm: '' });
-    
-  
     const [signUpSubmit] = useSignUpMutation()
     const [generateOTP] = useOtpGenerateMutation()
 
@@ -460,18 +497,19 @@ const Landing: FC = (): ReactElement => {
       .validate(credentials, { abortEarly: false })
       .then(validData => {
         setIsSignupError(false)
-        console.log('Validation successful:', validData);
-
+        validData
         signUpSubmit({...credentials,type:dataStates.selectedUserType})
         .unwrap()
         .then((res)=>{
+          console.log('signup success')
+          console.log(res)
           setTimeout( ()=> {
             setDataStates({...dataStates, email:credentials.email})
             generateOTP( { email:credentials.email } )
             setModalState(modalStates.SIGNUP_STEP3)
           }
           , 1000 )
-          console.log(res)
+          setDataStates({...dataStates, userId: res.data.id})
         })
         .catch((err) => {
           console.log(err)
@@ -787,25 +825,37 @@ const SubscriptionPlanSelection = () =>{
   const subscription_plan3 = useRef<HTMLDivElement>(null);
   const buttonSubscribe = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const PLAN_SELECTION_ITEMS = {
-    'FREE' : 1,
-    'MONTHLY' : 2,
-    'ANNUAL' : 3
-  }
 
   const handleSubscribe = () => {
     if (buttonSubscribe.current) {
       buttonSubscribe.current.onclick = () => {
         setSelectedModalHeader(1);
+        const userType = dataStates.selectedUserType;
+        
         if(currentSelectedPlan == PLAN_SELECTION_ITEMS.FREE){
+
+          localStorage.setItem('subscriptionTier', 'freeTrial');
+          localStorage.setItem('userType', userType);
+          
           setModalState(modalStates.LOADING)
           setTimeout(()=>{
-            navigate("/job-hunter");
+
+            const basePath = userType === 'employer' ? '/employer' : '/job-hunter/feed';
+            navigate(basePath, {
+              state: { initialTier: 'freeTrial' }
+            });
           },5000)
         }
-        else
+        else {
+          const selectedTier = 
+            currentSelectedPlan === PLAN_SELECTION_ITEMS.MONTHLY 
+              ? 'monthlyPlan' 
+              : 'yearlyPlan';
+              
+          localStorage.setItem('pendingSubscriptionTier', selectedTier);
+          localStorage.setItem('userType', userType);
           setModalState(modalStates.STRIPE_PAYMENT)
-
+        }
       };
     }
     if (subscription_plan1.current) {
@@ -823,7 +873,7 @@ const SubscriptionPlanSelection = () =>{
           setCurrentSelectedPlan(PLAN_SELECTION_ITEMS.ANNUAL)
       };
     }
-  }
+  };
   useEffect(handleSubscribe, []);
 
 
@@ -1001,92 +1051,139 @@ const CongratulationsModal = () => {
   )
 }
 
-const CreditCardForm = () => {
-  const [paymentSubmit] = usePaymentCreateMutation();
-  const previousButton = useRef<HTMLButtonElement>(null);
-  //const navigate = useNavigate();
+interface FormValues {
+  cardNumber: string;
+  cardholderName: string;
+  expirationDate: string;
+  cvv: string;
+}
 
-  const handlePrevious = () => {
+const CreditCardForm: React.FC = () => {
+  const [paymentSubmit] = usePaymentCreateMutation();
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const previousButton = useRef<HTMLButtonElement>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
     if (previousButton.current) {
       previousButton.current.onclick = () => {
-        setModalState(modalStates.SIGNUP_STEP5)
+        // Handle your button logic here
       };
     }
-  }
 
+    // Dynamically load Accept.js
+    const script = document.createElement('script');
+    script.src = process.env.NODE_ENV == 'development' ? 'https://jstest.authorize.net/v1/Accept.js' : 'https://js.authorize.net/v1/Accept.js';
+    script.async = true;
+    document.body.appendChild(script);
 
-  useEffect(handlePrevious,[])
-  console.log(previousButton)
+    return () => {
+      // Cleanup script on component unmount
+      document.body.removeChild(script);
+    };
+  }, []);
 
   const validationSchema = Yup.object({
     cardNumber: Yup.string()
-      .matches(/^\d{16}$/, 'Card number must be 16 digits')
+      //.matches(/^\d{15}$/, 'Card number must be 15 digits')
       .required('Card number is required'),
     cardholderName: Yup.string()
       .matches(/^[a-zA-Z\s]+$/, 'Name must only contain letters and spaces')
       .required('Cardholder name is required'),
     expirationDate: Yup.string()
-      .matches(
-        /^(0[1-9]|1[0-2])\/\d{2}$/,
-        'Expiration date must be in MM/YY format'
-      )
+      .matches(/^(0[1-9]|1[0-2])\/\d{2}$/, 'Expiration date must be in MM/YY format')
       .required('Expiration date is required'),
     cvv: Yup.string()
       .matches(/^\d{3,4}$/, 'CVV/CVC must be 3 or 4 digits')
       .required('CVV/CVC is required'),
   });
 
-  
-  const handleSubmit = async (values: { cardNumber: string; cardholderName: string; expirationDate: string; cvv: string }) => {
-    console.log(`Submitted values: ${JSON.stringify(values, null, 2)}`);
-
-    console.log('fetching create payment method')
-    const response = await fetch('/api/create-payment-method', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-          number: '4242424242424242',
-          exp_month: 12,
-          exp_year: 2028,
-          cvc: '123',
-          billing_details: {
-              name: 'Test User',
-              email: 'testuser@example.com',
-              address: {
-                  line1: '123 Test Street',
-                  city: 'Test City',
-                  state: 'TS',
-                  postal_code: '12345',
-                  country: 'US',
-              },
-          },
-      }),
-  })
-    const data = await response.json();
-    console.log("done fetching data")
-    console.log(data)
-    if (data.error) {
-        console.error('Error:', data.error);
-    } else {
-        console.log('PaymentMethod created:', data.paymentMethod);
+  const formatExpirationDate = (value: string): string => {
+    const cleaned = value.replace(/[^0-9]/g, ''); // Remove non-numeric characters
+    if (cleaned.length > 2) {
+      return `${cleaned.slice(0, 2)}/${cleaned.slice(2, 4)}`;
     }
- 
-    setModalState(modalStates.LOADING)
-    setTimeout(()=>{
-      //navigate("/job-hunter");
-    },5000)
-
-    paymentSubmit(
-      {
-        "provider": "stripe",
-        "userId": 10,
-        "plan": "price_1QMumHFCh69SpK2kBuCiBQI2",
-        "amount": 1,
-        "paymentMethodId": "pm_1QSiGYFCh69SpK2kcccrnWHL",
-        "daysTrial": 0
-      }
-    )
+    return cleaned;
   };
+  
+  const handleExpirationDateKeyDown = (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ): void => {
+    const { key, target } = event;
+    const inputElement = target as HTMLInputElement;
+  
+    // Handle backspace when cursor is at the third position (before the `/`)
+    if (key === 'Backspace' && inputElement.selectionStart === 3) {
+      const updatedValue = inputElement.value.slice(0, 2); // Remove the '/'
+      inputElement.value = updatedValue;
+      event.preventDefault();
+      inputElement.dispatchEvent(new Event('input', { bubbles: true })); // Trigger Formik's `onChange`
+    }
+  };
+
+  const handleSubmit = async (values: FormValues) => {
+    setIsSubmitting(true)
+    const secureData = {
+      authData: {
+        clientKey: '7wuXYQ768E3G3Seuy6aTf28PfU3mJWu7Bbj564KfTPqRa7RXUPZvTsnKz9Jf7daJ', // Replace with your actual client key
+        apiLoginID: '83M29Sdd8', // Replace with your actual API login ID
+      },
+      cardData: {
+        cardNumber: values.cardNumber,
+        month: values.expirationDate.split('/')[0],
+        year: values.expirationDate.split('/')[1],
+        cardCode: values.cvv,
+      },
+    };
+
+    console.log('generating token...')
+    Accept.dispatchData(secureData, async (acceptResponse: any) => {
+      if (acceptResponse.messages.resultCode === 'Ok') {
+        const token = acceptResponse.opaqueData.dataValue;
+        console.log(acceptResponse)
+        console.log('token generation success')
+        console.log(token)
+        // Send the token to your server for processing
+
+        try {
+          const res = await paymentSubmit({
+            "provider": "authnet",
+            "userId": 41,//dataStates.userId,
+            "plan": 
+              currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY ? "Monthly" : 
+              currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL ? "Annual" : '',
+            "amount":  
+              currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY ? 5 : 
+              currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL ? 55 : '',
+            "paymentMethodId": token,
+            "daysTrial": 0
+          })
+          .unwrap()
+          .then((res)=>{
+            console.log(res)
+            setModalState(modalStates.LOADING)
+            setTimeout(()=>{
+              navigate("/job-hunter");
+            },5000)
+          }).catch((err) => {
+            alert(JSON.stringify(err))
+            setIsSubmitting(false)
+            console.log(err)
+          })
+          console.log(res);
+        } catch (err: any) {
+          console.log(err);
+        } finally {
+          setIsSubmitting(false)
+        }
+
+      } else {
+        setIsSubmitting(false)
+        alert('Error: ' + acceptResponse.messages.message[0].text); // Use acceptResponse here
+      }
+    });
+  };
+
   return (
     <Formik
       initialValues={{
@@ -1099,57 +1196,76 @@ const CreditCardForm = () => {
       onSubmit={handleSubmit}
     >
       {() => (
-            <Form>
-              <div className={`${styles['stripe-form-inputs-container']}`}>
-                <div className={`${styles['stripe-form-upper-inputs']}`}>
-                  <div>
-                    <StripeTokenizedForm/>
-                  </div>
-                  <div>
-                    <Field component={CustomInput} id="cardNumber" placeholder="Card Number *" name="cardNumber" type="text" />
-                    <ErrorMessage className={`${styles['error-label']}`} name="cardNumber" component="div" />
-                  </div>
-
-                  <div>
-                    <Field component={CustomInput} id="cardholderName" placeholder="Cardholder Name *"  name="cardholderName" type="text" />
-                    <ErrorMessage className={`${styles['error-label']}`} name="cardholderName" component="div" />
-                  </div>
-
-                </div>
-                <div className={`${styles['stripe-form-lower-inputs']}`}>
-                  <div>
-                    <Field component={CustomInput} id="expirationDate" placeholder="Expiration Date *" name="expirationDate" type="text" />
-                    <ErrorMessage className={`${styles['error-label']}`} name="expirationDate" component="div" />
-                  </div>
-                  <div>
-                    <Field component={CustomInput} id="cvv" placeholder="CVV/CVC *" name="cvv"  type="text" />
-                    <ErrorMessage className={`${styles['error-label']}`} name="cvv" component="div" />
-                  </div>
-                </div>
+        <Form>
+          <div className={styles['stripe-form-inputs-container']}>
+            <div className={styles['stripe-form-upper-inputs']}>
+              <div>
+                <Field component={CustomInput} id="cardNumber" placeholder="Card Number *" name="cardNumber" type="text" />
+                <ErrorMessage className={styles['error-label']} name="cardNumber" component="div" />
               </div>
-
-
-
-              <div className={`${styles['security-privacy-container']}`}>
-                <div>
-                  <img src={green_lock_icon}/>
-                </div>
-                <div>
-                  <div>Security & Privacy</div>
-                  <div>We maintain industry-standard physical, technical, and administrative</div> 
-                  <div>measures to safeguard your personal information</div>
-                </div>
+              <div>
+                <Field component={CustomInput} id="cardholderName" placeholder="Cardholder Name *" name="cardholderName" type="text" />
+                <ErrorMessage className={styles['error-label']} name="cardholderName" component="div" />
               </div>
-              <div className={`${styles['action-buttons']}`}>
-                    <button ref={previousButton} type="button" className={`${styles['button-custom-basic']}`}>Previous</button>
-                    <button type="submit" className={`${styles['button-custom-orange']}`}>Next</button>
-              </div>  
-            </Form>
-        
+            </div>
+            <div className={styles['stripe-form-lower-inputs']}>
+              <div>
+                <Field name="expirationDate">
+                  {({ field, form }: { field: any; form: any }) => (
+                    <CustomInput
+                      {...field}
+                      id="expirationDate"
+                      placeholder="Expiration Date *"
+                      type="text"
+                      onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                        const formattedValue = formatExpirationDate(event.target.value);
+                        form.setFieldValue(field.name, formattedValue); // Update Formik state
+                      }}
+                      onKeyDown={handleExpirationDateKeyDown}
+                    />
+                  )}
+                </Field>
+                <ErrorMessage className={styles['error-label']} name="expirationDate" component="div" />
+              </div>
+              <div>
+                <Field component={CustomInput} id="cvv" placeholder="CVV/CVC *" name="cvv" type="text" />
+                <ErrorMessage className={styles['error-label']} name="cvv" component="div" />
+              </div>
+            </div>
+          </div>
+
+          <div className={styles['security-privacy-container']}>
+            <div>
+              <img src={green_lock_icon} alt="Security Lock" />
+            </div>
+            <div>
+              <div>Security & Privacy</div>
+              <div>We maintain industry-standard physical, technical, and administrative measures to safeguard your personal information</div>
+            </div>
+          </div>
+
+          <div className={styles['action-buttons']}>
+            <button ref={previousButton} type="button" className={styles['button-custom-basic']}>Previous</button>
+            <button
+                type="submit"
+                className={styles['button-custom-orange']}
+                disabled={isSubmitting}
+              >
+                <img
+                  src={button_loading_spinner}
+                  alt="Loading"
+                  className={styles['button-spinner']}
+                  hidden={!isSubmitting}
+                />
+                Next
+              </button>
+          </div>
+        </Form>
       )}
     </Formik>
   );
 };
+
 
 const StripePaymentModal = () => {
 
@@ -1249,20 +1365,16 @@ const Modal = () =>{
 }
 
 const NavigationHeader = () => {
+  const { menuOpen, toggleMenu } = useMenu();
+
   return(
-    <div className={`${styles.navigation}`}>
-      <div className={`${styles.homelogo}`}>
-          <img src={akazaLogo} width="161px" height="50px" />
-      </div>
-      <div className={`${styles.noselect}`}>About Us</div>
-      <div className={`${styles.noselect}`}>Contact Us</div>
-      <div className={`${styles.noselect}`}>Subscription Plans</div>
-      <div className={`${styles.noselect}`}>FAQ</div>
-      <div className={`${styles['nav-button-container']}`}>
-        <ButtonLoginNav/>
-        <ButtonSignUpNav/>
-      </div>
-  </div>
+    <BaseMenu
+    isAuthenticated={false}
+    isMenuOpen={menuOpen}
+    onToggleMenu={toggleMenu}
+    ButtonLoginNav={ButtonLoginNav}
+    ButtonSignUpNav={ButtonSignUpNav}
+/>
   )
 }
 const HeroPerfectMatchAlgo = () => {
@@ -1357,6 +1469,8 @@ const HeroJobTitleEmployer = () => {
 const HeroSkillSetsEmployer = () => {
   const heroEmployerButton = useRef<HTMLDivElement>(null);
   const heroPreviousButton = useRef<HTMLDivElement>(null);
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+
   const heroScreenActions = () => {
     if (heroEmployerButton.current) {
       heroEmployerButton.current.onclick = () => {
@@ -1370,7 +1484,7 @@ const HeroSkillSetsEmployer = () => {
     }
   };
   
-  useEffect(heroScreenActions,[])
+  useEffect(heroScreenActions, []);
   return(
     <div id="step2_employer" className={`${styles['hero-content']}`} hidden={heroState !== heroStates.SKILLSETS_EMPLOYER}>
       <img src={group_people_laptop} />
@@ -1385,8 +1499,17 @@ const HeroSkillSetsEmployer = () => {
                   </div>
               </div>
               <div className={`${styles['search-wrapper']}`}>
-                  <input className={`${styles['search-input']}`} placeholder="Type and select your skill set" type="text" />
-                  <img src={icon_search}></img>
+                <CoreSkillsTagInput
+                  value={selectedSkills}
+                  onChange={setSelectedSkills}
+                  placeholder="Type and select your skill set"
+                  className="bg-transparent border-none text-white min-h-9"
+                  alternateColors={{
+                    firstColor: "#168AAD",
+                    secondColor: "#184E77",
+                  }}
+                />
+                <img src={icon_search}></img>
               </div>
               <div className={`${styles['hero-button-container2']}`}>
                   <div ref={heroEmployerButton} className={`${styles['button-custom-orange']} ${styles['noselect']}`}>Next</div>
@@ -1455,6 +1578,8 @@ const HeroYearsOfExperienceEmployer = () => {
 const HeroSkillSetsJobHunter = () => {
   const heroNextButton = useRef<HTMLDivElement>(null);
   const heroPreviousButton = useRef<HTMLDivElement>(null);
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+
   const heroScreenActions = () => {
     if (heroNextButton.current) {
       heroNextButton.current.onclick = () => {
@@ -1484,7 +1609,16 @@ const HeroSkillSetsJobHunter = () => {
                     </div>
                 </div>
                 <div className={`${styles['search-wrapper']}`}>
-                    <input className={`${styles['search-input']}`} placeholder="Type and select your skill set" type="text" />
+                    <CoreSkillsTagInput
+                      value={selectedSkills}
+                      onChange={setSelectedSkills}
+                      placeholder="Type and select your skill set"
+                      className="bg-transparent border-none text-white min-h-[36px]"
+                      alternateColors={{
+                        firstColor: "#168AAD",
+                        secondColor: "#184E77",
+                      }}
+                    />
                     <img src={icon_search}></img>
                 </div>
                 <div className={`${styles['hero-button-container2']}`}>
@@ -1734,7 +1868,6 @@ const isFreeTrial = false;
 
             </div>
             <Footer/>
-            <div>test</div>
             <div id="mask_overlay" className={`${styles['mask-overlay']} ${styles['requires-no-scroll']}`} hidden={!!maskHidden}>
               <Modal/>
             </div>

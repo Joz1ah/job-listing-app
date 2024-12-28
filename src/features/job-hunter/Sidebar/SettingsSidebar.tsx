@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { User, CreditCard, Shield, Info } from "lucide-react";
 import verifiedIcon from 'images/verified.svg?url'
 import userCheck from 'images/user-check.svg?url'
+import { useJobHunterContext } from "components";
 
 interface MenuItem {
   icon: JSX.Element;
@@ -13,18 +14,17 @@ interface MenuItem {
 interface SettingsSidebarProps {
   userName: string;
   userType: 'employer' | 'job-hunter';
-  subscriptionTier: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
   className?: string;
 }
 
 const SettingsSidebar: FC<SettingsSidebarProps> = ({ 
   userName,
   userType,
-  subscriptionTier,
   className = ''
 }) => {
   const location = useLocation();
   const baseRoute = userType === 'employer' ? '/employer' : '/job-hunter';
+  const { subscriptionPlan } = useJobHunterContext();
 
   const settingsMenu: MenuItem[] = [
     {
@@ -53,18 +53,18 @@ const SettingsSidebar: FC<SettingsSidebarProps> = ({
     <div className="mb-8">
       <h2 className="text-[30px] font-normal flex items-center gap-2 text-white">
         {userName}{" "}
-        {subscriptionTier === 'freeTrial' ? (
+        {subscriptionPlan === 'freeTrial' ? (
           <Info className="w-7 h-7 fill-[#D6D6D6] text-[#212529]" />
         ) : (
           <img src={verifiedIcon} className="w-7 h-7" />
         )}
       </h2>
       <p className="text-[17px] text-white mt-1 flex items-center gap-2">
-      {subscriptionTier === "freeTrial" ? (
+      {subscriptionPlan === "freeTrial" ? (
           <>
             <span>Free Trial</span>
           </>
-        ) : subscriptionTier === "monthlyPlan" ? (
+        ) : subscriptionPlan === "monthlyPlan" ? (
           <>
             <img
               src={userCheck}
@@ -131,7 +131,7 @@ const SettingsSidebar: FC<SettingsSidebarProps> = ({
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex items-center gap-3 px-3 py-2 text-[15px] ${
+                className={`flex items-center gap-3 py-2 text-[15px] ${
                   location.pathname === item.path
                     ? "text-[#F5722E]"
                     : "text-white hover:text-[#F5722E]"

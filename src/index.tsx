@@ -3,6 +3,7 @@ import { createRoot, hydrateRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
 import { loadableReady } from '@loadable/component'
+import { AuthProvider } from 'contexts/AuthContext/AuthContext';
 
 import { App } from './App'
 
@@ -69,7 +70,9 @@ const indexJSX = (
     <Provider store={store}>
       <HelmetProvider>
         <BrowserRouter>
-          <App />
+          <AuthProvider>
+            <App />
+          </AuthProvider>
         </BrowserRouter>
       </HelmetProvider>
     </Provider>

@@ -1,26 +1,44 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
-type SubscriptionTier = 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
+import { createContext, useContext, useState, ReactNode, useMemo } from 'react';
+import { SubscriptionPlan, BaseContextType } from './types';
 
-interface EmployerContextType {
-  subscriptionTier: SubscriptionTier;
-  setSubscriptionTier: (tier: SubscriptionTier) => void;
-}
-
-const EmployerContext = createContext<EmployerContextType | undefined>(undefined);
+const EmployerContext = createContext<BaseContextType | undefined>(undefined);
 
 interface EmployerProviderProps {
   children: ReactNode;
-  initialTier?: SubscriptionTier;
+  initialTier?: SubscriptionPlan;
 }
 
 const EmployerProvider: React.FC<EmployerProviderProps> = ({ 
   children, 
   initialTier = 'freeTrial'
 }) => {
-  const [subscriptionTier, setSubscriptionTier] = useState<SubscriptionTier>(initialTier);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+  const [subscriptionPlan, setSubscriptionPlan] = useState<SubscriptionPlan>(initialTier);
+
+  const updateSubscriptionPlan = async (newPlan: SubscriptionPlan) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      // Simulating an API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setSubscriptionPlan(newPlan);
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error('Failed to update subscription'));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const value = useMemo(() => ({
+    subscriptionPlan,
+    setSubscriptionPlan: updateSubscriptionPlan,
+    isLoading,
+    error
+  }), [subscriptionPlan, isLoading, error]);
 
   return (
-    <EmployerContext.Provider value={{ subscriptionTier, setSubscriptionTier }}>
+    <EmployerContext.Provider value={value}>
       {children}
     </EmployerContext.Provider>
   );

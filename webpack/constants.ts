@@ -18,6 +18,7 @@ const ALIAS: Record<string, string> = {
   assets: `${SRC_DIR}/assets`,
   components: `${SRC_DIR}/components`,
   constants: `${SRC_DIR}/constants`,
+  contexts: `${SRC_DIR}/contexts`,
   images: `${SRC_DIR}/assets/images`,
   hocs: `${SRC_DIR}/hocs`,
   hooks: `${SRC_DIR}/hooks`,

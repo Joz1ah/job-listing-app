@@ -95,7 +95,7 @@ const THEME_OPTIONS = [
 //type ThemeOption = typeof THEME_OPTIONS[number]['value'];
 
 const GeneralSettings: FC = () => {
-  const { subscriptionTier } = useJobHunterContext();
+  const { subscriptionPlan } = useJobHunterContext();
   const [notifications, setNotifications] = useState<NotificationState>({
     push: false,
   });
@@ -119,7 +119,7 @@ const GeneralSettings: FC = () => {
   };
 
   const handleNotificationToggle = (type: keyof NotificationState) => {
-    if (subscriptionTier === 'freeTrial') {
+    if (subscriptionPlan === 'freeTrial') {
       // Trigger the ad dialog by clicking its trigger
       adTriggerRef.current?.click();
       return;
@@ -184,7 +184,7 @@ const GeneralSettings: FC = () => {
                   onCheckedChange={() => handleNotificationToggle(key as keyof NotificationState)}
                   className={cn(
                     "data-[state=checked]:bg-[#F5722E] data-[state=unchecked]:bg-gray-600/70 h-5 w-9 [&>span]:h-4 [&>span]:w-4 [&>span[data-state=checked]]:translate-x-4",
-                    subscriptionTier === 'freeTrial' && "cursor-pointer"
+                    subscriptionPlan === 'freeTrial' && "cursor-pointer"
                   )}
                 />
                 <div className="hidden">

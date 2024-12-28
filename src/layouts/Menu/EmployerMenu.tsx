@@ -19,7 +19,7 @@ interface MenuProps {
   onToggleMenu: () => void;
   desktopMenuItems: NavItem[];
   mobileMenuItems: NavItem[];
-  subscriptionTier: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
+  subscriptionPlan: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
 }
 
 const EmployerMenu: FC<MenuProps> = ({
@@ -27,7 +27,7 @@ const EmployerMenu: FC<MenuProps> = ({
   onToggleMenu,
   desktopMenuItems,
   mobileMenuItems,
-  subscriptionTier,
+  subscriptionPlan,
 }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 1024);
@@ -72,7 +72,7 @@ const EmployerMenu: FC<MenuProps> = ({
   };
 
   const renderStatusIcon = () => {
-    if (subscriptionTier === 'freeTrial') {
+    if (subscriptionPlan === 'freeTrial') {
       return <Info className="w-4 h-4 text-[#2D3A41] fill-white" />;
     }
     return <img src={verifiedIcon} className="w-4 h-4" />;
@@ -144,7 +144,7 @@ const EmployerMenu: FC<MenuProps> = ({
         </div>
 
         <div className="flex items-center gap-4 flex-shrink-0">
-          <NotificationFeed subscriptionTier={subscriptionTier} />
+          <NotificationFeed subscriptionPlan={subscriptionPlan} />
           <div className="flex items-center gap-2 flex-shrink-0 min-w-0">
             <NavLink to="/job-hunter/feed" onClick={handleNavLinkClick}>
               <span className="text-white font-medium text-[14px] lg:text-[18px] truncate block max-w-[100px] lg:max-w-[200px]">
@@ -186,7 +186,7 @@ const EmployerMenu: FC<MenuProps> = ({
       <header className="md:hidden bg-black py-4 px-2 flex justify-between items-center z-50">
         <img src={akazaLogoWhite} alt="Akaza Logo" className="h-8" />
         <div className="flex items-center space-x-2">
-          <NotificationFeed subscriptionTier={subscriptionTier} />
+          <NotificationFeed subscriptionPlan={subscriptionPlan} />
           <Button
             variant="custom"
             className="text-[#F5722E] bg-black"

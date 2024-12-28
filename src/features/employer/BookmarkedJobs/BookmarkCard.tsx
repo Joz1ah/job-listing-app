@@ -10,18 +10,18 @@ interface BookmarkCardProps {
   app: Match;
   bookmarked?: boolean;
   onBookmark?: () => void;
-  subscriptionTier: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
+  subscriptionPlan: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
 }
 
 const getAvailabilityStyle = (type: string) => {
   return type.toLowerCase() === "part time" ? "bg-[#BF532C]" : "bg-[#F5722E]";
 };
 
-const BookmarkCard: FC<BookmarkCardProps> = ({ app, subscriptionTier }) => {
+const BookmarkCard: FC<BookmarkCardProps> = ({ app, subscriptionPlan }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleCardClick = () => {
-    if (subscriptionTier === 'freeTrial') return;
+    if (subscriptionPlan === 'freeTrial') return;
     setIsModalOpen(true);
   };
 
@@ -135,7 +135,7 @@ const BookmarkCard: FC<BookmarkCardProps> = ({ app, subscriptionTier }) => {
         </div>
       </Card>
 
-      {subscriptionTier !== 'freeTrial' && (
+      {subscriptionPlan !== 'freeTrial' && (
         <AppPreviewModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}

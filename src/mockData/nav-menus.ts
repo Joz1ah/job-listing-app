@@ -1,8 +1,11 @@
+
 interface NavItem {
-    name: string;
-    path: string;
-    isSpecial?: boolean;
-  }
+  name: string;
+  path: string;
+  isSpecial?: boolean;
+  isAction?: boolean;
+  action?: () => void;
+}
   
   export const employerDesktopMenu: NavItem[] = [
     { name: 'MY JOB FEED', path: '/employer/feed' },
@@ -13,7 +16,11 @@ interface NavItem {
     { name: 'INTERVIEWS', path: '/employer/interviews' },
     { name: '✦ YOUR SUBSCRIPTION', path: '/employer/account-settings/subscription', isSpecial: true },
     { name: 'ACCOUNT SETTINGS', path: '/employer/account-settings' },
-    { name: 'SIGN OUT', path: '#' }
+    { 
+      name: 'SIGN OUT',
+      path: '#',
+      isAction: true
+    }
   ];
   
   export const employerMobileMenu: NavItem[] = [
@@ -28,7 +35,11 @@ interface NavItem {
     { name: 'CONTACT US', path: '#'},
     { name: '✦ YOUR SUBSCRIPTION', path: '/employer/account-settings/subscription', isSpecial: true },
     { name: 'ACCOUNT SETTINGS', path: '/employer/account-settings'},
-    { name: 'SIGN OUT', path: '#'}
+    { 
+      name: 'SIGN OUT',
+      path: '#',
+      isAction: true
+    }
   ];
 
   export const jobHunterDesktopMenu: NavItem[] = [
@@ -38,7 +49,11 @@ interface NavItem {
     { name: 'INTERVIEWS', path: '/job-hunter/interviews'},
     { name: '✦ YOUR SUBSCRIPTION', path: '/job-hunter/account-settings/subscription', isSpecial: true },
     { name: 'ACCOUNT SETTINGS', path: '/job-hunter/account-settings'},
-    { name: 'SIGN OUT', path: '#'}
+    { 
+      name: 'SIGN OUT',
+      path: '#',
+      isAction: true
+    }
   ];
 
   export const jobHunterMobileMenu: NavItem[] = [
@@ -51,5 +66,9 @@ interface NavItem {
     { name: '✦ YOUR SUBSCRIPTION', path: '/job-hunter/account-settings/subscription', isSpecial: true },
     { name: 'FAQ', path: '#'},
     { name: 'ACCOUNT SETTINGS', path: '/job-hunter/account-settings'},
-    { name: 'SIGN OUT', path: '#'}
+    { 
+      name: 'SIGN OUT',
+      path: '#',
+      isAction: true
+    }
   ];

@@ -12,7 +12,7 @@ const AcceptedInterviews: FC = () => {
   const [hasMore, setHasMore] = useState(true);
   const loaderRef = useRef<HTMLDivElement>(null);
   const [initialLoad, setInitialLoad] = useState(true);
-  const { subscriptionTier } = useEmployerContext();
+  const { subscriptionPlan } = useEmployerContext();
 
   const handleJoinInterview = (interview: Interview) => {
     window.open(interview.meetingLink, "_blank");
@@ -95,7 +95,7 @@ const AcceptedInterviews: FC = () => {
   const loadingCardsCount = Math.min(6, acceptedInterviewsData.length);
 
   // Show empty state if there are no interviews and we're not loading
-  if (!loading && displayedItems.length === 0 || subscriptionTier === 'freeTrial') {
+  if (!loading && displayedItems.length === 0 || subscriptionPlan === 'freeTrial') {
     return (
       <div className="h-full w-full flex items-center justify-center">
         <div className="flex flex-col items-center justify-center p-8 text-center">

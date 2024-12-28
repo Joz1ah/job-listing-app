@@ -7,17 +7,17 @@ import rocketIcon from "images/rocket-subscribe.svg?url";
 import { Link } from "react-router-dom";
 
 const BillingSettings: FC = () => {
-  const { subscriptionTier } = useEmployerContext();
+  const { subscriptionPlan } = useEmployerContext();
 
   const editTooltip =
-    subscriptionTier === "freeTrial"
+    subscriptionPlan === "freeTrial"
       ? "Editing is currently unavailable. Subscribe to a plan to unlock this feature and enjoy enhanced capabilities!"
       : "Editing is currently unavailable. Subscribe to a plan to unlock this feature and enjoy enhanced capabilities!";
 
   const manageTooltip =
     "Lorem ipsum odor amet, consectetuer adipiscing elit. Habitasse ante imperdiet congue parturient euismod nec suspendisse.";
 
-  if (subscriptionTier === "freeTrial") {
+  if (subscriptionPlan === "freeTrial") {
     return (
       <div className="flex flex-col min-h-full w-full">
         <div className="flex-1">

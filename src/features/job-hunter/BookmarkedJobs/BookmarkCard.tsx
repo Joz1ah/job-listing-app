@@ -5,23 +5,24 @@ import { Card, CardHeader, CardContent, CardFooter } from "components";
 import { Button } from "components";
 import { Match } from "mockData/jobs-data";
 import { JobPreviewModal } from "../JobCard/job-preview/JobPreviewModal";
+import { useJobHunterContext } from "components";
 
 interface BookmarkCardProps {
   match: Match;
   bookmarked?: boolean;
   onBookmark?: () => void;
-  subscriptionTier: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
 }
 
 const getAvailabilityStyle = (type: string) => {
   return type.toLowerCase() === "part time" ? "bg-[#BF532C]" : "bg-[#F5722E]";
 };
 
-const BookmarkCard: FC<BookmarkCardProps> = ({ match, subscriptionTier }) => {
+const BookmarkCard: FC<BookmarkCardProps> = ({ match }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { subscriptionPlan } = useJobHunterContext();
 
   const handleCardClick = () => {
-    if (subscriptionTier === 'freeTrial') return;
+    if (subscriptionPlan === 'freeTrial') return;
     setIsModalOpen(true);
   };
 
@@ -135,7 +136,7 @@ const BookmarkCard: FC<BookmarkCardProps> = ({ match, subscriptionTier }) => {
         </div>
       </Card>
 
-      {subscriptionTier !== 'freeTrial' && (
+      {subscriptionPlan !== 'freeTrial' && (
         <JobPreviewModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}

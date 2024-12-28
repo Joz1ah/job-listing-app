@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { BarChart2, Users, Calendar, DollarSign, Info } from "lucide-react";
 import verifiedIcon from 'images/verified.svg?url'
 import userCheck from 'images/user-check.svg?url'
+import { useEmployerContext } from "components";
 
 interface MenuItem {
   icon: JSX.Element;
@@ -12,17 +13,16 @@ interface MenuItem {
 
 interface AnalyticsSidebarProps {
   userName: string;
-  subscriptionTier: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
   className?: string;
 }
 
 const ReportsAnalyticsSidebar: FC<AnalyticsSidebarProps> = ({ 
   userName,
-  subscriptionTier,
   className=''
 }) => {
   const location = useLocation();
   const baseRoute = '/employer/reports-and-analytics';
+  const { subscriptionPlan } = useEmployerContext();
 
   const analyticsMenu: MenuItem[] = [
     {
@@ -50,17 +50,17 @@ const ReportsAnalyticsSidebar: FC<AnalyticsSidebarProps> = ({
   const userInfo = (
     <div className="mb-8">
       <span className="text-[30px] font-normal flex items-center gap-2 text-white">
-        {userName} {subscriptionTier === 'freeTrial' ? 
+        {userName} {subscriptionPlan === 'freeTrial' ? 
           <Info className="w-7 h-7 fill-[#D6D6D6] text-[#212529]" /> : 
           <img src={verifiedIcon} className="w-7 h-7" />
         }
       </span>
       <p className="text-[17px] text-white mt-1 flex items-center gap-2">
-      {subscriptionTier === "freeTrial" ? (
+      {subscriptionPlan === "freeTrial" ? (
           <>
             <span>Free Trial</span>
           </>
-        ) : subscriptionTier === "monthlyPlan" ? (
+        ) : subscriptionPlan === "monthlyPlan" ? (
           <>
             <img
               src={userCheck}
@@ -125,7 +125,7 @@ const ReportsAnalyticsSidebar: FC<AnalyticsSidebarProps> = ({
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex items-center gap-3 px-3 py-2 text-[15px] ${
+                className={`flex items-center gap-3 py-2 text-[15px] ${
                   location.pathname === item.path
                     ? "text-orange-500"
                     : "text-white hover:text-orange-500"

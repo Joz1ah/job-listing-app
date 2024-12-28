@@ -3,13 +3,13 @@ import { loadStripe, Stripe, StripeElements, StripeCardElement } from '@stripe/s
 
 const stripePromise = loadStripe('pk_test_51QMsGlFCh69SpK2kpR1Y1qGEkVzVy2gLDHJkLjIx8rQSJhyl8qQwG3nFVqjVL4E4JoeVhez3a0HAkyN94YhqcpKG00PsoOvCI8');
 
-const StripeTokenizedForm: React.FC = () => {
+const StripeTokenizedForm: React.FC = React.memo(() => {
   const [stripe, setStripe] = useState<Stripe | null>(null);
   const [elements, setElements] = useState<StripeElements | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [paymentMethodId, setPaymentMethodId] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
-  
+
   // Ref to hold the card element
   const cardElementRef = useRef<StripeCardElement | null>(null);
 
@@ -24,9 +24,11 @@ const StripeTokenizedForm: React.FC = () => {
         const card = elementsInstance.create('card');
         card.mount('#card-element');
         cardElementRef.current = card; // Assign to the ref
+        console.log('initialized stripe payment form');
+        console.log(card);
       }
     };
-    
+
     initializeStripe();
 
     // Cleanup on unmount
@@ -67,7 +69,7 @@ const StripeTokenizedForm: React.FC = () => {
 
   return (
     <div className="container mx-auto">
-      <div className="relative isolate overflow-hidden bg-white px-6 py-24 sm:py-32 lg:overflow-visible lg:px-0">
+      <div className="relative isolate overflow-hidden bg-white px-6 py-24 sm:py-4 lg:overflow-visible lg:px-0">
         <div className="overflow-hidden rounded-lg bg-white shadow">
           <div className="px-4 py-5 sm:p-6">
             <div className="px-4 sm:px-0">
@@ -76,7 +78,7 @@ const StripeTokenizedForm: React.FC = () => {
                 This form generates a token as a payment method ID to be included in the API payload.
               </p>
               <p className="max-w-2xl text-lg text-black-500 mb-10">
-                Akaza monthly subscription priced at $1.
+                Product monthly subscription priced at $1.
               </p>
             </div>
 
@@ -111,6 +113,6 @@ const StripeTokenizedForm: React.FC = () => {
       </div>
     </div>
   );
-};
+});
 
 export default StripeTokenizedForm;

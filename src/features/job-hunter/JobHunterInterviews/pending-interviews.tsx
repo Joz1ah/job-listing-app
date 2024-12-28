@@ -30,7 +30,7 @@ const PendingInterviews: FC = () => {
   const [initialLoad, setInitialLoad] = useState(true);
   const loaderRef = useRef<HTMLDivElement>(null);
   const [declineReason, setDeclineReason] = useState<string>("");
-  const { subscriptionTier } = useJobHunterContext();
+  const { subscriptionPlan } = useJobHunterContext();
 
   const handleAccept = async (interview: Interview, data: AcceptData) => {
     try {
@@ -145,7 +145,7 @@ const PendingInterviews: FC = () => {
   const loadingCardsCount = Math.min(6, pendingInterviewsData.length);
 
   // Show empty state if there are no pending interviews and we're not loading
-  if (!loading && displayedItems.length === 0 || subscriptionTier === 'freeTrial') {
+  if (!loading && displayedItems.length === 0 || subscriptionPlan === 'freeTrial') {
     return (
       <div className="h-full w-full flex items-center justify-center">
         <div className="flex flex-col items-center justify-center p-8 text-center">
