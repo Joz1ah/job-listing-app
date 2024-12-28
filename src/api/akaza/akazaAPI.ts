@@ -278,7 +278,7 @@ export const akazaApiAuth = createApiFunction({
 export const akazaApiSearch = createApiFunction({
   reducerPath: 'apiSearch',
   baseQuery: fetchBaseQuery({ 
-    baseUrl: 'https://api-search-sit.akaza.xyz/' ,
+    baseUrl: 'https://akaza-sit-api-gateway---rev-2-2tninhtd.uk.gateway.dev/' ,
     //baseUrl: process.env.REACT_APP_SEARCH_API_URL ,
     credentials: "include", 
     prepareHeaders: (headers) => {

@@ -1910,6 +1910,17 @@ input[type=number]::-webkit-outer-spin-button {
 
 }
 
+.perfect-match-container {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
 
 @keyframes spin {
   from {

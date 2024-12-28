@@ -15,6 +15,14 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 import { Formik, Form, FieldProps, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import { AppCard } from 'features/employer';
+import { JobCard } from 'features/job-hunter';
+import { gsap } from 'gsap';
+import { perfectMatch as employerMatches, Match as EmployerMatch } from 'mockData/job-hunter-data';
+import { perfectMatch as jobMatches, Match as JobMatch } from 'mockData/jobs-data';
+import { EmployerProvider, JobHunterProvider } from 'components';
+import { BookmarkProvider } from 'components';
+import { Button } from 'components';
 
 import video1 from 'assets/mp4/Landing-Page-hero-1.mp4';
 import video2 from 'assets/mp4/video-conference-call-1.mp4';
@@ -194,7 +202,7 @@ const Landing: FC = (): ReactElement => {
       'SKILLSETS_JOBHUNTER' : 5,
       'YEARS_OF_EXPERIENCE_JOBHUNTER' : 6,
       'LOADING' : 7,
-      'PERFECT_MATCH_RESULTS' : 7,
+      'PERFECT_MATCH_RESULTS' : 8,
   }
   const modalStates = {
       'LOGIN' : 1,
@@ -207,6 +215,7 @@ const Landing: FC = (): ReactElement => {
       'LOADING' : 8,
       'SIGNUP_CONGRATULATIONS' : 9,
       'STRIPE_PAYMENT' : 10,
+      'PERFECT_MATCH_RESULTS': 11 
   }
   const MODAL_HEADER_TYPE = {
       'WITH_LOGO_AND_CLOSE' : 1,
@@ -1297,6 +1306,104 @@ const StripePaymentModal = () => {
   )
 }
 
+const PerfectMatchResultsModal = () => {
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  
+  // Get the selected user type from the parent component's state
+  const selectedUserType = dataStates.selectedUserType;
+
+  // Type guard to determine which data to use
+  const getMatchData = () => {
+    if (selectedUserType === 'employer') {
+      return employerMatches as EmployerMatch[];
+    }
+    return jobMatches as JobMatch[];
+  };
+
+  const matchData = getMatchData();
+
+  useEffect(() => {
+    if (carouselRef.current) {
+      gsap.to(carouselRef.current, {
+        x: `${-currentIndex * 100}%`,
+        duration: 0.5,
+        ease: "power2.inOut"
+      });
+    }
+  }, [currentIndex]);
+
+  const nextSlide = () => {
+    if (currentIndex < matchData.length - 1) {
+      setCurrentIndex(prev => prev + 1);
+    }
+  };
+
+  const prevSlide = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(prev => prev - 1);
+    }
+  };
+
+  const renderCard = (match: EmployerMatch | JobMatch ) => {
+    if (selectedUserType === 'employer') {
+      return <AppCard match={match as EmployerMatch} />;
+    }
+    return <JobCard match={match as JobMatch} />;
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-center h-full">
+      <h2 className="text-[#F5722E] text-2xl font-medium mb-8">
+        Here's Your Perfect Match
+      </h2>
+
+      <div className="relative w-full max-w-4xl overflow-hidden">
+        <div 
+          ref={carouselRef}
+          className="flex gap-4"
+        >
+          {matchData.map((match, index) => (
+            <div 
+              key={index}
+              className="w-full flex-shrink-0 flex justify-center"
+            >
+              {renderCard(match)}
+            </div>
+          ))}
+        </div>
+        <div className="flex justify-between absolute top-1/2 -translate-y-1/2 w-full px-4">
+          <button
+            onClick={prevSlide}
+            disabled={currentIndex === 0}
+            className="p-2 bg-white rounded-full shadow-md disabled:opacity-50"
+          >
+            ←
+          </button>
+          <button
+            onClick={nextSlide}
+            disabled={currentIndex === matchData.length - 1}
+            className="p-2 bg-white rounded-full shadow-md disabled:opacity-50"
+          >
+            →
+          </button>
+        </div>
+      </div>
+
+      <div className="mt-8 w-full max-w-4xl flex flex-col items-center">
+        <Button 
+          className="w-full md:w-[300px] bg-[#F5722E] text-white py-1 rounded hover:bg-[#F5722E]/90 transition-colors"
+        >
+          Sign up now
+        </Button>
+        <p className="text-center text-sm text-gray-500 mt-2">
+          or continue with free trial
+        </p>
+      </div>
+    </div>
+  );
+};
+
 
 const ModalHeader = () =>{
   const closeModal1 = useRef<HTMLImageElement>(null);
@@ -1339,24 +1446,30 @@ const ModalHeader = () =>{
     </div>
   )
 }
-const Modal = () =>{
-
+const Modal = () => {
   return (
     <div id="modal_container" className={`${styles['modal-container-wrapper']}`} >
       <div className={`${styles['modal-container']}`}>
           <div className={`${styles['modal-item']}`}>
               <ModalHeader/>
               <div className={`${styles['modal-content-wrapper']}`}>
-                  <LoginModal/>
-                  <JobHunterEmployerSelection/>
-                  <UserNamePasswordSignup/>
-                  <OTPSignUp/>
-                  <MobileCountrySignUp/>
-                  <EmployerAdditionalInformation/>
-                  <SubscriptionPlanSelection/>
-                  <LoadingModal/>
-                  <CongratulationsModal/>
-                  <StripePaymentModal/>
+                <EmployerProvider initialTier='freeTrial'>
+                <JobHunterProvider initialTier='freeTrial'>
+                  <BookmarkProvider>
+                    <LoginModal/>
+                    <JobHunterEmployerSelection/>
+                    <UserNamePasswordSignup/>
+                    <OTPSignUp/>
+                    <MobileCountrySignUp/>
+                    <EmployerAdditionalInformation/>
+                    <SubscriptionPlanSelection/>
+                    <LoadingModal/>
+                    <CongratulationsModal/>
+                    <StripePaymentModal/>
+                    <PerfectMatchResultsModal/>
+                  </BookmarkProvider>
+                </JobHunterProvider>
+                </EmployerProvider>
               </div>
           </div>
       </div>
@@ -1384,11 +1497,13 @@ const HeroPerfectMatchAlgo = () => {
     if (heroEmployerButton.current) {
       heroEmployerButton.current.onclick = () => {
         setHeroState(heroStates.JOB_TITLE_EMPLOYER);
+        setDataStates({...dataStates, selectedUserType: 'employer'});
       };
     }
     if (heroJobHunterButton.current) {
       heroJobHunterButton.current.onclick = () => {
         setHeroState(heroStates.SKILLSETS_JOBHUNTER);
+        setDataStates({...dataStates, selectedUserType: 'job_hunter'});
       };
     }
   };
@@ -1451,7 +1566,6 @@ const HeroJobTitleEmployer = () => {
               </div>
               <div className={`${styles['search-wrapper']}`}>
                   <input className={`${styles['search-input']}`} placeholder="Please type a Job Title" type="text" />
-                  <img src={icon_search}></img>
               </div>
               <div className={`${styles['hero-button-container2']}`}>
                   <div ref={heroNextButton} className={`${styles['button-custom-orange']} ${styles['noselect']}`}>Next</div>
@@ -1684,53 +1798,103 @@ const HeroYearsOfExperienceJobHunter = () => {
   </div>
   )
 }
-const HeroLoading = () => {
-  const heroEmployerButton = useRef<HTMLDivElement>(null);
+
+const HeroPerfectMatchResults = () => {
+  const heroBackButton = useRef<HTMLDivElement>(null);
+  
   const heroScreenActions = () => {
-    if (heroEmployerButton.current) {
-      heroEmployerButton.current.onclick = () => {
-        setHeroState(heroStates.JOB_TITLE_EMPLOYER);
+    if (heroBackButton.current) {
+      heroBackButton.current.onclick = () => {
+        setHeroState(heroStates.PERFECT_MATCH_ALGO);
       };
     }
   };
   
-  useEffect(heroScreenActions,[])
-  return(
-    <div id="last_step" className={`${styles['hero-content']}`} hidden={heroState !== heroStates.LOADING}>
-        <Video
+  useEffect(heroScreenActions, []);
+
+  return (
+    <div id="perfect_match_results" className={`${styles['hero-content']}`} hidden={heroState !== heroStates.PERFECT_MATCH_RESULTS}>
+      <Video
         src={video4}
         className={styles['hero-video']}
       />
-        <div className={`${styles['hero-container-overlay']} ${styles['gradient-left-dark']}`}>
-            <div className={`${styles['hero-container-content-wrapper']}`}>
-                <div className={`${styles['title']} ${styles['orange']} ${styles['text-left']}`}>
-                    <div>
-                        You're a few seconds away from 
-                    </div>
-                    <div className={`${styles['sparkle-desc']}`}>
-                        <div>
-                            seeing your perfect match
-                        </div>
-                        <div className={`${styles['perfect-match-wrapper']}`}>
-                            <img src={sparkle_icon}></img>
-                        </div>
-                    </div>
-                </div>
-                <div className={`${styles['loading-wrapper']}`}>
-                    <div className={`${styles['akaza-loading-container']}`}>
-                        <div>
-                            <img className={`${styles.loader}`} src={akaza_loading}></img>
-                        </div>
-                        <div>
-                            <img src={akaza_icon}></img>
-                        </div>
-                    </div>
-                </div>
+      <div className={`${styles['hero-container-overlay']} ${styles['gradient-left-dark']}`}>
+        <div className={`${styles['hero-container-content-wrapper']}`}>
+          <div className={`${styles['title']} ${styles['orange']} ${styles['text-left']}`}>
+            <div>Here are your</div>
+            <div className={`${styles['sparkle-desc']}`}>
+              <div>Perfect Matches!</div>
+              <div className={`${styles['perfect-match-wrapper']}`}>
+                <img src={sparkle_icon} alt="sparkle"></img>
+              </div>
             </div>
+          </div>
+          
+          <div className={`${styles['perfect-match-results-wrapper']}`}>
+            {/* Add your perfect match results content here */}
+            <div className={`${styles['match-results-container']}`}>
+              {/* You can add match cards or other content here */}
+            </div>
+          </div>
+
+          <div className={`${styles['hero-button-container2']}`}>
+            <div ref={heroBackButton} className={`${styles['button-custom-transparent']} ${styles['noselect']}`}>
+              <img className={`${styles['caret-left']}`} src={arrow_left_icon} alt="back"></img>
+              <div>Back to Start</div>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
-  )
-}
+  );
+};
+
+const HeroLoading = () => {
+  useEffect(() => {
+    if (heroState === heroStates.LOADING) {
+      const timer = setTimeout(() => {
+        setMaskHidden(0);
+        setSelectedModalHeader(1);
+        setModalState(modalStates.PERFECT_MATCH_RESULTS);
+        setCloseModalActive(1);
+      }, 3000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [heroState]);
+
+  return (
+    <div id="loading_step" className={`${styles['hero-content']}`} hidden={heroState !== heroStates.LOADING}>
+      <Video
+        src={video4}
+        className={styles['hero-video']}
+      />
+      <div className={`${styles['hero-container-overlay']} ${styles['gradient-left-dark']}`}>
+        <div className={`${styles['hero-container-content-wrapper']}`}>
+          <div className={`${styles['title']} ${styles['orange']} ${styles['text-left']}`}>
+            <div>You're a few seconds away from</div>
+            <div className={`${styles['sparkle-desc']}`}>
+              <div>seeing your perfect match</div>
+              <div className={`${styles['perfect-match-wrapper']}`}>
+                <img src={sparkle_icon} alt="sparkle"></img>
+              </div>
+            </div>
+          </div>
+          <div className={`${styles['loading-wrapper']}`}>
+            <div className={`${styles['akaza-loading-container']}`}>
+              <div>
+                <img className={`${styles.loader}`} src={akaza_loading} alt="loading"></img>
+              </div>
+              <div>
+                <img src={akaza_icon} alt="akaza"></img>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const isFreeTrial = false;
 
@@ -1747,6 +1911,7 @@ const isFreeTrial = false;
                 <HeroSkillSetsJobHunter/>
                 <HeroYearsOfExperienceJobHunter/>
                 <HeroLoading/>
+                <HeroPerfectMatchResults/>
             </div>
             <div className={`${styles['pricing-container']}`}>
                 <div className={`${styles['desc1-wrapper']}`}>
