@@ -7,6 +7,10 @@ export const ROUTE_CONSTANTS = {
   ABOUT: '/about',
   FETCH: '/fetch',
   NOT_FOUND: '/404',
+  ABOUT_US: '/landing/about-us',
+  CONTACT_US: '/landing/contact-us',
+  SUBSCRIPTION_PLAN: '/landing/subscription-plan',
+  FAQ: '/landing/faq',
   
   // Authentication and Profile
   COMPLETE_PROFILE: '/employer/complete-profile',

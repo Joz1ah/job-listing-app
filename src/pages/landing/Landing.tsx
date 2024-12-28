@@ -348,23 +348,43 @@ const Landing: FC = (): ReactElement => {
       { setSubmitting, setFieldError }: any
     ) => {
       try {
-        const res = await loginSubmit(values)
-        .unwrap()
-        .then((res)=>{
-          console.log('Success Login')
-          console.log(res)
-          setTimeout(()=>{
-            navigate('/job-hunter');
-          },1000)
-        }).catch((err) => {
-          console.log('err')
-          setApiLoginErrorMessage('Invalid Username or Password')
-          console.log(err)
-        })
-        console.log(res);
+        await loginSubmit(values)
+          .unwrap()
+          .then((response) => {
+            console.log('Success Login')
+            console.log(response)
+            
+            setTimeout(() => {
+              const userType = response?.data?.user?.type;
+              const isFreeTrial = response?.data?.user?.freeTrial;
+              
+              const subscriptionTier = isFreeTrial ? 'freeTrial' : 'monthlyPlan';
+              
+              localStorage.setItem('userType', userType);
+              localStorage.setItem('subscriptionTier', subscriptionTier);
+    
+              if (userType === 'employer') {
+                navigate('/employer', { 
+                  state: { initialTier: subscriptionTier }
+                });
+              } else {
+                const basePath = isFreeTrial ? '/job-hunter/feed' : '/job-hunter';
+                  
+                navigate(basePath, {
+                  state: { initialTier: subscriptionTier }
+                });
+              }
+            }, 1000);
+          })
+          .catch((err) => {
+            console.log('err')
+            setApiLoginErrorMessage('Invalid Username or Password')
+            console.log(err)
+          });
+    
       } catch (err: any) {
         console.error(err);
-        setFieldError('general', 'Invalid Username or Password'); // Set general error
+        setFieldError('general', 'Invalid Username or Password');
       } finally {
         setSubmitting(false);
       }
@@ -810,15 +830,32 @@ const SubscriptionPlanSelection = () =>{
     if (buttonSubscribe.current) {
       buttonSubscribe.current.onclick = () => {
         setSelectedModalHeader(1);
+        const userType = dataStates.selectedUserType;
+        
         if(currentSelectedPlan == PLAN_SELECTION_ITEMS.FREE){
+
+          localStorage.setItem('subscriptionTier', 'freeTrial');
+          localStorage.setItem('userType', userType);
+          
           setModalState(modalStates.LOADING)
           setTimeout(()=>{
-            navigate("/job-hunter");
+
+            const basePath = userType === 'employer' ? '/employer' : '/job-hunter/feed';
+            navigate(basePath, {
+              state: { initialTier: 'freeTrial' }
+            });
           },5000)
         }
-        else
+        else {
+          const selectedTier = 
+            currentSelectedPlan === PLAN_SELECTION_ITEMS.MONTHLY 
+              ? 'monthlyPlan' 
+              : 'yearlyPlan';
+              
+          localStorage.setItem('pendingSubscriptionTier', selectedTier);
+          localStorage.setItem('userType', userType);
           setModalState(modalStates.STRIPE_PAYMENT)
-
+        }
       };
     }
     if (subscription_plan1.current) {
@@ -836,7 +873,7 @@ const SubscriptionPlanSelection = () =>{
           setCurrentSelectedPlan(PLAN_SELECTION_ITEMS.ANNUAL)
       };
     }
-  }
+  };
   useEffect(handleSubscribe, []);
 
 

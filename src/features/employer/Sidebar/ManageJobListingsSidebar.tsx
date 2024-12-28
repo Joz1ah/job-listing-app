@@ -122,7 +122,7 @@ const ManageJobListingsSidebar: FC<ManageJobsSidebarProps> = ({
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex items-center gap-3 px-3 py-2 text-[15px] ${
+                className={`flex items-center gap-3 py-2 text-[15px] ${
                   location.pathname === item.path
                     ? "text-orange-500"
                     : "text-white hover:text-orange-500"

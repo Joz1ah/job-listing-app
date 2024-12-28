@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ChevronLeft
@@ -8,6 +8,7 @@ import { NavLink } from "react-router-dom";
 import sparkeIcon from "images/sparkle-icon.png";
 import saveChanges from "images/save-changes.svg?url";
 import { selectOptions } from "mockData/job-listing-form-options";
+import { useJobListCreateMutation } from "api/akaza/akazaAPI";
 
 import {
   MultiSelect,
@@ -88,13 +89,50 @@ const JobListingForm: FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPreview, setShowPreview] = useState<boolean>(false);
 
-  const handlePreviewConfirm = (): void => {
-    setShowPreview(false);
-    setIsLoading(true);
-    setTimeout(() => {
-      navigate("/employer/feed");
-    }, 1500);
+  const [createJobList] = useJobListCreateMutation();
+
+  const handlePreviewConfirm = async (): Promise<void> => {
+    try {
+      setIsLoading(true);
+      setShowPreview(false);
+      
+      const jobListPayload = {
+        employerId: 1,  // You should get this from your auth context or user state
+        title: values.jobTitle,
+        priorityIndicator: values.priorityIndicator,
+        description: values.jobDescription,
+        location: values.location,
+        employmentType: values.employmentType.join(", "),
+        salaryRange: values.salaryRange,
+        yearsOfExperience: values.yearsOfExperience,
+        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days from now
+        education: values.education,
+        language: values.languages.join(","),
+        keywords: values.coreSkills
+      };
+  
+      console.log('Submitting form data:', jobListPayload);
+      
+      const result = await createJobList(jobListPayload).unwrap();
+      
+      if (result) {
+        setTimeout(() => {
+          setIsLoading(false);
+          navigate("/employer/feed");
+        }, 1500);
+      }
+    } catch (err) {
+      console.error('Error submitting form:', err);
+      setIsLoading(false);
+    }
   };
+
+  // Add cleanup when component unmounts
+  useEffect(() => {
+    return () => {
+      setIsLoading(false);
+    };
+  }, []);
 
   const {
     values,

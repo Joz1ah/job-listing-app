@@ -136,7 +136,7 @@ const InterviewSidebarJobHunter: FC<InterviewSidebarJobHunterProps> = ({
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex items-center gap-3 px-3 py-2 text-[15px] ${
+                className={`flex items-center gap-3 py-2 text-[15px] ${
                   location.pathname === item.path
                     ? "text-[#F5722E]"
                     : "text-white hover:text-[#F5722E]"
