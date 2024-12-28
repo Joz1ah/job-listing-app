@@ -450,25 +450,23 @@ export const akazaApiPerfectMatch = createApiFunction({
 export const akazaApiAccount = createApiFunction({
   reducerPath: 'apiAccount',
   baseQuery: fetchBaseQuery({ 
-    baseUrl: 'https://akaza-sit-api-gateway---rev-2-2tninhtd.uk.gateway.dev/' ,
-    //baseUrl: process.env. ,
+    baseUrl: 'https://akaza-sit-api-gateway---rev-2-2tninhtd.uk.gateway.dev/',
     credentials: "include", 
     prepareHeaders: (headers) => {
-    // Retrieve the token from cookies
-    const token = Cookies.get('token');
-
-    if (token) {
-      headers.set('Authorization', `Bearer ${token}`); // Add token to the Authorization header
-    }
+      const token = Cookies.get('token');
+      if (token) {
+        headers.set('Authorization', `Bearer ${token}`);
+      }
       return headers;
     },
   }), 
   endpoints: (builder) => ({
     getUserInfo: builder.query({
       query: () => ({
-        url: `/account/info`,
+        url: `account/info`,
         method: 'GET',
       }),
+      keepUnusedDataFor: 0,  // Remove unused data from the cache right away
     }),
   }),
 });

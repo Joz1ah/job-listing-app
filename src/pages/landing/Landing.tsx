@@ -2,7 +2,16 @@ import React, { FC, useEffect, useState, useRef, ReactElement } from 'react'
 import { FooterEngagement as Footer} from "layouts";
 import { PageMeta } from "components";
 import { LandingContext } from 'components';
-import { useLoginMutation, useSignUpMutation, useOtpGenerateMutation, useOtpVerifyMutation, useGetUserInfoQuery, usePaymentCreateMutation } from 'api/akaza/akazaAPI';
+import { 
+  useLoginMutation,
+  useSignUpMutation,
+  useOtpGenerateMutation,
+  useOtpVerifyMutation,
+  useGetUserInfoQuery,
+  usePaymentCreateMutation,
+  akazaApiAccount } from 'api/akaza/akazaAPI';
+
+import { useDispatch } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 import { Formik, Form, FieldProps, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -100,6 +109,7 @@ const Video: FC<VideoProps> = ({ src, className }) => {
 
 const getUserInfo = () => {
   const { data: userInfo, error, isLoading } = useGetUserInfoQuery(null)
+  const dispatch = useDispatch();
 
   if (isLoading) {
     console.log("Loading user info...");
@@ -112,8 +122,7 @@ const getUserInfo = () => {
   }
 
   if (userInfo) {
-    console.log("Fetched user info:", userInfo);
-
+    dispatch(akazaApiAccount.util.resetApiState());
     //const processedData = processUserInfo(userInfo); 
     //console.log("Processed Data:", processedData);
   }
@@ -441,8 +450,6 @@ const Landing: FC = (): ReactElement => {
     const [credentials, setCredentials] = useState({ email: '', password: '', passwordConfirm: '' });
     const [isSignupError, setIsSignupError] = useState(false);
     const [organizedErrors, setOrganizedErrors] =  useState({ email: '', password: '', passwordConfirm: '' });
-    
-  
     const [signUpSubmit] = useSignUpMutation()
     const [generateOTP] = useOtpGenerateMutation()
 
@@ -470,11 +477,12 @@ const Landing: FC = (): ReactElement => {
       .validate(credentials, { abortEarly: false })
       .then(validData => {
         setIsSignupError(false)
-        console.log('Validation successful:', validData);
-
+        validData
         signUpSubmit({...credentials,type:dataStates.selectedUserType})
         .unwrap()
         .then((res)=>{
+          console.log('signup success')
+          console.log(res)
           setTimeout( ()=> {
             setDataStates({...dataStates, email:credentials.email})
             generateOTP( { email:credentials.email } )
@@ -1040,7 +1048,7 @@ const CreditCardForm: React.FC = () => {
 
   const validationSchema = Yup.object({
     cardNumber: Yup.string()
-      .matches(/^\d{15}$/, 'Card number must be 15 digits')
+      //.matches(/^\d{15}$/, 'Card number must be 15 digits')
       .required('Card number is required'),
     cardholderName: Yup.string()
       .matches(/^[a-zA-Z\s]+$/, 'Name must only contain letters and spaces')
@@ -1095,6 +1103,7 @@ const CreditCardForm: React.FC = () => {
     Accept.dispatchData(secureData, async (acceptResponse: any) => {
       if (acceptResponse.messages.resultCode === 'Ok') {
         const token = acceptResponse.opaqueData.dataValue;
+        console.log(acceptResponse)
         console.log('token generation success')
         console.log(token)
         // Send the token to your server for processing
@@ -1102,7 +1111,7 @@ const CreditCardForm: React.FC = () => {
         try {
           const res = await paymentSubmit({
             "provider": "authnet",
-            "userId": dataStates.userId,
+            "userId": 41,//dataStates.userId,
             "plan": 
               currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY ? "Monthly" : 
               currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL ? "Annual" : '',
@@ -1120,7 +1129,7 @@ const CreditCardForm: React.FC = () => {
               navigate("/job-hunter");
             },5000)
           }).catch((err) => {
-            alert(JSON.parse(err))
+            alert(JSON.stringify(err))
             setIsSubmitting(false)
             console.log(err)
           })
