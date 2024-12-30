@@ -109,7 +109,7 @@ body:has(.requires-no-scroll:not([hidden])) {
 
 .hero-button-container2{
   display: flex;
-  margin-top: 7.5px;
+  margin-top: 20px;
   gap: 3px;
   flex-direction: column;
 }
@@ -379,9 +379,32 @@ body:has(.requires-no-scroll:not([hidden])) {
   background: linear-gradient(270deg, rgba(116, 149, 167, 0.15) 0%, rgba(98, 126, 141, 0.38) 47%, rgba(80, 104, 116, 0.75) 65.5%, #2D3A41 82.5%);
 }
 
-.hero-container-content-wrapper{
-  margin-left:56px;
+.hero-container-content-wrapper {
+  position: relative;
+  margin-left: 56px;
+
+  .validation-message {
+    position: absolute;
+    color: #E53835;
+    font-style: italic;
+    font-size: 14px;
+
+    &.variant-1 {
+      padding-left: 260px;
+    }
+
+    &.variant-2 {
+      padding-left: 210px;
+    }
+
+    &.variant-3 {
+      padding-left: 260px;
+      padding-bottom: 70px;
+      bottom: 0;
+    }
+  }
 }
+
 
 .hero-container .title{
   margin-top: 145px;
@@ -405,7 +428,7 @@ body:has(.requires-no-scroll:not([hidden])) {
 .search-wrapper{
   margin-top: 93px;
   border: 1px solid white;
-  width: 380px;
+  width: 410px;
   display: inline-flex;
   padding: 7.5px 11px 7.5px 20px;
   justify-content: flex-end;
@@ -1035,6 +1058,22 @@ color: #F5F5F7;
   font-family: Poppins-R;
 }
 
+.resend-button {
+  border: none;
+  background: none;
+  color: #F5722E;
+  font-family: Poppins-R;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  text-decoration-line: underline;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  margin-left: 4px;
+}
+
 .resend-container{
   margin-top: 10px;
   align-items: center;
@@ -1089,6 +1128,7 @@ color: #F5F5F7;
   font-style: normal;
   font-weight: 500;
   line-height: normal;
+  cursor: pointer;
 }
 
 .country-mobtel-container > .title-desc{
@@ -1183,6 +1223,18 @@ color: #F5F5F7;
       gap:20px;
       width: 100%;
     }
+  }
+  .error-label{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    margin-top:4px;
+    font-family: Poppins-R;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    color:red;
   }
   .input-fields-container{
     display: flex;
@@ -1917,7 +1969,7 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .modal-content {
-  background: white;
+  background: #F5F5F7;
   border-radius: 0.5rem;
   overflow: hidden;
 }

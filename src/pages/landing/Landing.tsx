@@ -51,7 +51,7 @@ import flame_vector from 'assets/flame-vector.svg?url';
 import orange_check from 'assets/orange-check.svg?url';
 import akazalogo_dark from 'assets/akazalogo-dark.svg?url';
 import close_icon from 'assets/close.svg?url';
-import eye_off_outline from 'assets/eye-off-outline.svg?url';
+//import eye_off_outline from 'assets/eye-off-outline.svg?url';
 import google_logo from 'assets/google-logo.svg?url';
 import philippines_flag from 'assets/country-icons/philippines.svg?url';
 import chevron_down from 'assets/chevron-down.svg?url';
@@ -336,6 +336,7 @@ const Landing: FC = (): ReactElement => {
   interface LoginFormValues {
     email: string;
     password: string;
+    rememberMe: boolean;
   }
   
   const LoginSchema = Yup.object().shape({
@@ -401,7 +402,7 @@ const Landing: FC = (): ReactElement => {
   
     return (
       <Formik<LoginFormValues>
-        initialValues={{ email: '', password: '' }}
+        initialValues={{ email: '', password: '', rememberMe: false }}
         validationSchema={LoginSchema}
         onSubmit={handleSubmit}
       >
@@ -476,11 +477,19 @@ const Landing: FC = (): ReactElement => {
   
 
   const UserNamePasswordSignup = () => {
+    type ErrorFields = 'email' | 'password' | 'passwordConfirm';
+    type ErrorState = Record<ErrorFields, string>;
+
     const [credentials, setCredentials] = useState({ email: '', password: '', passwordConfirm: '' });
-    const [isSignupError, setIsSignupError] = useState(false);
-    const [organizedErrors, setOrganizedErrors] =  useState({ email: '', password: '', passwordConfirm: '' });
-    const [signUpSubmit] = useSignUpMutation()
-    const [generateOTP] = useOtpGenerateMutation()
+    const [organizedErrors, setOrganizedErrors] = useState<ErrorState>({ 
+      email: '', 
+      password: '', 
+      passwordConfirm: '' 
+    });
+    const [signUpSubmit] = useSignUpMutation();
+    const [generateOTP] = useOtpGenerateMutation();
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const schema = Yup.object().shape({
       email: Yup
@@ -500,47 +509,72 @@ const Landing: FC = (): ReactElement => {
         .nullable(), 
     });
 
+    const handlePrevious = (e: React.MouseEvent) => {
+        e.preventDefault();
+        setModalState(modalStates.SIGNUP_SELECT_USER_TYPE);
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-      schema
-      .validate(credentials, { abortEarly: false })
-      .then(validData => {
-        setIsSignupError(false)
-        validData
-        signUpSubmit({...credentials,type:dataStates.selectedUserType})
-        .unwrap()
-        .then((res)=>{
-          console.log('signup success')
-          console.log(res)
-          setTimeout( ()=> {
-            setDataStates({...dataStates, email:credentials.email})
-            generateOTP( { email:credentials.email } )
-            setModalState(modalStates.SIGNUP_STEP3)
-          }
-          , 1000 )
-          setDataStates({...dataStates, userId: res.data.id})
-        })
-        .catch((err) => {
-          console.log(err)
-          //setIsSignupError(true)
-          //set_errorMessage('Invalid Username or Password')
-        })
-      })
-      .catch(err => {
-        setIsSignupError(true)
+      setOrganizedErrors({ email: '', password: '', passwordConfirm: '' });
 
-        if (err.inner) {
-          let _organizedErrors:any = { email: '', password: '', passwordConfirm: '' };
+      try {
+        // Validate the form data
+        await schema.validate(credentials, { abortEarly: false });
+        
+        try {
+          const res = await signUpSubmit({
+            ...credentials,
+            type: dataStates.selectedUserType
+          }).unwrap();
+          
+          console.log('signup success', res);
+          
+          setDataStates({
+            ...dataStates,
+            email: credentials.email,
+            userId: res.data.id
+          });
+          
+          await generateOTP({ email: credentials.email });
+          setTimeout(() => {
+            setModalState(modalStates.SIGNUP_STEP3);
+          }, 1000);
+          
+        } catch (err: any) {
+          if (err.status === 409 || err?.data?.message?.toLowerCase().includes('email already exists')) {
+            setOrganizedErrors(prev => ({
+              ...prev,
+              email: 'This email is already registered'
+            }));
+          } else {
+            setOrganizedErrors(prev => ({
+              ...prev,
+              email: err?.data?.message || 'Email already exists'
+            }));
+          }
+        }
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          const _organizedErrors: ErrorState = { 
+            email: '', 
+            password: '', 
+            passwordConfirm: '' 
+          };
+          
           err.inner.forEach((error: Yup.ValidationError) => {
-            if (error.path) {
+            if (error.path && isErrorField(error.path)) {
               _organizedErrors[error.path] = error.message;
             }
           });
-          setOrganizedErrors(_organizedErrors)
-          console.log('Organized Errors:', organizedErrors);
+          setOrganizedErrors(_organizedErrors);
         }
-      });
-        
+      }
+    };
+
+    // Type guard to ensure the error path is a valid error field
+    const isErrorField = (value: string): value is ErrorFields => {
+      return ['email', 'password', 'passwordConfirm'].includes(value);
     };
 
     return(
@@ -555,73 +589,93 @@ const Landing: FC = (): ReactElement => {
                         placeholder="Email"
                         onChange={(e) => setCredentials({ ...credentials, email: e.target.value })}
                         required>
-
                         </input>
                     </div>
-                    {
-                      (isSignupError) ?
+                    {organizedErrors.email && (
                         <div className={`${styles['error-label']}`}>
                             {organizedErrors.email}
-                        </div> : ''
-                    }
+                        </div>
+                    )}
                 </div>
                 <div id="signup_password" className={`${styles['transparent-input-field']}`}>
                     <div className={`${styles['input-container']}`}>
-                        <input type="password" 
-                        placeholder="Password"
-                        onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
-                        required>
-
-                        </input>
-                        <img src={eye_off_outline}></img>
+                        <input 
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Password"
+                            onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
+                            required
+                        />
+                        <button 
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="cursor-pointer"
+                        >
+                            {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
+                        </button>
                     </div>
-                    {
-                      (isSignupError) ?
+                    {organizedErrors.password && (
                         <div className={`${styles['error-label']}`}>
                             {organizedErrors.password}
-                        </div> : ''
-                    }
+                        </div>
+                    )}
                 </div>
+
                 <div id="signup_password_confirm" className={`${styles['transparent-input-field']}`}>
                     <div className={`${styles['input-container']}`}>
-                        <input type="password" 
-                        placeholder="Confirm password"
-                        onChange={(e) => setCredentials({ ...credentials, passwordConfirm: e.target.value })}
-                        required>
-                        </input>
-                        <img src={eye_off_outline}></img>
+                        <input 
+                            type={showConfirmPassword ? "text" : "password"}
+                            placeholder="Confirm password"
+                            onChange={(e) => setCredentials({ ...credentials, passwordConfirm: e.target.value })}
+                            required
+                        />
+                        <button 
+                            type="button"
+                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            className="cursor-pointer"
+                        >
+                            {showConfirmPassword ? <Eye size={20} /> : <EyeOff size={20} />}
+                        </button>
                     </div>
-                    {
-                      (isSignupError) ?
+                    {organizedErrors.passwordConfirm && (
                         <div className={`${styles['error-label']}`}>
                             {organizedErrors.passwordConfirm}
-                        </div> : ''
-                    }
+                        </div>
+                    )}
                 </div>
             </div>
             <div className={`${styles['other-signup-option-label']}`}>or sign up with</div>
             <div className={`${styles['social-media-items']} ${styles['noselect']}`}>
                 <div className={`${styles['social-media-button']}`}>
                     <div className={`${styles['social-media-icon']}`}>
-                        <img src={google_logo}></img>
+                        <img src={google_logo} alt="Google logo" />
                     </div>
                     <div className={`${styles['social-media-label']}`}>Google</div>
                 </div>
             </div>
             <div className={`${styles['action-buttons']}`}>
-                <button className={`${styles['button-custom-basic']}`}>Previous</button>
-                <button type="submit" className={`${styles['button-custom-orange']}`}>Next</button>
+                <button 
+                    onClick={handlePrevious}
+                    type="button"
+                    className={`${styles['button-custom-basic']}`}
+                >
+                    Previous
+                </button>
+                <button 
+                    type="submit" 
+                    className={`${styles['button-custom-orange']}`}
+                >
+                    Next
+                </button>
             </div>  
           </form>
         </div>    
     </div>
-    )
-  }
+    );
+}
 
 const OTPSignUp = () => {
   const buttonContinue = useRef<HTMLButtonElement>(null);
   const [submitOTP] = useOtpVerifyMutation();
-  //const buttonCancel = useRef<HTMLButtonElement>(null);
   const buttonPrevious = useRef<HTMLDivElement>(null);
   const ib1 = useRef<HTMLInputElement>(null);
   const ib2 = useRef<HTMLInputElement>(null);
@@ -629,90 +683,228 @@ const OTPSignUp = () => {
   const ib4 = useRef<HTMLInputElement>(null);
   const ib5 = useRef<HTMLInputElement>(null);
   const ib6 = useRef<HTMLInputElement>(null);
+  
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleOnInput = (ref:any, nextRef:any) =>{
-    let currentInput = ref.current
+    let currentInput = ref.current;
     if(currentInput.value.length > currentInput.maxLength)
        currentInput.value = currentInput.value.slice(0, currentInput.maxLength);
     if(currentInput.value.length >= currentInput.maxLength)
       nextRef.current.focus();
   }
+
   const handleOnKeyDown = (e:any, ref:any, refFocus:any) =>{
     if(e.keyCode == 8){
       ref.current.value = '';
       refFocus.current.focus();
     }
   }
+
   const handleContinue = () => {
     if (buttonContinue.current) {
-      buttonContinue.current.onclick = () => {
+      buttonContinue.current.onclick = async () => {
         const otp =
-        (ib1.current?.value || '') +
-        (ib2.current?.value || '') +
-        (ib3.current?.value || '') +
-        (ib4.current?.value || '') +
-        (ib5.current?.value || '') +
-        (ib6.current?.value || '');
+          (ib1.current?.value || '') +
+          (ib2.current?.value || '') +
+          (ib3.current?.value || '') +
+          (ib4.current?.value || '') +
+          (ib5.current?.value || '') +
+          (ib6.current?.value || '');
 
-      console.log('OTP:', otp); // Log the concatenated OTP
+        if (otp.length !== 6) {
+          alert('Please enter all 6 digits of the OTP');
+          return;
+        }
 
-      // Example submission logic
-      if (otp.length === 6) {
-        submitOTP({
-          email: dataStates.email,
-          otp: otp
-        })
-        .unwrap()
-        .then((res)=>{
-          setTimeout( ()=> {
+        try {
+          setIsLoading(true);
+          
+          await submitOTP({
+            email: dataStates.email,
+            otp: otp
+          }).unwrap();
+          
+          setTimeout(() => {
             setModalState(modalStates.SIGNUP_CONGRATULATIONS);
+          }, 1000);
+          
+        } catch (err: any) {
+          console.log('OTP Error details:', err); // Log full error object
+          
+          if (err.status === 'FETCH_ERROR' || err.originalStatus === 400) {
+            alert('Invalid OTP. Please try again.');
+          } else if (err.status === 408 || err.originalStatus === 408) {
+            alert('OTP has expired. Please request a new one.');
+          } else {
+            alert('Something went wrong. Please try again later.');
+            console.error('Unexpected error structure:', err);
           }
-          , 1000 )
-          console.log(res)
-        })
-        .catch((err) => {
-          console.log(err)
-          //setIsSignupError(true)
-          //set_errorMessage('Invalid Username or Password')
-        })
-      } else {
-        alert('Please complete the OTP');
-      }
+          
+          // Clear OTP fields on error
+          [ib1, ib2, ib3, ib4, ib5, ib6].forEach(ref => {
+            if (ref.current) {
+              ref.current.value = '';
+            }
+          });
+          if (ib1.current) {
+            ib1.current.focus();
+          }
+        } finally {
+          setIsLoading(false);
+        }
       };
     }
   }
-  
+
   useEffect(handleContinue, []);
-  return(
+
+  const [generateOTP] = useOtpGenerateMutation();
+
+  const resendOTP = async () => {
+    try {
+      await generateOTP({ email: dataStates.email })
+        .unwrap()
+        .then(() => {
+          console.log('OTP resent successfully');
+          // Optionally add success toast/notification here
+        })
+        .catch((error) => {
+          console.error('Failed to resend OTP:', error);
+          // Optionally add error toast/notification here
+        });
+    } catch (error) {
+      console.error('Error in resendOTP:', error);
+      throw error; // Propagate error to handleResendClick
+    }
+  };
+
+  const [countdown, setCountdown] = useState(180);
+
+  useEffect(() => {
+    // Start the countdown when component mounts
+    const timer = setInterval(() => {
+      setCountdown((prevCount) => {
+        if (prevCount <= 0) {
+          clearInterval(timer);
+          return 0;
+        }
+        return prevCount - 1;
+      });
+    }, 1000);
+  
+    // Cleanup timer on component unmount
+    return () => clearInterval(timer);
+  }, [countdown]);
+  
+  const handleResendClick = async () => {
+    try {
+      // Add your resend OTP logic here
+      await resendOTP();
+      
+      setCountdown(180);
+      
+    } catch (error) {
+      // Handle error
+      console.error('Failed to resend OTP:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (buttonPrevious.current) {
+      buttonPrevious.current.onclick = () => {
+        [ib1, ib2, ib3, ib4, ib5, ib6].forEach(ref => {
+          if (ref.current) {
+            ref.current.value = '';
+          }
+        });
+        setModalState(modalStates.SIGNUP_STEP2);
+      };
+    }
+  }, []);
+
+  const formatTime = (timeInSeconds: number): string => {
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = timeInSeconds % 60;
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  };
+  
+  return (
     <div id="step3_signup" className={`${styles['modal-content']}`} hidden={modalState !== modalStates.SIGNUP_STEP3}>
       <div className={`${styles['verify-container']}`}>
         <div className={`${styles.desc1}`}>Verify with One Time Password</div>
         <div className={`${styles.desc2}`}>To ensure your security, please enter the One - Time Password</div>
         <div className={`${styles.desc2}`}>(OTP) sent to your registered email below.</div>
+        
         <div className={`${styles['otp-input-fields']}`}>
-            <div><input onInput={()=>handleOnInput(ib1,ib2)} onKeyDown={(e)=>handleOnKeyDown(e, ib1, ib1)} ref={ib1} type="number" maxLength={1}></input></div>
-            <div><input onInput={()=>handleOnInput(ib2,ib3)} onKeyDown={(e)=>handleOnKeyDown(e, ib2, ib1)} ref={ib2} type="number" maxLength={1}></input></div>
-            <div><input onInput={()=>handleOnInput(ib3,ib4)} onKeyDown={(e)=>handleOnKeyDown(e, ib3, ib2)} ref={ib3} type="number" maxLength={1}></input></div>
-            <div><input onInput={()=>handleOnInput(ib4,ib5)} onKeyDown={(e)=>handleOnKeyDown(e, ib4, ib3)} ref={ib4} type="number" maxLength={1}></input></div>
-            <div><input onInput={()=>handleOnInput(ib5,ib6)} onKeyDown={(e)=>handleOnKeyDown(e, ib5, ib4)} ref={ib5} type="number" maxLength={1}></input></div>
-            <div><input onInput={()=>handleOnInput(ib6,ib6)} onKeyDown={(e)=>handleOnKeyDown(e, ib6, ib5)} ref={ib6} type="number" maxLength={1}></input></div>
+            <div><input onInput={()=>handleOnInput(ib1,ib2)} onKeyDown={(e)=>handleOnKeyDown(e, ib1, ib1)} ref={ib1} type="number" maxLength={1} /></div>
+            <div><input onInput={()=>handleOnInput(ib2,ib3)} onKeyDown={(e)=>handleOnKeyDown(e, ib2, ib1)} ref={ib2} type="number" maxLength={1} /></div>
+            <div><input onInput={()=>handleOnInput(ib3,ib4)} onKeyDown={(e)=>handleOnKeyDown(e, ib3, ib2)} ref={ib3} type="number" maxLength={1} /></div>
+            <div><input onInput={()=>handleOnInput(ib4,ib5)} onKeyDown={(e)=>handleOnKeyDown(e, ib4, ib3)} ref={ib4} type="number" maxLength={1} /></div>
+            <div><input onInput={()=>handleOnInput(ib5,ib6)} onKeyDown={(e)=>handleOnKeyDown(e, ib5, ib4)} ref={ib5} type="number" maxLength={1} /></div>
+            <div><input onInput={()=>handleOnInput(ib6,ib6)} onKeyDown={(e)=>handleOnKeyDown(e, ib6, ib5)} ref={ib6} type="number" maxLength={1} /></div>
         </div>
+        
         <div className={`${styles['action-buttons']}`}>
-            <button ref={buttonContinue} className={`${styles['button-custom-orange']}`}>Continue</button>
-            <button className={`${styles['button-custom-basic']}`}>Cancel</button>
+            <button 
+              ref={buttonContinue} 
+              className={`${styles['button-custom-orange']} ${isLoading ? styles['loading'] : ''}`}
+              disabled={isLoading}
+            >
+              {isLoading ? 'Verifying...' : 'Continue'}
+            </button>
+            <button 
+              onClick={() => {
+                [ib1, ib2, ib3, ib4, ib5, ib6].forEach(ref => {
+                  if (ref.current) {
+                    ref.current.value = '';
+                  }
+                });
+                setModalState(modalStates.SIGNUP_STEP2);
+              }} 
+              className={`${styles['button-custom-basic']}`}
+            >
+              Cancel
+            </button>
         </div>
+
         <div className={`${styles['resend-container']}`}>
-            <label className={`${styles['resend-label1']}`}>Didn’t receive the email?</label>
-            <label className={`${styles['resend-label2']}`}>Click to resend in </label>
-            <label className={`${styles['resend-label3']}`}>60s</label>
+          <label className={`${styles['resend-label1']}`}>Didn't receive the email?</label>
+          {countdown > 0 ? (
+            <>
+              <label className={`${styles['resend-label2']}`}>Click to resend in </label>
+              <label className={`${styles['resend-label3']}`}>{formatTime(countdown)}</label>
+            </>
+          ) : (
+            <label
+              onClick={handleResendClick}
+              className={`${styles['resend-button']}`}
+            >
+              Click to resend
+            </label>
+          )}
         </div>
-        <div ref={buttonPrevious} id="btn_signup_step3_previous" className={`${styles['previous-button-container']}`}>
-            <div className={`${styles['previous-button']}`}></div>
-            <div className={`${styles['caret-left']}`}></div>
-            <div className={`${styles['previous-button-label']}`}>Previous</div>
+        
+        <div 
+          ref={buttonPrevious} 
+          id="btn_signup_step3_previous" 
+          className={`${styles['previous-button-container']}`}
+          onClick={() => {
+            [ib1, ib2, ib3, ib4, ib5, ib6].forEach(ref => {
+              if (ref.current) {
+                ref.current.value = '';
+              }
+            });
+            setModalState(modalStates.SIGNUP_STEP2);
+          }}
+        >
+          <div className={`${styles['previous-button']}`}></div>
+          <div className={`${styles['caret-left']}`}></div>
+          <div className={`${styles['previous-button-label']}`}>Previous</div>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 
@@ -764,20 +956,143 @@ const MobileCountrySignUp = () => {
   )
 }
 
+const employerInfoSchema = Yup.object().shape({
+  firstName: Yup.string()
+    .trim()
+    .required('This field is required'),
 
+  lastName: Yup.string()
+    .trim()
+    .required('This field is required'),
+
+  position: Yup.string()
+    .trim()
+    .required('This field is required'),
+
+  businessName: Yup.string()
+    .trim()
+    .required('This field is required'),
+
+  address: Yup.string()
+    .trim()
+    .required('This field is required'),
+
+  website: Yup.string()
+    .trim()
+    .required('This field is required')
+});
+
+// Define the type for form data
+type FormData = {
+  firstName: string;
+  lastName: string;
+  position: string;
+  businessName: string;
+  address: string;
+  website: string;
+};
 
 const EmployerAdditionalInformation = () => {
-  const buttonNext = useRef<HTMLButtonElement>(null);
-  const handleContinue = () => {
-    if (buttonNext.current) {
-      buttonNext.current.onclick = () => {
-        setSelectedModalHeader(2)
-        setModalState(modalStates.SIGNUP_STEP5)
-      };
-    }
-  }
+  // Form state
+  const [formData, setFormData] = useState<FormData>({
+    firstName: '',
+    lastName: '',
+    position: '',
+    businessName: '',
+    address: '',
+    website: ''
+  });
 
-  useEffect(handleContinue, []);
+  // Error state
+  const [errors, setErrors] = useState<Record<keyof FormData, string>>({
+    firstName: '',
+    lastName: '',
+    position: '',
+    businessName: '',
+    address: '',
+    website: ''
+  });
+
+  // Handle input changes
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    
+    // Validate individual field
+    try {
+      // Create a schema with just the current field
+      const fieldSchema = Yup.object().shape({
+        [name]: employerInfoSchema.fields[name as keyof FormData]
+      });
+
+      // Validate the specific field
+      fieldSchema.validateSync({ [name]: value }, { abortEarly: true });
+      
+      // Clear error if validation passes
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    } catch (err) {
+      // Set error if validation fails
+      if (err instanceof Yup.ValidationError) {
+        setErrors(prev => ({
+          ...prev,
+          [name]: err.message
+        }));
+      }
+    }
+  };
+
+  // Validate form
+  const validateForm = () => {
+    try {
+      // Validate entire form
+      employerInfoSchema.validateSync(formData, { abortEarly: false });
+      
+      // Clear all errors if validation passes
+      setErrors({
+        firstName: '',
+        lastName: '',
+        position: '',
+        businessName: '',
+        address: '',
+        website: ''
+      });
+      return true;
+    } catch (err) {
+      if (err instanceof Yup.ValidationError) {
+        // Create error object from validation errors
+        const errorObj = err.inner.reduce((acc, curr) => {
+          if (curr.path) {
+            acc[curr.path as keyof FormData] = curr.message;
+          }
+          return acc;
+        }, {} as Record<keyof FormData, string>);
+        
+        // Set errors
+        setErrors(errorObj);
+        return false;
+      }
+      return false;
+    }
+  };
+
+  const handleNext = () => {
+    if (validateForm()) {
+      // Assuming these functions are defined elsewhere
+      setSelectedModalHeader(2);
+      setModalState(modalStates.SIGNUP_STEP5);
+    }
+  };
+
+  const handlePrevious = () => {
+    setModalState(modalStates.SIGNUP_STEP3);
+  };
+
   return(
     <div id="step4_signup" className={`${styles['modal-content']}`} hidden={modalState !== modalStates.SIGNUP_STEP4_EMPLOYER}>
         <div className={`${styles['employer-additional-information-container']}`}>
@@ -788,45 +1103,123 @@ const EmployerAdditionalInformation = () => {
               <div className={`${styles['name-field-wrapper']}`}>
                 <div className={`${styles['input-fields-container']}`}>
                     <div className={`${styles['input-container']}`}>
-                        <input type="text" placeholder="First Name *"></input>
+                        <input 
+                          type="text" 
+                          name="firstName"
+                          placeholder="First Name *"
+                          value={formData.firstName}
+                          onChange={handleChange}
+                        />
+                        {errors.firstName && (
+                          <div className={`${styles['error-label']}`}>
+                            {errors.firstName}
+                          </div>
+                        )}
                     </div>
                 </div>
                 <div className={`${styles['input-fields-container']}`}>
                     <div className={`${styles['input-container']}`}>
-                        <input type="text" placeholder="Last Name *"></input>
+                        <input 
+                          type="text" 
+                          name="lastName"
+                          placeholder="Last Name *"
+                          value={formData.lastName}
+                          onChange={handleChange}
+                        />
+                        {errors.lastName && (
+                          <div className={`${styles['error-label']}`}>
+                            {errors.lastName}
+                          </div>
+                        )}
                     </div>
                 </div>
               </div>
               <div className={`${styles['input-fields-container']}`}>
                   <div className={`${styles['input-container']}`}>
-                      <input type="text" placeholder="Position of the Representative *"></input>
+                      <input 
+                        type="text" 
+                        name="position"
+                        placeholder="Position of the Representative *"
+                        value={formData.position}
+                        onChange={handleChange}
+                      />
+                      {errors.position && (
+                        <div className={`${styles['error-label']}`}>
+                          {errors.position}
+                        </div>
+                      )}
                   </div>
               </div>
               <div className={`${styles['input-fields-container']}`}>
                   <div className={`${styles['input-container']}`}>
-                      <input type="text" placeholder="Legal Business Name *"></input>
+                      <input 
+                        type="text" 
+                        name="businessName"
+                        placeholder="Legal Business Name *"
+                        value={formData.businessName}
+                        onChange={handleChange}
+                      />
+                      {errors.businessName && (
+                        <div className={`${styles['error-label']}`}>
+                          {errors.businessName}
+                        </div>
+                      )}
                   </div>
               </div>
               <div className={`${styles['input-fields-container']}`}>
                   <div className={`${styles['input-container']}`}>
-                      <input type="text" placeholder="Company Address *"></input>
+                      <input 
+                        type="text" 
+                        name="address"
+                        placeholder="Company Address *"
+                        value={formData.address}
+                        onChange={handleChange}
+                      />
+                      {errors.address && (
+                        <div className={`${styles['error-label']}`}>
+                          {errors.address}
+                        </div>
+                      )}
                   </div>
               </div>
               <div className={`${styles['input-fields-container']}`}>
                   <div className={`${styles['input-container']}`}>
-                      <input type="text" placeholder="Company Website *"></input>
+                      <input 
+                        type="text" 
+                        name="website"
+                        placeholder="Company Website *"
+                        value={formData.website}
+                        onChange={handleChange}
+                      />
+                      {errors.website && (
+                        <div className={`${styles['error-label']}`}>
+                          {errors.website}
+                        </div>
+                      )}
                   </div>
               </div>
             </div>
             
             <div className={`${styles['action-buttons']}`}>
-                <button id="btn_signup_step4_previous" className={`${styles['button-custom-basic']}`}>Previous</button>
-                <button ref={buttonNext} className={`${styles['button-custom-orange']}`}>Next</button>
+                <button 
+                  type="button"
+                  onClick={handlePrevious}
+                  className={`${styles['button-custom-basic']}`}
+                >
+                  Previous
+                </button>
+                <button 
+                  type="button"
+                  onClick={handleNext}
+                  className={`${styles['button-custom-orange']}`}
+                >
+                  Next
+                </button>
             </div>
         </div>
     </div>
-  )
-}
+  );
+};
 
 const SubscriptionPlanSelection = () =>{
   const subscription_plan1 = useRef<HTMLDivElement>(null);
@@ -1534,20 +1927,50 @@ const HeroPerfectMatchAlgo = () => {
 const HeroJobTitleEmployer = () => {
   const heroNextButton = useRef<HTMLDivElement>(null);
   const heroPreviousButton = useRef<HTMLDivElement>(null);
+  const [jobTitle, setJobTitle] = useState('');
+  const [error, setError] = useState('');
+
+  const validationSchema = Yup.object().shape({
+    jobTitle: Yup.string().required('This field is required')
+  });
+
+  const validateJobTitle = async () => {
+    try {
+      await validationSchema.validate({ jobTitle }, { abortEarly: false });
+      return true;
+    } catch (err) {
+      if (err instanceof Yup.ValidationError) {
+        setError(err.errors[0]);
+      }
+      return false;
+    }
+  };
+
   const heroScreenActions = () => {
     if (heroNextButton.current) {
-      heroNextButton.current.onclick = () => {
-        setHeroState(heroStates.SKILLSETS_EMPLOYER);
+      heroNextButton.current.onclick = async () => {
+        const isValid = await validateJobTitle();
+        if (isValid) {
+          setError('');
+          setHeroState(heroStates.SKILLSETS_EMPLOYER);
+        }
       };
     }
     if (heroPreviousButton.current) {
       heroPreviousButton.current.onclick = () => {
+        setError('');
         setHeroState(heroStates.PERFECT_MATCH_ALGO);
       };
     }
   };
 
-  useEffect(heroScreenActions,[])
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setJobTitle(e.target.value);
+    if (error) setError('');
+  };
+
+  useEffect(heroScreenActions, [jobTitle]);
+
   return(
     <div id="step1_employer" className={`${styles['hero-content']}`} hidden={heroState !== heroStates.JOB_TITLE_EMPLOYER}>
       <Video
@@ -1565,8 +1988,19 @@ const HeroJobTitleEmployer = () => {
                   </div>
               </div>
               <div className={`${styles['search-wrapper']}`}>
-                  <input className={`${styles['search-input']}`} placeholder="Please type a Job Title" type="text" />
+                  <input 
+                    className={`${styles['search-input']}`}
+                    placeholder="Please type a Job Title" 
+                    type="text"
+                    value={jobTitle}
+                    onChange={handleInputChange}
+                  />
               </div>
+              {error && (
+                <div className={`${styles['validation-message']} ${styles['variant-1']}`}>
+                  {error}
+                </div>
+              )}
               <div className={`${styles['hero-button-container2']}`}>
                   <div ref={heroNextButton} className={`${styles['button-custom-orange']} ${styles['noselect']}`}>Next</div>
                   <div ref={heroPreviousButton} className={`${styles['button-custom-transparent']} ${styles['noselect']}`}>
@@ -1584,21 +2018,51 @@ const HeroSkillSetsEmployer = () => {
   const heroEmployerButton = useRef<HTMLDivElement>(null);
   const heroPreviousButton = useRef<HTMLDivElement>(null);
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+  const [error, setError] = useState('');
+
+  const validationSchema = Yup.object().shape({
+    skills: Yup.array()
+      .min(3, 'Please select at least 3 skills')
+      .max(5, 'Maximum of 5 skills allowed')
+      .required('Skills are required')
+  });
+
+  const validateSkills = async () => {
+    try {
+      await validationSchema.validate({ skills: selectedSkills }, { abortEarly: false });
+      return true;
+    } catch (err) {
+      if (err instanceof Yup.ValidationError) {
+        setError(err.errors[0]);
+      }
+      return false;
+    }
+  };
 
   const heroScreenActions = () => {
     if (heroEmployerButton.current) {
-      heroEmployerButton.current.onclick = () => {
-        setHeroState(heroStates.YEARS_OF_EXPERIENCE_EMPLOYER);
+      heroEmployerButton.current.onclick = async () => {
+        const isValid = await validateSkills();
+        if (isValid) {
+          setError('');
+          setHeroState(heroStates.YEARS_OF_EXPERIENCE_EMPLOYER);
+        }
       };
     }
     if (heroPreviousButton.current) {
       heroPreviousButton.current.onclick = () => {
+        setError('');
         setHeroState(heroStates.JOB_TITLE_EMPLOYER);
       };
     }
   };
+
+  const handleSkillsChange = (skills: string[]) => {
+    setSelectedSkills(skills);
+    if (error) setError('');
+  };
   
-  useEffect(heroScreenActions, []);
+  useEffect(heroScreenActions, [selectedSkills]);
   return(
     <div id="step2_employer" className={`${styles['hero-content']}`} hidden={heroState !== heroStates.SKILLSETS_EMPLOYER}>
       <img src={group_people_laptop} />
@@ -1615,9 +2079,9 @@ const HeroSkillSetsEmployer = () => {
               <div className={`${styles['search-wrapper']}`}>
                 <CoreSkillsTagInput
                   value={selectedSkills}
-                  onChange={setSelectedSkills}
+                  onChange={handleSkillsChange}
                   placeholder="Type and select your skill set"
-                  className="bg-transparent border-none text-white min-h-9"
+                  className={`bg-transparent border-none text-white min-h-9 ${error ? styles['input-error'] : ''}`}
                   alternateColors={{
                     firstColor: "#168AAD",
                     secondColor: "#184E77",
@@ -1625,6 +2089,11 @@ const HeroSkillSetsEmployer = () => {
                 />
                 <img src={icon_search}></img>
               </div>
+              {error && (
+                <div className={`${styles['validation-message']} ${styles['variant-2']}`}>
+                  {error}
+                </div>
+              )}
               <div className={`${styles['hero-button-container2']}`}>
                   <div ref={heroEmployerButton} className={`${styles['button-custom-orange']} ${styles['noselect']}`}>Next</div>
                   <div ref={heroPreviousButton} className={`${styles['button-custom-transparent']} ${styles['noselect']}`}>
@@ -1641,20 +2110,59 @@ const HeroSkillSetsEmployer = () => {
 const HeroYearsOfExperienceEmployer = () => {
   const heroNextButton = useRef<HTMLDivElement>(null);
   const heroPreviousButton = useRef<HTMLDivElement>(null);
+  const [selectedExperience, setSelectedExperience] = useState('');
+  const [error, setError] = useState('');
+
+  const validationSchema = Yup.object().shape({
+    experience: Yup.string().required('This field is required')
+  });
+
+  const validateExperience = async () => {
+    try {
+      await validationSchema.validate({ experience: selectedExperience }, { abortEarly: false });
+      return true;
+    } catch (err) {
+      if (err instanceof Yup.ValidationError) {
+        setError(err.errors[0]);
+      }
+      return false;
+    }
+  };
+
+  const handleExperienceSelect = (experience: string) => {
+    setSelectedExperience(experience);
+    if (error) setError('');
+  };
+
+  const experienceOptions = [
+    'no experience',
+    'under a year',
+    '1-3 years',
+    '3-5 years',
+    '5-10 years',
+    '10+ years'
+  ];
+
   const heroScreenActions = () => {
     if (heroNextButton.current) {
-        heroNextButton.current.onclick = () => {
-        setHeroState(heroStates.LOADING);
+      heroNextButton.current.onclick = async () => {
+        const isValid = await validateExperience();
+        if (isValid) {
+          setError('');
+          setHeroState(heroStates.LOADING);
+        }
       };
     }
     if (heroPreviousButton.current) {
-        heroPreviousButton.current.onclick = () => {
+      heroPreviousButton.current.onclick = () => {
+        setError('');
         setHeroState(heroStates.SKILLSETS_EMPLOYER);
       };
     }
   };
   
-  useEffect(heroScreenActions,[])
+  useEffect(heroScreenActions, [selectedExperience]);
+
   return(
     <div id="step3_employer" className={`${styles['hero-content']}`} hidden={heroState !== heroStates.YEARS_OF_EXPERIENCE_EMPLOYER}>
         <img src={man_woman_looking_at_list} />
@@ -1669,13 +2177,23 @@ const HeroYearsOfExperienceEmployer = () => {
                     </div>
                 </div>
                 <div className={`${styles['button-selection-wrapper']}`}>
-                    <button className={`${styles['button-custom-orange-flex']}`}>no experience</button>
-                    <button className={`${styles['button-custom-orange-flex']}`}>under a year</button>
-                    <button className={`${styles['button-custom-orange-flex']}`}>1-3 years</button>
-                    <button className={`${styles['button-custom-orange-flex']}`}>3-5 years</button>
-                    <button className={`${styles['button-custom-orange-flex']}`}>5-10 years</button>
-                    <button className={`${styles['button-custom-orange-flex']}`}>10+ years</button>
-                </div>
+                    {experienceOptions.map((experience) => (
+                      <button
+                        key={experience}
+                        className={`${styles['button-custom-orange-flex']} ${
+                          selectedExperience === experience ? styles['selected'] : ''
+                        }`}
+                        onClick={() => handleExperienceSelect(experience)}
+                      >
+                        {experience}
+                      </button>
+                    ))}
+                  </div>
+                    {error && (
+                  <div className={`${styles['validation-message']} ${styles['variant-3']}`}>
+                    {error}
+                  </div>
+                )}
                 <div className={`${styles['hero-button-container2']}`}>
                     <div ref={heroNextButton} className={`${styles['button-custom-orange']} ${styles['noselect']}`}>Next</div>
                     <div ref={heroPreviousButton} className={`${styles['button-custom-transparent']} ${styles['noselect']}`}>
@@ -1686,35 +2204,67 @@ const HeroYearsOfExperienceEmployer = () => {
             </div>
         </div>
     </div>
-  )
-}
+  );
+};
 
 const HeroSkillSetsJobHunter = () => {
   const heroNextButton = useRef<HTMLDivElement>(null);
   const heroPreviousButton = useRef<HTMLDivElement>(null);
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+  const [error, setError] = useState('');
+
+  const validationSchema = Yup.object().shape({
+    skills: Yup.array()
+      .min(3, 'Please select at least 3 skills')
+      .max(5, 'Maximum of 5 skills allowed')
+      .required('Skills are required')
+  });
+
+  const validateSkills = async () => {
+    try {
+      await validationSchema.validate({ skills: selectedSkills }, { abortEarly: false });
+      return true;
+    } catch (err) {
+      if (err instanceof Yup.ValidationError) {
+        setError(err.errors[0]);
+      }
+      return false;
+    }
+  };
+
+  const handleSkillsChange = (skills: string[]) => {
+    if (skills.length <= 5) {
+      setSelectedSkills(skills);
+      if (error) setError('');
+    }
+  };
 
   const heroScreenActions = () => {
     if (heroNextButton.current) {
-      heroNextButton.current.onclick = () => {
-        setHeroState(heroStates.YEARS_OF_EXPERIENCE_JOBHUNTER);
+      heroNextButton.current.onclick = async () => {
+        const isValid = await validateSkills();
+        if (isValid) {
+          setError('');
+          setHeroState(heroStates.YEARS_OF_EXPERIENCE_JOBHUNTER);
+        }
       };
     }
     if (heroPreviousButton.current) {
-        heroPreviousButton.current.onclick = () => {
+      heroPreviousButton.current.onclick = () => {
+        setError('');
         setHeroState(heroStates.PERFECT_MATCH_ALGO);
       };
     }
   };
   
-  useEffect(heroScreenActions,[])
-  /*${styles['hide-hero-layer']}*/
+  useEffect(heroScreenActions, [selectedSkills]);
+
   return(
     <div id="step1_job_hunter" className={`${styles['hero-content']}`} hidden={heroState !== heroStates.SKILLSETS_JOBHUNTER}>
         <Video
-        src={video3}
-        className={styles['hero-video']}
-      />
+          src={video3}
+          className={styles['hero-video']}
+        />
         <div className={`${styles['hero-container-overlay']} ${styles['gradient-left-dark']}`}>
             <div className={`${styles['hero-container-content-wrapper']}`}>
                 <div className={`${styles['title']} ${styles['orange']} ${styles['text-left']}`}>
@@ -1725,9 +2275,9 @@ const HeroSkillSetsJobHunter = () => {
                 <div className={`${styles['search-wrapper']}`}>
                     <CoreSkillsTagInput
                       value={selectedSkills}
-                      onChange={setSelectedSkills}
+                      onChange={handleSkillsChange}
                       placeholder="Type and select your skill set"
-                      className="bg-transparent border-none text-white min-h-[36px]"
+                      className={`bg-transparent border-none text-white min-h-[36px] ${error ? styles['input-error'] : ''}`}
                       alternateColors={{
                         firstColor: "#168AAD",
                         secondColor: "#184E77",
@@ -1735,6 +2285,11 @@ const HeroSkillSetsJobHunter = () => {
                     />
                     <img src={icon_search}></img>
                 </div>
+                {error && (
+                  <div className={`${styles['validation-message']} ${styles['variant-2']}`}>
+                    {error}
+                  </div>
+                )}
                 <div className={`${styles['hero-button-container2']}`}>
                     <div ref={heroNextButton} className={`${styles['button-custom-orange']} ${styles['noselect']}`}>Next</div>
                     <div ref={heroPreviousButton} className={`${styles['button-custom-transparent']} ${styles['noselect']}`}>
@@ -1746,25 +2301,64 @@ const HeroSkillSetsJobHunter = () => {
         </div>
     </div>
   )
-}
+};
 
 const HeroYearsOfExperienceJobHunter = () => {
   const heroNextButton = useRef<HTMLDivElement>(null);
   const heroPreviousButton = useRef<HTMLDivElement>(null);
+  const [selectedExperience, setSelectedExperience] = useState('');
+  const [error, setError] = useState('');
+
+  const validationSchema = Yup.object().shape({
+    experience: Yup.string().required('This field is required')
+  });
+
+  const validateExperience = async () => {
+    try {
+      await validationSchema.validate({ experience: selectedExperience }, { abortEarly: false });
+      return true;
+    } catch (err) {
+      if (err instanceof Yup.ValidationError) {
+        setError(err.errors[0]);
+      }
+      return false;
+    }
+  };
+
+  const handleExperienceSelect = (experience: string) => {
+    setSelectedExperience(experience);
+    if (error) setError('');
+  };
+
+  const experienceOptions = [
+    'no experience',
+    'under a year',
+    '1-3 years',
+    '3-5 years',
+    '5-10 years',
+    '10+ years'
+  ];
+
   const heroScreenActions = () => {
     if (heroNextButton.current) {
-      heroNextButton.current.onclick = () => {
-        setHeroState(heroStates.LOADING);
+      heroNextButton.current.onclick = async () => {
+        const isValid = await validateExperience();
+        if (isValid) {
+          setError('');
+          setHeroState(heroStates.LOADING);
+        }
       };
     }
     if (heroPreviousButton.current) {
-        heroPreviousButton.current.onclick = () => {
+      heroPreviousButton.current.onclick = () => {
+        setError('');
         setHeroState(heroStates.SKILLSETS_JOBHUNTER);
       };
     }
   };
 
-  useEffect(heroScreenActions,[])
+  useEffect(heroScreenActions, [selectedExperience]);
+
   return(
     <div id="step2_job_hunter" className={`${styles['hero-content']}`} hidden={heroState !== heroStates.YEARS_OF_EXPERIENCE_JOBHUNTER}>
       <img src={girl_with_dog_smiling_at_laptop} />
@@ -1775,17 +2369,28 @@ const HeroYearsOfExperienceJobHunter = () => {
                       How many years of experience
                   </div>
                   <div>
-                      required for your first job listing?
+                      do you have?
                   </div>
               </div>
               <div className={`${styles['button-selection-wrapper']}`}>
-                  <button className={`${styles['button-custom-orange-flex']}`}>no experience</button>
-                  <button className={`${styles['button-custom-orange-flex']}`}>under a year</button>
-                  <button className={`${styles['button-custom-orange-flex']}`}>1-3 years</button>
-                  <button className={`${styles['button-custom-orange-flex']}`}>3-5 years</button>
-                  <button className={`${styles['button-custom-orange-flex']}`}>5-10 years</button>
-                  <button className={`${styles['button-custom-orange-flex']}`}>10+ years</button>
+                  {experienceOptions.map((experience) => (
+                    <button
+                      key={experience}
+                      className={`${styles['button-custom-orange-flex']} ${
+                        selectedExperience === experience ? styles['selected'] : ''
+                      }`}
+                      onClick={() => handleExperienceSelect(experience)}
+                      type="button"
+                    >
+                      {experience}
+                    </button>
+                  ))}
               </div>
+              {error && (
+                <div className={`${styles['validation-message']} ${styles['variant-3']}`}>
+                  {error}
+                </div>
+              )}
               <div className={`${styles['hero-button-container2']}`}>
                   <div ref={heroNextButton} className={`${styles['button-custom-orange']} ${styles['noselect']}`}>Next</div>
                   <div ref={heroPreviousButton} className={`${styles['button-custom-transparent']} ${styles['noselect']}`}>
@@ -1796,8 +2401,8 @@ const HeroYearsOfExperienceJobHunter = () => {
           </div>
       </div>
   </div>
-  )
-}
+  );
+};
 
 const HeroPerfectMatchResults = () => {
   const heroBackButton = useRef<HTMLDivElement>(null);
