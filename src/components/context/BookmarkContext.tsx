@@ -19,7 +19,7 @@ const useBookmarks = () => {
 
 interface BookmarkProviderProps {
   children: React.ReactNode;
-  subscriptionPlan: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
+  subscriptionPlan?: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
   maxBookmarks?: number;
   onLimitReached?: () => void;
 }
