@@ -208,7 +208,7 @@ const Landing: FC = (): ReactElement => {
       'SIGNUP_STEP5' : 7,
       'LOADING' : 8,
       'SIGNUP_CONGRATULATIONS' : 9,
-      'STRIPE_PAYMENT' : 10,
+      'AUTHNET_PAYMENT' : 10,
       'PERFECT_MATCH_RESULTS': 11 
   }
   const MODAL_HEADER_TYPE = {
@@ -478,6 +478,7 @@ const Landing: FC = (): ReactElement => {
     const [generateOTP] = useOtpGenerateMutation();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const schema = Yup.object().shape({
       email: Yup
@@ -509,7 +510,7 @@ const Landing: FC = (): ReactElement => {
       try {
         // Validate the form data
         await schema.validate(credentials, { abortEarly: false });
-        
+        setIsSubmitting(true)
         try {
           const res = await signUpSubmit({
             ...credentials,
@@ -527,12 +528,15 @@ const Landing: FC = (): ReactElement => {
             //userId: res.data.id
           });
           
-          await generateOTP({ email: credentials.email });
+          await generateOTP({ email: credentials.email }).unwrap().then(()=>{
+            setIsSubmitting(false)
+          });
           setTimeout(() => {
             setModalState(modalStates.SIGNUP_STEP3);
           }, 1000);
           
         } catch (err: any) {
+          setIsSubmitting(false)
           if (err.status === 409 || err?.data?.message?.toLowerCase().includes('email already exists')) {
             setOrganizedErrors(prev => ({
               ...prev,
@@ -547,6 +551,7 @@ const Landing: FC = (): ReactElement => {
         }
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
+          setIsSubmitting(false)
           const _organizedErrors: ErrorState = { 
             email: '', 
             password: '', 
@@ -651,10 +656,17 @@ const Landing: FC = (): ReactElement => {
                 >
                     Previous
                 </button>
-                <button 
-                    type="submit" 
-                    className={`${styles['button-custom-orange']}`}
-                >
+                <button
+                    type="submit"
+                    className={styles['button-custom-orange']}
+                    disabled={isSubmitting}
+                  >
+                    <img
+                      src={button_loading_spinner}
+                      alt="Loading"
+                      className={styles['button-spinner']}
+                      hidden={!isSubmitting}
+                    />
                     Next
                 </button>
             </div>  
@@ -1269,7 +1281,7 @@ const SubscriptionPlanSelection = () =>{
               
           localStorage.setItem('pendingSubscriptionTier', selectedTier);
           localStorage.setItem('userType', userType);
-          setModalState(modalStates.STRIPE_PAYMENT)
+          setModalState(modalStates.AUTHNET_PAYMENT)
         }
       };
     }
@@ -1475,20 +1487,36 @@ const CreditCardForm: React.FC = () => {
   useEffect(() => {
     if (previousButton.current) {
       previousButton.current.onclick = () => {
-        // Handle your button logic here
+       setModalState(modalStates.AUTHNET_PAYMENT)
       };
     }
+  
+    const isDevOrStaging =
+    process.env.NODE_ENV === 'development' || window.location.origin === 'https://app-sit.akaza.xyz';
+    console.log(process.env.NODE_ENV)
+    const scriptSources = {
+      acceptJs: isDevOrStaging
+        ? 'https://jstest.authorize.net/v1/Accept.js'
+        : 'https://js.authorize.net/v1/Accept.js',
+      acceptCore: isDevOrStaging
+        ? 'https://jstest.authorize.net/v1/AcceptCore.js'
+        : 'https://js.authorize.net/v1/AcceptCore.js',
+    };  
 
-    // Dynamically load Accept.js
-    const script = document.createElement('script');
-    script.src = process.env.NODE_ENV == 'development' ? 'https://jstest.authorize.net/v1/Accept.js' : 'https://js.authorize.net/v1/Accept.js';
-    script.async = true;
-    document.body.appendChild(script);
-
-    return () => {
-      // Cleanup script on component unmount
-      document.body.removeChild(script);
-    };
+    // Check if the script already exists
+    if (!document.querySelector(`script[src="${scriptSources.acceptCore}"]`)) {
+      const script = document.createElement('script');
+      script.src = scriptSources.acceptJs;
+      script.async = true;
+      document.body.appendChild(script);
+  
+      return () => {
+        // Cleanup script on component unmount if it was added
+        if (script.parentNode) {
+          script.parentNode.removeChild(script);
+        }
+      };
+    }
   }, []);
 
   const validationSchema = Yup.object({
@@ -1677,7 +1705,7 @@ const CreditCardForm: React.FC = () => {
                   hidden={!isSubmitting}
                 />
                 Next
-              </button>
+            </button>
           </div>
         </Form>
       )}
@@ -1689,7 +1717,7 @@ const CreditCardForm: React.FC = () => {
 const StripePaymentModal = () => {
 
   return(
-    <div className={`${styles['modal-content']}`} hidden={modalState !== modalStates.STRIPE_PAYMENT}>
+    <div className={`${styles['modal-content']}`} hidden={modalState !== modalStates.AUTHNET_PAYMENT}>
         <div className={`${styles['stripe-payment-container']}`}>
           <div className={`${styles['stripe-payment-form']}`}>
             <div className={`${styles['credit-card-container']}`}>
