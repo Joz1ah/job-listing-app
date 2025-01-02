@@ -155,17 +155,17 @@ export const akazaApiAuth = createApiFunction({
           // Set the token as a cookie if the response is successful
           if (data?.data?.token) {
             console.log('setting cookies')
-            Cookies.set('token', data.data.token, {
+            Cookies.set('authToken', data.data.token, {
               path: '/', // Cookie is available site-wide
               secure: true, // Ensures cookie is sent over HTTPS
-              sameSite: 'None', // Prevents CSRF attacks
+              sameSite: process.env.NODE_ENV == 'development' ? 'Lax' : 'None', // Prevents CSRF attacks
               domain: 'akaza.xyz'
               //expires: 7, // Expires in 7 days
             });
-            Cookies.set('token', data.data.token, {
+            Cookies.set('authToken', data.data.token, {
               path: '/', // Cookie is available site-wide
               secure: true, // Ensures cookie is sent over HTTPS
-              sameSite: 'None', // Prevents CSRF attacks
+              sameSite: process.env.NODE_ENV == 'development' ? 'Lax' : 'None', // Prevents CSRF attacks
               domain: 'localhost'
               //expires: 7, // Expires in 7 days
             });
@@ -323,12 +323,12 @@ export const akazaApiSearch = createApiFunction({
 export const akazaApiPayment = createApiFunction({
   reducerPath: 'apiPayment',
   baseQuery: fetchBaseQuery({ 
-    baseUrl: 'https://payment-sit.akaza.xyz/' ,
+    baseUrl: 'https://akaza-sit-api-gateway---rev-2-2tninhtd.uk.gateway.dev/' ,
     //baseUrl: process.env.REACT_APP_PAYMENT_API_URL ,
     credentials: "include", 
     prepareHeaders: (headers) => {
       // Retrieve the token from cookies
-      const token = Cookies.get('token');
+      const token = Cookies.get('authToken');
 
       if (token) {
         headers.set('Authorization', `Bearer ${token}`); // Add token to the Authorization header
@@ -347,7 +347,14 @@ export const akazaApiPayment = createApiFunction({
           "plan": payLoad.plan,
           "amount": payLoad.amount ? payLoad.amount : 1,
           "paymentMethodId": payLoad.paymentMethodId ? payLoad.paymentMethodId : "pm_1QSiGYFCh69SpK2kcccrnWHL",
-          "daysTrial": 0
+          "daysTrial": 0,
+          "firstName": "Joshua",
+          "lastName": "Harris",
+          "address": "Cavite",
+          "city": "Kawit",
+          "state": "Region IV-A ",
+          "zip": "1234",
+          "country": "Philippines"
         },
       }),
     }),
@@ -453,7 +460,7 @@ export const akazaApiAccount = createApiFunction({
     baseUrl: 'https://akaza-sit-api-gateway---rev-2-2tninhtd.uk.gateway.dev/',
     credentials: "include", 
     prepareHeaders: (headers) => {
-      const token = Cookies.get('token');
+      const token = Cookies.get('authToken');
       if (token) {
         headers.set('Authorization', `Bearer ${token}`);
       }
