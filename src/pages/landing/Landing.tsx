@@ -1493,7 +1493,7 @@ const CreditCardForm: React.FC = () => {
   
     const isDevOrStaging =
     process.env.NODE_ENV === 'development' || window.location.origin === 'https://app-sit.akaza.xyz';
-  
+    console.log(process.env.NODE_ENV)
     const scriptSources = {
       acceptJs: isDevOrStaging
         ? 'https://jstest.authorize.net/v1/Accept.js'
