@@ -25,7 +25,7 @@ const csp = (req: Request, res: Response, next: NextFunction): void => {
       useDefaults: true,
       directives: {
         defaultSrc,        
-        imgSrc: ["'self'", 'raw.githubusercontent.com'],
+        imgSrc: ["'self'", 'raw.githubusercontent.com', 'verify.authorize.net'],
         scriptSrc: [
           "'self'",
           `'nonce-${String(res.locals.cspNonce)}'`,
@@ -34,6 +34,7 @@ const csp = (req: Request, res: Response, next: NextFunction): void => {
           'https://js.authorize.net',
           'http://js.authorize.net',
           'https://jstest.authorize.net',
+          'https://verify.authorize.net',
           IS_DEV ? "'unsafe-eval'" : ''
         ].filter(Boolean),
         frameSrc: ["'self'", "https://js.stripe.com", "http://js.stripe.com"],
