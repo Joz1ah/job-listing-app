@@ -10,7 +10,8 @@ declare module '*.svg'
 declare module '*.svg?url'
 declare module '*.svg?base64'
 interface Window {
-  __PRELOADED_STATE__: any
+  __PRELOADED_STATE__: any;
+  cspNonce: string;
 }
 
 declare const NO_SSR: boolean
