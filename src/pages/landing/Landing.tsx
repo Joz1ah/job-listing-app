@@ -99,6 +99,12 @@ interface FormValues {
 interface LoginFormValues {
   email: string;
   password: string;
+  rememberMe: boolean;
+}
+
+interface AutoLoginFormValues {
+  email: string;
+  password: string;
 }
 
 interface CustomInputProps extends FieldProps {
@@ -508,14 +514,17 @@ const Landing: FC = (): ReactElement => {
           const res = await signUpSubmit({
             ...credentials,
             type: dataStates.selectedUserType
-          }).unwrap();
+          }).unwrap().then(()=>{
+            setTempLoginEmail(credentials.email)
+            setTempLoginPassword(credentials.password)
+          });
           
           console.log('signup success', res);
           
           setDataStates({
             ...dataStates,
             email: credentials.email,
-            userId: res.data.id
+            //userId: res.data.id
           });
           
           await generateOTP({ email: credentials.email });
@@ -669,6 +678,19 @@ const OTPSignUp = () => {
   
   const [isLoading, setIsLoading] = useState(false);
 
+  const handleLogin = async (values: AutoLoginFormValues,) => {
+    try {
+      await loginSubmit(values)
+      .unwrap()
+      .then((res) => {
+        setDataStates({...dataStates, userId: res.data.user.id})
+      })
+    }
+    catch (err: any) {
+      console.log(err);
+    }
+  }
+
   const handleOnInput = (ref:any, nextRef:any) =>{
     let currentInput = ref.current;
     if(currentInput.value.length > currentInput.maxLength)
@@ -706,7 +728,15 @@ const OTPSignUp = () => {
           await submitOTP({
             email: dataStates.email,
             otp: otp
-          }).unwrap();
+          }).unwrap().then(()=>{
+            handleLogin({email: tempLoginEmail, password: tempLoginPassword}).then(
+              ()=>{
+                setTimeout( ()=> {
+                  setModalState(modalStates.SIGNUP_CONGRATULATIONS);
+                }
+                , 1000 )
+              }
+          )})
           
           setTimeout(() => {
             setModalState(modalStates.SIGNUP_CONGRATULATIONS);
