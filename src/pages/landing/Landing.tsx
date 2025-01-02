@@ -7,11 +7,9 @@ import {
   useSignUpMutation,
   useOtpGenerateMutation,
   useOtpVerifyMutation,
-  useGetUserInfoQuery,
   usePaymentCreateMutation,
-  akazaApiAccount } from 'api/akaza/akazaAPI';
+  } from 'api/akaza/akazaAPI';
 
-import { useDispatch } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 import { Formik, Form, FieldProps, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -35,7 +33,8 @@ import jobhunter_icon from 'assets/jobhunter-icon.png';
 import employer_icon from 'assets/employer-icon.png';
 import arrow_left_icon from 'assets/Keyboard-arrow-left.svg?url';
 import girl_with_dog_smiling_at_laptop from 'assets/girl-with-dog-smiling-at-laptop.jpg';
-import powered_by_stripe from 'assets/powered_by_stripe.svg?url';
+//import powered_by_stripe from 'assets/powered_by_stripe.svg?url';
+import authnet_visa_solution from 'assets/authnet-logo-light.svg?url';
 
 import icon_search from 'assets/search.svg?url';
 import _5dollarspermonth from 'assets/5dollarspermonth.svg?url';
@@ -82,6 +81,24 @@ interface VideoProps {
   className?: string;
 }
 
+interface FormValues {
+  cardNumber: string;
+  cardholderName: string;
+  expirationDate: string;
+  cvv: string;
+}
+
+interface LoginFormValues {
+  email: string;
+  password: string;
+}
+
+interface CustomInputProps extends FieldProps {
+  placeholder?: string;
+  type?: string;
+}
+
+
 const Video: FC<VideoProps> = ({ src, className }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -106,36 +123,6 @@ const Video: FC<VideoProps> = ({ src, className }) => {
     </video>
   );
 };
-
-const getUserInfo = () => {
-  const { data: userInfo, error, isLoading } = useGetUserInfoQuery(null)
-  const dispatch = useDispatch();
-
-  if (isLoading) {
-    console.log("Loading user info...");
-    return null; // No display, just process the logic
-  }
-
-  if (error) {
-    console.error("Error fetching user info:", error);
-    return null;
-  }
-
-  if (userInfo) {
-    dispatch(akazaApiAccount.util.resetApiState());
-    //const processedData = processUserInfo(userInfo); 
-    //console.log("Processed Data:", processedData);
-  }
-
-  return null; 
-
-}
-
-
-interface CustomInputProps extends FieldProps {
-  placeholder?: string;
-  type?: string;
-}
 
 const CustomInput: React.FC<CustomInputProps> = ({ field, form, ...props }) => {
   const [inputType, setInputType] = useState('password');
@@ -173,18 +160,19 @@ const CustomInput: React.FC<CustomInputProps> = ({ field, form, ...props }) => {
 };
 
 const Landing: FC = (): ReactElement => {
-  getUserInfo()
   const [maskHidden, setMaskHidden] = useState(1);
   const [closeModalActive, setCloseModalActive] = useState(1);
   const [selectedModalHeader, setSelectedModalHeader] = useState(1);
   const [modalState, setModalState] = useState(10);
   const [heroState, setHeroState] = useState(1);
-  const [currentSelectedPlan, setCurrentSelectedPlan] = useState(3)
+  const [currentSelectedPlan, setCurrentSelectedPlan] = useState(3);
   const [dataStates, setDataStates] = useState({
     selectedUserType: '',
     email: '',
     userId: 0
   });
+  const [tempLoginEmail, setTempLoginEmail] = useState('');
+  const [tempLoginPassword, setTempLoginPassword] = useState('');
 
   const heroStates = {
       'PERFECT_MATCH_ALGO' : 1,
@@ -324,11 +312,6 @@ const Landing: FC = (): ReactElement => {
     )
   }
 
-  interface LoginFormValues {
-    email: string;
-    password: string;
-  }
-  
   const LoginSchema = Yup.object().shape({
     email: Yup.string().email('Invalid email').required('Email is required'),
     password: Yup.string().required('Password is required'),
@@ -503,6 +486,9 @@ const Landing: FC = (): ReactElement => {
         .then((res)=>{
           console.log('signup success')
           console.log(res)
+          setTempLoginEmail(credentials.email)
+          setTempLoginPassword(credentials.password)
+          
           setTimeout( ()=> {
             setDataStates({...dataStates, email:credentials.email})
             generateOTP( { email:credentials.email } )
@@ -612,6 +598,7 @@ const Landing: FC = (): ReactElement => {
 const OTPSignUp = () => {
   const buttonContinue = useRef<HTMLButtonElement>(null);
   const [submitOTP] = useOtpVerifyMutation();
+  const [loginSubmit] = useLoginMutation();
   //const buttonCancel = useRef<HTMLButtonElement>(null);
   const buttonPrevious = useRef<HTMLDivElement>(null);
   const ib1 = useRef<HTMLInputElement>(null);
@@ -620,6 +607,20 @@ const OTPSignUp = () => {
   const ib4 = useRef<HTMLInputElement>(null);
   const ib5 = useRef<HTMLInputElement>(null);
   const ib6 = useRef<HTMLInputElement>(null);
+
+  const handleLogin = async (values: LoginFormValues,) => {
+    try {
+      await loginSubmit(values)
+      .unwrap()
+      .then((res) => {
+        setDataStates({...dataStates, userId: res.data.user.id})
+      })
+    }
+    catch (err: any) {
+      console.log(err);
+    }
+  }
+
   const handleOnInput = (ref:any, nextRef:any) =>{
     let currentInput = ref.current
     if(currentInput.value.length > currentInput.maxLength)
@@ -646,7 +647,6 @@ const OTPSignUp = () => {
 
       console.log('OTP:', otp); // Log the concatenated OTP
 
-      // Example submission logic
       if (otp.length === 6) {
         submitOTP({
           email: dataStates.email,
@@ -654,10 +654,12 @@ const OTPSignUp = () => {
         })
         .unwrap()
         .then((res)=>{
-          setTimeout( ()=> {
-            setModalState(modalStates.SIGNUP_CONGRATULATIONS);
-          }
-          , 1000 )
+          handleLogin({email: tempLoginEmail, password: tempLoginPassword}).then(()=>{
+            setTimeout( ()=> {
+              setModalState(modalStates.SIGNUP_CONGRATULATIONS);
+            }
+            , 1000 )
+          }).catch((err) => alert(err))
           console.log(res)
         })
         .catch((err) => {
@@ -1051,13 +1053,6 @@ const CongratulationsModal = () => {
   )
 }
 
-interface FormValues {
-  cardNumber: string;
-  cardholderName: string;
-  expirationDate: string;
-  cvv: string;
-}
-
 const CreditCardForm: React.FC = () => {
   const [paymentSubmit] = usePaymentCreateMutation();
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -1144,11 +1139,22 @@ const CreditCardForm: React.FC = () => {
         console.log('token generation success')
         console.log(token)
         // Send the token to your server for processing
-
+        console.log({
+          "provider": "authnet",
+          "userId": dataStates.userId,
+          "plan": 
+            currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY ? "Monthly" : 
+            currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL ? "Annual" : '',
+          "amount":  
+            currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY ? 5 : 
+            currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL ? 55 : '',
+          "paymentMethodId": token,
+          "daysTrial": 0
+        })
         try {
           const res = await paymentSubmit({
             "provider": "authnet",
-            "userId": 41,//dataStates.userId,
+            "userId": dataStates.userId,
             "plan": 
               currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY ? "Monthly" : 
               currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL ? "Annual" : '',
@@ -1289,7 +1295,7 @@ const StripePaymentModal = () => {
                 <label>integrates seamlessly with Stripe, a leading payment processor, to provide secure and efficient online payment solutions.</label> 
             </div>
             <div className={`${styles['powered-by-stripe-wrapper']}`}>
-                <img src={powered_by_stripe}/>
+                <img src={authnet_visa_solution}/>
             </div>
           </div>
         </div>
@@ -1408,8 +1414,8 @@ const HeroPerfectMatchAlgo = () => {
                 What best describes you?
             </div>
             <div className={`${styles['hero-button-container']} ${styles['center']}`}>
-                <div ref={heroEmployerButton} className={`${styles['button-custom']} ${styles['noselect']}`}>Employer</div>
                 <div ref={heroJobHunterButton} className={`${styles['button-custom']} ${styles['noselect']}`}>Job Hunter</div>
+                <div ref={heroEmployerButton} className={`${styles['button-custom']} ${styles['noselect']}`}>Employer</div>
             </div>
         </div>
     </div>
@@ -1731,7 +1737,28 @@ const HeroLoading = () => {
     </div>
   )
 }
+useEffect(()=>{
+  const nonce = window.cspNonce;
+  console.log(nonce)
+  const authnetscriptinit = document.createElement('script');
+  authnetscriptinit.type = 'text/javascript'; // Specify the type (optional)
+  authnetscriptinit.nonce = nonce;
+  authnetscriptinit.text = `console.log('Hello from inline script!');`;
+  //var ANS_customer_id = "60fed6e1-2b57-4a81-8c83-ece64f730be5";
+  //const authnetscript = document.createElement('script');
+  //authnetscriptinit.body
+  //authnetscript.src = 
+  //authnetscript.async = true;
+  //document.body.appendChild(script);
+  const authorizeNetSealDiv = document.querySelector('.AuthorizeNetSeal');
 
+  // Append the script to the div if it exists
+  if (authorizeNetSealDiv) {
+    authorizeNetSealDiv.appendChild(authnetscriptinit);
+  } else {
+    console.error('Element with class "AuthorizeNetSeal" not found.');
+  }
+},[])
 const isFreeTrial = false;
 
   return (
@@ -1747,6 +1774,11 @@ const isFreeTrial = false;
                 <HeroSkillSetsJobHunter/>
                 <HeroYearsOfExperienceJobHunter/>
                 <HeroLoading/>
+            </div>
+            <div>
+              It should be displayed here
+              <div className="AuthorizeNetSeal">
+              </div>
             </div>
             <div className={`${styles['pricing-container']}`}>
                 <div className={`${styles['desc1-wrapper']}`}>
