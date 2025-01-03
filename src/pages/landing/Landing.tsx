@@ -44,7 +44,7 @@ import girl_with_dog_smiling_at_laptop from 'assets/girl-with-dog-smiling-at-lap
 //import powered_by_stripe from 'assets/powered_by_stripe.svg?url';
 import authnet_visa_solution from 'assets/authnet-logo-light.svg?url';
 
-import icon_search from 'assets/search.svg?url';
+//import icon_search from 'assets/search.svg?url';
 import _5dollarspermonth from 'assets/5dollarspermonth.svg?url';
 import flame_vector from 'assets/flame-vector.svg?url';
 import orange_check from 'assets/orange-check.svg?url';
@@ -2162,7 +2162,7 @@ const HeroSkillSetsEmployer = () => {
                     secondColor: "#184E77",
                   }}
                 />
-                <img src={icon_search}></img>
+                {/* <img src={icon_search}></img> */}
               </div>
               {error && (
                 <div className={`${styles['validation-message']} ${styles['variant-2']}`}>
@@ -2358,7 +2358,7 @@ const HeroSkillSetsJobHunter = () => {
                         secondColor: "#184E77",
                       }}
                     />
-                    <img src={icon_search}></img>
+                    {/* <img src={icon_search}></img> */}
                 </div>
                 {error && (
                   <div className={`${styles['validation-message']} ${styles['variant-2']}`}>
