@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { fetchUser } from './authHelpers';
+import Cookies from 'js-cookie';
+import { getUserInfo } from './authHelpers';
 import { AuthContextProps, User } from './types';
 
 // Create the AuthContext
@@ -13,7 +14,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = (newToken: string) => {
     setToken(newToken);
-    localStorage.setItem('authToken', newToken);
+    Cookies.set('authToken', newToken, { expires: 7, path: '' });  // Set the token in a cookie (7 days expiration)
     refreshUser();
   };
 
@@ -21,12 +22,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setToken(null);
     setUser(null);
     setIsAuthenticated(false);
-    localStorage.removeItem('authToken');
+    Cookies.remove('authToken');  // Remove the token from cookies
   };
 
   const refreshUser = async () => {
     if (!token) return;
-    const userData = await fetchUser(token);
+    const userData = await getUserInfo();
     if (userData) {
       setUser(userData);
       setIsAuthenticated(true);
@@ -36,7 +37,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   useEffect(() => {
-    const storedToken = localStorage.getItem('authToken');
+    const storedToken = Cookies.get('authToken');  // Get the token from cookies
     if (storedToken) {
       setToken(storedToken);
       refreshUser();

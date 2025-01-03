@@ -7,11 +7,9 @@ import {
   useSignUpMutation,
   useOtpGenerateMutation,
   useOtpVerifyMutation,
-  useGetUserInfoQuery,
   usePaymentCreateMutation,
-  akazaApiAccount } from 'api/akaza/akazaAPI';
+  } from 'api/akaza/akazaAPI';
 
-import { useDispatch } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 import { Formik, Form, FieldProps, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -43,7 +41,8 @@ import jobhunter_icon from 'assets/jobhunter-icon.png';
 import employer_icon from 'assets/employer-icon.png';
 import arrow_left_icon from 'assets/Keyboard-arrow-left.svg?url';
 import girl_with_dog_smiling_at_laptop from 'assets/girl-with-dog-smiling-at-laptop.jpg';
-import powered_by_stripe from 'assets/powered_by_stripe.svg?url';
+//import powered_by_stripe from 'assets/powered_by_stripe.svg?url';
+import authnet_visa_solution from 'assets/authnet-logo-light.svg?url';
 
 import icon_search from 'assets/search.svg?url';
 import _5dollarspermonth from 'assets/5dollarspermonth.svg?url';
@@ -90,6 +89,30 @@ interface VideoProps {
   className?: string;
 }
 
+interface FormValues {
+  cardNumber: string;
+  cardholderName: string;
+  expirationDate: string;
+  cvv: string;
+}
+
+interface LoginFormValues {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+}
+
+interface AutoLoginFormValues {
+  email: string;
+  password: string;
+}
+
+interface CustomInputProps extends FieldProps {
+  placeholder?: string;
+  type?: string;
+}
+
+
 const Video: FC<VideoProps> = ({ src, className }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -114,36 +137,6 @@ const Video: FC<VideoProps> = ({ src, className }) => {
     </video>
   );
 };
-
-const getUserInfo = () => {
-  const { data: userInfo, error, isLoading } = useGetUserInfoQuery(null)
-  const dispatch = useDispatch();
-
-  if (isLoading) {
-    console.log("Loading user info...");
-    return null; // No display, just process the logic
-  }
-
-  if (error) {
-    console.error("Error fetching user info:", error);
-    return null;
-  }
-
-  if (userInfo) {
-    dispatch(akazaApiAccount.util.resetApiState());
-    //const processedData = processUserInfo(userInfo); 
-    //console.log("Processed Data:", processedData);
-  }
-
-  return null; 
-
-}
-
-
-interface CustomInputProps extends FieldProps {
-  placeholder?: string;
-  type?: string;
-}
 
 const CustomInput: React.FC<CustomInputProps> = ({ field, form, ...props }) => {
   const [inputType, setInputType] = useState('password');
@@ -181,18 +174,19 @@ const CustomInput: React.FC<CustomInputProps> = ({ field, form, ...props }) => {
 };
 
 const Landing: FC = (): ReactElement => {
-  getUserInfo()
   const [maskHidden, setMaskHidden] = useState(1);
   const [closeModalActive, setCloseModalActive] = useState(1);
   const [selectedModalHeader, setSelectedModalHeader] = useState(1);
   const [modalState, setModalState] = useState(10);
   const [heroState, setHeroState] = useState(1);
-  const [currentSelectedPlan, setCurrentSelectedPlan] = useState(3)
+  const [currentSelectedPlan, setCurrentSelectedPlan] = useState(3);
   const [dataStates, setDataStates] = useState({
     selectedUserType: '',
     email: '',
     userId: 0
   });
+  const [tempLoginEmail, setTempLoginEmail] = useState('');
+  const [tempLoginPassword, setTempLoginPassword] = useState('');
 
   const heroStates = {
       'PERFECT_MATCH_ALGO' : 1,
@@ -214,7 +208,7 @@ const Landing: FC = (): ReactElement => {
       'SIGNUP_STEP5' : 7,
       'LOADING' : 8,
       'SIGNUP_CONGRATULATIONS' : 9,
-      'STRIPE_PAYMENT' : 10,
+      'AUTHNET_PAYMENT' : 10,
       'PERFECT_MATCH_RESULTS': 11 
   }
   const MODAL_HEADER_TYPE = {
@@ -358,12 +352,6 @@ const Landing: FC = (): ReactElement => {
     )
   }
 
-  interface LoginFormValues {
-    email: string;
-    password: string;
-    rememberMe: boolean;
-  }
-  
   const LoginSchema = Yup.object().shape({
     email: Yup.string().email('Invalid email').required('Email is required'),
     password: Yup.string().required('Password is required'),
@@ -515,6 +503,7 @@ const Landing: FC = (): ReactElement => {
     const [generateOTP] = useOtpGenerateMutation();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const schema = Yup.object().shape({
       email: Yup
@@ -546,27 +535,33 @@ const Landing: FC = (): ReactElement => {
       try {
         // Validate the form data
         await schema.validate(credentials, { abortEarly: false });
-        
+        setIsSubmitting(true)
         try {
           const res = await signUpSubmit({
             ...credentials,
             type: dataStates.selectedUserType
-          }).unwrap();
+          }).unwrap().then(()=>{
+            setTempLoginEmail(credentials.email)
+            setTempLoginPassword(credentials.password)
+          });
           
           console.log('signup success', res);
           
           setDataStates({
             ...dataStates,
             email: credentials.email,
-            userId: res.data.id
+            //userId: res.data.id
           });
           
-          await generateOTP({ email: credentials.email });
+          await generateOTP({ email: credentials.email }).unwrap().then(()=>{
+            setIsSubmitting(false)
+          });
           setTimeout(() => {
             setModalState(modalStates.SIGNUP_STEP3);
           }, 1000);
           
         } catch (err: any) {
+          setIsSubmitting(false)
           if (err.status === 409 || err?.data?.message?.toLowerCase().includes('email already exists')) {
             setOrganizedErrors(prev => ({
               ...prev,
@@ -581,6 +576,7 @@ const Landing: FC = (): ReactElement => {
         }
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
+          setIsSubmitting(false)
           const _organizedErrors: ErrorState = { 
             email: '', 
             password: '', 
@@ -685,10 +681,17 @@ const Landing: FC = (): ReactElement => {
                 >
                     Previous
                 </button>
-                <button 
-                    type="submit" 
-                    className={`${styles['button-custom-orange']}`}
-                >
+                <button
+                    type="submit"
+                    className={styles['button-custom-orange']}
+                    disabled={isSubmitting}
+                  >
+                    <img
+                      src={button_loading_spinner}
+                      alt="Loading"
+                      className={styles['button-spinner']}
+                      hidden={!isSubmitting}
+                    />
                     Next
                 </button>
             </div>  
@@ -701,6 +704,7 @@ const Landing: FC = (): ReactElement => {
 const OTPSignUp = () => {
   const buttonContinue = useRef<HTMLButtonElement>(null);
   const [submitOTP] = useOtpVerifyMutation();
+  const [loginSubmit] = useLoginMutation();
   const buttonPrevious = useRef<HTMLDivElement>(null);
   const ib1 = useRef<HTMLInputElement>(null);
   const ib2 = useRef<HTMLInputElement>(null);
@@ -710,6 +714,19 @@ const OTPSignUp = () => {
   const ib6 = useRef<HTMLInputElement>(null);
   
   const [isLoading, setIsLoading] = useState(false);
+
+  const handleLogin = async (values: AutoLoginFormValues,) => {
+    try {
+      await loginSubmit(values)
+      .unwrap()
+      .then((res) => {
+        setDataStates({...dataStates, userId: res.data.user.id})
+      })
+    }
+    catch (err: any) {
+      console.log(err);
+    }
+  }
 
   const handleOnInput = (ref:any, nextRef:any) =>{
     let currentInput = ref.current;
@@ -748,7 +765,15 @@ const OTPSignUp = () => {
           await submitOTP({
             email: dataStates.email,
             otp: otp
-          }).unwrap();
+          }).unwrap().then(()=>{
+            handleLogin({email: tempLoginEmail, password: tempLoginPassword}).then(
+              ()=>{
+                setTimeout( ()=> {
+                  setModalState(modalStates.SIGNUP_CONGRATULATIONS);
+                }
+                , 1000 )
+              }
+          )})
           
           setTimeout(() => {
             setModalState(modalStates.SIGNUP_CONGRATULATIONS);
@@ -1281,7 +1306,7 @@ const SubscriptionPlanSelection = () =>{
               
           localStorage.setItem('pendingSubscriptionTier', selectedTier);
           localStorage.setItem('userType', userType);
-          setModalState(modalStates.STRIPE_PAYMENT)
+          setModalState(modalStates.AUTHNET_PAYMENT)
         }
       };
     }
@@ -1478,13 +1503,6 @@ const CongratulationsModal = () => {
   )
 }
 
-interface FormValues {
-  cardNumber: string;
-  cardholderName: string;
-  expirationDate: string;
-  cvv: string;
-}
-
 const CreditCardForm: React.FC = () => {
   const [paymentSubmit] = usePaymentCreateMutation();
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -1494,20 +1512,36 @@ const CreditCardForm: React.FC = () => {
   useEffect(() => {
     if (previousButton.current) {
       previousButton.current.onclick = () => {
-        // Handle your button logic here
+       setModalState(modalStates.AUTHNET_PAYMENT)
       };
     }
+  
+    const isDevOrStaging =
+    process.env.NODE_ENV === 'development' || window.location.origin === 'https://app-sit.akaza.xyz';
+    console.log(process.env.NODE_ENV)
+    const scriptSources = {
+      acceptJs: isDevOrStaging
+        ? 'https://jstest.authorize.net/v1/Accept.js'
+        : 'https://js.authorize.net/v1/Accept.js',
+      acceptCore: isDevOrStaging
+        ? 'https://jstest.authorize.net/v1/AcceptCore.js'
+        : 'https://js.authorize.net/v1/AcceptCore.js',
+    };  
 
-    // Dynamically load Accept.js
-    const script = document.createElement('script');
-    script.src = process.env.NODE_ENV == 'development' ? 'https://jstest.authorize.net/v1/Accept.js' : 'https://js.authorize.net/v1/Accept.js';
-    script.async = true;
-    document.body.appendChild(script);
-
-    return () => {
-      // Cleanup script on component unmount
-      document.body.removeChild(script);
-    };
+    // Check if the script already exists
+    if (!document.querySelector(`script[src="${scriptSources.acceptCore}"]`)) {
+      const script = document.createElement('script');
+      script.src = scriptSources.acceptJs;
+      script.async = true;
+      document.body.appendChild(script);
+  
+      return () => {
+        // Cleanup script on component unmount if it was added
+        if (script.parentNode) {
+          script.parentNode.removeChild(script);
+        }
+      };
+    }
   }, []);
 
   const validationSchema = Yup.object({
@@ -1571,11 +1605,22 @@ const CreditCardForm: React.FC = () => {
         console.log('token generation success')
         console.log(token)
         // Send the token to your server for processing
-
+        console.log({
+          "provider": "authnet",
+          "userId": dataStates.userId,
+          "plan": 
+            currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY ? "Monthly" : 
+            currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL ? "Annual" : '',
+          "amount":  
+            currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY ? 5 : 
+            currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL ? 55 : '',
+          "paymentMethodId": token,
+          "daysTrial": 0
+        })
         try {
           const res = await paymentSubmit({
             "provider": "authnet",
-            "userId": 41,//dataStates.userId,
+            "userId": dataStates.userId,
             "plan": 
               currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY ? "Monthly" : 
               currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL ? "Annual" : '',
@@ -1685,7 +1730,7 @@ const CreditCardForm: React.FC = () => {
                   hidden={!isSubmitting}
                 />
                 Next
-              </button>
+            </button>
           </div>
         </Form>
       )}
@@ -1697,7 +1742,7 @@ const CreditCardForm: React.FC = () => {
 const StripePaymentModal = () => {
 
   return(
-    <div className={`${styles['modal-content']}`} hidden={modalState !== modalStates.STRIPE_PAYMENT}>
+    <div className={`${styles['modal-content']}`} hidden={modalState !== modalStates.AUTHNET_PAYMENT}>
         <div className={`${styles['stripe-payment-container']}`}>
           <div className={`${styles['stripe-payment-form']}`}>
             <div className={`${styles['credit-card-container']}`}>
@@ -1716,7 +1761,7 @@ const StripePaymentModal = () => {
                 <label>integrates seamlessly with Stripe, a leading payment processor, to provide secure and efficient online payment solutions.</label> 
             </div>
             <div className={`${styles['powered-by-stripe-wrapper']}`}>
-                <img src={powered_by_stripe}/>
+                <img src={authnet_visa_solution}/>
             </div>
           </div>
         </div>
@@ -1944,8 +1989,8 @@ const HeroPerfectMatchAlgo = () => {
                 What best describes you?
             </div>
             <div className={`${styles['hero-button-container']} ${styles['center']}`}>
-                <div ref={heroEmployerButton} className={`${styles['button-custom']} ${styles['noselect']}`}>Employer</div>
                 <div ref={heroJobHunterButton} className={`${styles['button-custom']} ${styles['noselect']}`}>Job Hunter</div>
+                <div ref={heroEmployerButton} className={`${styles['button-custom']} ${styles['noselect']}`}>Employer</div>
             </div>
         </div>
     </div>
@@ -2555,6 +2600,11 @@ const isFreeTrial = false;
                 <HeroYearsOfExperienceJobHunter/>
                 <HeroLoading/>
                 <HeroPerfectMatchResults/>
+            </div>
+            <div>
+              It should be displayed here
+              <div className="AuthorizeNetSeal">
+              </div>
             </div>
             <div className={`${styles['pricing-container']}`}>
                 <div className={`${styles['desc1-wrapper']}`}>

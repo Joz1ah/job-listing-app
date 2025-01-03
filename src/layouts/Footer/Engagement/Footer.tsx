@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { NavLink } from 'react-router-dom';
 
-import powered_by_stripe from 'assets/powered_by_stripe.svg?url';
+import powered_by_stripe from 'assets/authnet-logo-light.svg?url';
 import akazalogo from 'assets/akazalogo.png';
 import instagram_icon from 'assets/instagram.svg?url';
 import facebook_icon from 'assets/facebook.svg?url';
