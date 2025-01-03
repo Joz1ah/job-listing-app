@@ -4,6 +4,7 @@ import { Input, Button, InputField } from "components";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import saveChanges from "images/save-changes.svg?url";
+import Cookies from 'js-cookie';
 
 import { selectOptions } from "mockData/app-form-options";
 
@@ -141,11 +142,17 @@ const ApplicationCardForm: FC = () => {
     try {
       setIsSubmitting(true);
       
-      // Transform the form data to match the API payload structure
+      // Ensure the auth token exists
+      const authToken = Cookies.get('authToken');
+      if (!authToken) {
+        console.error('No auth token found');
+        return;
+      }
+  
       const payload = {
         firstName: values.firstName,
         lastName: values.lastName,
-        location: "", // Add this field if needed
+        location: "", // Add if needed
         language: values.languages,
         birthday: values.birthday,
         email: values.emailAddress,
@@ -159,15 +166,16 @@ const ApplicationCardForm: FC = () => {
         salaryRange: values.salaryRange,
         country: values.country
       };
-
-      // Submit the profile data
-      await submitJobHunterProfile(payload).unwrap();
+  
+      const response = await submitJobHunterProfile(payload).unwrap();
       
-      // Handle successful submission
-      navigate("/job-hunter/feed");
+      if (response) {
+        // Add success notification here
+        navigate("/job-hunter/feed");
+      }
     } catch (error) {
       console.error("Error submitting profile:", error);
-      // Handle error appropriately (show error message, etc.)
+      // Add error notification here
     } finally {
       setIsSubmitting(false);
       setShowPreview(false);

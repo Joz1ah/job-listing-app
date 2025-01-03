@@ -445,6 +445,7 @@ const Landing: FC = (): ReactElement => {
                     type="button"
                     className={styles['toggle-visibility']}
                     onClick={() => setShowPassword(!showPassword)}
+                    tabIndex={-1}
                     aria-label={showPassword ? 'Hide Password' : 'Show Password'}
                   >
                     {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
@@ -535,33 +536,31 @@ const Landing: FC = (): ReactElement => {
       try {
         // Validate the form data
         await schema.validate(credentials, { abortEarly: false });
-        setIsSubmitting(true)
+        setIsSubmitting(true);
         try {
-          const res = await signUpSubmit({
+          // First set the modal state to SIGNUP_STEP3 immediately
+          setModalState(modalStates.SIGNUP_STEP3);
+          
+          await signUpSubmit({
             ...credentials,
             type: dataStates.selectedUserType
-          }).unwrap().then(()=>{
+          }).unwrap().then(() => {
             setTempLoginEmail(credentials.email)
             setTempLoginPassword(credentials.password)
+            
+            setDataStates({
+              ...dataStates,
+              email: credentials.email,
+            });
           });
-          
-          console.log('signup success', res);
-          
-          setDataStates({
-            ...dataStates,
-            email: credentials.email,
-            //userId: res.data.id
-          });
-          
-          await generateOTP({ email: credentials.email }).unwrap().then(()=>{
-            setIsSubmitting(false)
-          });
-          setTimeout(() => {
-            setModalState(modalStates.SIGNUP_STEP3);
-          }, 1000);
+
+          await generateOTP({ email: credentials.email }).unwrap();
           
         } catch (err: any) {
-          setIsSubmitting(false)
+          // If there's an error, revert back to the signup form
+          setModalState(modalStates.SIGNUP_STEP2);
+          setIsSubmitting(false);
+          
           if (err.status === 409 || err?.data?.message?.toLowerCase().includes('email already exists')) {
             setOrganizedErrors(prev => ({
               ...prev,
@@ -576,7 +575,7 @@ const Landing: FC = (): ReactElement => {
         }
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
-          setIsSubmitting(false)
+          setIsSubmitting(false);
           const _organizedErrors: ErrorState = { 
             email: '', 
             password: '', 
@@ -629,6 +628,7 @@ const Landing: FC = (): ReactElement => {
                         <button 
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
+                            tabIndex={-1}
                             className="cursor-pointer"
                         >
                             {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
@@ -652,6 +652,7 @@ const Landing: FC = (): ReactElement => {
                         <button 
                             type="button"
                             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            tabIndex={-1}
                             className="cursor-pointer"
                         >
                             {showConfirmPassword ? <Eye size={20} /> : <EyeOff size={20} />}
@@ -2075,7 +2076,8 @@ const HeroJobTitleEmployer = () => {
                 </div>
               )}
               <div className={`${styles['hero-button-container2']}`}>
-                  <div ref={heroNextButton} className={`${styles['button-custom-orange']} ${styles['noselect']}`}>Next</div>
+                  <div ref={heroNextButton} className={`${styles['button-custom-orange']} ${styles['noselect']}`}>
+                    Next</div>
                   <div ref={heroPreviousButton} className={`${styles['button-custom-transparent']} ${styles['noselect']}`}>
                       <img className={`${styles['caret-left']}`} src={arrow_left_icon}></img>
                       <div>Previous</div>
