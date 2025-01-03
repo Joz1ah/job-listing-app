@@ -34,6 +34,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 
 import { isValidPhoneNumber } from "react-phone-number-input";
+import { useJobHunterProfileMutation } from "api/akaza/akazaAPI";
 
 interface FormData {
   firstName: string;
@@ -102,6 +103,8 @@ const ApplicationCardForm: FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPreview, setShowPreview] = useState<boolean>(false);
 
+  const [submitJobHunterProfile ] = useJobHunterProfileMutation();
+
   const {
     values,
     errors,
@@ -129,10 +132,47 @@ const ApplicationCardForm: FC = () => {
     },
     validationSchema,
     validateOnMount: true,
-    onSubmit: (): void => {
+    onSubmit: () => {
       setShowPreview(true);
     },
   });
+
+  const handleFormSubmit = async () => {
+    try {
+      setIsSubmitting(true);
+      
+      // Transform the form data to match the API payload structure
+      const payload = {
+        firstName: values.firstName,
+        lastName: values.lastName,
+        location: "", // Add this field if needed
+        language: values.languages,
+        birthday: values.birthday,
+        email: values.emailAddress,
+        phoneNumber: values.mobileNumber,
+        employmentType: values.employmentType,
+        education: values.education,
+        yearsOfExperience: values.yearsOfExperience,
+        core: values.coreSkills,
+        interpersonal: values.interpersonalSkills,
+        certification: values.certifications,
+        salaryRange: values.salaryRange,
+        country: values.country
+      };
+
+      // Submit the profile data
+      await submitJobHunterProfile(payload).unwrap();
+      
+      // Handle successful submission
+      navigate("/job-hunter/feed");
+    } catch (error) {
+      console.error("Error submitting profile:", error);
+      // Handle error appropriately (show error message, etc.)
+    } finally {
+      setIsSubmitting(false);
+      setShowPreview(false);
+    }
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && e.target instanceof HTMLElement) {
@@ -150,14 +190,7 @@ const ApplicationCardForm: FC = () => {
         isOpen={showPreview}
         onClose={() => setShowPreview(false)}
         formData={values}
-        onConfirm={() => {
-          setShowPreview(false);
-          setIsSubmitting(true);
-          // Your existing submission logic here
-          setTimeout(() => {
-            navigate("/job-hunter/feed");
-          }, 1500);
-        }}
+        onConfirm={handleFormSubmit}
       />
       {isSubmitting && <LoadingOverlay />}
       

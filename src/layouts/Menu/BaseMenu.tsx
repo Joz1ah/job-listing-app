@@ -24,7 +24,6 @@ interface MenuProps {
   subscriptionPlan?: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
   userType?: 'employer' | 'job-hunter';
   userName?: string;
-  feedPath?: string;
   onSignOut?: () => void;
   isAuthenticated?: boolean;
   ButtonLoginNav?: FC;
@@ -39,7 +38,6 @@ const BaseMenu: FC<MenuProps> = ({
   subscriptionPlan = 'freeTrial',
   userType,
   userName,
-  feedPath = '/',
   onSignOut,
   isAuthenticated = false,
   ButtonLoginNav,
@@ -169,7 +167,7 @@ const BaseMenu: FC<MenuProps> = ({
       <header className="hidden md:flex fixed top-0 left-0 right-0 bg-[#2D3A41] h-[72px] px-4 justify-between items-center z-50">
         <div className="flex items-center gap-4">
           <NavLink
-            to={feedPath}
+            to="/"
             onClick={handleNavLinkClick}
             className="flex-shrink-0"
           >

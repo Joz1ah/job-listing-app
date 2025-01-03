@@ -24,6 +24,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 
 import { isValidPhoneNumber } from "react-phone-number-input";
+import { useEmployerProfileMutation } from "api/akaza/akazaAPI";
 
 const validationSchema = Yup.object().shape({
   businessName: Yup.string().required("This field is required"),
@@ -50,7 +51,6 @@ const validationSchema = Yup.object().shape({
   streetAddress: Yup.string().required("Street address is required"),
   city: Yup.string().required("City is required"),
   state: Yup.string().required("State is required"),
-  postalCode: Yup.string().required("Postal code is required"),
   country: Yup.string()
     .required("Country is required")
     .test("validCountry", "Please select a valid country", function (value) {
@@ -71,7 +71,7 @@ const LoadingOverlay = () => (
 const CompleteEmployerProfile: FC = () => {
   const [showPreview, setShowPreview] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const [employerProfile] = useEmployerProfileMutation();
   const navigate = useNavigate();
 
   const {
@@ -99,7 +99,6 @@ const CompleteEmployerProfile: FC = () => {
       streetAddress: "",
       city: "",
       state: "",
-      postalCode: "",
       country: "",
       companyOverview: "",
     },
@@ -120,20 +119,51 @@ const CompleteEmployerProfile: FC = () => {
     }
   };
 
+  // Add this function to handle the final submission
+  const handleProfileSubmission = async () => {
+    setShowPreview(false);
+    setIsSubmitting(true);
+    
+    try {
+      const profileData = {
+        businessName: values.businessName,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        email: values.emailAddress,
+        phoneNumber: values.mobileNumber,
+        position: values.position,
+        website: values.companyWebsite,
+        industryId: values.industry, // Consider renaming form field to match API
+        yearFounded: Number(values.yearFounded), // Explicit conversion to number
+        unit: values.unitAndBldg,
+        address: values.streetAddress,
+        city: values.city,
+        state: values.state,
+        country: values.country,
+        description: values.companyOverview
+      };
+
+      // Call the API
+      const result = await employerProfile(profileData).unwrap();
+      console.log('Profile updated successfully:', result);
+      
+      // Navigate on success
+      navigate("/employer/feed");
+    } catch (error) {
+      console.error('Failed to update profile:', error);
+      // Handle error appropriately - you might want to show an error message to the user
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <>
       <EmployerProfilePreview
         isOpen={showPreview}
         onClose={() => setShowPreview(false)}
         formData={values}
-        onConfirm={() => {
-          setShowPreview(false);
-          setIsSubmitting(true);
-          // Your existing submission logic here
-          setTimeout(() => {
-            navigate("/employer/feed");
-          }, 1500);
-        }}
+        onConfirm={handleProfileSubmission}
       />
       {isSubmitting && <LoadingOverlay />}
 

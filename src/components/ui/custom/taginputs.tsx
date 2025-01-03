@@ -55,21 +55,30 @@ const TagInputs: React.FC<TagInputProps> = ({
   const [inputValue, setInputValue] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(0);
+  const [showTooltip, setShowTooltip] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const tooltipTimeoutRef = useRef<NodeJS.Timeout>();
 
   const remainingTags = maxTags - value.length;
 
   const filteredOptions = options.filter(option => {
+    // Don't show already selected values
     if (value.includes(option.value)) return false;
     
-    return searchKeys.some(key => 
-      option[key as keyof Option]
-        .toString()
-        .toLowerCase()
-        .includes(inputValue.toLowerCase())
-    );
+    // Only filter if there's input
+    if (inputValue) {
+      return searchKeys.some(key => 
+        option[key as keyof Option]
+          .toString()
+          .toLowerCase()
+          .includes(inputValue.toLowerCase())
+      );
+    }
+    
+    // Return false if no input to show no suggestions
+    return false;
   });
 
   useEffect(() => {
@@ -85,7 +94,7 @@ const TagInputs: React.FC<TagInputProps> = ({
       const newTags = [...value, selectedOption.value];
       onChange(newTags);
       setInputValue("");
-      setShowSuggestions(false);
+      setShowSuggestions(false); // Close suggestions after selection
       setFocusedIndex(0);
       inputRef.current?.focus();
     }
@@ -94,29 +103,37 @@ const TagInputs: React.FC<TagInputProps> = ({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setInputValue(newValue);
-    setShowSuggestions(newValue.length > 0);
-    onInputChange?.(e); // Call the passed onInputChange handler
+    setShowSuggestions(true); // Always show suggestions panel
+    onInputChange?.(e);
   };
 
+  const handleInputFocus = () => {
+    setShowSuggestions(true); // Show suggestions when input is focused
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Backspace' && inputValue === '' && value.length > 0) {
       e.preventDefault();
       const newTags = value.slice(0, -1);
       onChange(newTags);
-    } else if (showSuggestions && filteredOptions.length > 0) {
+    } else if (showSuggestions) {
       switch (e.key) {
-        case 'ArrowDown':
-          e.preventDefault();
-          setFocusedIndex(prev => (prev + 1) % filteredOptions.length);
-          break;
-        case 'ArrowUp':
-          e.preventDefault();
-          setFocusedIndex(prev => (prev - 1 + filteredOptions.length) % filteredOptions.length);
-          break;
         case 'Enter':
+        case 'Tab':
           e.preventDefault();
-          handleSelect(filteredOptions[focusedIndex].value);
+          if (filteredOptions.length > 0) {
+            handleSelect(filteredOptions[focusedIndex].value);
+          } else if (inputValue) {
+            // Show tooltip when invalid input is entered
+            setShowTooltip(true);
+            if (tooltipTimeoutRef.current) {
+              clearTimeout(tooltipTimeoutRef.current);
+            }
+            tooltipTimeoutRef.current = setTimeout(() => {
+              setShowTooltip(false);
+            }, 3000);
+          }
+          setInputValue(""); // Clear input on invalid entry
           break;
         case 'Escape':
           setShowSuggestions(false);
@@ -125,6 +142,15 @@ const TagInputs: React.FC<TagInputProps> = ({
       }
     }
   };
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (tooltipTimeoutRef.current) {
+        clearTimeout(tooltipTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const removeTag = (indexToRemove: number) => {
     const newTags = value.filter((_, index) => index !== indexToRemove);
@@ -153,7 +179,7 @@ const TagInputs: React.FC<TagInputProps> = ({
     <div ref={containerRef} className="relative w-full">
       <div 
         className={cn(
-          "bg-transparent border-2 border-[#AEADAD] rounded-[10px] min-h-[36px] overflow-hidden",
+          "bg-transparent border-2 border-[#AEADAD] rounded-[10px] min-h-[36px] overflow-hidden group",
           "focus-within:border-[#F5722E]",
           "transition-all duration-200 ease-in-out",
           disabled && "opacity-50 cursor-not-allowed",
@@ -178,7 +204,7 @@ const TagInputs: React.FC<TagInputProps> = ({
                   disabled ? "cursor-not-allowed" : "cursor-pointer hover:opacity-80"
                 )}
                 onClick={() => !disabled && removeTag(index)}
-                title={tagLabel} // Show full text on hover
+                title={tagLabel}
               >
                 <span>{truncatedLabel}</span>
               </div>
@@ -191,15 +217,24 @@ const TagInputs: React.FC<TagInputProps> = ({
               value={inputValue}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
+              onFocus={handleInputFocus}
               disabled={disabled || remainingTags === 0}
               placeholder={value.length === 0 ? placeholder : ""}
               className="w-full h-7 py-0 mt-1.5 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent placeholder:text-[#AEADAD] disabled:cursor-not-allowed disabled:opacity-50"
             />
+
+            {showTooltip && (
+              <div 
+                className="absolute -top-8 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-white text-[#2D3A41] text-xs rounded shadow-lg whitespace-nowrap z-50"
+              >
+                Invalid tag entered. Please try again.
+                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-2 h-2 bg-white"></div>
+              </div>
+            )}
           </div>
         </div>
       </div>
-      
-      {showSuggestions && filteredOptions.length > 0 && remainingTags > 0 && (
+      {showSuggestions && remainingTags > 0 && inputValue && (
         <div 
           ref={suggestionsRef}
           className="absolute left-0 right-0 mt-1 bg-white border rounded-md shadow-lg z-50 text-black"
@@ -209,25 +244,33 @@ const TagInputs: React.FC<TagInputProps> = ({
           </Label>
           <ScrollArea className="h-[180px]">
             <ul className="py-1">
-              {filteredOptions.map((option, index) => (
-                <li
-                  key={option.value}
-                  onClick={() => handleSelect(option.value)}
-                  onMouseEnter={() => setFocusedIndex(index)}
-                  className={cn(
-                    "px-2 py-2 cursor-pointer transition-all ease-in-out duration-500",
-                    index === focusedIndex ? "bg-[#F5722E] text-white" : "hover:bg-[#F5722E] hover:text-white"
-                  )}
-                >
-                  {option.label}
-                </li>
-              ))}
+              {filteredOptions.length > 0 ? (
+                filteredOptions.map((option, index) => (
+                  <li
+                    key={option.value}
+                    onClick={() => handleSelect(option.value)}
+                    onMouseEnter={() => setFocusedIndex(index)}
+                    className={cn(
+                      "px-2 py-2 cursor-pointer transition-all ease-in-out duration-500",
+                      index === focusedIndex ? "bg-[#F5722E] text-white" : "hover:bg-[#F5722E] hover:text-white"
+                    )}
+                  >
+                    {option.label}
+                  </li>
+                ))
+              ) : (
+                <li className="px-2 py-2 text-gray-500">No suggestions available</li>
+              )}
             </ul>
           </ScrollArea>
         </div>
       )}
     </div>
   );
+};
+
+const capitalizeFirstLetter = (str: string) => {
+  return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
 const CoreSkillsTagInput: React.FC<Omit<TagInputProps, 'options'>> = (props) => {
@@ -241,22 +284,22 @@ const CoreSkillsTagInput: React.FC<Omit<TagInputProps, 'options'>> = (props) => 
   });
 
   // Transform the data correctly based on the API response
-  const options = searchResults?.map((skill: Skill) => {
-    const capitalizedKeyword = skill.keyword.charAt(0).toUpperCase() + skill.keyword.slice(1);
-    return {
-      label: capitalizedKeyword,
-      value: skill.keyword  // Keep original keyword for value
-    };
-  }) || [];
+  const options = searchResults?.map((skill: Skill) => ({
+    label: capitalizeFirstLetter(skill.keyword),
+    value: capitalizeFirstLetter(skill.keyword)  // Also capitalize the value
+  })) || [];
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchQuery(value);
   };
 
+  const capitalizedValues = props.value?.map(val => capitalizeFirstLetter(val)) || [];
+
   return (
     <TagInputs
       {...props}
+      value={capitalizedValues}
       options={options}
       maxTags={5}
       suggestionTitle="Select Core Skills"
@@ -277,22 +320,22 @@ const InterpersonalSkillsTagInput: React.FC<Omit<TagInputProps, 'options'>> = (p
   });
 
   // Transform the data correctly based on the API response
-  const options = searchResults?.map((skill: Skill) => {
-    const capitalizedKeyword = skill.keyword.charAt(0).toUpperCase() + skill.keyword.slice(1);
-    return {
-      label: capitalizedKeyword,
-      value: skill.keyword  // Keep original keyword for value
-    };
-  }) || [];
+  const options = searchResults?.map((skill: Skill) => ({
+    label: capitalizeFirstLetter(skill.keyword),
+    value: capitalizeFirstLetter(skill.keyword)  // Also capitalize the value
+  })) || [];
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchQuery(value);
   };
 
+  const capitalizedValues = props.value?.map(val => capitalizeFirstLetter(val)) || [];
+
   return (
     <TagInputs
       {...props}
+      value={capitalizedValues}
       options={options}
       maxTags={5}
       suggestionTitle="Select Interpersonal Skills"
@@ -351,22 +394,22 @@ const CertificationTagInput: React.FC<Omit<TagInputProps, 'options'>> = (props) 
   });
 
   // Transform the data correctly based on the API response
-  const options = searchResults?.map((certificate: Skill) => {
-    const capitalizedKeyword = certificate.keyword.charAt(0).toUpperCase() + certificate.keyword.slice(1);
-    return {
-      label: capitalizedKeyword,
-      value: certificate.keyword  // Keep original keyword for value
-    };
-  }) || [];
+  const options = searchResults?.map((skill: Skill) => ({
+    label: capitalizeFirstLetter(skill.keyword),
+    value: capitalizeFirstLetter(skill.keyword)  // Also capitalize the value
+  })) || [];
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchQuery(value);
   };
 
+  const capitalizedValues = props.value?.map(val => capitalizeFirstLetter(val)) || [];
+
   return (
     <TagInputs
       {...props}
+      value={capitalizedValues}
       options={options}
       maxTags={3}
       suggestionTitle="Select Certifications"

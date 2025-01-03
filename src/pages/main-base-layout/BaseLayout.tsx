@@ -94,7 +94,6 @@ const AuthenticatedLayoutContent: FC<{ userType: 'employer' | 'job-hunter' }> = 
         subscriptionPlan={subscriptionPlan}
         userType={userType}
         userName={userName}
-        feedPath={`/${isEmployer ? 'employer' : 'job-hunter'}/`}
         onSignOut={() => setShowSignOutModal(true)}
       />
       

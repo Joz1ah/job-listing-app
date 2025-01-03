@@ -232,41 +232,66 @@ const Landing: FC = (): ReactElement => {
 
   //const [localCount, setCount] = useState(0)
 
-  const ButtonLoginNav = () =>{
+  useEffect(() => {
+    // Check if PerfectMatchResultsModal was previously open and is now being closed
+    if (modalState !== modalStates.PERFECT_MATCH_RESULTS && maskHidden === 1) {
+      setHeroState(heroStates.PERFECT_MATCH_ALGO);
+    }
+  }, [modalState, maskHidden]);
+
+  const ButtonLoginNav = () => {
     const elementRef = useRef<HTMLButtonElement>(null);
     const toggleLogin = () => {
       if (elementRef.current) {
         elementRef.current.onclick = () => {
-          setSelectedModalHeader(1)
-          setMaskHidden((prev) => prev ? 0 : 1);
-          setModalState(modalStates.LOGIN);
-          setCloseModalActive(1);
+          // First, check if we're switching from another modal
+          if (!maskHidden) {
+            // We're switching modals, so don't toggle the mask
+            setSelectedModalHeader(1);
+            setModalState(modalStates.LOGIN);
+            setCloseModalActive(1);
+          } else {
+            // Normal opening of modal
+            setSelectedModalHeader(1);
+            setMaskHidden(0);
+            setModalState(modalStates.LOGIN);
+            setCloseModalActive(1);
+          }
         };
       }
     };
   
     useEffect(toggleLogin, []);
   
-    return <button ref={elementRef} id="btn_login_nav" className={`${styles.button}`}>Login</button>
-  }  
+    return <button ref={elementRef} id="btn_login_nav" className={`${styles.button}`}>Login</button>;
+  };
 
-  const ButtonSignUpNav = () =>{
+  const ButtonSignUpNav = () => {
     const elementRef = useRef<HTMLButtonElement>(null);
     const toggleSignUp = () => {
       if (elementRef.current) {
         elementRef.current.onclick = () => {
-          setSelectedModalHeader(1)
-          setMaskHidden((prev) => prev ? 0 : 1);
-          setModalState(modalStates.SIGNUP_SELECT_USER_TYPE);
-          setCloseModalActive(1);
+          // First, check if we're switching from another modal
+          if (!maskHidden) {
+            // We're switching modals, so don't toggle the mask
+            setSelectedModalHeader(1);
+            setModalState(modalStates.SIGNUP_SELECT_USER_TYPE);
+            setCloseModalActive(1);
+          } else {
+            // Normal opening of modal
+            setSelectedModalHeader(1);
+            setMaskHidden(0);
+            setModalState(modalStates.SIGNUP_SELECT_USER_TYPE);
+            setCloseModalActive(1);
+          }
         };
       }
     };
   
     useEffect(toggleSignUp, []);
   
-    return <button ref={elementRef} className={`${styles.button} ${styles['button-signup']}`}>Sign up</button>
-  }  
+    return <button ref={elementRef} className={`${styles.button} ${styles['button-signup']}`}>Sign up</button>;
+  };
 
   const LoginModal = () =>{
     return(
@@ -1805,6 +1830,9 @@ const ModalHeader = () =>{
     setSelectedModalHeader(1);
     setMaskHidden(1);
     setCloseModalActive(0);
+    if (modalState === modalStates.PERFECT_MATCH_RESULTS) {
+      setHeroState(heroStates.PERFECT_MATCH_ALGO);
+    }
     if(closeModalActive){}
   }
   const toggleCloseModal = () => {
@@ -2455,9 +2483,12 @@ const HeroPerfectMatchResults = () => {
 };
 
 const HeroLoading = () => {
+  const [hasShownModal, setHasShownModal] = useState(false);
+
   useEffect(() => {
-    if (heroState === heroStates.LOADING) {
+    if (heroState === heroStates.LOADING && !hasShownModal && maskHidden === 1) {
       const timer = setTimeout(() => {
+        setHasShownModal(true);
         setMaskHidden(0);
         setSelectedModalHeader(1);
         setModalState(modalStates.PERFECT_MATCH_RESULTS);
@@ -2465,6 +2496,13 @@ const HeroLoading = () => {
       }, 3000);
       
       return () => clearTimeout(timer);
+    }
+  }, [heroState, maskHidden, hasShownModal]);
+
+  // Reset modal shown state when leaving loading state
+  useEffect(() => {
+    if (heroState !== heroStates.LOADING) {
+      setHasShownModal(false);
     }
   }, [heroState]);
 
