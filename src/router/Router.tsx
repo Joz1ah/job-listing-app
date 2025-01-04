@@ -91,6 +91,9 @@ const JobHunterPrivacySettings = lazy(() => import('features/job-hunter').then(m
 const JobHunterYourBookmarkedJobs = lazy(() => import('features/job-hunter').then(module => ({ default: module.YourBookmarkedJobs })))
 const EmployerYourBookmarkedJobs = lazy(() => import('features/employer').then(module => ({ default: module.YourBookmarkedJobs })))
 
+const TermsAndConditions = lazy(() => import('pages').then(module => ({ default: module.TermsConditionsPage })))
+const PrivacyPolicy = lazy(() => import('pages').then(module => ({ default: module.PrivacyPolicyPage })))
+
 const LoadingFallback = () => (
   <div className="flex items-center justify-center h-screen">
     <img src={spinner_loading_fallback} alt="spinners" className='w-20 h-20'/>
@@ -159,6 +162,14 @@ const routes: RouteObject[] = [
       {
         path: ROUTE_CONSTANTS.FAQ,
         element: <LazyComponent component={Faq} />
+      },
+      {
+        path: ROUTE_CONSTANTS.TERMS_CONDITIONS,
+        element: <LazyComponent component={TermsAndConditions} />
+      },
+      {
+        path: ROUTE_CONSTANTS.PRIVACY_POLICY,
+        element: <LazyComponent component={PrivacyPolicy} />
       }
     ]
   },

@@ -118,6 +118,22 @@ const TagInputs: React.FC<TagInputProps> = ({
       onChange(newTags);
     } else if (showSuggestions) {
       switch (e.key) {
+        case 'ArrowDown':
+          e.preventDefault();
+          setFocusedIndex(prev => 
+            prev < filteredOptions.length - 1 ? prev + 1 : prev
+          );
+          // Ensure the focused item is visible in the scroll area
+          const element = suggestionsRef.current?.querySelector(`li:nth-child(${focusedIndex + 2})`);
+          element?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          setFocusedIndex(prev => prev > 0 ? prev - 1 : prev);
+          // Ensure the focused item is visible in the scroll area
+          const prevElement = suggestionsRef.current?.querySelector(`li:nth-child(${focusedIndex})`);
+          prevElement?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          break;
         case 'Enter':
         case 'Tab':
           e.preventDefault();
@@ -237,7 +253,7 @@ const TagInputs: React.FC<TagInputProps> = ({
       {showSuggestions && remainingTags > 0 && inputValue && (
         <div 
           ref={suggestionsRef}
-          className="absolute left-0 right-0 mt-1 bg-white border rounded-md shadow-lg z-50 text-black"
+          className="absolute left-0 right-0 mt-1 bg-white border-none shadow-lg z-50 text-black"
         >
           <Label className="px-2 py-1.5 text-xs font-normal text-gray-500">
             {suggestionTitle}
@@ -259,7 +275,7 @@ const TagInputs: React.FC<TagInputProps> = ({
                   </li>
                 ))
               ) : (
-                <li className="px-2 py-2 text-gray-500">No suggestions available</li>
+                <li className="px-2 py-2 text-gray-500">No results found</li>
               )}
             </ul>
           </ScrollArea>

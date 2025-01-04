@@ -1668,10 +1668,10 @@ margin-top: 12px;
   transform: scale(1.5);
 }
 
-.terms-and-privacy > div > label:nth-child(2),
-.terms-and-privacy > div > label:nth-child(4){
+.terms-and-privacy > div > .link-as-label {
   color: #F5722E;
   text-decoration: underline;
+  cursor: pointer;
 }
 
 /*Override*/

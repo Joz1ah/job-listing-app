@@ -63,4 +63,7 @@ export const ROUTE_CONSTANTS = {
   
   // Application status
   BOOKMARKED: 'bookmarked',
+
+  TERMS_CONDITIONS: '/landing/terms-conditions',
+  PRIVACY_POLICY: '/landing/privacy-policy',
 };

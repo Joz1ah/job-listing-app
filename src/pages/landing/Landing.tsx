@@ -21,6 +21,7 @@ import { perfectMatch as jobMatches, Match as JobMatch } from 'mockData/jobs-dat
 import { EmployerProvider, JobHunterProvider } from 'components';
 import { BookmarkProvider } from 'components';
 import { Button } from 'components';
+import { Link } from 'react-router-dom';
 
 import video1 from 'assets/mp4/Landing-Page-hero-1.mp4';
 import video2 from 'assets/mp4/video-conference-call-1.mp4';
@@ -302,14 +303,24 @@ const Landing: FC = (): ReactElement => {
                   </div>
               </div>
               <div className={`${styles['terms-and-privacy']}`}>
-                  <input type="checkbox"></input>
-                  <div>
-                      <label>I have read, understood and agree to the</label>
-                      <label>Terms of Use</label>
-                      <label>and</label>
-                      <label>Privacy Policy</label>
-                  </div>
-              </div>
+                <input type="checkbox" />
+                <div>
+                    <label>I have read, understood and agree to the </label>
+                    <Link 
+                        to='/landing/terms-conditions' 
+                        className={styles['link-as-label']}
+                    >
+                        Terms of Use
+                    </Link>
+                    <label> and </label>
+                    <Link 
+                        to='/landing/privacy-policy'
+                        className={styles['link-as-label']}
+                    >
+                        Privacy Policy
+                    </Link>
+                </div>
+            </div>
           </div>
       </div>
     )
