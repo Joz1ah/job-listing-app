@@ -1,9 +1,12 @@
 import { FC } from "react";
+import { LayoutContent } from "pages";
 
-const AboutUs : FC = () => {
+const AboutUs: FC = () => {
     return (
-        <>
-        </>
+        <LayoutContent >
+            <>
+            </>
+        </LayoutContent>
     )
 }
 

@@ -25,7 +25,7 @@ export { JobHunterNotFound } from 'pages/job-hunter/not-found/JobHunterNotFound'
 export { NotFoundPage } from 'pages/not-found-page/NotFoundPage'
 /* export { JobHunterBaseLayout } from 'pages/job-hunter/based-layout/JobHunterBaseLayout'
 export { EmployerBaseLayout } from 'pages/employer/base-layout/EmployerBaseLayout' */
-export { BaseLayout } from 'pages/main-base-layout/BaseLayout'
+export { BaseLayout, LayoutContent } from 'pages/main-base-layout/BaseLayout'
 export { SubscriptionPlan } from 'pages/subscription-plan/SubscriptionPlan'
 export { EmployerBookmarkedJobs } from 'pages/employer/bookmarked-jobs/EmployerBookmarkedJobs'
 export { AboutUs } from 'pages/about-us/AboutUs'

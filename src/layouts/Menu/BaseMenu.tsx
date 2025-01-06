@@ -105,6 +105,7 @@ const BaseMenu: FC<MenuProps> = ({
     : (isAuthenticated ? desktopMenuItems : defaultNavItems);
 
   const handleNavLinkClick = () => {
+    console.log('Navigating to path:', location.pathname);
     if (isMenuOpen) {
       onToggleMenu();
     }
@@ -161,6 +162,18 @@ const BaseMenu: FC<MenuProps> = ({
     );
   };
 
+  const formatUserPath = (userType: string) => {
+    switch (userType) {
+      case 'job-hunter':
+      case 'job_hunter':
+        return 'job-hunter';
+      case 'employer':
+        return 'employer';
+      default:
+        return 'job-hunter'; // default fallback
+    }
+  };
+
   return (
     <>
       {/* Desktop Header */}
@@ -181,22 +194,22 @@ const BaseMenu: FC<MenuProps> = ({
             <nav className="flex-shrink">
               <ul className="flex gap-4 lg:gap-8 text-white text-[14px] lg:text-[16px] font-light whitespace-nowrap items-center">
                 <li className="hover:text-[#F5722E]">
-                  <NavLink to={isAuthenticated ? `/${safeUserType}/about-us` : "/landing/about-us"} onClick={handleNavLinkClick}>
+                  <NavLink to={isAuthenticated ? `/${formatUserPath(safeUserType)}/about-us` : "/landing/about-us"} onClick={handleNavLinkClick}>
                     About us
                   </NavLink>
                 </li>
                 <li className="hover:text-[#F5722E]">
-                  <NavLink to={isAuthenticated ? `/${safeUserType}/contact-us` : "/landing/contact-us"} onClick={handleNavLinkClick}>
+                  <NavLink to={isAuthenticated ? `/${formatUserPath(safeUserType)}/contact-us` : "/landing/contact-us"} onClick={handleNavLinkClick}>
                     Contact us
                   </NavLink>
                 </li>
                 <li className="hover:text-[#F5722E]">
-                  <NavLink to={isAuthenticated ? `/${safeUserType}/subscription-plan` : "/landing/subscription-plan"} onClick={handleNavLinkClick}>
+                  <NavLink to={isAuthenticated ? `/${formatUserPath(safeUserType)}/subscription-plan` : "/landing/subscription-plan"} onClick={handleNavLinkClick}>
                     Subscription plans
                   </NavLink>
                 </li>
                 <li className="hover:text-[#F5722E]">
-                  <NavLink to={isAuthenticated ? `/${safeUserType}/faq` : "/landing/faq"} onClick={handleNavLinkClick}>
+                  <NavLink to={isAuthenticated ? `/${formatUserPath(safeUserType)}/faq` : "/landing/faq"} onClick={handleNavLinkClick}>
                     FAQ
                   </NavLink>
                 </li>

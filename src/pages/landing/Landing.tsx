@@ -22,6 +22,11 @@ import { EmployerProvider, JobHunterProvider } from 'components';
 import { BookmarkProvider } from 'components';
 import { Button } from 'components';
 import { Link } from 'react-router-dom';
+import { useAuth } from 'contexts/AuthContext/AuthContext';
+import { employerDesktopMenu, employerMobileMenu } from 'mockData/nav-menus';
+import { jobHunterDesktopMenu, jobHunterMobileMenu } from 'mockData/nav-menus';
+import { SignOutModal } from 'components';
+import { Outlet } from 'react-router-dom';
 
 import video1 from 'assets/mp4/Landing-Page-hero-1.mp4';
 import video2 from 'assets/mp4/video-conference-call-1.mp4';
@@ -333,7 +338,7 @@ const Landing: FC = (): ReactElement => {
     const moveToNext = () => {
       if (ButtonJobHunterRef.current) {
         ButtonJobHunterRef.current.onclick = () => {
-          setDataStates({...dataStates, selectedUserType: 'job_hunter'})
+          setDataStates({...dataStates, selectedUserType: 'job-hunter'})
           setModalState(modalStates.SIGNUP_STEP2)
         };
       }
@@ -371,8 +376,9 @@ const Landing: FC = (): ReactElement => {
 
   const LoginForm = () => {
     const [loginSubmit] = useLoginMutation();
-    const [apiLoginErrorMessage, setApiLoginErrorMessage] = useState('')
+    const [apiLoginErrorMessage, setApiLoginErrorMessage] = useState('');
     const navigate = useNavigate();
+    const { login } = useAuth();
   
     // State to toggle password visibility
     const [showPassword, setShowPassword] = useState(false);
@@ -382,42 +388,40 @@ const Landing: FC = (): ReactElement => {
       { setSubmitting, setFieldError }: any
     ) => {
       try {
-        await loginSubmit(values)
-          .unwrap()
-          .then((response) => {
-            console.log('Success Login')
-            console.log(response)
-            
-            setTimeout(() => {
-              const userType = response?.data?.user?.type;
-              const isFreeTrial = response?.data?.user?.freeTrial;
-              
-              const subscriptionTier = isFreeTrial ? 'freeTrial' : 'monthlyPlan';
-              
-              localStorage.setItem('userType', userType);
-              localStorage.setItem('subscriptionTier', subscriptionTier);
-    
-              if (userType === 'employer') {
-                navigate('/employer', { 
-                  state: { initialTier: subscriptionTier }
-                });
-              } else {
-                const basePath = isFreeTrial ? '/job-hunter/feed' : '/job-hunter';
-                  
-                navigate(basePath, {
-                  state: { initialTier: subscriptionTier }
-                });
-              }
-            }, 1000);
-          })
-          .catch((err) => {
-            console.log('err')
-            setApiLoginErrorMessage('Invalid Username or Password')
-            console.log(err)
-          });
-    
+        const response = await loginSubmit(values).unwrap();
+        
+        // Check if we have the token in the response
+        if (response?.data?.token) {
+          // Login with auth context
+          login(response.data.token);
+  
+          const userType = response.data.user?.type;
+          const isFreeTrial = response.data.user?.freeTrial;
+          
+          // Store user preferences
+          localStorage.setItem('userType', userType);
+          localStorage.setItem('subscriptionTier', isFreeTrial ? 'freeTrial' : 'monthlyPlan');
+  
+          // Navigate after successful login
+          setTimeout(() => {
+            if (userType === 'employer') {
+              navigate('/employer');
+            } else {
+              const basePath = isFreeTrial ? '/job-hunter/feed' : '/job-hunter';
+              navigate(basePath);
+            }
+          }, 1000);
+        } else {
+          throw new Error('No token received');
+        }
       } catch (err: any) {
-        console.error(err);
+        console.error('Login error:', err);
+        // Handle API-specific errors
+        if (err.status === 401) {
+          setApiLoginErrorMessage('Invalid Username or Password');
+        } else {
+          setApiLoginErrorMessage('An error occurred during login');
+        }
         setFieldError('general', 'Invalid Username or Password');
       } finally {
         setSubmitting(false);
@@ -1481,7 +1485,7 @@ const CongratulationsModal = () => {
   const handleNext = () => {
     if (nextButton.current) {
       nextButton.current.onclick = () => {
-        if(dataStates.selectedUserType == 'job_hunter')
+        if(dataStates.selectedUserType == 'job-hunter')
           setModalState(modalStates.SIGNUP_STEP4)
         else if(dataStates.selectedUserType == 'employer')
           setModalState(modalStates.SIGNUP_STEP4_EMPLOYER)
@@ -1957,15 +1961,47 @@ const Modal = () => {
 
 const NavigationHeader = () => {
   const { menuOpen, toggleMenu } = useMenu();
+  const { isAuthenticated } = useAuth();
+  const [showSignOutModal, setShowSignOutModal] = useState(false);
+
+  // Get stored user preferences
+  const userType = localStorage.getItem('userType') as 'employer' | 'job-hunter';
+  const subscriptionTier = localStorage.getItem('subscriptionTier') as 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
+
+  // Get the appropriate menu items based on user type
+  const desktopMenuItems = userType === 'employer' ? employerDesktopMenu : jobHunterDesktopMenu;
+  const mobileMenuItems = userType === 'employer' ? employerMobileMenu : jobHunterMobileMenu;
+  
+  // Example user name - replace with actual user name from your auth context
+  const userName = userType === 'employer' ? "ABC Incorporated" : "Michael V";
 
   return(
+    <>
     <BaseMenu
-    isAuthenticated={false}
-    isMenuOpen={menuOpen}
-    onToggleMenu={toggleMenu}
-    ButtonLoginNav={ButtonLoginNav}
-    ButtonSignUpNav={ButtonSignUpNav}
-/>
+      isAuthenticated={isAuthenticated}
+      isMenuOpen={menuOpen}
+      onToggleMenu={toggleMenu}
+      {...(!isAuthenticated ? {
+        ButtonLoginNav,
+        ButtonSignUpNav
+      } : {
+        // Show these props when authenticated
+        desktopMenuItems,
+        mobileMenuItems,
+        subscriptionPlan: subscriptionTier,
+        userType,
+        userName,
+        onSignOut: () => setShowSignOutModal(true)
+      })}
+    />
+
+    {showSignOutModal && (
+      <SignOutModal
+        isOpen={showSignOutModal}
+        onClose={() => setShowSignOutModal(false)}
+      />
+    )}
+  </>
   )
 }
 const HeroPerfectMatchAlgo = () => {
@@ -1981,7 +2017,7 @@ const HeroPerfectMatchAlgo = () => {
     if (heroJobHunterButton.current) {
       heroJobHunterButton.current.onclick = () => {
         setHeroState(heroStates.SKILLSETS_JOBHUNTER);
-        setDataStates({...dataStates, selectedUserType: 'job_hunter'});
+        setDataStates({...dataStates, selectedUserType: 'job-hunter'});
       };
     }
   };
@@ -2604,6 +2640,8 @@ const isFreeTrial = false;
         <PageMeta title="Akaza" />
         <div className={styles.main}>
             <NavigationHeader/>
+            {location.pathname === '/landing' ? (
+              <>
             <div className={`${styles['hero-container']}`}>
                 <HeroPerfectMatchAlgo/>
                 <HeroJobTitleEmployer/>
@@ -2614,11 +2652,11 @@ const isFreeTrial = false;
                 <HeroLoading/>
                 <HeroPerfectMatchResults/>
             </div>
-            <div>
+            {/* <div>
               It should be displayed here
               <div className="AuthorizeNetSeal">
               </div>
-            </div>
+            </div> */}
             <div className={`${styles['pricing-container']}`}>
                 <div className={`${styles['desc1-wrapper']}`}>
                     <div className={`${styles.desc1}`}>
@@ -2738,6 +2776,10 @@ const isFreeTrial = false;
                 </div>
 
             </div>
+            </>
+          ) : (
+          <Outlet />
+        )}
             <Footer/>
             <div id="mask_overlay" className={`${styles['mask-overlay']} ${styles['requires-no-scroll']}`} hidden={!!maskHidden}>
               <Modal/>

@@ -141,12 +141,8 @@ const routes: RouteObject[] = [
   },
   {
     path: ROUTE_CONSTANTS.LANDING,
-    element: <LazyComponent component={BaseLayout} userType="guest" />,
+    element: <LazyComponent component={Landing} userType="guest" />,
     children: [
-      {
-        path: '',
-        element: <LazyComponent component={Landing} />
-      },
       {
         path: ROUTE_CONSTANTS.ABOUT_US,
         element: <LazyComponent component={AboutUs} />
@@ -354,7 +350,7 @@ const routes: RouteObject[] = [
   },
   {
     path: ROUTE_CONSTANTS.JOB_HUNTER,
-    element: <LazyComponent component={BaseLayout} useType="job-hunter"/>,
+    element: <LazyComponent component={BaseLayout} userType="job-hunter"/>,
     children: [
       {
         path: '',
