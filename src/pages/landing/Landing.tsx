@@ -644,7 +644,7 @@ const Landing: FC = (): ReactElement => {
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
                             tabIndex={-1}
-                            className="cursor-pointer"
+                            className={styles['toggle-visibility']}
                         >
                             {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
                         </button>
@@ -668,7 +668,7 @@ const Landing: FC = (): ReactElement => {
                             type="button"
                             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                             tabIndex={-1}
-                            className="cursor-pointer"
+                            className={styles['toggle-visibility']}
                         >
                             {showConfirmPassword ? <Eye size={20} /> : <EyeOff size={20} />}
                         </button>
@@ -746,6 +746,8 @@ const OTPSignUp = () => {
 
   const handleOnInput = (ref:any, nextRef:any) =>{
     let currentInput = ref.current;
+    currentInput.value = currentInput.value.replace(/[^0-9]/g, '');
+
     if(currentInput.value.length > currentInput.maxLength)
        currentInput.value = currentInput.value.slice(0, currentInput.maxLength);
     if(currentInput.value.length >= currentInput.maxLength)
@@ -903,12 +905,12 @@ const OTPSignUp = () => {
         <div className={`${styles.desc2}`}>(OTP) sent to your registered email below.</div>
         
         <div className={`${styles['otp-input-fields']}`}>
-            <div><input onInput={()=>handleOnInput(ib1,ib2)} onKeyDown={(e)=>handleOnKeyDown(e, ib1, ib1)} ref={ib1} type="number" maxLength={1} /></div>
-            <div><input onInput={()=>handleOnInput(ib2,ib3)} onKeyDown={(e)=>handleOnKeyDown(e, ib2, ib1)} ref={ib2} type="number" maxLength={1} /></div>
-            <div><input onInput={()=>handleOnInput(ib3,ib4)} onKeyDown={(e)=>handleOnKeyDown(e, ib3, ib2)} ref={ib3} type="number" maxLength={1} /></div>
-            <div><input onInput={()=>handleOnInput(ib4,ib5)} onKeyDown={(e)=>handleOnKeyDown(e, ib4, ib3)} ref={ib4} type="number" maxLength={1} /></div>
-            <div><input onInput={()=>handleOnInput(ib5,ib6)} onKeyDown={(e)=>handleOnKeyDown(e, ib5, ib4)} ref={ib5} type="number" maxLength={1} /></div>
-            <div><input onInput={()=>handleOnInput(ib6,ib6)} onKeyDown={(e)=>handleOnKeyDown(e, ib6, ib5)} ref={ib6} type="number" maxLength={1} /></div>
+            <div><input onInput={()=>handleOnInput(ib1,ib2)} onKeyDown={(e)=>handleOnKeyDown(e, ib1, ib1)} ref={ib1} type="number" pattern="[0-9]*" maxLength={1} /></div>
+            <div><input onInput={()=>handleOnInput(ib2,ib3)} onKeyDown={(e)=>handleOnKeyDown(e, ib2, ib1)} ref={ib2} type="number" pattern="[0-9]*" maxLength={1} /></div>
+            <div><input onInput={()=>handleOnInput(ib3,ib4)} onKeyDown={(e)=>handleOnKeyDown(e, ib3, ib2)} ref={ib3} type="number" pattern="[0-9]*" maxLength={1} /></div>
+            <div><input onInput={()=>handleOnInput(ib4,ib5)} onKeyDown={(e)=>handleOnKeyDown(e, ib4, ib3)} ref={ib4} type="number" pattern="[0-9]*" maxLength={1} /></div>
+            <div><input onInput={()=>handleOnInput(ib5,ib6)} onKeyDown={(e)=>handleOnKeyDown(e, ib5, ib4)} ref={ib5} type="number" pattern="[0-9]*" maxLength={1} /></div>
+            <div><input onInput={()=>handleOnInput(ib6,ib6)} onKeyDown={(e)=>handleOnKeyDown(e, ib6, ib5)} ref={ib6} type="number" pattern="[0-9]*" maxLength={1} /></div>
         </div>
         
         <div className={`${styles['action-buttons']}`}>
@@ -2637,11 +2639,11 @@ const isFreeTrial = false;
 
   return (
     <LandingContext.Provider value={{ isFreeTrial }}>
-        <PageMeta title="Akaza" />
-        <div className={styles.main}>
-            <NavigationHeader/>
-            {location.pathname === '/landing' ? (
-              <>
+    <PageMeta title="Akaza" />
+    <div className={styles.main}>
+      <NavigationHeader/>
+      {location.pathname === '/landing' && (
+        <>
             <div className={`${styles['hero-container']}`}>
                 <HeroPerfectMatchAlgo/>
                 <HeroJobTitleEmployer/>
@@ -2774,13 +2776,11 @@ const isFreeTrial = false;
                         </div>
                     </div>
                 </div>
-
             </div>
-            </>
-          ) : (
-          <Outlet />
+          </>         
         )}
-            <Footer/>
+        <Outlet />
+        <Footer/>
             <div id="mask_overlay" className={`${styles['mask-overlay']} ${styles['requires-no-scroll']}`} hidden={!!maskHidden}>
               <Modal/>
             </div>

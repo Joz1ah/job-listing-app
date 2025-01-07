@@ -144,28 +144,32 @@ const routes: RouteObject[] = [
     element: <LazyComponent component={Landing} userType="guest" />,
     children: [
       {
+        index: true,
+        element: null
+      },
+      {
         path: ROUTE_CONSTANTS.ABOUT_US,
-        element: <LazyComponent component={AboutUs} />
+        element: <AboutUs />
       },
       {
         path: ROUTE_CONSTANTS.CONTACT_US,
-        element: <LazyComponent component={ContactUs} />
+        element: <ContactUs />
       },
       {
         path: ROUTE_CONSTANTS.SUBSCRIPTION_PLAN,
-        element: <LazyComponent component={SubscriptionPlan} />
+        element: <SubscriptionPlan />
       },
       {
         path: ROUTE_CONSTANTS.FAQ,
-        element: <LazyComponent component={Faq} />
+        element: <Faq />
       },
       {
         path: ROUTE_CONSTANTS.TERMS_CONDITIONS,
-        element: <LazyComponent component={TermsAndConditions} />
+        element: <TermsAndConditions />
       },
       {
         path: ROUTE_CONSTANTS.PRIVACY_POLICY,
-        element: <LazyComponent component={PrivacyPolicy} />
+        element: <PrivacyPolicy />
       }
     ]
   },

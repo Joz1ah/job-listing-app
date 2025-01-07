@@ -7,15 +7,13 @@ const Footer: FC = () => {
       <nav className="space-y-2">
         <p className="space-x-3">
           <Link 
-            to="/landing/terms-conditions"
-            className="hover:underline focus:underline"
+            to="terms-conditions"
           >
             Terms & Conditions
           </Link>
           <span aria-hidden="true">•</span>
           <Link 
-            to="/landing/privacy-policy"
-            className="hover:underline focus:underline"
+            to="privacy-policy"
           >
             Privacy Policy
           </Link>
