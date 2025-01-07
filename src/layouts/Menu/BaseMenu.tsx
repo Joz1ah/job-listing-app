@@ -24,7 +24,6 @@ interface MenuProps {
   subscriptionPlan?: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
   userType?: 'employer' | 'job-hunter';
   userName?: string;
-  feedPath?: string;
   onSignOut?: () => void;
   isAuthenticated?: boolean;
   ButtonLoginNav?: FC;
@@ -39,7 +38,6 @@ const BaseMenu: FC<MenuProps> = ({
   subscriptionPlan = 'freeTrial',
   userType,
   userName,
-  feedPath = '/',
   onSignOut,
   isAuthenticated = false,
   ButtonLoginNav,
@@ -49,14 +47,13 @@ const BaseMenu: FC<MenuProps> = ({
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 1024);
   const location = useLocation();
   const isEmployer = userType === 'employer';
-  const safeUserType = userType || 'job-hunter';
 
   // Default navigation items for unauthenticated state
   const defaultNavItems = [
-    { name: "About us", path: "/landing/about-us" },
-    { name: "Contact us", path: "/landing/contact-us" },
-    { name: "Subscription plans", path: "/landing/subscription-plan" },
-    { name: "FAQ", path: "/landing/faq" }
+    { name: "About us", path: "about-us" },
+    { name: "Contact us", path: "contact-us" },
+    { name: "Subscription plans", path: "subscription-plan" },
+    { name: "FAQ", path: "faq" }
   ];
 
   const handleItemClick = (item: NavItem) => {
@@ -166,10 +163,10 @@ const BaseMenu: FC<MenuProps> = ({
   return (
     <>
       {/* Desktop Header */}
-      <header className="hidden md:flex fixed top-0 left-0 right-0 bg-[#2D3A41] h-[72px] px-4 justify-between items-center z-50">
+      <header className="hidden md:flex fixed top-0 left-0 right-0 bg-[#2D3A41] h-[72px] px-4 justify-between items-center z-50 shadow-md">
         <div className="flex items-center gap-4">
           <NavLink
-            to={feedPath}
+            to="/"
             onClick={handleNavLinkClick}
             className="flex-shrink-0"
           >
@@ -183,22 +180,22 @@ const BaseMenu: FC<MenuProps> = ({
             <nav className="flex-shrink">
               <ul className="flex gap-4 lg:gap-8 text-white text-[14px] lg:text-[16px] font-light whitespace-nowrap items-center">
                 <li className="hover:text-[#F5722E]">
-                  <NavLink to={isAuthenticated ? `/${safeUserType}/about-us` : "/landing/about-us"} onClick={handleNavLinkClick}>
+                  <NavLink to='about-us' onClick={handleNavLinkClick}>
                     About us
                   </NavLink>
                 </li>
                 <li className="hover:text-[#F5722E]">
-                  <NavLink to={isAuthenticated ? `/${safeUserType}/contact-us` : "/landing/contact-us"} onClick={handleNavLinkClick}>
+                  <NavLink to='contact-us' onClick={handleNavLinkClick}>
                     Contact us
                   </NavLink>
                 </li>
                 <li className="hover:text-[#F5722E]">
-                  <NavLink to={isAuthenticated ? `/${safeUserType}/subscription-plan` : "/landing/subscription-plan"} onClick={handleNavLinkClick}>
+                  <NavLink to='subscription-plan' onClick={handleNavLinkClick}>
                     Subscription plans
                   </NavLink>
                 </li>
                 <li className="hover:text-[#F5722E]">
-                  <NavLink to={isAuthenticated ? `/${safeUserType}/faq` : "/landing/faq"} onClick={handleNavLinkClick}>
+                  <NavLink to='faq' onClick={handleNavLinkClick}>
                     FAQ
                   </NavLink>
                 </li>
@@ -277,7 +274,7 @@ const BaseMenu: FC<MenuProps> = ({
       </header>
 
       {/* Mobile Header */}
-      <header className="md:hidden bg-[#2D3A41] py-4 px-2 flex justify-between items-center z-50">
+      <header className="md:hidden bg-[#2D3A41] py-4 px-2 flex justify-between items-center z-50 shadow-md">
         <img src={akazaLogoWhite} alt="Akaza Logo" className="h-8" />
         <div className="flex items-center space-x-4">
           {isAuthenticated ? (

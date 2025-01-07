@@ -81,7 +81,7 @@ const JobHunterHeader: FC = () => {
               <DesktopTooltip content="This is how employer rated your interview">
                 <div className="flex items-center space-x-2 font-light text-white">
                   <span className="border-2 border-dotted border-[#F5722E] text-[15px] px-2 py-1 border-opacity-70 whitespace-nowrap">
-                    Your interview rating from employers
+                    Your interview ratings from Employers
                   </span>
                   <Info className="fill-[#D6D6D6] text-[#263238]" size={14} />
                 </div>

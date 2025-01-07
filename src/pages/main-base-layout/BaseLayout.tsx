@@ -1,3 +1,4 @@
+// layouts/BaseLayout.tsx
 import { FC, useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import { useMenu } from "hooks";
@@ -29,12 +30,12 @@ const LayoutContent: FC<LayoutContentProps> = ({ children, menu }) => (
   <div className="flex flex-col min-h-screen bg-[#212529] overflow-hidden h-full">
     {menu}
     <ScrollArea>
-    <div className="flex flex-col flex-1 h-screen">
-      <main className="flex-1 pb-8">
-        {children}
-      </main>
-      <Footer />
-    </div>
+      <div className="flex flex-col flex-1 h-screen">
+        <main className="flex-1 pb-8">
+          {children}
+        </main>
+        <Footer />
+      </div>
     </ScrollArea>
   </div>
 );
@@ -94,7 +95,6 @@ const AuthenticatedLayoutContent: FC<{ userType: 'employer' | 'job-hunter' }> = 
         subscriptionPlan={subscriptionPlan}
         userType={userType}
         userName={userName}
-        feedPath={`/${isEmployer ? 'employer' : 'job-hunter'}/`}
         onSignOut={() => setShowSignOutModal(true)}
       />
       
@@ -114,17 +114,9 @@ const AuthenticatedLayoutContent: FC<{ userType: 'employer' | 'job-hunter' }> = 
   );
 };
 
-const GuestLayoutContent: FC = () => {
-  return (
-    <LayoutContent>
-      <Outlet />
-    </LayoutContent>
-  );
-};
-
 const BaseLayoutContent: FC<BaseLayoutContentProps> = ({ userType }) => {
   if (userType === 'guest') {
-    return <GuestLayoutContent />;
+    return null;
   }
   return <AuthenticatedLayoutContent userType={userType} />;
 };
@@ -134,11 +126,11 @@ interface BaseLayoutProps {
 }
 
 const BaseLayout: FC<BaseLayoutProps> = ({ userType }) => {
-
   const storedTier = localStorage.getItem('subscriptionTier') as SubscriptionPlan || 'freeTrial';
 
+  // Remove guest layout case
   if (userType === 'guest') {
-    return <BaseLayoutContent userType={userType} />;
+    return null; // or handle differently if needed
   }
 
   if (userType === 'employer') {
@@ -156,4 +148,4 @@ const BaseLayout: FC<BaseLayoutProps> = ({ userType }) => {
   );
 };
 
-export { BaseLayout };
+export { BaseLayout, LayoutContent };

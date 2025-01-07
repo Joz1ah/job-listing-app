@@ -21,6 +21,12 @@ import { perfectMatch as jobMatches, Match as JobMatch } from 'mockData/jobs-dat
 import { EmployerProvider, JobHunterProvider } from 'components';
 import { BookmarkProvider } from 'components';
 import { Button } from 'components';
+import { Link } from 'react-router-dom';
+import { useAuth } from 'contexts/AuthContext/AuthContext';
+import { employerDesktopMenu, employerMobileMenu } from 'mockData/nav-menus';
+import { jobHunterDesktopMenu, jobHunterMobileMenu } from 'mockData/nav-menus';
+import { SignOutModal } from 'components';
+import { Outlet } from 'react-router-dom';
 
 import video1 from 'assets/mp4/Landing-Page-hero-1.mp4';
 import video2 from 'assets/mp4/video-conference-call-1.mp4';
@@ -44,7 +50,7 @@ import girl_with_dog_smiling_at_laptop from 'assets/girl-with-dog-smiling-at-lap
 //import powered_by_stripe from 'assets/powered_by_stripe.svg?url';
 import authnet_visa_solution from 'assets/authnet-logo-light.svg?url';
 
-import icon_search from 'assets/search.svg?url';
+//import icon_search from 'assets/search.svg?url';
 import _5dollarspermonth from 'assets/5dollarspermonth.svg?url';
 import flame_vector from 'assets/flame-vector.svg?url';
 import orange_check from 'assets/orange-check.svg?url';
@@ -226,41 +232,66 @@ const Landing: FC = (): ReactElement => {
 
   //const [localCount, setCount] = useState(0)
 
-  const ButtonLoginNav = () =>{
+  useEffect(() => {
+    // Check if PerfectMatchResultsModal was previously open and is now being closed
+    if (modalState !== modalStates.PERFECT_MATCH_RESULTS && maskHidden === 1) {
+      setHeroState(heroStates.PERFECT_MATCH_ALGO);
+    }
+  }, [modalState, maskHidden]);
+
+  const ButtonLoginNav = () => {
     const elementRef = useRef<HTMLButtonElement>(null);
     const toggleLogin = () => {
       if (elementRef.current) {
         elementRef.current.onclick = () => {
-          setSelectedModalHeader(1)
-          setMaskHidden((prev) => prev ? 0 : 1);
-          setModalState(modalStates.LOGIN);
-          setCloseModalActive(1);
+          // First, check if we're switching from another modal
+          if (!maskHidden) {
+            // We're switching modals, so don't toggle the mask
+            setSelectedModalHeader(1);
+            setModalState(modalStates.LOGIN);
+            setCloseModalActive(1);
+          } else {
+            // Normal opening of modal
+            setSelectedModalHeader(1);
+            setMaskHidden(0);
+            setModalState(modalStates.LOGIN);
+            setCloseModalActive(1);
+          }
         };
       }
     };
   
     useEffect(toggleLogin, []);
   
-    return <button ref={elementRef} id="btn_login_nav" className={`${styles.button}`}>Login</button>
-  }  
+    return <button ref={elementRef} id="btn_login_nav" className={`${styles.button}`}>Login</button>;
+  };
 
-  const ButtonSignUpNav = () =>{
+  const ButtonSignUpNav = () => {
     const elementRef = useRef<HTMLButtonElement>(null);
     const toggleSignUp = () => {
       if (elementRef.current) {
         elementRef.current.onclick = () => {
-          setSelectedModalHeader(1)
-          setMaskHidden((prev) => prev ? 0 : 1);
-          setModalState(modalStates.SIGNUP_SELECT_USER_TYPE);
-          setCloseModalActive(1);
+          // First, check if we're switching from another modal
+          if (!maskHidden) {
+            // We're switching modals, so don't toggle the mask
+            setSelectedModalHeader(1);
+            setModalState(modalStates.SIGNUP_SELECT_USER_TYPE);
+            setCloseModalActive(1);
+          } else {
+            // Normal opening of modal
+            setSelectedModalHeader(1);
+            setMaskHidden(0);
+            setModalState(modalStates.SIGNUP_SELECT_USER_TYPE);
+            setCloseModalActive(1);
+          }
         };
       }
     };
   
     useEffect(toggleSignUp, []);
   
-    return <button ref={elementRef} className={`${styles.button} ${styles['button-signup']}`}>Sign up</button>
-  }  
+    return <button ref={elementRef} className={`${styles.button} ${styles['button-signup']}`}>Sign up</button>;
+  };
 
   const LoginModal = () =>{
     return(
@@ -277,14 +308,24 @@ const Landing: FC = (): ReactElement => {
                   </div>
               </div>
               <div className={`${styles['terms-and-privacy']}`}>
-                  <input type="checkbox"></input>
-                  <div>
-                      <label>I have read, understood and agree to the</label>
-                      <label>Terms of Use</label>
-                      <label>and</label>
-                      <label>Privacy Policy</label>
-                  </div>
-              </div>
+                <input type="checkbox" />
+                <div>
+                    <label>I have read, understood and agree to the </label>
+                    <Link 
+                        to='/landing/terms-conditions' 
+                        className={styles['link-as-label']}
+                    >
+                        Terms of Use
+                    </Link>
+                    <label> and </label>
+                    <Link 
+                        to='/landing/privacy-policy'
+                        className={styles['link-as-label']}
+                    >
+                        Privacy Policy
+                    </Link>
+                </div>
+            </div>
           </div>
       </div>
     )
@@ -297,7 +338,7 @@ const Landing: FC = (): ReactElement => {
     const moveToNext = () => {
       if (ButtonJobHunterRef.current) {
         ButtonJobHunterRef.current.onclick = () => {
-          setDataStates({...dataStates, selectedUserType: 'job_hunter'})
+          setDataStates({...dataStates, selectedUserType: 'job-hunter'})
           setModalState(modalStates.SIGNUP_STEP2)
         };
       }
@@ -335,8 +376,9 @@ const Landing: FC = (): ReactElement => {
 
   const LoginForm = () => {
     const [loginSubmit] = useLoginMutation();
-    const [apiLoginErrorMessage, setApiLoginErrorMessage] = useState('')
+    const [apiLoginErrorMessage, setApiLoginErrorMessage] = useState('');
     const navigate = useNavigate();
+    const { login } = useAuth();
   
     // State to toggle password visibility
     const [showPassword, setShowPassword] = useState(false);
@@ -346,42 +388,40 @@ const Landing: FC = (): ReactElement => {
       { setSubmitting, setFieldError }: any
     ) => {
       try {
-        await loginSubmit(values)
-          .unwrap()
-          .then((response) => {
-            console.log('Success Login')
-            console.log(response)
-            
-            setTimeout(() => {
-              const userType = response?.data?.user?.type;
-              const isFreeTrial = response?.data?.user?.freeTrial;
-              
-              const subscriptionTier = isFreeTrial ? 'freeTrial' : 'monthlyPlan';
-              
-              localStorage.setItem('userType', userType);
-              localStorage.setItem('subscriptionTier', subscriptionTier);
-    
-              if (userType === 'employer') {
-                navigate('/employer', { 
-                  state: { initialTier: subscriptionTier }
-                });
-              } else {
-                const basePath = isFreeTrial ? '/job-hunter/feed' : '/job-hunter';
-                  
-                navigate(basePath, {
-                  state: { initialTier: subscriptionTier }
-                });
-              }
-            }, 1000);
-          })
-          .catch((err) => {
-            console.log('err')
-            setApiLoginErrorMessage('Invalid Username or Password')
-            console.log(err)
-          });
-    
+        const response = await loginSubmit(values).unwrap();
+        
+        // Check if we have the token in the response
+        if (response?.data?.token) {
+          // Login with auth context
+          login(response.data.token);
+  
+          const userType = response.data.user?.type;
+          const isFreeTrial = response.data.user?.freeTrial;
+          
+          // Store user preferences
+          localStorage.setItem('userType', userType);
+          localStorage.setItem('subscriptionTier', isFreeTrial ? 'freeTrial' : 'monthlyPlan');
+  
+          // Navigate after successful login
+          setTimeout(() => {
+            if (userType === 'employer') {
+              navigate('/employer');
+            } else {
+              const basePath = isFreeTrial ? '/job-hunter/feed' : '/job-hunter';
+              navigate(basePath);
+            }
+          }, 1000);
+        } else {
+          throw new Error('No token received');
+        }
       } catch (err: any) {
-        console.error(err);
+        console.error('Login error:', err);
+        // Handle API-specific errors
+        if (err.status === 401) {
+          setApiLoginErrorMessage('Invalid Username or Password');
+        } else {
+          setApiLoginErrorMessage('An error occurred during login');
+        }
         setFieldError('general', 'Invalid Username or Password');
       } finally {
         setSubmitting(false);
@@ -420,6 +460,7 @@ const Landing: FC = (): ReactElement => {
                     type="button"
                     className={styles['toggle-visibility']}
                     onClick={() => setShowPassword(!showPassword)}
+                    tabIndex={-1}
                     aria-label={showPassword ? 'Hide Password' : 'Show Password'}
                   >
                     {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
@@ -510,33 +551,31 @@ const Landing: FC = (): ReactElement => {
       try {
         // Validate the form data
         await schema.validate(credentials, { abortEarly: false });
-        setIsSubmitting(true)
+        setIsSubmitting(true);
         try {
-          const res = await signUpSubmit({
+          // First set the modal state to SIGNUP_STEP3 immediately
+          setModalState(modalStates.SIGNUP_STEP3);
+          
+          await signUpSubmit({
             ...credentials,
             type: dataStates.selectedUserType
-          }).unwrap().then(()=>{
+          }).unwrap().then(() => {
             setTempLoginEmail(credentials.email)
             setTempLoginPassword(credentials.password)
+            
+            setDataStates({
+              ...dataStates,
+              email: credentials.email,
+            });
           });
-          
-          console.log('signup success', res);
-          
-          setDataStates({
-            ...dataStates,
-            email: credentials.email,
-            //userId: res.data.id
-          });
-          
-          await generateOTP({ email: credentials.email }).unwrap().then(()=>{
-            setIsSubmitting(false)
-          });
-          setTimeout(() => {
-            setModalState(modalStates.SIGNUP_STEP3);
-          }, 1000);
+
+          await generateOTP({ email: credentials.email }).unwrap();
           
         } catch (err: any) {
-          setIsSubmitting(false)
+          // If there's an error, revert back to the signup form
+          setModalState(modalStates.SIGNUP_STEP2);
+          setIsSubmitting(false);
+          
           if (err.status === 409 || err?.data?.message?.toLowerCase().includes('email already exists')) {
             setOrganizedErrors(prev => ({
               ...prev,
@@ -551,7 +590,7 @@ const Landing: FC = (): ReactElement => {
         }
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
-          setIsSubmitting(false)
+          setIsSubmitting(false);
           const _organizedErrors: ErrorState = { 
             email: '', 
             password: '', 
@@ -604,7 +643,8 @@ const Landing: FC = (): ReactElement => {
                         <button 
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="cursor-pointer"
+                            tabIndex={-1}
+                            className={styles['toggle-visibility']}
                         >
                             {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
                         </button>
@@ -627,7 +667,8 @@ const Landing: FC = (): ReactElement => {
                         <button 
                             type="button"
                             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                            className="cursor-pointer"
+                            tabIndex={-1}
+                            className={styles['toggle-visibility']}
                         >
                             {showConfirmPassword ? <Eye size={20} /> : <EyeOff size={20} />}
                         </button>
@@ -705,6 +746,8 @@ const OTPSignUp = () => {
 
   const handleOnInput = (ref:any, nextRef:any) =>{
     let currentInput = ref.current;
+    currentInput.value = currentInput.value.replace(/[^0-9]/g, '');
+
     if(currentInput.value.length > currentInput.maxLength)
        currentInput.value = currentInput.value.slice(0, currentInput.maxLength);
     if(currentInput.value.length >= currentInput.maxLength)
@@ -862,12 +905,12 @@ const OTPSignUp = () => {
         <div className={`${styles.desc2}`}>(OTP) sent to your registered email below.</div>
         
         <div className={`${styles['otp-input-fields']}`}>
-            <div><input onInput={()=>handleOnInput(ib1,ib2)} onKeyDown={(e)=>handleOnKeyDown(e, ib1, ib1)} ref={ib1} type="number" maxLength={1} /></div>
-            <div><input onInput={()=>handleOnInput(ib2,ib3)} onKeyDown={(e)=>handleOnKeyDown(e, ib2, ib1)} ref={ib2} type="number" maxLength={1} /></div>
-            <div><input onInput={()=>handleOnInput(ib3,ib4)} onKeyDown={(e)=>handleOnKeyDown(e, ib3, ib2)} ref={ib3} type="number" maxLength={1} /></div>
-            <div><input onInput={()=>handleOnInput(ib4,ib5)} onKeyDown={(e)=>handleOnKeyDown(e, ib4, ib3)} ref={ib4} type="number" maxLength={1} /></div>
-            <div><input onInput={()=>handleOnInput(ib5,ib6)} onKeyDown={(e)=>handleOnKeyDown(e, ib5, ib4)} ref={ib5} type="number" maxLength={1} /></div>
-            <div><input onInput={()=>handleOnInput(ib6,ib6)} onKeyDown={(e)=>handleOnKeyDown(e, ib6, ib5)} ref={ib6} type="number" maxLength={1} /></div>
+            <div><input onInput={()=>handleOnInput(ib1,ib2)} onKeyDown={(e)=>handleOnKeyDown(e, ib1, ib1)} ref={ib1} type="number" pattern="[0-9]*" maxLength={1} /></div>
+            <div><input onInput={()=>handleOnInput(ib2,ib3)} onKeyDown={(e)=>handleOnKeyDown(e, ib2, ib1)} ref={ib2} type="number" pattern="[0-9]*" maxLength={1} /></div>
+            <div><input onInput={()=>handleOnInput(ib3,ib4)} onKeyDown={(e)=>handleOnKeyDown(e, ib3, ib2)} ref={ib3} type="number" pattern="[0-9]*" maxLength={1} /></div>
+            <div><input onInput={()=>handleOnInput(ib4,ib5)} onKeyDown={(e)=>handleOnKeyDown(e, ib4, ib3)} ref={ib4} type="number" pattern="[0-9]*" maxLength={1} /></div>
+            <div><input onInput={()=>handleOnInput(ib5,ib6)} onKeyDown={(e)=>handleOnKeyDown(e, ib5, ib4)} ref={ib5} type="number" pattern="[0-9]*" maxLength={1} /></div>
+            <div><input onInput={()=>handleOnInput(ib6,ib6)} onKeyDown={(e)=>handleOnKeyDown(e, ib6, ib5)} ref={ib6} type="number" pattern="[0-9]*" maxLength={1} /></div>
         </div>
         
         <div className={`${styles['action-buttons']}`}>
@@ -1444,7 +1487,7 @@ const CongratulationsModal = () => {
   const handleNext = () => {
     if (nextButton.current) {
       nextButton.current.onclick = () => {
-        if(dataStates.selectedUserType == 'job_hunter')
+        if(dataStates.selectedUserType == 'job-hunter')
           setModalState(modalStates.SIGNUP_STEP4)
         else if(dataStates.selectedUserType == 'employer')
           setModalState(modalStates.SIGNUP_STEP4_EMPLOYER)
@@ -1850,6 +1893,9 @@ const ModalHeader = () =>{
     setSelectedModalHeader(1);
     setMaskHidden(1);
     setCloseModalActive(0);
+    if (modalState === modalStates.PERFECT_MATCH_RESULTS) {
+      setHeroState(heroStates.PERFECT_MATCH_ALGO);
+    }
     if(closeModalActive){}
   }
   const toggleCloseModal = () => {
@@ -1917,15 +1963,47 @@ const Modal = () => {
 
 const NavigationHeader = () => {
   const { menuOpen, toggleMenu } = useMenu();
+  const { isAuthenticated } = useAuth();
+  const [showSignOutModal, setShowSignOutModal] = useState(false);
+
+  // Get stored user preferences
+  const userType = localStorage.getItem('userType') as 'employer' | 'job-hunter';
+  const subscriptionTier = localStorage.getItem('subscriptionTier') as 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
+
+  // Get the appropriate menu items based on user type
+  const desktopMenuItems = userType === 'employer' ? employerDesktopMenu : jobHunterDesktopMenu;
+  const mobileMenuItems = userType === 'employer' ? employerMobileMenu : jobHunterMobileMenu;
+  
+  // Example user name - replace with actual user name from your auth context
+  const userName = userType === 'employer' ? "ABC Incorporated" : "Michael V";
 
   return(
+    <>
     <BaseMenu
-    isAuthenticated={false}
-    isMenuOpen={menuOpen}
-    onToggleMenu={toggleMenu}
-    ButtonLoginNav={ButtonLoginNav}
-    ButtonSignUpNav={ButtonSignUpNav}
-/>
+      isAuthenticated={isAuthenticated}
+      isMenuOpen={menuOpen}
+      onToggleMenu={toggleMenu}
+      {...(!isAuthenticated ? {
+        ButtonLoginNav,
+        ButtonSignUpNav
+      } : {
+        // Show these props when authenticated
+        desktopMenuItems,
+        mobileMenuItems,
+        subscriptionPlan: subscriptionTier,
+        userType,
+        userName,
+        onSignOut: () => setShowSignOutModal(true)
+      })}
+    />
+
+    {showSignOutModal && (
+      <SignOutModal
+        isOpen={showSignOutModal}
+        onClose={() => setShowSignOutModal(false)}
+      />
+    )}
+  </>
   )
 }
 const HeroPerfectMatchAlgo = () => {
@@ -1941,7 +2019,7 @@ const HeroPerfectMatchAlgo = () => {
     if (heroJobHunterButton.current) {
       heroJobHunterButton.current.onclick = () => {
         setHeroState(heroStates.SKILLSETS_JOBHUNTER);
-        setDataStates({...dataStates, selectedUserType: 'job_hunter'});
+        setDataStates({...dataStates, selectedUserType: 'job-hunter'});
       };
     }
   };
@@ -2047,7 +2125,8 @@ const HeroJobTitleEmployer = () => {
                 </div>
               )}
               <div className={`${styles['hero-button-container2']}`}>
-                  <div ref={heroNextButton} className={`${styles['button-custom-orange']} ${styles['noselect']}`}>Next</div>
+                  <div ref={heroNextButton} className={`${styles['button-custom-orange']} ${styles['noselect']}`}>
+                    Next</div>
                   <div ref={heroPreviousButton} className={`${styles['button-custom-transparent']} ${styles['noselect']}`}>
                       <img className={`${styles['caret-left']}`} src={arrow_left_icon}></img>
                       <div>Previous</div>
@@ -2132,7 +2211,7 @@ const HeroSkillSetsEmployer = () => {
                     secondColor: "#184E77",
                   }}
                 />
-                <img src={icon_search}></img>
+                {/* <img src={icon_search}></img> */}
               </div>
               {error && (
                 <div className={`${styles['validation-message']} ${styles['variant-2']}`}>
@@ -2328,7 +2407,7 @@ const HeroSkillSetsJobHunter = () => {
                         secondColor: "#184E77",
                       }}
                     />
-                    <img src={icon_search}></img>
+                    {/* <img src={icon_search}></img> */}
                 </div>
                 {error && (
                   <div className={`${styles['validation-message']} ${styles['variant-2']}`}>
@@ -2500,9 +2579,12 @@ const HeroPerfectMatchResults = () => {
 };
 
 const HeroLoading = () => {
+  const [hasShownModal, setHasShownModal] = useState(false);
+
   useEffect(() => {
-    if (heroState === heroStates.LOADING) {
+    if (heroState === heroStates.LOADING && !hasShownModal && maskHidden === 1) {
       const timer = setTimeout(() => {
+        setHasShownModal(true);
         setMaskHidden(0);
         setSelectedModalHeader(1);
         setModalState(modalStates.PERFECT_MATCH_RESULTS);
@@ -2510,6 +2592,13 @@ const HeroLoading = () => {
       }, 3000);
       
       return () => clearTimeout(timer);
+    }
+  }, [heroState, maskHidden, hasShownModal]);
+
+  // Reset modal shown state when leaving loading state
+  useEffect(() => {
+    if (heroState !== heroStates.LOADING) {
+      setHasShownModal(false);
     }
   }, [heroState]);
 
@@ -2550,9 +2639,11 @@ const isFreeTrial = false;
 
   return (
     <LandingContext.Provider value={{ isFreeTrial }}>
-        <PageMeta title="Akaza" />
-        <div className={styles.main}>
-            <NavigationHeader/>
+    <PageMeta title="Akaza" />
+    <div className={styles.main}>
+      <NavigationHeader/>
+      {location.pathname === '/landing' && (
+        <>
             <div className={`${styles['hero-container']}`}>
                 <HeroPerfectMatchAlgo/>
                 <HeroJobTitleEmployer/>
@@ -2563,11 +2654,11 @@ const isFreeTrial = false;
                 <HeroLoading/>
                 <HeroPerfectMatchResults/>
             </div>
-            <div>
+            {/* <div>
               It should be displayed here
               <div className="AuthorizeNetSeal">
               </div>
-            </div>
+            </div> */}
             <div className={`${styles['pricing-container']}`}>
                 <div className={`${styles['desc1-wrapper']}`}>
                     <div className={`${styles.desc1}`}>
@@ -2685,9 +2776,11 @@ const isFreeTrial = false;
                         </div>
                     </div>
                 </div>
-
             </div>
-            <Footer/>
+          </>         
+        )}
+        <Outlet />
+        <Footer/>
             <div id="mask_overlay" className={`${styles['mask-overlay']} ${styles['requires-no-scroll']}`} hidden={!!maskHidden}>
               <Modal/>
             </div>

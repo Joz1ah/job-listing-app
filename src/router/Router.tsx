@@ -91,6 +91,9 @@ const JobHunterPrivacySettings = lazy(() => import('features/job-hunter').then(m
 const JobHunterYourBookmarkedJobs = lazy(() => import('features/job-hunter').then(module => ({ default: module.YourBookmarkedJobs })))
 const EmployerYourBookmarkedJobs = lazy(() => import('features/employer').then(module => ({ default: module.YourBookmarkedJobs })))
 
+const TermsAndConditions = lazy(() => import('pages').then(module => ({ default: module.TermsConditionsPage })))
+const PrivacyPolicy = lazy(() => import('pages').then(module => ({ default: module.PrivacyPolicyPage })))
+
 const LoadingFallback = () => (
   <div className="flex items-center justify-center h-screen">
     <img src={spinner_loading_fallback} alt="spinners" className='w-20 h-20'/>
@@ -138,27 +141,35 @@ const routes: RouteObject[] = [
   },
   {
     path: ROUTE_CONSTANTS.LANDING,
-    element: <LazyComponent component={BaseLayout} userType="guest" />,
+    element: <LazyComponent component={Landing} userType="guest" />,
     children: [
       {
-        path: '',
-        element: <LazyComponent component={Landing} />
+        index: true,
+        element: null
       },
       {
         path: ROUTE_CONSTANTS.ABOUT_US,
-        element: <LazyComponent component={AboutUs} />
+        element: <AboutUs />
       },
       {
         path: ROUTE_CONSTANTS.CONTACT_US,
-        element: <LazyComponent component={ContactUs} />
+        element: <ContactUs />
       },
       {
         path: ROUTE_CONSTANTS.SUBSCRIPTION_PLAN,
-        element: <LazyComponent component={SubscriptionPlan} />
+        element: <SubscriptionPlan />
       },
       {
         path: ROUTE_CONSTANTS.FAQ,
-        element: <LazyComponent component={Faq} />
+        element: <Faq />
+      },
+      {
+        path: ROUTE_CONSTANTS.TERMS_CONDITIONS,
+        element: <TermsAndConditions />
+      },
+      {
+        path: ROUTE_CONSTANTS.PRIVACY_POLICY,
+        element: <PrivacyPolicy />
       }
     ]
   },
@@ -343,7 +354,7 @@ const routes: RouteObject[] = [
   },
   {
     path: ROUTE_CONSTANTS.JOB_HUNTER,
-    element: <LazyComponent component={BaseLayout} useType="job-hunter"/>,
+    element: <LazyComponent component={BaseLayout} userType="job-hunter"/>,
     children: [
       {
         path: '',

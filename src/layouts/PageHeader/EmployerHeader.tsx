@@ -93,7 +93,7 @@ const EmployerHeader: FC = () => {
               <DesktopTooltip content="This is how job hunters rated your interview">
                 <div className="hidden md:flex items-center space-x-2">
                   <div className="border-2 border-dotted border-[#F5722E] text-white text-[15px] px-2 py-1 border-opacity-70 whitespace-nowrap">
-                    Your interview from Job Hunters
+                    Your interview ratings from Job Hunters
                   </div>
                   <Info className="fill-[#D6D6D6] text-[#263238]" size={14} />
                 </div>

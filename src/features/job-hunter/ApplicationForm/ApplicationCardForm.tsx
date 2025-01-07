@@ -4,6 +4,7 @@ import { Input, Button, InputField } from "components";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import saveChanges from "images/save-changes.svg?url";
+import Cookies from 'js-cookie';
 
 import { selectOptions } from "mockData/app-form-options";
 
@@ -34,6 +35,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 
 import { isValidPhoneNumber } from "react-phone-number-input";
+import { useJobHunterProfileMutation } from "api/akaza/akazaAPI";
 
 interface FormData {
   firstName: string;
@@ -102,6 +104,8 @@ const ApplicationCardForm: FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPreview, setShowPreview] = useState<boolean>(false);
 
+  const [submitJobHunterProfile ] = useJobHunterProfileMutation();
+
   const {
     values,
     errors,
@@ -129,10 +133,54 @@ const ApplicationCardForm: FC = () => {
     },
     validationSchema,
     validateOnMount: true,
-    onSubmit: (): void => {
+    onSubmit: () => {
       setShowPreview(true);
     },
   });
+
+  const handleFormSubmit = async () => {
+    try {
+      setIsSubmitting(true);
+      
+      // Ensure the auth token exists
+      const authToken = Cookies.get('authToken');
+      if (!authToken) {
+        console.error('No auth token found');
+        return;
+      }
+  
+      const payload = {
+        firstName: values.firstName,
+        lastName: values.lastName,
+        location: "", // Add if needed
+        language: values.languages,
+        birthday: values.birthday,
+        email: values.emailAddress,
+        phoneNumber: values.mobileNumber,
+        employmentType: values.employmentType,
+        education: values.education,
+        yearsOfExperience: values.yearsOfExperience,
+        core: values.coreSkills,
+        interpersonal: values.interpersonalSkills,
+        certification: values.certifications,
+        salaryRange: values.salaryRange,
+        country: values.country
+      };
+  
+      const response = await submitJobHunterProfile(payload).unwrap();
+      
+      if (response) {
+        // Add success notification here
+        navigate("/job-hunter/feed");
+      }
+    } catch (error) {
+      console.error("Error submitting profile:", error);
+      // Add error notification here
+    } finally {
+      setIsSubmitting(false);
+      setShowPreview(false);
+    }
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && e.target instanceof HTMLElement) {
@@ -150,14 +198,7 @@ const ApplicationCardForm: FC = () => {
         isOpen={showPreview}
         onClose={() => setShowPreview(false)}
         formData={values}
-        onConfirm={() => {
-          setShowPreview(false);
-          setIsSubmitting(true);
-          // Your existing submission logic here
-          setTimeout(() => {
-            navigate("/job-hunter/feed");
-          }, 1500);
-        }}
+        onConfirm={handleFormSubmit}
       />
       {isSubmitting && <LoadingOverlay />}
       

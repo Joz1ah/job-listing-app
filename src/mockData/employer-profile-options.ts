@@ -23,7 +23,7 @@ interface SelectOption {
     streetAddress: string;
     city: string;
     state: string;
-    postalCode: string;
+    postalCode?: string;
     country: string;
     companyOverview: string;
   }

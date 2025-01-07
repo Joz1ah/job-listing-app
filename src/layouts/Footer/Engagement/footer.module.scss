@@ -9,6 +9,14 @@ footer{
     color:#F5F7FA;
     padding: 105px 224px 105px 271px;
 
+    a {
+        transition: color 0.2s ease-in-out;
+        
+        &:hover {
+            color: #F5722E;
+        }
+    }
+
     @media (max-width: 768px) {
     }
     .footer-desc{

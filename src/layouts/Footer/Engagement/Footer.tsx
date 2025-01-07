@@ -20,15 +20,15 @@ const Footer: FC = () => {
                 </div>
                 <nav>
                     <div>Company</div>
-                    <div><NavLink to="/">About us</NavLink></div>
-                    <div><NavLink to="/">Contact us</NavLink></div>
-                    <div><NavLink to="/">Subscription</NavLink></div>
-                    <div><NavLink to="/">FAQ</NavLink></div>
+                    <div><NavLink to="about-us">About us</NavLink></div>
+                    <div><NavLink to="contact-us">Contact us</NavLink></div>
+                    <div><NavLink to="subscription-plan">Subscription</NavLink></div>
+                    <div><NavLink to="faq">FAQ</NavLink></div>
                 </nav>
                 <nav>
                     <div>Support</div>
-                    <div><NavLink to="/">Terms of service</NavLink></div>
-                    <div><NavLink to="/">Privacy policy</NavLink></div>
+                    <div><NavLink to="terms-conditions">Terms of service</NavLink></div>
+                    <div><NavLink to="privacy-policy">Privacy policy</NavLink></div>
                 </nav>
                 <nav>
                     <div>Connect with us</div>

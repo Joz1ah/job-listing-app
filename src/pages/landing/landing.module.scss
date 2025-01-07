@@ -1048,14 +1048,21 @@ color: #F5F5F7;
   gap:10px
 }
 
-.verify-container > .otp-input-fields > div > input{
+.verify-container > .otp-input-fields > div > input {
   width: 47px;
   height: 55px;
-  stroke-width: 3px;
-  stroke: #AEADAD;
+  border: 2px solid #AEADAD; 
   font-size: 24px;
   text-align: center;
   font-family: Poppins-R;
+  border-radius: 4px;
+  -moz-appearance: textfield; /* Hide spinners in Firefox */
+        
+  &:focus {
+    outline: none;
+    border: 2px solid #F5722E;
+    box-shadow: 0 0 0 1px #F5722E;
+  }
 }
 
 .resend-button {
@@ -1668,10 +1675,10 @@ margin-top: 12px;
   transform: scale(1.5);
 }
 
-.terms-and-privacy > div > label:nth-child(2),
-.terms-and-privacy > div > label:nth-child(4){
+.terms-and-privacy > div > .link-as-label {
   color: #F5722E;
   text-decoration: underline;
+  cursor: pointer;
 }
 
 /*Override*/
@@ -1974,6 +1981,10 @@ input[type=number]::-webkit-outer-spin-button {
   background: #F5F5F7;
   border-radius: 0.5rem;
   overflow: hidden;
+}
+
+.toggle-visibility {
+  color: #717171;
 }
 
 @keyframes spin {

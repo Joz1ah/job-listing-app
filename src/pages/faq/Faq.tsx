@@ -1,9 +1,9 @@
 import { FC } from "react";
 
-const Faq : FC = () => {
+const Faq: FC = () => {
     return (
-        <>
-        </>
+            <>
+            </>
     )
 }
 
