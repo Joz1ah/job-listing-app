@@ -553,8 +553,6 @@ const Landing: FC = (): ReactElement => {
         await schema.validate(credentials, { abortEarly: false });
         setIsSubmitting(true);
         try {
-          // First set the modal state to SIGNUP_STEP3 immediately
-          setModalState(modalStates.SIGNUP_STEP3);
           
           await signUpSubmit({
             ...credentials,
@@ -569,11 +567,11 @@ const Landing: FC = (): ReactElement => {
             });
           });
 
+          setModalState(modalStates.SIGNUP_STEP3);
+
           await generateOTP({ email: credentials.email }).unwrap();
           
         } catch (err: any) {
-          // If there's an error, revert back to the signup form
-          setModalState(modalStates.SIGNUP_STEP2);
           setIsSubmitting(false);
           
           if (err.status === 409 || err?.data?.message?.toLowerCase().includes('email already exists')) {
@@ -786,10 +784,7 @@ const OTPSignUp = () => {
           }).unwrap().then(()=>{
             handleLogin({email: tempLoginEmail, password: tempLoginPassword}).then(
               ()=>{
-                setTimeout( ()=> {
                   setModalState(modalStates.SIGNUP_CONGRATULATIONS);
-                }
-                , 1000 )
               }
           )})
           

@@ -919,6 +919,11 @@ color: #F5F5F7;
   display: flex;
   padding-bottom: 8px;
   border-bottom: 1px solid #AEADAD;
+
+  input::-ms-reveal,
+    input::-ms-clear {
+        display: none;
+    }
 }
 
 .transparent-input-field > .input-container > img{
