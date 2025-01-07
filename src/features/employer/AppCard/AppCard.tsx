@@ -12,13 +12,17 @@ import { Button } from "components";
 import { useBookmarks } from "components/context/BookmarkContext";
 import { AppPreviewModal } from "features/employer";
 import { ScheduleInterviewModal } from "features/employer";
+//import { AdDialogWrapper } from "components";
 import { Match } from "mockData/job-hunter-data";
 import { useEmployerContext } from "components";
+import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle } from "components";
+import { useNavigate } from "react-router-dom";
 
 interface AppCardProps {
   match: Match;
   bookmarked?: boolean;
   onBookmark?: () => void;
+  popupImage?: string;
 }
 
 interface SecureNameDisplayProps {
@@ -30,6 +34,7 @@ const SecureNameDisplay: FC<SecureNameDisplayProps> = ({
 }) => {
 
   const { subscriptionPlan } = useEmployerContext();
+
 
   if (subscriptionPlan === 'freeTrial') {
     return (
@@ -90,15 +95,16 @@ const LanguageTag: FC<{ language: string }> = ({ language }) => (
   </span>
 );
 
-const AppCard: FC<AppCardProps> = ({ match }) => {
+const AppCard: FC<AppCardProps> = ({ match, popupImage }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+  const [isAdDialogOpen, setIsAdDialogOpen] = useState(false);
   const cardId = generateCardId(match);
   const { subscriptionPlan } = useEmployerContext();
+  const navigate = useNavigate();
 
   const handleCardClick = () => {
     if (subscriptionPlan === 'freeTrial') return;
-    // Only open preview if schedule modal isn't open
     if (!isScheduleModalOpen) {
       setIsModalOpen(true);
     }
@@ -106,9 +112,12 @@ const AppCard: FC<AppCardProps> = ({ match }) => {
 
   const handleScheduleInterview = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (subscriptionPlan === 'freeTrial') return;
+    if (subscriptionPlan === 'freeTrial') {
+      setIsAdDialogOpen(true);
+      return;
+    }
     setIsScheduleModalOpen(true);
-    setIsModalOpen(false); // Close preview when scheduling
+    setIsModalOpen(false);
   };
 
   return (
@@ -216,7 +225,25 @@ const AppCard: FC<AppCardProps> = ({ match }) => {
         </CardFooter>
       </Card>
 
-      {subscriptionPlan !== 'freeTrial' && (
+      {subscriptionPlan === 'freeTrial' ? (
+        <AlertDialog open={isAdDialogOpen} onOpenChange={setIsAdDialogOpen}>
+          <AlertDialogContent className="bg-white p-0 border-none">
+            <AlertDialogHeader>
+              <AlertDialogTitle asChild>
+                <img
+                  src={popupImage}
+                  alt="Upgrade Subscription"
+                  className="w-full h-auto object-contain rounded-lg cursor-pointer"
+                  onClick={() => {
+                    setIsAdDialogOpen(false);
+                    navigate('account-settings/subscription');
+                  }}
+                />
+              </AlertDialogTitle>
+            </AlertDialogHeader>
+          </AlertDialogContent>
+        </AlertDialog>
+      ) : (
         <>
           <AppPreviewModal
             isOpen={isModalOpen}

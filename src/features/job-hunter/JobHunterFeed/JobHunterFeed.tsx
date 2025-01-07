@@ -223,7 +223,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
             popupImage={jobHunterPopAds}
           />
         ) : (
-          <JobCard key={index} match={item} />
+          <JobCard key={index} match={item} popupImage={jobHunterPopAds}/>
         ),
       )}
       {showLoadingCards && (
@@ -427,7 +427,7 @@ const OtherApplications: FC<selectedProps> = ({
             popupImage={jobHunterPopAds}
           />
         ) : (
-          <JobCard key={index} match={item} />
+          <JobCard key={index} match={item} popupImage={jobHunterPopAds}/>
         ),
       )}
 

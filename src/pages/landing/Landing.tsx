@@ -57,7 +57,7 @@ import orange_check from 'assets/orange-check.svg?url';
 import akazalogo_dark from 'assets/akazalogo-dark.svg?url';
 import close_icon from 'assets/close.svg?url';
 //import eye_off_outline from 'assets/eye-off-outline.svg?url';
-import google_logo from 'assets/google-logo.svg?url';
+//import google_logo from 'assets/google-logo.svg?url';
 import philippines_flag from 'assets/country-icons/philippines.svg?url';
 import chevron_down from 'assets/chevron-down.svg?url';
 import unchecked_green from 'assets/toggles/unchecked-green.svg?url';
@@ -298,7 +298,7 @@ const Landing: FC = (): ReactElement => {
       <div id="step_login" className={`${styles['modal-content']}`} hidden={modalState !== modalStates.LOGIN}>
           <div className={`${styles['login-container']}`}>
               <LoginForm/>
-              <div className={`${styles['other-signup-option-label']}`}>or continue with</div>
+              {/* <div className={`${styles['other-signup-option-label']}`}>or continue with</div>
               <div className={`${styles['social-media-items']} ${styles['noselect']}`}>
                   <div className={`${styles['social-media-button']}`}>
                       <div className={`${styles['social-media-icon']}`}>
@@ -306,7 +306,7 @@ const Landing: FC = (): ReactElement => {
                       </div>
                       <div className={`${styles['social-media-label']}`}>Google</div>
                   </div>
-              </div>
+              </div> */}
               <div className={`${styles['terms-and-privacy']}`}>
                 <input type="checkbox" />
                 <div>
@@ -678,7 +678,7 @@ const Landing: FC = (): ReactElement => {
                     )}
                 </div>
             </div>
-            <div className={`${styles['other-signup-option-label']}`}>or sign up with</div>
+            {/* <div className={`${styles['other-signup-option-label']}`}>or sign up with</div>
             <div className={`${styles['social-media-items']} ${styles['noselect']}`}>
                 <div className={`${styles['social-media-button']}`}>
                     <div className={`${styles['social-media-icon']}`}>
@@ -686,7 +686,7 @@ const Landing: FC = (): ReactElement => {
                     </div>
                     <div className={`${styles['social-media-label']}`}>Google</div>
                 </div>
-            </div>
+            </div> */}
             <div className={`${styles['action-buttons']}`}>
                 <button 
                     onClick={handlePrevious}
