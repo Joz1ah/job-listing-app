@@ -338,7 +338,7 @@ const Landing: FC = (): ReactElement => {
     const moveToNext = () => {
       if (ButtonJobHunterRef.current) {
         ButtonJobHunterRef.current.onclick = () => {
-          setDataStates({...dataStates, selectedUserType: 'job-hunter'})
+          setDataStates({...dataStates, selectedUserType: 'job_hunter'})
           setModalState(modalStates.SIGNUP_STEP2)
         };
       }
@@ -1487,7 +1487,7 @@ const CongratulationsModal = () => {
   const handleNext = () => {
     if (nextButton.current) {
       nextButton.current.onclick = () => {
-        if(dataStates.selectedUserType == 'job-hunter')
+        if(dataStates.selectedUserType == 'job_hunter')
           setModalState(modalStates.SIGNUP_STEP4)
         else if(dataStates.selectedUserType == 'employer')
           setModalState(modalStates.SIGNUP_STEP4_EMPLOYER)
@@ -2019,7 +2019,7 @@ const HeroPerfectMatchAlgo = () => {
     if (heroJobHunterButton.current) {
       heroJobHunterButton.current.onclick = () => {
         setHeroState(heroStates.SKILLSETS_JOBHUNTER);
-        setDataStates({...dataStates, selectedUserType: 'job-hunter'});
+        setDataStates({...dataStates, selectedUserType: 'job_hunter'});
       };
     }
   };
