@@ -26,7 +26,7 @@ import { useAuth } from 'contexts/AuthContext/AuthContext';
 import { employerDesktopMenu, employerMobileMenu } from 'mockData/nav-menus';
 import { jobHunterDesktopMenu, jobHunterMobileMenu } from 'mockData/nav-menus';
 import { SignOutModal } from 'components';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useMatch } from 'react-router-dom';
 
 import video1 from 'assets/mp4/Landing-Page-hero-1.mp4';
 import video2 from 'assets/mp4/video-conference-call-1.mp4';
@@ -2636,13 +2636,14 @@ const HeroLoading = () => {
 };
 
 const isFreeTrial = false;
+const isIndexRoute = useMatch('/landing');
 
   return (
     <LandingContext.Provider value={{ isFreeTrial }}>
     <PageMeta title="Akaza" />
     <div className={styles.main}>
       <NavigationHeader/>
-      {location.pathname === '/landing' && (
+      {isIndexRoute && (
         <>
             <div className={`${styles['hero-container']}`}>
                 <HeroPerfectMatchAlgo/>
