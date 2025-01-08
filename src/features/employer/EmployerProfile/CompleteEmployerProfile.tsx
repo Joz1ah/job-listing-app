@@ -25,6 +25,7 @@ import * as Yup from "yup";
 
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { useEmployerProfileMutation } from "api/akaza/akazaAPI";
+import { useAuth } from "contexts/AuthContext/AuthContext";
 
 const validationSchema = Yup.object().shape({
   businessName: Yup.string().required("This field is required"),
@@ -73,6 +74,7 @@ const CompleteEmployerProfile: FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [employerProfile] = useEmployerProfileMutation();
   const navigate = useNavigate();
+  const { refreshUser } = useAuth();
 
   const {
     values,
@@ -133,8 +135,8 @@ const CompleteEmployerProfile: FC = () => {
         phoneNumber: values.mobileNumber,
         position: values.position,
         website: values.companyWebsite,
-        industryId: values.industry, // Consider renaming form field to match API
-        yearFounded: Number(values.yearFounded), // Explicit conversion to number
+        industryId: values.industry,
+        yearFounded: Number(values.yearFounded),
         unit: values.unitAndBldg,
         address: values.streetAddress,
         city: values.city,
@@ -142,16 +144,17 @@ const CompleteEmployerProfile: FC = () => {
         country: values.country,
         description: values.companyOverview
       };
-
+  
       // Call the API
-      const result = await employerProfile(profileData).unwrap();
-      console.log('Profile updated successfully:', result);
+      await employerProfile(profileData).unwrap();
+      
+      // Refresh user data in auth context
+      await refreshUser();
       
       // Navigate on success
       navigate("/employer/feed");
     } catch (error) {
       console.error('Failed to update profile:', error);
-      // Handle error appropriately - you might want to show an error message to the user
     } finally {
       setIsSubmitting(false);
     }

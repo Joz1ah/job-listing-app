@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState, useRef, ReactElement } from 'react'
+import React, { FC, useEffect, useState, useRef, ReactElement, useMemo } from 'react'
 import { FooterEngagement as Footer} from "layouts";
 import { PageMeta } from "components";
 import { LandingContext } from 'components';
@@ -27,6 +27,7 @@ import { employerDesktopMenu, employerMobileMenu } from 'mockData/nav-menus';
 import { jobHunterDesktopMenu, jobHunterMobileMenu } from 'mockData/nav-menus';
 import { SignOutModal } from 'components';
 import { Outlet, useMatch } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 import video1 from 'assets/mp4/Landing-Page-hero-1.mp4';
 import video2 from 'assets/mp4/video-conference-call-1.mp4';
@@ -180,6 +181,13 @@ const CustomInput: React.FC<CustomInputProps> = ({ field, form, ...props }) => {
 };
 
 const Landing: FC = (): ReactElement => {
+  const { isAuthenticated, user } = useAuth();
+  
+  // Simple redirect if authenticated
+  if (isAuthenticated && user?.type) {
+    return <Navigate to={`/${user.type}`} replace />;
+  }
+
   const [maskHidden, setMaskHidden] = useState(1);
   const [closeModalActive, setCloseModalActive] = useState(1);
   const [selectedModalHeader, setSelectedModalHeader] = useState(1);
@@ -1290,57 +1298,75 @@ const SubscriptionPlanSelection = () =>{
   const subscription_plan3 = useRef<HTMLDivElement>(null);
   const buttonSubscribe = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const { login } = useAuth();
+  const [loginSubmit] = useLoginMutation();
 
-  const handleSubscribe = () => {
-    if (buttonSubscribe.current) {
-      buttonSubscribe.current.onclick = () => {
-        setSelectedModalHeader(1);
-        const userType = dataStates.selectedUserType;
-        
-        if(currentSelectedPlan == PLAN_SELECTION_ITEMS.FREE){
-
-          localStorage.setItem('subscriptionTier', 'freeTrial');
-          localStorage.setItem('userType', userType);
+  useEffect(() => {
+    // Move the function inside useEffect
+    const setupSubscriptionHandlers = () => {
+      if (buttonSubscribe.current) {
+        buttonSubscribe.current.onclick = async () => {
+          setSelectedModalHeader(1);
+          const userType = dataStates.selectedUserType;
           
-          setModalState(modalStates.LOADING)
-          setTimeout(()=>{
-
-            const basePath = userType === 'employer' ? '/employer' : '/job-hunter/feed';
-            navigate(basePath, {
-              state: { initialTier: 'freeTrial' }
-            });
-          },5000)
-        }
-        else {
-          const selectedTier = 
-            currentSelectedPlan === PLAN_SELECTION_ITEMS.MONTHLY 
-              ? 'monthlyPlan' 
-              : 'yearlyPlan';
+          if(currentSelectedPlan == PLAN_SELECTION_ITEMS.FREE){
+            try {
+              const response = await loginSubmit({
+                email: tempLoginEmail,
+                password: tempLoginPassword
+              }).unwrap();
               
-          localStorage.setItem('pendingSubscriptionTier', selectedTier);
-          localStorage.setItem('userType', userType);
-          setModalState(modalStates.AUTHNET_PAYMENT)
-        }
-      };
-    }
-    if (subscription_plan1.current) {
-        subscription_plan1.current.onclick = () => {
-          setCurrentSelectedPlan(PLAN_SELECTION_ITEMS.FREE)
-      };
-    }
-    if (subscription_plan2.current) {
-        subscription_plan2.current.onclick = () => {
-          setCurrentSelectedPlan(PLAN_SELECTION_ITEMS.MONTHLY)
-      };
-    }
-    if (subscription_plan3.current) {
-        subscription_plan3.current.onclick = () => {
-          setCurrentSelectedPlan(PLAN_SELECTION_ITEMS.ANNUAL)
-      };
-    }
-  };
-  useEffect(handleSubscribe, []);
+              if (response?.data?.token) {
+                login(response.data.token);
+                
+                localStorage.setItem('subscriptionTier', 'freeTrial');
+                localStorage.setItem('userType', userType);
+                
+                setModalState(modalStates.LOADING);
+                
+                setTimeout(() => {
+                  const redirectPath = userType === 'employer' 
+                    ? '/employer/complete-profile' 
+                    : '/job-hunter/create-application';
+                    
+                  navigate(redirectPath);
+                }, 5000);
+              }
+            } catch (error) {
+              console.error('Auto-login failed:', error);
+            }
+          } else {
+            const selectedTier = 
+              currentSelectedPlan === PLAN_SELECTION_ITEMS.MONTHLY 
+                ? 'monthlyPlan' 
+                : 'yearlyPlan';
+                
+            localStorage.setItem('pendingSubscriptionTier', selectedTier);
+            localStorage.setItem('userType', userType);
+            setModalState(modalStates.AUTHNET_PAYMENT);
+          }
+        };
+      }
 
+      if (subscription_plan1.current) {
+        subscription_plan1.current.onclick = () => {
+          setCurrentSelectedPlan(PLAN_SELECTION_ITEMS.FREE);
+        };
+      }
+      if (subscription_plan2.current) {
+        subscription_plan2.current.onclick = () => {
+          setCurrentSelectedPlan(PLAN_SELECTION_ITEMS.MONTHLY);
+        };
+      }
+      if (subscription_plan3.current) {
+        subscription_plan3.current.onclick = () => {
+          setCurrentSelectedPlan(PLAN_SELECTION_ITEMS.ANNUAL);
+        };
+      }
+    };
+
+    setupSubscriptionHandlers();
+  }, [currentSelectedPlan, navigate, login, loginSubmit, tempLoginEmail, tempLoginPassword]);
 
   return(
     <div id="step5_signup" className={`${styles['modal-content']}`} hidden={modalState !== modalStates.SIGNUP_STEP5}>
@@ -1867,11 +1893,17 @@ const PerfectMatchResultsModal = () => {
       </div>
 
       <div className="mt-8 w-full max-w-4xl flex flex-col items-center">
-        <Button 
-          className="w-full md:w-[300px] bg-[#F5722E] text-white py-1 rounded hover:bg-[#F5722E]/90 transition-colors"
-        >
-          Sign up now
-        </Button>
+      <Button 
+        className="w-full md:w-[300px] bg-[#F5722E] text-white py-1 rounded hover:bg-[#F5722E]/90 transition-colors"
+        onClick={() => {
+          setSelectedModalHeader(1);
+          setMaskHidden(0);
+          setModalState(modalStates.SIGNUP_STEP2);
+          setCloseModalActive(1);
+        }}
+      >
+        Sign up now
+      </Button>
         <p className="text-center text-sm text-gray-500 mt-2">
           or continue with free trial
         </p>
@@ -1958,7 +1990,7 @@ const Modal = () => {
 
 const NavigationHeader = () => {
   const { menuOpen, toggleMenu } = useMenu();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const [showSignOutModal, setShowSignOutModal] = useState(false);
 
   // Get stored user preferences
@@ -1969,8 +2001,18 @@ const NavigationHeader = () => {
   const desktopMenuItems = userType === 'employer' ? employerDesktopMenu : jobHunterDesktopMenu;
   const mobileMenuItems = userType === 'employer' ? employerMobileMenu : jobHunterMobileMenu;
   
-  // Example user name - replace with actual user name from your auth context
-  const userName = userType === 'employer' ? "ABC Incorporated" : "Michael V";
+  // Compute display name based on user type and profile data
+  const userName = useMemo(() => {
+    if (!user) return userType === 'employer' ? "Company Name" : "User Name";
+    
+    if (userType === 'employer') {
+      return user.businessName || "Company Name";
+    } else {
+      return user.firstName && user.lastName 
+        ? `${user.firstName} ${user.lastName}`
+        : "User Name";
+    }
+  }, [user, userType]);
 
   return(
     <>

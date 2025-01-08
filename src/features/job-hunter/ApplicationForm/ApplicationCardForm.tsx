@@ -4,7 +4,6 @@ import { Input, Button, InputField } from "components";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import saveChanges from "images/save-changes.svg?url";
-import Cookies from 'js-cookie';
 
 import { selectOptions } from "mockData/app-form-options";
 
@@ -36,6 +35,7 @@ import * as Yup from "yup";
 
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { useJobHunterProfileMutation } from "api/akaza/akazaAPI";
+import { useAuth } from "contexts/AuthContext/AuthContext";
 
 interface FormData {
   firstName: string;
@@ -105,6 +105,7 @@ const ApplicationCardForm: FC = () => {
   const [showPreview, setShowPreview] = useState<boolean>(false);
 
   const [submitJobHunterProfile ] = useJobHunterProfileMutation();
+  const { refreshUser } = useAuth();
 
   const {
     values,
@@ -142,17 +143,10 @@ const ApplicationCardForm: FC = () => {
     try {
       setIsSubmitting(true);
       
-      // Ensure the auth token exists
-      const authToken = Cookies.get('authToken');
-      if (!authToken) {
-        console.error('No auth token found');
-        return;
-      }
-  
       const payload = {
         firstName: values.firstName,
         lastName: values.lastName,
-        location: "", // Add if needed
+        location: "",
         language: values.languages,
         birthday: values.birthday,
         email: values.emailAddress,
@@ -167,15 +161,14 @@ const ApplicationCardForm: FC = () => {
         country: values.country
       };
   
-      const response = await submitJobHunterProfile(payload).unwrap();
+      await submitJobHunterProfile(payload).unwrap();
       
-      if (response) {
-        // Add success notification here
-        navigate("/job-hunter/feed");
-      }
+      // Refresh user data in auth context
+      await refreshUser();
+      
+      navigate("/job-hunter/feed");
     } catch (error) {
       console.error("Error submitting profile:", error);
-      // Add error notification here
     } finally {
       setIsSubmitting(false);
       setShowPreview(false);

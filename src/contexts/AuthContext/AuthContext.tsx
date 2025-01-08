@@ -9,8 +9,12 @@ export const AuthContext = createContext<AuthContextProps | undefined>(undefined
 
 // AuthProvider component
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [token, setToken] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(() => {
+    // Initialize from cookie on mount
+    return Cookies.get('authToken') || null;
+  });
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(true); // Add this line
   
   const { data: user, error, refetch } = useGetUserInfoQuery(null, {
     skip: !token
@@ -42,19 +46,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Update authenticated state when user data changes
   useEffect(() => {
-    if (user) {
+    if (user && token) {
       setIsAuthenticated(true);
+      setIsLoading(false);
     } else if (error) {
       logout();
+      setIsLoading(false);
     }
-  }, [user, error]);
+  }, [user, error, token]);
 
-  // Check for stored token on mount
+  // Initial auth check
   useEffect(() => {
-    const storedToken = Cookies.get('authToken');
-    if (storedToken) {
+    const checkAuth = async () => {
+      const storedToken = Cookies.get('authToken');
+      if (!storedToken) {
+        setIsLoading(false);
+        return;
+      }
       setToken(storedToken);
-    }
+    };
+    checkAuth();
   }, []);
 
   return (
@@ -62,6 +73,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       user, 
       token, 
       isAuthenticated, 
+      isLoading,
       login, 
       logout,
       refreshUser // Add refreshUser to the context value
