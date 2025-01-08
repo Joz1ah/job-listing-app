@@ -11,6 +11,9 @@ export const ROUTE_CONSTANTS = {
   CONTACT_US: '/landing/contact-us',
   SUBSCRIPTION_PLAN: '/landing/subscription-plan',
   FAQ: '/landing/faq',
+
+  // Test Route
+  TEST: '/test',
   
   // Authentication and Profile
   COMPLETE_PROFILE: '/employer/complete-profile',
