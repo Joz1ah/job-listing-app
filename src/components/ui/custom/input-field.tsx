@@ -12,6 +12,7 @@ const inputWrapperVariants = cva(
         default: "",
         primary: "",
         secondary: "",
+        tulleGray: "",
       }
     },
     defaultVariants: {
@@ -27,7 +28,8 @@ const labelVariants = cva(
       variant: {
         default: "text-white",
         primary: "text-white",
-        secondary: "text-[#263238]"
+        secondary: "text-[#263238]",
+        tulleGray: "text-[#263238]"
       },
       size: {
         sm: "text-sm",
@@ -49,7 +51,8 @@ const labelWrapperVariants = cva(
       variant: {
         default: "bg-[#242625] md:bg-[#2D3A41]",
         primary: "bg-[#2D3A41]",
-        secondary: "bg-white"
+        secondary: "bg-white",
+        tulleGray: "bg-[#F5F5F7]"
       }
     },
     defaultVariants: {
@@ -65,7 +68,8 @@ const alertIconVariants = cva(
       variant: {
         default: "text-[#242625] md:text-[#2D3A41]",
         primary: "text-[#2D3A41]",
-        secondary: "text-white"
+        secondary: "text-white",
+        tulleGray: "bg-[#F5F5F7]"
       }
     },
     defaultVariants: {
@@ -81,7 +85,8 @@ const tooltipIconVariants = cva(
       variant: {
         default: "text-[#2D3A41] fill-[#AEADAD]",
         primary: "text-primary fill-[#AEADAD]",
-        secondary: "text-gray-600 fill-gray-400"
+        secondary: "text-gray-600 fill-gray-400",
+        tulleGray: "text-gray-600 fill-gray-400"
       },
       size: {
         sm: "",
