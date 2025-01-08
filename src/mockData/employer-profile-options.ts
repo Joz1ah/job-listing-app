@@ -19,7 +19,6 @@ interface SelectOption {
     companyWebsite: string;
     yearFounded: string;
     unitAndBldg: string;
-    buildingName: string;
     streetAddress: string;
     city: string;
     state: string;
@@ -44,11 +43,11 @@ export const selectOptions: SelectOptions = {
       { value: "cn", label: "China" },
     ],
     industry: [
-      { value: "accounting-finance", label: "Accounting and Finance" },
-      { value: "architecture-interior-design", label: "Architecture and Interior Design" },
-      { value: "automotive-engineering", label: "Automotive and Engineering" },
-      { value: "blockchain-cryptocurrency", label: "Blockchain and Cryptocurrency" },
-      { value: "compliance-regulatory", label: "Compliance and Regulatory Affairs" },
+      { value: "1", label: "Accounting and Finance" },
+      { value: "2", label: "Architecture and Interior Design" },
+      { value: "3", label: "Automotive and Engineering" },
+      { value: "4", label: "Blockchain and Cryptocurrency" },
+      /* { value: "compliance-regulatory", label: "Compliance and Regulatory Affairs" },
       { value: "consulting", label: "Consulting" },
       { value: "creative-arts", label: "Creative Arts" },
       { value: "customer-service-support", label: "Customer Service and Support" },
@@ -58,6 +57,6 @@ export const selectOptions: SelectOptions = {
       { value: "executive-roles", label: "Executive Roles" },
       { value: "family-child-services", label: "Family and Child Services" },
       { value: "travel", label: "Travel" },
-      { value: "web-software-development", label: "Web/Software Development" },
+      { value: "web-software-development", label: "Web/Software Development" }, */
     ]
   };

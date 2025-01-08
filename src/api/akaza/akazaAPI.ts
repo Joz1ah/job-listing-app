@@ -132,7 +132,11 @@ export const akazaApiAuth = createApiFunction({
     //baseUrl: process.env.REACT_APP_AUTH_API_URL ,
     credentials: "include", 
     prepareHeaders: (headers) => {
-        return headers;
+      const token = Cookies.get('authToken');
+      if (token) {
+        headers.set('Authorization', `Bearer ${token}`);
+      }
+      return headers;
     },
   }), 
   endpoints: (builder) => ({

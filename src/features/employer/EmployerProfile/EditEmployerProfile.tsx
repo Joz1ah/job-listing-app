@@ -94,7 +94,6 @@ const EditEmployerProfile: FC = () => {
       companyWebsite: "www.example.com",
       employmentType: [],
       unitAndBldg: "Suite 100",
-      buildingName: "Tech Plaza",
       streetAddress: "123 Main St",
       city: "San Francisco",
       state: "CA",

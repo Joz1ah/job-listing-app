@@ -43,10 +43,19 @@ const validationSchema = Yup.object().shape({
   emailAddress: Yup.string()
     .required("This field is required")
     .email("Invalid email address"),
-  mobileNumber: Yup.string()
+    mobileNumber: Yup.string()
     .required("This field is required")
-    .test("phone", "Please enter a valid phone number", function (value) {
-      return value ? isValidPhoneNumber(value) : false;
+    .test("phone", "Phone number must be in international format and contain 11-12 digits", function(value) {
+      if (!value) return false;
+      
+      // Check if it's a valid phone number first
+      if (!isValidPhoneNumber(value)) return false;
+      
+      // Remove all non-digit characters to check length
+      const digitsOnly = value.replace(/\D/g, '');
+      
+      // Check if the number of digits is between 11 and 12
+      return digitsOnly.length >= 11 && digitsOnly.length <= 12;
     }),
   unitAndBldg: Yup.string(),
   streetAddress: Yup.string().required("Street address is required"),
@@ -84,7 +93,7 @@ const CompleteEmployerProfile: FC = () => {
     setFieldValue,
     handleSubmit,
     isValid,
-  } = useFormik<FormData & { employmentType: string[] }>({
+  } = useFormik<FormData>({
     initialValues: {
       businessName: "",
       firstName: "",
@@ -95,9 +104,7 @@ const CompleteEmployerProfile: FC = () => {
       yearFounded: "",
       mobileNumber: "",
       companyWebsite: "",
-      employmentType: [],
       unitAndBldg: "",
-      buildingName: "",
       streetAddress: "",
       city: "",
       state: "",
@@ -127,16 +134,19 @@ const CompleteEmployerProfile: FC = () => {
     setIsSubmitting(true);
     
     try {
+      // Remove '+' and any non-digit characters for the API
+      const formattedPhoneNumber = values.mobileNumber.replace(/[^\d]/g, '');
+      
       const profileData = {
         businessName: values.businessName,
         firstName: values.firstName,
         lastName: values.lastName,
         email: values.emailAddress,
-        phoneNumber: values.mobileNumber,
+        phoneNumber: formattedPhoneNumber,
         position: values.position,
         website: values.companyWebsite,
-        industryId: values.industry,
-        yearFounded: Number(values.yearFounded),
+        industryId: Number(values.industry),
+        yearFounded: values.yearFounded,
         unit: values.unitAndBldg,
         address: values.streetAddress,
         city: values.city,

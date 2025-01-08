@@ -13,12 +13,12 @@ export const ROUTE_CONSTANTS = {
   FAQ: 'faq',
   
   // Authentication and Profile
-  COMPLETE_PROFILE: '/employer/complete-profile',
+  COMPLETE_PROFILE: '/employer/employer-profile',
   EDIT_PROFILE: '/employer/edit-profile',
   
   // Job Hunter routes
   JOB_HUNTER: '/job-hunter',
-  CREATE_APPLICATION: '/job-hunter/create-application',
+  CREATE_APPLICATION: '/job-hunter/jobhunter-profile',
   EDIT_APPLICATION: '/job-hunter/edit-application',
   BOOKMARKED_JOBS_JOBHUNTER: '/job-hunter/bookmarked-jobs',
   INTERVIEWS_JOB_HUNTER: '/job-hunter/interviews',

@@ -72,10 +72,10 @@ const AuthenticatedLayoutContent: FC<{ userType: 'employer' | 'job-hunter' }> = 
     if (!user) return isEmployer ? "Company Name" : "User Name";
     
     if (isEmployer) {
-      return user.businessName || "Company Name";
+      return user?.data?.user?.relatedDetails?.businessName || "Company Name";
     } else {
-      return user.firstName && user.lastName 
-        ? `${user.firstName} ${user.lastName}`
+      return user?.data?.user?.relatedDetails?.firstName && user?.data?.user?.relatedDetails?.lastName
+        ? `${user?.data?.user?.relatedDetails?.firstName} ${user?.data?.user?.relatedDetails?.lastName}`
         : "User Name";
     }
   }, [user, isEmployer]);

@@ -136,15 +136,19 @@ type PhoneInputProps = {
 const PhoneInput = React.forwardRef<React.ElementRef<typeof RPNInput.default>, PhoneInputProps>(
   ({ className, onChange, name, value, ...props }, ref) => {
     const handlePhoneChange = (phoneValue: RPNInput.Value) => {
+      // Remove any non-digit characters except the leading + for display
+      const formattedValue = phoneValue ? phoneValue.toString().replace(/[^\d+]/g, '') : "";
+      
       const syntheticEvent = {
         target: {
           name,
-          value: phoneValue || ""
+          // Store the full international format for validation and display
+          value: formattedValue || ""
         },
         type: 'change',
         preventDefault: () => {},
         stopPropagation: () => {},
-        currentTarget: { name, value: phoneValue || "" },
+        currentTarget: { name, value: formattedValue || "" },
         nativeEvent: new Event('change'),
         bubbles: true,
         cancelable: true,

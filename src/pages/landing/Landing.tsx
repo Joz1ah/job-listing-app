@@ -1326,8 +1326,8 @@ const SubscriptionPlanSelection = () =>{
                 
                 setTimeout(() => {
                   const redirectPath = userType === 'employer' 
-                    ? '/employer/complete-profile' 
-                    : '/job-hunter/create-application';
+                    ? '/employer/employer-profile' 
+                    : '/job-hunter/jobhunter-profile';
                     
                   navigate(redirectPath);
                 }, 5000);
