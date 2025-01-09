@@ -103,6 +103,7 @@ interface InputFieldProps
   error?: string | string[];
   touched?: boolean;
   showIcon?: boolean;
+  showAlertIcon?: boolean;
   tooltipContent?: string | React.ReactNode;
   size?: "sm" | "md" | "lg";
   children: React.ReactNode;
@@ -118,6 +119,7 @@ const InputField = React.forwardRef<HTMLDivElement, InputFieldProps>(
     error,
     touched,
     showIcon,
+    showAlertIcon = true,
     tooltipContent,
     ...props
   }, ref) => {
@@ -157,7 +159,7 @@ const InputField = React.forwardRef<HTMLDivElement, InputFieldProps>(
           
           <div className="relative">
             {children}
-            {showError && (
+            {showError && showAlertIcon && (
               <div className="absolute -right-6 top-1/2 -translate-y-1/2">
                 <AlertTriangle
                   className={alertIconVariants({variant})}
