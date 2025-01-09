@@ -10,7 +10,7 @@ import {
   usePaymentCreateMutation,
   } from 'api/akaza/akazaAPI';
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Formik, Form, FieldProps, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { AppCard } from 'features/employer';
@@ -182,6 +182,7 @@ const CustomInput: React.FC<CustomInputProps> = ({ field, form, ...props }) => {
 
 const Landing: FC = (): ReactElement => {
   const { isAuthenticated, user } = useAuth();
+  const location = useLocation();
   
   // Simple redirect if authenticated
   if (isAuthenticated && user?.type) {
@@ -274,6 +275,19 @@ const Landing: FC = (): ReactElement => {
     return <button ref={elementRef} id="btn_login_nav" className={`${styles.button}`}>Login</button>;
   };
 
+  useEffect(() => {
+    // Check if we have state from navigation indicating we should open the modal
+    if (location.state?.openModal) {
+      setSelectedModalHeader(1);
+      setMaskHidden(0);
+      setModalState(modalStates.SIGNUP_SELECT_USER_TYPE);
+      setCloseModalActive(1);
+      
+      // Clear the navigation state after using it
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
+
   const ButtonSignUpNav = () => {
     const elementRef = useRef<HTMLButtonElement>(null);
     const toggleSignUp = () => {
@@ -315,25 +329,6 @@ const Landing: FC = (): ReactElement => {
                       <div className={`${styles['social-media-label']}`}>Google</div>
                   </div>
               </div> */}
-              <div className={`${styles['terms-and-privacy']}`}>
-                <input type="checkbox" />
-                <div>
-                    <label>I have read, understood and agree to the </label>
-                    <Link 
-                        to='/landing/terms-conditions' 
-                        className={styles['link-as-label']}
-                    >
-                        Terms of Use
-                    </Link>
-                    <label> and </label>
-                    <Link 
-                        to='/landing/privacy-policy'
-                        className={styles['link-as-label']}
-                    >
-                        Privacy Policy
-                    </Link>
-                </div>
-            </div>
           </div>
       </div>
     )
@@ -684,6 +679,25 @@ const Landing: FC = (): ReactElement => {
                             {organizedErrors.passwordConfirm}
                         </div>
                     )}
+                </div>
+            </div>
+            <div className={`${styles['terms-and-privacy']}`}>
+                <input type="checkbox" />
+                <div>
+                    <label>I have read, understood and agree to the </label>
+                    <Link 
+                        to='/landing/terms-conditions' 
+                        className={styles['link-as-label']}
+                    >
+                        Terms of Use
+                    </Link>
+                    <label> and </label>
+                    <Link 
+                        to='/landing/privacy-policy'
+                        className={styles['link-as-label']}
+                    >
+                        Privacy Policy
+                    </Link>
                 </div>
             </div>
             {/* <div className={`${styles['other-signup-option-label']}`}>or sign up with</div>
@@ -1847,6 +1861,13 @@ const PerfectMatchResultsModal = () => {
     }
   };
 
+  const handleSignup = () => {
+    setSelectedModalHeader(1);
+    setMaskHidden(0);
+    setModalState(modalStates.SIGNUP_STEP2);
+    setCloseModalActive(1);
+  };
+
   const renderCard = (match: EmployerMatch | JobMatch ) => {
     if (selectedUserType === 'employer') {
       return <AppCard match={match as EmployerMatch} />;
@@ -1895,18 +1916,16 @@ const PerfectMatchResultsModal = () => {
       <div className="mt-8 w-full max-w-4xl flex flex-col items-center">
       <Button 
         className="w-full md:w-[300px] bg-[#F5722E] text-white py-1 rounded hover:bg-[#F5722E]/90 transition-colors"
-        onClick={() => {
-          setSelectedModalHeader(1);
-          setMaskHidden(0);
-          setModalState(modalStates.SIGNUP_STEP2);
-          setCloseModalActive(1);
-        }}
+        onClick={handleSignup}
       >
         Sign up now
       </Button>
-        <p className="text-center text-sm text-gray-500 mt-2">
+      <button 
+          onClick={handleSignup}
+          className="text-center text-sm text-gray-500 mt-2 hover:text-gray-700 transition-colors cursor-pointer"
+        >
           or continue with free trial
-        </p>
+        </button>
       </div>
     </div>
   );

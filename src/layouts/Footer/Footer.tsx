@@ -18,7 +18,7 @@ const Footer: FC = () => {
             Privacy Policy
           </Link>
         </p>
-        <p>Copyright © {new Date().getFullYear()}, Akaza Official Inc.</p>
+        <p>Copyright © {new Date().getFullYear()}, Akaza Technologies Inc.</p>
       </nav>
     </footer>
   );
