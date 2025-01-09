@@ -141,7 +141,7 @@ const GeneralSettings: FC = () => {
   };
 
   const tooltips = {
-    googleAccount: "Link or unlink your Google account to easily manage your profile and settings seamlessly.",
+    googleAccount: /* "Link or unlink your Google account to easily manage your profile and settings seamlessly." */"Currently not available",
     theme: "Switch between light and dark mode for your preference",
     notifications: "Enable or disable push notifications for better experience.",
     timezone: "Select your preferred timezone. Times across the application will be displayed according to this setting."
@@ -226,7 +226,7 @@ const GeneralSettings: FC = () => {
       {/* Full Width Sections */}
       <div className="space-y-12 pt-12">
         {/* Google Account Section */}
-        <div className="space-y-3">
+        <div className="space-y-3 opacity-50">
           <div className="flex items-center gap-1">
             <h3 className="text-white text-2xl font-normal flex items-center">
               <div className="flex items-center">
@@ -242,11 +242,11 @@ const GeneralSettings: FC = () => {
               <Info className="w-3 h-3 text-[#2D3A41] fill-white mb-2" />
             </Tooltip>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 opacity-50 cursor-not-allowed">
             <span className="text-white text-[15px]">
               Unlink your Google Account
             </span>
-            <button className="px-3 py-1 border border-[#E53835] text-[#E53835] text-sm rounded hover:bg-[#E53835] hover:text-white transition-colors duration-200">
+            <button className="px-3 py-1 border border-[#E53835] text-[#E53835] text-sm rounded hover:bg-[#E53835] hover:text-white transition-colors duration-200 cursor-not-allowed">
               Unlink
             </button>
           </div>

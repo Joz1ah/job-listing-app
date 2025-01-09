@@ -132,7 +132,11 @@ export const akazaApiAuth = createApiFunction({
     //baseUrl: process.env.REACT_APP_AUTH_API_URL ,
     credentials: "include", 
     prepareHeaders: (headers) => {
-        return headers;
+      const token = Cookies.get('authToken');
+      if (token) {
+        headers.set('Authorization', `Bearer ${token}`);
+      }
+      return headers;
     },
   }), 
   endpoints: (builder) => ({
@@ -384,10 +388,14 @@ export const akazaApiPayment = createApiFunction({
 export const akazaApiJobFeed = createApiFunction({
   reducerPath: 'apiJobFeed',
   baseQuery: fetchBaseQuery({ 
-    baseUrl: 'https://api-jobfeed-sit.akaza.xyz/' ,
+    baseUrl: 'https://akaza-sit-api-gateway---rev-2-2tninhtd.uk.gateway.dev/' ,
     //baseUrl: process.env.REACT_APP_JOBFEED_API_URL ,
     credentials: "include", 
     prepareHeaders: (headers) => {
+      const token = Cookies.get('authToken');
+      if (token) {
+        headers.set('Authorization', `Bearer ${token}`);
+      }
       return headers;
     },
   }), 
