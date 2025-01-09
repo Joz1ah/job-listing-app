@@ -83,7 +83,7 @@ const CompleteEmployerProfile: FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [employerProfile] = useEmployerProfileMutation();
   const navigate = useNavigate();
-  const { refreshUser } = useAuth();
+  const { refreshUser, user } = useAuth();
 
   const {
     values,
@@ -100,7 +100,7 @@ const CompleteEmployerProfile: FC = () => {
       lastName: "",
       position: "",
       industry: "",
-      emailAddress: "",
+      emailAddress: user?.data?.user?.email || "",
       yearFounded: "",
       mobileNumber: "",
       companyWebsite: "",
