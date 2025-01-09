@@ -798,12 +798,18 @@ color: #F5F5F7;
   height: 100%;
 }
 
-.modal-container{
+.modal-container {
   display: flex;
   flex-direction: column;
-  width: 642px;
+  max-width: 642px;
+  width: 100%;
   height: 554px;
   background: #F5F5F7;
+
+  @media (max-width: 768px) {
+    max-width: min-content;
+    width: calc(100% - 40px); 
+  }
 }
 
 .modal-item {
@@ -813,11 +819,11 @@ color: #F5F5F7;
   height: inherit;
 }
 
-.modal-header{
+.modal-header {
   display: inline-flex;
   padding: 6px 31px 9px 19px;
   align-items: center;
-  gap: 414px;
+  width: 100%; // Ensure it takes full width of the container
 }
 
 .modal-content-wrapper{
@@ -919,6 +925,11 @@ color: #F5F5F7;
   display: flex;
   padding-bottom: 8px;
   border-bottom: 1px solid #AEADAD;
+
+  input::-ms-reveal,
+    input::-ms-clear {
+        display: none;
+    }
 }
 
 .transparent-input-field > .input-container > img{
@@ -1048,14 +1059,21 @@ color: #F5F5F7;
   gap:10px
 }
 
-.verify-container > .otp-input-fields > div > input{
+.verify-container > .otp-input-fields > div > input {
   width: 47px;
   height: 55px;
-  stroke-width: 3px;
-  stroke: #AEADAD;
+  border: 2px solid #AEADAD; 
   font-size: 24px;
   text-align: center;
   font-family: Poppins-R;
+  border-radius: 4px;
+  -moz-appearance: textfield; /* Hide spinners in Firefox */
+        
+  &:focus {
+    outline: none;
+    border: 2px solid #F5722E;
+    box-shadow: 0 0 0 1px #F5722E;
+  }
 }
 
 .resend-button {
@@ -1668,10 +1686,10 @@ margin-top: 12px;
   transform: scale(1.5);
 }
 
-.terms-and-privacy > div > label:nth-child(2),
-.terms-and-privacy > div > label:nth-child(4){
+.terms-and-privacy > div > .link-as-label {
   color: #F5722E;
   text-decoration: underline;
+  cursor: pointer;
 }
 
 /*Override*/
@@ -1949,12 +1967,23 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .hero-video {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  position: absolute; // Positioning absolute to fill the parent
+  top: 50%; // Centering vertically
+  left: 50%; // Centering horizontally
+  width: 100vw; // Full viewport width
+  height: auto; // Maintain aspect ratio
+  min-height: 100%; // Ensure it covers full height of parent
+  min-width: 100%; // Ensure it covers full width of parent
+  transform: translate(-50%, -50%) scale(1.2); // Center the video and apply scaling
+  object-fit: cover; // Cover the container
+}
+
+@media (max-width: 768px) {
+  .hero-video {
+    min-height: 100%; // Keep it full height
+    min-width: 100%; // Keep it full width
+    transform: translate(-50%, -50%) scale(1.2); // Maintain centering and scaling
+  }
 }
 
 .button-spinner {
@@ -1972,8 +2001,12 @@ input[type=number]::-webkit-outer-spin-button {
 
 .modal-content {
   background: #F5F5F7;
-  border-radius: 0.5rem;
+  /*border-radius: 0.5rem;*/
   overflow: hidden;
+}
+
+.toggle-visibility {
+  color: #717171;
 }
 
 @keyframes spin {
@@ -1986,3 +2019,143 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 /*End Custom CSS*/
+
+
+.authnet-paymentfull-container{
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+  padding: 1em 1.5em 0 1em;
+  @media (max-width: 768px) {
+    overflow: scroll;
+  }
+  .button-custom-orange{
+    width: 100%;
+  }
+  form{
+    .authnet-paymentfull-form{
+      display: flex;
+      flex-direction: row;
+      flex-basis: 100%;
+        
+      @media (max-width: 768px) {
+        flex-direction: column;
+        .form-left{
+          border-right: none!important;
+          padding-right: 0!important;
+        }
+        .form-right{
+          padding-left: 0!important;
+        }
+      }
+      .form-left, .form-right{
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: stretch;
+        align-items: stretch;
+      }
+
+      .form-left{
+        border-right: 1px solid #AEADAD;
+        padding-right: .9em;
+        .credit-card-container{
+            display: flex;
+            direction: row;
+            gap:15.5px;
+            justify-content: center;
+        }
+        .expiry-cvv{
+          display: flex;
+          flex-direction: row;
+          gap:1.2em;
+        }
+
+        .terms-and-privacy{
+          margin-top: 1em;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: center;
+          color: #525254;
+          text-align: center;
+          font-family: Poppins-R;
+          font-size: 12px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 143.523%;
+          input[type="checkbox"] {
+            margin-left: 2.2em;
+            width: 16px; 
+            height: 16px; 
+            transform: scale(2); 
+          }
+        }
+      }
+      .form-right{
+        padding-left: .9em;
+        @media (max-width: 768px) {
+          margin-top: .5em;
+        }
+        .state-province{
+          display: flex;
+          flex-direction: row;
+          gap:1.2em;
+        }
+        .complete-payment-container{
+          margin-top:1em;
+          margin-bottom:1em;
+          color: #263238;
+          font-size: 11px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 16px; /* 145.455% */
+          :nth-child(2){
+            color: #F5722E;
+            font-weight: 700;
+          }
+        }
+      }
+      
+    }
+  }
+  .authnet-footer{
+    display: flex;
+    flex-direction: row;
+    min-height: 2.5em;
+    @media (max-width: 768px) {
+      flex-direction: column;
+      .authnet-footer-desc {
+        margin-top: 1em;
+        text-align: center;
+        max-width: none!important;
+        padding: 0!important;
+      }
+      .authnet-logo-wrapper{
+        margin-top: .5em;
+      }
+    }
+    .authnet-footer-desc {
+      max-width: 40em;
+      padding-left: 3.5em;
+      padding-right: 1.9em;
+      color: var(--Default-Grey-Text, #263238);
+      font-family: Poppins;
+      font-size: 9px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 15px;
+    
+      :nth-child(1) {
+        color: #F5722E;
+        font-weight: 700;
+      }
+    }
+    
+    .authnet-logo-wrapper{
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+  }
+}

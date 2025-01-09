@@ -115,6 +115,7 @@ const PrivacyAndSecuritySettings: FC = () => {
                       onClick={() =>
                         setShowOriginalPassword(!showOriginalPassword)
                       }
+                      tabIndex={-1}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors duration-200 bg-[#2D3A41] p-0.5"
                     >
                       {showOriginalPassword ? (
@@ -145,6 +146,7 @@ const PrivacyAndSecuritySettings: FC = () => {
                     <button
                       type="button"
                       onClick={() => setShowNewPassword(!showNewPassword)}
+                      tabIndex={-1}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors duration-200 bg-[#2D3A41] p-0.5"
                     >
                       {showNewPassword ? (
@@ -175,6 +177,7 @@ const PrivacyAndSecuritySettings: FC = () => {
                       onClick={() =>
                         setShowConfirmPassword(!showConfirmPassword)
                       }
+                      tabIndex={-1}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors duration-200 bg-[#2D3A41] p-0.5"
                     >
                       {showConfirmPassword ? (

@@ -6,6 +6,10 @@ import {
   CardContent,
   CardFooter,
   CardTitle,
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle
 } from "components";
 import { Button } from "components";
 import { SkillsWithEllipsis } from "components";
@@ -14,9 +18,11 @@ import { useBookmarks } from "components";
 import { ScheduleInterviewModal } from "features/job-hunter";
 import { Match } from "mockData/jobs-data";
 import { useJobHunterContext } from "components";
+import { useNavigate } from "react-router-dom";
 
 interface JobCardProps {
   match: Match;
+  popupImage?: string;
 }
 
 interface SecureCompanyDisplayProps {
@@ -81,15 +87,16 @@ const BookmarkButton: FC<{
   );
 };
 
-const JobCard: FC<JobCardProps> = ({ match }) => {
+const JobCard: FC<JobCardProps> = ({ match, popupImage }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+  const [isUpgradeDialogOpen, setIsUpgradeDialogOpen] = useState(false);
   const cardId = generateCardId(match);
   const { subscriptionPlan } = useJobHunterContext();
+  const navigate = useNavigate();
 
   const handleCardClick = () => {
     if (subscriptionPlan === "freeTrial") return;
-    // Only open preview if schedule modal isn't open
     if (!isScheduleModalOpen) {
       setIsModalOpen(true);
     }
@@ -99,7 +106,10 @@ const JobCard: FC<JobCardProps> = ({ match }) => {
     if (e) {
       e.stopPropagation();
     }
-    if (subscriptionPlan === "freeTrial") return;
+    if (subscriptionPlan === "freeTrial") {
+      setIsUpgradeDialogOpen(true);
+      return;
+    }
     setIsScheduleModalOpen(true);
     setIsModalOpen(false);
   };
@@ -189,7 +199,7 @@ const JobCard: FC<JobCardProps> = ({ match }) => {
 
         <CardFooter className="absolute bottom-0 right-0 flex flex-row justify-end items-center space-x-1 p-2">
           <Button
-            className="text-[10px] md:text-[12px] font-semibold px-0 w-[133px] h-[27px] bg-[#F5722E] hover:bg-[#F5722E]/90"
+            className="text-[12px] font-semibold px-0 w-[133px] h-[27px] bg-[#F5722E] hover:bg-[#F5722E]/90"
             onClick={(e) => handleInterested(e)}
           >
             Schedule Interview
@@ -206,7 +216,25 @@ const JobCard: FC<JobCardProps> = ({ match }) => {
         </CardFooter>
       </Card>
 
-      {subscriptionPlan !== "freeTrial" && (
+      {subscriptionPlan === "freeTrial" ? (
+        <AlertDialog open={isUpgradeDialogOpen} onOpenChange={setIsUpgradeDialogOpen}>
+          <AlertDialogContent className="bg-white p-0 border-none">
+            <AlertDialogHeader>
+              <AlertDialogTitle asChild>
+                <img
+                  src={popupImage}
+                  alt="Upgrade Subscription"
+                  className="w-full h-auto object-contain rounded-lg cursor-pointer"
+                  onClick={() => {
+                    setIsUpgradeDialogOpen(false);
+                    navigate('account-settings/subscription');
+                  }}
+                />
+              </AlertDialogTitle>
+            </AlertDialogHeader>
+          </AlertDialogContent>
+        </AlertDialog>
+      ) : (
         <>
           <JobPreviewModal
             isOpen={isModalOpen}

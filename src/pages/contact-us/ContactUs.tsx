@@ -1,9 +1,9 @@
 import { FC } from "react";
 
-const ContactUs : FC = () => {
+const ContactUs: FC = () => {
     return (
-        <>
-        </>
+            <>
+            </>
     )
 }
 

@@ -10,6 +10,15 @@ footer {
     padding: 105px 224px 105px 271px;
     margin-top: auto; // Push the footer to the bottom
   
+
+    a {
+        transition: color 0.2s ease-in-out;
+        
+        &:hover {
+            color: #F5722E;
+        }
+    }
+
     @media (max-width: 768px) {
       padding: 20px; // Adjust padding for smaller screens
     }

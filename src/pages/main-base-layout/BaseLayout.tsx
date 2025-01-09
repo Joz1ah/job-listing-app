@@ -1,5 +1,6 @@
-import { FC, useState, useEffect } from "react";
-import { Outlet } from "react-router-dom";
+// layouts/BaseLayout.tsx
+import { FC, useState, useEffect, useMemo } from "react";
+import { Outlet, useNavigate, Navigate } from "react-router-dom";
 import { useMenu } from "hooks";
 import { 
   employerDesktopMenu, 
@@ -17,6 +18,7 @@ import { BaseMenu, Footer } from "layouts";
 import { SignOutModal } from "components";
 import { ScrollArea } from "components";
 import { SubscriptionPlan } from "components/context/types";
+import { useAuth } from "contexts/AuthContext/AuthContext";
 
 type UserType = 'employer' | 'job-hunter' | 'guest';
 
@@ -29,12 +31,12 @@ const LayoutContent: FC<LayoutContentProps> = ({ children, menu }) => (
   <div className="flex flex-col min-h-screen bg-[#212529] overflow-hidden h-full">
     {menu}
     <ScrollArea>
-    <div className="flex flex-col flex-1 h-screen">
-      <main className="flex-1 pb-8">
-        {children}
-      </main>
-      <Footer />
-    </div>
+      <div className="flex flex-col flex-1 h-screen">
+        <main className="flex-1 pb-8">
+          {children}
+        </main>
+        <Footer />
+      </div>
     </ScrollArea>
   </div>
 );
@@ -52,10 +54,31 @@ const AuthenticatedLayoutContent: FC<{ userType: 'employer' | 'job-hunter' }> = 
   const { subscriptionPlan, isLoading, error } = isEmployer 
     ? useEmployerContext() 
     : useJobHunterContext();
+  const { isAuthenticated, user } = useAuth(); // Add user from auth context
+
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/landing');
+    }
+  }, [isAuthenticated, navigate]);
 
   const desktopMenuItems = isEmployer ? employerDesktopMenu : jobHunterDesktopMenu;
   const mobileMenuItems = isEmployer ? employerMobileMenu : jobHunterMobileMenu;
-  const userName = isEmployer ? "ABC Incorporated" : "Michael V";
+  
+  // Compute display name based on user type and profile data
+  const displayName = useMemo(() => {
+    if (!user) return isEmployer ? "Company Name" : "User Name";
+    
+    if (isEmployer) {
+      return user.businessName || "Company Name";
+    } else {
+      return user.firstName && user.lastName 
+        ? `${user.firstName} ${user.lastName}`
+        : "User Name";
+    }
+  }, [user, isEmployer]);
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
@@ -93,8 +116,7 @@ const AuthenticatedLayoutContent: FC<{ userType: 'employer' | 'job-hunter' }> = 
         mobileMenuItems={mobileMenuItems}
         subscriptionPlan={subscriptionPlan}
         userType={userType}
-        userName={userName}
-        feedPath={`/${isEmployer ? 'employer' : 'job-hunter'}/`}
+        userName={displayName}
         onSignOut={() => setShowSignOutModal(true)}
       />
       
@@ -114,18 +136,17 @@ const AuthenticatedLayoutContent: FC<{ userType: 'employer' | 'job-hunter' }> = 
   );
 };
 
-const GuestLayoutContent: FC = () => {
-  return (
-    <LayoutContent>
-      <Outlet />
-    </LayoutContent>
-  );
-};
-
 const BaseLayoutContent: FC<BaseLayoutContentProps> = ({ userType }) => {
-  if (userType === 'guest') {
-    return <GuestLayoutContent />;
+  const { isAuthenticated } = useAuth();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/landing" replace />;
   }
+
+  if (userType === 'guest') {
+    return null;
+  }
+
   return <AuthenticatedLayoutContent userType={userType} />;
 };
 
@@ -134,13 +155,25 @@ interface BaseLayoutProps {
 }
 
 const BaseLayout: FC<BaseLayoutProps> = ({ userType }) => {
-
+  const { isAuthenticated, isLoading } = useAuth(); // Add isLoading to track auth state
   const storedTier = localStorage.getItem('subscriptionTier') as SubscriptionPlan || 'freeTrial';
 
-  if (userType === 'guest') {
-    return <BaseLayoutContent userType={userType} />;
+  // Show loading state while checking auth
+  if (isLoading) {
+    return <div>Loading...</div>;
   }
 
+  // Redirect guest users
+  if (userType === 'guest') {
+    return <Navigate to="/landing" replace />;
+  }
+
+  // Check authentication for protected routes
+  if (!isAuthenticated) {
+    return <Navigate to="/landing" replace />;
+  }
+
+  // Render appropriate provider based on user type
   if (userType === 'employer') {
     return (
       <EmployerProvider initialTier={storedTier}>
@@ -156,4 +189,4 @@ const BaseLayout: FC<BaseLayoutProps> = ({ userType }) => {
   );
 };
 
-export { BaseLayout };
+export { BaseLayout, LayoutContent };

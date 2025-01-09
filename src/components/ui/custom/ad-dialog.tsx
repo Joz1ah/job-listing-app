@@ -1,4 +1,5 @@
 import { useState, forwardRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -10,12 +11,18 @@ import {
 
 interface AdDialogWrapperProps {
   adImage?: string;
-  popupImage: string;
+  popupImage?: string;
 }
 
 const AdDialogWrapper = forwardRef<HTMLDivElement, AdDialogWrapperProps>(
   ({ adImage, popupImage }, ref) => {
     const [isOpen, setIsOpen] = useState(false);
+    const navigate = useNavigate();
+
+    const handleImageClick = () => {
+      navigate('account-settings/subscription');
+      setIsOpen(false);
+    };
 
     return (
       <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
@@ -38,7 +45,8 @@ const AdDialogWrapper = forwardRef<HTMLDivElement, AdDialogWrapperProps>(
               <img
                 src={popupImage}
                 alt="Popup Advertisement"
-                className="w-full h-auto object-contain rounded-lg"
+                className="w-full h-auto object-contain rounded-lg cursor-pointer"
+                onClick={handleImageClick}
               />
             </AlertDialogTitle>
           </AlertDialogHeader>

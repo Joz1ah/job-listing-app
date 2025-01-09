@@ -70,7 +70,7 @@ const LoadingOverlay = () => (
 
 const EditEmployerProfile: FC = () => {
   const [showPreview, setShowPreview] = useState<boolean>(false);
-    const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
   const {

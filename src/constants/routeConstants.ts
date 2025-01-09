@@ -14,6 +14,10 @@ export const ROUTE_CONSTANTS = {
 
   // Test Route
   TEST: '/test',
+  ABOUT_US: 'about-us',
+  CONTACT_US: 'contact-us',
+  SUBSCRIPTION_PLAN: 'subscription-plan',
+  FAQ: 'faq',
   
   // Authentication and Profile
   COMPLETE_PROFILE: '/employer/complete-profile',
@@ -66,4 +70,7 @@ export const ROUTE_CONSTANTS = {
   
   // Application status
   BOOKMARKED: 'bookmarked',
+
+  TERMS_CONDITIONS: 'terms-conditions',
+  PRIVACY_POLICY: 'privacy-policy',
 };

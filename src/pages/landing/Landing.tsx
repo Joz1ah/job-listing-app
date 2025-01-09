@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState, useRef, ReactElement } from 'react'
+import React, { FC, useEffect, useState, useRef, ReactElement, useMemo } from 'react'
 import { FooterEngagement as Footer} from "layouts";
 import { PageMeta } from "components";
 import { LandingContext } from 'components';
@@ -21,6 +21,13 @@ import { perfectMatch as jobMatches, Match as JobMatch } from 'mockData/jobs-dat
 import { EmployerProvider, JobHunterProvider } from 'components';
 import { BookmarkProvider } from 'components';
 import { Button } from 'components';
+import { Link } from 'react-router-dom';
+import { useAuth } from 'contexts/AuthContext/AuthContext';
+import { employerDesktopMenu, employerMobileMenu } from 'mockData/nav-menus';
+import { jobHunterDesktopMenu, jobHunterMobileMenu } from 'mockData/nav-menus';
+import { SignOutModal } from 'components';
+import { Outlet, useMatch } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 import video1 from 'assets/mp4/Landing-Page-hero-1.mp4';
 import video2 from 'assets/mp4/video-conference-call-1.mp4';
@@ -43,15 +50,16 @@ import arrow_left_icon from 'assets/Keyboard-arrow-left.svg?url';
 import girl_with_dog_smiling_at_laptop from 'assets/girl-with-dog-smiling-at-laptop.jpg';
 //import powered_by_stripe from 'assets/powered_by_stripe.svg?url';
 import authnet_visa_solution from 'assets/authnet-logo-light.svg?url';
+import authnet_logo from 'assets/authnet-logo2.svg?url';
 
-import icon_search from 'assets/search.svg?url';
+//import icon_search from 'assets/search.svg?url';
 import _5dollarspermonth from 'assets/5dollarspermonth.svg?url';
 import flame_vector from 'assets/flame-vector.svg?url';
 import orange_check from 'assets/orange-check.svg?url';
 import akazalogo_dark from 'assets/akazalogo-dark.svg?url';
 import close_icon from 'assets/close.svg?url';
 //import eye_off_outline from 'assets/eye-off-outline.svg?url';
-import google_logo from 'assets/google-logo.svg?url';
+//import google_logo from 'assets/google-logo.svg?url';
 import philippines_flag from 'assets/country-icons/philippines.svg?url';
 import chevron_down from 'assets/chevron-down.svg?url';
 import unchecked_green from 'assets/toggles/unchecked-green.svg?url';
@@ -174,10 +182,17 @@ const CustomInput: React.FC<CustomInputProps> = ({ field, form, ...props }) => {
 };
 
 const Landing: FC = (): ReactElement => {
+  const { isAuthenticated, user } = useAuth();
+  
+  // Simple redirect if authenticated
+  if (isAuthenticated && user?.type) {
+    return <Navigate to={`/${user.type}`} replace />;
+  }
+
   const [maskHidden, setMaskHidden] = useState(1);
   const [closeModalActive, setCloseModalActive] = useState(1);
   const [selectedModalHeader, setSelectedModalHeader] = useState(1);
-  const [modalState, setModalState] = useState(10);
+  const [modalState, setModalState] = useState(12);
   const [heroState, setHeroState] = useState(1);
   const [currentSelectedPlan, setCurrentSelectedPlan] = useState(3);
   const [dataStates, setDataStates] = useState({
@@ -209,7 +224,8 @@ const Landing: FC = (): ReactElement => {
       'LOADING' : 8,
       'SIGNUP_CONGRATULATIONS' : 9,
       'AUTHNET_PAYMENT' : 10,
-      'PERFECT_MATCH_RESULTS': 11 
+      'PERFECT_MATCH_RESULTS': 11,
+      'AUTHNET_PAYMENT_FULL': 12
   }
   const MODAL_HEADER_TYPE = {
       'WITH_LOGO_AND_CLOSE' : 1,
@@ -226,48 +242,73 @@ const Landing: FC = (): ReactElement => {
 
   //const [localCount, setCount] = useState(0)
 
-  const ButtonLoginNav = () =>{
+  useEffect(() => {
+    // Check if PerfectMatchResultsModal was previously open and is now being closed
+    if (modalState !== modalStates.PERFECT_MATCH_RESULTS && maskHidden === 1) {
+      setHeroState(heroStates.PERFECT_MATCH_ALGO);
+    }
+  }, [modalState, maskHidden]);
+
+  const ButtonLoginNav = () => {
     const elementRef = useRef<HTMLButtonElement>(null);
     const toggleLogin = () => {
       if (elementRef.current) {
         elementRef.current.onclick = () => {
-          setSelectedModalHeader(1)
-          setMaskHidden((prev) => prev ? 0 : 1);
-          setModalState(modalStates.LOGIN);
-          setCloseModalActive(1);
+          // First, check if we're switching from another modal
+          if (!maskHidden) {
+            // We're switching modals, so don't toggle the mask
+            setSelectedModalHeader(1);
+            setModalState(modalStates.LOGIN);
+            setCloseModalActive(1);
+          } else {
+            // Normal opening of modal
+            setSelectedModalHeader(1);
+            setMaskHidden(0);
+            setModalState(modalStates.LOGIN);
+            setCloseModalActive(1);
+          }
         };
       }
     };
   
     useEffect(toggleLogin, []);
   
-    return <button ref={elementRef} id="btn_login_nav" className={`${styles.button}`}>Login</button>
-  }  
+    return <button ref={elementRef} id="btn_login_nav" className={`${styles.button}`}>Login</button>;
+  };
 
-  const ButtonSignUpNav = () =>{
+  const ButtonSignUpNav = () => {
     const elementRef = useRef<HTMLButtonElement>(null);
     const toggleSignUp = () => {
       if (elementRef.current) {
         elementRef.current.onclick = () => {
-          setSelectedModalHeader(1)
-          setMaskHidden((prev) => prev ? 0 : 1);
-          setModalState(modalStates.SIGNUP_SELECT_USER_TYPE);
-          setCloseModalActive(1);
+          // First, check if we're switching from another modal
+          if (!maskHidden) {
+            // We're switching modals, so don't toggle the mask
+            setSelectedModalHeader(1);
+            setModalState(modalStates.SIGNUP_SELECT_USER_TYPE);
+            setCloseModalActive(1);
+          } else {
+            // Normal opening of modal
+            setSelectedModalHeader(1);
+            setMaskHidden(0);
+            setModalState(modalStates.SIGNUP_SELECT_USER_TYPE);
+            setCloseModalActive(1);
+          }
         };
       }
     };
   
     useEffect(toggleSignUp, []);
   
-    return <button ref={elementRef} className={`${styles.button} ${styles['button-signup']}`}>Sign up</button>
-  }  
+    return <button ref={elementRef} className={`${styles.button} ${styles['button-signup']}`}>Sign up</button>;
+  };
 
   const LoginModal = () =>{
     return(
       <div id="step_login" className={`${styles['modal-content']}`} hidden={modalState !== modalStates.LOGIN}>
           <div className={`${styles['login-container']}`}>
               <LoginForm/>
-              <div className={`${styles['other-signup-option-label']}`}>or continue with</div>
+              {/* <div className={`${styles['other-signup-option-label']}`}>or continue with</div>
               <div className={`${styles['social-media-items']} ${styles['noselect']}`}>
                   <div className={`${styles['social-media-button']}`}>
                       <div className={`${styles['social-media-icon']}`}>
@@ -275,16 +316,26 @@ const Landing: FC = (): ReactElement => {
                       </div>
                       <div className={`${styles['social-media-label']}`}>Google</div>
                   </div>
-              </div>
+              </div> */}
               <div className={`${styles['terms-and-privacy']}`}>
-                  <input type="checkbox"></input>
-                  <div>
-                      <label>I have read, understood and agree to the</label>
-                      <label>Terms of Use</label>
-                      <label>and</label>
-                      <label>Privacy Policy</label>
-                  </div>
-              </div>
+                <input type="checkbox" />
+                <div>
+                    <label>I have read, understood and agree to the </label>
+                    <Link 
+                        to='/landing/terms-conditions' 
+                        className={styles['link-as-label']}
+                    >
+                        Terms of Use
+                    </Link>
+                    <label> and </label>
+                    <Link 
+                        to='/landing/privacy-policy'
+                        className={styles['link-as-label']}
+                    >
+                        Privacy Policy
+                    </Link>
+                </div>
+            </div>
           </div>
       </div>
     )
@@ -335,8 +386,9 @@ const Landing: FC = (): ReactElement => {
 
   const LoginForm = () => {
     const [loginSubmit] = useLoginMutation();
-    const [apiLoginErrorMessage, setApiLoginErrorMessage] = useState('')
+    const [apiLoginErrorMessage, setApiLoginErrorMessage] = useState('');
     const navigate = useNavigate();
+    const { login } = useAuth();
   
     // State to toggle password visibility
     const [showPassword, setShowPassword] = useState(false);
@@ -346,42 +398,40 @@ const Landing: FC = (): ReactElement => {
       { setSubmitting, setFieldError }: any
     ) => {
       try {
-        await loginSubmit(values)
-          .unwrap()
-          .then((response) => {
-            console.log('Success Login')
-            console.log(response)
-            
-            setTimeout(() => {
-              const userType = response?.data?.user?.type;
-              const isFreeTrial = response?.data?.user?.freeTrial;
-              
-              const subscriptionTier = isFreeTrial ? 'freeTrial' : 'monthlyPlan';
-              
-              localStorage.setItem('userType', userType);
-              localStorage.setItem('subscriptionTier', subscriptionTier);
-    
-              if (userType === 'employer') {
-                navigate('/employer', { 
-                  state: { initialTier: subscriptionTier }
-                });
-              } else {
-                const basePath = isFreeTrial ? '/job-hunter/feed' : '/job-hunter';
-                  
-                navigate(basePath, {
-                  state: { initialTier: subscriptionTier }
-                });
-              }
-            }, 1000);
-          })
-          .catch((err) => {
-            console.log('err')
-            setApiLoginErrorMessage('Invalid Username or Password')
-            console.log(err)
-          });
-    
+        const response = await loginSubmit(values).unwrap();
+        
+        // Check if we have the token in the response
+        if (response?.data?.token) {
+          // Login with auth context
+          login(response.data.token);
+  
+          const userType = response.data.user?.type;
+          const isFreeTrial = response.data.user?.freeTrial;
+          
+          // Store user preferences
+          localStorage.setItem('userType', userType);
+          localStorage.setItem('subscriptionTier', isFreeTrial ? 'freeTrial' : 'monthlyPlan');
+  
+          // Navigate after successful login
+          setTimeout(() => {
+            if (userType === 'employer') {
+              navigate('/employer');
+            } else {
+              const basePath = isFreeTrial ? '/job-hunter/feed' : '/job-hunter';
+              navigate(basePath);
+            }
+          }, 1000);
+        } else {
+          throw new Error('No token received');
+        }
       } catch (err: any) {
-        console.error(err);
+        console.error('Login error:', err);
+        // Handle API-specific errors
+        if (err.status === 401) {
+          setApiLoginErrorMessage('Invalid Username or Password');
+        } else {
+          setApiLoginErrorMessage('An error occurred during login');
+        }
         setFieldError('general', 'Invalid Username or Password');
       } finally {
         setSubmitting(false);
@@ -420,6 +470,7 @@ const Landing: FC = (): ReactElement => {
                     type="button"
                     className={styles['toggle-visibility']}
                     onClick={() => setShowPassword(!showPassword)}
+                    tabIndex={-1}
                     aria-label={showPassword ? 'Hide Password' : 'Show Password'}
                   >
                     {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
@@ -510,17 +561,28 @@ const Landing: FC = (): ReactElement => {
       try {
         // Validate the form data
         await schema.validate(credentials, { abortEarly: false });
-        setIsSubmitting(true)
+        setIsSubmitting(true);
         try {
-          const res = await signUpSubmit({
+          
+          await signUpSubmit({
             ...credentials,
             type: dataStates.selectedUserType
-          }).unwrap().then(()=>{
+          }).unwrap().then(() => {
             setTempLoginEmail(credentials.email)
             setTempLoginPassword(credentials.password)
+            
+            setDataStates({
+              ...dataStates,
+              email: credentials.email,
+            });
           });
+
+          setModalState(modalStates.SIGNUP_STEP3);
+
+          await generateOTP({ email: credentials.email }).unwrap();
           
-          console.log('signup success', res);
+        } catch (err: any) {
+          setIsSubmitting(false);
           
           setDataStates({
             ...dataStates,
@@ -528,10 +590,11 @@ const Landing: FC = (): ReactElement => {
             //userId: res.data.id
           });
           
-          await generateOTP({ email: credentials.email }).unwrap().then(()=>{
+          await generateOTP({ email: credentials.email }).unwrap().catch(()=>{
             setIsSubmitting(false)
           });
           setTimeout(() => {
+            setIsSubmitting(false)
             setModalState(modalStates.SIGNUP_STEP3);
           }, 1000);
           
@@ -551,7 +614,7 @@ const Landing: FC = (): ReactElement => {
         }
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
-          setIsSubmitting(false)
+          setIsSubmitting(false);
           const _organizedErrors: ErrorState = { 
             email: '', 
             password: '', 
@@ -604,7 +667,8 @@ const Landing: FC = (): ReactElement => {
                         <button 
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="cursor-pointer"
+                            tabIndex={-1}
+                            className={styles['toggle-visibility']}
                         >
                             {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
                         </button>
@@ -627,7 +691,8 @@ const Landing: FC = (): ReactElement => {
                         <button 
                             type="button"
                             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                            className="cursor-pointer"
+                            tabIndex={-1}
+                            className={styles['toggle-visibility']}
                         >
                             {showConfirmPassword ? <Eye size={20} /> : <EyeOff size={20} />}
                         </button>
@@ -639,7 +704,7 @@ const Landing: FC = (): ReactElement => {
                     )}
                 </div>
             </div>
-            <div className={`${styles['other-signup-option-label']}`}>or sign up with</div>
+            {/* <div className={`${styles['other-signup-option-label']}`}>or sign up with</div>
             <div className={`${styles['social-media-items']} ${styles['noselect']}`}>
                 <div className={`${styles['social-media-button']}`}>
                     <div className={`${styles['social-media-icon']}`}>
@@ -647,7 +712,7 @@ const Landing: FC = (): ReactElement => {
                     </div>
                     <div className={`${styles['social-media-label']}`}>Google</div>
                 </div>
-            </div>
+            </div> */}
             <div className={`${styles['action-buttons']}`}>
                 <button 
                     onClick={handlePrevious}
@@ -705,6 +770,8 @@ const OTPSignUp = () => {
 
   const handleOnInput = (ref:any, nextRef:any) =>{
     let currentInput = ref.current;
+    currentInput.value = currentInput.value.replace(/[^0-9]/g, '');
+
     if(currentInput.value.length > currentInput.maxLength)
        currentInput.value = currentInput.value.slice(0, currentInput.maxLength);
     if(currentInput.value.length >= currentInput.maxLength)
@@ -743,10 +810,7 @@ const OTPSignUp = () => {
           }).unwrap().then(()=>{
             handleLogin({email: tempLoginEmail, password: tempLoginPassword}).then(
               ()=>{
-                setTimeout( ()=> {
                   setModalState(modalStates.SIGNUP_CONGRATULATIONS);
-                }
-                , 1000 )
               }
           )})
           
@@ -761,7 +825,11 @@ const OTPSignUp = () => {
             alert('Invalid OTP. Please try again.');
           } else if (err.status === 408 || err.originalStatus === 408) {
             alert('OTP has expired. Please request a new one.');
-          } else {
+          } else if (err.status == 400 && err?.errors && err?.message){
+            alert(err.status + err.message);
+            console.error(err);
+          }
+          else {
             alert('Something went wrong. Please try again later.');
             console.error('Unexpected error structure:', err);
           }
@@ -862,12 +930,12 @@ const OTPSignUp = () => {
         <div className={`${styles.desc2}`}>(OTP) sent to your registered email below.</div>
         
         <div className={`${styles['otp-input-fields']}`}>
-            <div><input onInput={()=>handleOnInput(ib1,ib2)} onKeyDown={(e)=>handleOnKeyDown(e, ib1, ib1)} ref={ib1} type="number" maxLength={1} /></div>
-            <div><input onInput={()=>handleOnInput(ib2,ib3)} onKeyDown={(e)=>handleOnKeyDown(e, ib2, ib1)} ref={ib2} type="number" maxLength={1} /></div>
-            <div><input onInput={()=>handleOnInput(ib3,ib4)} onKeyDown={(e)=>handleOnKeyDown(e, ib3, ib2)} ref={ib3} type="number" maxLength={1} /></div>
-            <div><input onInput={()=>handleOnInput(ib4,ib5)} onKeyDown={(e)=>handleOnKeyDown(e, ib4, ib3)} ref={ib4} type="number" maxLength={1} /></div>
-            <div><input onInput={()=>handleOnInput(ib5,ib6)} onKeyDown={(e)=>handleOnKeyDown(e, ib5, ib4)} ref={ib5} type="number" maxLength={1} /></div>
-            <div><input onInput={()=>handleOnInput(ib6,ib6)} onKeyDown={(e)=>handleOnKeyDown(e, ib6, ib5)} ref={ib6} type="number" maxLength={1} /></div>
+            <div><input onInput={()=>handleOnInput(ib1,ib2)} onKeyDown={(e)=>handleOnKeyDown(e, ib1, ib1)} ref={ib1} type="number" pattern="[0-9]*" maxLength={1} /></div>
+            <div><input onInput={()=>handleOnInput(ib2,ib3)} onKeyDown={(e)=>handleOnKeyDown(e, ib2, ib1)} ref={ib2} type="number" pattern="[0-9]*" maxLength={1} /></div>
+            <div><input onInput={()=>handleOnInput(ib3,ib4)} onKeyDown={(e)=>handleOnKeyDown(e, ib3, ib2)} ref={ib3} type="number" pattern="[0-9]*" maxLength={1} /></div>
+            <div><input onInput={()=>handleOnInput(ib4,ib5)} onKeyDown={(e)=>handleOnKeyDown(e, ib4, ib3)} ref={ib4} type="number" pattern="[0-9]*" maxLength={1} /></div>
+            <div><input onInput={()=>handleOnInput(ib5,ib6)} onKeyDown={(e)=>handleOnKeyDown(e, ib5, ib4)} ref={ib5} type="number" pattern="[0-9]*" maxLength={1} /></div>
+            <div><input onInput={()=>handleOnInput(ib6,ib6)} onKeyDown={(e)=>handleOnKeyDown(e, ib6, ib5)} ref={ib6} type="number" pattern="[0-9]*" maxLength={1} /></div>
         </div>
         
         <div className={`${styles['action-buttons']}`}>
@@ -1252,20 +1320,55 @@ const SubscriptionPlanSelection = () =>{
   const subscription_plan3 = useRef<HTMLDivElement>(null);
   const buttonSubscribe = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const { login } = useAuth();
+  const [loginSubmit] = useLoginMutation();
 
-  const handleSubscribe = () => {
-    if (buttonSubscribe.current) {
-      buttonSubscribe.current.onclick = () => {
-        setSelectedModalHeader(1);
-        const userType = dataStates.selectedUserType;
-        
-        if(currentSelectedPlan == PLAN_SELECTION_ITEMS.FREE){
-
-          localStorage.setItem('subscriptionTier', 'freeTrial');
-          localStorage.setItem('userType', userType);
+  useEffect(() => {
+    // Move the function inside useEffect
+    const setupSubscriptionHandlers = () => {
+      if (buttonSubscribe.current) {
+        buttonSubscribe.current.onclick = async () => {
+          setSelectedModalHeader(1);
+          const userType = dataStates.selectedUserType;
           
-          setModalState(modalStates.LOADING)
-          setTimeout(()=>{
+          if(currentSelectedPlan == PLAN_SELECTION_ITEMS.FREE){
+            try {
+              const response = await loginSubmit({
+                email: tempLoginEmail,
+                password: tempLoginPassword
+              }).unwrap();
+              
+              if (response?.data?.token) {
+                login(response.data.token);
+                
+                localStorage.setItem('subscriptionTier', 'freeTrial');
+                localStorage.setItem('userType', userType);
+                
+                setModalState(modalStates.LOADING);
+                
+                setTimeout(() => {
+                  const redirectPath = userType === 'employer' 
+                    ? '/employer/complete-profile' 
+                    : '/job-hunter/create-application';
+                    
+                  navigate(redirectPath);
+                }, 5000);
+              }
+            } catch (error) {
+              console.error('Auto-login failed:', error);
+            }
+          } else {
+            const selectedTier = 
+              currentSelectedPlan === PLAN_SELECTION_ITEMS.MONTHLY 
+                ? 'monthlyPlan' 
+                : 'yearlyPlan';
+                
+            localStorage.setItem('pendingSubscriptionTier', selectedTier);
+            localStorage.setItem('userType', userType);
+            setModalState(modalStates.AUTHNET_PAYMENT);
+          }
+        };
+      }
 
             const basePath = userType === 'employer' ? '/employer' : '/job-hunter/feed';
             navigate(basePath, {
@@ -1281,28 +1384,29 @@ const SubscriptionPlanSelection = () =>{
               
           localStorage.setItem('pendingSubscriptionTier', selectedTier);
           localStorage.setItem('userType', userType);
-          setModalState(modalStates.AUTHNET_PAYMENT)
+          setModalState(modalStates.AUTHNET_PAYMENT_FULL)
         }
       };
     }
     if (subscription_plan1.current) {
         subscription_plan1.current.onclick = () => {
-          setCurrentSelectedPlan(PLAN_SELECTION_ITEMS.FREE)
-      };
-    }
-    if (subscription_plan2.current) {
+          setCurrentSelectedPlan(PLAN_SELECTION_ITEMS.FREE);
+        };
+      }
+      if (subscription_plan2.current) {
         subscription_plan2.current.onclick = () => {
-          setCurrentSelectedPlan(PLAN_SELECTION_ITEMS.MONTHLY)
-      };
-    }
-    if (subscription_plan3.current) {
+          setCurrentSelectedPlan(PLAN_SELECTION_ITEMS.MONTHLY);
+        };
+      }
+      if (subscription_plan3.current) {
         subscription_plan3.current.onclick = () => {
-          setCurrentSelectedPlan(PLAN_SELECTION_ITEMS.ANNUAL)
-      };
-    }
-  };
-  useEffect(handleSubscribe, []);
+          setCurrentSelectedPlan(PLAN_SELECTION_ITEMS.ANNUAL);
+        };
+      }
+    };
 
+    setupSubscriptionHandlers();
+  }, [currentSelectedPlan, navigate, login, loginSubmit, tempLoginEmail, tempLoginPassword]);
 
   return(
     <div id="step5_signup" className={`${styles['modal-content']}`} hidden={modalState !== modalStates.SIGNUP_STEP5}>
@@ -1478,6 +1582,36 @@ const CongratulationsModal = () => {
   )
 }
 
+const createAuthNetTokenizer = async () =>{
+  
+  const isDevOrStaging =
+  process.env.NODE_ENV === 'development' || window.location.origin === 'https://app-sit.akaza.xyz';
+
+  const scriptSources = {
+    acceptJs: isDevOrStaging
+      ? 'https://jstest.authorize.net/v1/Accept.js'
+      : 'https://js.authorize.net/v1/Accept.js',
+    acceptCore: isDevOrStaging
+      ? 'https://jstest.authorize.net/v1/AcceptCore.js'
+      : 'https://js.authorize.net/v1/AcceptCore.js',
+  };  
+
+  // Check if the script already exists
+  if (!document.querySelector(`script[src="${scriptSources.acceptCore}"]`)) {
+    const script = document.createElement('script');
+    script.src = scriptSources.acceptJs;
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      // Cleanup script on component unmount if it was added
+      if (script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
+    };
+  }
+}
+
 const CreditCardForm: React.FC = () => {
   const [paymentSubmit] = usePaymentCreateMutation();
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -1490,33 +1624,7 @@ const CreditCardForm: React.FC = () => {
        setModalState(modalStates.AUTHNET_PAYMENT)
       };
     }
-  
-    const isDevOrStaging =
-    process.env.NODE_ENV === 'development' || window.location.origin === 'https://app-sit.akaza.xyz';
-    console.log(process.env.NODE_ENV)
-    const scriptSources = {
-      acceptJs: isDevOrStaging
-        ? 'https://jstest.authorize.net/v1/Accept.js'
-        : 'https://js.authorize.net/v1/Accept.js',
-      acceptCore: isDevOrStaging
-        ? 'https://jstest.authorize.net/v1/AcceptCore.js'
-        : 'https://js.authorize.net/v1/AcceptCore.js',
-    };  
-
-    // Check if the script already exists
-    if (!document.querySelector(`script[src="${scriptSources.acceptCore}"]`)) {
-      const script = document.createElement('script');
-      script.src = scriptSources.acceptJs;
-      script.async = true;
-      document.body.appendChild(script);
-  
-      return () => {
-        // Cleanup script on component unmount if it was added
-        if (script.parentNode) {
-          script.parentNode.removeChild(script);
-        }
-      };
-    }
+    createAuthNetTokenizer();
   }, []);
 
   const validationSchema = Yup.object({
@@ -1744,6 +1852,384 @@ const StripePaymentModal = () => {
   )
 }
 
+
+const AuthnetPaymentFullModal = () => {
+  const errors = {businessName : 'biz'}
+  const touched = {businessName : false}
+  const submitButton = useRef<HTMLDivElement>(null);
+  const [paymentSubmit] = usePaymentCreateMutation();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
+  const [paymentData,setPaymentData] = useState({
+    cardNumber:'',
+    firstName:'',
+    lastName:'',
+    expiryDate:'',
+    cvv:'',
+    email:'',
+    billingAddress:'',
+    stateProvince:'',
+    zipCode:'',
+    city:'',
+    country:'',
+    zipPostalCode:'',
+  })
+
+  useEffect(()=>{
+    console.log(paymentData)
+  },[paymentData])
+  
+  const handleSubmit = async(values: FormValues) => {
+    console.log('values')
+    console.log(values)
+    setPaymentData(paymentData)
+    setIsSubmitting(true)
+    const secureData = {
+      authData: {
+        clientKey: '7wuXYQ768E3G3Seuy6aTf28PfU3mJWu7Bbj564KfTPqRa7RXUPZvTsnKz9Jf7daJ', // Replace with your actual client key
+        apiLoginID: '83M29Sdd8', // Replace with your actual API login ID
+      },
+      cardData: {
+        cardNumber: values.cardNumber,
+        month: values.expirationDate.split('/')[0],
+        year: values.expirationDate.split('/')[1],
+        cardCode: values.cvv,
+      },
+    };
+
+    console.log('generating token...')
+    Accept.dispatchData(secureData, async (acceptResponse: any) => {
+      console.log('paymentData')
+      console.log(paymentData)
+      if (acceptResponse.messages.resultCode === 'Ok') {
+        const token = acceptResponse.opaqueData.dataValue;
+        console.log(acceptResponse)
+        console.log('token generation success')
+        console.log(token)
+        // Send the token to your server for processing
+        console.log({
+          "provider": "authnet",
+          "userId": dataStates.userId,
+          "plan": 
+            currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY ? "Monthly" : 
+            currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL ? "Annual" : '',
+          "amount":  
+            currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY ? 5 : 
+            currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL ? 55 : '',
+          "paymentMethodId": token,
+          "daysTrial": 0
+        })
+        try {
+          const res = await paymentSubmit({
+            "provider": "authnet",
+            "userId": dataStates.userId,
+            "plan": 
+              currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY ? "Monthly" : 
+              currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL ? "Annual" : '',
+            "amount":  
+              currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY ? 5 : 
+              currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL ? 55 : '',
+            "paymentMethodId": token,
+            "daysTrial": 0
+          })
+          .unwrap()
+          .then((res)=>{
+            console.log(res)
+            setModalState(modalStates.LOADING)
+            setTimeout(()=>{
+              navigate("/job-hunter");
+            },5000)
+          }).catch((err) => {
+            alert(JSON.stringify(err))
+            setIsSubmitting(false)
+            console.log(err)
+          })
+          console.log(res);
+        } catch (err: any) {
+          console.log(err);
+        } finally {
+          setIsSubmitting(false)
+        }
+
+      } else {
+        setIsSubmitting(false)
+        alert('Error: ' + acceptResponse.messages.message[0].text); // Use acceptResponse here
+      }
+    });
+  };
+
+
+  useEffect(() => {
+    if (submitButton.current) {
+      submitButton.current.onclick = () => {
+        handleSubmit({
+          cardNumber: '4242424242424242',
+          cardholderName: 'string',
+          expirationDate: '12/33',
+          cvv: '123'
+        }
+        )
+      };
+    }
+    createAuthNetTokenizer();
+  }, []);
+
+  return(
+    <div className={`${styles['modal-content']}`} hidden={modalState !== modalStates.AUTHNET_PAYMENT_FULL}>
+        <div className={`${styles['authnet-paymentfull-container']}`}>
+          <form>
+            <div className={`${styles['authnet-paymentfull-form']}`}>
+                <div className={`${styles['form-left']}`}>
+                  <div className={`${styles['credit-card-container']}`}>
+                    <img src={visa_icon}></img>
+                    <img src={amex_icon}></img>
+                    <img src={mastercard_icon}></img>
+                    <img src={discover_icon}></img>
+                  </div>
+                  <div className={styles['input-form']}>
+                    <InputField variant={'tulleGray'}
+                      label="Card Number"
+                      className="bg-transparent mt-2"
+                      error={errors.businessName}
+                      touched={touched.businessName}
+                      showIcon={false}
+                      tooltipContent="N/A"
+                    >
+                      <Input
+                        name="cardNumber"
+                        value={''}
+                        placeholder="Card Number"
+                        className="bg-transparent border-[#000] h-[38px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                      />
+                    </InputField>
+                    <InputField variant={'tulleGray'}
+                      label="First Name"
+                      className="bg-transparent mt-3"
+                      error={errors.businessName}
+                      touched={touched.businessName}
+                      showIcon={false}
+                      tooltipContent="N/A"
+                    >
+                      <Input
+                        name="firstName"
+                        value={''}
+                        onChange={()=>{}}
+                        placeholder="First Name"
+                        className="bg-transparent border-[#000] h-[38px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                      />
+                    </InputField>
+                    <InputField variant={'tulleGray'}
+                      label="Last Name"
+                      className="bg-transparent mt-3"
+                      error={errors.businessName}
+                      touched={touched.businessName}
+                      showIcon={false}
+                      tooltipContent="N/A"
+                    >
+                      <Input
+                        name="lastName"
+                        value={''}
+                        onChange={()=>{}}
+                        placeholder="Last Name"
+                        className="bg-transparent border-[#000] h-[38px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                      />
+                    </InputField>
+                    <div className={styles['expiry-cvv']}>
+                      <InputField variant={'tulleGray'}
+                        label="Expiry Date"
+                        className="bg-transparent mt-3"
+                        error={errors.businessName}
+                        touched={touched.businessName}
+                        showIcon={false}
+                        tooltipContent="N/A"
+                      >
+                        <Input
+                          name="expiryDate"
+                          value={''}
+                          onChange={()=>{}}
+                          placeholder="XX/XX"
+                          className="bg-transparent border-[#000] h-[38px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                        />
+                      </InputField>
+                      
+                      <InputField variant={'tulleGray'}
+                        label="CVV"
+                        className="bg-transparent mt-3"
+                        error={errors.businessName}
+                        touched={touched.businessName}
+                        showIcon={false}
+                        tooltipContent="N/A"
+                      >
+                        <Input
+                          name="cvv"
+                          value={''}
+                          onChange={()=>{}}
+                          placeholder="CVV"
+                          className="bg-transparent border-[#000] h-[38px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                        />
+                      </InputField>
+                    </div>
+                    <InputField variant={'tulleGray'}
+                      label="Email"
+                      className="bg-transparent mt-3"
+                      error={errors.businessName}
+                      touched={touched.businessName}
+                      showIcon={false}
+                      tooltipContent="N/A"
+                    >
+                      <Input
+                        name="email"
+                        value={''}
+                        onChange={()=>{}}
+                        placeholder="Legal Business Name"
+                        className="bg-transparent border-[#000] h-[38px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                      />
+                    </InputField>
+                    <div className={`${styles['terms-and-privacy']}`}>
+                        <input type="checkbox"></input>
+                        <div>
+                            <label>I have read, understood and agree to the</label>
+                            <label>Terms of Use</label>
+                            <label>and</label>
+                            <label>Privacy Policy</label>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+                <div className={`${styles['form-right']}`}>
+
+                <InputField variant={'tulleGray'}
+                      label="BillingAddress"
+                      className="bg-transparent"
+                      error={errors.businessName}
+                      touched={touched.businessName}
+                      showIcon={false}
+                      tooltipContent="N/A"
+                    >
+                      <Input
+                        name="billingAdress"
+                        value={''}
+                        onChange={()=>{}}
+                        placeholder="House No./Bldg./Street"
+                        className="bg-transparent border-[#000] h-[38px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                      />
+                    </InputField>
+                    <div className={styles['state-province']}>
+                      <InputField variant={'tulleGray'}
+                        label="State/Province"
+                        className="bg-transparent mt-3"
+                        error={errors.businessName}
+                        touched={touched.businessName}
+                        showIcon={false}
+                        tooltipContent="N/A"
+                      >
+                        <Input
+                          name="stateProvince"
+                          value={''}
+                          onChange={()=>{}}
+                          placeholder="State/Province"
+                          className="bg-transparent border-[#000] h-[38px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                        />
+                      </InputField>
+                      
+                      <InputField variant={'tulleGray'}
+                        label="Zip Code"
+                        className="bg-transparent mt-3"
+                        error={errors.businessName}
+                        touched={touched.businessName}
+                        showIcon={false}
+                        tooltipContent="N/A"
+                      >
+                        <Input
+                          name="zipCode"
+                          value={''}
+                          onChange={()=>{}}
+                          placeholder="Zip Code"
+                          className="bg-transparent border-[#000] h-[38px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                        />
+                      </InputField>
+                    </div>
+                    <InputField variant={'tulleGray'}
+                      label="City"
+                      className="bg-transparent mt-3"
+                      error={errors.businessName}
+                      touched={touched.businessName}
+                      showIcon={false}
+                      tooltipContent="N/A"
+                    >
+                      <Input
+                        name="city"
+                        value={''}
+                        onChange={()=>{}}
+                        placeholder="City"
+                        className="bg-transparent border-[#000] h-[38px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                      />
+                    </InputField>
+                    <InputField variant={'tulleGray'}
+                      label="Country"
+                      className="bg-transparent mt-3"
+                      error={errors.businessName}
+                      touched={touched.businessName}
+                      showIcon={false}
+                      tooltipContent="N/A"
+                    >
+                      <Input
+                        name="country"
+                        value={''}
+                        onChange={()=>{}}
+                        placeholder="Country"
+                        className="bg-transparent border-[#000] h-[38px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                      />
+                    </InputField>
+                    <InputField variant={'tulleGray'}
+                      label="Zip/Postal Code"
+                      className="bg-transparent mt-3"
+                      error={errors.businessName}
+                      touched={touched.businessName}
+                      showIcon={false}
+                      tooltipContent="N/A"
+                    >
+                      <Input
+                        name="zipPostalCode"
+                        value={''}
+                        onChange={()=>{}}
+                        placeholder="Zip/Postal Code"
+                        className="bg-transparent border-[#000] h-[38px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                      />
+                    </InputField>
+                    <div className={styles['complete-payment-container']}>
+                        <label>By Clicking “Complete Payment” you will be charged the total price of </label>
+                        <label>$55.00</label>
+                    </div>
+                    <div ref={submitButton} className={`${styles['button-custom-orange']} ${styles['noselect']}`}>
+                    <img
+                      src={button_loading_spinner}
+                      alt="Loading"
+                      className={styles['button-spinner']}
+                      hidden={!isSubmitting}
+                    />
+                      Complete Payment
+                    </div>
+                    
+                </div>
+
+            </div>
+          </form>
+
+          <div className={`${styles['authnet-footer']}`}>
+            <div className={`${styles['authnet-footer-desc']}`}>
+                <label>Akaza{"\u00A0"}</label>
+                <label>integrates seamlessly with Stripe, a leading payment processor, to provide secure and efficient online payment solutions.</label> 
+            </div>
+            <div className={`${styles['authnet-logo-wrapper']}`}>
+              <img src={authnet_logo}/>
+            </div>
+          </div>
+        </div>
+    </div> 
+  )
+}
+
 const PerfectMatchResultsModal = () => {
   const carouselRef = useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -1791,7 +2277,7 @@ const PerfectMatchResultsModal = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-full">
+    <div className="flex flex-col items-center justify-center h-full" hidden={modalState !== modalStates.PERFECT_MATCH_RESULTS}>
       <h2 className="text-[#F5722E] text-2xl font-medium mb-8">
         Here's Your Perfect Match
       </h2>
@@ -1829,11 +2315,17 @@ const PerfectMatchResultsModal = () => {
       </div>
 
       <div className="mt-8 w-full max-w-4xl flex flex-col items-center">
-        <Button 
-          className="w-full md:w-[300px] bg-[#F5722E] text-white py-1 rounded hover:bg-[#F5722E]/90 transition-colors"
-        >
-          Sign up now
-        </Button>
+      <Button 
+        className="w-full md:w-[300px] bg-[#F5722E] text-white py-1 rounded hover:bg-[#F5722E]/90 transition-colors"
+        onClick={() => {
+          setSelectedModalHeader(1);
+          setMaskHidden(0);
+          setModalState(modalStates.SIGNUP_STEP2);
+          setCloseModalActive(1);
+        }}
+      >
+        Sign up now
+      </Button>
         <p className="text-center text-sm text-gray-500 mt-2">
           or continue with free trial
         </p>
@@ -1850,6 +2342,9 @@ const ModalHeader = () =>{
     setSelectedModalHeader(1);
     setMaskHidden(1);
     setCloseModalActive(0);
+    if (modalState === modalStates.PERFECT_MATCH_RESULTS) {
+      setHeroState(heroStates.PERFECT_MATCH_ALGO);
+    }
     if(closeModalActive){}
   }
   const toggleCloseModal = () => {
@@ -1869,8 +2364,14 @@ const ModalHeader = () =>{
           selectedModalHeader == MODAL_HEADER_TYPE.WITH_LOGO_AND_CLOSE ?
               <>
                 <div className={`${styles['modal-header']}`}>
-                    <img src={akazalogo_dark} />
-                    <img ref={closeModal1} className={`${styles['close-modal']}`} src={close_icon} style={{"width": "24px","height": "24px"}}/>
+                    <img src={akazalogo_dark} alt="Akaza Logo" />
+                    <img
+                        ref={closeModal1}
+                        className={`${styles['close-modal']}`}
+                        src={close_icon}
+                        alt="Close"
+                        style={{ width: '24px', height: '24px', marginLeft: 'auto' }} // Add marginLeft auto here
+                    />
                 </div>
                 <div className={`${styles['modal-divider']}`}></div>
               </>
@@ -1904,6 +2405,7 @@ const Modal = () => {
                     <LoadingModal/>
                     <CongratulationsModal/>
                     <StripePaymentModal/>
+                    <AuthnetPaymentFullModal/>
                     <PerfectMatchResultsModal/>
                   </BookmarkProvider>
                 </JobHunterProvider>
@@ -1917,15 +2419,57 @@ const Modal = () => {
 
 const NavigationHeader = () => {
   const { menuOpen, toggleMenu } = useMenu();
+  const { isAuthenticated, user } = useAuth();
+  const [showSignOutModal, setShowSignOutModal] = useState(false);
+
+  // Get stored user preferences
+  const userType = localStorage.getItem('userType') as 'employer' | 'job-hunter';
+  const subscriptionTier = localStorage.getItem('subscriptionTier') as 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
+
+  // Get the appropriate menu items based on user type
+  const desktopMenuItems = userType === 'employer' ? employerDesktopMenu : jobHunterDesktopMenu;
+  const mobileMenuItems = userType === 'employer' ? employerMobileMenu : jobHunterMobileMenu;
+  
+  // Compute display name based on user type and profile data
+  const userName = useMemo(() => {
+    if (!user) return userType === 'employer' ? "Company Name" : "User Name";
+    
+    if (userType === 'employer') {
+      return user.businessName || "Company Name";
+    } else {
+      return user.firstName && user.lastName 
+        ? `${user.firstName} ${user.lastName}`
+        : "User Name";
+    }
+  }, [user, userType]);
 
   return(
+    <>
     <BaseMenu
-    isAuthenticated={false}
-    isMenuOpen={menuOpen}
-    onToggleMenu={toggleMenu}
-    ButtonLoginNav={ButtonLoginNav}
-    ButtonSignUpNav={ButtonSignUpNav}
-/>
+      isAuthenticated={isAuthenticated}
+      isMenuOpen={menuOpen}
+      onToggleMenu={toggleMenu}
+      {...(!isAuthenticated ? {
+        ButtonLoginNav,
+        ButtonSignUpNav
+      } : {
+        // Show these props when authenticated
+        desktopMenuItems,
+        mobileMenuItems,
+        subscriptionPlan: subscriptionTier,
+        userType,
+        userName,
+        onSignOut: () => setShowSignOutModal(true)
+      })}
+    />
+
+    {showSignOutModal && (
+      <SignOutModal
+        isOpen={showSignOutModal}
+        onClose={() => setShowSignOutModal(false)}
+      />
+    )}
+  </>
   )
 }
 const HeroPerfectMatchAlgo = () => {
@@ -2047,7 +2591,8 @@ const HeroJobTitleEmployer = () => {
                 </div>
               )}
               <div className={`${styles['hero-button-container2']}`}>
-                  <div ref={heroNextButton} className={`${styles['button-custom-orange']} ${styles['noselect']}`}>Next</div>
+                  <div ref={heroNextButton} className={`${styles['button-custom-orange']} ${styles['noselect']}`}>
+                    Next</div>
                   <div ref={heroPreviousButton} className={`${styles['button-custom-transparent']} ${styles['noselect']}`}>
                       <img className={`${styles['caret-left']}`} src={arrow_left_icon}></img>
                       <div>Previous</div>
@@ -2132,7 +2677,7 @@ const HeroSkillSetsEmployer = () => {
                     secondColor: "#184E77",
                   }}
                 />
-                <img src={icon_search}></img>
+                {/* <img src={icon_search}></img> */}
               </div>
               {error && (
                 <div className={`${styles['validation-message']} ${styles['variant-2']}`}>
@@ -2328,7 +2873,7 @@ const HeroSkillSetsJobHunter = () => {
                         secondColor: "#184E77",
                       }}
                     />
-                    <img src={icon_search}></img>
+                    {/* <img src={icon_search}></img> */}
                 </div>
                 {error && (
                   <div className={`${styles['validation-message']} ${styles['variant-2']}`}>
@@ -2500,9 +3045,12 @@ const HeroPerfectMatchResults = () => {
 };
 
 const HeroLoading = () => {
+  const [hasShownModal, setHasShownModal] = useState(false);
+
   useEffect(() => {
-    if (heroState === heroStates.LOADING) {
+    if (heroState === heroStates.LOADING && !hasShownModal && maskHidden === 1) {
       const timer = setTimeout(() => {
+        setHasShownModal(true);
         setMaskHidden(0);
         setSelectedModalHeader(1);
         setModalState(modalStates.PERFECT_MATCH_RESULTS);
@@ -2510,6 +3058,13 @@ const HeroLoading = () => {
       }, 3000);
       
       return () => clearTimeout(timer);
+    }
+  }, [heroState, maskHidden, hasShownModal]);
+
+  // Reset modal shown state when leaving loading state
+  useEffect(() => {
+    if (heroState !== heroStates.LOADING) {
+      setHasShownModal(false);
     }
   }, [heroState]);
 
@@ -2547,12 +3102,15 @@ const HeroLoading = () => {
 };
 
 const isFreeTrial = false;
+const isIndexRoute = useMatch('/landing');
 
   return (
     <LandingContext.Provider value={{ isFreeTrial }}>
-        <PageMeta title="Akaza" />
-        <div className={styles.main}>
-            <NavigationHeader/>
+    <PageMeta title="Akaza" />
+    <div className={styles.main}>
+      <NavigationHeader/>
+      {isIndexRoute && (
+        <>
             <div className={`${styles['hero-container']}`}>
                 <HeroPerfectMatchAlgo/>
                 <HeroJobTitleEmployer/>
@@ -2563,11 +3121,11 @@ const isFreeTrial = false;
                 <HeroLoading/>
                 <HeroPerfectMatchResults/>
             </div>
-            <div>
+            {/* <div>
               It should be displayed here
               <div className="AuthorizeNetSeal">
               </div>
-            </div>
+            </div> */}
             <div className={`${styles['pricing-container']}`}>
                 <div className={`${styles['desc1-wrapper']}`}>
                     <div className={`${styles.desc1}`}>
@@ -2685,9 +3243,11 @@ const isFreeTrial = false;
                         </div>
                     </div>
                 </div>
-
             </div>
-            <Footer/>
+          </>         
+        )}
+        <Outlet />
+        <Footer/>
             <div id="mask_overlay" className={`${styles['mask-overlay']} ${styles['requires-no-scroll']}`} hidden={!!maskHidden}>
               <Modal/>
             </div>
