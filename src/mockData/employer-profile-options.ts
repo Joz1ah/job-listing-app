@@ -25,6 +25,7 @@ interface SelectOption {
     postalCode?: string;
     country: string;
     companyOverview: string;
+    employmentType: string[];
   }
 
 export const selectOptions: SelectOptions = {

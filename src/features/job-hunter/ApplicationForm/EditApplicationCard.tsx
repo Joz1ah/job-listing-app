@@ -8,6 +8,8 @@ import saveChanges from "images/save-changes.svg?url";
 import { selectOptions } from "mockData/app-form-options";
 
 import { AppCardPreview } from "features/employer";
+import { useAuth } from "contexts/AuthContext/AuthContext";
+import { useJobHunterProfileMutation } from "api/akaza/akazaAPI";
 
 import {
   LanguageTagInput,
@@ -52,6 +54,12 @@ interface FormData {
   certifications: string[];
 }
 
+interface JobHunterSkill {
+  id: string;
+  keyword: string;
+  type: "core" | "interpersonal" | "certification";
+}
+
 const validationSchema = Yup.object().shape({
   firstName: Yup.string().required("This field is required"),
   lastName: Yup.string().required("This field is required"),
@@ -70,10 +78,7 @@ const validationSchema = Yup.object().shape({
       return value ? isValidPhoneNumber(value) : false;
     }),
   country: Yup.string().required("This field is required"),
-  employmentType: Yup.array().min(
-    1,
-    "Please select at least one employment type",
-  ),
+  employmentType: Yup.array().min(1, "Please select at least one employment type"),
   salaryRange: Yup.string().required("This field is required"),
   yearsOfExperience: Yup.string().required("This field is required"),
   coreSkills: Yup.array()
@@ -88,8 +93,7 @@ const validationSchema = Yup.object().shape({
     .required("This field is required"),
 });
 
-// Loading Overlay Component
-const LoadingOverlay = () => (
+const LoadingOverlay: FC = () => (
   <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
     <div className="flex flex-col items-center">
       <img src={saveChanges} alt="Loading" />
@@ -101,42 +105,59 @@ const EditApplicationCard: FC = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPreview, setShowPreview] = useState<boolean>(false);
+  const { user, refreshUser } = useAuth();  // Add refreshUser
+  const [submitJobHunterProfile] = useJobHunterProfileMutation();
 
-  const {
-    values,
-    errors,
-    touched,
-    handleChange,
-    setFieldValue,
-    handleSubmit,
-    isValid,
-  } = useFormik<FormData & { employmentType: string[] }>({
+  // Parse employment type string into array
+  const employmentTypes = user?.data?.user?.relatedDetails?.employmentType
+    ? user.data.user.relatedDetails.employmentType.split(',')
+    : [];
+
+  const formik = useFormik<FormData>({
     initialValues: {
-      firstName: "Nadine",
-      lastName: "Lustre",
-      birthday: "",
-      emailAddress: "nadine@gmail.com",
-      mobileNumber: "+63888888888",
-      employmentType: [],
-      salaryRange: "",
-      yearsOfExperience: "",
-      coreSkills: ["React", "JavaScript", "CSS", "HTML", "Git"],
-      interpersonalSkills: [
-        "Leadership",
-        "Team Collaboration",
-        "Problem Solving",
-      ],
-      education: "",
-      languages: ["English"],
-      country: "",
-      certifications: [],
+      firstName: user?.data?.user?.relatedDetails?.firstName || "",
+      lastName: user?.data?.user?.relatedDetails?.lastName || "",
+      birthday: user?.data?.user?.relatedDetails?.birthday || "",
+      emailAddress: user?.data?.user?.email || "",
+      mobileNumber: user?.data?.user?.relatedDetails?.phoneNumber 
+        ? user.data.user.relatedDetails.phoneNumber.startsWith('+') 
+          ? user.data.user.relatedDetails.phoneNumber 
+          : `+${user.data.user.relatedDetails.phoneNumber}`
+        : "",
+      employmentType: employmentTypes,
+      salaryRange: user?.data?.user?.relatedDetails?.salaryRange || "",
+      yearsOfExperience: user?.data?.user?.relatedDetails?.yearsOfExperience || "",
+      coreSkills: user?.data?.user?.relatedDetails?.JobHunterSkill
+        ?.filter((skill: JobHunterSkill) => skill.type === "core")
+        ?.map((skill: JobHunterSkill) => skill.keyword) || [],
+      interpersonalSkills: user?.data?.user?.relatedDetails?.JobHunterSkill
+        ?.filter((skill: JobHunterSkill) => skill.type === "interpersonal")
+        ?.map((skill: JobHunterSkill) => skill.keyword) || [],
+      education: user?.data?.user?.relatedDetails?.education || "",
+      languages: user?.data?.user?.relatedDetails?.language
+        ? [user.data.user.relatedDetails.language]
+        : [],
+      country: user?.data?.user?.relatedDetails?.country || "",
+      certifications: user?.data?.user?.relatedDetails?.JobHunterSkill
+        ?.filter((skill: JobHunterSkill) => skill.type === "certification")
+        ?.map((skill: JobHunterSkill) => skill.keyword) || [],
     },
     validationSchema,
     validateOnMount: true,
-    onSubmit: (): void => {
+    onSubmit: async () => {
       setShowPreview(true);
     },
   });
+
+  const { 
+    values, 
+    errors, 
+    touched, 
+    handleChange, 
+    setFieldValue, 
+    handleSubmit,
+    isValid 
+  } = formik;
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && e.target instanceof HTMLElement) {
@@ -148,20 +169,87 @@ const EditApplicationCard: FC = () => {
     }
   };
 
+  const handleFormSubmit = async () => {
+    setShowPreview(false);
+    setIsSubmitting(true);
+
+    try {
+      const formattedPhoneNumber = values.mobileNumber.replace(/[^\d]/g, '');
+      
+      // Define language options
+      const languages = [
+        { label: "Arabic", value: "ar" },
+        { label: "Bengali", value: "bn" },
+        { label: "Chinese (Cantonese)", value: "zh-hk" },
+        { label: "Chinese (Mandarin)", value: "zh" },
+        { label: "Dutch", value: "nl" },
+        { label: "English", value: "en" },
+        { label: "Finnish", value: "fi" },
+        { label: "French", value: "fr" },
+        { label: "German", value: "de" },
+        { label: "Hindi", value: "hi" },
+        { label: "Italian", value: "it" },
+        { label: "Japanese", value: "ja" },
+        { label: "Korean", value: "ko" },
+        { label: "Malay", value: "ms" },
+        { label: "Polish", value: "pl" },
+        { label: "Portuguese", value: "pt" },
+        { label: "Russian", value: "ru" },
+        { label: "Spanish", value: "es" },
+        { label: "Swedish", value: "sv" },
+        { label: "Tagalog", value: "tl" },
+        { label: "Thai", value: "th" },
+        { label: "Turkish", value: "tr" },
+        { label: "Vietnamese", value: "vi" }
+      ];
+
+      // Format language array to comma-separated string
+      const formattedLanguages = values.languages.map(lang => {
+        const languageOption = languages.find(opt => opt.value === lang);
+        return languageOption?.label || lang;
+      }).join(',');
+
+      // Format employment types to comma-separated string
+      const formattedEmploymentTypes = values.employmentType.join(',');
+      
+      const payload = {
+        firstName: values.firstName,
+        lastName: values.lastName,
+        location: values.country,
+        language: formattedLanguages,
+        birthday: values.birthday,
+        email: values.emailAddress,
+        phoneNumber: formattedPhoneNumber,
+        employmentType: formattedEmploymentTypes,
+        education: values.education,
+        yearsOfExperience: values.yearsOfExperience || "less-than-1",
+        core: values.coreSkills,
+        interpersonal: values.interpersonalSkills,
+        certification: values.certifications,
+        salaryRange: values.salaryRange,
+        country: values.country
+      };
+  
+      await submitJobHunterProfile(payload).unwrap();
+      
+      // Refresh user data in auth context
+      await refreshUser();
+      
+      navigate("/job-hunter/feed");
+    } catch (error) {
+      console.error("Error submitting profile:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <>
       <ApplicationFormPreview
         isOpen={showPreview}
         onClose={() => setShowPreview(false)}
         formData={values}
-        onConfirm={() => {
-          setShowPreview(false);
-          setIsSubmitting(true);
-          // Your existing submission logic here
-          setTimeout(() => {
-            navigate("/job-hunter/feed");
-          }, 1500);
-        }}
+        onConfirm={handleFormSubmit}  // Update this to use the new submission handler
       />
       {isSubmitting && <LoadingOverlay />}
       

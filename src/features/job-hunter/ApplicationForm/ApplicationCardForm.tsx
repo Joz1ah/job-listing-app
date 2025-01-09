@@ -114,7 +114,7 @@ const ApplicationCardForm: FC = () => {
   const [showPreview, setShowPreview] = useState<boolean>(false);
 
   const [submitJobHunterProfile ] = useJobHunterProfileMutation();
-  const { refreshUser } = useAuth();
+  const { refreshUser, user } = useAuth();
 
   const {
     values,
@@ -129,7 +129,7 @@ const ApplicationCardForm: FC = () => {
       firstName: "",
       lastName: "",
       birthday: "",
-      emailAddress: "",
+      emailAddress: user?.data?.user?.email || "",
       mobileNumber: "",
       employmentType: [],
       salaryRange: "",
@@ -202,7 +202,6 @@ const ApplicationCardForm: FC = () => {
         employmentType: formattedEmploymentTypes,
         education: values.education,
         yearsOfExperience: values.yearsOfExperience || "less-than-1",
-        // Since the TagInputs are already storing IDs, we can use them directly
         core: values.coreSkills,
         interpersonal: values.interpersonalSkills,
         certification: values.certifications,

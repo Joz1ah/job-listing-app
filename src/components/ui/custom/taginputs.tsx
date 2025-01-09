@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { cn } from "lib/utils";
 import { Input } from "components";
 import { Label } from "components";
@@ -81,20 +81,24 @@ const TagInputs: React.FC<TagInputProps> = ({
     return false;
   });
 
+  // Helper function to get label from ID
+  const getLabelFromId = (id: string): string => {
+    const option = options.find(opt => opt.value === id);
+    return option?.label || id;
+  };
+
   useEffect(() => {
     if (showSuggestions && filteredOptions.length > 0) {
       setFocusedIndex(0);
     }
   }, [showSuggestions, filteredOptions.length]);
 
-  const handleSelect = (selectedValue: string) => {
-    const selectedOption = options.find(opt => opt.value === selectedValue);
-    
-    if (selectedOption && !value.includes(selectedOption.value) && value.length < maxTags) {
-      const newTags = [...value, selectedOption.value];
+  const handleSelect = (selectedId: string) => {
+    if (!value.includes(selectedId) && value.length < maxTags) {
+      const newTags = [...value, selectedId];
       onChange(newTags);
       setInputValue("");
-      setShowSuggestions(false); // Close suggestions after selection
+      setShowSuggestions(false);
       setFocusedIndex(0);
       inputRef.current?.focus();
     }
@@ -203,9 +207,9 @@ const TagInputs: React.FC<TagInputProps> = ({
         )}
       >
         <div className="flex flex-wrap items-center mt-0.5 mb-2">
-          {value.map((tag, index) => {
-            const tagLabel = options.find(opt => opt.value === tag)?.label || tag;
-            const truncatedLabel = truncateText(tagLabel, maxTagLength);
+        {value.map((id, index) => {
+            const displayLabel = getLabelFromId(id);
+            const truncatedLabel = truncateText(displayLabel, maxTagLength);
             
             return (
               <div
@@ -220,7 +224,7 @@ const TagInputs: React.FC<TagInputProps> = ({
                   disabled ? "cursor-not-allowed" : "cursor-pointer hover:opacity-80"
                 )}
                 onClick={() => !disabled && removeTag(index)}
-                title={tagLabel}
+                title={displayLabel}
               >
                 <span>{truncatedLabel}</span>
               </div>
@@ -291,6 +295,7 @@ const capitalizeFirstLetter = (str: string) => {
 
 const CoreSkillsTagInput: React.FC<Omit<TagInputProps, 'options'>> = (props) => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [idToKeywordMap, setIdToKeywordMap] = useState<Record<string, string>>({});
   
   const { data: searchResults } = useSearchCoreQuery({
     query: searchQuery,
@@ -299,10 +304,20 @@ const CoreSkillsTagInput: React.FC<Omit<TagInputProps, 'options'>> = (props) => 
     skip: !searchQuery
   });
 
-  // Transform the data correctly based on the API response
+  // Update the ID to keyword mapping whenever search results change
+  useEffect(() => {
+    if (searchResults) {
+      const newMap = searchResults.reduce((acc: Record<string, string>, skill: Skill) => {
+        acc[skill.id] = capitalizeFirstLetter(skill.keyword);
+        return acc;
+      }, {...idToKeywordMap}); // Preserve existing mappings
+      setIdToKeywordMap(newMap);
+    }
+  }, [searchResults]);
+
   const options = searchResults?.map((skill: Skill) => ({
     label: capitalizeFirstLetter(skill.keyword),
-    value: capitalizeFirstLetter(skill.keyword)  // Also capitalize the value
+    value: skill.id
   })) || [];
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -310,13 +325,42 @@ const CoreSkillsTagInput: React.FC<Omit<TagInputProps, 'options'>> = (props) => 
     setSearchQuery(value);
   };
 
-  const capitalizedValues = props.value?.map(val => capitalizeFirstLetter(val)) || [];
+  const handleChange = (newValues: string[]) => {
+    // Ensure we're always passing IDs to the form
+    props.onChange(newValues);
+  };
+
+  // Create display options including both search results and existing selected values
+  const displayOptions = useMemo(() => {
+    const allOptions = [...options];
+    
+    // Add options for any selected values that aren't in current search results
+    props.value.forEach((id: string) => {
+      if (!allOptions.find(opt => opt.value === id)) {
+        if (idToKeywordMap[id]) {
+          allOptions.push({
+            label: idToKeywordMap[id],
+            value: id
+          });
+        } else {
+          // If we don't have the keyword mapping yet, use the ID temporarily
+          allOptions.push({
+            label: id,
+            value: id
+          });
+        }
+      }
+    });
+
+    return allOptions;
+  }, [options, props.value, idToKeywordMap]);
 
   return (
     <TagInputs
       {...props}
-      value={capitalizedValues}
-      options={options}
+      value={props.value}
+      onChange={handleChange}
+      options={displayOptions}
       maxTags={5}
       suggestionTitle="Select Core Skills"
       placeholder={props.placeholder || "Type to search core skills"}
@@ -327,6 +371,7 @@ const CoreSkillsTagInput: React.FC<Omit<TagInputProps, 'options'>> = (props) => 
 
 const InterpersonalSkillsTagInput: React.FC<Omit<TagInputProps, 'options'>> = (props) => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [idToKeywordMap, setIdToKeywordMap] = useState<Record<string, string>>({});
   
   const { data: searchResults } = useSearchInterPersonalQuery({
     query: searchQuery,
@@ -335,10 +380,20 @@ const InterpersonalSkillsTagInput: React.FC<Omit<TagInputProps, 'options'>> = (p
     skip: !searchQuery
   });
 
-  // Transform the data correctly based on the API response
+  // Update the ID to keyword mapping whenever search results change
+  useEffect(() => {
+    if (searchResults) {
+      const newMap = searchResults.reduce((acc: Record<string, string>, skill: Skill) => {
+        acc[skill.id] = capitalizeFirstLetter(skill.keyword);
+        return acc;
+      }, {...idToKeywordMap}); // Preserve existing mappings
+      setIdToKeywordMap(newMap);
+    }
+  }, [searchResults]);
+
   const options = searchResults?.map((skill: Skill) => ({
     label: capitalizeFirstLetter(skill.keyword),
-    value: capitalizeFirstLetter(skill.keyword)  // Also capitalize the value
+    value: skill.id
   })) || [];
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -346,13 +401,42 @@ const InterpersonalSkillsTagInput: React.FC<Omit<TagInputProps, 'options'>> = (p
     setSearchQuery(value);
   };
 
-  const capitalizedValues = props.value?.map(val => capitalizeFirstLetter(val)) || [];
+  const handleChange = (newValues: string[]) => {
+    // Ensure we're always passing IDs to the form
+    props.onChange(newValues);
+  };
+
+  // Create display options including both search results and existing selected values
+  const displayOptions = useMemo(() => {
+    const allOptions = [...options];
+    
+    // Add options for any selected values that aren't in current search results
+    props.value.forEach((id: string) => {
+      if (!allOptions.find(opt => opt.value === id)) {
+        if (idToKeywordMap[id]) {
+          allOptions.push({
+            label: idToKeywordMap[id],
+            value: id
+          });
+        } else {
+          // If we don't have the keyword mapping yet, use the ID temporarily
+          allOptions.push({
+            label: id,
+            value: id
+          });
+        }
+      }
+    });
+
+    return allOptions;
+  }, [options, props.value, idToKeywordMap]);
 
   return (
     <TagInputs
       {...props}
-      value={capitalizedValues}
-      options={options}
+      value={props.value}
+      onChange={handleChange}
+      options={displayOptions}
       maxTags={5}
       suggestionTitle="Select Interpersonal Skills"
       placeholder={props.placeholder || "Type to search interpersonal skills"}
@@ -401,6 +485,7 @@ const LanguageTagInput: React.FC<Omit<TagInputProps, 'options'>> = (props) => {
 
 const CertificationTagInput: React.FC<Omit<TagInputProps, 'options'>> = (props) => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [idToKeywordMap, setIdToKeywordMap] = useState<Record<string, string>>({});
   
   const { data: searchResults } = useSearchCertificationQuery({
     query: searchQuery,
@@ -409,10 +494,20 @@ const CertificationTagInput: React.FC<Omit<TagInputProps, 'options'>> = (props) 
     skip: !searchQuery
   });
 
-  // Transform the data correctly based on the API response
+  // Update the ID to keyword mapping whenever search results change
+  useEffect(() => {
+    if (searchResults) {
+      const newMap = searchResults.reduce((acc: Record<string, string>, skill: Skill) => {
+        acc[skill.id] = capitalizeFirstLetter(skill.keyword);
+        return acc;
+      }, {...idToKeywordMap}); // Preserve existing mappings
+      setIdToKeywordMap(newMap);
+    }
+  }, [searchResults]);
+
   const options = searchResults?.map((skill: Skill) => ({
     label: capitalizeFirstLetter(skill.keyword),
-    value: capitalizeFirstLetter(skill.keyword)  // Also capitalize the value
+    value: skill.id
   })) || [];
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -420,13 +515,42 @@ const CertificationTagInput: React.FC<Omit<TagInputProps, 'options'>> = (props) 
     setSearchQuery(value);
   };
 
-  const capitalizedValues = props.value?.map(val => capitalizeFirstLetter(val)) || [];
+  const handleChange = (newValues: string[]) => {
+    // Ensure we're always passing IDs to the form
+    props.onChange(newValues);
+  };
+
+  // Create display options including both search results and existing selected values
+  const displayOptions = useMemo(() => {
+    const allOptions = [...options];
+    
+    // Add options for any selected values that aren't in current search results
+    props.value.forEach((id: string) => {
+      if (!allOptions.find(opt => opt.value === id)) {
+        if (idToKeywordMap[id]) {
+          allOptions.push({
+            label: idToKeywordMap[id],
+            value: id
+          });
+        } else {
+          // If we don't have the keyword mapping yet, use the ID temporarily
+          allOptions.push({
+            label: id,
+            value: id
+          });
+        }
+      }
+    });
+
+    return allOptions;
+  }, [options, props.value, idToKeywordMap]);
 
   return (
     <TagInputs
       {...props}
-      value={capitalizedValues}
-      options={options}
+      value={props.value}
+      onChange={handleChange}
+      options={displayOptions}
       maxTags={3}
       suggestionTitle="Select Certifications"
       placeholder={props.placeholder || "Type to search certifications"}

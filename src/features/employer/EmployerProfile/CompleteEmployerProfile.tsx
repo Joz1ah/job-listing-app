@@ -110,6 +110,7 @@ const CompleteEmployerProfile: FC = () => {
       state: "",
       country: "",
       companyOverview: "",
+      employmentType: []
     },
     validationSchema,
     validateOnMount: true,

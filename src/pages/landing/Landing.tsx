@@ -2001,18 +2001,17 @@ const NavigationHeader = () => {
   const desktopMenuItems = userType === 'employer' ? employerDesktopMenu : jobHunterDesktopMenu;
   const mobileMenuItems = userType === 'employer' ? employerMobileMenu : jobHunterMobileMenu;
   
-  // Compute display name based on user type and profile data
-  const userName = useMemo(() => {
-    if (!user) return userType === 'employer' ? "Company Name" : "User Name";
-    
-    if (userType === 'employer') {
-      return user.businessName || "Company Name";
-    } else {
-      return user.firstName && user.lastName 
-        ? `${user.firstName} ${user.lastName}`
-        : "User Name";
-    }
-  }, [user, userType]);
+  // Compute display name from relatedDetails structure
+const displayName = useMemo(() => {
+  if (!user?.data?.user?.relatedDetails) return userType === 'employer' ? "Company Name" : "User Name";
+  
+  if (userType === 'employer') {
+    return user.data.user.relatedDetails.businessName || "Company Name";
+  }
+  
+  const { firstName, lastName } = user.data.user.relatedDetails;
+  return firstName && lastName ? `${firstName} ${lastName}` : "User Name";
+}, [user, userType]);
 
   return(
     <>
@@ -2029,7 +2028,7 @@ const NavigationHeader = () => {
         mobileMenuItems,
         subscriptionPlan: subscriptionTier,
         userType,
-        userName,
+        userName: displayName,
         onSignOut: () => setShowSignOutModal(true)
       })}
     />
