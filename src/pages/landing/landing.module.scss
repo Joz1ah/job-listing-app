@@ -105,6 +105,10 @@ body:has(.requires-no-scroll:not([hidden])) {
   margin-top: 44px;
   gap: 80px;
   flex-direction: row;
+  @media (max-width: 768px) {
+    margin:2em;
+    gap: 40px;
+  }
 }
 
 .hero-button-container2{
@@ -697,6 +701,11 @@ color: #F5F5F7;
         display: flex; 
         align-items: flex-end;
         justify-content: flex-end;
+
+        @media (max-width: 768px) {
+          margin-top: .5em;
+          justify-content: center;
+        }
       }
 
       > .desc2 {
@@ -743,41 +752,62 @@ color: #F5F5F7;
   overflow: hidden;
   height: 763px;
   width: 100%;
+
+  > .info-desc{
+    padding-top: 31px;
+    padding-left: 38px;
+    padding-right: 38px;
+    display: flex;
+    flex-direction: column;
+
+    > .info-desc-wrapper{
+      margin-left: 50%;
+      padding: .5em;
+      @media (max-width: 768px) {
+        margin-left: 0;
+      }
+      > :first-child{
+        margin-top: 1em;
+      }
+      > :first-child, :nth-child(3){
+        white-space: nowrap;
+        label:nth-child(2){
+          display:inline-block;
+          color:#F5722E;
+        }
+        @media (max-width: 768px) {
+          margin-top: .5em;
+          white-space: normal;
+        }
+      }
+      > div > div{
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+      }
+    
+      > :nth-child(2),
+       :nth-child(3){
+        margin-top: 50px;
+      }
+      > :nth-child(2) > :not(:first-child){
+        margin-top: 57px;
+      }
+    }
+    }
+
+  > div{
+    font-size: 36px;
+    color: #FFF;
+  }
+  @media (max-width: 768px) {
+    background-size: cover;
+    background-position: center;
+    height: auto;
+  }
+  
 }
 
-.infographic1 > .info-desc{
-  padding-top: 31px;
-  padding-left: 38px;
-  padding-right: 38px;
-  display: flex;
-  flex-direction: column;
-}
-.infographic1 > .info-desc > .info-desc-wrapper{
-  margin-left: 50%;
-}
-
-.infographic1 > .info-desc > .info-desc-wrapper > :first-child{
-  margin-top: 100px;
-  white-space: nowrap;
-}
-.infographic1 > .info-desc > .info-desc-wrapper > div > div{
-  text-align: center;
-  align-items: center;
-  justify-content: center;
-}
-
-.infographic1 > .info-desc > .info-desc-wrapper > :nth-child(2),
-.infographic1 > .info-desc > .info-desc-wrapper > :nth-child(3){
-  margin-top: 50px;
-}
-.infographic1 > .info-desc > .info-desc-wrapper > :nth-child(2) > :not(:first-child){
-  margin-top: 57px;
-}
-
-.infographic1 > div{
-  font-size: 36px;
-  color: #FFF;
-}
 
 
 .mask-overlay{
@@ -807,8 +837,7 @@ color: #F5F5F7;
   background: #F5F5F7;
 
   @media (max-width: 768px) {
-    max-width: min-content;
-    width: calc(100% - 40px); 
+    margin: 1em;
   }
 }
 
@@ -987,15 +1016,32 @@ color: #F5F5F7;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 }
 
-
-.password-confirmation-container .action-buttons,
-.country-mobtel-container > .action-buttons{
+.continue-signup-terms-and-conditions{
   flex-basis: 100%;
-  display: flex;
   align-items: end;
+  display: flex;
   justify-content: center;
-  flex-direction: row;
-  gap: 10px;
+  text-align: center;
+  padding-bottom: 1em;
+  .link {
+    margin: 0 5px; // Add horizontal spacing around the links
+    text-decoration: underline; // Ensures underline effect on links
+  }
+
+}
+.password-confirmation-container, .country-mobtel-container{
+  .action-buttons{
+    display: flex;
+    align-items: end;
+    justify-content: center;
+    flex-direction: row;
+    gap: 10px;
+  }
+}
+.country-mobtel-container{
+  .action-buttons{
+    flex-basis: 100%;
+  }
 }
 .password-confirmation-container form{
   flex-basis: 100%;
@@ -2072,7 +2118,7 @@ input[type=number]::-webkit-outer-spin-button {
         }
 
         .terms-and-privacy{
-          margin-top: 1em;
+          margin-top: 2em;
           display: flex;
           flex-direction: row;
           align-items: center;
@@ -2103,7 +2149,7 @@ input[type=number]::-webkit-outer-spin-button {
           gap:1.2em;
         }
         .complete-payment-container{
-          margin-top:1em;
+          margin-top:2em;
           margin-bottom:1em;
           color: #263238;
           font-size: 11px;

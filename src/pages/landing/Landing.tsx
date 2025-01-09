@@ -28,6 +28,7 @@ import { jobHunterDesktopMenu, jobHunterMobileMenu } from 'mockData/nav-menus';
 import { SignOutModal } from 'components';
 import { Outlet, useMatch } from 'react-router-dom';
 import { Navigate } from 'react-router-dom';
+import { Input, InputField } from "components";
 
 import video1 from 'assets/mp4/Landing-Page-hero-1.mp4';
 import video2 from 'assets/mp4/video-conference-call-1.mp4';
@@ -102,6 +103,20 @@ interface FormValues {
   cardholderName: string;
   expirationDate: string;
   cvv: string;
+}
+
+interface PaymentFormValues {
+  cardNumber: string;
+  firstName: string;
+  lastName: string;
+  expiryDate: string; 
+  cvv: string;
+  email: string;
+  billingAddress: string; 
+  stateProvince: string;
+  zipPostalCode: string;
+  city: string;
+  country: string;
 }
 
 interface LoginFormValues {
@@ -194,7 +209,7 @@ const Landing: FC = (): ReactElement => {
   const [selectedModalHeader, setSelectedModalHeader] = useState(1);
   const [modalState, setModalState] = useState(12);
   const [heroState, setHeroState] = useState(1);
-  const [currentSelectedPlan, setCurrentSelectedPlan] = useState(3);
+  const [currentSelectedPlan, setCurrentSelectedPlan] = useState(2);
   const [dataStates, setDataStates] = useState({
     selectedUserType: '',
     email: '',
@@ -202,6 +217,7 @@ const Landing: FC = (): ReactElement => {
   });
   const [tempLoginEmail, setTempLoginEmail] = useState('');
   const [tempLoginPassword, setTempLoginPassword] = useState('');
+  const navigate = useNavigate();
 
   const heroStates = {
       'PERFECT_MATCH_ALGO' : 1,
@@ -362,7 +378,7 @@ const Landing: FC = (): ReactElement => {
   
     useEffect(moveToNext, []);
     return(
-      <div id="step1_signup" className={`${styles['modal-content']}`} hidden={modalState !== modalStates.SIGNUP_SELECT_USER_TYPE}>
+      <div className={`${styles['modal-content']}`} hidden={modalState !== modalStates.SIGNUP_SELECT_USER_TYPE}>
           <div className={`${styles['modal-title']}`}>What best describes you?</div>
           <div className={`${styles['selection-items']}`}>
               <div>
@@ -578,17 +594,6 @@ const Landing: FC = (): ReactElement => {
           });
 
           setModalState(modalStates.SIGNUP_STEP3);
-
-          await generateOTP({ email: credentials.email }).unwrap();
-          
-        } catch (err: any) {
-          setIsSubmitting(false);
-          
-          setDataStates({
-            ...dataStates,
-            email: credentials.email,
-            //userId: res.data.id
-          });
           
           await generateOTP({ email: credentials.email }).unwrap().catch(()=>{
             setIsSubmitting(false)
@@ -713,6 +718,22 @@ const Landing: FC = (): ReactElement => {
                     <div className={`${styles['social-media-label']}`}>Google</div>
                 </div>
             </div> */}
+          <div className={`${styles['continue-signup-terms-and-conditions']}`}>
+            <div>
+              <div>
+                By clicking "Next," you agree to our 
+              </div>
+              <div>
+                <a href='https://app.websitepolicies.com/policies/view/azn4i7fg' target="_blank" rel="noopener noreferrer">
+                  <u className={styles['link']}>Terms & Conditions</u>
+                </a>
+                and 
+                <a href='https://app.websitepolicies.com/policies/view/2albjkzj' target="_blank" rel="noopener noreferrer">
+                  <u className={styles['link']}>Privacy Policy.</u>
+                </a>
+              </div>
+            </div>
+          </div>
             <div className={`${styles['action-buttons']}`}>
                 <button 
                     onClick={handlePrevious}
@@ -1324,89 +1345,44 @@ const SubscriptionPlanSelection = () =>{
   const [loginSubmit] = useLoginMutation();
 
   useEffect(() => {
-    // Move the function inside useEffect
-    const setupSubscriptionHandlers = () => {
-      if (buttonSubscribe.current) {
-        buttonSubscribe.current.onclick = async () => {
-          setSelectedModalHeader(1);
-          const userType = dataStates.selectedUserType;
-          
-          if(currentSelectedPlan == PLAN_SELECTION_ITEMS.FREE){
-            try {
-              const response = await loginSubmit({
-                email: tempLoginEmail,
-                password: tempLoginPassword
-              }).unwrap();
-              
-              if (response?.data?.token) {
-                login(response.data.token);
-                
-                localStorage.setItem('subscriptionTier', 'freeTrial');
-                localStorage.setItem('userType', userType);
-                
-                setModalState(modalStates.LOADING);
-                
-                setTimeout(() => {
-                  const redirectPath = userType === 'employer' 
-                    ? '/employer/complete-profile' 
-                    : '/job-hunter/create-application';
-                    
-                  navigate(redirectPath);
-                }, 5000);
-              }
-            } catch (error) {
-              console.error('Auto-login failed:', error);
-            }
-          } else {
-            const selectedTier = 
-              currentSelectedPlan === PLAN_SELECTION_ITEMS.MONTHLY 
-                ? 'monthlyPlan' 
-                : 'yearlyPlan';
-                
-            localStorage.setItem('pendingSubscriptionTier', selectedTier);
-            localStorage.setItem('userType', userType);
-            setModalState(modalStates.AUTHNET_PAYMENT);
-          }
-        };
-      }
-
-            const basePath = userType === 'employer' ? '/employer' : '/job-hunter/feed';
-            navigate(basePath, {
-              state: { initialTier: 'freeTrial' }
-            });
-          },5000)
-        }
-        else {
-          const selectedTier = 
-            currentSelectedPlan === PLAN_SELECTION_ITEMS.MONTHLY 
-              ? 'monthlyPlan' 
-              : 'yearlyPlan';
-              
-          localStorage.setItem('pendingSubscriptionTier', selectedTier);
-          localStorage.setItem('userType', userType);
-          setModalState(modalStates.AUTHNET_PAYMENT_FULL)
-        }
-      };
+    if (!subscription_plan1.current || !subscription_plan2.current || !subscription_plan3.current || !buttonSubscribe.current) {
+      return;
     }
-    if (subscription_plan1.current) {
-        subscription_plan1.current.onclick = () => {
-          setCurrentSelectedPlan(PLAN_SELECTION_ITEMS.FREE);
-        };
-      }
-      if (subscription_plan2.current) {
-        subscription_plan2.current.onclick = () => {
-          setCurrentSelectedPlan(PLAN_SELECTION_ITEMS.MONTHLY);
-        };
-      }
-      if (subscription_plan3.current) {
-        subscription_plan3.current.onclick = () => {
-          setCurrentSelectedPlan(PLAN_SELECTION_ITEMS.ANNUAL);
-        };
+  
+    const handleSubscription = async () => {
+      setSelectedModalHeader(1);
+      const userType = dataStates.selectedUserType;
+  
+      if (currentSelectedPlan === PLAN_SELECTION_ITEMS.FREE) {
+        try {
+          const response = await loginSubmit({ email: tempLoginEmail, password: tempLoginPassword }).unwrap();
+          if (response?.data?.token) {
+            login(response.data.token);
+            localStorage.setItem('subscriptionTier', 'freeTrial');
+            localStorage.setItem('userType', userType);
+            setModalState(modalStates.LOADING);
+            setTimeout(() => {
+              navigate(userType === 'employer' ? '/employer/complete-profile' : '/job-hunter/create-application');
+            }, 5000);
+          }
+        } catch (error) {
+          console.error('Auto-login failed:', error);
+        }
+      } else {
+        const selectedTier = currentSelectedPlan === PLAN_SELECTION_ITEMS.MONTHLY ? 'monthlyPlan' : 'yearlyPlan';
+        localStorage.setItem('pendingSubscriptionTier', selectedTier);
+        localStorage.setItem('userType', userType);
+        setModalState(modalStates.AUTHNET_PAYMENT_FULL);
       }
     };
-
-    setupSubscriptionHandlers();
+  
+    buttonSubscribe.current.onclick = handleSubscription;
+  
+    subscription_plan1.current.onclick = () => setCurrentSelectedPlan(PLAN_SELECTION_ITEMS.FREE);
+    subscription_plan2.current.onclick = () => setCurrentSelectedPlan(PLAN_SELECTION_ITEMS.MONTHLY);
+    subscription_plan3.current.onclick = () => setCurrentSelectedPlan(PLAN_SELECTION_ITEMS.ANNUAL);
   }, [currentSelectedPlan, navigate, login, loginSubmit, tempLoginEmail, tempLoginPassword]);
+  
 
   return(
     <div id="step5_signup" className={`${styles['modal-content']}`} hidden={modalState !== modalStates.SIGNUP_STEP5}>
@@ -1854,35 +1830,36 @@ const StripePaymentModal = () => {
 
 
 const AuthnetPaymentFullModal = () => {
-  const errors = {businessName : 'biz'}
-  const touched = {businessName : false}
-  const submitButton = useRef<HTMLDivElement>(null);
   const [paymentSubmit] = usePaymentCreateMutation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
-  const [paymentData,setPaymentData] = useState({
-    cardNumber:'',
-    firstName:'',
-    lastName:'',
-    expiryDate:'',
-    cvv:'',
-    email:'',
-    billingAddress:'',
-    stateProvince:'',
-    zipCode:'',
-    city:'',
-    country:'',
-    zipPostalCode:'',
-  })
 
-  useEffect(()=>{
-    console.log(paymentData)
-  },[paymentData])
+  const formatExpirationDate = (value: string): string => {
+    const cleaned = value.replace(/[^0-9]/g, ''); // Remove non-numeric characters
+    if (cleaned.length > 2) {
+      return `${cleaned.slice(0, 2)}/${cleaned.slice(2, 4)}`;
+    }
+    return cleaned;
+  };
   
-  const handleSubmit = async(values: FormValues) => {
+  const handleExpirationDateKeyDown = (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ): void => {
+    const { key, target } = event;
+    const inputElement = target as HTMLInputElement;
+  
+    // Handle backspace when cursor is at the third position (before the `/`)
+    if (key === 'Backspace' && inputElement.selectionStart === 3) {
+      const updatedValue = inputElement.value.slice(0, 2); // Remove the '/'
+      inputElement.value = updatedValue;
+      event.preventDefault();
+      inputElement.dispatchEvent(new Event('input', { bubbles: true })); // Trigger Formik's `onChange`
+    }
+  };
+  
+  const handleSubmit = async(values: PaymentFormValues) => {
     console.log('values')
     console.log(values)
-    setPaymentData(paymentData)
     setIsSubmitting(true)
     const secureData = {
       authData: {
@@ -1891,16 +1868,14 @@ const AuthnetPaymentFullModal = () => {
       },
       cardData: {
         cardNumber: values.cardNumber,
-        month: values.expirationDate.split('/')[0],
-        year: values.expirationDate.split('/')[1],
+        month: values.expiryDate.split('/')[0],
+        year: values.expiryDate.split('/')[1],
         cardCode: values.cvv,
       },
     };
 
     console.log('generating token...')
     Accept.dispatchData(secureData, async (acceptResponse: any) => {
-      console.log('paymentData')
-      console.log(paymentData)
       if (acceptResponse.messages.resultCode === 'Ok') {
         const token = acceptResponse.opaqueData.dataValue;
         console.log(acceptResponse)
@@ -1930,14 +1905,21 @@ const AuthnetPaymentFullModal = () => {
               currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY ? 5 : 
               currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL ? 55 : '',
             "paymentMethodId": token,
-            "daysTrial": 0
+            "daysTrial": 0,
+            "firstName": values.firstName,
+            "lastName": values.lastName,
+            "address": values.billingAddress,
+            "city": values.city,
+            "state": values.stateProvince,
+            "zip": values.zipPostalCode,
+            "country": values.country
           })
           .unwrap()
           .then((res)=>{
             console.log(res)
             setModalState(modalStates.LOADING)
             setTimeout(()=>{
-              navigate("/job-hunter");
+              navigate(dataStates.selectedUserType === 'employer' ? '/employer/complete-profile' : '/job-hunter/create-application');
             },5000)
           }).catch((err) => {
             alert(JSON.stringify(err))
@@ -1960,24 +1942,61 @@ const AuthnetPaymentFullModal = () => {
 
 
   useEffect(() => {
-    if (submitButton.current) {
-      submitButton.current.onclick = () => {
-        handleSubmit({
-          cardNumber: '4242424242424242',
-          cardholderName: 'string',
-          expirationDate: '12/33',
-          cvv: '123'
-        }
-        )
-      };
-    }
     createAuthNetTokenizer();
   }, []);
 
   return(
     <div className={`${styles['modal-content']}`} hidden={modalState !== modalStates.AUTHNET_PAYMENT_FULL}>
         <div className={`${styles['authnet-paymentfull-container']}`}>
-          <form>
+        <Formik
+            initialValues={{
+            cardNumber: '',
+            firstName: '',
+            lastName: '',
+            expiryDate: '',
+            cvv: '',
+            email: '',
+            billingAddress: '',
+            stateProvince: '',
+            zipPostalCode: '',
+            city: '',
+            country: '',
+          }}
+          validationSchema={Yup.object({
+            cardNumber: Yup.string()
+              .matches(/^\d{13,19}$/, 'Card number must be between 13 and 19 digits')
+              .required('Card number is required'),
+            firstName: Yup.string()
+              .matches(/^[a-zA-Z\s]+$/, 'First name must only contain letters and spaces')
+              .required('First name is required'),
+            lastName: Yup.string()
+              .matches(/^[a-zA-Z\s]+$/, 'Last name must only contain letters and spaces')
+              .required('Last name is required'),
+            expiryDate: Yup.string()
+              .matches(/^(0[1-9]|1[0-2])\/\d{2}$/, 'Expiration date must be in MM/YY format')
+              .required('ExpiryDate is required'),
+            cvv: Yup.string()
+              .matches(/^\d{3,4}$/, 'CVV/CVC must be 3 or 4 digits')
+              .required('CVV/CVC is required'),
+            email: Yup.string()
+              .email('Must be a valid email')
+              .required('Email is required'),
+            billingAddress: Yup.string()
+              .required('Billing address is required'),
+            stateProvince: Yup.string()
+              .required('State/Province is required'),
+            zipPostalCode: Yup.string()
+              .matches(/^\d{5}(-\d{4})?$/, 'Zip/Postal code must be 5 digits or 5-4 digits')
+              .required('Zip/Postal code is required'),
+            city: Yup.string()
+              .required('City is required'),
+            country: Yup.string()
+              .required('Country is required'),
+          })}
+          onSubmit={handleSubmit}
+        >
+      {({ errors, touched, handleSubmit }) => (
+          <form onSubmit={handleSubmit}>
             <div className={`${styles['authnet-paymentfull-form']}`}>
                 <div className={`${styles['form-left']}`}>
                   <div className={`${styles['credit-card-container']}`}>
@@ -1987,103 +2006,165 @@ const AuthnetPaymentFullModal = () => {
                     <img src={discover_icon}></img>
                   </div>
                   <div className={styles['input-form']}>
-                    <InputField variant={'tulleGray'}
-                      label="Card Number"
-                      className="bg-transparent mt-2"
-                      error={errors.businessName}
-                      touched={touched.businessName}
-                      showIcon={false}
-                      tooltipContent="N/A"
-                    >
-                      <Input
-                        name="cardNumber"
-                        value={''}
-                        placeholder="Card Number"
-                        className="bg-transparent border-[#000] h-[38px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
-                      />
-                    </InputField>
-                    <InputField variant={'tulleGray'}
-                      label="First Name"
-                      className="bg-transparent mt-3"
-                      error={errors.businessName}
-                      touched={touched.businessName}
-                      showIcon={false}
-                      tooltipContent="N/A"
-                    >
-                      <Input
-                        name="firstName"
-                        value={''}
-                        onChange={()=>{}}
-                        placeholder="First Name"
-                        className="bg-transparent border-[#000] h-[38px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
-                      />
-                    </InputField>
-                    <InputField variant={'tulleGray'}
-                      label="Last Name"
-                      className="bg-transparent mt-3"
-                      error={errors.businessName}
-                      touched={touched.businessName}
-                      showIcon={false}
-                      tooltipContent="N/A"
-                    >
-                      <Input
-                        name="lastName"
-                        value={''}
-                        onChange={()=>{}}
-                        placeholder="Last Name"
-                        className="bg-transparent border-[#000] h-[38px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
-                      />
-                    </InputField>
+                  <InputField
+                    variant={'tulleGray'}
+                    label="Card Number"
+                    className="bg-transparent mt-2"
+                    error={errors.cardNumber}
+                    touched={touched.cardNumber}
+                    showIcon={false}
+                    tooltipContent="N/A"
+                  >
+                    <Field name="cardNumber">
+                      {({ field, form }: FieldProps) => (
+                        <Input
+                          {...field} // Spread field props
+                          placeholder="Card Number"
+                          className="bg-transparent border-[#000] h-[38px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                            const value = event.target.value;
+                            form.setFieldValue(field.name, value);
+                          }}
+                          onBlur={() => {
+                            form.validateField(field.name);
+                          }}
+                        />
+                      )}
+                    </Field>
+                  </InputField>
+                  <InputField
+                    variant={'tulleGray'}
+                    label="First Name"
+                    className="bg-transparent mt-3"
+                    error={errors.firstName}
+                    touched={touched.firstName}
+                    showIcon={false}
+                    tooltipContent="N/A"
+                  >
+                    <Field name="firstName">
+                      {({ field, form }: FieldProps) => (
+                        <Input
+                          {...field} // Spread field props
+                          placeholder="First Name"
+                          className="bg-transparent border-[#000] h-[38px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                            const value = event.target.value;
+                            form.setFieldValue(field.name, value);
+                          }}
+                          onBlur={() => {
+                            form.validateField(field.name);
+                          }}
+                        />
+                      )}
+                    </Field>
+                  </InputField>
+                  <InputField
+                    variant={'tulleGray'}
+                    label="Last Name"
+                    className="bg-transparent mt-3"
+                    error={errors.lastName}
+                    touched={touched.lastName}
+                    showIcon={false}
+                    tooltipContent="N/A"
+                  >
+                    <Field name="lastName">
+                      {({ field, form }: FieldProps) => (
+                        <Input
+                          {...field} // Spread field props
+                          placeholder="Last Name"
+                          className="bg-transparent border-[#000] h-[38px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                            const value = event.target.value;
+                            form.setFieldValue(field.name, value);
+                          }}
+                          onBlur={() => {
+                            form.validateField(field.name);
+                          }}
+                        />
+                      )}
+                    </Field>
+                  </InputField>
                     <div className={styles['expiry-cvv']}>
-                      <InputField variant={'tulleGray'}
-                        label="Expiry Date"
-                        className="bg-transparent mt-3"
-                        error={errors.businessName}
-                        touched={touched.businessName}
-                        showIcon={false}
-                        tooltipContent="N/A"
-                      >
-                        <Input
-                          name="expiryDate"
-                          value={''}
-                          onChange={()=>{}}
-                          placeholder="XX/XX"
-                          className="bg-transparent border-[#000] h-[38px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
-                        />
-                      </InputField>
-                      
-                      <InputField variant={'tulleGray'}
-                        label="CVV"
-                        className="bg-transparent mt-3"
-                        error={errors.businessName}
-                        touched={touched.businessName}
-                        showIcon={false}
-                        tooltipContent="N/A"
-                      >
-                        <Input
-                          name="cvv"
-                          value={''}
-                          onChange={()=>{}}
-                          placeholder="CVV"
-                          className="bg-transparent border-[#000] h-[38px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
-                        />
-                      </InputField>
-                    </div>
-                    <InputField variant={'tulleGray'}
-                      label="Email"
+                    <InputField
+                      variant={'tulleGray'}
+                      label="Expiry Date"
                       className="bg-transparent mt-3"
-                      error={errors.businessName}
-                      touched={touched.businessName}
+                      error={errors.expiryDate}
+                      touched={touched.expiryDate}
                       showIcon={false}
                       tooltipContent="N/A"
                     >
-                      <Input
-                        name="email"
-                        value={''}
-                        onChange={()=>{}}
-                        placeholder="Legal Business Name"
-                        className="bg-transparent border-[#000] h-[38px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
-                      />
+                      <Field name="expiryDate">
+                        {({ field, form }: FieldProps) => (
+                          <Input
+                            {...field} // Spread field props
+                            placeholder="MM/YY"
+                            className="bg-transparent border-[#000] h-[38px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                              const formattedValue = formatExpirationDate(event.target.value); // Format input
+                              form.setFieldValue(field.name, formattedValue);
+                            }}
+                            onBlur={() => {
+                              form.validateField(field.name);
+                            }}
+                            onKeyDown={handleExpirationDateKeyDown} // Retain custom keydown handler
+                          />
+                        )}
+                      </Field>
+                    </InputField>
+                      
+                    <InputField
+                      variant={'tulleGray'}
+                      label="CVV"
+                      className="bg-transparent mt-3"
+                      error={errors.cvv}
+                      touched={touched.cvv}
+                      showIcon={false}
+                      tooltipContent="N/A"
+                    >
+                      <Field name="cvv">
+                        {({ field, form }: FieldProps) => (
+                          <Input
+                            {...field} // Spread field props
+                            placeholder="CVV"
+                            className="bg-transparent border-[#000] h-[38px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                              const value = event.target.value;
+                              form.setFieldValue(field.name, value);
+                            }}
+                            onBlur={() => {
+                              form.validateField(field.name);
+                            }}
+                          />
+                        )}
+                      </Field>
+                    </InputField>
+                    </div>
+                    <InputField
+                      variant={'tulleGray'}
+                      label="Email Address"
+                      className="bg-transparent mt-3"
+                      error={errors.email}
+                      touched={touched.email}
+                      showIcon={false}
+                      tooltipContent="Your contact email address"
+                    >
+                      <Field name="email">
+                        {({ field, form }: FieldProps) => (
+                          <Input
+                            {...field} // Spread field props
+                            placeholder="Email Address"
+                            className="bg-transparent border-[#000] h-[38px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                              const value = event.target.value;
+                              form.setFieldValue(field.name, value);
+                            }}
+                            onBlur={() => {
+                              form.validateField(field.name);
+                            }}
+                          />
+                        )}
+                      </Field>
                     </InputField>
                     <div className={`${styles['terms-and-privacy']}`}>
                         <input type="checkbox"></input>
@@ -2098,110 +2179,144 @@ const AuthnetPaymentFullModal = () => {
                 </div>
                 <div className={`${styles['form-right']}`}>
 
-                <InputField variant={'tulleGray'}
-                      label="BillingAddress"
-                      className="bg-transparent"
-                      error={errors.businessName}
-                      touched={touched.businessName}
-                      showIcon={false}
-                      tooltipContent="N/A"
-                    >
+                <InputField
+                    variant={'tulleGray'}
+                    label="Billing Address"
+                    className="bg-transparent mt-3"
+                    error={errors.billingAddress}
+                    touched={touched.billingAddress}
+                    showIcon={false}
+                    tooltipContent="The address linked to your payment method"
+                  >
+                    <Field name="billingAddress">
+                      {({ field, form }: FieldProps) => (
+                        <Input
+                          {...field} // Spread field props
+                          placeholder="Billing Address"
+                          className="bg-transparent border-[#000] h-[38px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                            const value = event.target.value;
+                            form.setFieldValue(field.name, value);
+                          }}
+                          onBlur={() => {
+                            form.validateField(field.name);
+                          }}
+                        />
+                      )}
+                    </Field>
+                </InputField>
+                <InputField
+                  variant={'tulleGray'}
+                  label="State/Province"
+                  className="bg-transparent mt-3"
+                  error={errors.stateProvince}
+                  touched={touched.stateProvince}
+                  showIcon={false}
+                  tooltipContent="N/A"
+                >
+                  <Field name="stateProvince">
+                    {({ field, form }: FieldProps) => (
                       <Input
-                        name="billingAdress"
-                        value={''}
-                        onChange={()=>{}}
-                        placeholder="House No./Bldg./Street"
+                        {...field} // Spread field props
+                        placeholder="State/Province"
                         className="bg-transparent border-[#000] h-[38px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                          const value = event.target.value;
+                          form.setFieldValue(field.name, value);
+                        }}
+                        onBlur={() => {
+                          form.validateField(field.name);
+                        }}
                       />
-                    </InputField>
-                    <div className={styles['state-province']}>
-                      <InputField variant={'tulleGray'}
-                        label="State/Province"
-                        className="bg-transparent mt-3"
-                        error={errors.businessName}
-                        touched={touched.businessName}
-                        showIcon={false}
-                        tooltipContent="N/A"
-                      >
-                        <Input
-                          name="stateProvince"
-                          value={''}
-                          onChange={()=>{}}
-                          placeholder="State/Province"
-                          className="bg-transparent border-[#000] h-[38px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
-                        />
-                      </InputField>
-                      
-                      <InputField variant={'tulleGray'}
-                        label="Zip Code"
-                        className="bg-transparent mt-3"
-                        error={errors.businessName}
-                        touched={touched.businessName}
-                        showIcon={false}
-                        tooltipContent="N/A"
-                      >
-                        <Input
-                          name="zipCode"
-                          value={''}
-                          onChange={()=>{}}
-                          placeholder="Zip Code"
-                          className="bg-transparent border-[#000] h-[38px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
-                        />
-                      </InputField>
-                    </div>
-                    <InputField variant={'tulleGray'}
-                      label="City"
-                      className="bg-transparent mt-3"
-                      error={errors.businessName}
-                      touched={touched.businessName}
-                      showIcon={false}
-                      tooltipContent="N/A"
-                    >
+                    )}
+                  </Field>
+                </InputField>
+                <InputField
+                  variant={'tulleGray'}
+                  label="City"
+                  className="bg-transparent mt-3"
+                  error={errors.city}
+                  touched={touched.city}
+                  showIcon={false}
+                  tooltipContent="City of residence"
+                >
+                  <Field name="city">
+                    {({ field, form }: FieldProps) => (
                       <Input
-                        name="city"
-                        value={''}
-                        onChange={()=>{}}
+                        {...field} // Spread field props
                         placeholder="City"
                         className="bg-transparent border-[#000] h-[38px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                          const value = event.target.value;
+                          form.setFieldValue(field.name, value);
+                        }}
+                        onBlur={() => {
+                          form.validateField(field.name);
+                        }}
                       />
-                    </InputField>
-                    <InputField variant={'tulleGray'}
-                      label="Country"
-                      className="bg-transparent mt-3"
-                      error={errors.businessName}
-                      touched={touched.businessName}
-                      showIcon={false}
-                      tooltipContent="N/A"
-                    >
+                    )}
+                  </Field>
+                </InputField>
+                <InputField
+                  variant={'tulleGray'}
+                  label="Country"
+                  className="bg-transparent mt-3"
+                  error={errors.country}
+                  touched={touched.country}
+                  showIcon={false}
+                  tooltipContent="N/A"
+                >
+                  <Field name="country">
+                    {({ field, form }: FieldProps) => (
                       <Input
-                        name="country"
-                        value={''}
-                        onChange={()=>{}}
+                        {...field} // Spread field props
                         placeholder="Country"
                         className="bg-transparent border-[#000] h-[38px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                          const value = event.target.value;
+                          form.setFieldValue(field.name, value);
+                        }}
+                        onBlur={() => {
+                          form.validateField(field.name);
+                        }}
                       />
-                    </InputField>
-                    <InputField variant={'tulleGray'}
-                      label="Zip/Postal Code"
-                      className="bg-transparent mt-3"
-                      error={errors.businessName}
-                      touched={touched.businessName}
-                      showIcon={false}
-                      tooltipContent="N/A"
-                    >
+                    )}
+                  </Field>
+                </InputField>
+                <InputField
+                  variant={'tulleGray'}
+                  label="Zip/Postal Code"
+                  className="bg-transparent mt-3"
+                  error={errors.zipPostalCode}
+                  touched={touched.zipPostalCode}
+                  showIcon={false}
+                  tooltipContent="N/A"
+                >
+                  <Field name="zipPostalCode">
+                    {({ field, form }: FieldProps) => (
                       <Input
-                        name="zipPostalCode"
-                        value={''}
-                        onChange={()=>{}}
+                        {...field} // Spread field props
                         placeholder="Zip/Postal Code"
                         className="bg-transparent border-[#000] h-[38px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                          const value = event.target.value;
+                          form.setFieldValue(field.name, value);
+                        }}
+                        onBlur={() => {
+                          form.validateField(field.name);
+                        }}
                       />
-                    </InputField>
+                    )}
+                  </Field>
+                </InputField>
                     <div className={styles['complete-payment-container']}>
                         <label>By Clicking “Complete Payment” you will be charged the total price of </label>
-                        <label>$55.00</label>
+                        <label>
+                          {currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY ? '$5.00' :
+                          currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL ? '$55.00' : ''}
+                          </label>
                     </div>
-                    <div ref={submitButton} className={`${styles['button-custom-orange']} ${styles['noselect']}`}>
+                    <button type='submit' className={`${styles['button-custom-orange']} ${styles['noselect']}`}>
                     <img
                       src={button_loading_spinner}
                       alt="Loading"
@@ -2209,13 +2324,15 @@ const AuthnetPaymentFullModal = () => {
                       hidden={!isSubmitting}
                     />
                       Complete Payment
-                    </div>
+                    </button>
                     
                 </div>
 
             </div>
           </form>
 
+          )}
+          </Formik>
           <div className={`${styles['authnet-footer']}`}>
             <div className={`${styles['authnet-footer-desc']}`}>
                 <label>Akaza{"\u00A0"}</label>
@@ -2387,7 +2504,7 @@ const ModalHeader = () =>{
 }
 const Modal = () => {
   return (
-    <div id="modal_container" className={`${styles['modal-container-wrapper']}`} >
+    <div className={`${styles['modal-container-wrapper']}`} >
       <div className={`${styles['modal-container']}`}>
           <div className={`${styles['modal-item']}`}>
               <ModalHeader/>
@@ -3103,6 +3220,18 @@ const HeroLoading = () => {
 
 const isFreeTrial = false;
 const isIndexRoute = useMatch('/landing');
+const buttonScheduleACall = useRef<HTMLButtonElement>(null);
+
+const handleScheduleAcall = ()=> {
+  if (buttonScheduleACall.current) {
+    buttonScheduleACall.current.onclick = () => {
+      navigate('/landing/contact-us');
+    };
+  }
+}
+useEffect(()=>{
+  handleScheduleAcall()
+},[])
 
   return (
     <LandingContext.Provider value={{ isFreeTrial }}>
@@ -3218,7 +3347,7 @@ const isIndexRoute = useMatch('/landing');
                         <div className={`${styles['sub-desc']}`}>We are committed to be the best at what we do. Our CEO is eager to connect with you personally to discuss how we can enhance your experience!</div>
                     </div>
                     <div className={`${styles['button-wrapper']}`}>
-                        <button className={`${styles['button-regular']}`}>Schedule a call</button>
+                        <button ref={buttonScheduleACall} className={`${styles['button-regular']}`}>Schedule a call</button>
                     </div>
                 </div>
             </div>
@@ -3227,7 +3356,7 @@ const isIndexRoute = useMatch('/landing');
                     <div className={`${styles['info-desc-wrapper']}`}>
                         <div>
                             <div>
-                                <label>$5 for a chance to</label> <label style={{"display":"inline-block","color":"#F5722E"}}>#TakeBackYourTime</label>
+                                <label>$5 for a chance to</label> <label>#TakeBackYourTime</label>
                             </div>
                         </div>
                         <div>
@@ -3238,7 +3367,7 @@ const isIndexRoute = useMatch('/landing');
                         </div>
                         <div>
                             <div>
-                                <label>It's time to</label> <label style={{"display":"inline-block","color":"#F5722E"}}>#TakeBackYourTime</label>
+                                <label>It's time to</label> <label>#TakeBackYourTime</label>
                             </div>
                         </div>
                     </div>
