@@ -1,0 +1,33 @@
+.layout-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; // Ensure the layout spans the full height of the viewport
+  
+    .layout-main {
+        flex: 1;
+        padding: 1rem;
+        background-color: #f9f9f9;
+        margin-top: var(--header-height); // Push main content below the header
+        @media (max-width: 768px) {
+            margin-top:0;
+        }
+      }
+  
+    .button-signup {
+      background-color: #F5722E;
+      color: #FFF;
+    }
+  }
+  
+  .button {
+    border-color: #F5722E;
+    color: #F5722E;
+    font-family: Inter;
+    border-radius: 4px;
+    padding: 10px 20px;
+  }
+  
+  .button-signup {
+    background-color: #F5722E;
+    color: #FFF;
+  }

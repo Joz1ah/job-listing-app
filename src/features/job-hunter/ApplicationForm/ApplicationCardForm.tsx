@@ -4,7 +4,6 @@ import { Input, Button, InputField } from "components";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import saveChanges from "images/save-changes.svg?url";
-import Cookies from 'js-cookie';
 
 import { selectOptions } from "mockData/app-form-options";
 
@@ -36,6 +35,7 @@ import * as Yup from "yup";
 
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { useJobHunterProfileMutation } from "api/akaza/akazaAPI";
+import { useAuth } from "contexts/AuthContext/AuthContext";
 
 interface FormData {
   firstName: string;
@@ -66,11 +66,20 @@ const validationSchema = Yup.object().shape({
   emailAddress: Yup.string()
     .required("This field is required")
     .email("Invalid email address"),
-  mobileNumber: Yup.string()
-    .required("This field is required")
-    .test("phone", "Please enter a valid phone number", function (value) {
-      return value ? isValidPhoneNumber(value) : false;
-    }),
+ mobileNumber: Yup.string()
+     .required("This field is required")
+     .test("phone", "Phone number must be in international format and contain 11-12 digits", function(value) {
+       if (!value) return false;
+       
+       // Check if it's a valid phone number first
+       if (!isValidPhoneNumber(value)) return false;
+       
+       // Remove all non-digit characters to check length
+       const digitsOnly = value.replace(/\D/g, '');
+       
+       // Check if the number of digits is between 11 and 12
+       return digitsOnly.length >= 11 && digitsOnly.length <= 12;
+     }),
   country: Yup.string().required("This field is required"),
   employmentType: Yup.array().min(
     1,
@@ -105,6 +114,7 @@ const ApplicationCardForm: FC = () => {
   const [showPreview, setShowPreview] = useState<boolean>(false);
 
   const [submitJobHunterProfile ] = useJobHunterProfileMutation();
+  const { refreshUser, user } = useAuth();
 
   const {
     values,
@@ -119,7 +129,7 @@ const ApplicationCardForm: FC = () => {
       firstName: "",
       lastName: "",
       birthday: "",
-      emailAddress: "",
+      emailAddress: user?.data?.user?.email || "",
       mobileNumber: "",
       employmentType: [],
       salaryRange: "",
@@ -139,27 +149,59 @@ const ApplicationCardForm: FC = () => {
   });
 
   const handleFormSubmit = async () => {
+    setShowPreview(false);
+    setIsSubmitting(true);
+
     try {
-      setIsSubmitting(true);
+      const formattedPhoneNumber = values.mobileNumber.replace(/[^\d]/g, '');
       
-      // Ensure the auth token exists
-      const authToken = Cookies.get('authToken');
-      if (!authToken) {
-        console.error('No auth token found');
-        return;
-      }
-  
+      // Define language options
+      const languages = [
+        { label: "Arabic", value: "ar" },
+        { label: "Bengali", value: "bn" },
+        { label: "Chinese (Cantonese)", value: "zh-hk" },
+        { label: "Chinese (Mandarin)", value: "zh" },
+        { label: "Dutch", value: "nl" },
+        { label: "English", value: "en" },
+        { label: "Finnish", value: "fi" },
+        { label: "French", value: "fr" },
+        { label: "German", value: "de" },
+        { label: "Hindi", value: "hi" },
+        { label: "Italian", value: "it" },
+        { label: "Japanese", value: "ja" },
+        { label: "Korean", value: "ko" },
+        { label: "Malay", value: "ms" },
+        { label: "Polish", value: "pl" },
+        { label: "Portuguese", value: "pt" },
+        { label: "Russian", value: "ru" },
+        { label: "Spanish", value: "es" },
+        { label: "Swedish", value: "sv" },
+        { label: "Tagalog", value: "tl" },
+        { label: "Thai", value: "th" },
+        { label: "Turkish", value: "tr" },
+        { label: "Vietnamese", value: "vi" }
+      ];
+
+      // Format language array to comma-separated string
+      const formattedLanguages = values.languages.map(lang => {
+        const languageOption = languages.find(opt => opt.value === lang);
+        return languageOption?.label || lang;
+      }).join(',');
+
+      // Format employment types to comma-separated string
+      const formattedEmploymentTypes = values.employmentType.join(',');
+      
       const payload = {
         firstName: values.firstName,
         lastName: values.lastName,
-        location: "", // Add if needed
-        language: values.languages,
+        location: values.country,
+        language: formattedLanguages,
         birthday: values.birthday,
         email: values.emailAddress,
-        phoneNumber: values.mobileNumber,
-        employmentType: values.employmentType,
+        phoneNumber: formattedPhoneNumber,
+        employmentType: formattedEmploymentTypes,
         education: values.education,
-        yearsOfExperience: values.yearsOfExperience,
+        yearsOfExperience: values.yearsOfExperience || "less-than-1",
         core: values.coreSkills,
         interpersonal: values.interpersonalSkills,
         certification: values.certifications,
@@ -167,18 +209,16 @@ const ApplicationCardForm: FC = () => {
         country: values.country
       };
   
-      const response = await submitJobHunterProfile(payload).unwrap();
+      await submitJobHunterProfile(payload).unwrap();
       
-      if (response) {
-        // Add success notification here
-        navigate("/job-hunter/feed");
-      }
+      // Refresh user data in auth context
+      await refreshUser();
+      
+      navigate("/job-hunter/feed");
     } catch (error) {
       console.error("Error submitting profile:", error);
-      // Add error notification here
     } finally {
       setIsSubmitting(false);
-      setShowPreview(false);
     }
   };
 

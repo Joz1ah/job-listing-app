@@ -9,6 +9,7 @@ export interface User {
     user: User | null;
     token: string | null;
     isAuthenticated: boolean;
+    isLoading: boolean;
     login: (token: string) => void;
     logout: () => void;
     refreshUser: () => Promise<void>;

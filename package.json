@@ -14,6 +14,7 @@
     "start:server": "wait-on dist/server.js && node dist/server.js",
     "dev": "npm run clean && npm-run-all --print-label --parallel start:webpack start:server",
     "start": "nodemon --exec npm run dev --watch src/server --ext ts,tsx,json ",
+    "build:development": "npm run clean  && cross-env NODE_ENV=development webpack --mode development",
     "build": "npm run clean  && cross-env NODE_ENV=production webpack --mode production",
     "build:report": "npm run build --withReport",
     "run": "node dist/server.js",

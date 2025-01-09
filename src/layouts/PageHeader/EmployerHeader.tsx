@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import { Tooltip } from "components";
 import verifiedIcon from "images/verified.svg?url";
 import { useEmployerContext } from "components";
+import { useAuth } from "contexts/AuthContext/AuthContext";
 
 const DesktopTooltip = ({
   content,
@@ -35,6 +36,8 @@ const EmployerHeader: FC = () => {
 
   const hideOnMobile = hideOnPagesMobile.includes(location.pathname);
   const hideOnDesktop = hideOnPagesDesktop.includes(location.pathname);
+  const { user } = useAuth();
+  const businessName = user?.data?.user?.relatedDetails?.businessName || "Company Name";
 
   return (
     <div
@@ -46,7 +49,7 @@ const EmployerHeader: FC = () => {
         <div className="flex flex-col space-y-2 md:space-y-4">
           <div className="flex items-center">
             <h1 className="text-3xl text-white font-normal">
-              ABC Incorporated
+              {businessName}
             </h1>
             {subscriptionPlan === "freeTrial" ? (
               <Tooltip
@@ -56,7 +59,7 @@ const EmployerHeader: FC = () => {
                       Subscribe to unlock your verification status.
                     </div>
                     <div className="flex items-center text-sm">
-                      ABC Incorporated
+                      {businessName}
                       <img
                         src={verifiedIcon}
                         className="ml-1 w-4 h-4 text-orange-500"

@@ -19,13 +19,13 @@ interface SelectOption {
     companyWebsite: string;
     yearFounded: string;
     unitAndBldg: string;
-    buildingName: string;
     streetAddress: string;
     city: string;
     state: string;
     postalCode?: string;
     country: string;
     companyOverview: string;
+    employmentType: string[];
   }
 
 export const selectOptions: SelectOptions = {
@@ -44,20 +44,20 @@ export const selectOptions: SelectOptions = {
       { value: "cn", label: "China" },
     ],
     industry: [
-      { value: "accounting-finance", label: "Accounting and Finance" },
-      { value: "architecture-interior-design", label: "Architecture and Interior Design" },
-      { value: "automotive-engineering", label: "Automotive and Engineering" },
-      { value: "blockchain-cryptocurrency", label: "Blockchain and Cryptocurrency" },
-      { value: "compliance-regulatory", label: "Compliance and Regulatory Affairs" },
-      { value: "consulting", label: "Consulting" },
-      { value: "creative-arts", label: "Creative Arts" },
-      { value: "customer-service-support", label: "Customer Service and Support" },
-      { value: "data-entry-admin", label: "Data Entry and Administrative Work" },
-      { value: "ecommerce", label: "E-Commerce" },
-      { value: "education-tutoring", label: "Education and Tutoring" },
-      { value: "executive-roles", label: "Executive Roles" },
-      { value: "family-child-services", label: "Family and Child Services" },
-      { value: "travel", label: "Travel" },
-      { value: "web-software-development", label: "Web/Software Development" },
+      { value: "1", label: "Accounting and Finance" },
+      { value: "2", label: "Architecture and Interior Design" },
+      { value: "3", label: "Automotive and Engineering" },
+      { value: "4", label: "Blockchain and Cryptocurrency" },
+      { value: "6", label: "Compliance and Regulatory Affairs" },
+      { value: "7", label: "Consulting" },
+      { value: "8", label: "Creative Arts" },
+      { value: "9", label: "Customer Service and Support" },
+      { value: "10", label: "Data Entry and Administrative Work" },
+      { value: "11", label: "E-Commerce" },
+      { value: "12", label: "Education and Tutoring" },
+      { value: "13", label: "Executive Roles" },
+      { value: "14", label: "Family and Child Services" },
+      { value: "15", label: "Travel" },
+      { value: "16", label: "Web/Software Development" },
     ]
   };

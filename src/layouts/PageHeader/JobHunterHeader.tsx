@@ -8,12 +8,15 @@ import {
 } from "lucide-react";
 import { Tooltip } from "components";
 import { useJobHunterContext } from "components";
+import { useAuth } from "contexts/AuthContext/AuthContext";
 
 const JobHunterHeader: FC = () => {
   const { subscriptionPlan } = useJobHunterContext();
   const rating = 4.5;
   const fullStars = Math.floor(rating);
   const hasHalfStar = rating % 1 !== 0;
+  const { user } = useAuth();
+  const firstName = user?.data?.user?.relatedDetails?.firstName;
 
   const DesktopTooltip = ({
     content,
@@ -35,7 +38,7 @@ const JobHunterHeader: FC = () => {
       <div className="flex flex-col space-y-4 md:space-y-6">
         <div className="flex flex-col space-y-2 md:space-y-4">
           <h1 className="text-3xl text-white font-normal">
-            Welcome to your dashboard, Michael!
+            Welcome to your dashboard, {firstName}!
           </h1>
 
           <div className="flex items-center justify-between md:justify-start md:gap-8">

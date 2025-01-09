@@ -7,18 +7,21 @@ export const ROUTE_CONSTANTS = {
   ABOUT: '/about',
   FETCH: '/fetch',
   NOT_FOUND: '/404',
-  ABOUT_US: 'about-us',
-  CONTACT_US: 'contact-us',
-  SUBSCRIPTION_PLAN: 'subscription-plan',
-  FAQ: 'faq',
+  ABOUT_US: '/landing/about-us',
+  CONTACT_US: '/landing/contact-us',
+  SUBSCRIPTION_PLAN: '/landing/subscription-plan',
+  FAQ: '/landing/faq',
+
+  // Test Route
+  TEST: '/test',
   
   // Authentication and Profile
-  COMPLETE_PROFILE: '/employer/complete-profile',
+  COMPLETE_PROFILE: '/employer/employer-profile',
   EDIT_PROFILE: '/employer/edit-profile',
   
   // Job Hunter routes
   JOB_HUNTER: '/job-hunter',
-  CREATE_APPLICATION: '/job-hunter/create-application',
+  CREATE_APPLICATION: '/job-hunter/jobhunter-profile',
   EDIT_APPLICATION: '/job-hunter/edit-application',
   BOOKMARKED_JOBS_JOBHUNTER: '/job-hunter/bookmarked-jobs',
   INTERVIEWS_JOB_HUNTER: '/job-hunter/interviews',

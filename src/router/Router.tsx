@@ -23,6 +23,7 @@ const SubscriptionPlan = lazy(() => import('pages').then(module => ({ default: m
 const AboutUs = lazy(() => import('pages').then(module => ({ default: module.AboutUs })))
 const ContactUs = lazy(() => import('pages').then(module => ({ default: module.ContactUs })))
 const Faq = lazy(() => import('pages').then(module => ({ default: module.Faq })))
+const Test = lazy(() => import('pages').then(module => ({ default: module.Test })))
 
 // Employer pages
 //const EmployerBaseLayout = lazy(() => import('pages').then(module => ({ default: module.EmployerBaseLayout })))
@@ -138,6 +139,10 @@ const routes: RouteObject[] = [
   {
     path: '',
     element: <RedirectTo to={ROUTE_CONSTANTS.LANDING} />,
+  },
+  {
+    path: ROUTE_CONSTANTS.TEST,
+    element: <LazyComponent component={Test} />,
   },
   {
     path: ROUTE_CONSTANTS.LANDING,

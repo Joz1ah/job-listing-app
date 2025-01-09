@@ -31,5 +31,6 @@ export { EmployerBookmarkedJobs } from 'pages/employer/bookmarked-jobs/EmployerB
 export { AboutUs } from 'pages/about-us/AboutUs'
 export { ContactUs } from 'pages/contact-us/ContactUs'
 export { Faq } from 'pages/faq/Faq'
+export { Test } from 'pages/test/Test'
 export { TermsConditionsPage } from 'pages/terms-conditions/TermsConditionsPage'
 export { PrivacyPolicyPage } from 'pages/privacy-policy/PrivacyPolicyPage'

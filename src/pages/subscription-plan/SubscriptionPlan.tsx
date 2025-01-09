@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { Button } from "components";
 import { ThumbsUp, ChartNoAxesCombined, LockKeyhole, MessageCircleMore, Trophy } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import sparkle_icon from 'assets/images/sparkle-icon.png'
 
 interface PlanFeature {
@@ -23,6 +24,18 @@ const PlanCard: FC<PlanProps> = ({
   features,
   bestValue,
 }) => {
+  const navigate = useNavigate();
+
+  const handleStartNow = () => {
+    // Navigate with state to indicate modal should open
+    navigate('/landing', { 
+      state: { 
+        openModal: true,
+        modalType: 'SIGNUP_SELECT_USER_TYPE'  
+      } 
+    });
+  };
+
   return (
     <div
       className={`w-full ${bestValue ? "bg-[#2D3A41]" : "bg-[#F5F5F7BF]"} rounded-lg px-4 py-3 transform transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_2px_rgba(245,114,46,0.6)] mb-6`}
@@ -58,7 +71,10 @@ const PlanCard: FC<PlanProps> = ({
             <br />
             and hire the best talent faster
           </p>
-          <Button className="w-32 h-8 text-[15px] bg-[#F5722E] text-[#F5F5F7] py-1 rounded hover:bg-[#F5722E]/90">
+          <Button 
+            className="w-32 h-8 text-[15px] bg-[#F5722E] text-[#F5F5F7] py-1 rounded hover:bg-[#F5722E]/90"
+            onClick={handleStartNow}
+          >
             Start Now
           </Button>
         </div>

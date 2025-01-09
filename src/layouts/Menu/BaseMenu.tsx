@@ -166,7 +166,7 @@ const BaseMenu: FC<MenuProps> = ({
       <header className="hidden md:flex fixed top-0 left-0 right-0 bg-[#2D3A41] h-[72px] px-4 justify-between items-center z-50 shadow-md">
         <div className="flex items-center gap-4">
           <NavLink
-            to="/"
+            to={isAuthenticated ? (userType === 'employer' ? '/employer' : '/job-hunter') : '/'}
             onClick={handleNavLinkClick}
             className="flex-shrink-0"
           >

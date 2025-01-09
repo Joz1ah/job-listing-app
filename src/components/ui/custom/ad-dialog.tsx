@@ -11,7 +11,7 @@ import {
 
 interface AdDialogWrapperProps {
   adImage?: string;
-  popupImage: string;
+  popupImage?: string;
 }
 
 const AdDialogWrapper = forwardRef<HTMLDivElement, AdDialogWrapperProps>(

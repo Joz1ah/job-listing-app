@@ -9,6 +9,7 @@ import sparkeIcon from "images/sparkle-icon.png";
 import saveChanges from "images/save-changes.svg?url";
 import { selectOptions } from "mockData/job-listing-form-options";
 import { useJobListCreateMutation } from "api/akaza/akazaAPI";
+import { useAuth } from "contexts/AuthContext/AuthContext";
 
 import {
   MultiSelect,
@@ -88,6 +89,7 @@ const JobListingForm: FC = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [showPreview, setShowPreview] = useState<boolean>(false);
+  const { user } = useAuth();
 
   const [createJobList] = useJobListCreateMutation();
 
@@ -97,7 +99,7 @@ const JobListingForm: FC = () => {
       setShowPreview(false);
       
       const jobListPayload = {
-        employerId: 1,  // You should get this from your auth context or user state
+        employerId: user?.data?.user?.relatedDetails?.id, // Get ID from auth context
         title: values.jobTitle,
         priorityIndicator: values.priorityIndicator,
         description: values.jobDescription,
@@ -105,13 +107,28 @@ const JobListingForm: FC = () => {
         employmentType: values.employmentType.join(", "),
         salaryRange: values.salaryRange,
         yearsOfExperience: values.yearsOfExperience,
-        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days from now
+        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
         education: values.education,
         language: values.languages.join(","),
-        keywords: values.coreSkills
+        keywords: [...values.coreSkills, ...values.interpersonalSkills]
+          .map(skill => {
+            const id = parseInt(skill, 10);
+            if (isNaN(id)) {
+              console.warn(`Invalid skill ID found: ${skill}`);
+              return null;
+            }
+            return id;
+          })
+          .filter((id): id is number => id !== null)
       };
   
+      // Validate payload before submission
       console.log('Submitting form data:', jobListPayload);
+      
+      // Verify keywords are valid numbers
+      if (!jobListPayload.keywords.every(k => Number.isInteger(k))) {
+        throw new Error('Invalid keyword IDs detected');
+      }
       
       const result = await createJobList(jobListPayload).unwrap();
       
@@ -124,6 +141,8 @@ const JobListingForm: FC = () => {
     } catch (err) {
       console.error('Error submitting form:', err);
       setIsLoading(false);
+      // Show error message to user
+      alert(err instanceof Error ? err.message : 'Failed to create job listing. Please try again.');
     }
   };
 
