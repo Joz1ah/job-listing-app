@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState, useRef, ReactElement, useMemo } from 'react'
+import React, { FC, useEffect, useState, useRef, ReactElement } from 'react'
 import { FooterEngagement as Footer} from "layouts";
 import { PageMeta } from "components";
 import { LandingContext } from 'components';
@@ -23,9 +23,9 @@ import { BookmarkProvider } from 'components';
 import { Button } from 'components';
 import { Link } from 'react-router-dom';
 import { useAuth } from 'contexts/AuthContext/AuthContext';
-import { employerDesktopMenu, employerMobileMenu } from 'mockData/nav-menus';
+/* import { employerDesktopMenu, employerMobileMenu } from 'mockData/nav-menus';
 import { jobHunterDesktopMenu, jobHunterMobileMenu } from 'mockData/nav-menus';
-import { SignOutModal } from 'components';
+import { SignOutModal } from 'components'; */
 import { Outlet, useMatch } from 'react-router-dom';
 import { Navigate } from 'react-router-dom';
 
@@ -1078,6 +1078,9 @@ type FormData = {
 };
 
 const EmployerAdditionalInformation = () => {
+  const { login } = useAuth();
+  const [loginSubmit] = useLoginMutation();
+
   // Form state
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
@@ -1166,11 +1169,29 @@ const EmployerAdditionalInformation = () => {
     }
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (validateForm()) {
-      // Assuming these functions are defined elsewhere
-      setSelectedModalHeader(2);
-      setModalState(modalStates.SIGNUP_STEP5);
+      try {
+        // Login to get the token
+        const response = await loginSubmit({
+          email: tempLoginEmail,
+          password: tempLoginPassword
+        }).unwrap();
+        
+        if (response?.data?.token) {
+          // Store the token
+          login(response.data.token);
+          
+          // Store employer info in localStorage for persistence
+          localStorage.setItem('employerInfo', JSON.stringify(formData));
+          
+          // Continue with the flow
+          setSelectedModalHeader(2);
+          setModalState(modalStates.SIGNUP_STEP5);
+        }
+      } catch (error) {
+        console.error('Error in login:', error);
+      }
     }
   };
 
@@ -2009,58 +2030,17 @@ const Modal = () => {
 
 const NavigationHeader = () => {
   const { menuOpen, toggleMenu } = useMenu();
-  const { isAuthenticated, user } = useAuth();
-  const [showSignOutModal, setShowSignOutModal] = useState(false);
 
-  // Get stored user preferences
-  const userType = localStorage.getItem('userType') as 'employer' | 'job-hunter';
-  const subscriptionTier = localStorage.getItem('subscriptionTier') as 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
-
-  // Get the appropriate menu items based on user type
-  const desktopMenuItems = userType === 'employer' ? employerDesktopMenu : jobHunterDesktopMenu;
-  const mobileMenuItems = userType === 'employer' ? employerMobileMenu : jobHunterMobileMenu;
-  
-  // Compute display name from relatedDetails structure
-const displayName = useMemo(() => {
-  if (!user?.data?.user?.relatedDetails) return userType === 'employer' ? "Company Name" : "User Name";
-  
-  if (userType === 'employer') {
-    return user.data.user.relatedDetails.businessName || "Company Name";
-  }
-  
-  const { firstName, lastName } = user.data.user.relatedDetails;
-  return firstName && lastName ? `${firstName} ${lastName}` : "User Name";
-}, [user, userType]);
-
-  return(
-    <>
+  return (
     <BaseMenu
-      isAuthenticated={isAuthenticated}
+      isAuthenticated={false}
       isMenuOpen={menuOpen}
       onToggleMenu={toggleMenu}
-      {...(!isAuthenticated ? {
-        ButtonLoginNav,
-        ButtonSignUpNav
-      } : {
-        // Show these props when authenticated
-        desktopMenuItems,
-        mobileMenuItems,
-        subscriptionPlan: subscriptionTier,
-        userType,
-        userName: displayName,
-        onSignOut: () => setShowSignOutModal(true)
-      })}
+      ButtonLoginNav={ButtonLoginNav}
+      ButtonSignUpNav={ButtonSignUpNav}
     />
-
-    {showSignOutModal && (
-      <SignOutModal
-        isOpen={showSignOutModal}
-        onClose={() => setShowSignOutModal(false)}
-      />
-    )}
-  </>
-  )
-}
+  );
+};
 const HeroPerfectMatchAlgo = () => {
   const heroEmployerButton = useRef<HTMLDivElement>(null);
   const heroJobHunterButton = useRef<HTMLDivElement>(null);
