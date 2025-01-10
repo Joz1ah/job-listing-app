@@ -1,6 +1,6 @@
 import React, { FC, useState } from "react";
 import { ChevronLeft } from "lucide-react";
-import { Input, Button, Textarea, InputField } from "components";
+import { Input, Button, Textarea, InputField, IndustrySearch } from "components";
 
 import saveChanges from "images/save-changes.svg?url";
 
@@ -148,7 +148,7 @@ const CompleteEmployerProfile: FC = () => {
         phoneNumber: formattedPhoneNumber,
         position: values.position,
         website: values.companyWebsite,
-        industryId: Number(values.industry),
+        industryId: parseInt(values.industry, 10),
         yearFounded: values.yearFounded,
         unit: values.unitAndBldg,
         address: values.streetAddress,
@@ -157,7 +157,8 @@ const CompleteEmployerProfile: FC = () => {
         country: values.country,
         description: values.companyOverview
       };
-  
+
+      console.log('Profile Data being sent:', profileData);
       // Call the API
       await employerProfile(profileData).unwrap();
       
@@ -273,28 +274,9 @@ const CompleteEmployerProfile: FC = () => {
                   error={errors.industry}
                   touched={touched.industry}
                 >
-                  <Select
-                    name="industry"
-                    value={values.industry}
+                  <IndustrySearch
                     onValueChange={(value) => setFieldValue("industry", value)}
-                  >
-                    <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
-                      <SelectValue placeholder="Select Industry" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-[#F5F5F7] items-center p-0 [&>*]:p-0 border-none rounded-none">
-                      {selectOptions.industry.map(({ value, label }) => (
-                        <SelectItem
-                          key={value}
-                          className={cn(
-                            "rounded-none justify-start pl-3 h-[55px] transition-all duration-500 ease-in-out",
-                          )}
-                          value={value}
-                        >
-                          <div className="py-3 w-full text-center">{label}</div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  />
                 </InputField>
               </div>
 
