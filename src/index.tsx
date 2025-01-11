@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
 import { loadableReady } from '@loadable/component'
 import { AuthProvider } from 'contexts/AuthContext/AuthContext';
+import { ErrorModalProvider } from 'contexts/ErrorModalContext/ErrorModalContext';
 
 import { App } from './App'
 
@@ -67,15 +68,17 @@ if (
 
 const indexJSX = (
   <StrictMode>
-    <Provider store={store}>
-      <HelmetProvider>
-        <BrowserRouter>
-          <AuthProvider>
-            <App />
-          </AuthProvider>
-        </BrowserRouter>
-      </HelmetProvider>
-    </Provider>
+    <ErrorModalProvider>
+      <Provider store={store}>
+        <HelmetProvider>
+          <BrowserRouter>
+            <AuthProvider>
+              <App />
+            </AuthProvider>
+          </BrowserRouter>
+        </HelmetProvider>
+      </Provider>
+    </ErrorModalProvider>
   </StrictMode>
 )
 
