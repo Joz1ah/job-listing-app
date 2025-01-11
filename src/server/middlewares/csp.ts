@@ -16,6 +16,8 @@ const defaultSrc = [
   'jstest.authorize.net',
   'api2.authorize.net',
   'localhost:*',
+  'js.intercomcdn.com',
+  'nexus-websocket-a.intercom.io'
   //'pokeapi.co',
 ];
 
@@ -25,7 +27,16 @@ const csp = (req: Request, res: Response, next: NextFunction): void => {
       useDefaults: true,
       directives: {
         defaultSrc,        
-        imgSrc: ["'self'", 'raw.githubusercontent.com', 'verify.authorize.net'],
+        imgSrc: [
+          "'self'",
+          'raw.githubusercontent.com',
+          'verify.authorize.net',
+          'https://downloads.intercomcdn.com',
+          'https://js.intercomcdn.com',
+          'https://static.intercomassets.com',
+          'https://static.intercomassets.com data:',
+          'https://gifs.intercomcdn.com'
+          ],
         scriptSrc: [
           "'self'",
           `'nonce-${String(res.locals.cspNonce)}'`,
@@ -35,10 +46,24 @@ const csp = (req: Request, res: Response, next: NextFunction): void => {
           'http://js.authorize.net',
           'https://jstest.authorize.net',
           'https://verify.authorize.net',
+          'https://widget.intercom.io/',
+          'https://js.intercomcdn.com/',
           IS_DEV ? "'unsafe-eval'" : ''
         ].filter(Boolean),
         frameSrc: ["'self'", "https://js.stripe.com", "http://js.stripe.com"],
-        connectSrc: [...defaultSrc, "https://api.stripe.com", "http://api.stripe.com",'https://api2.authorize.net', 'https://apitest.authorize.net'],
+        connectSrc: [
+          ...defaultSrc,
+          "https://api-iam.intercom.io", 
+          "https://api.stripe.com", 
+          "http://api.stripe.com",
+          'https://api2.authorize.net',
+          'https://apitest.authorize.net',
+          'wss://nexus-websocket-a.intercom.io'
+        ],
+        formAction: [
+          "'self'", // Allow form submissions to the same origin
+          'https://api-iam.intercom.io' // Allow form submissions to the Intercom API
+        ],
       }
     },
     crossOriginEmbedderPolicy: { policy: 'credentialless' },
