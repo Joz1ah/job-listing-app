@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "components";
 import { Button } from "components";
-import { useBookmarks } from "components/context/BookmarkContext";
+import { useBookmarks } from "contexts/BookmarkContext";
 import { AppPreviewModal } from "features/employer";
 import { ScheduleInterviewModal } from "features/employer";
 //import { AdDialogWrapper } from "components";

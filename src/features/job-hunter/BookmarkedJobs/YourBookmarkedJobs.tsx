@@ -4,7 +4,7 @@ import { InterviewCardSkeleton } from "components";
 import { NavLink } from "react-router-dom";
 import emptyBookmark from "images/bookmark-empty.svg?url";
 import { Match } from "mockData/jobs-data";
-import { BookmarkProvider } from "components/context/BookmarkContext";
+import { BookmarkProvider } from "contexts/BookmarkContext";
 import { useJobHunterContext } from "components";
 
 // You can replace this with your actual mock data
