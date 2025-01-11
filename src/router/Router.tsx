@@ -1,12 +1,12 @@
 import { RouteObject, Navigate } from 'react-router-dom'
-import { lazy, Suspense, ComponentType } from 'react'
+import { lazy, Suspense, ComponentType, useEffect, useState  } from 'react'
 import { ROUTE_CONSTANTS } from 'constants/routeConstants'
-import { useEffect, useState } from 'react'
 import spinner_loading_fallback from 'assets/images/spinner-loading-akaza.svg?url'
 import { useAuth } from 'contexts/AuthContext/AuthContext';
 
 // Common page imports
 import { Home } from 'pages'
+import { isServer } from 'utils';
 //import { Fetch } from 'pages'
 //import { About } from 'pages'
 //import { NotFoundPage as NotFound } from 'pages'
@@ -145,14 +145,14 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 const DashboardRedirectRoute = ({ children }: { children: React.ReactNode }) => {
+  if(isServer) return; //Add handling for SSR as the code below causes issues on redirect
   const { isAuthenticated, isLoading } = useAuth();
-  if(isLoading)
-    return <></>
-  else
-    return isAuthenticated ? <RedirectTo to={ROUTE_CONSTANTS.JOB_HUNTER} /> : children;
+  if (isLoading) {
+    return <></>;
+  }
+
+  return isAuthenticated ? <RedirectTo to={ROUTE_CONSTANTS.JOB_HUNTER} /> : children;
 };
-
-
 const routes: RouteObject[] = [
   {
     path: '',
