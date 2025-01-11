@@ -1,11 +1,12 @@
 import { RouteObject, Navigate } from 'react-router-dom'
-import { lazy, Suspense, ComponentType } from 'react'
+import { lazy, Suspense, ComponentType, useEffect, useState  } from 'react'
 import { ROUTE_CONSTANTS } from 'constants/routeConstants'
-import { useEffect, useState } from 'react'
 import spinner_loading_fallback from 'assets/images/spinner-loading-akaza.svg?url'
+import { useAuth } from 'contexts/AuthContext/AuthContext';
 
 // Common page imports
 import { Home } from 'pages'
+import { isServer } from 'utils';
 //import { Fetch } from 'pages'
 //import { About } from 'pages'
 //import { NotFoundPage as NotFound } from 'pages'
@@ -135,6 +136,23 @@ const RedirectTo = ({ to }: { to: string }) => {
   return <Navigate to={to} replace />;
 };
 
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const { isAuthenticated, isLoading } = useAuth();
+  if(isLoading)
+    return <></>
+  else
+    return isAuthenticated ? children : <RedirectTo to={ROUTE_CONSTANTS.LANDING} />;
+};
+
+const DashboardRedirectRoute = ({ children }: { children: React.ReactNode }) => {
+  if(isServer) return; //Add handling for SSR as the code below causes issues on redirect
+  const { isAuthenticated, isLoading } = useAuth();
+  if (isLoading) {
+    return <></>;
+  }
+
+  return isAuthenticated ? <RedirectTo to={ROUTE_CONSTANTS.JOB_HUNTER} /> : children;
+};
 const routes: RouteObject[] = [
   {
     path: '',
@@ -146,7 +164,10 @@ const routes: RouteObject[] = [
   },
   {
     path: ROUTE_CONSTANTS.LANDING,
-    element: <LazyComponent component={Landing} userType="guest" />,
+    element: 
+    <DashboardRedirectRoute>
+      <LazyComponent component={Landing} userType="guest" />
+    </DashboardRedirectRoute>,
     children: [
       {
         index: true,
@@ -197,7 +218,11 @@ const routes: RouteObject[] = [
   },
   {
     path: ROUTE_CONSTANTS.EMPLOYER,
-    element: <LazyComponent component={BaseLayout} userType="employer"/>,
+    element: 
+      <ProtectedRoute>
+        <LazyComponent component={BaseLayout} userType="employer"/>
+      </ProtectedRoute>
+      ,
     children: [
       {
         path: '',
@@ -358,8 +383,12 @@ const routes: RouteObject[] = [
     ]
   },
   {
+    
     path: ROUTE_CONSTANTS.JOB_HUNTER,
-    element: <LazyComponent component={BaseLayout} userType="job-hunter"/>,
+    element: 
+    <ProtectedRoute>
+      <LazyComponent component={BaseLayout} userType="job-hunter"/>
+    </ProtectedRoute>,
     children: [
       {
         path: '',

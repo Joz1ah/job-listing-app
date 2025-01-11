@@ -159,20 +159,24 @@ export const akazaApiAuth = createApiFunction({
           // Set the token as a cookie if the response is successful
           if (data?.data?.token) {
             console.log('setting cookies')
-            Cookies.set('authToken', data.data.token, {
-              path: '/', // Cookie is available site-wide
-              secure: true, // Ensures cookie is sent over HTTPS
-              sameSite: process.env.NODE_ENV == 'development' ? 'Lax' : 'None', // Prevents CSRF attacks
-              domain: 'akaza.xyz'
-              //expires: 7, // Expires in 7 days
-            });
-            Cookies.set('authToken', data.data.token, {
-              path: '/', // Cookie is available site-wide
-              secure: true, // Ensures cookie is sent over HTTPS
-              sameSite: process.env.NODE_ENV == 'development' ? 'Lax' : 'None', // Prevents CSRF attacks
-              domain: 'localhost'
-              //expires: 7, // Expires in 7 days
-            });
+            if(process.env.NODE_ENV == 'development'){
+              Cookies.set('authToken', data.data.token, {
+                path: '/', // Cookie is available site-wide
+                secure: true, // Ensures cookie is sent over HTTPS
+                sameSite: 'Lax', // Prevents CSRF attacks
+                domain: 'localhost'
+                //expires: 7, // Expires in 7 days
+              });
+
+            }else if(process.env.NODE_ENV == 'production'){
+              Cookies.set('authToken', data.data.token, {
+                path: '/', // Cookie is available site-wide
+                secure: true, // Ensures cookie is sent over HTTPS
+                sameSite: 'None', // Prevents CSRF attacks
+                domain: 'akaza.xyz'
+                //expires: 7, // Expires in 7 days
+              });
+            }
             console.log('cookies is set')
           } else {
             console.warn('No token found in the response.');
@@ -352,13 +356,13 @@ export const akazaApiPayment = createApiFunction({
           "amount": payLoad.amount ? payLoad.amount : 1,
           "paymentMethodId": payLoad.paymentMethodId ? payLoad.paymentMethodId : "pm_1QSiGYFCh69SpK2kcccrnWHL",
           "daysTrial": 0,
-          "firstName": "Joshua",
-          "lastName": "Harris",
-          "address": "Cavite",
-          "city": "Kawit",
-          "state": "Region IV-A ",
-          "zip": "1234",
-          "country": "Philippines"
+          "firstName": payLoad.firstName,
+          "lastName": payLoad.lastName,
+          "address": payLoad.address,
+          "city": payLoad.city,
+          "state": payLoad.state,
+          "zip": payLoad.zip,
+          "country": payLoad.country
         },
       }),
     }),

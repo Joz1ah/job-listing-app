@@ -17,7 +17,7 @@ import {
 import { BaseMenu, Footer } from "layouts";
 import { SignOutModal } from "components";
 import { ScrollArea } from "components";
-import { SubscriptionPlan } from "components/context/types";
+import { SubscriptionPlan } from "contexts/types";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 
 type UserType = 'employer' | 'job-hunter' | 'guest';

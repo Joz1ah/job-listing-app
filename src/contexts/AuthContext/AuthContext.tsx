@@ -23,7 +23,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = (newToken: string) => {
     setToken(newToken);
-    Cookies.set('authToken', newToken, { expires: 7, path: '' });
+    //Cookies.set('authToken', newToken, { expires: 7, path: '' });
   };
 
   const logout = () => {
