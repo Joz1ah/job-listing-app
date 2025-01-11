@@ -1721,6 +1721,14 @@ margin-top: 12px;
   font-weight: 400;
   line-height: 143.523%;
   gap: 12px;
+
+  >div{
+    justify-content: center;
+    .link {
+      margin: 0 5px; // Add horizontal spacing around the links
+      text-decoration: underline; // Ensures underline effect on links
+    }
+  }
 }
 
 .password-confirmation-container input[type="checkbox"]{

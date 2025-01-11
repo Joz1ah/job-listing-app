@@ -21,7 +21,7 @@ import { perfectMatch as jobMatches, Match as JobMatch } from 'mockData/jobs-dat
 import { EmployerProvider, JobHunterProvider } from 'components';
 import { BookmarkProvider } from 'components';
 import { Button } from 'components';
-import { Link } from 'react-router-dom';
+//import { Link } from 'react-router-dom';
 import { useAuth } from 'contexts/AuthContext/AuthContext';
 /* import { employerDesktopMenu, employerMobileMenu } from 'mockData/nav-menus';
 import { jobHunterDesktopMenu, jobHunterMobileMenu } from 'mockData/nav-menus';
@@ -38,7 +38,6 @@ import { BaseMenu } from 'layouts';
 import { CoreSkillsTagInput } from 'components';
 import { useMenu } from 'hooks';
 
-//import akazaLogo from 'assets/akazalogo.png';
 import akaza_icon from 'assets/akaza-icon.png';
 import akaza_loading from 'assets/akaza-loading.png';
 import group_people_laptop from 'assets/group-people-laptop.jpg'
@@ -49,18 +48,14 @@ import jobhunter_icon from 'assets/jobhunter-icon.png';
 import employer_icon from 'assets/employer-icon.png';
 import arrow_left_icon from 'assets/Keyboard-arrow-left.svg?url';
 import girl_with_dog_smiling_at_laptop from 'assets/girl-with-dog-smiling-at-laptop.jpg';
-//import powered_by_stripe from 'assets/powered_by_stripe.svg?url';
 import authnet_visa_solution from 'assets/authnet-logo-light.svg?url';
 import authnet_logo from 'assets/authnet-logo2.svg?url';
 
-//import icon_search from 'assets/search.svg?url';
 import _5dollarspermonth from 'assets/5dollarspermonth.svg?url';
 import flame_vector from 'assets/flame-vector.svg?url';
 import orange_check from 'assets/orange-check.svg?url';
 import akazalogo_dark from 'assets/akazalogo-dark.svg?url';
 import close_icon from 'assets/close.svg?url';
-//import eye_off_outline from 'assets/eye-off-outline.svg?url';
-//import google_logo from 'assets/google-logo.svg?url';
 import philippines_flag from 'assets/country-icons/philippines.svg?url';
 import chevron_down from 'assets/chevron-down.svg?url';
 import unchecked_green from 'assets/toggles/unchecked-green.svg?url';
@@ -84,14 +79,9 @@ import discover_icon from 'assets/credit-card-icons/cc_discover.svg?url';
 
 import { Eye, EyeOff } from "lucide-react";
 import button_loading_spinner from 'assets/loading-spinner-orange.svg?url';
-//import { useAppSelector, useAppDispatch } from 'store/store'
-//import { increment } from 'store/counter/counterSlice'
-//import useTranslations from 'i18n/useTranslations'
 
-//import { Button, Counter, Menu, PageMeta } from 'components'
-
-import styles from './landing.module.scss'
-//import StripeTokenizedForm from 'components/payment/stripeFormEmbed';
+import styles from './landing.module.scss';
+import { useErrorModal } from 'contexts/ErrorModalContext/ErrorModalContext';
 
 interface VideoProps {
   src: string;
@@ -210,7 +200,7 @@ const Landing: FC = (): ReactElement => {
   const [selectedModalHeader, setSelectedModalHeader] = useState(1);
   const [modalState, setModalState] = useState(12);
   const [heroState, setHeroState] = useState(1);
-  const [currentSelectedPlan, setCurrentSelectedPlan] = useState(2);
+  const [currentSelectedPlan, setCurrentSelectedPlan] = useState(3);
   const [dataStates, setDataStates] = useState({
     selectedUserType: '',
     email: '',
@@ -704,7 +694,7 @@ const Landing: FC = (): ReactElement => {
                     )}
                 </div>
             </div>
-            <div className={`${styles['terms-and-privacy']}`}>
+            {/*<div className={`${styles['terms-and-privacy']}`}>
                 <input type="checkbox" />
                 <div>
                     <label>I have read, understood and agree to the </label>
@@ -722,7 +712,7 @@ const Landing: FC = (): ReactElement => {
                         Privacy Policy
                     </Link>
                 </div>
-            </div>
+            </div>*/}
             {/* <div className={`${styles['other-signup-option-label']}`}>or sign up with</div>
             <div className={`${styles['social-media-items']} ${styles['noselect']}`}>
                 <div className={`${styles['social-media-button']}`}>
@@ -1868,7 +1858,8 @@ const AuthnetPaymentFullModal = () => {
   const [paymentSubmit] = usePaymentCreateMutation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
-
+  const {showError} = useErrorModal();
+  
   const formatExpirationDate = (value: string): string => {
     const cleaned = value.replace(/[^0-9]/g, ''); // Remove non-numeric characters
     if (cleaned.length > 2) {
@@ -1954,10 +1945,11 @@ const AuthnetPaymentFullModal = () => {
             console.log(res)
             setModalState(modalStates.LOADING)
             setTimeout(()=>{
-              navigate(dataStates.selectedUserType === 'employer' ? '/employer/complete-profile' : '/job-hunter/create-application');
+              navigate(dataStates.selectedUserType === 'employer' ? '/employer/employer-profile' : '/job-hunter/jobhunter-profile');
             },5000)
           }).catch((err) => {
-            alert(JSON.stringify(err))
+            
+            showError(JSON.stringify(err));
             setIsSubmitting(false)
             console.log(err)
           })
@@ -2205,9 +2197,13 @@ const AuthnetPaymentFullModal = () => {
                         <input type="checkbox"></input>
                         <div>
                             <label>I have read, understood and agree to the</label>
-                            <label>Terms of Use</label>
-                            <label>and</label>
-                            <label>Privacy Policy</label>
+                              <a href='https://app.websitepolicies.com/policies/view/azn4i7fg' target="_blank" rel="noopener noreferrer">
+                                <u className={styles['link']}>Terms & Conditions</u>
+                              </a>
+                              <label>and</label> 
+                              <a href='https://app.websitepolicies.com/policies/view/2albjkzj' target="_blank" rel="noopener noreferrer">
+                                <u className={styles['link']}>Privacy Policy.</u>
+                              </a>
                         </div>
                     </div>
                   </div>
@@ -2347,8 +2343,8 @@ const AuthnetPaymentFullModal = () => {
                     <div className={styles['complete-payment-container']}>
                         <label>By Clicking “Complete Payment” you will be charged the total price of </label>
                         <label>
-                          {currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY ? '$5.00' :
-                          currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL ? '$55.00' : ''}
+                          {currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY ? `\$${5*1.096}` :
+                          currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL ? `\$${55*1.096}` : ''}
                           </label>
                     </div>
                     <button type='submit' className={`${styles['button-custom-orange']} ${styles['noselect']}`}>
@@ -2370,9 +2366,11 @@ const AuthnetPaymentFullModal = () => {
           </Formik>
           <div className={`${styles['authnet-footer']}`}>
             <div className={`${styles['authnet-footer-desc']}`}>
+              {/*
                 <label>Akaza{"\u00A0"}</label>
-                <label>integrates seamlessly with Stripe, a leading payment processor, to provide secure and efficient online payment solutions.</label> 
-            </div>
+                <label>integrates seamlessly with Authorize.net, a leading payment processor, to provide secure and efficient online payment solutions.</label> 
+              */}
+              </div>
             <div className={`${styles['authnet-logo-wrapper']}`}>
               <img src={authnet_logo}/>
             </div>
