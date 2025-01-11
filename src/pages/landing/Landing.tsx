@@ -2040,6 +2040,7 @@ const AuthnetPaymentFullModal = () => {
                     error={errors.cardNumber}
                     touched={touched.cardNumber}
                     showIcon={false}
+                    showAlertIcon={false}
                     tooltipContent="N/A"
                   >
                     <Field name="cardNumber">
@@ -2066,6 +2067,7 @@ const AuthnetPaymentFullModal = () => {
                     error={errors.firstName}
                     touched={touched.firstName}
                     showIcon={false}
+                    showAlertIcon={false}
                     tooltipContent="N/A"
                   >
                     <Field name="firstName">
@@ -2092,6 +2094,7 @@ const AuthnetPaymentFullModal = () => {
                     error={errors.lastName}
                     touched={touched.lastName}
                     showIcon={false}
+                    showAlertIcon={false}
                     tooltipContent="N/A"
                   >
                     <Field name="lastName">
@@ -2119,6 +2122,7 @@ const AuthnetPaymentFullModal = () => {
                       error={errors.expiryDate}
                       touched={touched.expiryDate}
                       showIcon={false}
+                      showAlertIcon={false}
                       tooltipContent="N/A"
                     >
                       <Field name="expiryDate">
@@ -2147,6 +2151,7 @@ const AuthnetPaymentFullModal = () => {
                       error={errors.cvv}
                       touched={touched.cvv}
                       showIcon={false}
+                      showAlertIcon={false}
                       tooltipContent="N/A"
                     >
                       <Field name="cvv">
@@ -2174,6 +2179,7 @@ const AuthnetPaymentFullModal = () => {
                       error={errors.email}
                       touched={touched.email}
                       showIcon={false}
+                      showAlertIcon={false}
                       tooltipContent="Your contact email address"
                     >
                       <Field name="email">
@@ -2217,6 +2223,7 @@ const AuthnetPaymentFullModal = () => {
                     error={errors.billingAddress}
                     touched={touched.billingAddress}
                     showIcon={false}
+                    showAlertIcon={false}
                     tooltipContent="The address linked to your payment method"
                   >
                     <Field name="billingAddress">
@@ -2243,6 +2250,7 @@ const AuthnetPaymentFullModal = () => {
                   error={errors.stateProvince}
                   touched={touched.stateProvince}
                   showIcon={false}
+                  showAlertIcon={false}
                   tooltipContent="N/A"
                 >
                   <Field name="stateProvince">
@@ -2269,6 +2277,7 @@ const AuthnetPaymentFullModal = () => {
                   error={errors.city}
                   touched={touched.city}
                   showIcon={false}
+                  showAlertIcon={false}
                   tooltipContent="City of residence"
                 >
                   <Field name="city">
@@ -2295,6 +2304,7 @@ const AuthnetPaymentFullModal = () => {
                   error={errors.country}
                   touched={touched.country}
                   showIcon={false}
+                  showAlertIcon={false}
                   tooltipContent="N/A"
                 >
                   <Field name="country">
@@ -2321,6 +2331,7 @@ const AuthnetPaymentFullModal = () => {
                   error={errors.zipPostalCode}
                   touched={touched.zipPostalCode}
                   showIcon={false}
+                  showAlertIcon={false}
                   tooltipContent="N/A"
                 >
                   <Field name="zipPostalCode">
