@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, Link, useLocation } from "react-router-dom";
 import { Button } from "components/ui/shadcn/buttons";
 import { ChevronDown, Info, Plus, ChevronUp } from "lucide-react";
 import { NotificationFeed } from "components";
@@ -195,9 +195,9 @@ const BaseMenu: FC<MenuProps> = ({
                   </NavLink>
                 </li>
                 <li className="hover:text-[#F5722E]">
-                  <NavLink to='faq' onClick={handleNavLinkClick}>
+                  <Link to='https://support.akaza.io/' onClick={handleNavLinkClick}>
                     FAQ
-                  </NavLink>
+                  </Link>
                 </li>
                 {isAuthenticated && isEmployer && (
                   <li>
