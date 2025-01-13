@@ -140,12 +140,12 @@ const GeneralSettings: FC = () => {
     }
   };
 
-  const tooltips = {
-    googleAccount: /* "Link or unlink your Google account to easily manage your profile and settings seamlessly." */"Currently not available",
+  /* const tooltips = {
+    googleAccount: "Link or unlink your Google account to easily manage your profile and settings seamlessly.",
     theme: "Switch between light and dark mode for your preference",
     notifications: "Enable or disable push notifications for better experience.",
     timezone: "Select your preferred timezone. Times across the application will be displayed according to this setting."
-  } as const;
+  } as const; */
 
   return (
     <div className="w-full">
@@ -224,100 +224,108 @@ const GeneralSettings: FC = () => {
       </div>
 
       {/* Full Width Sections */}
-      <div className="space-y-12 pt-12">
-        {/* Google Account Section */}
-        <div className="space-y-3 opacity-50">
-          <div className="flex items-center gap-1">
-            <h3 className="text-white text-2xl font-normal flex items-center">
-              <div className="flex items-center">
-                <img 
-                  src={googleLogo}
-                  alt="G"
-                  className="w-5 h-5"
-                />
-                <span>oogle Account</span>
+            <div className="space-y-12 pt-12">
+              {/* Google Account Section */}
+              <div className="space-y-3 opacity-50">
+                <Tooltip content="This feature is coming soon.">
+                  <div>
+                    <div className="flex items-center gap-1">
+                      <h3 className="text-white text-2xl font-normal flex items-center">
+                        <div className="flex items-center">
+                          <img 
+                            src={googleLogo}
+                            alt="G"
+                            className="w-5 h-5"
+                          />
+                          <span>oogle Account</span>
+                        </div>
+                      </h3>
+                      {/* <Tooltip content={tooltips.googleAccount}> */}
+                        <Info className="w-3 h-3 text-[#2D3A41] fill-white mb-2" />
+                      {/* </Tooltip> */}
+                    </div>
+                    <div className="flex items-center gap-2 opacity-50 cursor-not-allowed">
+                      <span className="text-white text-[15px]">
+                        Unlink your Google Account
+                      </span>
+                      <button className="px-3 py-1 border border-[#E53835] text-[#E53835] text-sm rounded transition-colors duration-200 cursor-not-allowed"> {/* hover:bg-[#E53835] hover:text-white */}
+                        Unlink
+                      </button>
+                    </div>
+                  </div>
+                </Tooltip>
               </div>
-            </h3>
-            <Tooltip content={tooltips.googleAccount}>
-              <Info className="w-3 h-3 text-[#2D3A41] fill-white mb-2" />
-            </Tooltip>
-          </div>
-          <div className="flex items-center gap-2 opacity-50 cursor-not-allowed">
-            <span className="text-white text-[15px]">
-              Unlink your Google Account
-            </span>
-            <button className="px-3 py-1 border border-[#E53835] text-[#E53835] text-sm rounded hover:bg-[#E53835] hover:text-white transition-colors duration-200 cursor-not-allowed">
-              Unlink
-            </button>
-          </div>
-        </div>
-
-        {/* Theme Section */}
-        <div className="space-y-3 opacity-50">
-          <div className="flex items-center gap-1">
-            <h3 className="text-white text-2xl font-normal flex items-center">
-              Theme
-            </h3>
-            <Tooltip content="Theme selection is currently disabled">
-              <Info className="w-3 h-3 text-[#2D3A41] fill-white mb-2" />
-            </Tooltip>
-          </div>
-          <div className="flex items-center gap-12">
-            {THEME_OPTIONS.map(({ value, label }) => (
-              <div
-                key={value}
-                className="flex items-center cursor-not-allowed"
-              >
-                <span className="relative flex items-center justify-center w-4 h-4">
-                  <span
-                    className={`absolute w-4 h-4 rounded-full border-2 ${
-                      value === "dark" ? "border-[#F5722E]" : "border-white"
-                    }`}
-                  />
-                  <span
-                    className={`w-2 h-2 rounded-full ${
-                      value === "dark" ? "bg-[#F5722E]" : "bg-transparent"
-                    }`}
-                  />
-                </span>
-                <span className="text-white text-sm ml-2">{label}</span>
+      
+              {/* Theme Section */}
+              <div className="space-y-3 opacity-50">
+                <Tooltip content="This feature is coming soon.">
+                  <div>
+                    <div className="flex items-center gap-1">
+                      <h3 className="text-white text-2xl font-normal flex items-center">
+                        Theme
+                      </h3>
+                      {/* <Tooltip content="Theme selection is currently disabled"> */}
+                        <Info className="w-3 h-3 text-[#2D3A41] fill-white mb-2" />
+                      {/* </Tooltip> */}
+                    </div>
+                    <div className="flex items-center gap-12">
+                      {THEME_OPTIONS.map(({ value, label }) => (
+                        <div
+                          key={value}
+                          className="flex items-center cursor-not-allowed"
+                        >
+                          <span className="relative flex items-center justify-center w-4 h-4">
+                            <span
+                              className={`absolute w-4 h-4 rounded-full border-2 ${
+                                value === "dark" ? "border-[#F5722E]" : "border-white"
+                              }`}
+                            />
+                            <span
+                              className={`w-2 h-2 rounded-full ${
+                                value === "dark" ? "bg-[#F5722E]" : "bg-transparent"
+                              }`}
+                            />
+                          </span>
+                          <span className="text-white text-sm ml-2">{label}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </Tooltip>
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Email Section */}
-        <div className="space-y-3 w-full md:w-[450px]">
-          <h3 className="text-white text-[24px] font-normal">
-            Registered Email Address
-          </h3>
-          <div className="flex flex-col sm:flex-row items-start gap-2">
-            <div className="w-full sm:flex-1">
-              <FormField label="Email address">
-                <Input
-                  type="email"
-                  value={isEditingEmail ? tempEmail : email}
-                  onChange={(e) => isEditingEmail && setTempEmail(e.target.value)}
-                  disabled={!isEditingEmail}
-                  className={cn(
-                    "w-full bg-transparent border-[#AEADAD] h-[45px] border-2 focus:border-[#F5722E] text-white",
-                    !isEditingEmail && "opacity-70"
-                  )}
-                  placeholder="Enter email address"
-                />
-              </FormField>
+      
+              {/* Email Section */}
+              <div className="space-y-3 w-full md:w-[450px]">
+                <h3 className="text-white text-[24px] font-normal">
+                  Registered Email Address
+                </h3>
+                <div className="flex flex-col sm:flex-row items-start gap-2">
+                  <div className="w-full sm:flex-1">
+                    <FormField label="Email address">
+                      <Input
+                        type="email"
+                        value={isEditingEmail ? tempEmail : email}
+                        onChange={(e) => isEditingEmail && setTempEmail(e.target.value)}
+                        disabled={!isEditingEmail}
+                        className={cn(
+                          "w-full bg-transparent border-[#AEADAD] h-[45px] border-2 focus:border-[#F5722E] text-white",
+                          !isEditingEmail && "opacity-70"
+                        )}
+                        placeholder="Enter email address"
+                      />
+                    </FormField>
+                  </div>
+                  <button 
+                    onClick={handleEmailEdit}
+                    className="w-full sm:w-[80px] mt-[18px] px-3 py-2 bg-transparent border border-[#F5722E] text-[#F5722E] text-sm rounded hover:bg-[#F5722E] hover:text-white transition-colors duration-200"
+                  >
+                    {isEditingEmail ? "Update" : "Change"}
+                  </button>
+                </div>
+              </div>
             </div>
-            <button 
-              onClick={handleEmailEdit}
-              className="w-full sm:w-[80px] mt-[18px] px-3 py-2 bg-transparent border border-[#F5722E] text-[#F5722E] text-sm rounded hover:bg-[#F5722E] hover:text-white transition-colors duration-200"
-            >
-              {isEditingEmail ? "Update" : "Change"}
-            </button>
           </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export { GeneralSettings };
+        );
+      };
+      
+      export { GeneralSettings };

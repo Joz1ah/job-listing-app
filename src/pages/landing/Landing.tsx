@@ -28,7 +28,7 @@ import { jobHunterDesktopMenu, jobHunterMobileMenu } from 'mockData/nav-menus';
 import { SignOutModal } from 'components'; */
 import { Outlet, useMatch } from 'react-router-dom';
 import { Navigate } from 'react-router-dom';
-import { Input, InputField } from "components";
+import { Input, InputField, PhoneInputLanding, CountrySelect } from "components";
 
 import video1 from 'assets/mp4/Landing-Page-hero-1.mp4';
 import video2 from 'assets/mp4/video-conference-call-1.mp4';
@@ -56,8 +56,8 @@ import flame_vector from 'assets/flame-vector.svg?url';
 import orange_check from 'assets/orange-check.svg?url';
 import akazalogo_dark from 'assets/akazalogo-dark.svg?url';
 import close_icon from 'assets/close.svg?url';
-import philippines_flag from 'assets/country-icons/philippines.svg?url';
-import chevron_down from 'assets/chevron-down.svg?url';
+/* import philippines_flag from 'assets/country-icons/philippines.svg?url';
+import chevron_down from 'assets/chevron-down.svg?url'; */
 import unchecked_green from 'assets/toggles/unchecked-green.svg?url';
 import checked_green from 'assets/toggles/checked-green.svg?url';
 import sparkle_icon from 'assets/sparkle-icon.svg?url';
@@ -1028,51 +1028,142 @@ const OTPSignUp = () => {
 
 const MobileCountrySignUp = () => {
   const buttonNext = useRef<HTMLButtonElement>(null);
-  const handleContinue = () => {
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [country, setCountry] = useState('');
+  const [phoneError, setPhoneError] = useState('');
+  const [countryError, setCountryError] = useState('');
+
+  const validatePhoneNumber = (phone: string): boolean => {
+    // Remove all non-digit characters
+    const cleanPhone = phone.replace(/\D/g, '');
+    
+    if (!cleanPhone) {
+      setPhoneError('This field is required');
+      return false;
+    }
+    
+    if (cleanPhone.length < 8 || cleanPhone.length > 15) {
+      setPhoneError('Phone number must be between 8 and 15 digits');
+      return false;
+    }
+    
+    setPhoneError('');
+    return true;
+  };
+
+  const validateForm = () => {
+    const isPhoneValid = validatePhoneNumber(phoneNumber);
+    let isCountryValid = true;
+
+    if (!country) {
+      setCountryError('This field is required');
+      isCountryValid = false;
+    } else {
+      setCountryError('');
+    }
+
+    return isPhoneValid && isCountryValid;
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setPhoneNumber(newValue);
+    if (phoneError) {
+      // Clear error only if there's actual input
+      if (newValue.trim()) {
+        validatePhoneNumber(newValue);
+      } else {
+        setPhoneError('');
+      }
+    }
+  };
+
+  const handleCountryChange = (value: string) => {
+    setCountry(value);
+    if (countryError) setCountryError('');
+    // Revalidate phone number when country changes
+    if (phoneNumber) {
+      validatePhoneNumber(phoneNumber);
+    }
+  };
+
+  useEffect(() => {
     if (buttonNext.current) {
       buttonNext.current.onclick = () => {
-        setSelectedModalHeader(2)
-        setModalState(modalStates.SIGNUP_STEP5)
+        if (validateForm()) {
+          setSelectedModalHeader(2);
+          setModalState(modalStates.SIGNUP_STEP5);
+        }
       };
     }
-  }
+  }, [phoneNumber, country]);
 
-  useEffect(handleContinue, []);
-  return(
-    <div id="step4_signup" className={`${styles['modal-content']}`} hidden={modalState !== modalStates.SIGNUP_STEP4}>
-        <div className={`${styles['country-mobtel-container']}`}>
-            <div className={`${styles['title-desc']}`}>
-                The information you provide will only be used for internal and verification purposes.
-            </div>
-            <div className={`${styles['input-fields-container']}`}>
-                <div className={`${styles['input-container']}`}>
-                    <div className={`${styles['input-title-label-container']}`}>
-                        <label className={`${styles['input-title-label']}`}>Mobile Number</label>
-                        <label className={`${styles['input-title-label']}`}>*</label>
-                    </div>
-                    <input type="text" placeholder="Mobile Number" inputMode="numeric"></input>
-                    <div className={`${styles['input-image-container']}`}>
-                        <img src={philippines_flag}></img>
-                        <img src={chevron_down}></img>
-                    </div>
-                </div>
-                <div className={`${styles['input-container']}`}>
-                    <div className={`${styles['input-title-label-container']}`}>
-                        <label className={`${styles['input-title-label']}`}>Country</label>
-                        <label className={`${styles['input-title-label']}`}>*</label>
-                    </div>
-                    <input type="text" placeholder="Country"></input>
-                    <img src={chevron_down}></img>
-                </div>
-            </div>
-            <div className={`${styles['action-buttons']}`}>
-                <button id="btn_signup_step4_previous" className={`${styles['button-custom-basic']}`}>Previous</button>
-                <button ref={buttonNext} className={`${styles['button-custom-orange']}`}>Next</button>
-            </div>
+  return (
+    <div id="step4_signup" className={styles['modal-content']} hidden={modalState !== modalStates.SIGNUP_STEP4}>
+      <div className={styles['country-mobtel-container']}>
+        <div className={styles['title-desc']}>
+          The information you provide will only be used for internal and verification purposes.
         </div>
+
+        <div className={styles['input-fields-container']}>
+          {/* Phone Number Input */}
+          <div className={styles['input-container']}>
+            <div className={styles['input-title-label-container']}>
+              <label className={styles['input-title-label']}>Mobile Number</label>
+              <label className={styles['input-title-label']}>*</label>
+            </div>
+            <PhoneInputLanding
+              name="phoneNumber"
+              value={phoneNumber}
+              onChange={handlePhoneChange}
+              defaultCountry="PH"
+              className={styles['phone-input-wrapper']}
+              onCountryChange={(country) => {
+                handleCountryChange(country || '');
+              }}
+            />
+            {phoneError && (
+              <div className="absolute text-red-500 text-[10px] mt-1 font-light bottom-0 right-0">
+                {phoneError}
+              </div>
+            )}
+          </div>
+
+          {/* Country Input */}
+          <div className={styles['input-container']}>
+            <div className={styles['input-title-label-container']}>
+              <label className={styles['input-title-label']}>Country</label>
+              <label className={styles['input-title-label']}>*</label>
+            </div>
+            <div className={styles['input-wrapper']}>
+              <CountrySelect
+                value={country}
+                onChange={handleCountryChange}
+                error={countryError}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className={styles['action-buttons']}>
+          <button 
+            onClick={() => setModalState(modalStates.SIGNUP_STEP3)} 
+            className={styles['button-custom-basic']}
+          >
+            Previous
+          </button>
+          <button 
+            ref={buttonNext} 
+            className={styles['button-custom-orange']}
+          >
+            Next
+          </button>
+        </div>
+      </div>
     </div>
-  )
-}
+  );
+};
 
 const employerInfoSchema = Yup.object().shape({
   firstName: Yup.string()

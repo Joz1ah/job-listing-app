@@ -8,7 +8,7 @@ interface EmptyStateProps {
   onExploreClick?: () => void;
 }
 
-const PerfectMatchEmptyState: React.FC<EmptyStateProps> = ({ onExploreClick }) => (
+const PerfectMatchEmptyState: React.FC<EmptyStateProps> = ({ /* onExploreClick  */}) => (
   <div className="w-full flex flex-col items-center justify-center py-16 px-4">
     <div className="relative mb-6">
       <img src={emptyStateFeed} alt="Empty state" />
@@ -25,20 +25,18 @@ const PerfectMatchEmptyState: React.FC<EmptyStateProps> = ({ onExploreClick }) =
 
       <div className="space-y-4">
         <NavLink to="/job-hunter/edit-application">
-          <Button 
-            className="bg-[#F5722E] hover:bg-orange-600 text-white text-[13px] font-normal rounded-sm w-[180px] h-[24px] max-w-xs p-0"
-          >
+          <Button className="bg-[#F5722E] hover:bg-[#F5722E]/90 rounded-sm items-center p-0 w-[200px]">
             Update Application Card
           </Button>
         </NavLink>
         
-        <Button 
+        {/* <Button 
           variant="link" 
           onClick={onExploreClick}
           className="text-[#F5722E] hover:text-orange-400 underline font-light w-full"
         >
           Explore Other Opportunities
-        </Button>
+        </Button> */}
       </div>
     </div>
   </div>
@@ -61,9 +59,7 @@ const OtherOpportunitiesEmptyState: React.FC = () => (
 
       <div className="space-y-4">
         <NavLink to="/job-hunter/edit-application">
-          <Button 
-            className="bg-[#F5722E] hover:bg-orange-600 text-white text-[13px] font-normal rounded-sm w-[180px] h-[24px] max-w-xs p-0"
-          >
+          <Button className="bg-[#F5722E] hover:bg-[#F5722E]/90 rounded-sm items-center p-0 w-[200px]">
             Update Application Card
           </Button>
         </NavLink>

@@ -95,7 +95,7 @@ const SubscriptionDialog: React.FC = () => {
           Manage
         </Button>
       </DialogTrigger>
-      <DialogContent className="bg-[#263238] border-none max-w-md p-6">
+      <DialogContent className="bg-[#263238] border-none max-w-md p-6 [&_button>svg]:text-white">
         <DialogHeader className="relative">
           <DialogTitle asChild>
             <div className="mb-4">
