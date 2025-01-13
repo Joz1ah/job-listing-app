@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useState, useEffect } from "react";
 import { ChevronLeft } from "lucide-react";
 import { Input, Button, InputField } from "components";
 import { NavLink } from "react-router-dom";
@@ -10,6 +10,8 @@ import { selectOptions } from "mockData/app-form-options";
 import { AppCardPreview } from "features/employer";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import { useJobHunterProfileMutation } from "api/akaza/akazaAPI";
+import { useContext } from "react";
+import { KeywordMappingContext } from "contexts/KeyWordMappingContext";
 
 import {
   LanguageTagInput,
@@ -101,17 +103,33 @@ const LoadingOverlay: FC = () => (
   </div>
 );
 
+interface JobHunterSkill {
+  id: string;
+  keyword: string;
+  type: "core" | "interpersonal" | "certification";
+}
+
 const EditApplicationCard: FC = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPreview, setShowPreview] = useState<boolean>(false);
   const { user, refreshUser } = useAuth();  // Add refreshUser
   const [submitJobHunterProfile] = useJobHunterProfileMutation();
+  const { keywordToIdMap, addMapping } = useContext(KeywordMappingContext);
 
   // Parse employment type string into array
   const employmentTypes = user?.data?.user?.relatedDetails?.employmentType
     ? user.data.user.relatedDetails.employmentType.split(',')
     : [];
+
+  
+    useEffect(() => {
+      if (user?.data?.user?.relatedDetails?.JobHunterSkill) {
+        user.data.user.relatedDetails.JobHunterSkill.forEach((skill: JobHunterSkill) => {
+          addMapping(skill.keyword, skill.id);
+        });
+      }
+    }, [user, addMapping]);
 
   const formik = useFormik<FormData>({
     initialValues: {
@@ -128,19 +146,19 @@ const EditApplicationCard: FC = () => {
       salaryRange: user?.data?.user?.relatedDetails?.salaryRange || "",
       yearsOfExperience: user?.data?.user?.relatedDetails?.yearsOfExperience || "",
       coreSkills: user?.data?.user?.relatedDetails?.JobHunterSkill
-        ?.filter((skill: JobHunterSkill) => skill.type === "core")
-        ?.map((skill: JobHunterSkill) => skill.keyword) || [],
-      interpersonalSkills: user?.data?.user?.relatedDetails?.JobHunterSkill
-        ?.filter((skill: JobHunterSkill) => skill.type === "interpersonal")
-        ?.map((skill: JobHunterSkill) => skill.keyword) || [],
+      ?.filter((skill: JobHunterSkill) => skill.type === "core")
+      ?.map((skill: JobHunterSkill) => skill.keyword) || [],
+    interpersonalSkills: user?.data?.user?.relatedDetails?.JobHunterSkill
+      ?.filter((skill: JobHunterSkill) => skill.type === "interpersonal")
+      ?.map((skill: JobHunterSkill) => skill.keyword) || [],
       education: user?.data?.user?.relatedDetails?.education || "",
       languages: user?.data?.user?.relatedDetails?.language
         ? [user.data.user.relatedDetails.language]
         : [],
       country: user?.data?.user?.relatedDetails?.country || "",
       certifications: user?.data?.user?.relatedDetails?.JobHunterSkill
-        ?.filter((skill: JobHunterSkill) => skill.type === "certification")
-        ?.map((skill: JobHunterSkill) => skill.keyword) || [],
+      ?.filter((skill: JobHunterSkill) => skill.type === "certification")
+      ?.map((skill: JobHunterSkill) => skill.keyword) || [],
     },
     validationSchema,
     validateOnMount: true,
@@ -203,13 +221,26 @@ const EditApplicationCard: FC = () => {
         { label: "Vietnamese", value: "vi" }
       ];
 
-      // Format language array to comma-separated string
-      const formattedLanguages = values.languages.map(lang => {
-        const languageOption = languages.find(opt => opt.value === lang);
-        return languageOption?.label || lang;
-      }).join(',');
+      // Transform keywords to IDs during submission
+      const coreSkillIds = values.coreSkills
+        .map(keyword => keywordToIdMap[keyword])
+        .filter(Boolean);
 
-      // Format employment types to comma-separated string
+      const interpersonalSkillIds = values.interpersonalSkills
+        .map(keyword => keywordToIdMap[keyword])
+        .filter(Boolean);
+
+      const certificationIds = values.certifications
+        .map(keyword => keywordToIdMap[keyword])
+        .filter(Boolean);
+
+        const formattedLanguages = values.languages
+        .map(lang => {
+          const languageOption = languages.find(opt => opt.value === lang);
+          return languageOption?.label || lang;
+        })
+        .join(',');
+      
       const formattedEmploymentTypes = values.employmentType.join(',');
       
       const payload = {
@@ -223,9 +254,9 @@ const EditApplicationCard: FC = () => {
         employmentType: formattedEmploymentTypes,
         education: values.education,
         yearsOfExperience: values.yearsOfExperience || "less-than-1",
-        core: values.coreSkills,
-        interpersonal: values.interpersonalSkills,
-        certification: values.certifications,
+        core: coreSkillIds,
+        interpersonal: interpersonalSkillIds,
+        certification: certificationIds,
         salaryRange: values.salaryRange,
         country: values.country
       };

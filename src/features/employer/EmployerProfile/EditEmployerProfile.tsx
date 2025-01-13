@@ -194,7 +194,7 @@ const EditEmployerProfile: FC = () => {
   
             <h1 className="flex-1 text-center text-xl md:text-[32px] pt-6 font-normal text-[#F5722E]">
               <span className="inline-flex items-center gap-2 justify-center">
-                Complete Your Company Profile
+                Edit Your Company Profile
               </span>
             </h1>
           </div>

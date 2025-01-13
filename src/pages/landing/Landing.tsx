@@ -1478,7 +1478,7 @@ const SubscriptionPlanSelection = () =>{
             localStorage.setItem('userType', userType);
             setModalState(modalStates.LOADING);
             setTimeout(() => {
-              navigate(userType === 'employer' ? '/employer/employer/employer-profile' : '/job-hunter/jobhunter-profile');
+              navigate(userType === 'employer' ? '/employer/employer-profile' : '/job-hunter/jobhunter-profile');
             }, 5000);
           }
         } catch (error) {

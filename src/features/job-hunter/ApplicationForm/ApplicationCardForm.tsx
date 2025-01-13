@@ -4,6 +4,8 @@ import { Input, Button, InputField } from "components";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import saveChanges from "images/save-changes.svg?url";
+import { useContext } from "react";
+import { KeywordMappingContext } from "contexts/KeyWordMappingContext";
 
 import { selectOptions } from "mockData/app-form-options";
 
@@ -112,6 +114,7 @@ const ApplicationCardForm: FC = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPreview, setShowPreview] = useState<boolean>(false);
+  const { keywordToIdMap } = useContext(KeywordMappingContext);
 
   const [submitJobHunterProfile ] = useJobHunterProfileMutation();
   const { refreshUser, user } = useAuth();
@@ -183,12 +186,23 @@ const ApplicationCardForm: FC = () => {
       ];
 
       // Format language array to comma-separated string
-      const formattedLanguages = values.languages.map(lang => {
-        const languageOption = languages.find(opt => opt.value === lang);
-        return languageOption?.label || lang;
-      }).join(',');
+      // Transform keywords to IDs during submission
+      const coreSkillIds = values.coreSkills
+        .map(keyword => keywordToIdMap[keyword] || keyword);
 
-      // Format employment types to comma-separated string
+      const interpersonalSkillIds = values.interpersonalSkills
+        .map(keyword => keywordToIdMap[keyword] || keyword);
+
+      const certificationIds = values.certifications
+        .map(keyword => keywordToIdMap[keyword] || keyword);
+
+        const formattedLanguages = values.languages
+        .map(lang => {
+          const languageOption = languages.find(opt => opt.value === lang);
+          return languageOption?.label || lang;
+        })
+        .join(',');
+      
       const formattedEmploymentTypes = values.employmentType.join(',');
       
       const payload = {
@@ -202,18 +216,15 @@ const ApplicationCardForm: FC = () => {
         employmentType: formattedEmploymentTypes,
         education: values.education,
         yearsOfExperience: values.yearsOfExperience || "less-than-1",
-        core: values.coreSkills,
-        interpersonal: values.interpersonalSkills,
-        certification: values.certifications,
+        core: coreSkillIds,           // Now using IDs
+        interpersonal: interpersonalSkillIds, // Now using IDs
+        certification: certificationIds,    // Now using IDs
         salaryRange: values.salaryRange,
         country: values.country
       };
   
       await submitJobHunterProfile(payload).unwrap();
-      
-      // Refresh user data in auth context
       await refreshUser();
-      
       navigate("/job-hunter/feed");
     } catch (error) {
       console.error("Error submitting profile:", error);
@@ -251,7 +262,7 @@ const ApplicationCardForm: FC = () => {
     
               <h1 className="flex-1 text-center text-xl md:text-[32px] pt-6 font-normal text-[#F5722E]">
                 <span className="inline-flex items-center gap-2 justify-center">
-                  Edit Your Application Card
+                  Create Your Application Card
                 </span>
               </h1>
             </div>
