@@ -4,6 +4,8 @@ import { ROUTE_CONSTANTS } from 'constants/routeConstants'
 import spinner_loading_fallback from 'assets/images/spinner-loading-akaza.svg?url'
 import { useAuth } from 'contexts/AuthContext/AuthContext';
 
+import { IntercomProvider } from 'contexts/Intercom/IntercomContext';
+
 // Common page imports
 import { Home } from 'pages'
 import { isServer } from 'utils';
@@ -136,12 +138,18 @@ const RedirectTo = ({ to }: { to: string }) => {
   return <Navigate to={to} replace />;
 };
 
+const Intercom = ({ children }: { children: React.ReactNode }) => {
+  
+  return <IntercomProvider>{children}</IntercomProvider>
+}
+
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  if(isServer) return; //Add handling for SSR as the code below causes issues on redirect
   const { isAuthenticated, isLoading } = useAuth();
   if(isLoading)
     return <></>
   else
-    return isAuthenticated ? children : <RedirectTo to={ROUTE_CONSTANTS.LANDING} />;
+    return isAuthenticated ? <Intercom>{children}</Intercom> : <RedirectTo to={ROUTE_CONSTANTS.LANDING} />;
 };
 
 const DashboardRedirectRoute = ({ children }: { children: React.ReactNode }) => {

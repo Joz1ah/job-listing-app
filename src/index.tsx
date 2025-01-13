@@ -5,7 +5,6 @@ import { HelmetProvider } from 'react-helmet-async'
 import { loadableReady } from '@loadable/component'
 import { AuthProvider } from 'contexts/AuthContext/AuthContext';
 import { ErrorModalProvider } from 'contexts/ErrorModalContext/ErrorModalContext';
-import { IntercomProvider } from 'contexts/Intercom/IntercomContext';
 
 import { App } from './App'
 
@@ -74,9 +73,7 @@ const indexJSX = (
         <HelmetProvider>
           <AuthProvider>
               <BrowserRouter>
-                  <IntercomProvider>
                     <App />
-                  </IntercomProvider>
               </BrowserRouter>
             </AuthProvider>
         </HelmetProvider>
