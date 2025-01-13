@@ -777,38 +777,58 @@ const OTPSignUp = () => {
   const ib4 = useRef<HTMLInputElement>(null);
   const ib5 = useRef<HTMLInputElement>(null);
   const ib6 = useRef<HTMLInputElement>(null);
+  const { showError } = useErrorModal();
   
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = async (values: AutoLoginFormValues,) => {
+  const handleLogin = async (values: AutoLoginFormValues) => {
     try {
       await loginSubmit(values)
-      .unwrap()
-      .then((res) => {
-        setDataStates({...dataStates, userId: res.data.user.id})
-      })
-    }
-    catch (err: any) {
+        .unwrap()
+        .then((res) => {
+          setDataStates({ ...dataStates, userId: res.data.user.id })
+        })
+    } catch (err: any) {
       console.log(err);
     }
-  }
+  };
 
-  const handleOnInput = (ref:any, nextRef:any) =>{
+  const handleOnInput = (ref: any, nextRef: any) => {
     let currentInput = ref.current;
     currentInput.value = currentInput.value.replace(/[^0-9]/g, '');
 
-    if(currentInput.value.length > currentInput.maxLength)
-       currentInput.value = currentInput.value.slice(0, currentInput.maxLength);
-    if(currentInput.value.length >= currentInput.maxLength)
+    if (currentInput.value.length > currentInput.maxLength)
+      currentInput.value = currentInput.value.slice(0, currentInput.maxLength);
+    if (currentInput.value.length >= currentInput.maxLength)
       nextRef.current.focus();
-  }
+  };
 
-  const handleOnKeyDown = (e:any, ref:any, refFocus:any) =>{
-    if(e.keyCode == 8){
+  const handleOnKeyDown = (e: any, ref: any, refFocus: any) => {
+    if (e.keyCode === 8) {
       ref.current.value = '';
       refFocus.current.focus();
     }
-  }
+  };
+
+  const handleOnPaste = (e: React.ClipboardEvent, refArray: any[]) => {
+    const pasteData = e.clipboardData.getData("Text").replace(/[^0-9]/g, '');
+    if (pasteData.length === 6) {
+      pasteData.split('').forEach((digit, index) => {
+        if (refArray[index].current) {
+          refArray[index].current.value = digit;
+        }
+      });
+    } else {
+      // If pasted OTP is not of 6 digits, you can show an error or clear fields
+      alert('Please paste a valid 6-digit OTP.');
+      refArray.forEach(ref => {
+        if (ref.current) {
+          ref.current.value = '';
+        }
+      });
+    }
+    e.preventDefault(); // Prevent default paste behavior
+  };
 
   const handleContinue = () => {
     if (buttonContinue.current) {
@@ -828,37 +848,28 @@ const OTPSignUp = () => {
 
         try {
           setIsLoading(true);
-          
+
           await submitOTP({
             email: dataStates.email,
             otp: otp
-          }).unwrap().then(()=>{
-            handleLogin({email: tempLoginEmail, password: tempLoginPassword}).then(
-              ()=>{
-                  setModalState(modalStates.SIGNUP_CONGRATULATIONS);
+          }).unwrap().then(() => {
+            handleLogin({ email: tempLoginEmail, password: tempLoginPassword }).then(
+              () => {
+                setModalState(modalStates.SIGNUP_CONGRATULATIONS);
               }
-          )})
-          
+            )
+          });
+
           setTimeout(() => {
             setModalState(modalStates.SIGNUP_CONGRATULATIONS);
           }, 1000);
-          
+
         } catch (err: any) {
           console.log('OTP Error details:', err); // Log full error object
-          
-          if (err.status === 'FETCH_ERROR' || err.originalStatus === 400) {
-            alert('Invalid OTP. Please try again.');
-          } else if (err.status === 408 || err.originalStatus === 408) {
-            alert('OTP has expired. Please request a new one.');
-          } else if (err.status == 400 && err?.errors && err?.message){
-            alert(err.status + err.message);
-            console.error(err);
+          if (err?.data?.message) {
+            showError(err?.data?.errors, err?.data?.message)
           }
-          else {
-            alert('Something went wrong. Please try again later.');
-            console.error('Unexpected error structure:', err);
-          }
-          
+
           // Clear OTP fields on error
           [ib1, ib2, ib3, ib4, ib5, ib6].forEach(ref => {
             if (ref.current) {
@@ -873,7 +884,7 @@ const OTPSignUp = () => {
         }
       };
     }
-  }
+  };
 
   useEffect(handleContinue, []);
 
@@ -910,18 +921,18 @@ const OTPSignUp = () => {
         return prevCount - 1;
       });
     }, 1000);
-  
+
     // Cleanup timer on component unmount
     return () => clearInterval(timer);
   }, [countdown]);
-  
+
   const handleResendClick = async () => {
     try {
       // Add your resend OTP logic here
       await resendOTP();
-      
+
       setCountdown(180);
-      
+
     } catch (error) {
       // Handle error
       console.error('Failed to resend OTP:', error);
@@ -946,44 +957,44 @@ const OTPSignUp = () => {
     const seconds = timeInSeconds % 60;
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
-  
+
   return (
     <div id="step3_signup" className={`${styles['modal-content']}`} hidden={modalState !== modalStates.SIGNUP_STEP3}>
       <div className={`${styles['verify-container']}`}>
         <div className={`${styles.desc1}`}>Verify with One Time Password</div>
         <div className={`${styles.desc2}`}>To ensure your security, please enter the One - Time Password</div>
         <div className={`${styles.desc2}`}>(OTP) sent to your registered email below.</div>
-        
+
         <div className={`${styles['otp-input-fields']}`}>
-            <div><input onInput={()=>handleOnInput(ib1,ib2)} onKeyDown={(e)=>handleOnKeyDown(e, ib1, ib1)} ref={ib1} type="number" pattern="[0-9]*" maxLength={1} /></div>
-            <div><input onInput={()=>handleOnInput(ib2,ib3)} onKeyDown={(e)=>handleOnKeyDown(e, ib2, ib1)} ref={ib2} type="number" pattern="[0-9]*" maxLength={1} /></div>
-            <div><input onInput={()=>handleOnInput(ib3,ib4)} onKeyDown={(e)=>handleOnKeyDown(e, ib3, ib2)} ref={ib3} type="number" pattern="[0-9]*" maxLength={1} /></div>
-            <div><input onInput={()=>handleOnInput(ib4,ib5)} onKeyDown={(e)=>handleOnKeyDown(e, ib4, ib3)} ref={ib4} type="number" pattern="[0-9]*" maxLength={1} /></div>
-            <div><input onInput={()=>handleOnInput(ib5,ib6)} onKeyDown={(e)=>handleOnKeyDown(e, ib5, ib4)} ref={ib5} type="number" pattern="[0-9]*" maxLength={1} /></div>
-            <div><input onInput={()=>handleOnInput(ib6,ib6)} onKeyDown={(e)=>handleOnKeyDown(e, ib6, ib5)} ref={ib6} type="number" pattern="[0-9]*" maxLength={1} /></div>
+          <div><input onInput={() => handleOnInput(ib1, ib2)} onKeyDown={(e) => handleOnKeyDown(e, ib1, ib1)} ref={ib1} type="number" pattern="[0-9]*" maxLength={1} onPaste={(e) => handleOnPaste(e, [ib1, ib2, ib3, ib4, ib5, ib6])} /></div>
+          <div><input onInput={() => handleOnInput(ib2, ib3)} onKeyDown={(e) => handleOnKeyDown(e, ib2, ib1)} ref={ib2} type="number" pattern="[0-9]*" maxLength={1} onPaste={(e) => handleOnPaste(e, [ib1, ib2, ib3, ib4, ib5, ib6])} /></div>
+          <div><input onInput={() => handleOnInput(ib3, ib4)} onKeyDown={(e) => handleOnKeyDown(e, ib3, ib2)} ref={ib3} type="number" pattern="[0-9]*" maxLength={1} onPaste={(e) => handleOnPaste(e, [ib1, ib2, ib3, ib4, ib5, ib6])} /></div>
+          <div><input onInput={() => handleOnInput(ib4, ib5)} onKeyDown={(e) => handleOnKeyDown(e, ib4, ib3)} ref={ib4} type="number" pattern="[0-9]*" maxLength={1} onPaste={(e) => handleOnPaste(e, [ib1, ib2, ib3, ib4, ib5, ib6])} /></div>
+          <div><input onInput={() => handleOnInput(ib5, ib6)} onKeyDown={(e) => handleOnKeyDown(e, ib5, ib4)} ref={ib5} type="number" pattern="[0-9]*" maxLength={1} onPaste={(e) => handleOnPaste(e, [ib1, ib2, ib3, ib4, ib5, ib6])} /></div>
+          <div><input onInput={() => handleOnInput(ib6, ib6)} onKeyDown={(e) => handleOnKeyDown(e, ib6, ib5)} ref={ib6} type="number" pattern="[0-9]*" maxLength={1} onPaste={(e) => handleOnPaste(e, [ib1, ib2, ib3, ib4, ib5, ib6])} /></div>
         </div>
-        
+
         <div className={`${styles['action-buttons']}`}>
-            <button 
-              ref={buttonContinue} 
-              className={`${styles['button-custom-orange']} ${isLoading ? styles['loading'] : ''}`}
-              disabled={isLoading}
-            >
-              {isLoading ? 'Verifying...' : 'Continue'}
-            </button>
-            <button 
-              onClick={() => {
-                [ib1, ib2, ib3, ib4, ib5, ib6].forEach(ref => {
-                  if (ref.current) {
-                    ref.current.value = '';
-                  }
-                });
-                setModalState(modalStates.SIGNUP_STEP2);
-              }} 
-              className={`${styles['button-custom-basic']}`}
-            >
-              Cancel
-            </button>
+          <button 
+            ref={buttonContinue} 
+            className={`${styles['button-custom-orange']} ${isLoading ? styles['loading'] : ''}`}
+            disabled={isLoading}
+          >
+            {isLoading ? 'Verifying...' : 'Continue'}
+          </button>
+          <button 
+            onClick={() => {
+              [ib1, ib2, ib3, ib4, ib5, ib6].forEach(ref => {
+                if (ref.current) {
+                  ref.current.value = '';
+                }
+              });
+              setModalState(modalStates.SIGNUP_STEP2);
+            }} 
+            className={`${styles['button-custom-basic']}`}
+          >
+            Cancel
+          </button>
         </div>
 
         <div className={`${styles['resend-container']}`}>
@@ -1002,7 +1013,7 @@ const OTPSignUp = () => {
             </label>
           )}
         </div>
-        
+
         <div 
           ref={buttonPrevious} 
           id="btn_signup_step3_previous" 
@@ -1023,7 +1034,7 @@ const OTPSignUp = () => {
       </div>
     </div>
   );
-}
+};
 
 
 const MobileCountrySignUp = () => {
@@ -2014,7 +2025,7 @@ const AuthnetPaymentFullModal = () => {
         try {
           const res = await paymentSubmit({
             "provider": "authnet",
-            "userId": dataStates.userId,
+            //"userId": dataStates.userId,
             "plan": 
               currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY ? "Monthly" : 
               currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL ? "Yearly" : '',
@@ -2039,8 +2050,7 @@ const AuthnetPaymentFullModal = () => {
               navigate(dataStates.selectedUserType === 'employer' ? '/employer/employer-profile' : '/job-hunter/jobhunter-profile');
             },5000)
           }).catch((err) => {
-            
-            showError(JSON.stringify(err));
+            showError(err?.data?.errors, err?.data?.message)
             setIsSubmitting(false)
             console.log(err)
           })
