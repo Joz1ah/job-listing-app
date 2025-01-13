@@ -88,7 +88,7 @@ const EmployerHeader: FC = () => {
             <div className="flex items-center space-x-2 text-white font-light">
               <Building className="fill-[#D6D6D6] text-[#263238]" size={19} />
               <span className="text-[15px]">
-                Germany, South Africa, and China
+                {user?.data?.user?.relatedDetails?.city}, {user?.data?.user?.relatedDetails?.state}, {user?.data?.user?.relatedDetails?.country}
               </span>
             </div>
 

@@ -33,7 +33,12 @@ const validationSchema = Yup.object().shape({
   lastName: Yup.string().required("This field is required"),
   position: Yup.string().required("This field is required"),
   industry: Yup.string().required("This field is required"),
-  companyWebsite: Yup.string().required("This field is required"),
+  companyWebsite: Yup.string()
+  .required("This field is required")
+  .matches(
+    /^https?:\/\/.+/,
+    'Website URL must start with "http://" or "https://"'
+  ),
   yearFounded: Yup.number()
     .required("This field is required")
     .typeError("Please enter a valid number")
@@ -176,36 +181,37 @@ const EditEmployerProfile: FC = () => {
         isOpen={showPreview}
         onClose={() => setShowPreview(false)}
         formData={values}
-        onConfirm={handleProfileSubmission}  // Update this to use the new submission handler
+        onConfirm={handleProfileSubmission}
       />
       {isSubmitting && <LoadingOverlay />}
-
+  
       <div className="flex gap-8 px-4 md:px-8 lg:px-12 py-6 justify-center">
         <div className="w-full md:w-[800px] min-h-[825px] bg-[#242625] md:bg-[#2D3A41] text-white">
           <div className="flex items-center relative w-full mb-6 md:mb-10">
             <NavLink to="/employer/feed" className="absolute left-4 top-6">
               <ChevronLeft strokeWidth={4} className="h-6 w-6" />
             </NavLink>
-
+  
             <h1 className="flex-1 text-center text-xl md:text-[32px] pt-6 font-normal text-[#F5722E]">
               <span className="inline-flex items-center gap-2 justify-center">
-                Edit Your Company Profile
+                Complete Your Company Profile
               </span>
             </h1>
           </div>
-
+  
           <form
             onSubmit={handleSubmit}
             onKeyDown={handleKeyDown}
             className="space-y-6 p-4 md:p-8"
           >
+            {/* Business Name - Full Width */}
             <InputField
               label="Legal Business Name"
               className="bg-transparent"
               error={errors.businessName}
               touched={touched.businessName}
               showIcon={true}
-              tooltipContent="Please enter your company’s complete legal business name e.g. “ Imagination Ventures LLC”"
+              tooltipContent="Please enter your company's complete legal business name e.g. "
             >
               <Input
                 name="businessName"
@@ -215,134 +221,130 @@ const EditEmployerProfile: FC = () => {
                 className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
               />
             </InputField>
-
+  
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-x-[65px]">
-              {/* Left Column */}
-              <div className="space-y-6">
-                <InputField
-                  label="First Name"
-                  className="bg-transparent"
-                  error={errors.firstName}
-                  touched={touched.firstName}
-                >
-                  <Input
-                    name="firstName"
-                    value={values.firstName}
-                    onChange={handleChange}
-                    placeholder="Representative's First Name"
-                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
-                  />
-                </InputField>
-
-                <InputField
-                  label="Email Address"
-                  className="bg-transparent"
-                  error={errors.emailAddress}
-                  touched={touched.emailAddress}
-                >
-                  <Input
-                    name="emailAddress"
-                    value={values.emailAddress}
-                    onChange={handleChange}
-                    placeholder="Email Address"
-                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
-                  />
-                </InputField>
-
-                <InputField
-                  label="Position of the Representative"
-                  className="bg-transparent"
-                  error={errors.position}
-                  touched={touched.position}
-                >
-                  <Input
-                    name="position"
-                    value={values.position}
-                    onChange={handleChange}
-                    placeholder="e.g. Recruitement Supervisor"
-                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
-                  />
-                </InputField>
-
-                <InputField
-                  label="Industry"
-                  className="bg-transparent"
-                  error={errors.industry}
-                  touched={touched.industry}
-                >
-                  <IndustrySearch
-                    onValueChange={(value) => setFieldValue("industry", value)}
-                  />
-                </InputField>
-              </div>
-
-              {/* Right Column */}
-              <div className="space-y-6">
-                <InputField
-                  label="Last Name"
-                  className="bg-transparent"
-                  error={errors.lastName}
-                  touched={touched.lastName}
-                >
-                  <Input
-                    name="lastName"
-                    value={values.lastName}
-                    onChange={handleChange}
-                    placeholder="Representative's Last Name"
-                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
-                  />
-                </InputField>
-
-                <InputField
-                  label="Mobile Number"
-                  error={errors.mobileNumber}
-                  touched={touched.mobileNumber}
-                >
-                  <PhoneInput
-                    name="mobileNumber"
-                    value={values.mobileNumber}
-                    onChange={handleChange}
-                    className="bg-transparent border-2 rounded-[10px] border-[#AEADAD] h-[56px] focus-within:border-[#F5722E] transition-colors flex justify-between"
-                    defaultCountry="CA"
-                  />
-                </InputField>
-
-                <InputField
-                  label="Company Website"
-                  className="bg-transparent"
-                  error={errors.companyWebsite}
-                  touched={touched.companyWebsite}
-                >
-                  <Input
-                    name="companyWebsite"
-                    value={values.companyWebsite}
-                    onChange={handleChange}
-                    placeholder="Company Website"
-                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
-                  />
-                </InputField>
-
-                <InputField
-                  label="Year Founded"
-                  className="bg-transparent"
-                  error={errors.yearFounded}
-                  touched={touched.yearFounded}
-                >
-                  <Input
-                    name="yearFounded"
-                    value={values.yearFounded}
-                    onChange={handleChange}
-                    placeholder="Year Founded"
-                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
-                  />
-                </InputField>
-              </div>
+              {/* Personal Information */}
+              <InputField
+                label="First Name"
+                className="bg-transparent"
+                error={errors.firstName}
+                touched={touched.firstName}
+              >
+                <Input
+                  name="firstName"
+                  value={values.firstName}
+                  onChange={handleChange}
+                  placeholder="Representative's First Name"
+                  className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                />
+              </InputField>
+  
+              <InputField
+                label="Last Name"
+                className="bg-transparent"
+                error={errors.lastName}
+                touched={touched.lastName}
+              >
+                <Input
+                  name="lastName"
+                  value={values.lastName}
+                  onChange={handleChange}
+                  placeholder="Representative's Last Name"
+                  className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                />
+              </InputField>
+  
+              <InputField
+                label="Email Address"
+                className="bg-transparent"
+                error={errors.emailAddress}
+                touched={touched.emailAddress}
+              >
+                <Input
+                  name="emailAddress"
+                  value={values.emailAddress}
+                  onChange={handleChange}
+                  placeholder="Email Address"
+                  className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                />
+              </InputField>
+  
+              <InputField
+                label="Mobile Number"
+                error={errors.mobileNumber}
+                touched={touched.mobileNumber}
+              >
+                <PhoneInput
+                  name="mobileNumber"
+                  value={values.mobileNumber}
+                  onChange={handleChange}
+                  className="bg-transparent border-2 rounded-[10px] border-[#AEADAD] h-[56px] focus-within:border-[#F5722E] transition-colors flex justify-between"
+                  defaultCountry="CA"
+                />
+              </InputField>
+  
+              <InputField
+                label="Position of the Representative"
+                className="bg-transparent"
+                error={errors.position}
+                touched={touched.position}
+              >
+                <Input
+                  name="position"
+                  value={values.position}
+                  onChange={handleChange}
+                  placeholder="e.g. Recruitement Supervisor"
+                  className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                />
+              </InputField>
+  
+              <InputField
+                label="Company Website"
+                className="bg-transparent"
+                error={errors.companyWebsite}
+                touched={touched.companyWebsite}
+              >
+                <Input
+                  name="companyWebsite"
+                  value={values.companyWebsite}
+                  onChange={handleChange}
+                  placeholder="Company Website"
+                  className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                />
+              </InputField>
+  
+              <InputField
+                label="Industry"
+                className="bg-transparent"
+                error={errors.industry}
+                touched={touched.industry}
+              >
+                <IndustrySearch
+                  onValueChange={(value) => setFieldValue("industry", value)}
+                />
+              </InputField>
+  
+              <InputField
+                label="Year Founded"
+                className="bg-transparent"
+                error={errors.yearFounded}
+                touched={touched.yearFounded}
+              >
+                <Input
+                  name="yearFounded"
+                  value={values.yearFounded}
+                  onChange={handleChange}
+                  placeholder="Year Founded"
+                  className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                />
+              </InputField>
             </div>
-
+  
+            {/* Company Address Section */}
             <h2 className="text-white text-lg mb-4 flex justify-center">
               Complete Company Address
             </h2>
-
+  
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-x-[65px]">
               <InputField
                 label="Unit No./Building"
@@ -357,7 +359,7 @@ const EditEmployerProfile: FC = () => {
                   className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
                 />
               </InputField>
-
+  
               <InputField
                 label="Street Address"
                 error={errors.streetAddress}
@@ -371,7 +373,7 @@ const EditEmployerProfile: FC = () => {
                   className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
                 />
               </InputField>
-
+  
               <InputField
                 label="City"
                 error={errors.city}
@@ -385,7 +387,7 @@ const EditEmployerProfile: FC = () => {
                   className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
                 />
               </InputField>
-
+  
               <InputField
                 label="State/Province/Region"
                 error={errors.state}
@@ -399,48 +401,42 @@ const EditEmployerProfile: FC = () => {
                   className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
                 />
               </InputField>
-
-              {/* Empty column on the left */}
-              <div className="md:col-span-1"></div>
-
-              {/* Country field on the right */}
-              <div className="md:col-start-2">
-                <InputField
-                  label="Country"
-                  error={errors.country}
-                  touched={touched.country}
+  
+              <InputField
+                label="Country"
+                error={errors.country}
+                touched={touched.country}
+              >
+                <Select
+                  name="country"
+                  value={values.country}
+                  onValueChange={(value) => setFieldValue("country", value)}
                 >
-                  <Select
-                    name="country"
-                    value={values.country}
-                    onValueChange={(value) => setFieldValue("country", value)}
-                  >
-                    <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
-                      <SelectValue placeholder="Country" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-[#F5F5F7] items-center p-0 [&>*]:p-0 border-none rounded-none">
-                      {selectOptions.country.map(({ value, label }) => (
-                        <SelectItem
-                          key={value}
-                          className={cn(
-                            "rounded-none justify-start pl-3 h-[55px] transition-all duration-500 ease-in-out",
-                          )}
-                          value={value}
-                        >
-                          <div className="py-3 w-full text-center">{label}</div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </InputField>
-              </div>
+                  <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
+                    <SelectValue placeholder="Country" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#F5F5F7] items-center p-0 [&>*]:p-0 border-none rounded-none">
+                    {selectOptions.country.map(({ value, label }) => (
+                      <SelectItem
+                        key={value}
+                        className={cn(
+                          "rounded-none justify-start pl-3 h-[55px] transition-all duration-500 ease-in-out",
+                        )}
+                        value={value}
+                      >
+                        <div className="py-3 w-full text-center">{label}</div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </InputField>
             </div>
-
+  
             <InputField
               label="Job Description"
               error={errors.companyOverview}
               touched={touched.companyOverview}
-              className="relative "
+              className="relative"
             >
               <Textarea
                 name="companyOverview"
@@ -449,11 +445,8 @@ const EditEmployerProfile: FC = () => {
                 className="bg-transparent border-[#AEADAD] h-[90px] pt-4 resize-none border-2 focus-within:border-[#F5722E] placeholder:text-[#AEADAD]"
                 placeholder="Please provide a job description"
               />
-              {/* <span className="flex right-0 italic text-[11px] absolute">
-              Maximum of 500 words
-            </span> */}
             </InputField>
-
+  
             {/* Footer Buttons */}
             <div className="flex justify-center md:justify-end pt-8 md:pt-12">
               <Button

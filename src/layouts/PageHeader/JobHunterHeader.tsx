@@ -44,7 +44,7 @@ const JobHunterHeader: FC = () => {
           <div className="flex items-center justify-between md:justify-start md:gap-8">
             <div className="flex items-center space-x-2 text-white font-light">
               <MapPin className="text-[#F5722E]" size={19} />
-              <span className="text-[13px] md:text-[17px]">Philippines</span>
+              <span className="text-[13px] md:text-[17px]">{user?.data?.user?.relatedDetails?.country}</span>
             </div>
 
             {/* Mobile rating */}

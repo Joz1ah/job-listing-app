@@ -120,46 +120,50 @@ const TagInputs: React.FC<TagInputProps> = ({
       e.preventDefault();
       const newTags = value.slice(0, -1);
       onChange(newTags);
-    } else if (showSuggestions) {
+    } else if (showSuggestions && filteredOptions.length > 0) {
       switch (e.key) {
         case 'ArrowDown':
           e.preventDefault();
           setFocusedIndex(prev => 
             prev < filteredOptions.length - 1 ? prev + 1 : prev
           );
-          // Ensure the focused item is visible in the scroll area
           const element = suggestionsRef.current?.querySelector(`li:nth-child(${focusedIndex + 2})`);
           element?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
           break;
         case 'ArrowUp':
           e.preventDefault();
           setFocusedIndex(prev => prev > 0 ? prev - 1 : prev);
-          // Ensure the focused item is visible in the scroll area
           const prevElement = suggestionsRef.current?.querySelector(`li:nth-child(${focusedIndex})`);
           prevElement?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
           break;
         case 'Enter':
-        case 'Tab':
           e.preventDefault();
-          if (filteredOptions.length > 0) {
+          handleSelect(filteredOptions[focusedIndex].value);
+          break;
+        case 'Tab':
+          // Only prevent default if we have suggestions visible
+          if (showSuggestions && filteredOptions.length > 0) {
+            e.preventDefault();
             handleSelect(filteredOptions[focusedIndex].value);
-          } else if (inputValue) {
-            // Show tooltip when invalid input is entered
-            setShowTooltip(true);
-            if (tooltipTimeoutRef.current) {
-              clearTimeout(tooltipTimeoutRef.current);
-            }
-            tooltipTimeoutRef.current = setTimeout(() => {
-              setShowTooltip(false);
-            }, 3000);
           }
-          setInputValue(""); // Clear input on invalid entry
+          // Otherwise, let the tab event proceed normally
           break;
         case 'Escape':
           setShowSuggestions(false);
           setFocusedIndex(0);
           break;
       }
+    } else if (e.key === 'Enter' && inputValue) {
+      // Show tooltip when invalid input is entered
+      e.preventDefault();
+      setShowTooltip(true);
+      if (tooltipTimeoutRef.current) {
+        clearTimeout(tooltipTimeoutRef.current);
+      }
+      tooltipTimeoutRef.current = setTimeout(() => {
+        setShowTooltip(false);
+      }, 3000);
+      setInputValue(""); // Clear input on invalid entry
     }
   };
 

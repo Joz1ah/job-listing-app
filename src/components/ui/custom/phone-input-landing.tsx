@@ -26,7 +26,7 @@ const InputComponent = React.forwardRef<HTMLInputElement, React.InputHTMLAttribu
   ({ className, ...props }, ref) => (
     <Input
       className={cn(
-        "rounded-[4px] border-none bg-transparent text-white h-full pl-2",
+        "rounded-none border-none bg-transparent text-white h-full pr-24",
         "placeholder:text-white/50 focus-visible:ring-0 focus-visible:ring-offset-0",
         className
       )}
@@ -37,12 +37,12 @@ const InputComponent = React.forwardRef<HTMLInputElement, React.InputHTMLAttribu
 );
 InputComponent.displayName = "InputComponent";
 
-// Flag Component - fixed styling
+// Flag Component
 const FlagComponent = ({ country, countryName }: RPNInput.FlagProps) => {
   const Flag = flags[country];
   return (
-    <span className="flex h-6 w-6 overflow-hidden rounded-full relative">
-      <span className="absolute inset-0 flex items-center justify-center scale-[1.8]">
+    <span className="flex h-6 w-6 overflow-hidden rounded-full ml-6 relative">
+      <span className="absolute inset-0 flex items-center justify-end scale-[1.8]">
         {Flag && <Flag title={countryName} />}
       </span>
     </span>
@@ -78,7 +78,8 @@ const CountrySelect = ({
           className={cn(
             "flex items-center gap-1 h-full px-2",
             "bg-transparent hover:bg-transparent min-w-[80px]",
-            "border-none focus-visible:ring-0 focus-visible:ring-offset-0"
+            "border-none focus-visible:ring-0 focus-visible:ring-offset-0",
+            "absolute right-0 top-0"
           )}
           disabled={disabled}
         >
@@ -88,7 +89,7 @@ const CountrySelect = ({
           </div>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[300px] p-0 bg-white border-[#AEADAD]">
+      <PopoverContent className="w-[300px] p-0 bg-white border-[#AEADAD]" align="end">
         <Command className="bg-white">
           <CommandInput placeholder="Search country..." className="text-black" />
           <CommandList>
@@ -124,7 +125,7 @@ const CountrySelect = ({
   );
 };
 
-type PhoneInputProps = {
+type PhoneInputLandingProps = {
   name: string;
   value: string | number;
   onChange: (e: React.ChangeEvent<any>) => void;
@@ -132,17 +133,15 @@ type PhoneInputProps = {
   defaultCountry?: RPNInput.Country;
 } & Omit<RPNInput.Props<typeof RPNInput.default>, 'onChange' | 'value'>;
 
-// Main PhoneInput Component
-const PhoneInput = React.forwardRef<React.ElementRef<typeof RPNInput.default>, PhoneInputProps>(
+// Main PhoneInputLanding Component
+const PhoneInputLanding = React.forwardRef<React.ElementRef<typeof RPNInput.default>, PhoneInputLandingProps>(
   ({ className, onChange, name, value, ...props }, ref) => {
     const handlePhoneChange = (phoneValue: RPNInput.Value) => {
-      // Remove any non-digit characters except the leading + for display
       const formattedValue = phoneValue ? phoneValue.toString().replace(/[^\d+]/g, '') : "";
       
       const syntheticEvent = {
         target: {
           name,
-          // Store the full international format for validation and display
           value: formattedValue || ""
         },
         type: 'change',
@@ -180,6 +179,6 @@ const PhoneInput = React.forwardRef<React.ElementRef<typeof RPNInput.default>, P
   }
 );
 
-PhoneInput.displayName = "PhoneInput";
+PhoneInputLanding.displayName = "PhoneInput";
 
-export { PhoneInput }
+export { PhoneInputLanding }
