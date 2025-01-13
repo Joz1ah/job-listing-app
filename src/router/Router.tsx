@@ -154,12 +154,12 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 const DashboardRedirectRoute = ({ children }: { children: React.ReactNode }) => {
   if(isServer) return; //Add handling for SSR as the code below causes issues on redirect
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, user, isLoading } = useAuth();
   if (isLoading) {
     return <></>;
   }
 
-  return isAuthenticated ? <RedirectTo to={ROUTE_CONSTANTS.JOB_HUNTER} /> : children;
+  return isAuthenticated && user?.data?.user?.subscriptions.length > 0 ? <RedirectTo to={ROUTE_CONSTANTS.JOB_HUNTER} /> : children;
 };
 const routes: RouteObject[] = [
   {

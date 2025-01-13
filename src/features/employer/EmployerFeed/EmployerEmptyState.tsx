@@ -9,7 +9,7 @@ interface EmptyStateProps {
 }
 
 const PerfectMatchEmptyState: React.FC<EmptyStateProps> = ({
-  onExploreClick,
+  /* onExploreClick, */
 }) => (
   <div className="w-full flex flex-col items-center justify-center py-16 px-4">
     <div className="relative mb-6">
@@ -33,18 +33,18 @@ const PerfectMatchEmptyState: React.FC<EmptyStateProps> = ({
 
       <div className="space-y-4">
         <NavLink to="/employer/job-listing">
-          <Button className="bg-[#F5722E] hover:bg-orange-600 text-white text-[13px] font-normal rounded-sm w-[180px] h-[24px] max-w-xs p-0">
+          <Button className="bg-[#F5722E] hover:bg-[#F5722E]/90 rounded-sm items-center p-0 w-[180px]">
             Create Job Listing
           </Button>
         </NavLink>
 
-        <Button
+{/*         <Button
           variant="link"
           onClick={onExploreClick}
           className="text-[#F5722E] hover:text-orange-400 underline font-light w-full"
         >
           Explore Other Application Cards
-        </Button>
+        </Button> */}
       </div>
     </div>
   </div>
@@ -68,7 +68,7 @@ const OtherApplicationEmptyState: React.FC = () => (
 
       <div className="space-y-4">
         <NavLink to="/employer/job-listing">
-          <Button className="bg-[#F5722E] hover:bg-orange-600 text-white text-[13px] font-normal rounded-sm w-[180px] h-[24px] max-w-xs p-0">
+          <Button className="bg-[#F5722E] hover:bg-[#F5722E]/90 rounded-sm items-center p-0 w-[180px]">
             Create Job Listing
           </Button>
         </NavLink>

@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Bookmark, MapPin, MoreVertical } from "lucide-react";
-import sparkleIcon from "images/sparkle-icon.png";
 import {
   Card,
   CardHeader,
@@ -9,6 +8,7 @@ import {
   CardTitle,
   Button,
 } from "components";
+import { useSearchCoreQuery } from 'api/akaza/akazaAPI';
 
 interface SelectOption {
   value: string;
@@ -51,6 +51,22 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
   values,
   selectOptions,
 }) => {
+  const [skillsMap, setSkillsMap] = useState<Record<string, string>>({});
+  const { data: searchResults } = useSearchCoreQuery({
+    query: '', // Empty query to get all skills
+    limit: 100 // Increase limit to get more skills
+  });
+
+  useEffect(() => {
+    if (searchResults?.data) {
+      const newMap = searchResults.data.reduce((acc: Record<string, string>, skill: any) => {
+        acc[skill.id] = skill.keyword;
+        return acc;
+      }, {});
+      setSkillsMap(newMap);
+    }
+  }, [searchResults]);
+
   const getLabel = (
     type: keyof SelectOptions,
     value: string | string[],
@@ -59,20 +75,27 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
 
     if (Array.isArray(value)) {
       return value.map((v) => {
+        if (type === 'coreSkills') {
+          return skillsMap[v] || v;
+        }
         const option = selectOptions[type]?.find((opt) => opt.value === v);
         return option?.label || v;
       });
     }
 
+    if (type === 'coreSkills') {
+      return skillsMap[value] || value;
+    }
     const option = selectOptions[type]?.find((opt) => opt.value === value);
     return option?.label || value;
   };
 
-  const formattedSkills =
-    values.coreSkills?.map(
-      (skillValue) =>
-        (getLabel("coreSkills", skillValue) as string) || skillValue,
-    ) || [];
+  // Format skills using the skillsMap
+  const formattedSkills = values.coreSkills?.map(skillId => 
+    skillsMap[skillId] ? 
+      skillsMap[skillId].charAt(0).toUpperCase() + skillsMap[skillId].slice(1) : 
+      skillId
+  ) || [];
 
   const hasName = values.firstName || values.lastName;
   const hasCountry = values.country;
@@ -86,14 +109,12 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
     <div className="flex flex-col items-center md:items-start md:w-[436px] pb-6">
       <div className="flex justify-center md:justify-start items-center flex-wrap text-white text-base mb-6 md:mb-2 px-6 md:px-0">
         <span>This is how your</span>
-          <div className="flex items-center mx-1">
-            <img src={sparkleIcon} className="w-4 h-4 mr-1" alt="spark icon" />
-            <span className="text-[#F5722E]">Perfect Match</span>
-          </div>
+        <div className="flex items-center mx-1">
+          <span className="text-[#F5722E]">Perfect Match</span>
+        </div>
         <span>application card will appear to your future Employers.</span>
       </div>
 
-      {/* Desktop View */}
       <div className="w-full xl:w-auto flex xl:block justify-center">
         <Card className="bg-white border-none w-full md:w-[436px] h-auto md:h-[275px] hidden md:block">
           <CardHeader className="flex flex-col justify-between items-start pb-0">
@@ -138,19 +159,16 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
                   Core Skills:
                 </p>
                 <div className="flex flex-wrap gap-1 mt-1">
-                  {[0, 1, 2, 3, 4].map((i) => {
-                    const skill = formattedSkills[i];
-                    return (
-                      <span
-                        key={i}
-                        className={`text-white text-xs font-semibold px-1.5 py-0.5 rounded-[2px] inline-block ${
-                          i % 2 === 0 ? "bg-[#168AAD]" : "bg-[#184E77]"
-                        }`}
-                      >
-                        {skill || "Skills"}
-                      </span>
-                    );
-                  })}
+                  {formattedSkills.slice(0, 5).map((skill, i) => (
+                    <span
+                      key={i}
+                      className={`text-white text-xs font-semibold px-1.5 py-0.5 rounded-[2px] inline-block ${
+                        i % 2 === 0 ? "bg-[#168AAD]" : "bg-[#184E77]"
+                      }`}
+                    >
+                      {skill}
+                    </span>
+                  ))}
                 </div>
               </div>
             ) : (
