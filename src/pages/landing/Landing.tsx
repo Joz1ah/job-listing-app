@@ -820,7 +820,7 @@ const OTPSignUp = () => {
       });
     } else {
       // If pasted OTP is not of 6 digits, you can show an error or clear fields
-      alert('Please paste a valid 6-digit OTP.');
+      showError('Error', 'Please paste a valid 6-digit OTP.')
       refArray.forEach(ref => {
         if (ref.current) {
           ref.current.value = '';
