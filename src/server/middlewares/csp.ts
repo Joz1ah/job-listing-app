@@ -17,7 +17,8 @@ const defaultSrc = [
   'api2.authorize.net',
   'localhost:*',
   'js.intercomcdn.com',
-  'nexus-websocket-a.intercom.io'
+  'nexus-websocket-a.intercom.io',
+  'https://bdf2b90d-e282-4058-a4d5-820c10cf0d68.mock.pstmn.io'
   //'pokeapi.co',
 ];
 
