@@ -1694,7 +1694,7 @@ const CreditCardForm: React.FC = () => {
           "userId": dataStates.userId,
           "plan": 
             currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY ? "Monthly" : 
-            currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL ? "Annual" : '',
+            currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL ? "Yearly" : '',
           "amount":  
             currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY ? 5 : 
             currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL ? 55 : '',
@@ -1707,7 +1707,7 @@ const CreditCardForm: React.FC = () => {
             "userId": dataStates.userId,
             "plan": 
               currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY ? "Monthly" : 
-              currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL ? "Annual" : '',
+              currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL ? "Yearly" : '',
             "amount":  
               currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY ? 5 : 
               currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL ? 55 : '',
