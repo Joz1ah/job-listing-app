@@ -163,7 +163,7 @@ export const akazaApiAuth = createApiFunction({
               Cookies.set('authToken', data.data.token, {
                 path: '/', // Cookie is available site-wide
                 secure: true, // Ensures cookie is sent over HTTPS
-                sameSite: 'Lax', // Prevents CSRF attacks
+                sameSite: 'strict', // Prevents CSRF attacks
                 domain: 'localhost'
                 //expires: 7, // Expires in 7 days
               });
@@ -172,7 +172,7 @@ export const akazaApiAuth = createApiFunction({
               Cookies.set('authToken', data.data.token, {
                 path: '/', // Cookie is available site-wide
                 secure: true, // Ensures cookie is sent over HTTPS
-                sameSite: 'None', // Prevents CSRF attacks
+                sameSite: 'strict', // Prevents CSRF attacks
                 domain: 'akaza.xyz'
                 //expires: 7, // Expires in 7 days
               });
