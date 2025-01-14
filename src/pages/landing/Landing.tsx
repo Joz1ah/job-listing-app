@@ -2,6 +2,7 @@ import React, { FC, useEffect, useState, useRef, ReactElement } from 'react'
 import { FooterEngagement as Footer} from "layouts";
 import { PageMeta } from "components";
 import { LandingContext } from 'components';
+
 import { 
   useLoginMutation,
   useSignUpMutation,
@@ -54,8 +55,6 @@ import authnet_logo from 'assets/authnet-logo2.svg?url';
 import _5dollarspermonth from 'assets/5dollarspermonth.svg?url';
 import flame_vector from 'assets/flame-vector.svg?url';
 import orange_check from 'assets/orange-check.svg?url';
-import akazalogo_dark from 'assets/akazalogo-dark.svg?url';
-import close_icon from 'assets/close.svg?url';
 /* import philippines_flag from 'assets/country-icons/philippines.svg?url';
 import chevron_down from 'assets/chevron-down.svg?url'; */
 import unchecked_green from 'assets/toggles/unchecked-green.svg?url';
@@ -82,6 +81,7 @@ import button_loading_spinner from 'assets/loading-spinner-orange.svg?url';
 
 import styles from './landing.module.scss';
 import { useErrorModal } from 'contexts/ErrorModalContext/ErrorModalContext';
+import useModal from 'components/modal/modalContext'
 
 interface VideoProps {
   src: string;
@@ -194,10 +194,7 @@ const Landing: FC = (): ReactElement => {
   if (isAuthenticated && user?.type) {
     return <Navigate to={`/${user.type}`} replace />;
   }
-
-  const [maskHidden, setMaskHidden] = useState(1);
-  const [closeModalActive, setCloseModalActive] = useState(1);
-  const [selectedModalHeader, setSelectedModalHeader] = useState(1);
+  const { openModal, closeModal, isModalOpen, setSelectedModalHeader, Modal} = useModal();
   const [modalState, setModalState] = useState(12);
   const [heroState, setHeroState] = useState(1);
   const [currentSelectedPlan, setCurrentSelectedPlan] = useState(3);
@@ -234,10 +231,6 @@ const Landing: FC = (): ReactElement => {
       'PERFECT_MATCH_RESULTS': 11,
       'AUTHNET_PAYMENT_FULL': 12
   }
-  const MODAL_HEADER_TYPE = {
-      'WITH_LOGO_AND_CLOSE' : 1,
-      'WITH_CLOSE' : 2,
-  }
   const PLAN_SELECTION_ITEMS = {
     'FREE' : 1,
     'MONTHLY' : 2,
@@ -249,12 +242,16 @@ const Landing: FC = (): ReactElement => {
 
   //const [localCount, setCount] = useState(0)
 
+  useEffect(()=>{
+    console.log('site ready')
+  })
+
   useEffect(() => {
     // Check if PerfectMatchResultsModal was previously open and is now being closed
-    if (modalState !== modalStates.PERFECT_MATCH_RESULTS && maskHidden === 1) {
+    if (modalState !== modalStates.PERFECT_MATCH_RESULTS && !isModalOpen) {
       setHeroState(heroStates.PERFECT_MATCH_ALGO);
     }
-  }, [modalState, maskHidden]);
+  }, [modalState, isModalOpen]);
 
   const ButtonLoginNav = () => {
     const elementRef = useRef<HTMLButtonElement>(null);
@@ -262,17 +259,16 @@ const Landing: FC = (): ReactElement => {
       if (elementRef.current) {
         elementRef.current.onclick = () => {
           // First, check if we're switching from another modal
-          if (!maskHidden) {
+          if (isModalOpen) {
             // We're switching modals, so don't toggle the mask
             setSelectedModalHeader(1);
             setModalState(modalStates.LOGIN);
-            setCloseModalActive(1);
+            closeModal();
           } else {
             // Normal opening of modal
             setSelectedModalHeader(1);
-            setMaskHidden(0);
             setModalState(modalStates.LOGIN);
-            setCloseModalActive(1);
+            openModal();
           }
         };
       }
@@ -287,9 +283,8 @@ const Landing: FC = (): ReactElement => {
     // Check if we have state from navigation indicating we should open the modal
     if (location.state?.openModal) {
       setSelectedModalHeader(1);
-      setMaskHidden(0);
       setModalState(modalStates.SIGNUP_SELECT_USER_TYPE);
-      setCloseModalActive(1);
+      closeModal();
       
       // Clear the navigation state after using it
       window.history.replaceState({}, document.title);
@@ -299,20 +294,20 @@ const Landing: FC = (): ReactElement => {
   const ButtonSignUpNav = () => {
     const elementRef = useRef<HTMLButtonElement>(null);
     const toggleSignUp = () => {
+      console.log('clicked')
       if (elementRef.current) {
         elementRef.current.onclick = () => {
           // First, check if we're switching from another modal
-          if (!maskHidden) {
+          if (isModalOpen) {
             // We're switching modals, so don't toggle the mask
             setSelectedModalHeader(1);
             setModalState(modalStates.SIGNUP_SELECT_USER_TYPE);
-            setCloseModalActive(1);
+            closeModal();
           } else {
             // Normal opening of modal
             setSelectedModalHeader(1);
-            setMaskHidden(0);
             setModalState(modalStates.SIGNUP_SELECT_USER_TYPE);
-            setCloseModalActive(1);
+            openModal();
           }
         };
       }
@@ -2533,9 +2528,8 @@ const PerfectMatchResultsModal = () => {
 
   const handleSignup = () => {
     setSelectedModalHeader(1);
-    setMaskHidden(0);
     setModalState(modalStates.SIGNUP_STEP2);
-    setCloseModalActive(1);
+    closeModal();
   };
 
   const renderCard = (match: EmployerMatch | JobMatch ) => {
@@ -2600,89 +2594,6 @@ const PerfectMatchResultsModal = () => {
     </div>
   );
 };
-
-
-const ModalHeader = () =>{
-  const closeModal1 = useRef<HTMLImageElement>(null);
-  const closeModal2 = useRef<HTMLImageElement>(null);
-  const closeProcess = () => {
-    setSelectedModalHeader(1);
-    setMaskHidden(1);
-    setCloseModalActive(0);
-    if (modalState === modalStates.PERFECT_MATCH_RESULTS) {
-      setHeroState(heroStates.PERFECT_MATCH_ALGO);
-    }
-    if(closeModalActive){}
-  }
-  const toggleCloseModal = () => {
-    if (closeModal1.current) {
-      closeModal1.current.onclick = () => closeProcess();
-    }
-    if (closeModal2.current)
-      closeModal2.current.onclick = () => closeProcess();
-  };
-
-  useEffect(toggleCloseModal, []);
-
-  return(
-    <div className={`${styles['modal-header-wrapper']}`}>
-            <div>
-        {
-          selectedModalHeader == MODAL_HEADER_TYPE.WITH_LOGO_AND_CLOSE ?
-              <>
-                <div className={`${styles['modal-header']}`}>
-                    <img src={akazalogo_dark} alt="Akaza Logo" />
-                    <img
-                        ref={closeModal1}
-                        className={`${styles['close-modal']}`}
-                        src={close_icon}
-                        alt="Close"
-                        style={{ width: '24px', height: '24px', marginLeft: 'auto' }} // Add marginLeft auto here
-                    />
-                </div>
-                <div className={`${styles['modal-divider']}`}></div>
-              </>
-          : selectedModalHeader == MODAL_HEADER_TYPE.WITH_CLOSE ? 
-              <div className={`${styles['modal-header']}`}>
-                  <img ref={closeModal2} className={`${styles['close-modal2']}`} src={close_icon} style={{"width": "24px","height": "24px"}}/>
-              </div>
-          : ''
-        }
-            </div>
-    </div>
-  )
-}
-const Modal = () => {
-  return (
-    <div className={`${styles['modal-container-wrapper']}`} >
-      <div className={`${styles['modal-container']}`}>
-          <div className={`${styles['modal-item']}`}>
-              <ModalHeader/>
-              <div className={`${styles['modal-content-wrapper']}`}>
-                <EmployerProvider initialTier='freeTrial'>
-                <JobHunterProvider initialTier='freeTrial'>
-                  <BookmarkProvider>
-                    <LoginModal/>
-                    <JobHunterEmployerSelection/>
-                    <UserNamePasswordSignup/>
-                    <OTPSignUp/>
-                    <MobileCountrySignUp/>
-                    <EmployerAdditionalInformation/>
-                    <SubscriptionPlanSelection/>
-                    <LoadingModal/>
-                    <CongratulationsModal/>
-                    <StripePaymentModal/>
-                    <AuthnetPaymentFullModal/>
-                    <PerfectMatchResultsModal/>
-                  </BookmarkProvider>
-                </JobHunterProvider>
-                </EmployerProvider>
-              </div>
-          </div>
-      </div>
-    </div>
-  )
-}
 
 const NavigationHeader = () => {
   const { menuOpen, toggleMenu } = useMenu();
@@ -3273,18 +3184,17 @@ const HeroLoading = () => {
   const [hasShownModal, setHasShownModal] = useState(false);
 
   useEffect(() => {
-    if (heroState === heroStates.LOADING && !hasShownModal && maskHidden === 1) {
+    if (heroState === heroStates.LOADING && !hasShownModal && !isModalOpen) {
       const timer = setTimeout(() => {
         setHasShownModal(true);
-        setMaskHidden(0);
         setSelectedModalHeader(1);
         setModalState(modalStates.PERFECT_MATCH_RESULTS);
-        setCloseModalActive(1);
+        closeModal();
       }, 3000);
       
       return () => clearTimeout(timer);
     }
-  }, [heroState, maskHidden, hasShownModal]);
+  }, [heroState, isModalOpen, hasShownModal]);
 
   // Reset modal shown state when leaving loading state
   useEffect(() => {
@@ -3340,6 +3250,31 @@ const handleScheduleAcall = ()=> {
 useEffect(()=>{
   handleScheduleAcall()
 },[])
+
+const ModalWrapper = ()=>{
+  return(
+    <Modal>
+      <EmployerProvider initialTier='freeTrial'>
+              <JobHunterProvider initialTier='freeTrial'>
+                <BookmarkProvider>
+                  <LoginModal/>
+                  <JobHunterEmployerSelection/>
+                  <UserNamePasswordSignup/>
+                  <OTPSignUp/>
+                  <MobileCountrySignUp/>
+                  <EmployerAdditionalInformation/>
+                  <SubscriptionPlanSelection/>
+                  <LoadingModal/>
+                  <CongratulationsModal/>
+                  <StripePaymentModal/>
+                  <AuthnetPaymentFullModal/>
+                  <PerfectMatchResultsModal/>
+                </BookmarkProvider>
+              </JobHunterProvider>
+        </EmployerProvider>
+      </Modal>
+  )
+}
 
   return (
     <LandingContext.Provider value={{ isFreeTrial }}>
@@ -3485,9 +3420,7 @@ useEffect(()=>{
         )}
         <Outlet />
         <Footer/>
-            <div id="mask_overlay" className={`${styles['mask-overlay']} ${styles['requires-no-scroll']}`} hidden={!!maskHidden}>
-              <Modal/>
-            </div>
+        <ModalWrapper/>
         </div>
     </LandingContext.Provider>
   )

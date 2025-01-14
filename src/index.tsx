@@ -73,7 +73,7 @@ const indexJSX = (
         <HelmetProvider>
           <AuthProvider>
               <BrowserRouter>
-                    <App />
+                  <App />
               </BrowserRouter>
             </AuthProvider>
         </HelmetProvider>

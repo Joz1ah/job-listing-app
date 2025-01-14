@@ -351,7 +351,7 @@ export const akazaApiPayment = createApiFunction({
         method: 'POST',
         body: {
           "provider": payLoad.provider,
-          "userId": payLoad.userId,
+          //"userId": payLoad.userId,
           "plan": payLoad.plan,
           "amount": payLoad.amount ? payLoad.amount : 1,
           "paymentMethodId": payLoad.paymentMethodId ? payLoad.paymentMethodId : "pm_1QSiGYFCh69SpK2kcccrnWHL",

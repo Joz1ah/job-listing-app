@@ -3,12 +3,11 @@ import { lazy, Suspense, ComponentType, useEffect, useState  } from 'react'
 import { ROUTE_CONSTANTS } from 'constants/routeConstants'
 import spinner_loading_fallback from 'assets/images/spinner-loading-akaza.svg?url'
 import { useAuth } from 'contexts/AuthContext/AuthContext';
-
+import { isServer } from 'utils';
 import { IntercomProvider } from 'contexts/Intercom/IntercomContext';
 
 // Common page imports
-import { Home } from 'pages'
-import { isServer } from 'utils';
+//import { Home } from 'pages'
 //import { Fetch } from 'pages'
 //import { About } from 'pages'
 //import { NotFoundPage as NotFound } from 'pages'
@@ -18,8 +17,8 @@ const BaseLayout = lazy(() => import('pages').then(module => ({ default: module.
 // Adjust imports to match your file structure and add type assertions
 //const Home = lazy(() => import('pages').then(module => ({ default: module.Home })))
 //const Landing = lazy(() => import('pages').then(module => ({ default: module.Landing })))
-const Fetch = lazy(() => import('pages').then(module => ({ default: module.Fetch })))
-const About = lazy(() => import('pages').then(module => ({ default: module.About })))
+//const Fetch = lazy(() => import('pages').then(module => ({ default: module.Fetch })))
+//const About = lazy(() => import('pages').then(module => ({ default: module.About })))
 const NotFound = lazy(() => import('pages').then(module => ({ default: module.NotFoundPage })))
 const Landing = lazy(() => import('pages').then(module => ({ default: module.Landing })))
 const SubscriptionPlan = lazy(() => import('pages').then(module => ({ default: module.SubscriptionPlan })))
@@ -181,32 +180,34 @@ const routes: RouteObject[] = [
         index: true,
         element: null
       },
-      {
-        path: ROUTE_CONSTANTS.ABOUT_US,
-        element: <AboutUs />
-      },
-      {
-        path: ROUTE_CONSTANTS.CONTACT_US,
-        element: <ContactUs />
-      },
-      {
-        path: ROUTE_CONSTANTS.SUBSCRIPTION_PLAN,
-        element: <SubscriptionPlan />
-      },
-      {
-        path: ROUTE_CONSTANTS.FAQ,
-        element: <Faq />
-      },
-      {
-        path: ROUTE_CONSTANTS.TERMS_CONDITIONS,
-        element: <TermsAndConditions />
-      },
-      {
-        path: ROUTE_CONSTANTS.PRIVACY_POLICY,
-        element: <PrivacyPolicy />
-      }
     ]
   },
+
+  {
+    path: ROUTE_CONSTANTS.ABOUT_US,
+    element: <LazyComponent component={AboutUs} />
+  },
+  {
+    path: ROUTE_CONSTANTS.CONTACT_US,
+    element: <LazyComponent component={ContactUs} />
+  },
+  {
+    path: ROUTE_CONSTANTS.SUBSCRIPTION_PLAN,
+    element: <LazyComponent component={SubscriptionPlan} />
+  },
+  {
+    path: ROUTE_CONSTANTS.FAQ,
+    element: <LazyComponent component={Faq} />
+  },
+  {
+    path: ROUTE_CONSTANTS.TERMS_CONDITIONS,
+    element: <LazyComponent component={TermsAndConditions} />
+  },
+  {
+    path: ROUTE_CONSTANTS.PRIVACY_POLICY,
+    element: <LazyComponent component={PrivacyPolicy} />
+  },
+  /*
   {
     path: ROUTE_CONSTANTS.HOME,
     element: <LazyComponent component={Home} />
@@ -219,6 +220,7 @@ const routes: RouteObject[] = [
     path: ROUTE_CONSTANTS.ABOUT,
     element: <LazyComponent component={About} />
   },
+  */
   // ... rest of your routes remain the same
   {
     path: '*',

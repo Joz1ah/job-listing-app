@@ -180,17 +180,17 @@ const BaseMenu: FC<MenuProps> = ({
             <nav className="flex-shrink">
               <ul className="flex gap-4 lg:gap-8 text-white text-[14px] lg:text-[16px] font-light whitespace-nowrap items-center">
                 <li className="hover:text-[#F5722E]">
-                  <NavLink to='about-us' onClick={handleNavLinkClick}>
+                  <NavLink to='/about-us' onClick={handleNavLinkClick}>
                     About us
                   </NavLink>
                 </li>
                 <li className="hover:text-[#F5722E]">
-                  <NavLink to='contact-us' onClick={handleNavLinkClick}>
+                  <NavLink to='/contact-us' onClick={handleNavLinkClick}>
                     Contact us
                   </NavLink>
                 </li>
                 <li className="hover:text-[#F5722E]">
-                  <NavLink to='subscription-plan' onClick={handleNavLinkClick}>
+                  <NavLink to='/subscription-plan' onClick={handleNavLinkClick}>
                     Subscription plans
                   </NavLink>
                 </li>
