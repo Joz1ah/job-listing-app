@@ -1187,8 +1187,11 @@ const employerInfoSchema = Yup.object().shape({
     .required('This field is required'),
 
   website: Yup.string()
-    .trim()
-    .required('This field is required')
+    .required("This field is required")
+    .matches(
+      /^https?:\/\/.+/,
+      'Website URL must start with "http://" or "https://"'
+    ),
 });
 
 // Define the type for form data

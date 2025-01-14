@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Building, Info, Star } from "lucide-react";
+import { Building, Info } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { Tooltip } from "components";
 import verifiedIcon from "images/verified.svg?url";
@@ -23,10 +23,6 @@ const DesktopTooltip = ({
 
 const EmployerHeader: FC = () => {
   const { subscriptionPlan } = useEmployerContext();
-  const rating = 4.5;
-  const fullStars = Math.floor(rating);
-  const hasHalfStar = rating % 1 !== 0;
-
   const location = useLocation();
   const hideOnPagesMobile = [
     "/employer/job-listing",
@@ -47,41 +43,43 @@ const EmployerHeader: FC = () => {
     >
       <div className="flex flex-col items-center md:flex-row md:justify-between md:items-start">
         <div className="flex flex-col space-y-2 md:space-y-4">
-          <div className="flex items-center">
-            <h1 className="text-3xl text-white font-normal">
-              {businessName}
-            </h1>
-            {subscriptionPlan === "freeTrial" ? (
-              <Tooltip
-                content={
-                  <div className="flex flex-col gap-2">
-                    <div className="text-xs">
-                      Subscribe to unlock your verification status.
+          <div className="flex items-start">
+            <div className="flex-1">
+              <h1 className="text-3xl text-white font-normal line-clamp-2">
+                {businessName}
+              </h1>
+            </div>
+            <div className="flex-shrink-0 ml-2">
+              {subscriptionPlan === "freeTrial" ? (
+                <Tooltip
+                  content={
+                    <div className="flex flex-col gap-2">
+                      <div className="text-xs">
+                        Subscribe to unlock your verification status.
+                      </div>
+                      <div className="flex items-center text-sm">
+                        {businessName}
+                        <img
+                          src={verifiedIcon}
+                          className="ml-1 w-4 h-4 text-orange-500"
+                        />
+                      </div>
                     </div>
-                    <div className="flex items-center text-sm">
-                      {businessName}
-                      <img
-                        src={verifiedIcon}
-                        className="ml-1 w-4 h-4 text-orange-500"
-                      />
-                    </div>
-                  </div>
-                }
-              >
-                <Info
-                  className="ml-2 fill-[#F5F5F7] text-[#263238]"
-                  size={34}
+                  }
+                >
+                  <Info
+                    className="fill-[#F5F5F7] text-[#263238]"
+                    size={34}
+                  />
+                </Tooltip>
+              ) : (
+                <img
+                  src={verifiedIcon}
+                  className="w-8 h-8"
+                  alt="Verified"
                 />
-              </Tooltip>
-            ) : (
-              <img
-                src={verifiedIcon}
-                className="ml-2"
-                width={34}
-                height={34}
-                alt="Verified"
-              />
-            )}
+              )}
+            </div>
           </div>
 
           <div className="flex flex-col space-y-3">
@@ -104,36 +102,6 @@ const EmployerHeader: FC = () => {
             )}
           </div>
         </div>
-
-        {/* Mobile view - star rating (hidden on job creation page) */}
-        {!hideOnMobile && (
-          <div className="md:hidden flex items-center text-[15px] text-white">
-            <div className="flex items-center">
-              {rating}
-              <div className="flex ml-1">
-                {[...Array(fullStars)].map((_, i) => (
-                  <Star
-                    key={i}
-                    size={16}
-                    className="text-[#F5722E] fill-[#F5722E]"
-                  />
-                ))}
-                {hasHalfStar && (
-                  <div className="relative ml-1">
-                    <Star size={16} className="text-[#F5722E]" />
-                    <div className="absolute inset-0 overflow-hidden w-1/2">
-                      <Star
-                        size={16}
-                        className="text-[#F5722E] fill-[#F5722E]"
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-            <span className="pl-2">Job Hunter Rating</span>
-          </div>
-        )}
       </div>
     </div>
   );
