@@ -22,7 +22,7 @@ import { perfectMatch as jobMatches, Match as JobMatch } from 'mockData/jobs-dat
 import { EmployerProvider, JobHunterProvider } from 'components';
 import { BookmarkProvider } from 'components';
 import { Button } from 'components';
-//import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from 'contexts/AuthContext/AuthContext';
 /* import { employerDesktopMenu, employerMobileMenu } from 'mockData/nav-menus';
 import { jobHunterDesktopMenu, jobHunterMobileMenu } from 'mockData/nav-menus';
@@ -205,7 +205,6 @@ const Landing: FC = (): ReactElement => {
   });
   const [tempLoginEmail, setTempLoginEmail] = useState('');
   const [tempLoginPassword, setTempLoginPassword] = useState('');
-  const navigate = useNavigate();
 
   const heroStates = {
       'PERFECT_MATCH_ALGO' : 1,
@@ -3238,19 +3237,6 @@ const HeroLoading = () => {
 
 const isFreeTrial = false;
 const isIndexRoute = useMatch('/landing');
-const buttonScheduleACall = useRef<HTMLButtonElement>(null);
-
-const handleScheduleAcall = ()=> {
-  if (buttonScheduleACall.current) {
-    buttonScheduleACall.current.onclick = () => {
-      navigate('/landing/contact-us');
-    };
-  }
-}
-useEffect(()=>{
-  handleScheduleAcall()
-},[])
-
 const ModalWrapper = ()=>{
   return(
     <Modal>
@@ -3390,7 +3376,8 @@ const ModalWrapper = ()=>{
                         <div className={`${styles['sub-desc']}`}>We are committed to be the best at what we do. Our CEO is eager to connect with you personally to discuss how we can enhance your experience!</div>
                     </div>
                     <div className={`${styles['button-wrapper']}`}>
-                        <button ref={buttonScheduleACall} className={`${styles['button-regular']}`}>Schedule a call</button>
+                        <button className={`${styles['button-regular']}`}>
+                          <Link to={'https://calendly.com/ceo-akaza/intro-to-akaza'}>Schedule a call</Link></button>
                     </div>
                 </div>
             </div>
