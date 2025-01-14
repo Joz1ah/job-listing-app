@@ -143,24 +143,48 @@ const Intercom = ({ children }: { children: React.ReactNode }) => {
   return <IntercomProvider>{children}</IntercomProvider>
 }
 
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  if(isServer) return; //Add handling for SSR as the code below causes issues on redirect
-  const { isAuthenticated, isLoading } = useAuth();
-  if(isLoading)
-    return <></>
-  else
-    return isAuthenticated ? <Intercom>{children}</Intercom> : <RedirectTo to={ROUTE_CONSTANTS.LANDING} />;
+const ProtectedRoute = ({ children, allowedUserType }: { children: React.ReactNode, allowedUserType: 'employer' | 'job_hunter' }) => {
+  if (isServer) return null;
+  const { isAuthenticated, user, isLoading } = useAuth();
+  
+  if (isLoading) {
+    return <LoadingFallback />;
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to={ROUTE_CONSTANTS.LANDING} replace />;
+  }
+
+  const userType = user?.data?.user?.type;
+
+  if (userType !== allowedUserType) {
+    const redirectPath = userType === 'employer' 
+      ? ROUTE_CONSTANTS.EMPLOYER 
+      : ROUTE_CONSTANTS.JOB_HUNTER;
+    return <Navigate to={redirectPath} replace />;
+  }
+
+  return <Intercom>{children}</Intercom>;
 };
 
 const DashboardRedirectRoute = ({ children }: { children: React.ReactNode }) => {
-  if(isServer) return; //Add handling for SSR as the code below causes issues on redirect
+  if (isServer) return null;
   const { isAuthenticated, user, isLoading } = useAuth();
+  
   if (isLoading) {
-    return <></>;
+    return <LoadingFallback />;
   }
 
-  return isAuthenticated && user?.data?.user?.subscriptions.length > 0 ? <RedirectTo to={ROUTE_CONSTANTS.JOB_HUNTER} /> : children;
+  if (isAuthenticated && user?.data?.user?.type) {
+    const redirectPath = user.data.user.type === 'employer' 
+      ? ROUTE_CONSTANTS.EMPLOYER 
+      : ROUTE_CONSTANTS.JOB_HUNTER;
+    return <Navigate to={redirectPath} replace />;
+  }
+
+  return <>{children}</>;
 };
+
 const routes: RouteObject[] = [
   {
     path: '',
@@ -174,7 +198,7 @@ const routes: RouteObject[] = [
     path: ROUTE_CONSTANTS.LANDING,
     element: 
     <DashboardRedirectRoute>
-      <LazyComponent component={Landing} userType="guest" />
+      <LazyComponent component={Landing} />
     </DashboardRedirectRoute>,
     children: [
       {
@@ -227,9 +251,9 @@ const routes: RouteObject[] = [
   {
     path: ROUTE_CONSTANTS.EMPLOYER,
     element: 
-      <ProtectedRoute>
-        <LazyComponent component={BaseLayout} userType="employer"/>
-      </ProtectedRoute>
+    <ProtectedRoute allowedUserType="employer">
+    <LazyComponent component={BaseLayout}/>
+  </ProtectedRoute>
       ,
     children: [
       {
@@ -391,12 +415,11 @@ const routes: RouteObject[] = [
     ]
   },
   {
-    
     path: ROUTE_CONSTANTS.JOB_HUNTER,
     element: 
-    <ProtectedRoute>
-      <LazyComponent component={BaseLayout} userType="job-hunter"/>
-    </ProtectedRoute>,
+    <ProtectedRoute allowedUserType="job_hunter">
+        <LazyComponent component={BaseLayout}/>
+      </ProtectedRoute>,
     children: [
       {
         path: '',

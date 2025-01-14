@@ -1205,10 +1205,7 @@ type FormData = {
 };
 
 const EmployerAdditionalInformation = () => {
-  const { login } = useAuth();
-  const [loginSubmit] = useLoginMutation();
-
-  // Form state
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
     lastName: '',
@@ -1217,8 +1214,6 @@ const EmployerAdditionalInformation = () => {
     address: '',
     website: ''
   });
-
-  // Error state
   const [errors, setErrors] = useState<Record<keyof FormData, string>>({
     firstName: '',
     lastName: '',
@@ -1238,21 +1233,15 @@ const EmployerAdditionalInformation = () => {
     
     // Validate individual field
     try {
-      // Create a schema with just the current field
       const fieldSchema = Yup.object().shape({
         [name]: employerInfoSchema.fields[name as keyof FormData]
       });
-
-      // Validate the specific field
       fieldSchema.validateSync({ [name]: value }, { abortEarly: true });
-      
-      // Clear error if validation passes
       setErrors(prev => ({
         ...prev,
         [name]: ''
       }));
     } catch (err) {
-      // Set error if validation fails
       if (err instanceof Yup.ValidationError) {
         setErrors(prev => ({
           ...prev,
@@ -1265,10 +1254,7 @@ const EmployerAdditionalInformation = () => {
   // Validate form
   const validateForm = () => {
     try {
-      // Validate entire form
       employerInfoSchema.validateSync(formData, { abortEarly: false });
-      
-      // Clear all errors if validation passes
       setErrors({
         firstName: '',
         lastName: '',
@@ -1280,17 +1266,13 @@ const EmployerAdditionalInformation = () => {
       return true;
     } catch (err) {
       if (err instanceof Yup.ValidationError) {
-        // Create error object from validation errors
         const errorObj = err.inner.reduce((acc, curr) => {
           if (curr.path) {
             acc[curr.path as keyof FormData] = curr.message;
           }
           return acc;
         }, {} as Record<keyof FormData, string>);
-        
-        // Set errors
         setErrors(errorObj);
-        return false;
       }
       return false;
     }
@@ -1299,25 +1281,18 @@ const EmployerAdditionalInformation = () => {
   const handleNext = async () => {
     if (validateForm()) {
       try {
-        // Login to get the token
-        const response = await loginSubmit({
-          email: tempLoginEmail,
-          password: tempLoginPassword
-        }).unwrap();
+        setIsSubmitting(true);
         
-        if (response?.data?.token) {
-          // Store the token
-          login(response.data.token);
-          
-          // Store employer info in localStorage for persistence
-          localStorage.setItem('employerInfo', JSON.stringify(formData));
-          
-          // Continue with the flow
-          setSelectedModalHeader(2);
-          setModalState(modalStates.SIGNUP_STEP5);
-        }
+        // Store the form data in the parent component's state if needed
+        // Or pass it to the next step through context/state management
+        
+        // Continue to next step
+        setSelectedModalHeader(2);
+        setModalState(modalStates.SIGNUP_STEP5);
       } catch (error) {
-        console.error('Error in login:', error);
+        console.error('Error:', error);
+      } finally {
+        setIsSubmitting(false);
       }
     }
   };
@@ -1433,22 +1408,34 @@ const EmployerAdditionalInformation = () => {
               </div>
             </div>
             
-            <div className={`${styles['action-buttons']}`}>
-                <button 
-                  type="button"
-                  onClick={handlePrevious}
-                  className={`${styles['button-custom-basic']}`}
-                >
-                  Previous
-                </button>
-                <button 
-                  type="button"
-                  onClick={handleNext}
-                  className={`${styles['button-custom-orange']}`}
-                >
-                  Next
-                </button>
-            </div>
+            <div className={styles['action-buttons']}>
+          <button 
+            type="button"
+            onClick={handlePrevious}
+            className={styles['button-custom-basic']}
+          >
+            Previous
+          </button>
+          <button 
+            type="button"
+            onClick={handleNext}
+            className={styles['button-custom-orange']}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <>
+                <img
+                  src={button_loading_spinner}
+                  alt="Loading"
+                  className={styles['button-spinner']}
+                />
+                Loading...
+              </>
+            ) : (
+              'Next'
+            )}
+          </button>
+        </div>
         </div>
     </div>
   );
@@ -1482,7 +1469,7 @@ const SubscriptionPlanSelection = () =>{
             setModalState(modalStates.LOADING);
             setTimeout(() => {
               navigate(userType === 'employer' ? '/employer/employer-profile' : '/job-hunter/jobhunter-profile');
-            }, 5000);
+            }, 1000);
           }
         } catch (error) {
           console.error('Auto-login failed:', error);
@@ -1814,7 +1801,7 @@ const CreditCardForm: React.FC = () => {
             setModalState(modalStates.LOADING)
             setTimeout(()=>{
               navigate("/job-hunter");
-            },5000)
+            },1000)
           }).catch((err) => {
             alert(JSON.stringify(err))
             setIsSubmitting(false)
@@ -2040,7 +2027,7 @@ const AuthnetPaymentFullModal = () => {
             setModalState(modalStates.LOADING)
             setTimeout(()=>{
               navigate(dataStates.selectedUserType === 'employer' ? '/employer/employer-profile' : '/job-hunter/jobhunter-profile');
-            },5000)
+            },1000)
           }).catch((err) => {
             
             showError(JSON.stringify(err));
