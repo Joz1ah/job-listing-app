@@ -90,8 +90,6 @@ const CompleteEmployerProfile: FC = () => {
   const navigate = useNavigate();
   const { refreshUser, user } = useAuth();
 
-  const storedEmployerInfo = JSON.parse(localStorage.getItem('employerInfo') || '{}');
-
   const {
     values,
     errors,
@@ -102,17 +100,17 @@ const CompleteEmployerProfile: FC = () => {
     isValid,
   } = useFormik<FormData>({
     initialValues: {
-      businessName: storedEmployerInfo.businessName || "",
-      firstName: storedEmployerInfo.firstName || "",
-      lastName: storedEmployerInfo.lastName || "",
-      position: storedEmployerInfo.position || "",
+      businessName: user?.data?.user?.relatedDetails?.businessName || "",
+      firstName: user?.data?.user?.relatedDetails?.firstName || "",
+      lastName: user?.data?.user?.relatedDetails?.lastName || "",
+      position: user?.data?.user?.relatedDetails?.position || "",
       industry: "",
-      emailAddress: user?.data?.user?.email || "",
+      emailAddress: "",
       yearFounded: "",
       mobileNumber: "",
-      companyWebsite: storedEmployerInfo.website || "",
+      companyWebsite: user?.data?.user?.relatedDetails?.website || "",
       unitAndBldg: "",
-      streetAddress: storedEmployerInfo.address || "",
+      streetAddress: user?.data?.user?.relatedDetails?.address || "",
       city: "",
       state: "",
       country: "",

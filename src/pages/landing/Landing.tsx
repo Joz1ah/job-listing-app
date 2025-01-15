@@ -29,6 +29,7 @@ import { SignOutModal } from 'components'; */
 import { Outlet, useMatch } from 'react-router-dom';
 import { Navigate } from 'react-router-dom';
 import { Input, InputField, PhoneInputLanding, CountrySelect } from "components";
+import { useEmployerContactMutation, useJobHunterContactMutation } from 'api/akaza/akazaAPI';
 
 import video1 from 'assets/mp4/Landing-Page-hero-1.mp4';
 import video2 from 'assets/mp4/video-conference-call-1.mp4';
@@ -1032,9 +1033,12 @@ const MobileCountrySignUp = () => {
   const [country, setCountry] = useState('');
   const [phoneError, setPhoneError] = useState('');
   const [countryError, setCountryError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Add the mutation hook
+  const [jobHunterContactSubmit] = useJobHunterContactMutation();
 
   const validatePhoneNumber = (phone: string): boolean => {
-    // Remove all non-digit characters
     const cleanPhone = phone.replace(/\D/g, '');
     
     if (!cleanPhone) {
@@ -1069,7 +1073,6 @@ const MobileCountrySignUp = () => {
     const newValue = e.target.value;
     setPhoneNumber(newValue);
     if (phoneError) {
-      // Clear error only if there's actual input
       if (newValue.trim()) {
         validatePhoneNumber(newValue);
       } else {
@@ -1081,7 +1084,6 @@ const MobileCountrySignUp = () => {
   const handleCountryChange = (value: string) => {
     setCountry(value);
     if (countryError) setCountryError('');
-    // Revalidate phone number when country changes
     if (phoneNumber) {
       validatePhoneNumber(phoneNumber);
     }
@@ -1089,14 +1091,43 @@ const MobileCountrySignUp = () => {
 
   useEffect(() => {
     if (buttonNext.current) {
-      buttonNext.current.onclick = () => {
+      buttonNext.current.onclick = async () => {
         if (validateForm()) {
-          setSelectedModalHeader(2);
-          setModalState(modalStates.SIGNUP_STEP5);
+          try {
+            setIsSubmitting(true);
+            
+            // Submit the form data to the API
+            await jobHunterContactSubmit({
+              phoneNumber: phoneNumber.replace(/[^\d]/g, ''),
+              country: country
+            }).unwrap();
+
+            // If successful, move to next step
+            setSelectedModalHeader(2);
+            setModalState(modalStates.SIGNUP_STEP5);
+          } catch (err: any) {
+            // Handle API errors
+            console.error('Error submitting contact info:', err);
+            
+            if (err.status === 400) {
+              // Handle validation errors from the API
+              if (err.data?.errors?.phoneNumber) {
+                setPhoneError(err.data.errors.phoneNumber[0]);
+              }
+              if (err.data?.errors?.country) {
+                setCountryError(err.data.errors.country[0]);
+              }
+            } else {
+              // Handle other types of errors
+              alert('An error occurred while saving your information. Please try again.');
+            }
+          } finally {
+            setIsSubmitting(false);
+          }
         }
       };
     }
-  }, [phoneNumber, country]);
+  }, [phoneNumber, country, jobHunterContactSubmit]);
 
   return (
     <div id="step4_signup" className={styles['modal-content']} hidden={modalState !== modalStates.SIGNUP_STEP4}>
@@ -1156,8 +1187,20 @@ const MobileCountrySignUp = () => {
           <button 
             ref={buttonNext} 
             className={styles['button-custom-orange']}
+            disabled={isSubmitting}
           >
-            Next
+            {isSubmitting ? (
+              <>
+                <img
+                  src={button_loading_spinner}
+                  alt="Loading"
+                  className={styles['button-spinner']}
+                />
+                Loading...
+              </>
+            ) : (
+              'Next'
+            )}
           </button>
         </div>
       </div>
@@ -1205,6 +1248,8 @@ type FormData = {
 };
 
 const EmployerAdditionalInformation = () => {
+  const [employerContactSubmit] = useEmployerContactMutation();
+  const [loginSubmit] = useLoginMutation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
@@ -1283,14 +1328,79 @@ const EmployerAdditionalInformation = () => {
       try {
         setIsSubmitting(true);
         
-        // Store the form data in the parent component's state if needed
-        // Or pass it to the next step through context/state management
-        
+        // First ensure we have a valid auth token
+        if (tempLoginEmail && tempLoginPassword) {
+          try {
+            const { data } = await loginSubmit({
+              email: tempLoginEmail,
+              password: tempLoginPassword
+            }).unwrap();
+            
+            // Check if we have a valid token
+            if (!data?.token) {
+              throw new Error('No token received from login');
+            }
+            
+            // Wait a bit for the auth token to be set in cookies
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // Now submit the employer contact info
+            const response = await employerContactSubmit({
+              firstName: formData.firstName,
+              lastName: formData.lastName,
+              position: formData.position,
+              businessName: formData.businessName,
+              address: formData.address,
+              website: formData.website.startsWith('http') ? formData.website : `https://${formData.website}`
+            }).unwrap();
+
+            console.log('Employer contact submission successful:', response);
+            
+            // Continue to next step
+            setSelectedModalHeader(2);
+            setModalState(modalStates.SIGNUP_STEP5);
+          } catch (loginErr) {
+            console.error('Error during login:', loginErr);
+            alert('There was an issue with your session. Please try refreshing the page.');
+          }
+        } else {
+          console.error('Missing login credentials');
+          alert('There was an issue with your registration. Please try refreshing the page.');
+        }
+
         // Continue to next step
         setSelectedModalHeader(2);
         setModalState(modalStates.SIGNUP_STEP5);
-      } catch (error) {
-        console.error('Error:', error);
+      } catch (err: any) {
+        console.error('Error submitting employer contact:', err);
+        
+        // Log detailed error information
+        console.log('Error details:', {
+          status: err.status,
+          data: err.data,
+          message: err.message,
+          stack: err.stack
+        });
+
+        if (err.status === 409) {
+          alert('This employer information has already been registered. Please try again with different information.');
+        } else if (err.status === 400) {
+          // Handle validation errors from the API
+          const errorMessages = err.data?.errors || {};
+          setErrors(prev => ({
+            ...prev,
+            ...Object.keys(errorMessages).reduce((acc: any, key) => {
+              acc[key as keyof FormData] = errorMessages[key][0];
+              return acc;
+            }, {})
+          }));
+        } else if (err.status === 401) {
+          alert('Your session has expired. Please log in again.');
+          // Optionally redirect to login
+        } else {
+          // Handle other types of errors
+          alert('An error occurred while saving your information. Please try again.');
+        }
       } finally {
         setIsSubmitting(false);
       }
@@ -1409,37 +1519,38 @@ const EmployerAdditionalInformation = () => {
             </div>
             
             <div className={styles['action-buttons']}>
-          <button 
-            type="button"
-            onClick={handlePrevious}
-            className={styles['button-custom-basic']}
-          >
-            Previous
-          </button>
-          <button 
-            type="button"
-            onClick={handleNext}
-            className={styles['button-custom-orange']}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? (
-              <>
-                <img
-                  src={button_loading_spinner}
-                  alt="Loading"
-                  className={styles['button-spinner']}
-                />
-                Loading...
-              </>
-            ) : (
-              'Next'
-            )}
-          </button>
-        </div>
+              <button 
+                type="button"
+                onClick={handlePrevious}
+                className={styles['button-custom-basic']}
+              >
+                Previous
+              </button>
+              <button 
+                type="button"
+                onClick={handleNext}
+                className={styles['button-custom-orange']}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>
+                    <img
+                      src={button_loading_spinner}
+                      alt="Loading"
+                      className={styles['button-spinner']}
+                    />
+                    Loading...
+                  </>
+                ) : (
+                  'Next'
+                )}
+              </button>
+            </div>
         </div>
     </div>
   );
 };
+
 
 const SubscriptionPlanSelection = () =>{
   const subscription_plan1 = useRef<HTMLDivElement>(null);

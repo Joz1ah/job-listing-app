@@ -133,7 +133,11 @@ const ApplicationCardForm: FC = () => {
       lastName: "",
       birthday: "",
       emailAddress: user?.data?.user?.email || "",
-      mobileNumber: "",
+      mobileNumber: user?.data?.user?.relatedDetails?.phoneNumber 
+        ? user.data.user.relatedDetails.phoneNumber.startsWith('+') 
+          ? user.data.user.relatedDetails.phoneNumber 
+          : `+${user.data.user.relatedDetails.phoneNumber}`
+        : "",
       employmentType: [],
       salaryRange: "",
       yearsOfExperience: "",
@@ -141,7 +145,7 @@ const ApplicationCardForm: FC = () => {
       interpersonalSkills: [],
       education: "",
       languages: [],
-      country: "",
+      country: user?.data?.user?.relatedDetails?.country,
       certifications: [],
     },
     validationSchema,
