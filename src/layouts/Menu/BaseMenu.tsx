@@ -22,7 +22,7 @@ interface MenuProps {
   desktopMenuItems?: NavItem[];
   mobileMenuItems?: NavItem[];
   subscriptionPlan?: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
-  userType?: 'employer' | 'job-hunter';
+  userType?: 'employer' | 'job_hunter';
   userName?: string;
   onSignOut?: () => void;
   isAuthenticated?: boolean;

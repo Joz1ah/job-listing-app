@@ -53,7 +53,7 @@ export const ROUTE_CONSTANTS = {
   COMPLETED: 'completed',
   
   // Job listing status
-  ACTIVE: 'active',
+  ALL_JOB: 'all-job-lists',
   DRAFTS: 'drafts',
   EXPIRED: 'expired',
   CLOSED: 'closed',

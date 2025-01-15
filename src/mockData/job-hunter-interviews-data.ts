@@ -36,7 +36,7 @@ export interface Interview {
   }
 
   export const acceptedInterviewsData: Interview[] = [
-    {
+    /* {
       position: "Senior Frontend Engineer",
       company: "Google",
       location: "Mountain View, CA",
@@ -125,11 +125,11 @@ export interface Interview {
         "Incident Response",
       ],
       description: "We are looking for a Software Engineer to join our infrastructure team. In this role, you'll be responsible for designing and implementing scalable cloud solutions, maintaining our CI/CD pipelines, and ensuring the reliability and security of our systems."
-    },
+    }, */
   ];
 
   export const completedInterviewsData: Interview[] = [
-    {
+    /* {
       position: "Senior Frontend Engineer",
       company: "Google",
       location: "Mountain View, CA",
@@ -206,11 +206,11 @@ export interface Interview {
         "Team Collaboration",
         "Incident Response",
       ],
-    },
+    }, */
   ];
 
   export const declinedInterviewsData: Interview[] = [
-    {
+    /* {
       position: "Sr Mobile and Web Developer",
       company: "Google",
       location: "USA",
@@ -293,11 +293,11 @@ export interface Interview {
         "Visual Communication",
         "Design Systems",
       ],
-    },
+    }, */
   ];
 
   export const pendingInterviewsData: Interview[] = [
-    {
+   /*  {
       position: "Frontend Engineer",
       company: "Google",
       location: "Mountain View, CA",
@@ -452,11 +452,11 @@ export interface Interview {
         "Team Collaboration",
         "Incident Response",
       ],
-    },
+    }, */
   ];
 
   export const rescheduleInterviewsData: Interview[] = [
-    {
+    /* {
       position: "Sr. Mobile and Web Developer",
       company: "MAC Technofirm",
       location: "USA",
@@ -575,5 +575,5 @@ export interface Interview {
         "Team Collaboration",
         "Agile Methodologies",
       ],
-    },
+    }, */
   ];

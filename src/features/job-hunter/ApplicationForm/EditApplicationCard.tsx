@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useState, useEffect } from "react";
 import { ChevronLeft } from "lucide-react";
 import { Input, Button, InputField } from "components";
 import { NavLink } from "react-router-dom";
@@ -10,6 +10,9 @@ import { selectOptions } from "mockData/app-form-options";
 import { AppCardPreview } from "features/employer";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import { useJobHunterProfileMutation } from "api/akaza/akazaAPI";
+import { useContext } from "react";
+import { KeywordMappingContext } from "contexts/KeyWordMappingContext";
+import { CountrySelect } from "components";
 
 import {
   LanguageTagInput,
@@ -101,17 +104,33 @@ const LoadingOverlay: FC = () => (
   </div>
 );
 
+interface JobHunterSkill {
+  id: string;
+  keyword: string;
+  type: "core" | "interpersonal" | "certification";
+}
+
 const EditApplicationCard: FC = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPreview, setShowPreview] = useState<boolean>(false);
   const { user, refreshUser } = useAuth();  // Add refreshUser
   const [submitJobHunterProfile] = useJobHunterProfileMutation();
+  const { keywordToIdMap, addMapping } = useContext(KeywordMappingContext);
 
   // Parse employment type string into array
   const employmentTypes = user?.data?.user?.relatedDetails?.employmentType
     ? user.data.user.relatedDetails.employmentType.split(',')
     : [];
+
+  
+    useEffect(() => {
+      if (user?.data?.user?.relatedDetails?.JobHunterSkill) {
+        user.data.user.relatedDetails.JobHunterSkill.forEach((skill: JobHunterSkill) => {
+          addMapping(skill.keyword, skill.id);
+        });
+      }
+    }, [user, addMapping]);
 
   const formik = useFormik<FormData>({
     initialValues: {
@@ -128,19 +147,19 @@ const EditApplicationCard: FC = () => {
       salaryRange: user?.data?.user?.relatedDetails?.salaryRange || "",
       yearsOfExperience: user?.data?.user?.relatedDetails?.yearsOfExperience || "",
       coreSkills: user?.data?.user?.relatedDetails?.JobHunterSkill
-        ?.filter((skill: JobHunterSkill) => skill.type === "core")
-        ?.map((skill: JobHunterSkill) => skill.keyword) || [],
-      interpersonalSkills: user?.data?.user?.relatedDetails?.JobHunterSkill
-        ?.filter((skill: JobHunterSkill) => skill.type === "interpersonal")
-        ?.map((skill: JobHunterSkill) => skill.keyword) || [],
+      ?.filter((skill: JobHunterSkill) => skill.type === "core")
+      ?.map((skill: JobHunterSkill) => skill.keyword) || [],
+    interpersonalSkills: user?.data?.user?.relatedDetails?.JobHunterSkill
+      ?.filter((skill: JobHunterSkill) => skill.type === "interpersonal")
+      ?.map((skill: JobHunterSkill) => skill.keyword) || [],
       education: user?.data?.user?.relatedDetails?.education || "",
       languages: user?.data?.user?.relatedDetails?.language
         ? [user.data.user.relatedDetails.language]
         : [],
       country: user?.data?.user?.relatedDetails?.country || "",
       certifications: user?.data?.user?.relatedDetails?.JobHunterSkill
-        ?.filter((skill: JobHunterSkill) => skill.type === "certification")
-        ?.map((skill: JobHunterSkill) => skill.keyword) || [],
+      ?.filter((skill: JobHunterSkill) => skill.type === "certification")
+      ?.map((skill: JobHunterSkill) => skill.keyword) || [],
     },
     validationSchema,
     validateOnMount: true,
@@ -203,13 +222,26 @@ const EditApplicationCard: FC = () => {
         { label: "Vietnamese", value: "vi" }
       ];
 
-      // Format language array to comma-separated string
-      const formattedLanguages = values.languages.map(lang => {
-        const languageOption = languages.find(opt => opt.value === lang);
-        return languageOption?.label || lang;
-      }).join(',');
+      // Transform keywords to IDs during submission
+      const coreSkillIds = values.coreSkills
+        .map(keyword => keywordToIdMap[keyword])
+        .filter(Boolean);
 
-      // Format employment types to comma-separated string
+      const interpersonalSkillIds = values.interpersonalSkills
+        .map(keyword => keywordToIdMap[keyword])
+        .filter(Boolean);
+
+      const certificationIds = values.certifications
+        .map(keyword => keywordToIdMap[keyword])
+        .filter(Boolean);
+
+        const formattedLanguages = values.languages
+        .map(lang => {
+          const languageOption = languages.find(opt => opt.value === lang);
+          return languageOption?.label || lang;
+        })
+        .join(',');
+      
       const formattedEmploymentTypes = values.employmentType.join(',');
       
       const payload = {
@@ -223,9 +255,9 @@ const EditApplicationCard: FC = () => {
         employmentType: formattedEmploymentTypes,
         education: values.education,
         yearsOfExperience: values.yearsOfExperience || "less-than-1",
-        core: values.coreSkills,
-        interpersonal: values.interpersonalSkills,
-        certification: values.certifications,
+        core: coreSkillIds,
+        interpersonal: interpersonalSkillIds,
+        certification: certificationIds,
         salaryRange: values.salaryRange,
         country: values.country
       };
@@ -377,31 +409,18 @@ const EditApplicationCard: FC = () => {
   
               {/* Country / Employment */}
               <div>
-                <InputField
+              <InputField
                   label="Country of Residence"
                   error={errors.country}
                   touched={touched.country}
                 >
-                  <Select
-                    name="country"
-                    value={values.country}
-                    onValueChange={(value) => setFieldValue("country", value)}
-                  >
-                    <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
-                      <SelectValue placeholder="Select your Country of Residence" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-[#F5F5F7] items-center p-0 [&>*]:p-0 border-none rounded-none">
-                      {selectOptions.country.map(({ value, label }) => (
-                        <SelectItem
-                          key={value}
-                          className={cn("rounded-none justify-start pl-3 h-[55px]")}
-                          value={value}
-                        >
-                          <div className="py-3 w-full text-center">{label}</div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <CountrySelect
+                    value={values.country || ""}
+                    onChange={(value) => setFieldValue("country", value)}
+                    className="bg-transparent border-[#AEADAD] h-[56px] hover:text-white border-2 focus:border-[#F5722E] w-[335px] rounded-[8px] text-white placeholder:text-[#AEADAD] px-3 py-2"
+                    popoverClassName="w-[335px]"
+                    error={touched.country && errors.country ? errors.country : undefined}
+                  />
                 </InputField>
               </div>
   

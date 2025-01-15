@@ -1,4 +1,4 @@
-import { RouteObject, Navigate } from 'react-router-dom'
+import { RouteObject, Navigate, useLocation } from 'react-router-dom'
 import { lazy, Suspense, ComponentType, useEffect, useState  } from 'react'
 import { ROUTE_CONSTANTS } from 'constants/routeConstants'
 import spinner_loading_fallback from 'assets/images/spinner-loading-akaza.svg?url'
@@ -37,7 +37,7 @@ const EmployerNotFound = lazy(() => import('pages').then(module => ({ default: m
 const InterviewEmployer = lazy(() => import('pages').then(module => ({ default: module.InterviewEmployer })))
 const AccountSettingsEmployer = lazy(() => import('pages').then(module => ({ default: module.AccountSettingsEmployer })))
 const ManageJobListings = lazy(() => import('pages').then(module => ({ default: module.ManageJobListings })))
-const ReportsAnalytics = lazy(() => import('pages').then(module => ({ default: module.ReportsAnalytics })))
+//const ReportsAnalytics = lazy(() => import('pages').then(module => ({ default: module.ReportsAnalytics })))
 const EmployerBookmarkedJobs = lazy(() => import('pages').then(module => ({ default: module.EmployerBookmarkedJobs })))
 
 // Job Hunter pages
@@ -65,16 +65,16 @@ const EmployerSubscriptionSettings = lazy(() => import('features/employer').then
 const EmployerPrivacySettings = lazy(() => import('features/employer').then(module => ({ default: module.PrivacyAndSecuritySettings })))
 
 // Job listings management
-const ActiveListings = lazy(() => import('features/employer').then(module => ({ default: module.ActiveListings })))
+const JobListings = lazy(() => import('features/employer').then(module => ({ default: module.JobListings})))
 const DraftListings = lazy(() => import('features/employer').then(module => ({ default: module.DraftListings })))
 const ExpiredListings = lazy(() => import('features/employer').then(module => ({ default: module.ExpiredListings })))
 const ClosedListings = lazy(() => import('features/employer').then(module => ({ default: module.ClosedListings })))
 
 // Reports and analytics
-const JobPerformance = lazy(() => import('features/employer').then(module => ({ default: module.JobPerformance })))
+/* const JobPerformance = lazy(() => import('features/employer').then(module => ({ default: module.JobPerformance })))
 const CandidateAnalytics = lazy(() => import('features/employer').then(module => ({ default: module.CandidateAnalytics })))
 const InterviewAnalytics = lazy(() => import('features/employer').then(module => ({ default: module.InterviewAnalytics })))
-const CostAnalytics = lazy(() => import('features/employer').then(module => ({ default: module.CostAnalytics })))
+const CostAnalytics = lazy(() => import('features/employer').then(module => ({ default: module.CostAnalytics }))) */
 
 // Job Hunter features
 const JobHunterFeed = lazy(() => import('features/job-hunter').then(module => ({ default: module.JobHunterFeed })))
@@ -93,9 +93,6 @@ const JobHunterPrivacySettings = lazy(() => import('features/job-hunter').then(m
 // Bookmarked jobs
 const JobHunterYourBookmarkedJobs = lazy(() => import('features/job-hunter').then(module => ({ default: module.YourBookmarkedJobs })))
 const EmployerYourBookmarkedJobs = lazy(() => import('features/employer').then(module => ({ default: module.YourBookmarkedJobs })))
-
-const TermsAndConditions = lazy(() => import('pages').then(module => ({ default: module.TermsConditionsPage })))
-const PrivacyPolicy = lazy(() => import('pages').then(module => ({ default: module.PrivacyPolicyPage })))
 
 const LoadingFallback = () => (
   <div className="flex items-center justify-center h-screen">
@@ -142,24 +139,73 @@ const Intercom = ({ children }: { children: React.ReactNode }) => {
   return <IntercomProvider>{children}</IntercomProvider>
 }
 
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  if(isServer) return; //Add handling for SSR as the code below causes issues on redirect
-  const { isAuthenticated, isLoading } = useAuth();
-  if(isLoading)
-    return <></>
-  else
-    return isAuthenticated ? <Intercom>{children}</Intercom> : <RedirectTo to={ROUTE_CONSTANTS.LANDING} />;
+const ProtectedRoute = ({ 
+  children, 
+  allowedUserType 
+}: { 
+  children: React.ReactNode, 
+  allowedUserType: 'employer' | 'job_hunter' 
+}) => {
+  if (isServer) return null;
+  const { isAuthenticated, user, isLoading } = useAuth();
+  const location = useLocation();
+  
+  if (isLoading) {
+    return <LoadingFallback />;
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to={ROUTE_CONSTANTS.LANDING} replace />;
+  }
+
+  const userType = user?.data?.user?.type;
+  const userDetails = user?.data?.user?.relatedDetails;
+
+  // Different profile completion checks based on user type
+  const isProfileIncomplete = userType === 'employer'
+    ? !userDetails?.businessName || !userDetails?.firstName || !userDetails?.lastName
+    : !userDetails?.firstName || !userDetails?.lastName;
+
+  // Get profile completion routes based on user type
+  const profileCompletionRoute = userType === 'employer'
+    ? ROUTE_CONSTANTS.COMPLETE_PROFILE
+    : ROUTE_CONSTANTS.CREATE_APPLICATION;
+
+  const isProfileRoute = location.pathname === profileCompletionRoute;
+
+  // If profile is incomplete and not already on profile page, redirect
+  if (isProfileIncomplete && !isProfileRoute) {
+    return <Navigate to={profileCompletionRoute} replace />;
+  }
+
+  if (userType !== allowedUserType) {
+    const redirectPath = userType === 'employer' 
+      ? ROUTE_CONSTANTS.EMPLOYER 
+      : ROUTE_CONSTANTS.JOB_HUNTER;
+    return <Navigate to={redirectPath} replace />;
+  }
+
+  return <Intercom>{children}</Intercom>;
 };
 
 const DashboardRedirectRoute = ({ children }: { children: React.ReactNode }) => {
-  if(isServer) return; //Add handling for SSR as the code below causes issues on redirect
+  if (isServer) return null;
   const { isAuthenticated, user, isLoading } = useAuth();
+  
   if (isLoading) {
-    return <></>;
+    return <LoadingFallback />;
   }
 
-  return isAuthenticated && user?.data?.user?.subscriptions.length > 0 ? <RedirectTo to={ROUTE_CONSTANTS.JOB_HUNTER} /> : children;
+  if (isAuthenticated && user?.data?.user?.type) {
+    const redirectPath = user.data.user.type === 'employer' 
+      ? ROUTE_CONSTANTS.EMPLOYER 
+      : ROUTE_CONSTANTS.JOB_HUNTER;
+    return <Navigate to={redirectPath} replace />;
+  }
+
+  return <>{children}</>;
 };
+
 const routes: RouteObject[] = [
   {
     path: '',
@@ -173,13 +219,29 @@ const routes: RouteObject[] = [
     path: ROUTE_CONSTANTS.LANDING,
     element: 
     <DashboardRedirectRoute>
-      <LazyComponent component={Landing} userType="guest" />
+      <LazyComponent component={Landing} />
     </DashboardRedirectRoute>,
     children: [
       {
         index: true,
         element: null
       },
+      {
+        path: ROUTE_CONSTANTS.ABOUT_US,
+        element: <AboutUs />
+      },
+      {
+        path: ROUTE_CONSTANTS.CONTACT_US,
+        element: <ContactUs />
+      },
+      {
+        path: ROUTE_CONSTANTS.SUBSCRIPTION_PLAN,
+        element: <SubscriptionPlan />
+      },
+      {
+        path: ROUTE_CONSTANTS.FAQ,
+        element: <Faq />
+      }
     ]
   },
 
@@ -229,9 +291,9 @@ const routes: RouteObject[] = [
   {
     path: ROUTE_CONSTANTS.EMPLOYER,
     element: 
-      <ProtectedRoute>
-        <LazyComponent component={BaseLayout} userType="employer"/>
-      </ProtectedRoute>
+    <ProtectedRoute allowedUserType="employer">
+      <LazyComponent component={BaseLayout}/>
+    </ProtectedRoute>
       ,
     children: [
       {
@@ -322,11 +384,11 @@ const routes: RouteObject[] = [
         children: [
           {
             path: '',
-            element: <Navigate to={`${ROUTE_CONSTANTS.MANAGE_JOB_LISTINGS}/${ROUTE_CONSTANTS.ACTIVE}`} replace />
+            element: <Navigate to={`${ROUTE_CONSTANTS.MANAGE_JOB_LISTINGS}/${ROUTE_CONSTANTS.ALL_JOB}`} replace />
           },
           {
-            path: ROUTE_CONSTANTS.ACTIVE,
-            element: <LazyComponent component={ActiveListings} />
+            path: ROUTE_CONSTANTS.ALL_JOB,
+            element: <LazyComponent component={JobListings} />
           },
           {
             path: ROUTE_CONSTANTS.DRAFTS,
@@ -342,7 +404,7 @@ const routes: RouteObject[] = [
           }
         ]
       },
-      {
+     /*  {
         path: ROUTE_CONSTANTS.REPORTS_ANALYTICS,
         element: <LazyComponent component={ReportsAnalytics} />,
         children: [
@@ -367,7 +429,7 @@ const routes: RouteObject[] = [
             element: <LazyComponent component={CostAnalytics} />
           }
         ]
-      },
+      }, */
       {
         path: ROUTE_CONSTANTS.BOOKMARKED_JOBS_EMPLOYER,
         element: <LazyComponent component={EmployerBookmarkedJobs} />,
@@ -393,12 +455,11 @@ const routes: RouteObject[] = [
     ]
   },
   {
-    
     path: ROUTE_CONSTANTS.JOB_HUNTER,
     element: 
-    <ProtectedRoute>
-      <LazyComponent component={BaseLayout} userType="job-hunter"/>
-    </ProtectedRoute>,
+      <ProtectedRoute allowedUserType="job_hunter">
+        <LazyComponent component={BaseLayout}/>
+      </ProtectedRoute>,
     children: [
       {
         path: '',

@@ -3,7 +3,6 @@ import {
   BriefcaseBusiness,
   DollarSign,
   Info,
-  Star,
   MapPin,
 } from "lucide-react";
 import { Tooltip } from "components";
@@ -12,11 +11,8 @@ import { useAuth } from "contexts/AuthContext/AuthContext";
 
 const JobHunterHeader: FC = () => {
   const { subscriptionPlan } = useJobHunterContext();
-  const rating = 4.5;
-  const fullStars = Math.floor(rating);
-  const hasHalfStar = rating % 1 !== 0;
   const { user } = useAuth();
-  const firstName = user?.data?.user?.relatedDetails?.firstName;
+  const relatedDetails = user?.data?.user?.relatedDetails;
 
   const DesktopTooltip = ({
     content,
@@ -33,58 +29,46 @@ const JobHunterHeader: FC = () => {
     </>
   );
 
+  // Format salary range from "71-100" to "$71,000 - $100,000"
+  const formatSalaryRange = (range: string) => {
+    if (range === "nego") return "Negotiable";
+    if (range === "121+") return "$121,000 or more";
+    
+    const [min, max] = range.split("-");
+    return `$${min},000 - $${max},000`;
+  };
+
+  // Format employment type (e.g., "full-time" to "Full Time", "contract" to "Contract Only")
+  const formatEmploymentType = (type: string) => {
+    const formattedType = type
+      .split("-")
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+    
+    return formattedType === "Contract" ? "Contract Only" : formattedType;
+  };
+
   return (
     <div className="w-full px-6 md:px-16 py-8 md:mt-16">
-      <div className="flex flex-col space-y-4 md:space-y-6">
+      <div className="flex flex-col space-y-3">
         <div className="flex flex-col space-y-2 md:space-y-4">
           <h1 className="text-3xl text-white font-normal">
-            Welcome to your dashboard, {firstName}!
+            Welcome to your dashboard, {relatedDetails?.firstName}!
           </h1>
 
           <div className="flex items-center justify-between md:justify-start md:gap-8">
             <div className="flex items-center space-x-2 text-white font-light">
-              <MapPin className="text-[#F5722E]" size={19} />
-              <span className="text-[13px] md:text-[17px]">{user?.data?.user?.relatedDetails?.country}</span>
-            </div>
-
-            {/* Mobile rating */}
-            <div className="flex items-center md:hidden">
-              <span className="text-[#AEADAD] mx-4">•</span>
-              <div className="flex items-center text-[13px] text-white">
-                <span>Employer Rating:</span>
-                <div className="flex items-center ml-2">
-                  {rating}
-                  <div className="flex ml-1">
-                    {[...Array(fullStars)].map((_, i) => (
-                      <Star
-                        key={i}
-                        size={16}
-                        className="text-[#F5722E] fill-[#F5722E]"
-                      />
-                    ))}
-                    {hasHalfStar && (
-                      <div className="relative ml-1">
-                        <Star size={16} className="text-[#F5722E]" />
-                        <div className="absolute inset-0 overflow-hidden w-1/2">
-                          <Star
-                            size={16}
-                            className="text-[#F5722E] fill-[#F5722E]"
-                          />
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
+              <MapPin className="text-[#F5722E]" size={20} />
+              <span className="text-[13px] md:text-[17px]">{relatedDetails?.country}</span>
             </div>
           </div>
 
           {subscriptionPlan !== "freeTrial" && (
             <div className="hidden md:flex items-center space-x-2">
-              <DesktopTooltip content="This is how employer rated your interview">
+              <DesktopTooltip content="This shows your profile completeness">
                 <div className="flex items-center space-x-2 font-light text-white">
                   <span className="border-2 border-dotted border-[#F5722E] text-[15px] px-2 py-1 border-opacity-70 whitespace-nowrap">
-                    Your interview ratings from Employers
+                    Profile Status
                   </span>
                   <Info className="fill-[#D6D6D6] text-[#263238]" size={14} />
                 </div>
@@ -93,31 +77,33 @@ const JobHunterHeader: FC = () => {
           )}
         </div>
 
-        <div className="flex flex-col space-y-3">
+        <div className="flex flex-col space-y-3.5">
           <div className="flex items-center space-x-2 text-white">
-            <DollarSign className="text-[#F5722E]" size={14} strokeWidth={4} />
+            <DollarSign className="text-[#F5722E]" size={20} strokeWidth={4} />
             <span className="text-[13px] md:text-[15px]">
               Expected Salary:{" "}
             </span>
             <span className="outline outline-1 outline-[#F5722E] text-[#F5722E] px-1 font-semibold text-[13px] md:text-[15px] rounded-[2px]">
-              $100,000 - $120,000
+              {formatSalaryRange(relatedDetails?.salaryRange || "0-0")}
             </span>
           </div>
 
           <div className="flex items-center space-x-2 text-white">
             <BriefcaseBusiness
               className="fill-[#F5722E] text-[#263238]"
-              size={14}
+              size={20}
             />
             <span className="text-[13px] md:text-[15px]">
               Employment Preference:{" "}
             </span>
-            <span className="outline outline-1 outline-[#F5722E] text-[#F5722E] px-1 text-[13px] md:text-[15px] rounded-[2px]">
-              Full Time
-            </span>
-            <span className="outline outline-1 outline-[#F5722E] text-[#F5722E] px-1 text-[13px] md:text-[15px] rounded-[2px]">
-              Part Time
-            </span>
+                          {relatedDetails?.employmentType?.split(",").map((type: string) => (
+              <span 
+                key={type}
+                className="outline outline-1 outline-[#F5722E] text-[#F5722E] px-1 text-[13px] md:text-[15px] rounded-[2px]"
+              >
+                {formatEmploymentType(type.trim())}
+              </span>
+            ))}
           </div>
         </div>
       </div>

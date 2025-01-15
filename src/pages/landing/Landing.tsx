@@ -30,6 +30,7 @@ import { SignOutModal } from 'components'; */
 import { Outlet, useMatch } from 'react-router-dom';
 import { Navigate } from 'react-router-dom';
 import { Input, InputField, PhoneInputLanding, CountrySelect } from "components";
+import { useEmployerContactMutation, useJobHunterContactMutation } from 'api/akaza/akazaAPI';
 
 import video1 from 'assets/mp4/Landing-Page-hero-1.mp4';
 import video2 from 'assets/mp4/video-conference-call-1.mp4';
@@ -1037,9 +1038,12 @@ const MobileCountrySignUp = () => {
   const [country, setCountry] = useState('');
   const [phoneError, setPhoneError] = useState('');
   const [countryError, setCountryError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Add the mutation hook
+  const [jobHunterContactSubmit] = useJobHunterContactMutation();
 
   const validatePhoneNumber = (phone: string): boolean => {
-    // Remove all non-digit characters
     const cleanPhone = phone.replace(/\D/g, '');
     
     if (!cleanPhone) {
@@ -1074,7 +1078,6 @@ const MobileCountrySignUp = () => {
     const newValue = e.target.value;
     setPhoneNumber(newValue);
     if (phoneError) {
-      // Clear error only if there's actual input
       if (newValue.trim()) {
         validatePhoneNumber(newValue);
       } else {
@@ -1086,7 +1089,6 @@ const MobileCountrySignUp = () => {
   const handleCountryChange = (value: string) => {
     setCountry(value);
     if (countryError) setCountryError('');
-    // Revalidate phone number when country changes
     if (phoneNumber) {
       validatePhoneNumber(phoneNumber);
     }
@@ -1094,14 +1096,43 @@ const MobileCountrySignUp = () => {
 
   useEffect(() => {
     if (buttonNext.current) {
-      buttonNext.current.onclick = () => {
+      buttonNext.current.onclick = async () => {
         if (validateForm()) {
-          setSelectedModalHeader(2);
-          setModalState(modalStates.SIGNUP_STEP5);
+          try {
+            setIsSubmitting(true);
+            
+            // Submit the form data to the API
+            await jobHunterContactSubmit({
+              phoneNumber: phoneNumber.replace(/[^\d]/g, ''),
+              country: country
+            }).unwrap();
+
+            // If successful, move to next step
+            setSelectedModalHeader(2);
+            setModalState(modalStates.SIGNUP_STEP5);
+          } catch (err: any) {
+            // Handle API errors
+            console.error('Error submitting contact info:', err);
+            
+            if (err.status === 400) {
+              // Handle validation errors from the API
+              if (err.data?.errors?.phoneNumber) {
+                setPhoneError(err.data.errors.phoneNumber[0]);
+              }
+              if (err.data?.errors?.country) {
+                setCountryError(err.data.errors.country[0]);
+              }
+            } else {
+              // Handle other types of errors
+              alert('An error occurred while saving your information. Please try again.');
+            }
+          } finally {
+            setIsSubmitting(false);
+          }
         }
       };
     }
-  }, [phoneNumber, country]);
+  }, [phoneNumber, country, jobHunterContactSubmit]);
 
   return (
     <div id="step4_signup" className={styles['modal-content']} hidden={modalState !== modalStates.SIGNUP_STEP4}>
@@ -1161,8 +1192,20 @@ const MobileCountrySignUp = () => {
           <button 
             ref={buttonNext} 
             className={styles['button-custom-orange']}
+            disabled={isSubmitting}
           >
-            Next
+            {isSubmitting ? (
+              <>
+                <img
+                  src={button_loading_spinner}
+                  alt="Loading"
+                  className={styles['button-spinner']}
+                />
+                Loading...
+              </>
+            ) : (
+              'Next'
+            )}
           </button>
         </div>
       </div>
@@ -1192,8 +1235,11 @@ const employerInfoSchema = Yup.object().shape({
     .required('This field is required'),
 
   website: Yup.string()
-    .trim()
-    .required('This field is required')
+    .required("This field is required")
+    .matches(
+      /^https?:\/\/.+/,
+      'Website URL must start with "http://" or "https://"'
+    ),
 });
 
 // Define the type for form data
@@ -1207,10 +1253,9 @@ type FormData = {
 };
 
 const EmployerAdditionalInformation = () => {
-  const { login } = useAuth();
+  const [employerContactSubmit] = useEmployerContactMutation();
   const [loginSubmit] = useLoginMutation();
-
-  // Form state
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
     lastName: '',
@@ -1219,8 +1264,6 @@ const EmployerAdditionalInformation = () => {
     address: '',
     website: ''
   });
-
-  // Error state
   const [errors, setErrors] = useState<Record<keyof FormData, string>>({
     firstName: '',
     lastName: '',
@@ -1240,21 +1283,15 @@ const EmployerAdditionalInformation = () => {
     
     // Validate individual field
     try {
-      // Create a schema with just the current field
       const fieldSchema = Yup.object().shape({
         [name]: employerInfoSchema.fields[name as keyof FormData]
       });
-
-      // Validate the specific field
       fieldSchema.validateSync({ [name]: value }, { abortEarly: true });
-      
-      // Clear error if validation passes
       setErrors(prev => ({
         ...prev,
         [name]: ''
       }));
     } catch (err) {
-      // Set error if validation fails
       if (err instanceof Yup.ValidationError) {
         setErrors(prev => ({
           ...prev,
@@ -1267,10 +1304,7 @@ const EmployerAdditionalInformation = () => {
   // Validate form
   const validateForm = () => {
     try {
-      // Validate entire form
       employerInfoSchema.validateSync(formData, { abortEarly: false });
-      
-      // Clear all errors if validation passes
       setErrors({
         firstName: '',
         lastName: '',
@@ -1282,17 +1316,13 @@ const EmployerAdditionalInformation = () => {
       return true;
     } catch (err) {
       if (err instanceof Yup.ValidationError) {
-        // Create error object from validation errors
         const errorObj = err.inner.reduce((acc, curr) => {
           if (curr.path) {
             acc[curr.path as keyof FormData] = curr.message;
           }
           return acc;
         }, {} as Record<keyof FormData, string>);
-        
-        // Set errors
         setErrors(errorObj);
-        return false;
       }
       return false;
     }
@@ -1301,25 +1331,83 @@ const EmployerAdditionalInformation = () => {
   const handleNext = async () => {
     if (validateForm()) {
       try {
-        // Login to get the token
-        const response = await loginSubmit({
-          email: tempLoginEmail,
-          password: tempLoginPassword
-        }).unwrap();
+        setIsSubmitting(true);
         
-        if (response?.data?.token) {
-          // Store the token
-          login(response.data.token);
-          
-          // Store employer info in localStorage for persistence
-          localStorage.setItem('employerInfo', JSON.stringify(formData));
-          
-          // Continue with the flow
-          setSelectedModalHeader(2);
-          setModalState(modalStates.SIGNUP_STEP5);
+        // First ensure we have a valid auth token
+        if (tempLoginEmail && tempLoginPassword) {
+          try {
+            const { data } = await loginSubmit({
+              email: tempLoginEmail,
+              password: tempLoginPassword
+            }).unwrap();
+            
+            // Check if we have a valid token
+            if (!data?.token) {
+              throw new Error('No token received from login');
+            }
+            
+            // Wait a bit for the auth token to be set in cookies
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // Now submit the employer contact info
+            const response = await employerContactSubmit({
+              firstName: formData.firstName,
+              lastName: formData.lastName,
+              position: formData.position,
+              businessName: formData.businessName,
+              address: formData.address,
+              website: formData.website.startsWith('http') ? formData.website : `https://${formData.website}`
+            }).unwrap();
+
+            console.log('Employer contact submission successful:', response);
+            
+            // Continue to next step
+            setSelectedModalHeader(2);
+            setModalState(modalStates.SIGNUP_STEP5);
+          } catch (loginErr) {
+            console.error('Error during login:', loginErr);
+            alert('There was an issue with your session. Please try refreshing the page.');
+          }
+        } else {
+          console.error('Missing login credentials');
+          alert('There was an issue with your registration. Please try refreshing the page.');
         }
-      } catch (error) {
-        console.error('Error in login:', error);
+
+        // Continue to next step
+        setSelectedModalHeader(2);
+        setModalState(modalStates.SIGNUP_STEP5);
+      } catch (err: any) {
+        console.error('Error submitting employer contact:', err);
+        
+        // Log detailed error information
+        console.log('Error details:', {
+          status: err.status,
+          data: err.data,
+          message: err.message,
+          stack: err.stack
+        });
+
+        if (err.status === 409) {
+          alert('This employer information has already been registered. Please try again with different information.');
+        } else if (err.status === 400) {
+          // Handle validation errors from the API
+          const errorMessages = err.data?.errors || {};
+          setErrors(prev => ({
+            ...prev,
+            ...Object.keys(errorMessages).reduce((acc: any, key) => {
+              acc[key as keyof FormData] = errorMessages[key][0];
+              return acc;
+            }, {})
+          }));
+        } else if (err.status === 401) {
+          alert('Your session has expired. Please log in again.');
+          // Optionally redirect to login
+        } else {
+          // Handle other types of errors
+          alert('An error occurred while saving your information. Please try again.');
+        }
+      } finally {
+        setIsSubmitting(false);
       }
     }
   };
@@ -1435,26 +1523,39 @@ const EmployerAdditionalInformation = () => {
               </div>
             </div>
             
-            <div className={`${styles['action-buttons']}`}>
-                <button 
-                  type="button"
-                  onClick={handlePrevious}
-                  className={`${styles['button-custom-basic']}`}
-                >
-                  Previous
-                </button>
-                <button 
-                  type="button"
-                  onClick={handleNext}
-                  className={`${styles['button-custom-orange']}`}
-                >
-                  Next
-                </button>
+            <div className={styles['action-buttons']}>
+              <button 
+                type="button"
+                onClick={handlePrevious}
+                className={styles['button-custom-basic']}
+              >
+                Previous
+              </button>
+              <button 
+                type="button"
+                onClick={handleNext}
+                className={styles['button-custom-orange']}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>
+                    <img
+                      src={button_loading_spinner}
+                      alt="Loading"
+                      className={styles['button-spinner']}
+                    />
+                    Loading...
+                  </>
+                ) : (
+                  'Next'
+                )}
+              </button>
             </div>
         </div>
     </div>
   );
 };
+
 
 const SubscriptionPlanSelection = () =>{
   const subscription_plan1 = useRef<HTMLDivElement>(null);
@@ -1483,8 +1584,8 @@ const SubscriptionPlanSelection = () =>{
             localStorage.setItem('userType', userType);
             setModalState(modalStates.LOADING);
             setTimeout(() => {
-              navigate(userType === 'employer' ? '/employer/employer/employer-profile' : '/job-hunter/jobhunter-profile');
-            }, 5000);
+              navigate(userType === 'employer' ? '/employer/employer-profile' : '/job-hunter/jobhunter-profile');
+            }, 1000);
           }
         } catch (error) {
           console.error('Auto-login failed:', error);
@@ -1816,7 +1917,7 @@ const CreditCardForm: React.FC = () => {
             setModalState(modalStates.LOADING)
             setTimeout(()=>{
               navigate("/job-hunter");
-            },5000)
+            },1000)
           }).catch((err) => {
             alert(JSON.stringify(err))
             setIsSubmitting(false)
@@ -2042,7 +2143,7 @@ const AuthnetPaymentFullModal = () => {
             setModalState(modalStates.LOADING)
             setTimeout(()=>{
               navigate(dataStates.selectedUserType === 'employer' ? '/employer/employer-profile' : '/job-hunter/jobhunter-profile');
-            },5000)
+            },1000)
           }).catch((err) => {
             showError(err?.data?.errors, err?.data?.message)
             setIsSubmitting(false)

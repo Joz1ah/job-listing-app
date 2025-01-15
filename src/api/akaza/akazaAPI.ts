@@ -229,7 +229,7 @@ export const akazaApiAuth = createApiFunction({
           "firstName": payLoad.firstName,
           "lastName": payLoad.lastName,
           "position": payLoad.position,
-          "businessName": payLoad.firsbusinessNametName,
+          "businessName": payLoad.businessName, 
           "address": payLoad.address,
           "website": payLoad.website
       },

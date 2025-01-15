@@ -1,6 +1,6 @@
 // layouts/BaseLayout.tsx
 import { FC, useState, useEffect, useMemo } from "react";
-import { Outlet, useNavigate, Navigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import { useMenu } from "hooks";
 import { 
   employerDesktopMenu, 
@@ -19,8 +19,6 @@ import { SignOutModal } from "components";
 import { ScrollArea } from "components";
 import { SubscriptionPlan } from "contexts/types";
 import { useAuth } from "contexts/AuthContext/AuthContext";
-
-type UserType = 'employer' | 'job-hunter' | 'guest';
 
 interface LayoutContentProps {
   children: React.ReactNode;
@@ -41,28 +39,17 @@ const LayoutContent: FC<LayoutContentProps> = ({ children, menu }) => (
   </div>
 );
 
-interface BaseLayoutContentProps {
-  userType: UserType;
-}
-
-const AuthenticatedLayoutContent: FC<{ userType: 'employer' | 'job-hunter' }> = ({ userType }) => {
+const AuthenticatedLayoutContent: FC = () => {
   const { menuOpen, toggleMenu } = useMenu();
   const [showSignOutModal, setShowSignOutModal] = useState(false);
   const [shouldRenderModal, setShouldRenderModal] = useState(false);
+  const { user } = useAuth();
+  const userType = user?.data?.user?.type;
   const isEmployer = userType === 'employer';
   
   const { subscriptionPlan, isLoading, error } = isEmployer 
     ? useEmployerContext() 
     : useJobHunterContext();
-  const { isAuthenticated, user } = useAuth(); // Add user from auth context
-
-  const navigate = useNavigate();
-  
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/landing');
-    }
-  }, [isAuthenticated, navigate]);
 
   const desktopMenuItems = isEmployer ? employerDesktopMenu : jobHunterDesktopMenu;
   const mobileMenuItems = isEmployer ? employerMobileMenu : jobHunterMobileMenu;
@@ -136,57 +123,25 @@ const AuthenticatedLayoutContent: FC<{ userType: 'employer' | 'job-hunter' }> = 
   );
 };
 
-const BaseLayoutContent: FC<BaseLayoutContentProps> = ({ userType }) => {
-  const { isAuthenticated } = useAuth();
-
-  if (!isAuthenticated) {
-    return <Navigate to="/landing" replace />;
-  }
-
-  if (userType === 'guest') {
-    return null;
-  }
-
-  return <AuthenticatedLayoutContent userType={userType} />;
-};
-
-interface BaseLayoutProps {
-  userType: UserType;
-}
-
-const BaseLayout: FC<BaseLayoutProps> = ({ userType }) => {
-  const { isAuthenticated, isLoading } = useAuth(); // Add isLoading to track auth state
+const BaseLayout: FC = () => {
+  const { user } = useAuth();
   const storedTier = localStorage.getItem('subscriptionTier') as SubscriptionPlan || 'freeTrial';
-
-  // Show loading state while checking auth
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  // Redirect guest users
-  if (userType === 'guest') {
-    return <Navigate to="/landing" replace />;
-  }
-
-  // Check authentication for protected routes
-  if (!isAuthenticated) {
-    return <Navigate to="/landing" replace />;
-  }
+  const userType = user?.data?.user?.type;
 
   // Render appropriate provider based on user type
   if (userType === 'employer') {
     return (
       <EmployerProvider initialTier={storedTier}>
-        <BaseLayoutContent userType={userType} />
+        <AuthenticatedLayoutContent />
       </EmployerProvider>
     );
   }
 
   return (
     <JobHunterProvider initialTier={storedTier}>
-      <BaseLayoutContent userType={userType} />
+      <AuthenticatedLayoutContent />
     </JobHunterProvider>
   );
 };
 
-export { BaseLayout, LayoutContent };
+export { BaseLayout };

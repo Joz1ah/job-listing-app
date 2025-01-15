@@ -130,3 +130,4 @@ export { RescheduleCard } from 'components/Interview/interview-cards/RescheduleC
 export { SignOutModal } from 'components/sign-out/SignOutModal'
 export { IndustrySearch } from 'components/ui/custom/industry-search'
 export { CountrySelect } from 'components/ui/custom/country-select'
+export { TimezoneSelector } from 'components/ui/custom/timezone-selector'
