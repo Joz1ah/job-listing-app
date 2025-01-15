@@ -1,13 +1,15 @@
 import React, { createContext, useState, useContext, useCallback, ReactNode } from 'react';
+import style from './errorModalContext.module.scss';
 
 type ServerError = {
   id: number;
+  title?: string;
   message: string;
 };
 
 type ServerErrorContextType = {
   errors: ServerError[];
-  showError: (message: string) => void;
+  showError: (title:string, message: string) => void;
   hideError: (id: number) => void;
 };
 
@@ -18,9 +20,9 @@ let errorIdCounter = 0;
 export const ErrorModalProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [errors, setErrors] = useState<ServerError[]>([]);
   
-    const showError = useCallback((message: string) => {
+    const showError = useCallback((title: string, message: string) => {
       const id = ++errorIdCounter;
-      setErrors((prevErrors) => [...prevErrors, { id, message }]);
+      setErrors((prevErrors) => [...prevErrors, { id, title, message }]);
     }, []);
   
     const hideError = useCallback((id: number) => {
@@ -48,38 +50,14 @@ export const useErrorModal = (): ServerErrorContextType => {
 
 const ServerErrorModal: React.FC<{ error: ServerError; onClose: () => void }> = ({ error, onClose }) => {
   return (
-    <div style={modalStyles.overlay}>
-      <div style={modalStyles.modal}>
-        <h2>Server Error</h2>
-        <p>{error.message}</p>
-        <button onClick={onClose}>Close</button>
+    <div className={style.overlay}>
+      <div className={style.modal}>
+        <h2>{error.title || 'Server Error'}</h2>
+        <p>{JSON.stringify(error.message)}</p>
+        <button className={style['button-close']} onClick={onClose}>Close</button>
       </div>
     </div>
   );
 };
 
-const modalStyles = {
-  overlay: {
-    position: 'fixed' as const,
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 1000,
-  },
-  modal: {
-    background: 'white',
-    padding: '20px',
-    borderRadius: '8px',
-    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-    textAlign: 'center' as const,
-    width: '400px',
-    maxWidth: '90%',
-    position: 'relative' as const,
-    zIndex: 1000,
-  },
-};
+

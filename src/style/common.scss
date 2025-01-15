@@ -43,6 +43,24 @@ body,
   src: url('/src/assets/fonts/MerriweatherSans.ttf');
 }
 
+@font-face {
+  font-family: Poppins-R;
+  src: url('assets/Poppins-Regular.ttf');
+}
+@font-face {
+  font-family: Poppins-SB;
+  src: url('assets/Poppins-SemiBold.ttf');
+}
+@font-face {
+  font-family: Inter;
+  src: url('assets/Inter-VariableFont_opsz\,wght.ttf');
+}
+@font-face {
+  font-family: Poppins-L;
+  src: url('assets/Poppins-Light.ttf');
+}
+
+
 a:hover {
   text-decoration: none;
 }
@@ -50,7 +68,6 @@ a:hover {
 .main {
   min-width: 280px;
   min-height: 200px;
-  padding: 30px;
 
   background: var(--main-bg-color);
   border-radius: var(--border-radius);

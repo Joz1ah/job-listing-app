@@ -2,7 +2,7 @@ import React, { useEffect, useRef, ReactNode } from 'react';
 import styles from './defaultLayout.module.scss';
 import { BaseMenu } from 'layouts';
 import { useMenu } from 'hooks';
-
+import { Footer } from 'layouts/Footer/Engagement/Footer'
 interface DefaultLayoutProps {
   children: ReactNode;
 }
@@ -61,6 +61,7 @@ export const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
     <div className={styles['layout-container']}>
       <NavigationHeader/>
       <main className={styles['layout-main']}>{children}</main>
+      <Footer/>
     </div>
   );
 };

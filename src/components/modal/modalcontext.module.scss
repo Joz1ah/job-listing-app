@@ -1,0 +1,77 @@
+body:has(.requires-no-scroll:not([hidden])) {
+  overflow: hidden;
+}
+
+.mask-overlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: rgba(45, 58, 65, 0.50);
+  z-index: 1;
+}
+
+.modal-container-wrapper {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.modal-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  max-width: 642px;
+  width: 100%;
+  height: auto;
+  min-height: 554px;
+  background: #F5F5F7;
+  border-radius: 8px;
+
+  @media (max-width: 768px) {
+    margin: 1em;
+  }
+}
+
+.modal-item {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  position: relative;
+  height: inherit;
+}
+
+.modal-header {
+  display: inline-flex;
+  padding: 6px 31px 9px 19px;
+  align-items: center;
+  width: 100%;
+}
+
+.modal-content-wrapper {
+  flex: 1;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.modal-header:has(.close-modal2) {
+  padding: 4px 7px 0px 0px;
+  display: flex;
+  justify-content: end;
+}
+
+.modal-header > .close-modal:hover,
+.modal-header > .close-modal2:hover {
+  cursor: pointer;
+}
+
+.modal-divider {
+  border-top: 1px solid #AEADAD;
+}
