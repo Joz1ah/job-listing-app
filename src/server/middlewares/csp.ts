@@ -51,7 +51,7 @@ const csp = (req: Request, res: Response, next: NextFunction): void => {
           'https://js.intercomcdn.com/',
           IS_DEV ? "'unsafe-eval'" : ''
         ].filter(Boolean),
-        frameSrc: ["'self'", "https://js.stripe.com", "http://js.stripe.com"],
+        frameSrc: ["'self'", "https://js.stripe.com", "http://js.stripe.com","https://intercom-sheets.com"],
         connectSrc: [
           ...defaultSrc,
           "https://api-iam.intercom.io", 
