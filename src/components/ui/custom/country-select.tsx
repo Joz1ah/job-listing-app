@@ -20,6 +20,7 @@ interface CountrySelectProps {
   onChange: (value: string) => void
   error?: string
   className?: string
+  popoverClassName?: string
 }
 
 const countries = [
@@ -46,78 +47,79 @@ const countries = [
 ]
 
 const CountrySelect = ({
-    value,
-    onChange,
-    error,
-    className,
-  }: CountrySelectProps) => {
-    const [open, setOpen] = React.useState(false)
-  
-    return (
-      <div className="relative w-[410px]">
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              role="combobox"
-              aria-expanded={open}
-              className={cn(
-                "w-full justify-between bg-transparent px-0 font-normal",
-                "border-0 rounded-none shadow-none hover:bg-transparent hover:no-underline focus:ring-0 focus:ring-offset-0",
-                "text-[14px] text-[#263238] font-medium h-[38px]",
-                error ? "border-red-500" : "",
-                className
-              )}
-            >
-              <span className="truncate">
-                {value
-                  ? countries.find(
-                      (country) => country.toLowerCase() === value.toLowerCase()
-                    )
-                  : "Select country..."}
-              </span>
-              <ChevronDown className="h-4 w-4 opacity-50 flex-shrink-0 ml-2" />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-[410px] p-0 rounded-none">
-            <Command>
-              <CommandInput 
-                placeholder="Search country..." 
-                className="h-9"
-              />
-              <CommandEmpty>No country found.</CommandEmpty>
-              <CommandGroup className="max-h-64 overflow-auto">
-                {countries.map((country) => (
-                  <CommandItem
-                    key={country}
-                    value={country}
-                    onSelect={(currentValue) => {
-                      onChange(currentValue === value ? "" : currentValue)
-                      setOpen(false)
-                    }}
-                    className={cn(
-                      "relative flex items-center px-4 py-2 text-[14px] font-normal",
-                      "hover:bg-[#F5722E] hover:text-white",
-                      value.toLowerCase() === country.toLowerCase() && "bg-[#F5722E] text-white"
-                    )}
-                  >
-                    {value.toLowerCase() === country.toLowerCase() && (
-                      <span className="absolute left-0 top-1/2 transform -translate-y-1/2 inline-block h-full w-2 bg-[#8C4227]" />
-                    )}
-                    <span className="truncate">{country}</span>
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </Command>
-          </PopoverContent>
-        </Popover>
-        {error && (
-          <div className="absolute text-red-500 text-[10px] mt-1 font-light bottom-0 right-0">
-            {error}
-          </div>
-        )}
-      </div>
-    )
-  }
+  value,
+  onChange,
+  error,
+  className,
+  popoverClassName,  // Accept the new prop
+}: CountrySelectProps) => {
+  const [open, setOpen] = React.useState(false)
+
+  return (
+    <div className="relative w-full"> {/* Changed from w-[410px] to w-full */}
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            className={cn(
+              "w-full justify-between bg-transparent px-0 font-normal",
+              "border-0 rounded-none shadow-none hover:bg-transparent hover:no-underline focus:ring-0 focus:ring-offset-0",
+              "text-[14px] text-[#263238] font-medium h-[38px]",
+              error ? "border-red-500" : "",
+              className
+            )}
+          >
+            <span className="truncate">
+              {value
+                ? countries.find(
+                    (country) => country.toLowerCase() === value.toLowerCase()
+                  )
+                : "Select country..."}
+            </span>
+            <ChevronDown className="h-4 w-4 opacity-50 flex-shrink-0 ml-2" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className={cn("w-[410px] p-0 rounded-none", popoverClassName)}>
+          <Command>
+            <CommandInput 
+              placeholder="Search country..." 
+              className="h-9"
+            />
+            <CommandEmpty>No country found.</CommandEmpty>
+            <CommandGroup className="max-h-64 overflow-auto">
+              {countries.map((country) => (
+                <CommandItem
+                  key={country}
+                  value={country}
+                  onSelect={(currentValue) => {
+                    onChange(currentValue === value ? "" : currentValue)
+                    setOpen(false)
+                  }}
+                  className={cn(
+                    "relative flex items-center px-4 py-2 text-[14px] font-normal",
+                    "hover:bg-[#F5722E] hover:text-white",
+                    value.toLowerCase() === country.toLowerCase() && "bg-[#F5722E] text-white"
+                  )}
+                >
+                  {value.toLowerCase() === country.toLowerCase() && (
+                    <span className="absolute left-0 top-1/2 transform -translate-y-1/2 inline-block h-full w-2 bg-[#8C4227]" />
+                  )}
+                  <span className="truncate">{country}</span>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </Command>
+        </PopoverContent>
+      </Popover>
+      {error && (
+        <div className="absolute text-red-500 text-[10px] mt-1 font-light bottom-0 right-0">
+          {error}
+        </div>
+      )}
+    </div>
+  )
+}
 
 export { CountrySelect }

@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import saveChanges from "images/save-changes.svg?url";
 import { useContext } from "react";
 import { KeywordMappingContext } from "contexts/KeyWordMappingContext";
+import { CountrySelect } from "components";
 
 import { selectOptions } from "mockData/app-form-options";
 
@@ -381,33 +382,20 @@ const ApplicationCardForm: FC = () => {
     
                 {/* Country / Employment */}
                 <div>
-                  <InputField
-                    label="Country of Residence"
-                    error={errors.country}
-                    touched={touched.country}
-                  >
-                    <Select
-                      name="country"
-                      value={values.country}
-                      onValueChange={(value) => setFieldValue("country", value)}
-                    >
-                      <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
-                        <SelectValue placeholder="Select your Country of Residence" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-[#F5F5F7] items-center p-0 [&>*]:p-0 border-none rounded-none">
-                        {selectOptions.country.map(({ value, label }) => (
-                          <SelectItem
-                            key={value}
-                            className={cn("rounded-none justify-start pl-3 h-[55px]")}
-                            value={value}
-                          >
-                            <div className="py-3 w-full text-center">{label}</div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </InputField>
-                </div>
+                <InputField
+                  label="Country of Residence"
+                  error={errors.country}
+                  touched={touched.country}
+                >
+                  <CountrySelect
+                    value={values.country || ""}
+                    onChange={(value) => setFieldValue("country", value)}
+                    className="bg-transparent border-[#AEADAD] h-[56px] hover:text-white border-2 focus:border-[#F5722E] w-[335px] rounded-[8px] text-white placeholder:text-[#AEADAD] px-3 py-2"
+                    popoverClassName="w-[335px]"
+                    error={touched.country && errors.country ? errors.country : undefined}
+                  />
+                </InputField>
+              </div>
     
                 <div>
                   <InputField

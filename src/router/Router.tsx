@@ -66,7 +66,7 @@ const EmployerSubscriptionSettings = lazy(() => import('features/employer').then
 const EmployerPrivacySettings = lazy(() => import('features/employer').then(module => ({ default: module.PrivacyAndSecuritySettings })))
 
 // Job listings management
-const ActiveListings = lazy(() => import('features/employer').then(module => ({ default: module.ActiveListings })))
+const JobListings = lazy(() => import('features/employer').then(module => ({ default: module.JobListings})))
 const DraftListings = lazy(() => import('features/employer').then(module => ({ default: module.DraftListings })))
 const ExpiredListings = lazy(() => import('features/employer').then(module => ({ default: module.ExpiredListings })))
 const ClosedListings = lazy(() => import('features/employer').then(module => ({ default: module.ClosedListings })))
@@ -358,11 +358,11 @@ const routes: RouteObject[] = [
         children: [
           {
             path: '',
-            element: <Navigate to={`${ROUTE_CONSTANTS.MANAGE_JOB_LISTINGS}/${ROUTE_CONSTANTS.ACTIVE}`} replace />
+            element: <Navigate to={`${ROUTE_CONSTANTS.MANAGE_JOB_LISTINGS}/${ROUTE_CONSTANTS.ALL_JOB}`} replace />
           },
           {
-            path: ROUTE_CONSTANTS.ACTIVE,
-            element: <LazyComponent component={ActiveListings} />
+            path: ROUTE_CONSTANTS.ALL_JOB,
+            element: <LazyComponent component={JobListings} />
           },
           {
             path: ROUTE_CONSTANTS.DRAFTS,

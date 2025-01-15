@@ -18,7 +18,7 @@ export { CompletedInterviews } from 'features/employer/EmployerInterviews/comple
 export { ManageJobListingsSidebar } from 'features/employer/Sidebar/ManageJobListingsSidebar'
 export { ReportsAnalyticsSidebar } from 'features/employer/Sidebar/ReportsAnalyticsSidebar'
 
-export { ActiveListings } from 'features/employer/ManageJobListings/active-listings'
+export { JobListings } from 'features/employer/ManageJobListings/job-listings'
 export { ClosedListings } from 'features/employer/ManageJobListings/closed-listings'
 export { DraftListings } from 'features/employer/ManageJobListings/draft-listings'
 export { ExpiredListings } from 'features/employer/ManageJobListings/expired-listings'

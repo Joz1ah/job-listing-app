@@ -8,18 +8,12 @@ import { NavLink, useNavigate } from "react-router-dom";
 
 import { PhoneInput } from "components";
 
-import { selectOptions, FormData } from "mockData/employer-profile-options";
+import { FormData } from "mockData/employer-profile-options";
 import { EmployerProfilePreview } from "./EmployerProfilePreview";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import { useEmployerProfileMutation } from "api/akaza/akazaAPI";
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "components";
+import { CountrySelect } from "components";
 
 import { cn } from "lib/utils";
 import { useFormik } from "formik";
@@ -53,15 +47,11 @@ const validationSchema = Yup.object().shape({
     .test("phone", "Please enter a valid phone number", function (value) {
       return value ? isValidPhoneNumber(value) : false;
     }),
-  unitAndBldg: Yup.string(),
-  streetAddress: Yup.string().required("Street address is required"),
-  city: Yup.string().required("City is required"),
-  state: Yup.string().required("State is required"),
-  country: Yup.string()
-    .required("Country is required")
-    .test("validCountry", "Please select a valid country", function(value) {
-      return selectOptions.country.some(option => option.value === value);
-    }),
+  unitAndBldg: Yup.string().required("This field is required"),
+  streetAddress: Yup.string().required("This field is required"),
+  city: Yup.string().required("This field is required"),
+  state: Yup.string().required("This field is required"),
+  country: Yup.string().required("This field is required"),
   companyOverview: Yup.string().required("This field is required"),
 });
 
@@ -403,33 +393,18 @@ const EditEmployerProfile: FC = () => {
               </InputField>
   
               <InputField
-                label="Country"
-                error={errors.country}
-                touched={touched.country}
-              >
-                <Select
-                  name="country"
-                  value={values.country}
-                  onValueChange={(value) => setFieldValue("country", value)}
+                  label="Country"
+                  error={errors.country}
+                  touched={touched.country}
                 >
-                  <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
-                    <SelectValue placeholder="Country" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-[#F5F5F7] items-center p-0 [&>*]:p-0 border-none rounded-none">
-                    {selectOptions.country.map(({ value, label }) => (
-                      <SelectItem
-                        key={value}
-                        className={cn(
-                          "rounded-none justify-start pl-3 h-[55px] transition-all duration-500 ease-in-out",
-                        )}
-                        value={value}
-                      >
-                        <div className="py-3 w-full text-center">{label}</div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </InputField>
+                  <CountrySelect
+                    value={values.country || ""}
+                    onChange={(value) => setFieldValue("country", value)}
+                    className="bg-transparent border-[#AEADAD] h-[56px] hover:text-white border-2 focus:border-[#F5722E] w-[335px] rounded-[8px] text-white placeholder:text-[#AEADAD] px-3 py-2"
+                    popoverClassName="w-[335px]"
+                    error={touched.country && errors.country ? errors.country : undefined}
+                  />
+                </InputField>
             </div>
   
             <InputField

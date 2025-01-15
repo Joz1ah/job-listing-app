@@ -159,7 +159,7 @@ const BookmarkedJobsContent: FC = () => {
 
           <NavLink
             to="/job-hunter/feed"
-            className="bg-[#F5722E] text-[13px] h-6 text-white px-6 rounded-md hover:bg-orange-600 transition-colors flex items-center"
+             className="bg-[#F5722E] text-white px-6 py-2 rounded-md hover:bg-orange-600 transition-colors"
           >
             Go To Job Feed
           </NavLink>

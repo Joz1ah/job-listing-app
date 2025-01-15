@@ -31,8 +31,11 @@ const JobHunterHeader: FC = () => {
 
   // Format salary range from "71-100" to "$71,000 - $100,000"
   const formatSalaryRange = (range: string) => {
+    if (range === "nego") return "Negotiable";
+    if (range === "121+") return "$121,000 or more";
+    
     const [min, max] = range.split("-");
-    return `${min},000 - ${max},000`;
+    return `$${min},000 - $${max},000`;
   };
 
   // Format employment type (e.g., "full-time" to "Full Time", "contract" to "Contract Only")
