@@ -226,7 +226,7 @@ const routes: RouteObject[] = [
         index: true,
         element: null
       },
-      {
+      /* {
         path: ROUTE_CONSTANTS.ABOUT_US,
         element: <AboutUs />
       },
@@ -241,7 +241,7 @@ const routes: RouteObject[] = [
       {
         path: ROUTE_CONSTANTS.FAQ,
         element: <Faq />
-      }
+      } */
     ]
   },
 
@@ -260,14 +260,6 @@ const routes: RouteObject[] = [
   {
     path: ROUTE_CONSTANTS.FAQ,
     element: <LazyComponent component={Faq} />
-  },
-  {
-    path: ROUTE_CONSTANTS.TERMS_CONDITIONS,
-    element: <LazyComponent component={TermsAndConditions} />
-  },
-  {
-    path: ROUTE_CONSTANTS.PRIVACY_POLICY,
-    element: <LazyComponent component={PrivacyPolicy} />
   },
   /*
   {
