@@ -1,10 +1,13 @@
 import { FC } from "react";
 import { EmployerHeader } from "layouts";
 import { JobListingForm, Sidebar } from "features/employer";
+import { KeywordMappingProvider } from "contexts/KeyWordMappingContext";
 
 const JobListingFormLayout: FC = () => {
 
   return (
+    <>
+    <KeywordMappingProvider>
     <div className="md:px-4 xl:px-12 md:pt-20 md:pb-6">
       {/* Main content area with two columns */}
       <div className="flex flex-col md:flex-row md:space-x-6">
@@ -20,6 +23,8 @@ const JobListingFormLayout: FC = () => {
         </div>
       </div>
     </div>
+    </KeywordMappingProvider>
+    </>
   );
 };
 
