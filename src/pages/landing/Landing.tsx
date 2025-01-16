@@ -229,7 +229,11 @@ const Landing: FC = (): ReactElement => {
       'SIGNUP_CONGRATULATIONS' : 9,
       'AUTHNET_PAYMENT' : 10,
       'PERFECT_MATCH_RESULTS': 11,
-      'AUTHNET_PAYMENT_FULL': 12
+      'AUTHNET_PAYMENT_FULL': 12,
+      'FORGOT_PASSWORD_EMAIL': 13,
+      'FORGOT_PASSWORD_NEW_PASSWORD': 14,
+      'FORGOT_PASSWORD_OTP': 15,
+      
   }
   const PLAN_SELECTION_ITEMS = {
     'FREE' : 1,
@@ -484,7 +488,7 @@ const Landing: FC = (): ReactElement => {
                 <Field type="checkbox" name="rememberMe" />
                 <label>Remember me</label>
               </div>
-              <div>Forgot password?</div>
+              <div className={styles['forgot-password']}>Forgot password?</div>
             </div>
   
             <div className={styles['action-buttons']}>
@@ -3370,6 +3374,7 @@ const ModalWrapper = ()=>{
       <NavigationHeader/>
       {isIndexRoute && (
         <>
+            <div className={styles['navigation-header-helper']}></div>
             <div className={`${styles['hero-container']}`}>
                 <HeroPerfectMatchAlgo/>
                 <HeroJobTitleEmployer/>
@@ -3388,54 +3393,22 @@ const ModalWrapper = ()=>{
             <div className={`${styles['pricing-container']}`}>
                 <div className={`${styles['desc1-wrapper']}`}>
                     <div className={`${styles.desc1}`}>
+                    { ['Perfect Match automation',
+                    'Ratings & Feedback',
+                    ' Access to diverse private sector industries',
+                    'Basic analytic page',
+                    'Access to exclusive informative content',
+                    'Live chat support'].map((label: string) => (
                         <div className={`${styles['sub-desc']}`}>
-                            <div className={`${styles['orange-check']}`}>
+                            <div>
                                 <img src={orange_check}></img>
                             </div>
                             <div>
-                                Perfect Match automation
+                                {label}
                             </div> 
                         </div>
-                        <div className={`${styles['sub-desc']}`}>
-                            <div className={`${styles['orange-check']}`}>
-                                <img src={orange_check}></img>
-                            </div>
-                            <div>
-                                Ratings & Feedback
-                            </div> 
-                        </div>
-                        <div className={`${styles['sub-desc']}`}>
-                            <div className={`${styles['orange-check']}`}>
-                                <img src={orange_check}></img>
-                            </div>
-                            <div>
-                                Access to diverse private sector industries
-                            </div> 
-                        </div>
-                        <div className={`${styles['sub-desc']}`}>
-                            <div className={`${styles['orange-check']}`}>
-                                <img src={orange_check}></img>
-                            </div>
-                            <div>
-                                Basic analytic page
-                            </div> 
-                        </div>
-                        <div className={`${styles['sub-desc']}`}>
-                            <div className={`${styles['orange-check']}`}>
-                                <img src={orange_check}></img>
-                            </div>
-                            <div>
-                                Access to exclusive informative content
-                            </div> 
-                        </div>
-                        <div className={`${styles['sub-desc']}`}>
-                            <div className={`${styles['orange-check']}`}>
-                                <img src={orange_check}></img>
-                            </div>
-                            <div>
-                                Live chat support
-                            </div> 
-                        </div>
+                    )) }
+
                     </div>
                     <div className={`${styles['desc1-2']}`}>
                         <div className={`${styles['corner-recatangle']}`}>

@@ -15,6 +15,12 @@
   src: url('assets/Poppins-Light.ttf');
 }
 
+.navigation-header-helper{
+  margin-top: 72px;
+  @media (max-width: 768px) {
+    margin-top: 0;
+  }
+}
 body{
   background: #fff!important;
 }
@@ -529,12 +535,6 @@ color: #F5F5F7;
   margin-bottom: 20px;
 }
 
-.orange-check{
-  width: 18.013px;
-  height: 18.68px;
-}
-
-
 .button-regular{
   border-radius: 4px;
   background: #F5722E;
@@ -555,25 +555,27 @@ color: #F5F5F7;
 
   @media (max-width: 768px) {
       flex-direction: column; // Change to column on small screens
-      > .desc1-wrapper > .desc1 {
-        &-2{
-            > .corner-recatangle{
-              > .image-wrapper {
-                > div {
-                  &:nth-child(1) > img {
-                    height: 30vw!important;
+      > .desc1-wrapper{
+        > .desc1 {
+          &-2{
+              > .corner-recatangle{
+                > .image-wrapper {
+                  > div {
+                    &:nth-child(1) > img {
+                      height: 30vw!important;
+                    }
+                    
+                    &:nth-child(2) > img {
+                      height: 25vw!important;
+                    }
+                    &:nth-child(3) {
+                      font-size: 2.5vw!important;
+                      width: 140px!important;
+                      padding-right: 2vw!important;
+                      margin-top: 2.5vw!important;
+                    }
                   }
-                  
-                  &:nth-child(2) > img {
-                    height: 25vw!important;
-                  }
-                  &:nth-child(3) {
-                    font-size: 2.5vw!important;
-                    width: 140px!important;
-                    padding-right: 2vw!important;
-                    margin-top: 2.5vw!important;
-                  }
-                }
+              }
             }
           }
         }
@@ -601,11 +603,18 @@ color: #F5F5F7;
           > .sub-desc {
               display: flex;
               flex-direction: row;
-              align-items: center;
-
-              > .orange-check {
-                  margin-right: 10px;
+              gap: 10px;  
+              >div{
+                flex:1
               }
+              >div:nth-child(1){
+                width: 20px;
+                flex: 0 0 20px;
+              }
+              >div:nth-child(2){
+                line-height: 1.5em;
+              }
+
           }
 
           &-2 {
@@ -1559,89 +1568,79 @@ color: #F5F5F7;
 
 .login-container{
   padding: 41px 59px 93px 50px;
-}
-.login-container > .error-label{
-  margin-top:4px;
-  font-family: Poppins-R;
-  font-size: 10px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-
-}
-
-.login-container > form > .login-options{
-  padding: 8px;
-  display: flex;
-  flex-direction: row;
-}
-
-.login-container > form >.login-options > div{
-  flex: 50%;
-  font-family: Poppins-R;
-  font-size: 10px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: normal;
-}
-
-.login-container > form > .login-options > div:nth-child(1){
-  color: #AEADAD;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 12px;
-}
-
-.login-container > form > .login-options > div:nth-child(2){
-  color: #F5722E;
-  text-align: right;
-}
-
-.login-container > form > .action-buttons {
-margin-top: 12px;  
-}
-
-.login-container > form > .action-buttons > button{
-  width: 100%;
-}
-
-
-.login-container > .social-media-items{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.login-container  > .social-media-items > .social-media-button:hover{
-  cursor: pointer;
-}
-
-.login-container > .other-signup-option-label{
-  margin-top: 27px;
-  color:#263238;
-  text-align: center;
-  font-family: Poppins-R;
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-}
-
-.login-container > .social-media-items {
-  margin-top:8px;
-}
-
-.login-container > .social-media-items > .social-media-button{
-  display: flex;
-  padding: 8px 18px 8px 11px;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 11px;
-  flex-shrink: 0;
-  border-radius: 5px;
-  background: var(--Default-White, #F5F5F7);
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  >.error-label{
+    margin-top:4px;
+    font-family: Poppins-R;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+  }
+  form{
+    > .action-buttons {
+      margin-top: 12px;  
+      > button{
+        width: 100%;
+      }
+      }
+      > .login-options{
+        padding: 8px;
+        display: flex;
+        flex-direction: row;
+        .forgot-password{
+          cursor: pointer;
+        }
+        > div{
+          flex: 50%;
+          font-family: Poppins-R;
+          font-size: 10px;
+          font-style: normal;
+          font-weight: 600;
+          line-height: normal;
+        }
+        > div:nth-child(1){
+          color: #AEADAD;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          gap: 12px;
+        }
+        > div:nth-child(2){
+          color: #F5722E;
+          text-align: right;
+        }
+      }
+  } 
+  > .social-media-items{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top:8px;
+    > .social-media-button{
+      display: flex;
+      padding: 8px 18px 8px 11px;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 11px;
+      flex-shrink: 0;
+      border-radius: 5px;
+      background: var(--Default-White, #F5F5F7);
+      box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    }
+    > .social-media-button:hover{
+      cursor: pointer;
+    }
+  }
+  > .other-signup-option-label{
+    margin-top: 27px;
+    color:#263238;
+    text-align: center;
+    font-family: Poppins-R;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+  }
 }
 
 .terms-and-privacy{
