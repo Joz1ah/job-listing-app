@@ -3437,7 +3437,10 @@ const ModalWrapper = ()=>{
                             <div className={`${styles.white}`}>Efficiency</div>
                             <div className={`${styles.orange}`}>&</div>
                             <div className={`${styles.white}`}>Accountability</div>
-                            <div className={`${styles.orange}`}>is what we strive for!</div>
+                            { ['is','what','we','strive','for!'].map((label: string) => (
+                              <div className={`${styles.orange}`}>{label}</div>
+                              )) }
+                            
                         </div>
                         <div className={`${styles['sub-desc']}`}>We are committed to be the best at what we do. Our CEO is eager to connect with you personally to discuss how we can enhance your experience!</div>
                     </div>

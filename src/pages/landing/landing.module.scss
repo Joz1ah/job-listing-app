@@ -709,7 +709,10 @@ color: #F5F5F7;
 
         @media (max-width: 768px) {
           margin-top: .5em;
-          justify-content: center;
+          button{
+            padding: 10px 40px 10px 40px;
+            font-size: .5em;
+          }
         }
       }
 
@@ -717,22 +720,28 @@ color: #F5F5F7;
           padding: 10px;
 
           .sub-desc {
-              display: flex;
-              flex-direction: row; // Keep items in a row
-              gap: 10px; // Adjust the gap as needed
-              flex-wrap: wrap;
-          }
-          > .sub-desc:nth-child(1){
+            display: flex;
+            flex-direction: row; // Keep items in a row
+            gap: 10px; // Adjust the gap as needed
+            flex-wrap: wrap; // This allows the items to wrap to the next line if necessary
+        
             > div {
-              display: inline-block;
+                display: inline; // Change to inline to allow each word to be treated separately
             }
+        
             > .orange {
-              color: #F5722E;
+                color: #F5722E;
             }
+            
             > .white {
-              color: #FFF;
+                color: #FFF;
             }
-          }
+        
+            @media (max-width: 768px) {
+                font-size: 0.7em;
+                line-height: 1em;
+            }
+        }
       }
   }
 }
@@ -750,7 +759,7 @@ color: #F5F5F7;
 .infographic1{
   background-color: #2D3A41;
   background-image:
-  linear-gradient(to left, rgba(45, 58, 65, 1), rgba(45, 58, 65, 1), rgba(80, 104, 116, 0.9), rgba(98, 126, 141, 0.15), rgba(116, 149, 167, 0.15), transparent),
+  linear-gradient(to left, rgba(45, 58, 65, 1) 10%, rgba(45, 58, 65, 1) 20%, rgba(80, 104, 116, .8) 40%, rgba(98, 126, 141, 0.15) 80%, rgba(116, 149, 167, 0.15), transparent),
    url("assets/rasta.png");
   background-size: contain;
   background-repeat: no-repeat;
@@ -758,6 +767,11 @@ color: #F5F5F7;
   height: 763px;
   width: 100%;
 
+  @media (max-width: 768px) {
+    background-size: cover;
+    background-position: center;
+    height: 400px;
+  }
   > .info-desc{
     padding-top: 31px;
     padding-left: 38px;
@@ -804,11 +818,6 @@ color: #F5F5F7;
   > div{
     font-size: 36px;
     color: #FFF;
-  }
-  @media (max-width: 768px) {
-    background-size: cover;
-    background-position: center;
-    height: auto;
   }
   
 }
