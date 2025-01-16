@@ -3425,14 +3425,6 @@ const ModalWrapper = ()=>{
                                 <img src={orange_check}></img>
                             </div>
                             <div>
-                                Basic analytic page
-                            </div> 
-                        </div>
-                        <div className={`${styles['sub-desc']}`}>
-                            <div className={`${styles['orange-check']}`}>
-                                <img src={orange_check}></img>
-                            </div>
-                            <div>
                                 Access to exclusive informative content
                             </div> 
                         </div>
