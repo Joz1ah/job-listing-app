@@ -7,5 +7,6 @@ export {
     akazaApiPayment,
     akazaApiPerfectMatch,
     akazaApiSearch,
-    akazaApiAccount
+    akazaApiAccount,
+    localApi
  } from 'api/akaza/akazaAPI';

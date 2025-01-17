@@ -490,6 +490,38 @@ export const akazaApiAccount = createApiFunction({
   }),
 });
 
+
+export const localApi = createApiFunction({
+  reducerPath: 'apiLocal',
+  baseQuery: fetchBaseQuery({ 
+    baseUrl: 'https://localhost:8080',
+    credentials: "include", 
+    prepareHeaders: (headers) => {
+      const token = Cookies.get('authToken');
+      if (token) {
+        headers.set('Authorization', `Bearer ${token}`);
+      }
+      return headers;
+    },
+  }), 
+  endpoints: (builder) => ({
+    sendContactUsEmail: builder.mutation({
+      query: (payLoad) => ({
+        url: `/api/contact-us-send-email`,
+        method: 'POST',
+        body: {
+            "firstName": payLoad.firstName,
+            "lastName": payLoad.lastName,
+            "emailAddress": payLoad.emailAddress,
+            "userType": payLoad.userType,
+            "message": payLoad.message,
+            "subject":payLoad.subject,
+          }
+      }),
+    }),
+  }),
+});
+
 //export const {useLoginMutation, useSignUpMutation} = akazaApi
 export const {
   useSignUpMutation,
@@ -541,3 +573,7 @@ export const {
 export const {
   useGetUserInfoQuery
 } = akazaApiAccount
+
+export const {
+  useSendContactUsEmailMutation
+} = localApi
