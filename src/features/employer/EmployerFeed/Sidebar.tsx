@@ -14,10 +14,10 @@ import { cn } from "lib/utils";
 const Sidebar: FC = () => {
   const location = useLocation();
   const hideOnPagesMobile = [
-    "/employer/job-listing",
-    "/employer/employer-profile",
+    "/dashboard/job-listing",
+    "/dashboard/employer-profile",
   ];
-  const hideOnPagesDesktop = ["/employer/employer-profile"];
+  const hideOnPagesDesktop = ["/dashboard/employer-profile"];
 
   const shouldShowMobileView = !hideOnPagesMobile.includes(location.pathname);
   const shouldShowDesktopView = !hideOnPagesDesktop.includes(location.pathname);

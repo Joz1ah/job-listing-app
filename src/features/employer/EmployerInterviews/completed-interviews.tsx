@@ -110,7 +110,7 @@ const CompletedInterviews: FC = () => {
           </p>
 
           <NavLink
-            to="/employer/interviews/accepted"
+            to="/dashboard/interviews/accepted"
             className="bg-[#F5722E] text-white px-6 py-2 rounded-md hover:bg-orange-600 transition-colors"
           >
             View Upcoming Interviews

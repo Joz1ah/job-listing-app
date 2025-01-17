@@ -127,7 +127,7 @@ const JobListingForm: FC = () => {
       // Refresh user data in auth context
       await refreshUser();
 
-      navigate("/employer");
+      navigate("/dashboard");
     } catch (error) {
       console.error("Error submitting job:", error);
     } finally {
@@ -186,7 +186,7 @@ const JobListingForm: FC = () => {
       {isSubmitting && <LoadingOverlay />}
       <div className="w-full max-w-[927px] min-h-[825px] bg-transparent md:bg-[#2D3A41] text-white mx-2 px-4 py-8 md:py-12">
         <div className="flex items-center relative w-full mb-6 md:mb-14">
-          <NavLink to="/employer/feed" className="absolute left-0 md:left-4">
+          <NavLink to="/dashboard/feed" className="absolute left-0 md:left-4">
             <ChevronLeft strokeWidth={4} className="h-6 w-6" />
           </NavLink>
 

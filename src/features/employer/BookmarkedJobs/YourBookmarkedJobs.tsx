@@ -9,7 +9,7 @@ import { useEmployerContext } from "components";
 
 // You can replace this with your actual mock data
 const mockBookmarks: Match[] = [
-  {
+  /* {
     id: 1,
     firstName: "Olivia",
     lastName: "Davis",
@@ -73,7 +73,7 @@ const mockBookmarks: Match[] = [
     interpersonalSkills: ["Creativity", "Empathy", "Conflict Resolution"],
     certificates: ["Certified Vue.js Developer"],
     isNew: false,
-  },
+  }, */
 ];
 
 const BookmarkedJobsContent: FC = () => {
@@ -174,7 +174,7 @@ const BookmarkedJobsContent: FC = () => {
           </p>
 
           <NavLink
-            to="/job-hunter/feed"
+            to="/dashboard/feed"
              className="bg-[#F5722E] text-white px-6 py-2 rounded-md hover:bg-orange-600 transition-colors"
           >
             Go To Job Feed

@@ -21,7 +21,7 @@ const ReportsAnalyticsSidebar: FC<AnalyticsSidebarProps> = ({
   className=''
 }) => {
   const location = useLocation();
-  const baseRoute = '/employer/reports-and-analytics';
+  const baseRoute = '/dashboard/reports-and-analytics';
   const { subscriptionPlan } = useEmployerContext();
 
   const analyticsMenu: MenuItem[] = [

@@ -6,19 +6,8 @@ import { useAuth } from 'contexts/AuthContext/AuthContext';
 import { isServer } from 'utils';
 import { IntercomProvider } from 'contexts/Intercom/IntercomContext';
 
-// Common page imports
-//import { Home } from 'pages'
-//import { Fetch } from 'pages'
-//import { About } from 'pages'
-//import { NotFoundPage as NotFound } from 'pages'
-
 const BaseLayout = lazy(() => import('pages').then(module => ({ default: module.BaseLayout })))
 
-// Adjust imports to match your file structure and add type assertions
-//const Home = lazy(() => import('pages').then(module => ({ default: module.Home })))
-//const Landing = lazy(() => import('pages').then(module => ({ default: module.Landing })))
-//const Fetch = lazy(() => import('pages').then(module => ({ default: module.Fetch })))
-//const About = lazy(() => import('pages').then(module => ({ default: module.About })))
 const NotFound = lazy(() => import('pages').then(module => ({ default: module.NotFoundPage })))
 const Landing = lazy(() => import('pages').then(module => ({ default: module.Landing })))
 const SubscriptionPlan = lazy(() => import('pages').then(module => ({ default: module.SubscriptionPlan })))
@@ -37,11 +26,9 @@ const EmployerNotFound = lazy(() => import('pages').then(module => ({ default: m
 const InterviewEmployer = lazy(() => import('pages').then(module => ({ default: module.InterviewEmployer })))
 const AccountSettingsEmployer = lazy(() => import('pages').then(module => ({ default: module.AccountSettingsEmployer })))
 const ManageJobListings = lazy(() => import('pages').then(module => ({ default: module.ManageJobListings })))
-//const ReportsAnalytics = lazy(() => import('pages').then(module => ({ default: module.ReportsAnalytics })))
 const EmployerBookmarkedJobs = lazy(() => import('pages').then(module => ({ default: module.EmployerBookmarkedJobs })))
 
 // Job Hunter pages
-//const JobHunterBaseLayout = lazy(() => import('pages').then(module => ({ default: module.JobHunterBaseLayout })))
 const JobHunterFeedLayout = lazy(() => import('pages').then(module => ({ default: module.JobHunterFeedLayout })))
 const CreateAppCard = lazy(() => import('pages').then(module => ({ default: module.CreateAppCard })))
 const EditAppCard = lazy(() => import('pages').then(module => ({ default: module.EditAppCard })))
@@ -69,12 +56,6 @@ const JobListings = lazy(() => import('features/employer').then(module => ({ def
 const DraftListings = lazy(() => import('features/employer').then(module => ({ default: module.DraftListings })))
 const ExpiredListings = lazy(() => import('features/employer').then(module => ({ default: module.ExpiredListings })))
 const ClosedListings = lazy(() => import('features/employer').then(module => ({ default: module.ClosedListings })))
-
-// Reports and analytics
-/* const JobPerformance = lazy(() => import('features/employer').then(module => ({ default: module.JobPerformance })))
-const CandidateAnalytics = lazy(() => import('features/employer').then(module => ({ default: module.CandidateAnalytics })))
-const InterviewAnalytics = lazy(() => import('features/employer').then(module => ({ default: module.InterviewAnalytics })))
-const CostAnalytics = lazy(() => import('features/employer').then(module => ({ default: module.CostAnalytics }))) */
 
 // Job Hunter features
 const JobHunterFeed = lazy(() => import('features/job-hunter').then(module => ({ default: module.JobHunterFeed })))
@@ -206,6 +187,24 @@ const DashboardRedirectRoute = ({ children }: { children: React.ReactNode }) => 
   return <>{children}</>;
 };
 
+// Create a component that conditionally renders based on user type
+const UserTypeComponent = ({ 
+  employerComponent: EmployerComponent,
+  jobHunterComponent: JobHunterComponent,
+  ...props
+}: {
+  employerComponent: ComponentType<any>;
+  jobHunterComponent: ComponentType<any>;
+  [key: string]: any;
+}) => {
+  const { user } = useAuth();
+  const userType = user?.data?.user?.type;
+
+  const Component = userType === 'employer' ? EmployerComponent : JobHunterComponent;
+  
+  return <LazyComponent component={Component} {...props} />;
+};
+
 const routes: RouteObject[] = [
   {
     path: '',
@@ -244,7 +243,6 @@ const routes: RouteObject[] = [
       } */
     ]
   },
-
   {
     path: ROUTE_CONSTANTS.ABOUT_US,
     element: <LazyComponent component={AboutUs} />
@@ -261,118 +259,78 @@ const routes: RouteObject[] = [
     path: ROUTE_CONSTANTS.FAQ,
     element: <LazyComponent component={Faq} />
   },
-  /*
-  {
-    path: ROUTE_CONSTANTS.HOME,
-    element: <LazyComponent component={Home} />
-  },
-  {
-    path: ROUTE_CONSTANTS.FETCH,
-    element: <LazyComponent component={Fetch} />
-  },
-  {
-    path: ROUTE_CONSTANTS.ABOUT,
-    element: <LazyComponent component={About} />
-  },
-  */
-  // ... rest of your routes remain the same
   {
     path: '*',
     element: <LazyComponent component={NotFound} />
   },
   {
     path: ROUTE_CONSTANTS.EMPLOYER,
-    element: 
-    <ProtectedRoute allowedUserType="employer">
-      <LazyComponent component={BaseLayout}/>
-    </ProtectedRoute>
-      ,
+    element: <LazyComponent component={BaseLayout}/>,
     children: [
+      // Feed
       {
         path: '',
-        element: <LazyComponent component={EmployerFeedLayout} />,
+        element: <UserTypeComponent 
+          employerComponent={EmployerFeedLayout} 
+          jobHunterComponent={JobHunterFeedLayout} 
+        />,
         children: [
           {
             index: true,
-            element: <LazyComponent component={EmployerFeed} />
+            element: <UserTypeComponent 
+              employerComponent={EmployerFeed} 
+              jobHunterComponent={JobHunterFeed} 
+            />
           },
           {
             path: ROUTE_CONSTANTS.FEED,
-            element: <LazyComponent component={EmployerFeed} />
+            element: <UserTypeComponent 
+              employerComponent={EmployerFeed} 
+              jobHunterComponent={JobHunterFeed} 
+            />
           }
         ]
       },
-      {
-        path: ROUTE_CONSTANTS.JOB_LISTING,
-        element: <LazyComponent component={JobListingFormLayout} />
-      },
+      // Profile Routes
       {
         path: ROUTE_CONSTANTS.COMPLETE_PROFILE,
-        element: <LazyComponent component={CompleteProfile} />
+        element: <UserTypeComponent 
+          employerComponent={CompleteProfile} 
+          jobHunterComponent={CreateAppCard} 
+        />
+      },
+      {
+        path: ROUTE_CONSTANTS.CREATE_APPLICATION,
+        element: <ProtectedRoute allowedUserType="job_hunter">
+          <LazyComponent component={CreateAppCard} />
+        </ProtectedRoute>
+      },
+      {
+        path: ROUTE_CONSTANTS.EDIT_APPLICATION,
+        element: <ProtectedRoute allowedUserType="job_hunter">
+          <LazyComponent component={EditAppCard} />
+        </ProtectedRoute>
       },
       {
         path: ROUTE_CONSTANTS.EDIT_PROFILE,
-        element: <LazyComponent component={EditProfile} />
+        element: <UserTypeComponent 
+          employerComponent={EditProfile} 
+          jobHunterComponent={EditAppCard} 
+        />
       },
+      // Job Listing (Employer only)
       {
-        path: ROUTE_CONSTANTS.INTERVIEWS_EMPLOYER,
-        element: <LazyComponent component={InterviewEmployer} />,
-        children: [
-          {
-            path: '',
-            element: <Navigate to={`${ROUTE_CONSTANTS.INTERVIEWS_EMPLOYER}/${ROUTE_CONSTANTS.PENDING}`} replace />
-          },
-          {
-            path: ROUTE_CONSTANTS.PENDING,
-            element: <LazyComponent component={EmployerPendingInterviews} />
-          },
-          {
-            path: ROUTE_CONSTANTS.ACCEPTED,
-            element: <LazyComponent component={EmployerAcceptedInterviews} />
-          },
-          {
-            path: ROUTE_CONSTANTS.RESCHEDULE,
-            element: <LazyComponent component={EmployerRescheduleRequests} />
-          },
-          {
-            path: ROUTE_CONSTANTS.DECLINED,
-            element: <LazyComponent component={EmployerDeclinedInterviews} />
-          },
-          {
-            path: ROUTE_CONSTANTS.COMPLETED,
-            element: <LazyComponent component={EmployerCompletedInterviews} />
-          }
-        ]
+        path: ROUTE_CONSTANTS.JOB_LISTING,
+        element: <ProtectedRoute allowedUserType="employer">
+          <LazyComponent component={JobListingFormLayout} />
+        </ProtectedRoute>
       },
-      {
-        path: ROUTE_CONSTANTS.ACCOUNT_SETTINGS_EMPLOYER,
-        element: <LazyComponent component={AccountSettingsEmployer} />,
-        children: [
-          {
-            path: '',
-            element: <Navigate to={`${ROUTE_CONSTANTS.ACCOUNT_SETTINGS_EMPLOYER}/${ROUTE_CONSTANTS.GENERAL}`} replace />
-          },
-          {
-            path: ROUTE_CONSTANTS.GENERAL,
-            element: <LazyComponent component={EmployerGeneralSettings} />
-          },
-          {
-            path: ROUTE_CONSTANTS.BILLING,
-            element: <LazyComponent component={EmployerBillingSettings} />
-          },
-          {
-            path: ROUTE_CONSTANTS.SUBSCRIPTION,
-            element: <LazyComponent component={EmployerSubscriptionSettings} />
-          },
-          {
-            path: ROUTE_CONSTANTS.PRIVACY,
-            element: <LazyComponent component={EmployerPrivacySettings} />
-          }
-        ]
-      },
+      // Manage Job Listings (Employer only)
       {
         path: ROUTE_CONSTANTS.MANAGE_JOB_LISTINGS,
-        element: <LazyComponent component={ManageJobListings} />,
+        element: <ProtectedRoute allowedUserType="employer">
+          <LazyComponent component={ManageJobListings} />
+        </ProtectedRoute>,
         children: [
           {
             path: '',
@@ -396,35 +354,104 @@ const routes: RouteObject[] = [
           }
         ]
       },
-     /*  {
-        path: ROUTE_CONSTANTS.REPORTS_ANALYTICS,
-        element: <LazyComponent component={ReportsAnalytics} />,
+      // Interviews
+      {
+        path: ROUTE_CONSTANTS.INTERVIEWS_EMPLOYER,
+        element: <UserTypeComponent 
+          employerComponent={InterviewEmployer} 
+          jobHunterComponent={InterviewJobHunter} 
+        />,
         children: [
           {
             path: '',
-            element: <Navigate to={`${ROUTE_CONSTANTS.REPORTS_ANALYTICS}/${ROUTE_CONSTANTS.JOB_PERFORMANCE}`} replace />
+            element: <Navigate to={`${ROUTE_CONSTANTS.INTERVIEWS_EMPLOYER}/${ROUTE_CONSTANTS.PENDING}`} replace />
           },
           {
-            path: ROUTE_CONSTANTS.JOB_PERFORMANCE,
-            element: <LazyComponent component={JobPerformance} />
+            path: ROUTE_CONSTANTS.PENDING,
+            element: <UserTypeComponent 
+              employerComponent={EmployerPendingInterviews} 
+              jobHunterComponent={JobHunterPendingInterviews} 
+            />
           },
           {
-            path: ROUTE_CONSTANTS.CANDIDATES,
-            element: <LazyComponent component={CandidateAnalytics} />
+            path: ROUTE_CONSTANTS.ACCEPTED,
+            element: <UserTypeComponent 
+              employerComponent={EmployerAcceptedInterviews} 
+              jobHunterComponent={JobHunterAcceptedInterviews} 
+            />
           },
           {
-            path: ROUTE_CONSTANTS.INTERVIEWS,
-            element: <LazyComponent component={InterviewAnalytics} />
+            path: ROUTE_CONSTANTS.RESCHEDULE,
+            element: <UserTypeComponent 
+              employerComponent={EmployerRescheduleRequests} 
+              jobHunterComponent={JobHunterRescheduleRequests} 
+            />
           },
           {
-            path: ROUTE_CONSTANTS.COSTS,
-            element: <LazyComponent component={CostAnalytics} />
+            path: ROUTE_CONSTANTS.DECLINED,
+            element: <UserTypeComponent 
+              employerComponent={EmployerDeclinedInterviews} 
+              jobHunterComponent={JobHunterDeclinedInterviews} 
+            />
+          },
+          {
+            path: ROUTE_CONSTANTS.COMPLETED,
+            element: <UserTypeComponent 
+              employerComponent={EmployerCompletedInterviews} 
+              jobHunterComponent={JobHunterCompletedInterviews} 
+            />
           }
         ]
-      }, */
+      },
+      // Account Settings
+      {
+        path: ROUTE_CONSTANTS.ACCOUNT_SETTINGS_EMPLOYER,
+        element: <UserTypeComponent 
+          employerComponent={AccountSettingsEmployer} 
+          jobHunterComponent={AccountSettingsJobHunter} 
+        />,
+        children: [
+          {
+            path: '',
+            element: <Navigate to={`${ROUTE_CONSTANTS.ACCOUNT_SETTINGS_EMPLOYER}/${ROUTE_CONSTANTS.GENERAL}`} replace />
+          },
+          {
+            path: ROUTE_CONSTANTS.GENERAL,
+            element: <UserTypeComponent 
+              employerComponent={EmployerGeneralSettings} 
+              jobHunterComponent={JobHunterGeneralSettings} 
+            />
+          },
+          {
+            path: ROUTE_CONSTANTS.BILLING,
+            element: <UserTypeComponent 
+              employerComponent={EmployerBillingSettings} 
+              jobHunterComponent={JobHunterBillingSettings} 
+            />
+          },
+          {
+            path: ROUTE_CONSTANTS.SUBSCRIPTION,
+            element: <UserTypeComponent 
+              employerComponent={EmployerSubscriptionSettings} 
+              jobHunterComponent={JobHunterSubscriptionSettings} 
+            />
+          },
+          {
+            path: ROUTE_CONSTANTS.PRIVACY,
+            element: <UserTypeComponent 
+              employerComponent={EmployerPrivacySettings} 
+              jobHunterComponent={JobHunterPrivacySettings} 
+            />
+          }
+        ]
+      },
+      // Bookmarked Jobs
       {
         path: ROUTE_CONSTANTS.BOOKMARKED_JOBS_EMPLOYER,
-        element: <LazyComponent component={EmployerBookmarkedJobs} />,
+        element: <UserTypeComponent 
+          employerComponent={EmployerBookmarkedJobs} 
+          jobHunterComponent={JobHunterBookmarkedJobs} 
+        />,
         children: [
           {
             path: '',
@@ -432,129 +459,31 @@ const routes: RouteObject[] = [
           },
           {
             path: ROUTE_CONSTANTS.BOOKMARKED,
-            element: <LazyComponent component={EmployerYourBookmarkedJobs} />
+            element: <UserTypeComponent 
+              employerComponent={EmployerYourBookmarkedJobs} 
+              jobHunterComponent={JobHunterYourBookmarkedJobs} 
+            />
           }
         ]
       },
+      // Subscription Plans
       {
         path: ROUTE_CONSTANTS.EMPLOLYER_SUB_PLAN,
-        element: <LazyComponent component={SubscriptionPlan} />,
+        element: <UserTypeComponent 
+          employerComponent={SubscriptionPlan} 
+          jobHunterComponent={SubscriptionPlan} 
+        />,
       },
+      // Not Found
       {
         path: '*',
-        element: <LazyComponent component={EmployerNotFound} />
+        element: <UserTypeComponent 
+          employerComponent={EmployerNotFound} 
+          jobHunterComponent={JobHunterNotFound} 
+        />
       }
     ]
-  },
-  {
-    path: ROUTE_CONSTANTS.JOB_HUNTER,
-    element: 
-      <ProtectedRoute allowedUserType="job_hunter">
-        <LazyComponent component={BaseLayout}/>
-      </ProtectedRoute>,
-    children: [
-      {
-        path: '',
-        element: <LazyComponent component={JobHunterFeedLayout} />,
-        children: [
-          {
-            index: true,
-            element: <LazyComponent component={JobHunterFeed} />
-          },
-          {
-            path: ROUTE_CONSTANTS.FEED,
-            element: <LazyComponent component={JobHunterFeed} />
-          }
-        ]
-      },
-      {
-        path: ROUTE_CONSTANTS.CREATE_APPLICATION,
-        element: <LazyComponent component={CreateAppCard} />
-      },
-      {
-        path: ROUTE_CONSTANTS.EDIT_APPLICATION,
-        element: <LazyComponent component={EditAppCard} />
-      },
-      {
-        path: ROUTE_CONSTANTS.INTERVIEWS_JOB_HUNTER,
-        element: <LazyComponent component={InterviewJobHunter} />,
-        children: [
-          {
-            path: '',
-            element: <Navigate to={`${ROUTE_CONSTANTS.INTERVIEWS_JOB_HUNTER}/${ROUTE_CONSTANTS.PENDING}`} replace />
-          },
-          {
-            path: ROUTE_CONSTANTS.PENDING,
-            element: <LazyComponent component={JobHunterPendingInterviews} />
-          },
-          {
-            path: ROUTE_CONSTANTS.ACCEPTED,
-            element: <LazyComponent component={JobHunterAcceptedInterviews} />
-          },
-          {
-            path: ROUTE_CONSTANTS.RESCHEDULE,
-            element: <LazyComponent component={JobHunterRescheduleRequests} />
-          },
-          {
-            path: ROUTE_CONSTANTS.DECLINED,
-            element: <LazyComponent component={JobHunterDeclinedInterviews} />
-          },
-          {
-            path: ROUTE_CONSTANTS.COMPLETED,
-            element: <LazyComponent component={JobHunterCompletedInterviews} />
-          }
-        ]
-      },
-      {
-        path: ROUTE_CONSTANTS.ACCOUNT_SETTINGS_JOB_HUNTER,
-        element: <LazyComponent component={AccountSettingsJobHunter} />,
-        children: [
-          {
-            path: '',
-            element: <Navigate to={`${ROUTE_CONSTANTS.ACCOUNT_SETTINGS_JOB_HUNTER}/${ROUTE_CONSTANTS.GENERAL}`} replace />
-          },
-          {
-            path: ROUTE_CONSTANTS.GENERAL,
-            element: <LazyComponent component={JobHunterGeneralSettings} />
-          },
-          {
-            path: ROUTE_CONSTANTS.BILLING,
-            element: <LazyComponent component={JobHunterBillingSettings} />
-          },
-          {
-            path: ROUTE_CONSTANTS.SUBSCRIPTION,
-            element: <LazyComponent component={JobHunterSubscriptionSettings} />
-          },
-          {
-            path: ROUTE_CONSTANTS.PRIVACY,
-            element: <LazyComponent component={JobHunterPrivacySettings} />
-          }
-        ]
-      },
-      {
-        path: ROUTE_CONSTANTS.BOOKMARKED_JOBS_JOBHUNTER,
-        element: <LazyComponent component={JobHunterBookmarkedJobs} />,
-        children: [
-          {
-            path: '',
-            element: <Navigate to={`${ROUTE_CONSTANTS.BOOKMARKED_JOBS_JOBHUNTER}/${ROUTE_CONSTANTS.BOOKMARKED}`} replace />
-          },
-          {
-            path: ROUTE_CONSTANTS.BOOKMARKED,
-            element: <LazyComponent component={JobHunterYourBookmarkedJobs} />
-          }
-        ]
-      },
-      {
-        path: ROUTE_CONSTANTS.JOBHUNTER_SUB_PLAN,
-        element: <LazyComponent component={SubscriptionPlan} />,
-      },
-      {
-        path: '*',
-        element: <LazyComponent component={JobHunterNotFound} />
-      }
-    ]
-  },
-]
+  }
+];
 
 export { routes }

@@ -250,13 +250,6 @@ const Landing: FC = (): ReactElement => {
     console.log('site ready')
   })
 
-  useEffect(() => {
-    // Check if PerfectMatchResultsModal was previously open and is now being closed
-    if (modalState !== modalStates.PERFECT_MATCH_RESULTS && !isModalOpen) {
-      setHeroState(heroStates.PERFECT_MATCH_ALGO);
-    }
-  }, [modalState, isModalOpen]);
-
   const ButtonLoginNav = () => {
     const elementRef = useRef<HTMLButtonElement>(null);
     const toggleLogin = () => {
@@ -415,10 +408,9 @@ const Landing: FC = (): ReactElement => {
           // Navigate after successful login
           setTimeout(() => {
             if (userType === 'employer') {
-              navigate('/employer');
+              navigate('/dashboard');
             } else {
-              const basePath = isFreeTrial ? '/job-hunter/feed' : '/job-hunter';
-              navigate(basePath);
+              navigate('/dashboard');
             }
           }, 1000);
         } else {
@@ -1588,7 +1580,7 @@ const SubscriptionPlanSelection = () =>{
             localStorage.setItem('userType', userType);
             setModalState(modalStates.LOADING);
             setTimeout(() => {
-              navigate(userType === 'employer' ? '/employer/employer-profile' : '/job-hunter/jobhunter-profile');
+              navigate(userType === 'employer' ? '/dashboard/employer-profile' : '/dashboard/jobhunter-profile');
             }, 1000);
           }
         } catch (error) {
@@ -1920,7 +1912,7 @@ const CreditCardForm: React.FC = () => {
             console.log(res)
             setModalState(modalStates.LOADING)
             setTimeout(()=>{
-              navigate("/job-hunter");
+              navigate("/dashboard");
             },1000)
           }).catch((err) => {
             alert(JSON.stringify(err))
@@ -2146,7 +2138,7 @@ const AuthnetPaymentFullModal = () => {
             console.log(res)
             setModalState(modalStates.LOADING)
             setTimeout(()=>{
-              navigate(dataStates.selectedUserType === 'employer' ? '/employer/employer-profile' : '/job-hunter/jobhunter-profile');
+              navigate(dataStates.selectedUserType === 'employer' ? '/dashboard/employer-profile' : '/dashboard/jobhunter-profile');
             },1000)
           }).catch((err) => {
             showError(err?.data?.errors, err?.data?.message)
@@ -3303,7 +3295,7 @@ const HeroLoading = () => {
 };
 
 const isFreeTrial = false;
-const isIndexRoute = useMatch('/landing');
+const isIndexRoute = useMatch('/');
 const ModalWrapper = () => {
   return (
     <>

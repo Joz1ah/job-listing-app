@@ -21,14 +21,14 @@ const ManageJobListingsSidebar: FC<ManageJobsSidebarProps> = ({
   className = "",
 }) => {
   const location = useLocation();
-  const baseRoute = "/employer/manage-job-listings";
+  const baseRoute = "/dashboard/manage-job-listings";
   const { subscriptionPlan } = useEmployerContext();
 
   const jobListingsMenu: MenuItem[] = [
     {
       icon: <List className="w-5 h-5" />,
       label: "All Job Listings",
-      path: `${baseRoute}/active`,
+      path: `${baseRoute}/all`,
     },
     {
       icon: <CircleCheck className="w-5 h-5" />,

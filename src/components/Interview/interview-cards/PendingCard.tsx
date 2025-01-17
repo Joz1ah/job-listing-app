@@ -114,8 +114,8 @@ const PendingCard: FC<PendingCardProps> = ({
       setTimeout(() => {
         navigate(
           variant === "employer"
-            ? "/employer/interviews/declined"
-            : "/job-hunter/interviews/declined",
+            ? "/dashboard/interviews/declined"
+            : "/dashboard/interviews/declined",
         );
       }, 1000);
     },
@@ -132,8 +132,8 @@ const PendingCard: FC<PendingCardProps> = ({
     setTimeout(() => {
       navigate(
         variant === "employer"
-          ? "/employer/interviews/accepted"
-          : "/job-hunter/interviews/accepted",
+          ? "/dashboard/interviews/accepted"
+          : "/dashboard/interviews/accepted",
       );
     }, 1000);
   };

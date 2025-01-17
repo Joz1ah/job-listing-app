@@ -23,7 +23,7 @@ const InterviewSidebarJobHunter: FC<InterviewSidebarJobHunterProps> = ({
   className = ''
 }) => {
   const location = useLocation();
-  const baseRoute = userType === 'employer' ? '/employer' : '/job-hunter';
+  const baseRoute = userType === 'employer' ? '/dashboard' : '/dashboard';
   const { subscriptionPlan } = useJobHunterContext();
 
   const interviewMenu: MenuItem[] = [

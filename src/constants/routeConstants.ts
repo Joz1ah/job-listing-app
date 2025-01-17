@@ -1,9 +1,9 @@
   export const ROUTE_CONSTANTS = {
     // Core routes
     HOME: '/',
-    LANDING: '/landing',
-    EMPLOLYER_SUB_PLAN: '/employer/subscription-plan',
-    JOBHUNTER_SUB_PLAN: '/job-hunter/subscription-plan',
+    LANDING: '/',
+    EMPLOLYER_SUB_PLAN: '/dashboard/subscription-plan',
+    JOBHUNTER_SUB_PLAN: '/dashboard/subscription-plan',
     ABOUT: '/about',
     FETCH: '/fetch',
     NOT_FOUND: '/404',
@@ -16,25 +16,25 @@
     TEST: '/test',
     
     // Authentication and Profile
-    COMPLETE_PROFILE: '/employer/employer-profile',
-    EDIT_PROFILE: '/employer/edit-profile',
+    COMPLETE_PROFILE: '/dashboard/employer-profile',
+    EDIT_PROFILE: '/dashboard/edit-profile',
     
     // Job Hunter routes
-    JOB_HUNTER: '/job-hunter',
-    CREATE_APPLICATION: '/job-hunter/jobhunter-profile',
-    EDIT_APPLICATION: '/job-hunter/edit-application',
-    BOOKMARKED_JOBS_JOBHUNTER: '/job-hunter/bookmarked-jobs',
-    INTERVIEWS_JOB_HUNTER: '/job-hunter/interviews',
-    ACCOUNT_SETTINGS_JOB_HUNTER: '/job-hunter/account-settings',
+    JOB_HUNTER: '/dashboard',
+    CREATE_APPLICATION: '/dashboard/jobhunter-profile',
+    EDIT_APPLICATION: '/dashboard/edit-application',
+    BOOKMARKED_JOBS_JOBHUNTER: '/dashboard/bookmarked-jobs',
+    INTERVIEWS_JOB_HUNTER: '/dashboard/interviews',
+    ACCOUNT_SETTINGS_JOB_HUNTER: '/dashboard/account-settings',
     
     // Employer routes
-    EMPLOYER: '/employer',
-    JOB_LISTING: '/employer/job-listing',
-    MANAGE_JOB_LISTINGS: '/employer/manage-job-listings',
-    INTERVIEWS_EMPLOYER: '/employer/interviews',
-    REPORTS_ANALYTICS: '/employer/reports-and-analytics',
-    ACCOUNT_SETTINGS_EMPLOYER: '/employer/account-settings',
-    BOOKMARKED_JOBS_EMPLOYER: '/employer/bookmarked-jobs',
+    EMPLOYER: '/dashboard',
+    JOB_LISTING: '/dashboard/job-listing',
+    MANAGE_JOB_LISTINGS: '/dashboard/manage-job-listings',
+    INTERVIEWS_EMPLOYER: '/dashboard/interviews',
+    REPORTS_ANALYTICS: '/dashboard/reports-and-analytics',
+    ACCOUNT_SETTINGS_EMPLOYER: '/dashboard/account-settings',
+    BOOKMARKED_JOBS_EMPLOYER: '/dashboard/bookmarked-jobs',
     
     // Feed and General sections
     FEED: 'feed',
@@ -53,7 +53,7 @@
     COMPLETED: 'completed',
     
     // Job listing status
-    ALL_JOB: 'all-job-lists',
+    ALL_JOB: 'all',
     DRAFTS: 'drafts',
     EXPIRED: 'expired',
     CLOSED: 'closed',

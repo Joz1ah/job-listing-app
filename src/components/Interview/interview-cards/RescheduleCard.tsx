@@ -71,8 +71,8 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
     setTimeout(() => {
       navigate(
         variant === "employer"
-          ? "/employer/interviews/accepted"
-          : "/job-hunter/interviews/accepted",
+          ? "/dashboard/interviews/accepted"
+          : "/dashboard/interviews/accepted",
       );
     }, 1000);
   };
@@ -90,8 +90,8 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
     setTimeout(() => {
       navigate(
         variant === "employer"
-          ? "/employer/interviews/declined"
-          : "/job-hunter/interviews/declined",
+          ? "/dashboard/interviews/declined"
+          : "/dashboard/interviews/declined",
       );
     }, 1000);
   };

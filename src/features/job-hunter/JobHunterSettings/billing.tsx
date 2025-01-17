@@ -118,7 +118,7 @@ const BillingSettings: FC = () => {
           </Tooltip>
         </div>
 
-        <Link to="/job-hunter/account-settings/subscription" className="inline-block">
+        <Link to="/dashboard/account-settings/subscription" className="inline-block">
           {" "}
           <Button className="px-4 py-2 bg-orange-500 text-white rounded text-sm hover:bg-orange-600 transition-colors">
             Manage

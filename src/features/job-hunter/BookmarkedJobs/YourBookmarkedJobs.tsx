@@ -9,7 +9,7 @@ import { useJobHunterContext } from "components";
 
 // You can replace this with your actual mock data
 const mockBookmarks: Match[] = [
-  {
+  /* {
     employerId: 1,
     position: "Software Engineer",
     company: "Fintech Solutions Ltd",
@@ -56,7 +56,7 @@ const mockBookmarks: Match[] = [
     interpersonalSkills: ["Communication", "Adaptability", "Problem-solving"],
     certificates: ["None required"],
     isNew: false
-  },
+  }, */
   // Add more mock bookmarks as needed
 ];
 
@@ -158,7 +158,7 @@ const BookmarkedJobsContent: FC = () => {
           </p>
 
           <NavLink
-            to="/job-hunter/feed"
+            to="/dashboard/feed"
              className="bg-[#F5722E] text-white px-6 py-2 rounded-md hover:bg-orange-600 transition-colors"
           >
             Go To Job Feed

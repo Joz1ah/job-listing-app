@@ -159,7 +159,7 @@ const CompleteEmployerProfile: FC = () => {
       await refreshUser();
       
       // Navigate on success
-      navigate("/employer/feed");
+      navigate("/dashboard/feed");
     } catch (error) {
       console.error('Failed to update profile:', error);
     } finally {
@@ -180,7 +180,7 @@ const CompleteEmployerProfile: FC = () => {
         <div className="flex gap-8 px-4 md:px-8 lg:px-12 py-6 justify-center">
           <div className="w-full md:w-[800px] min-h-[825px] bg-[#242625] md:bg-[#2D3A41] text-white">
             <div className="flex items-center relative w-full mb-6 md:mb-10">
-              <NavLink to="/employer/feed" className="absolute left-4 top-6">
+              <NavLink to="/dashboard/feed" className="absolute left-4 top-6">
                 <ChevronLeft strokeWidth={4} className="h-6 w-6" />
               </NavLink>
     

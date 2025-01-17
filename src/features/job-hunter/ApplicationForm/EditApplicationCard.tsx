@@ -267,7 +267,7 @@ const EditApplicationCard: FC = () => {
       // Refresh user data in auth context
       await refreshUser();
       
-      navigate("/job-hunter/feed");
+      navigate("/dashboard/feed");
     } catch (error) {
       console.error("Error submitting profile:", error);
     } finally {
@@ -288,7 +288,7 @@ const EditApplicationCard: FC = () => {
       <div className="flex flex-col xl:flex-row gap-8 pt-6">
         <div className="w-full md:w-[800px] min-h-[960px] bg-[#242625] md:bg-[#2D3A41] text-white">
           <div className="flex items-center relative w-full mb-6 md:mb-10">
-            <NavLink to="/job-hunter/feed" className="absolute left-4 top-6">
+            <NavLink to="/dashboard/feed" className="absolute left-4 top-6">
               <ChevronLeft strokeWidth={4} className="h-6 w-6 ml-4" />
             </NavLink>
   

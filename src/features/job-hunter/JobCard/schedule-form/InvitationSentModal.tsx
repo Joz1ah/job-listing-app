@@ -35,7 +35,7 @@ const InvitationSentModal: React.FC<InvitationSentModalProps> = ({
 
             <div className="flex flex-col w-full space-y-3 pt-4">
               <NavLink 
-                to="/job-hunter/interviews/pending"
+                to="/dashboard/interviews/pending"
                 onClick={onClose}
               >
                 <Button 
@@ -46,7 +46,7 @@ const InvitationSentModal: React.FC<InvitationSentModalProps> = ({
               </NavLink>
 
               <NavLink 
-                to="/job-hunter/feed"
+                to="/dashboard/feed"
                 onClick={onClose}
               >
                 <Button 

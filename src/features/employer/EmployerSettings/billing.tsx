@@ -120,7 +120,7 @@ const BillingSettings: FC = () => {
         </div>
 
         <Link
-          to="/employer/account-settings/subscription"
+          to="/dashboard/account-settings/subscription"
           className="inline-block"
         >
           {" "}

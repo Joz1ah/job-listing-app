@@ -20,8 +20,8 @@ const SuccessModal: React.FC<SuccessModalProps> = ({
   };
 
   const paths = {
-    employer: "/employer/interviews/pending",
-    "job-hunter": "/job-hunter/interviews/pending",
+    employer: "/dashboard/interviews/pending",
+    "job-hunter": "/dashboard/interviews/pending",
   };
 
   return (

@@ -21,7 +21,7 @@ const BookmarkSidebar: FC<BookmarkSidebarProps> = ({
   className = "",
 }) => {
   const location = useLocation();
-  const baseRoute = "/employer/bookmarked-jobs";
+  const baseRoute = "/dashboard/bookmarked-jobs";
   const { subscriptionPlan } = useEmployerContext();
 
   const bookmarkMenu: MenuItem[] = [

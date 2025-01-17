@@ -166,7 +166,7 @@ const BaseMenu: FC<MenuProps> = ({
       <header className="hidden md:flex fixed top-0 left-0 right-0 bg-[#2D3A41] h-[72px] px-4 justify-between items-center z-50 shadow-md">
         <div className="flex items-center gap-4">
           <NavLink
-            to={isAuthenticated ? (userType === 'employer' ? '/employer' : '/job-hunter') : '/'}
+            to={isAuthenticated ? (userType === 'employer' ? '/dashboard' : '/dashboard') : '/'}
             onClick={handleNavLinkClick}
             className="flex-shrink-0"
           >
@@ -202,7 +202,7 @@ const BaseMenu: FC<MenuProps> = ({
                 {isAuthenticated && isEmployer && (
                   <li>
                     <NavLink
-                      to="/employer/job-listing"
+                      to="/dashboard/job-listing"
                       onClick={handleNavLinkClick}
                       className="flex-shrink-0"
                     >
@@ -333,7 +333,7 @@ const BaseMenu: FC<MenuProps> = ({
                 <div key={`${item.path}-${index}`}>
                   <div className="w-full text-end px-2 sm:pr-4 sm:pl-0">
                     {index === 0 && isMobile && isEmployer && isAuthenticated ? (
-                      <NavLink to="/employer/job-listing">
+                      <NavLink to="/dashboard/job-listing">
                         <Button
                           onClick={() => handleItemClick(item)}
                           className="w-[160px] h-[36px] bg-[#F5722E] hover:bg-[#F5722E]/90 text-white p-0 text-xs font-normal mb-2"
