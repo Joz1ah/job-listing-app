@@ -1,3 +1,46 @@
+.custom-radio {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .custom-radio input {
+    display: none; /* Hide the default radio button */
+  }
+  
+  .radio-mark {
+    width: 20px; 
+    height: 20px;
+    border: 2px solid #F5722E; 
+    border-radius: 50%; 
+    margin-right: 8px; 
+    position: relative;
+    overflow: hidden; 
+    transition: border-color 0.3s; 
+  }
+  
+  .custom-radio input:checked + .radio-mark {
+    border-color: #F5722E; 
+  }
+  
+  .custom-radio input:checked + .radio-mark::after {
+    content: "";
+    width: 70%; 
+    height: 70%; 
+    border-radius: 50%; 
+    background: #F5722E; 
+    position: absolute;
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    transition: background 0.1s ease; 
+  }
+  
+  .custom-radio input:not(:checked) + .radio-mark::after {
+    content: ""; 
+    background: transparent; 
+  }
+  
 .about-us-container{
     display: flex;
     flex-direction: row;
@@ -9,6 +52,9 @@
     }
     .radio-group-container{
         margin-top: 1em;
+        .radio-group-title{
+            margin-bottom: .3em;
+        }
     }
     button{
         display: flex;
@@ -23,6 +69,7 @@
         line-height: normal;
         border-radius: 4px;
         background: #F5722E;
+        width: 160px;
     }
     .form-button-submit-wrapper{
         margin-top:.3em;
@@ -46,6 +93,9 @@
     }
     .form-container-wrapper{
         justify-content: flex-end;
+        @media (max-width: 768px) {
+            justify-content: center;
+        }
     }
     .contact-details-container-wrapper{
         justify-content: flex-start;
@@ -57,7 +107,37 @@
         box-shadow: 0px 5px 4px 0px rgba(0, 0, 0, 0.25);
         width: 580px;
         justify-content: flex-end; 
+        z-index: 2;
     }
+    .form-success{
+        padding: 176px 0 313px 0;
+        opacity: 0;
+        transition: opacity 0.1s ease-in;
+        .message-container{
+            padding:20px;
+            div:nth-child(1){
+                color:#F5722E;
+                font-size: 36px;
+                font-style: normal;
+                font-weight: 500;
+                line-height: normal;
+                @media (max-width: 768px) {
+                    text-align: center;
+                }
+            }
+            div:nth-child(2){
+                margin-top: 2em;
+                color:#263238;
+                font-size: 14px;
+                font-style: normal;
+                font-weight: 400;
+                line-height: 149.843%;
+            }
+        }
+    }
+    .form-success.visible {
+        opacity: 1; /* Fully opaque when the 'visible' class is added */
+      }
     .form-header{
         padding: 1.7em 1.7em .8em 1.7em;
         border-bottom: 1px solid #AEADAD;
@@ -116,23 +196,43 @@
       
       .contact-us-person {
         position: absolute; 
+        z-index: 1;
+        @media (max-width: 768px) {
+            margin-bottom: 100px;
+            bottom: 0;
+            img{
+                min-height: 562px;
+                min-width: 580px;
+            }
+        }
+      }
+      .contact-us-bg1{
+        position: absolute; 
         top: 0;
-        right: 0; 
+        left: 0;
+        margin-left: 120px;
         z-index: 1; 
-        img {
+        @media (max-width: 768px) {
+            margin-left: 0;
         }
       }
       .contact-us-bg{
         position: absolute; 
         top: 0;
+        margin-left: -100px;
+        margin-top:-20px;
         z-index: 1; 
-
       }
       .contact-us-bg-inverted{
         position: absolute; 
         bottom:0;
         right: 0;
+        margin-bottom: 162px;
+        margin-right: 17px;
         z-index: 1; 
+        @media (max-width: 768px) {
+            margin-bottom: 100px;
+        }
 
       }
       .contact-us-details-body {
