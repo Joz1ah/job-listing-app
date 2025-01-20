@@ -175,6 +175,8 @@ const JobListingForm: FC = () => {
     }
   };
 
+  const isFirstJobListing = user?.data?.user?.jobCounts?.count === 0;
+
   return (
     <>
       <JobListingPreview
@@ -186,13 +188,15 @@ const JobListingForm: FC = () => {
       {isSubmitting && <LoadingOverlay />}
       <div className="w-full max-w-[927px] min-h-[825px] bg-transparent md:bg-[#2D3A41] text-white mx-2 px-4 py-8 md:py-12">
         <div className="flex items-center relative w-full mb-6 md:mb-14">
-          <NavLink to="/dashboard/feed" className="absolute left-0 md:left-4">
-            <ChevronLeft strokeWidth={4} className="h-6 w-6" />
-          </NavLink>
+          {!isFirstJobListing && (
+            <NavLink to="/dashboard/feed" className="absolute left-0 md:left-4">
+              <ChevronLeft strokeWidth={4} className="h-6 w-6" />
+            </NavLink>
+          )}
 
           <h1 className="flex-1 text-center text-xl md:text-[32px] font-normal text-[#F5722E]">
             <span className="inline-flex items-center gap-2 justify-center">
-              Create Job Listing
+            {isFirstJobListing ? "Create Your First Job Listing" : "Create Job Listing"}
             </span>
           </h1>
         </div>

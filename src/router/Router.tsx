@@ -125,7 +125,7 @@ const ProtectedRoute = ({
   allowedUserType 
 }: { 
   children: React.ReactNode, 
-  allowedUserType: 'employer' | 'job_hunter' 
+  allowedUserType?: 'employer' | 'job_hunter' 
 }) => {
   if (isServer) return null;
   const { isAuthenticated, user, isLoading } = useAuth();
@@ -141,29 +141,46 @@ const ProtectedRoute = ({
 
   const userType = user?.data?.user?.type;
   const userDetails = user?.data?.user?.relatedDetails;
+  const jobCount = user?.data?.user?.jobCounts?.count;
 
   // Different profile completion checks based on user type
-  const isProfileIncomplete = userType === 'employer'
-    ? !userDetails?.businessName || !userDetails?.firstName || !userDetails?.lastName
-    : !userDetails?.firstName || !userDetails?.lastName;
+  const isEmployerProfileIncomplete = userType === 'employer' && (
+    !userDetails?.businessName || 
+    !userDetails?.firstName || 
+    !userDetails?.lastName || 
+    !userDetails?.country || 
+    !userDetails?.state
+  );
+
+  const isJobHunterProfileIncomplete = userType === 'job_hunter' && (
+    !userDetails?.firstName || 
+    !userDetails?.lastName
+  );
+
+  const isProfileIncomplete = isEmployerProfileIncomplete || isJobHunterProfileIncomplete;
 
   // Get profile completion routes based on user type
   const profileCompletionRoute = userType === 'employer'
     ? ROUTE_CONSTANTS.COMPLETE_PROFILE
     : ROUTE_CONSTANTS.CREATE_APPLICATION;
 
+  // Check if current route is a protected route
   const isProfileRoute = location.pathname === profileCompletionRoute;
+  const isJobListingRoute = location.pathname.includes(ROUTE_CONSTANTS.JOB_LISTING);
 
-  // If profile is incomplete and not already on profile page, redirect
+  // First priority: Check if profile is incomplete
   if (isProfileIncomplete && !isProfileRoute) {
     return <Navigate to={profileCompletionRoute} replace />;
   }
 
-  if (userType !== allowedUserType) {
-    const redirectPath = userType === 'employer' 
-      ? ROUTE_CONSTANTS.EMPLOYER 
-      : ROUTE_CONSTANTS.JOB_HUNTER;
-    return <Navigate to={redirectPath} replace />;
+  // Second priority: Check for job listing only if profile is complete
+  if (!isProfileIncomplete && userType === 'employer' && jobCount === 0 && !isJobListingRoute) {
+    return <Navigate to={ROUTE_CONSTANTS.JOB_LISTING} replace />;
+  }
+
+  // Check for user type mismatch
+  if (allowedUserType && userType !== allowedUserType) {
+    return <Navigate to={ROUTE_CONSTANTS.DASHBOARD} replace />;
   }
 
   return <Intercom>{children}</Intercom>;
@@ -178,10 +195,8 @@ const DashboardRedirectRoute = ({ children }: { children: React.ReactNode }) => 
   }
 
   if (isAuthenticated && user?.data?.user?.type) {
-    const redirectPath = user.data.user.type === 'employer' 
-      ? ROUTE_CONSTANTS.EMPLOYER 
-      : ROUTE_CONSTANTS.JOB_HUNTER;
-    return <Navigate to={redirectPath} replace />;
+
+    return <Navigate to={ROUTE_CONSTANTS.DASHBOARD} replace />;
   }
 
   return <>{children}</>;
@@ -197,11 +212,18 @@ const UserTypeComponent = ({
   jobHunterComponent: ComponentType<any>;
   [key: string]: any;
 }) => {
-  const { user } = useAuth();
-  const userType = user?.data?.user?.type;
-
-  const Component = userType === 'employer' ? EmployerComponent : JobHunterComponent;
+  const { user, isLoading } = useAuth();
   
+  if (isLoading) {
+    return <LoadingFallback />;
+  }
+
+  const userType = user?.data?.user?.type;
+  if (!userType) {
+    return <Navigate to={ROUTE_CONSTANTS.LANDING} replace />;
+  }
+  
+  const Component = userType === 'employer' ? EmployerComponent : JobHunterComponent;
   return <LazyComponent component={Component} {...props} />;
 };
 
@@ -264,40 +286,51 @@ const routes: RouteObject[] = [
     element: <LazyComponent component={NotFound} />
   },
   {
-    path: ROUTE_CONSTANTS.EMPLOYER,
-    element: <LazyComponent component={BaseLayout}/>,
+    path: ROUTE_CONSTANTS.DASHBOARD,
+  element: (
+    <ProtectedRoute>
+    <LazyComponent component={BaseLayout}/>
+  </ProtectedRoute>
+  ),
     children: [
       // Feed
       {
         path: '',
-        element: <UserTypeComponent 
-          employerComponent={EmployerFeedLayout} 
-          jobHunterComponent={JobHunterFeedLayout} 
-        />,
+        element: <ProtectedRoute>
+          <UserTypeComponent 
+            employerComponent={EmployerFeedLayout} 
+            jobHunterComponent={JobHunterFeedLayout} 
+          />
+        </ProtectedRoute>,
         children: [
           {
             index: true,
-            element: <UserTypeComponent 
-              employerComponent={EmployerFeed} 
-              jobHunterComponent={JobHunterFeed} 
-            />
+            element: <ProtectedRoute>
+              <UserTypeComponent 
+                employerComponent={EmployerFeed} 
+                jobHunterComponent={JobHunterFeed} 
+              />
+            </ProtectedRoute>
           },
           {
             path: ROUTE_CONSTANTS.FEED,
-            element: <UserTypeComponent 
-              employerComponent={EmployerFeed} 
-              jobHunterComponent={JobHunterFeed} 
-            />
+            element: <ProtectedRoute>
+              <UserTypeComponent 
+                employerComponent={EmployerFeed} 
+                jobHunterComponent={JobHunterFeed} 
+              />
+            </ProtectedRoute>
           }
         ]
       },
       // Profile Routes
       {
         path: ROUTE_CONSTANTS.COMPLETE_PROFILE,
-        element: <UserTypeComponent 
+        element:<ProtectedRoute allowedUserType='employer'>
+          <UserTypeComponent 
           employerComponent={CompleteProfile} 
           jobHunterComponent={CreateAppCard} 
-        />
+        /></ProtectedRoute> 
       },
       {
         path: ROUTE_CONSTANTS.CREATE_APPLICATION,
@@ -313,10 +346,11 @@ const routes: RouteObject[] = [
       },
       {
         path: ROUTE_CONSTANTS.EDIT_PROFILE,
-        element: <UserTypeComponent 
+        element:<ProtectedRoute allowedUserType="employer">
+          <UserTypeComponent 
           employerComponent={EditProfile} 
           jobHunterComponent={EditAppCard} 
-        />
+        /></ProtectedRoute>
       },
       // Job Listing (Employer only)
       {
@@ -357,10 +391,10 @@ const routes: RouteObject[] = [
       // Interviews
       {
         path: ROUTE_CONSTANTS.INTERVIEWS_EMPLOYER,
-        element: <UserTypeComponent 
+        element:<ProtectedRoute><UserTypeComponent 
           employerComponent={InterviewEmployer} 
           jobHunterComponent={InterviewJobHunter} 
-        />,
+        /></ProtectedRoute>,
         children: [
           {
             path: '',
@@ -406,10 +440,10 @@ const routes: RouteObject[] = [
       // Account Settings
       {
         path: ROUTE_CONSTANTS.ACCOUNT_SETTINGS_EMPLOYER,
-        element: <UserTypeComponent 
+        element:<ProtectedRoute><UserTypeComponent 
           employerComponent={AccountSettingsEmployer} 
           jobHunterComponent={AccountSettingsJobHunter} 
-        />,
+        /></ProtectedRoute>,
         children: [
           {
             path: '',
@@ -448,10 +482,10 @@ const routes: RouteObject[] = [
       // Bookmarked Jobs
       {
         path: ROUTE_CONSTANTS.BOOKMARKED_JOBS_EMPLOYER,
-        element: <UserTypeComponent 
+        element:<ProtectedRoute><UserTypeComponent 
           employerComponent={EmployerBookmarkedJobs} 
           jobHunterComponent={JobHunterBookmarkedJobs} 
-        />,
+        /></ProtectedRoute> ,
         children: [
           {
             path: '',

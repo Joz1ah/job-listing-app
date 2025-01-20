@@ -14,6 +14,8 @@
 
     // Test Route
     TEST: '/test',
+
+    DASHBOARD: '/dashboard',
     
     // Authentication and Profile
     COMPLETE_PROFILE: '/dashboard/employer-profile',
