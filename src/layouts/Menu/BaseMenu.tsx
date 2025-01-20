@@ -1,9 +1,10 @@
 import { FC, useEffect, useState } from "react";
 import { NavLink, Link, useLocation } from "react-router-dom";
 import { Button } from "components/ui/shadcn/buttons";
-import { ChevronDown, Info, Plus, ChevronUp } from "lucide-react";
+import { ChevronDown, Plus, ChevronUp } from "lucide-react";
 import { NotificationFeed } from "components";
-import verifiedIcon from "images/verified.svg?url";
+/* import { Info } from "lucide-react";
+import verifiedIcon from "images/verified.svg?url"; */
 import companyLogo from "images/company-logo.png";
 import akazaLogoWhite from "images/akaza-logo-white.png";
 import menuButton from "images/menu-button.png";
@@ -50,10 +51,10 @@ const BaseMenu: FC<MenuProps> = ({
 
   // Default navigation items for unauthenticated state
   const defaultNavItems = [
-    { name: "About us", path: "about-us" },
-    { name: "Contact us", path: "contact-us" },
-    { name: "Subscription plans", path: "subscription-plan" },
-    { name: "FAQ", path: "faq" }
+    { name: "About us", path: "/about-us" },
+    { name: "Contact us", path: "/contact-us" },
+    { name: "Subscription plans", path: "/subscription-plan" },
+    { name: "FAQ", path: "/faq" }
   ];
 
   const handleItemClick = (item: NavItem) => {
@@ -109,12 +110,12 @@ const BaseMenu: FC<MenuProps> = ({
     }
   };
 
-  const renderStatusIcon = () => {
+/*   const renderStatusIcon = () => {
     if (subscriptionPlan === 'freeTrial') {
       return <Info className="w-4 h-4 text-[#2D3A41] fill-white" />;
     }
     return <img src={verifiedIcon} className="w-4 h-4" alt="Verified" />;
-  };
+  }; */
 
   const handleNotificationClick = () => {
     if (isMenuOpen) {
@@ -232,10 +233,13 @@ const BaseMenu: FC<MenuProps> = ({
             <>
               {renderNotificationFeed()}
               <div className="flex items-center gap-2 flex-shrink-0 min-w-0">
-                <span className="text-white font-medium text-[14px] lg:text-[18px] truncate block max-w-[100px] lg:max-w-[200px]">
-                  {userName}
-                </span>
-                {renderStatusIcon()}
+              <span 
+                className="text-white font-medium text-[14px] lg:text-[18px] truncate block max-w-[100px] lg:max-w-[200px]"
+                title={userName}
+              >
+                {userName}
+              </span>
+                {/* {renderStatusIcon()} */}
                 <div className="relative w-6 h-6">
                   <div
                     className={`absolute inset-0 transform transition-all duration-300 ease-in-out ${

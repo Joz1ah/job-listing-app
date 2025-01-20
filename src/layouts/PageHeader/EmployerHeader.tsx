@@ -1,8 +1,9 @@
 import { FC } from "react";
-import { Building, Info } from "lucide-react";
+import { Building } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { Tooltip } from "components";
-import verifiedIcon from "images/verified.svg?url";
+import { Info } from "lucide-react";
+//import verifiedIcon from "images/verified.svg?url";
 import { useEmployerContext } from "components";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 
@@ -45,11 +46,13 @@ const EmployerHeader: FC = () => {
         <div className="flex flex-col space-y-2 md:space-y-4">
           <div className="flex items-start">
             <div className="flex-1">
-              <h1 className="text-3xl text-white font-normal line-clamp-2">
+              <h1 className="text-3xl text-white font-normal line-clamp-2"
+              title={businessName}
+              >
                 {businessName}
               </h1>
             </div>
-            <div className="flex-shrink-0 ml-2">
+            {/* <div className="flex-shrink-0 ml-2">
               {subscriptionPlan === "freeTrial" ? (
                 <Tooltip
                   content={
@@ -79,7 +82,7 @@ const EmployerHeader: FC = () => {
                   alt="Verified"
                 />
               )}
-            </div>
+            </div> */}
           </div>
 
           <div className="flex flex-col space-y-3">

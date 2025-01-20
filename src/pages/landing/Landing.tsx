@@ -35,6 +35,7 @@ import { Outlet, useMatch } from 'react-router-dom';
 import { Navigate } from 'react-router-dom';
 import { Input, InputField, PhoneInputLanding, CountrySelect } from "components";
 import { useEmployerContactMutation, useJobHunterContactMutation } from 'api/akaza/akazaAPI';
+import empty_matches from 'assets/images/empty-match-modal.svg?url'
 
 import video1 from 'assets/mp4/Landing-Page-hero-1.mp4';
 import video2 from 'assets/mp4/video-conference-call-1.mp4';
@@ -2586,6 +2587,7 @@ const AuthnetPaymentFullModal = () => {
 const PerfectMatchResultsModal = () => {
   const selectedUserType = dataStates.selectedUserType;
   const matchData = selectedUserType === 'employer' ? employerMatches : jobMatches;
+  const hasMatches = matchData && matchData.length > 0;
 
   const handleSignup = () => {
     // First, update the modal state to show signup step 2
@@ -2596,6 +2598,22 @@ const PerfectMatchResultsModal = () => {
     // Then open the modal with the updated state
     openModal();
   };
+
+  const EmptyState = () => (
+    <div className="flex flex-col items-center gap-6">
+      <img src={empty_matches} alt="No matches found" />
+      <div className="text-center">
+        <h3 className="text-[#F5722E] text-[22px] font-bold mb-2">
+          Oops, no match today
+        </h3>
+        <p className="text-[#263238] text-[15px]">
+          But the best matches don't wait around.
+          <br />
+          Sign up now and snag your next big opportunity tomorrow!
+        </p>
+      </div>
+    </div>
+  );
 
   return (
     <div 
@@ -2610,27 +2628,30 @@ const PerfectMatchResultsModal = () => {
             Perfect Match
           </h2>
 
-          {/* Carousel using shadcn */}
-          <Carousel 
-            opts={{
-              align: "start",
-              loop: false,
-              containScroll: "trimSnaps"
-            }}
-            className="w-full"
-          >
-            <CarouselContent className="-ml-4">
-              {matchData.map((match, index) => (
-                <CarouselItem key={index} className="basis-[55%] transition-opacity">
-                  {selectedUserType === 'employer' ? (
-                    <MockAppCard match={match as EmployerMatch} />
-                  ) : (
-                    <MockJobCard match={match as JobMatch} />
-                  )}
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-          </Carousel>
+          {hasMatches ? (
+            <Carousel 
+              opts={{
+                align: "center",
+                loop: false,
+                containScroll: "trimSnaps"
+              }}
+              className="w-full"
+            >
+              <CarouselContent className="-ml-4">
+                {matchData.map((match, index) => (
+                  <CarouselItem key={index} className="md:basis-[55%] basis-[100%] transition-opacity">
+                    {selectedUserType === 'employer' ? (
+                      <MockAppCard match={match as EmployerMatch} />
+                    ) : (
+                      <MockJobCard match={match as JobMatch} />
+                    )}
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+            </Carousel>
+          ) : (
+            <EmptyState />
+          )}
 
           {/* Action buttons */}
           <div className="flex flex-col items-center gap-2 w-full max-w-[300px]">

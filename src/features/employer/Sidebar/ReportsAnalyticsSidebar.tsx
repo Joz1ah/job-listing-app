@@ -1,7 +1,8 @@
 import { FC } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { BarChart2, Users, Calendar, DollarSign, Info } from "lucide-react";
-import verifiedIcon from 'images/verified.svg?url'
+import { BarChart2, Users, Calendar, DollarSign } from "lucide-react";
+/* import { Info } from "lucide-react";
+import verifiedIcon from 'images/verified.svg?url' */
 import userCheck from 'images/user-check.svg?url'
 import { useEmployerContext } from "components";
 
@@ -51,17 +52,19 @@ const ReportsAnalyticsSidebar: FC<AnalyticsSidebarProps> = ({
     <div className="mb-8">
       <div className="flex items-start">
         <div className="flex-1">
-          <span className="text-[30px] font-normal text-white line-clamp-2">
+          <span className="text-[30px] font-normal text-white line-clamp-2"
+          title={userName}
+          >
             {userName}
           </span>
         </div>
-        <div className="flex-shrink-0 ml-2 mt-2">
+        {/* <div className="flex-shrink-0 ml-2 mt-2">
           {subscriptionPlan === 'freeTrial' ? (
             <Info className="w-7 h-7 fill-[#D6D6D6] text-[#212529]" />
           ) : (
             <img src={verifiedIcon} className="w-7 h-7" />
           )}
-        </div>
+        </div> */}
       </div>
       <p className="text-[17px] text-white mt-1 flex items-center gap-2">
         {subscriptionPlan === "freeTrial" ? (
