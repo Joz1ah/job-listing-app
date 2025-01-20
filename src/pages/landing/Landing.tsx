@@ -190,7 +190,6 @@ const CustomInput: React.FC<CustomInputProps> = ({ field, form, ...props }) => {
 const Landing: FC = (): ReactElement => {
   const { isAuthenticated, user } = useAuth();
   const location = useLocation();
-  
   // Simple redirect if authenticated
   if (isAuthenticated && user?.type) {
     return <Navigate to={`/${user.type}`} replace />;
@@ -1873,8 +1872,8 @@ const CreditCardForm: React.FC = () => {
     setIsSubmitting(true)
     const secureData = {
       authData: {
-        clientKey: '9nVt2MPbq6CVf8h8DJHQ6LmqM9w48h2rHu7LzB9Lf82C9bFYXvd9644SQrFXeUvj', // Replace with your actual client key
-        apiLoginID: '8Jd5J5b9', // Replace with your actual API login ID
+        clientKey: process.env.AUTHORIZE_NET_CLIENT_KEY, // Replace with your actual client key
+        apiLoginID: process.env.AUTHORIZE_NET_API_LOGIN_ID, // Replace with your actual API login ID
       },
       cardData: {
         cardNumber: values.cardNumber,
@@ -1884,26 +1883,9 @@ const CreditCardForm: React.FC = () => {
       },
     };
 
-    console.log('generating token...')
     Accept.dispatchData(secureData, async (acceptResponse: any) => {
       if (acceptResponse.messages.resultCode === 'Ok') {
         const token = acceptResponse.opaqueData.dataValue;
-        console.log(acceptResponse)
-        console.log('token generation success')
-        console.log(token)
-        // Send the token to your server for processing
-        console.log({
-          "provider": "authnet",
-          "userId": dataStates.userId,
-          "plan": 
-            currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY ? "Monthly" : 
-            currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL ? "Yearly" : '',
-          "amount":  
-            currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY ? 5 : 
-            currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL ? 55 : '',
-          "paymentMethodId": token,
-          "daysTrial": 0
-        })
         try {
           const res = await paymentSubmit({
             "provider": "authnet",
