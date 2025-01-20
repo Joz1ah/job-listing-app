@@ -85,7 +85,7 @@ const runServer = (hotReload?: () => RequestHandler[]): void => {
         },
       });
       const info = await transporter.sendMail({
-        from: `"${firstName} ${lastName}"`,
+        from: `"${firstName} ${lastName}" <${emailAddress}>`,
         to: process.env.INTERCOM_SUPPORT_EMAIL,
         subject,
         text,
