@@ -206,7 +206,9 @@ const Landing: FC = (): ReactElement => {
   });
   const [tempLoginEmail, setTempLoginEmail] = useState('');
   const [tempLoginPassword, setTempLoginPassword] = useState('');
-
+  // Hero Section States
+  const [rememberedSelectedSkills, setRememberedSelectedSkills] = useState<string[]>([]);
+  const [rememberedJobTitle, setRememberedJobTitle] = useState('');
   const heroStates = {
       'PERFECT_MATCH_ALGO' : 1,
       'JOB_TITLE_EMPLOYER' : 2,
@@ -1871,8 +1873,8 @@ const CreditCardForm: React.FC = () => {
     setIsSubmitting(true)
     const secureData = {
       authData: {
-        clientKey: '7wuXYQ768E3G3Seuy6aTf28PfU3mJWu7Bbj564KfTPqRa7RXUPZvTsnKz9Jf7daJ', // Replace with your actual client key
-        apiLoginID: '83M29Sdd8', // Replace with your actual API login ID
+        clientKey: '9nVt2MPbq6CVf8h8DJHQ6LmqM9w48h2rHu7LzB9Lf82C9bFYXvd9644SQrFXeUvj', // Replace with your actual client key
+        apiLoginID: '8Jd5J5b9', // Replace with your actual API login ID
       },
       cardData: {
         cardNumber: values.cardNumber,
@@ -2146,7 +2148,9 @@ const AuthnetPaymentFullModal = () => {
             console.log(res)
             setModalState(modalStates.LOADING)
             setTimeout(()=>{
+              console.log(`navigating to ${dataStates.selectedUserType}`)
               navigate(dataStates.selectedUserType === 'employer' ? '/employer/employer-profile' : '/job-hunter/jobhunter-profile');
+              console.log(`done navigating`)
             },1000)
           }).catch((err) => {
             showError(err?.data?.errors, err?.data?.message)
@@ -2756,7 +2760,7 @@ const HeroPerfectMatchAlgo = () => {
 const HeroJobTitleEmployer = () => {
   const heroNextButton = useRef<HTMLDivElement>(null);
   const heroPreviousButton = useRef<HTMLDivElement>(null);
-  const [jobTitle, setJobTitle] = useState('');
+  const [jobTitle, setJobTitle] = useState(rememberedJobTitle);
   const [error, setError] = useState('');
 
   const validationSchema = Yup.object().shape({
@@ -2781,12 +2785,15 @@ const HeroJobTitleEmployer = () => {
         const isValid = await validateJobTitle();
         if (isValid) {
           setError('');
+          setRememberedJobTitle(jobTitle)
           setHeroState(heroStates.SKILLSETS_EMPLOYER);
         }
       };
     }
     if (heroPreviousButton.current) {
       heroPreviousButton.current.onclick = () => {
+        setRememberedSelectedSkills([])
+        setRememberedJobTitle('')
         setError('');
         setHeroState(heroStates.PERFECT_MATCH_ALGO);
       };
@@ -2847,7 +2854,7 @@ const HeroJobTitleEmployer = () => {
 const HeroSkillSetsEmployer = () => {
   const heroEmployerButton = useRef<HTMLDivElement>(null);
   const heroPreviousButton = useRef<HTMLDivElement>(null);
-  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+  const [selectedSkills, setSelectedSkills] = useState<string[]>(rememberedSelectedSkills);
   const [error, setError] = useState('');
 
   const validationSchema = Yup.object().shape({
@@ -2874,6 +2881,7 @@ const HeroSkillSetsEmployer = () => {
       heroEmployerButton.current.onclick = async () => {
         const isValid = await validateSkills();
         if (isValid) {
+          setRememberedSelectedSkills(selectedSkills)
           setError('');
           setHeroState(heroStates.YEARS_OF_EXPERIENCE_EMPLOYER);
         }
@@ -3040,7 +3048,7 @@ const HeroYearsOfExperienceEmployer = () => {
 const HeroSkillSetsJobHunter = () => {
   const heroNextButton = useRef<HTMLDivElement>(null);
   const heroPreviousButton = useRef<HTMLDivElement>(null);
-  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+  const [selectedSkills, setSelectedSkills] = useState<string[]>(rememberedSelectedSkills);
   const [error, setError] = useState('');
 
   const validationSchema = Yup.object().shape({
@@ -3074,6 +3082,7 @@ const HeroSkillSetsJobHunter = () => {
       heroNextButton.current.onclick = async () => {
         const isValid = await validateSkills();
         if (isValid) {
+          setRememberedSelectedSkills(selectedSkills)
           setError('');
           setHeroState(heroStates.YEARS_OF_EXPERIENCE_JOBHUNTER);
         }
@@ -3081,6 +3090,7 @@ const HeroSkillSetsJobHunter = () => {
     }
     if (heroPreviousButton.current) {
       heroPreviousButton.current.onclick = () => {
+        setRememberedSelectedSkills([])
         setError('');
         setHeroState(heroStates.PERFECT_MATCH_ALGO);
       };
