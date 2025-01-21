@@ -5,7 +5,13 @@ WORKDIR /app
 
 COPY package.json package-lock.json ./
 
+#Wait script
+COPY wait-for-env.sh /app/wait-for-env.sh
+
 RUN npm install
+
+#Make the wait script executable
+RUN chmod +x /app/wait-for-env.sh
 
 COPY . .
 
@@ -27,6 +33,8 @@ EXPOSE 8080
 #EXPOSE 80
 #EXPOSE 443
 
+# Set the entry point to the wait script
+ENTRYPOINT ["/app/wait-for-env.sh"]
 
 # Start NGINX
 #CMD ["nginx", "-g", "daemon off;"]
