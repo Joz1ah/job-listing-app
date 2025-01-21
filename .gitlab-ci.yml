@@ -34,9 +34,12 @@ run_shell_script:
   image: node:18-alpine
   script:
     - echo "Waiting for env"
-    - ls -la ./scripts
-    - chmod +x ./wait-for-env.sh
-    - ./wait-for-env.sh 2>&1
+    - echo "root"
+    - ls -la
+    - echo "sub dir"
+    - ls -la
+    - chmod +x ./scripts/wait-for-env.sh
+    - ./scripts/wait-for-env.sh 2>&1
   only:
     - main
 
