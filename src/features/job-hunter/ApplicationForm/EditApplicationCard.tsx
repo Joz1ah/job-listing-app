@@ -39,6 +39,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 
 import { isValidPhoneNumber } from "react-phone-number-input";
+import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 
 interface FormData {
   firstName: string;
@@ -117,6 +118,7 @@ const EditApplicationCard: FC = () => {
   const { user, refreshUser } = useAuth();  // Add refreshUser
   const [submitJobHunterProfile] = useJobHunterProfileMutation();
   const { keywordToIdMap, addMapping } = useContext(KeywordMappingContext);
+  const { showError } = useErrorModal();
 
   // Parse employment type string into array
   const employmentTypes = user?.data?.user?.relatedDetails?.employmentType
@@ -269,6 +271,10 @@ const EditApplicationCard: FC = () => {
       
       navigate("/dashboard/feed");
     } catch (error) {
+      showError(
+        'Profile Update Failed',
+        'Unable to update your application card. Please try again or contact support if the issue persists.'
+      );
       console.error("Error submitting profile:", error);
     } finally {
       setIsSubmitting(false);

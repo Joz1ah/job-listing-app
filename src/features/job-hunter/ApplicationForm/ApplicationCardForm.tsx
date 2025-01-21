@@ -37,6 +37,7 @@ import * as Yup from "yup";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { useJobHunterProfileMutation } from "api/akaza/akazaAPI";
 import { useAuth } from "contexts/AuthContext/AuthContext";
+import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 
 interface FormData {
   firstName: string;
@@ -114,9 +115,9 @@ const ApplicationCardForm: FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPreview, setShowPreview] = useState<boolean>(false);
   const { keywordToIdMap } = useContext(KeywordMappingContext);
-
   const [submitJobHunterProfile ] = useJobHunterProfileMutation();
   const { refreshUser, user } = useAuth();
+  const { showError } = useErrorModal();
 
   const {
     values,
@@ -230,6 +231,10 @@ const ApplicationCardForm: FC = () => {
       await refreshUser();
       navigate("/dashboard/feed");
     } catch (error) {
+      showError(
+        'Profile Update Failed',
+        'Unable to update your application card. Please try again or contact support if the issue persists.'
+      );
       console.error("Error submitting profile:", error);
     } finally {
       setIsSubmitting(false);

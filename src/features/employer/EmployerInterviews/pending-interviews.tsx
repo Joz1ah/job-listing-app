@@ -5,6 +5,7 @@ import { NavLink } from "react-router-dom";
 import emptyInterview from "images/calendar-empty.svg?url";
 import { pendingInterviewsData, Interview } from "mockData/employer-interviews-data";
 import { useEmployerContext } from "components";
+import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 
 interface AcceptData {
   confirmed: boolean;
@@ -31,6 +32,7 @@ const PendingInterviews: FC = () => {
   const loaderRef = useRef<HTMLDivElement>(null);
   const [declineReason, setDeclineReason] = useState<string>("");
   const { subscriptionPlan } = useEmployerContext();
+  const { showError } = useErrorModal();
 
   const handleAccept = async (interview: Interview, data: AcceptData) => {
     try {
@@ -38,6 +40,10 @@ const PendingInterviews: FC = () => {
       await new Promise((resolve) => setTimeout(resolve, 3000));
       setDisplayedItems((prev) => prev.filter((item) => item !== interview));
     } catch (error) {
+      showError(
+        'Accept Interview Failed',
+        'Unable to accept the interview. Please try again or contact support.'
+      );
       console.error("Error accepting interview:", error);
     }
   };
@@ -48,19 +54,24 @@ const PendingInterviews: FC = () => {
       await new Promise((resolve) => setTimeout(resolve, 3000));
       setDisplayedItems((prev) => prev.filter((item) => item !== interview));
     } catch (error) {
+      showError(
+        'Decline Interview Failed',
+        'Unable to decline the interview. Please try again or contact support.'
+      );
       console.error("Error declining interview:", error);
     }
   };
 
-  const handleReschedule = async (
-    interview: Interview,
-    data: RescheduleData,
-  ) => {
+  const handleReschedule = async (interview: Interview, data: RescheduleData) => {
     try {
       console.log("Reschedule:", interview, data);
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+      await new Promise((resolve) => setTimeout(resolve, 3000));
       setDisplayedItems((prev) => prev.filter((item) => item !== interview));
     } catch (error) {
+      showError(
+        'Reschedule Interview Failed',
+        'Unable to reschedule the interview. Please try again or contact support.'
+      );
       console.error("Error rescheduling interview:", error);
     }
   };

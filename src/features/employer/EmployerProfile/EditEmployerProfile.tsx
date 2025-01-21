@@ -20,6 +20,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 
 import { isValidPhoneNumber } from "react-phone-number-input";
+import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 
 const validationSchema = Yup.object().shape({
   businessName: Yup.string().required("This field is required"),
@@ -70,6 +71,7 @@ const EditEmployerProfile: FC = () => {
   const [employerProfile] = useEmployerProfileMutation();
   const navigate = useNavigate();
   const { user, refreshUser } = useAuth();
+  const { showError } = useErrorModal();
 
   const employmentTypes = user?.data?.user?.relatedDetails?.employmentType
     ? user.data.user.relatedDetails.employmentType.split(',')
@@ -159,6 +161,10 @@ const EditEmployerProfile: FC = () => {
       // Navigate on success
       navigate("/dashboard/feed");
     } catch (error) {
+      showError(
+        'Profile Update Failed',
+        'Unable to update your company profile. Please try again or contact support if the issue persists.'
+      );
       console.error('Failed to update profile:', error);
     } finally {
       setIsSubmitting(false);

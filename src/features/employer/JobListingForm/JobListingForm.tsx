@@ -14,6 +14,7 @@ import { KeywordMappingContext } from "contexts/KeyWordMappingContext";
 import { MultiSelect } from "components";
 
 import { JobListingPreview } from "./JobListingPreview";
+import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 
 import {
   CoreSkillsTagInput,
@@ -89,6 +90,7 @@ const JobListingForm: FC = () => {
   const [showPreview, setShowPreview] = useState<boolean>(false);
   const { user, refreshUser } = useAuth();
   const { keywordToIdMap } = useContext(KeywordMappingContext);
+  const { showError } = useErrorModal();
 
   const [createJobList] = useJobListCreateMutation();
 
@@ -129,6 +131,10 @@ const JobListingForm: FC = () => {
 
       navigate("/dashboard");
     } catch (error) {
+      showError(
+        'Job Listing Creation Failed',
+        'Unable to create job listing. Please try again or contact support.'
+      );
       console.error("Error submitting job:", error);
     } finally {
       setIsSubmitting(false);

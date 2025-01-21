@@ -19,6 +19,7 @@ import * as Yup from "yup";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { useEmployerProfileMutation } from "api/akaza/akazaAPI";
 import { useAuth } from "contexts/AuthContext/AuthContext";
+import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 
 const validationSchema = Yup.object().shape({
   businessName: Yup.string().required("This field is required"),
@@ -78,6 +79,7 @@ const CompleteEmployerProfile: FC = () => {
   const [employerProfile] = useEmployerProfileMutation();
   const navigate = useNavigate();
   const { refreshUser, user } = useAuth();
+  const { showError } = useErrorModal();
 
   const {
     values,
@@ -160,6 +162,10 @@ const CompleteEmployerProfile: FC = () => {
       // Navigate on success
       navigate("/dashboard/job-listing");
     } catch (error) {
+      showError(
+        'Profile Update Failed',
+        'Unable to update your company profile. Please try again or contact support if the issue persists.'
+      );
       console.error('Failed to update profile:', error);
     } finally {
       setIsSubmitting(false);
