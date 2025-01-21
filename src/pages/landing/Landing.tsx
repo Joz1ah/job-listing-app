@@ -2211,7 +2211,7 @@ const AuthnetPaymentFullModal = () => {
             stateProvince: Yup.string()
               .required('State/Province is required'),
             zipPostalCode: Yup.string()
-              .matches(/^\d{5}(-\d{4})?$/, 'Zip/Postal code must be 5 digits or 5-4 digits')
+              .matches(/^[a-zA-Z0-9]{1,6}$/, 'Zip/Postal code must be alphanumeric and up to 6 characters')
               .required('Zip/Postal code is required'),
             city: Yup.string()
               .required('City is required'),
