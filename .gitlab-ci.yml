@@ -8,40 +8,22 @@ build:
   stage: build
   image: node:18-alpine
   script:
-    - echo "Installing dependencies..."
     - npm install
-    - echo "Building the application..."
     - npm run build
   only:
+    - main
 
 docker_build:
   stage: docker_build
   before_script:
     - docker info
   script:
-    - echo "Checking script location..."
-    - ls -la ./scripts
-    - chmod +x ./scripts/wait-for-env.sh
-    - ./scripts/wait-for-env.sh
     - echo "Building Docker image..."
     - echo $CI_COMMIT_SHA
-    - docker build --no-cache --platform linux/amd64 -t gcr.io/$GOOGLE_PROJECT_ID/akaza-app:$CI_COMMIT_SHA .    
+    - docker build  --build-arg BASE_URL=${SIT_BASE_URL} --build-arg AUTH_API_URL=${SIT_AUTH_API_URL}   --build-arg SIGNUP_API_URL=${SIT_AUTH_API_URL} --no-cache --platform linux/amd64 -t gcr.io/$GOOGLE_PROJECT_ID/akaza-app:$CI_COMMIT_SHA .    
   only:
     - main
 
-run_shell_script:
-  stage: build
-  image: node:18-alpine
-  script:
-    - echo "Waiting for env"
-    - echo "root"
-    - ls -la
-    - echo "sub dir"
-    - ls -la
-    - chmod +x ./scripts/wait-for-env.sh
-    - ./scripts/wait-for-env.sh 2>&1
-  only:
-    - main
 
 docker_push:
   stage: docker_push

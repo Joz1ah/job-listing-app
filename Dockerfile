@@ -1,4 +1,4 @@
-# Stage 1 Build the app
+# Stage 1: Build the app
 FROM node:18-alpine as build
 
 WORKDIR /app
@@ -9,34 +9,25 @@ RUN npm install
 
 COPY . .
 
-# Add build arguments for environment variables
-ARG SIT_BASE_URL
-ARG SIT_AUTH_API_URL
-ARG SIT_SIGNUP_API_URL
-
-RUN echo "BASE_URL=$SIT_BASE_URL" > .env && \
-    echo "SIGNUP_API_URL=$SIT_SIGNUP_API_URL" >> .env && \
-    echo "AUTH_API_URL=$SIT_AUTH_API_URL" >> .env
-
 RUN npm run build
+
+#RUN npm run build:static
+
+# Verify build
 
 RUN ls -la /app/dist
 
-# Stage 2 Runtime environment
-FROM node:18-alpine
+#FROM nginx:alpine
 
-WORKDIR /app
+#COPY --from=build /app/dist /usr/share/nginx/html
+#COPY default.conf /etc/nginx/conf.d/default.conf
 
-COPY --from=build /app .
-
-#COPY scripts/wait-for-env.sh /wait-for-env.sh
-
-# Make the wait script executable
-#RUN chmod +x /wait-for-env.sh
-
+# Expose HTTP and HTTPS ports
 EXPOSE 8080
+#EXPOSE 80
+#EXPOSE 443
 
-#ENTRYPOINT ["/wait-for-env.sh"]
 
-# Start the server
+# Start NGINX
+#CMD ["nginx", "-g", "daemon off;"]
 CMD ["npm", "run", "start:server"]
