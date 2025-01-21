@@ -5,37 +5,30 @@ WORKDIR /app
 
 COPY package.json package-lock.json ./
 
-#Wait script
-COPY scripts/wait-for-env.sh /app/scripts/wait-for-env.sh
-
 RUN npm install
-
-#Make the wait script executable
-RUN chmod +x /app/scripts/wait-for-env.sh
 
 COPY . .
 
 RUN npm run build
 
-#RUN npm run build:static
-
-# Verify build
-
 RUN ls -la /app/dist
 
-#FROM nginx:alpine
+# Stage 2: Serve the built app with NGINX
+FROM nginx:alpine
 
-#COPY --from=build /app/dist /usr/share/nginx/html
-#COPY default.conf /etc/nginx/conf.d/default.conf
+# Set the working directory inside the container
+WORKDIR /usr/share/nginx/html
 
-# Expose HTTP and HTTPS ports
-EXPOSE 8080
-#EXPOSE 80
-#EXPOSE 443
+# Copy the build artifacts from the previous stage to the NGINX HTML directory
+COPY --from=build /app/dist .
 
-# Set the entry point to the wait script
-ENTRYPOINT ["/app/scripts/wait-for-env.sh"]
+COPY scripts/wait-for-env.sh /wait-for-env.sh
 
-# Start NGINX
-#CMD ["nginx", "-g", "daemon off;"]
-CMD ["npm", "run", "start:server"]
+RUN chmod +x /wait-for-env.sh
+
+EXPOSE 80
+EXPOSE 443
+
+ENTRYPOINT ["/wait-for-env.sh"]
+
+CMD ["nginx", "-g", "daemon off;"]
