@@ -29,14 +29,14 @@ WORKDIR /app
 
 COPY --from=build /app .
 
-COPY scripts/wait-for-env.sh /wait-for-env.sh
+#COPY scripts/wait-for-env.sh /wait-for-env.sh
 
 # Make the wait script executable
-RUN chmod +x /wait-for-env.sh
+#RUN chmod +x /wait-for-env.sh
 
 EXPOSE 8080
 
-ENTRYPOINT ["/wait-for-env.sh"]
+#ENTRYPOINT ["/wait-for-env.sh"]
 
 # Start the server
 CMD ["npm", "run", "start:server"]
