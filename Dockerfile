@@ -15,14 +15,6 @@ RUN chmod +x /app/wait-for-env.sh
 
 COPY . .
 
-ARG SIT_BASE_URL
-ARG SIT_AUTH_API_URL
-ARG SIT_SIGNUP_API_URL
-
-RUN echo "BASE_URL=$SIT_BASE_URL" > .env
-RUN echo "SIGNUP_API_URL=$SIT_AUTH_API_URL" >> .env
-RUN echo "AUTH_API_URL=$SIT_SIGNUP_API_URL" >> .env
-
 RUN npm run build
 
 #RUN npm run build:static
