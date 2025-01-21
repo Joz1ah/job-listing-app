@@ -6,7 +6,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 
 #Wait script
-COPY wait-for-env.sh /app/wait-for-env.sh
+COPY wait-for-env.sh /app/scripts/wait-for-env.sh
 
 RUN npm install
 
