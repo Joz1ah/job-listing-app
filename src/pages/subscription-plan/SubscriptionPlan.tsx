@@ -3,6 +3,7 @@ import { Button } from "components";
 import { ThumbsUp, ChartNoAxesCombined, LockKeyhole, MessageCircleMore, Trophy } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import sparkle_icon from 'assets/images/sparkle-icon.png'
+import { DefaultLayout } from "layouts";
 
 interface PlanFeature {
   icon: React.ReactNode;
@@ -114,6 +115,7 @@ const SubscriptionPlan: FC = () => {
   ];
 
   return (
+    <DefaultLayout backgroundColor="#242625">
     <div className="bg-[#242625] min-h-screen md:pt-20">
       <div className="max-w-3xl mx-auto px-4">
         <div className="space-y-6 pt-4">
@@ -139,6 +141,7 @@ const SubscriptionPlan: FC = () => {
         </div>
       </div>
     </div>
+    </DefaultLayout>
   );
 };
 
