@@ -1,7 +1,5 @@
 import React, { FC, useState } from "react";
-import { ChevronLeft } from "lucide-react";
 import { Input, Button, InputField } from "components";
-import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import saveChanges from "images/save-changes.svg?url";
 import { useContext } from "react";
@@ -39,6 +37,7 @@ import * as Yup from "yup";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { useJobHunterProfileMutation } from "api/akaza/akazaAPI";
 import { useAuth } from "contexts/AuthContext/AuthContext";
+import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 
 interface FormData {
   firstName: string;
@@ -116,9 +115,9 @@ const ApplicationCardForm: FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPreview, setShowPreview] = useState<boolean>(false);
   const { keywordToIdMap } = useContext(KeywordMappingContext);
-
   const [submitJobHunterProfile ] = useJobHunterProfileMutation();
   const { refreshUser, user } = useAuth();
+  const { showError } = useErrorModal();
 
   const {
     values,
@@ -230,8 +229,12 @@ const ApplicationCardForm: FC = () => {
   
       await submitJobHunterProfile(payload).unwrap();
       await refreshUser();
-      navigate("/job-hunter/feed");
+      navigate("/dashboard/feed");
     } catch (error) {
+      showError(
+        'Profile Update Failed',
+        'Unable to update your application card. Please try again or contact support if the issue persists.'
+      );
       console.error("Error submitting profile:", error);
     } finally {
       setIsSubmitting(false);
@@ -261,10 +264,6 @@ const ApplicationCardForm: FC = () => {
         <div className="flex flex-col xl:flex-row gap-8 pt-6">
           <div className="w-full md:w-[800px] min-h-[960px] bg-[#242625] md:bg-[#2D3A41] text-white">
             <div className="flex items-center relative w-full mb-6 md:mb-10">
-              <NavLink to="/job-hunter/feed" className="absolute left-4 top-6">
-                <ChevronLeft strokeWidth={4} className="h-6 w-6 ml-4" />
-              </NavLink>
-    
               <h1 className="flex-1 text-center text-xl md:text-[32px] pt-6 font-normal text-[#F5722E]">
                 <span className="inline-flex items-center gap-2 justify-center">
                   Create Your Application Card

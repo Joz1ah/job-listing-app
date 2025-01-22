@@ -20,6 +20,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 
 import { isValidPhoneNumber } from "react-phone-number-input";
+import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 
 const validationSchema = Yup.object().shape({
   businessName: Yup.string().required("This field is required"),
@@ -70,6 +71,7 @@ const EditEmployerProfile: FC = () => {
   const [employerProfile] = useEmployerProfileMutation();
   const navigate = useNavigate();
   const { user, refreshUser } = useAuth();
+  const { showError } = useErrorModal();
 
   const employmentTypes = user?.data?.user?.relatedDetails?.employmentType
     ? user.data.user.relatedDetails.employmentType.split(',')
@@ -157,8 +159,12 @@ const EditEmployerProfile: FC = () => {
       await refreshUser();
       
       // Navigate on success
-      navigate("/employer/feed");
+      navigate("/dashboard/feed");
     } catch (error) {
+      showError(
+        'Profile Update Failed',
+        'Unable to update your company profile. Please try again or contact support if the issue persists.'
+      );
       console.error('Failed to update profile:', error);
     } finally {
       setIsSubmitting(false);
@@ -178,7 +184,7 @@ const EditEmployerProfile: FC = () => {
       <div className="flex gap-8 px-4 md:px-8 lg:px-12 py-6 justify-center">
         <div className="w-full md:w-[800px] min-h-[825px] bg-[#242625] md:bg-[#2D3A41] text-white">
           <div className="flex items-center relative w-full mb-6 md:mb-10">
-            <NavLink to="/employer/feed" className="absolute left-4 top-6">
+            <NavLink to="/dashboard/feed" className="absolute left-4 top-6">
               <ChevronLeft strokeWidth={4} className="h-6 w-6" />
             </NavLink>
   

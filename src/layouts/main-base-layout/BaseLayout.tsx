@@ -125,10 +125,10 @@ const AuthenticatedLayoutContent: FC = () => {
 
 const BaseLayout: FC = () => {
   const { user } = useAuth();
-  const storedTier = localStorage.getItem('subscriptionTier') as SubscriptionPlan || 'freeTrial';
   const userType = user?.data?.user?.type;
+  const storedTier = localStorage.getItem('subscriptionTier') as SubscriptionPlan || 'freeTrial';
 
-  // Render appropriate provider based on user type
+  // Render the appropriate provider based on user type
   if (userType === 'employer') {
     return (
       <EmployerProvider initialTier={storedTier}>
@@ -137,11 +137,16 @@ const BaseLayout: FC = () => {
     );
   }
 
-  return (
-    <JobHunterProvider initialTier={storedTier}>
-      <AuthenticatedLayoutContent />
-    </JobHunterProvider>
-  );
+  if (userType === 'job_hunter') {
+    return (
+      <JobHunterProvider initialTier={storedTier}>
+        <AuthenticatedLayoutContent />
+      </JobHunterProvider>
+    );
+  }
+
+  // Handle loading or error state
+  return <div>Loading...</div>;
 };
 
 export { BaseLayout };

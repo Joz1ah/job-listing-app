@@ -1,4 +1,4 @@
-export type UserType = 'employer' | 'job-hunter' | 'guest';
+export type UserType = 'employer' | 'job-hunter';
 export type SubscriptionPlan = 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
 
 export interface BaseContextType {

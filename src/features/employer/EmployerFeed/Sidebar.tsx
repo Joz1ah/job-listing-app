@@ -7,17 +7,18 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Label
+  /* Label */
 } from "components";
 import { cn } from "lib/utils";
+import { useAuth } from "contexts/AuthContext/AuthContext";
 
 const Sidebar: FC = () => {
   const location = useLocation();
   const hideOnPagesMobile = [
-    "/employer/job-listing",
-    "/employer/employer-profile",
+    "/dashboard/job-listing",
+    "/dashboard/employer-profile",
   ];
-  const hideOnPagesDesktop = ["/employer/employer-profile"];
+  const hideOnPagesDesktop = ["/dashboard/employer-profile"];
 
   const shouldShowMobileView = !hideOnPagesMobile.includes(location.pathname);
   const shouldShowDesktopView = !hideOnPagesDesktop.includes(location.pathname);
@@ -33,48 +34,55 @@ const Sidebar: FC = () => {
     { title: "Content Creator", path: "#" },
   ];
 
-  const SelectComponent = () => (
-    <div className="relative pt-4 w-full">
-      <div className="relative">
-        <div className="absolute -top-3 left-5 bg-[#242625] md:bg-[#2D3A41] px-1 z-20">
-          <div className="flex items-center">
-            <Label className="text-sm md:text-base font-normal text-white">
-              All Job Listing
-            </Label>
-          </div>
+  const SelectComponent = () => {
+    const { user } = useAuth();
+    const isFirstJobListing = user?.data?.user?.jobCounts?.count === 0;
+    
+    return (
+      <div className="relative pt-4 w-full">
+        <div className="relative">
+{/*           <div className="absolute -top-3 left-5 bg-[#242625] md:bg-[#2D3A41] px-1 z-20">
+            <div className="flex items-center">
+              <Label className="text-sm md:text-base font-normal text-white">
+                All Job Listing
+              </Label>
+            </div>
+          </div> */}
+          {!isFirstJobListing && (
+            <Select>
+              <SelectTrigger 
+                className="bg-transparent border-[#AEADAD] h-[56px] border-2 text-white text-sm md:text-base"
+              >
+                <SelectValue
+                  placeholder="Full Stack Developer"
+                  className="text-left pl-4"
+                />
+              </SelectTrigger>
+              <SelectContent
+                className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none"
+                position="popper"
+                sideOffset={4}
+              >
+                <SelectGroup>
+                  {jobListings.map((item) => (
+                    <SelectItem
+                      key={item.title}
+                      value={item.title.toLowerCase().replace(/\s+/g, '-')}
+                      className={cn(
+                        "rounded-none justify-center pl-3 h-[55px] text-sm md:text-base"
+                      )}
+                    >
+                      <div className="py-3 w-full text-center">{item.title}</div>
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          )}
         </div>
-        <Select>
-          <SelectTrigger 
-            className="bg-transparent border-[#AEADAD] h-[56px] border-2 text-white text-sm md:text-base"
-          >
-            <SelectValue 
-              placeholder="Full Stack Developer"
-              className="text-left pl-4"
-            />
-          </SelectTrigger>
-          <SelectContent 
-            className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none" 
-            position="popper" 
-            sideOffset={4}
-          >
-            <SelectGroup>
-              {jobListings.map((item) => (
-                <SelectItem
-                  key={item.title}
-                  value={item.title.toLowerCase().replace(/\s+/g, '-')}
-                  className={cn(
-                    "rounded-none justify-center pl-3 h-[55px] text-sm md:text-base"
-                  )}
-                >
-                  <div className="py-3 w-full text-center">{item.title}</div>
-                </SelectItem>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <>

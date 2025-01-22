@@ -279,6 +279,17 @@ export const akazaApiAuth = createApiFunction({
         */
       }),
     }),
+    updatePassword: builder.mutation({
+      query: (payload) => ({
+        url: 'settings/update-password',
+        method: 'POST',
+        body: {
+          oldPassword: payload.oldPassword,
+          newPassword: payload.newPassword,
+          confirmPassword: payload.confirmPassword
+        },
+      }),
+    }),
   }),
 });
 
@@ -540,7 +551,8 @@ export const {
   useEmployerContactMutation,
   useEmployerProfileMutation,
   useForgotPasswordMutation,
-  useResetPasswordQuery
+  useResetPasswordQuery,
+  useUpdatePasswordMutation
 } = akazaApiAuth
 
 export const {

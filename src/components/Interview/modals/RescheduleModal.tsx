@@ -138,8 +138,8 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
         onClose();
         navigate(
           variant === "employer"
-            ? "/employer/interviews/reschedule"
-            : "/job-hunter/interviews/reschedule",
+            ? "/dashboard/interviews/reschedule"
+            : "/dashboard/interviews/reschedule",
         );
       }, 1000);
     },

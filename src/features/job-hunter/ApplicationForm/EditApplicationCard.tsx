@@ -39,6 +39,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 
 import { isValidPhoneNumber } from "react-phone-number-input";
+import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 
 interface FormData {
   firstName: string;
@@ -117,6 +118,7 @@ const EditApplicationCard: FC = () => {
   const { user, refreshUser } = useAuth();  // Add refreshUser
   const [submitJobHunterProfile] = useJobHunterProfileMutation();
   const { keywordToIdMap, addMapping } = useContext(KeywordMappingContext);
+  const { showError } = useErrorModal();
 
   // Parse employment type string into array
   const employmentTypes = user?.data?.user?.relatedDetails?.employmentType
@@ -267,8 +269,12 @@ const EditApplicationCard: FC = () => {
       // Refresh user data in auth context
       await refreshUser();
       
-      navigate("/job-hunter/feed");
+      navigate("/dashboard/feed");
     } catch (error) {
+      showError(
+        'Profile Update Failed',
+        'Unable to update your application card. Please try again or contact support if the issue persists.'
+      );
       console.error("Error submitting profile:", error);
     } finally {
       setIsSubmitting(false);
@@ -288,7 +294,7 @@ const EditApplicationCard: FC = () => {
       <div className="flex flex-col xl:flex-row gap-8 pt-6">
         <div className="w-full md:w-[800px] min-h-[960px] bg-[#242625] md:bg-[#2D3A41] text-white">
           <div className="flex items-center relative w-full mb-6 md:mb-10">
-            <NavLink to="/job-hunter/feed" className="absolute left-4 top-6">
+            <NavLink to="/dashboard/feed" className="absolute left-4 top-6">
               <ChevronLeft strokeWidth={4} className="h-6 w-6 ml-4" />
             </NavLink>
   

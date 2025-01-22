@@ -3,6 +3,7 @@ import { Building2, Mail, Phone, Calendar, MapPin, Globe, X } from 'lucide-react
 import { Card, CardFooter } from 'components';
 import { Button } from 'components';
 import { selectOptions, FormData } from 'mockData/employer-profile-options';
+import { useAuth } from 'contexts/AuthContext/AuthContext';
 
 interface EmployerProfilePreviewProps {
   isOpen: boolean;
@@ -38,6 +39,9 @@ const EmployerProfilePreview: React.FC<EmployerProfilePreviewProps> = ({
     ].filter(Boolean);
     return parts.join(', ');
   };
+
+  const { user } = useAuth();
+  const completeProfile = user?.data?.user?.jobCounts?.count === 0;
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 flex flex-col items-center overflow-y-auto p-4 pt-8">
@@ -123,7 +127,7 @@ const EmployerProfilePreview: React.FC<EmployerProfilePreviewProps> = ({
               onClick={onConfirm}
               className="bg-[#F5722E] text-white hover:bg-orange-600 px-6 md:px-8 py-2"
             >
-              Go To Job Feed
+              {completeProfile? "Create Job" : "Go to Feed"}
             </Button>
           </CardFooter>
         </div>

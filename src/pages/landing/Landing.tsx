@@ -14,11 +14,15 @@ import {
 import { useNavigate, useLocation } from "react-router-dom";
 import { Formik, Form, FieldProps, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { AppCard } from 'features/employer';
-import { JobCard } from 'features/job-hunter';
-import { gsap } from 'gsap';
-import { perfectMatch as employerMatches, Match as EmployerMatch } from 'mockData/job-hunter-data';
-import { perfectMatch as jobMatches, Match as JobMatch } from 'mockData/jobs-data';
+import { MockAppCard } from 'features/employer';
+import { MockJobCard } from 'features/job-hunter';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "components"
+import { employerMatches, jobMatches } from 'mockData/hero-carousel-perfectmatch-data';
+import type { EmployerMatch, JobMatch } from 'mockData/hero-carousel-perfectmatch-data';
 import { EmployerProvider, JobHunterProvider } from 'components';
 import { BookmarkProvider } from 'components';
 import { Button } from 'components';
@@ -31,6 +35,7 @@ import { Outlet, useMatch } from 'react-router-dom';
 import { Navigate } from 'react-router-dom';
 import { Input, InputField, PhoneInputLanding, CountrySelect } from "components";
 import { useEmployerContactMutation, useJobHunterContactMutation } from 'api/akaza/akazaAPI';
+import empty_matches from 'assets/images/empty-match-modal.svg?url'
 
 import video1 from 'assets/mp4/Landing-Page-hero-1.mp4';
 import video2 from 'assets/mp4/video-conference-call-1.mp4';
@@ -263,13 +268,6 @@ const Landing: FC = (): ReactElement => {
     console.log('site ready')
   })
 
-  useEffect(() => {
-    // Check if PerfectMatchResultsModal was previously open and is now being closed
-    if (modalState !== modalStates.PERFECT_MATCH_RESULTS && !isModalOpen) {
-      setHeroState(heroStates.PERFECT_MATCH_ALGO);
-    }
-  }, [modalState, isModalOpen]);
-
   const ButtonLoginNav = () => {
     const elementRef = useRef<HTMLButtonElement>(null);
     const toggleLogin = () => {
@@ -428,10 +426,9 @@ const Landing: FC = (): ReactElement => {
           // Navigate after successful login
           setTimeout(() => {
             if (userType === 'employer') {
-              navigate('/employer');
+              navigate('/dashboard');
             } else {
-              const basePath = isFreeTrial ? '/job-hunter/feed' : '/job-hunter';
-              navigate(basePath);
+              navigate('/dashboard');
             }
           }, 1000);
         } else {
@@ -1601,7 +1598,7 @@ const SubscriptionPlanSelection = () =>{
             localStorage.setItem('userType', userType);
             setModalState(modalStates.LOADING);
             setTimeout(() => {
-              navigate(userType === 'employer' ? '/employer/employer-profile' : '/job-hunter/jobhunter-profile');
+              navigate(userType === 'employer' ? '/dashboard/employer-profile' : '/dashboard/jobhunter-profile');
             }, 1000);
           }
         } catch (error) {
@@ -1916,7 +1913,7 @@ const CreditCardForm: React.FC = () => {
             console.log(res)
             setModalState(modalStates.LOADING)
             setTimeout(()=>{
-              navigate("/job-hunter");
+              navigate("/dashboard");
             },1000)
           }).catch((err) => {
             alert(JSON.stringify(err))
@@ -2590,108 +2587,90 @@ const AuthnetPaymentFullModal = () => {
 }
 
 const PerfectMatchResultsModal = () => {
-  const carouselRef = useRef<HTMLDivElement>(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  
-  // Get the selected user type from the parent component's state
   const selectedUserType = dataStates.selectedUserType;
-
-  // Type guard to determine which data to use
-  const getMatchData = () => {
-    if (selectedUserType === 'employer') {
-      return employerMatches as EmployerMatch[];
-    }
-    return jobMatches as JobMatch[];
-  };
-
-  const matchData = getMatchData();
-
-  useEffect(() => {
-    if (carouselRef.current) {
-      gsap.to(carouselRef.current, {
-        x: `${-currentIndex * 100}%`,
-        duration: 0.5,
-        ease: "power2.inOut"
-      });
-    }
-  }, [currentIndex]);
-
-  const nextSlide = () => {
-    if (currentIndex < matchData.length - 1) {
-      setCurrentIndex(prev => prev + 1);
-    }
-  };
-
-  const prevSlide = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex(prev => prev - 1);
-    }
-  };
+  const matchData = selectedUserType === 'employer' ? employerMatches : jobMatches;
+  const hasMatches = matchData && matchData.length > 0;
 
   const handleSignup = () => {
+    // First, update the modal state to show signup step 2
+    setModalState(modalStates.SIGNUP_SELECT_USER_TYPE);
     setSelectedModalHeader(1);
-    setModalState(modalStates.SIGNUP_STEP2);
-    closeModal();
+    setHeroState(heroStates.PERFECT_MATCH_ALGO)
+    
+    // Then open the modal with the updated state
+    openModal();
   };
 
-  const renderCard = (match: EmployerMatch | JobMatch ) => {
-    if (selectedUserType === 'employer') {
-      return <AppCard match={match as EmployerMatch} />;
-    }
-    return <JobCard match={match as JobMatch} />;
-  };
+  const EmptyState = () => (
+    <div className="flex flex-col items-center gap-6">
+      <img src={empty_matches} alt="No matches found" />
+      <div className="text-center">
+        <h3 className="text-[#F5722E] text-[22px] font-bold mb-2">
+          Oops, no match today
+        </h3>
+        <p className="text-[#263238] text-[15px]">
+          But the best matches don't wait around.
+          <br />
+          Sign up now and snag your next big opportunity tomorrow!
+        </p>
+      </div>
+    </div>
+  );
 
   return (
-    <div className="flex flex-col items-center justify-center h-full" hidden={modalState !== modalStates.PERFECT_MATCH_RESULTS}>
-      <h2 className="text-[#F5722E] text-2xl font-medium mb-8">
-        Here's Your Perfect Match
-      </h2>
+    <div 
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" 
+      hidden={modalState !== modalStates.PERFECT_MATCH_RESULTS}
+    >
+      <div className="relative bg-[#F5F5F7] rounded-lg w-[800px] h-[550px] max-w-[90vw] px-4 py-8">
+        <div className="flex flex-col items-center gap-12 pt-4">
+          <h2 className="text-[#F5722E] text-2xl font-medium flex flex-row">
+            Here's Your
+            <img src={sparkle_icon} className="w-5 h-5 ml-2 mt-1" alt="sparkle"/>
+            Perfect Match
+          </h2>
 
-      <div className="relative w-full max-w-4xl overflow-hidden">
-        <div 
-          ref={carouselRef}
-          className="flex gap-4"
-        >
-          {matchData.map((match, index) => (
-            <div 
-              key={index}
-              className="w-full flex-shrink-0 flex justify-center"
+          {hasMatches ? (
+            <Carousel 
+              opts={{
+                align: "center",
+                loop: false,
+                containScroll: "trimSnaps"
+              }}
+              className="w-full"
             >
-              {renderCard(match)}
-            </div>
-          ))}
-        </div>
-        <div className="flex justify-between absolute top-1/2 -translate-y-1/2 w-full px-4">
-          <button
-            onClick={prevSlide}
-            disabled={currentIndex === 0}
-            className="p-2 bg-white rounded-full shadow-md disabled:opacity-50"
-          >
-            ←
-          </button>
-          <button
-            onClick={nextSlide}
-            disabled={currentIndex === matchData.length - 1}
-            className="p-2 bg-white rounded-full shadow-md disabled:opacity-50"
-          >
-            →
-          </button>
-        </div>
-      </div>
+              <CarouselContent className="-ml-4">
+                {matchData.map((match, index) => (
+                  <CarouselItem key={index} className="md:basis-[55%] basis-[100%] transition-opacity">
+                    {selectedUserType === 'employer' ? (
+                      <MockAppCard match={match as EmployerMatch} />
+                    ) : (
+                      <MockJobCard match={match as JobMatch} />
+                    )}
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+            </Carousel>
+          ) : (
+            <EmptyState />
+          )}
 
-      <div className="mt-8 w-full max-w-4xl flex flex-col items-center">
-      <Button 
-        className="w-full md:w-[300px] bg-[#F5722E] text-white py-1 rounded hover:bg-[#F5722E]/90 transition-colors"
-        onClick={handleSignup}
-      >
-        Sign up now
-      </Button>
-      <button 
-          onClick={handleSignup}
-          className="text-center text-sm text-gray-500 mt-2 hover:text-gray-700 transition-colors cursor-pointer"
-        >
-          or continue with free trial
-        </button>
+          {/* Action buttons */}
+          <div className="flex flex-col items-center gap-2 w-full max-w-[300px]">
+            <Button 
+              className="w-full bg-[#F5722E] h-8 text-white py-3 rounded hover:bg-[#F5722E]/90 transition-colors"
+              onClick={handleSignup}
+            >
+              Sign up now
+            </Button>
+            <button 
+              onClick={handleSignup}
+              className="text-center text-[10px] text-[#AEADAD] hover:text-gray-500 transition-colors cursor-pointer"
+            >
+              or continue with free trial
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -3297,8 +3276,8 @@ const HeroLoading = () => {
         setHasShownModal(true);
         setSelectedModalHeader(1);
         setModalState(modalStates.PERFECT_MATCH_RESULTS);
-        closeModal();
-      }, 3000);
+        openModal();
+      }, 2000);
       
       return () => clearTimeout(timer);
     }
@@ -3345,29 +3324,38 @@ const HeroLoading = () => {
 };
 
 const isFreeTrial = false;
-const isIndexRoute = useMatch('/landing');
-const ModalWrapper = ()=>{
-  return(
-    <Modal>
-      <EmployerProvider initialTier='freeTrial'>
-              <JobHunterProvider initialTier='freeTrial'>
-                <BookmarkProvider>
-                  <LoginModal/>
-                  <JobHunterEmployerSelection/>
-                  <UserNamePasswordSignup/>
-                  <OTPSignUp/>
-                  <MobileCountrySignUp/>
-                  <EmployerAdditionalInformation/>
-                  <SubscriptionPlanSelection/>
-                  <LoadingModal/>
-                  <CongratulationsModal/>
-                  <StripePaymentModal/>
-                  <AuthnetPaymentFullModal/>
-                  <PerfectMatchResultsModal/>
-                </BookmarkProvider>
-              </JobHunterProvider>
+const isIndexRoute = useMatch('/');
+const ModalWrapper = () => {
+  return (
+    <>
+      {modalState !== modalStates.PERFECT_MATCH_RESULTS ? (
+        <Modal>
+          <EmployerProvider initialTier='freeTrial'>
+            <JobHunterProvider initialTier='freeTrial'>
+              <BookmarkProvider>
+                <LoginModal/>
+                <JobHunterEmployerSelection/>
+                <UserNamePasswordSignup/>
+                <OTPSignUp/>
+                <MobileCountrySignUp/>
+                <EmployerAdditionalInformation/>
+                <SubscriptionPlanSelection/>
+                <LoadingModal/>
+                <CongratulationsModal/>
+                <StripePaymentModal/>
+                <AuthnetPaymentFullModal/>
+              </BookmarkProvider>
+            </JobHunterProvider>
+          </EmployerProvider>
+        </Modal>
+      ) : (
+        <EmployerProvider initialTier='freeTrial'>
+          <JobHunterProvider initialTier='freeTrial'>
+              <PerfectMatchResultsModal />
+          </JobHunterProvider>
         </EmployerProvider>
-      </Modal>
+      )}
+    </>
   )
 }
 

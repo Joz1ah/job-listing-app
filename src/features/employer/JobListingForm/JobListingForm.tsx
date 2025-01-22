@@ -1,8 +1,6 @@
-import React, { FC, useState, useEffect } from "react";
+import React, { FC, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  ChevronLeft
-} from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { Input, Button, Textarea } from "components";
 import { NavLink } from "react-router-dom";
 import sparkeIcon from "images/sparkle-icon.png";
@@ -10,12 +8,13 @@ import saveChanges from "images/save-changes.svg?url";
 import { selectOptions } from "mockData/job-listing-form-options";
 import { useJobListCreateMutation } from "api/akaza/akazaAPI";
 import { useAuth } from "contexts/AuthContext/AuthContext";
+import { useContext } from "react";
+import { KeywordMappingContext } from "contexts/KeyWordMappingContext";
 
-import {
-  MultiSelect,
-} from "components";
+import { MultiSelect } from "components";
 
 import { JobListingPreview } from "./JobListingPreview";
+import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 
 import {
   CoreSkillsTagInput,
@@ -87,19 +86,26 @@ const LoadingOverlay = () => (
 
 const JobListingForm: FC = () => {
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPreview, setShowPreview] = useState<boolean>(false);
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
+  const { keywordToIdMap } = useContext(KeywordMappingContext);
+  const { showError } = useErrorModal();
 
   const [createJobList] = useJobListCreateMutation();
 
-  const handlePreviewConfirm = async (): Promise<void> => {
+  const handlePreviewConfirm = async () => {
+    setShowPreview(false);
+    setIsSubmitting(true);
+
     try {
-      setIsLoading(true);
-      setShowPreview(false);
-      
-      const jobListPayload = {
-        employerId: user?.data?.user?.relatedDetails?.id, // Get ID from auth context
+      const coreSkillIds = values.coreSkills
+        .map((keyword) => keywordToIdMap[keyword])
+        .filter(Boolean)
+        .map((id) => Number(id));
+
+      const payload = {
+        employerId: user?.data?.user?.relatedDetails?.id,
         title: values.jobTitle,
         priorityIndicator: values.priorityIndicator,
         description: values.jobDescription,
@@ -107,51 +113,33 @@ const JobListingForm: FC = () => {
         employmentType: values.employmentType.join(", "),
         salaryRange: values.salaryRange,
         yearsOfExperience: values.yearsOfExperience,
-        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        expiresAt: new Date(
+          Date.now() + 30 * 24 * 60 * 60 * 1000,
+        ).toISOString(),
         education: values.education,
         language: values.languages.join(","),
-        keywords: [...values.coreSkills, ...values.interpersonalSkills]
-          .map(skill => {
-            const id = parseInt(skill, 10);
-            if (isNaN(id)) {
-              console.warn(`Invalid skill ID found: ${skill}`);
-              return null;
-            }
-            return id;
-          })
-          .filter((id): id is number => id !== null)
+        keywords: coreSkillIds,
       };
-  
+
       // Validate payload before submission
-      console.log('Submitting form data:', jobListPayload);
-      
-      // Verify keywords are valid numbers
-      if (!jobListPayload.keywords.every(k => Number.isInteger(k))) {
-        throw new Error('Invalid keyword IDs detected');
-      }
-      
-      const result = await createJobList(jobListPayload).unwrap();
-      
-      if (result) {
-        setTimeout(() => {
-          setIsLoading(false);
-          navigate("/employer/feed");
-        }, 1500);
-      }
-    } catch (err) {
-      console.error('Error submitting form:', err);
-      setIsLoading(false);
-      // Show error message to user
-      alert(err instanceof Error ? err.message : 'Failed to create job listing. Please try again.');
+      console.log("Submitting form data:", payload);
+
+      await createJobList(payload).unwrap();
+
+      // Refresh user data in auth context
+      await refreshUser();
+
+      navigate("/dashboard");
+    } catch (error) {
+      showError(
+        'Job Listing Creation Failed',
+        'Unable to create job listing. Please try again or contact support.'
+      );
+      console.error("Error submitting job:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
-
-  // Add cleanup when component unmounts
-  useEffect(() => {
-    return () => {
-      setIsLoading(false);
-    };
-  }, []);
 
   const {
     values,
@@ -193,6 +181,8 @@ const JobListingForm: FC = () => {
     }
   };
 
+  const isFirstJobListing = user?.data?.user?.jobCounts?.count === 0;
+
   return (
     <>
       <JobListingPreview
@@ -201,20 +191,22 @@ const JobListingForm: FC = () => {
         formData={values}
         onConfirm={handlePreviewConfirm}
       />
-      {isLoading && <LoadingOverlay />}
+      {isSubmitting && <LoadingOverlay />}
       <div className="w-full max-w-[927px] min-h-[825px] bg-transparent md:bg-[#2D3A41] text-white mx-2 px-4 py-8 md:py-12">
         <div className="flex items-center relative w-full mb-6 md:mb-14">
-          <NavLink to="/employer/feed" className="absolute left-0 md:left-4">
-            <ChevronLeft strokeWidth={4} className="h-6 w-6" />
-          </NavLink>
-  
+          {!isFirstJobListing && (
+            <NavLink to="/dashboard/feed" className="absolute left-0 md:left-4">
+              <ChevronLeft strokeWidth={4} className="h-6 w-6" />
+            </NavLink>
+          )}
+
           <h1 className="flex-1 text-center text-xl md:text-[32px] font-normal text-[#F5722E]">
             <span className="inline-flex items-center gap-2 justify-center">
-              Create Job Listing
+            {isFirstJobListing ? "Create Your First Job Listing" : "Create Job Listing"}
             </span>
           </h1>
         </div>
-  
+
         <form
           onSubmit={handleSubmit}
           onKeyDown={handleKeyDown}
@@ -234,7 +226,7 @@ const JobListingForm: FC = () => {
               placeholder="Provide a Job Title"
             />
           </InputField>
-  
+
           <InputField
             label="Priority Indicator"
             error={errors.priorityIndicator}
@@ -244,7 +236,11 @@ const JobListingForm: FC = () => {
               <div className="flex flex-wrap items-center justify-start">
                 <span>This will sort your</span>
                 <div className="flex items-center">
-                  <img src={sparkeIcon} alt="Spark Icon" className="w-3 h-3 object-contain" />
+                  <img
+                    src={sparkeIcon}
+                    alt="Spark Icon"
+                    className="w-3 h-3 object-contain"
+                  />
                   <span className="text-[#F5722E]">Perfect Matches</span>
                 </div>
                 <span>based on the criteria you choose.</span>
@@ -254,7 +250,9 @@ const JobListingForm: FC = () => {
             <Select
               name="priorityIndicator"
               value={values.priorityIndicator}
-              onValueChange={(value) => setFieldValue("priorityIndicator", value)}
+              onValueChange={(value) =>
+                setFieldValue("priorityIndicator", value)
+              }
             >
               <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
                 <SelectValue
@@ -262,7 +260,10 @@ const JobListingForm: FC = () => {
                     <div className="flex items-center gap-1 text-white">
                       <span>Select</span>
                       <div className="flex items-center">
-                        <img src={sparkeIcon} className="w-4 h-4 text-[#F5722E]" />
+                        <img
+                          src={sparkeIcon}
+                          className="w-4 h-4 text-[#F5722E]"
+                        />
                         <span className="text-[#F5722E]">Perfect Match</span>
                       </div>
                       <span>Indicator</span>
@@ -283,7 +284,7 @@ const JobListingForm: FC = () => {
               </SelectContent>
             </Select>
           </InputField>
-  
+
           <InputField
             label="Employment Type"
             error={errors.employmentType}
@@ -297,7 +298,7 @@ const JobListingForm: FC = () => {
               options={selectOptions.employmentType}
             />
           </InputField>
-  
+
           <InputField
             label="Location"
             error={errors.location}
@@ -311,7 +312,7 @@ const JobListingForm: FC = () => {
               placeholder="Type and enter country"
             />
           </InputField>
-  
+
           <InputField
             label="Salary Range"
             error={errors.salaryRange}
@@ -365,7 +366,7 @@ const JobListingForm: FC = () => {
               </SelectContent>
             </Select>
           </InputField>
-  
+
           <InputField
             label="Languages"
             error={errors.languages}
@@ -381,7 +382,7 @@ const JobListingForm: FC = () => {
               placeholder="Type and enter to add language"
             />
           </InputField>
-  
+
           <InputField
             label="Years of Experience"
             error={errors.yearsOfExperience}
@@ -390,7 +391,9 @@ const JobListingForm: FC = () => {
             <Select
               name="yearsOfExperience"
               value={values.yearsOfExperience}
-              onValueChange={(value) => setFieldValue("yearsOfExperience", value)}
+              onValueChange={(value) =>
+                setFieldValue("yearsOfExperience", value)
+              }
             >
               <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
                 <SelectValue placeholder="Select Years of Experience" />
@@ -408,7 +411,7 @@ const JobListingForm: FC = () => {
               </SelectContent>
             </Select>
           </InputField>
-  
+
           <InputField
             label="Core Skills"
             error={errors.coreSkills}
@@ -427,7 +430,7 @@ const JobListingForm: FC = () => {
               placeholder="Type and enter to add core skill"
             />
           </InputField>
-  
+
           <InputField
             label="Interpersonal Skills"
             error={errors.interpersonalSkills}
@@ -446,7 +449,7 @@ const JobListingForm: FC = () => {
               placeholder="Type and enter to add interpersonal skill"
             />
           </InputField>
-  
+
           <InputField
             label="Certificates"
             error={errors.certifications}
@@ -483,7 +486,7 @@ const JobListingForm: FC = () => {
               Maximum of 500 words
             </span>
           </InputField>
-  
+
           {/* Footer Button */}
           <div className="col-span-full flex justify-end mt-8 md:mt-12">
             <Button

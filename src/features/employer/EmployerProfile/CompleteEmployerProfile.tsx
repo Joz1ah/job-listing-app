@@ -1,10 +1,9 @@
 import React, { FC, useState } from "react";
-import { ChevronLeft } from "lucide-react";
 import { Input, Button, Textarea, InputField, IndustrySearch } from "components";
 
 import saveChanges from "images/save-changes.svg?url";
 
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { PhoneInput } from "components";
 
@@ -20,6 +19,7 @@ import * as Yup from "yup";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { useEmployerProfileMutation } from "api/akaza/akazaAPI";
 import { useAuth } from "contexts/AuthContext/AuthContext";
+import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 
 const validationSchema = Yup.object().shape({
   businessName: Yup.string().required("This field is required"),
@@ -79,6 +79,7 @@ const CompleteEmployerProfile: FC = () => {
   const [employerProfile] = useEmployerProfileMutation();
   const navigate = useNavigate();
   const { refreshUser, user } = useAuth();
+  const { showError } = useErrorModal();
 
   const {
     values,
@@ -159,8 +160,12 @@ const CompleteEmployerProfile: FC = () => {
       await refreshUser();
       
       // Navigate on success
-      navigate("/employer/feed");
+      navigate("/dashboard/job-listing");
     } catch (error) {
+      showError(
+        'Profile Update Failed',
+        'Unable to update your company profile. Please try again or contact support if the issue persists.'
+      );
       console.error('Failed to update profile:', error);
     } finally {
       setIsSubmitting(false);
@@ -180,10 +185,6 @@ const CompleteEmployerProfile: FC = () => {
         <div className="flex gap-8 px-4 md:px-8 lg:px-12 py-6 justify-center">
           <div className="w-full md:w-[800px] min-h-[825px] bg-[#242625] md:bg-[#2D3A41] text-white">
             <div className="flex items-center relative w-full mb-6 md:mb-10">
-              <NavLink to="/employer/feed" className="absolute left-4 top-6">
-                <ChevronLeft strokeWidth={4} className="h-6 w-6" />
-              </NavLink>
-    
               <h1 className="flex-1 text-center text-xl md:text-[32px] pt-6 font-normal text-[#F5722E]">
                 <span className="inline-flex items-center gap-2 justify-center">
                   Complete Your Company Profile

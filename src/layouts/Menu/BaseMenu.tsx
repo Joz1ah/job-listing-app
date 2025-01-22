@@ -1,9 +1,10 @@
 import { FC, useEffect, useState } from "react";
 import { NavLink, Link, useLocation } from "react-router-dom";
 import { Button } from "components/ui/shadcn/buttons";
-import { ChevronDown, Info, Plus, ChevronUp } from "lucide-react";
+import { ChevronDown, Plus, ChevronUp } from "lucide-react";
 import { NotificationFeed } from "components";
-import verifiedIcon from "images/verified.svg?url";
+/* import { Info } from "lucide-react";
+import verifiedIcon from "images/verified.svg?url"; */
 import companyLogo from "images/company-logo.png";
 import akazaLogoWhite from "images/akaza-logo-white.png";
 import menuButton from "images/menu-button.png";
@@ -50,10 +51,10 @@ const BaseMenu: FC<MenuProps> = ({
 
   // Default navigation items for unauthenticated state
   const defaultNavItems = [
-    { name: "About us", path: "about-us" },
-    { name: "Contact us", path: "contact-us" },
-    { name: "Subscription plans", path: "subscription-plan" },
-    { name: "FAQ", path: "faq" }
+    { name: "About us", path: "/about-us" },
+    { name: "Contact us", path: "/contact-us" },
+    { name: "Subscription plans", path: "/subscription-plan" },
+    { name: "FAQ", path: "/faq" }
   ];
 
   const handleItemClick = (item: NavItem) => {
@@ -109,12 +110,12 @@ const BaseMenu: FC<MenuProps> = ({
     }
   };
 
-  const renderStatusIcon = () => {
+/*   const renderStatusIcon = () => {
     if (subscriptionPlan === 'freeTrial') {
       return <Info className="w-4 h-4 text-[#2D3A41] fill-white" />;
     }
     return <img src={verifiedIcon} className="w-4 h-4" alt="Verified" />;
-  };
+  }; */
 
   const handleNotificationClick = () => {
     if (isMenuOpen) {
@@ -166,7 +167,7 @@ const BaseMenu: FC<MenuProps> = ({
       <header className="hidden md:flex fixed top-0 left-0 right-0 bg-[#2D3A41] h-[72px] px-4 justify-between items-center z-50 shadow-md">
         <div className="flex items-center gap-4">
           <NavLink
-            to={isAuthenticated ? (userType === 'employer' ? '/employer' : '/job-hunter') : '/'}
+            to={isAuthenticated ? (userType === 'employer' ? '/dashboard' : '/dashboard') : '/'}
             onClick={handleNavLinkClick}
             className="flex-shrink-0"
           >
@@ -202,7 +203,7 @@ const BaseMenu: FC<MenuProps> = ({
                 {isAuthenticated && isEmployer && (
                   <li>
                     <NavLink
-                      to="/employer/job-listing"
+                      to="/dashboard/job-listing"
                       onClick={handleNavLinkClick}
                       className="flex-shrink-0"
                     >
@@ -232,10 +233,13 @@ const BaseMenu: FC<MenuProps> = ({
             <>
               {renderNotificationFeed()}
               <div className="flex items-center gap-2 flex-shrink-0 min-w-0">
-                <span className="text-white font-medium text-[14px] lg:text-[18px] truncate block max-w-[100px] lg:max-w-[200px]">
-                  {userName}
-                </span>
-                {renderStatusIcon()}
+              <span 
+                className="text-white font-medium text-[14px] lg:text-[18px] truncate block max-w-[100px] lg:max-w-[200px]"
+                title={userName}
+              >
+                {userName}
+              </span>
+                {/* {renderStatusIcon()} */}
                 <div className="relative w-6 h-6">
                   <div
                     className={`absolute inset-0 transform transition-all duration-300 ease-in-out ${
@@ -333,7 +337,7 @@ const BaseMenu: FC<MenuProps> = ({
                 <div key={`${item.path}-${index}`}>
                   <div className="w-full text-end px-2 sm:pr-4 sm:pl-0">
                     {index === 0 && isMobile && isEmployer && isAuthenticated ? (
-                      <NavLink to="/employer/job-listing">
+                      <NavLink to="/dashboard/job-listing">
                         <Button
                           onClick={() => handleItemClick(item)}
                           className="w-[160px] h-[36px] bg-[#F5722E] hover:bg-[#F5722E]/90 text-white p-0 text-xs font-normal mb-2"

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { X } from 'lucide-react';
 import companyLogo from "images/company-logo.png";
 import { useAuth } from 'contexts/AuthContext/AuthContext';
+import { useErrorModal } from 'contexts/ErrorModalContext/ErrorModalContext';
 
 interface SignOutModalProps {
   isOpen: boolean;
@@ -12,6 +13,7 @@ interface SignOutModalProps {
 const SignOutModal = ({ isOpen, onClose }: SignOutModalProps) => {
   const navigate = useNavigate();
   const { logout } = useAuth();
+  const { showError } = useErrorModal();
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
@@ -37,17 +39,16 @@ const SignOutModal = ({ isOpen, onClose }: SignOutModalProps) => {
 
   const handleSignOut = async () => {
     try {
-      // Call the auth context logout first
-      logout();
-      
-      // Then clear any additional storage if needed
+      await logout();
       localStorage.clear();
       sessionStorage.clear();
-      
-      // Close modal and navigate
       onClose();
       navigate('/');
     } catch (error) {
+      showError(
+        'Sign Out Failed',
+        'Unable to sign out properly. Please try again or contact support if the issue persists.'
+      );
       console.error('Sign out failed:', error);
     }
   };

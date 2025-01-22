@@ -6,12 +6,12 @@
     .layout-main {
         flex: 1;
         padding: 1rem;
-        background-color: #f9f9f9;
+        background-color: var(--main-bg-color, #f9f9f9); // Use CSS variable with fallback
         margin-top: var(--header-height); // Push main content below the header
         @media (max-width: 768px) {
             margin-top:0;
         }
-      }
+  }
   
     .button-signup {
       background-color: #F5722E;

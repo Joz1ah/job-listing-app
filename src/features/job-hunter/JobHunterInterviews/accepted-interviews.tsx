@@ -118,7 +118,7 @@ const AcceptedInterviews: FC = () => {
           </p>
 
           <NavLink
-            to="/job-hunter/interviews/pending"
+            to="/dashboard/interviews/pending"
             className="bg-[#F5722E] text-white px-6 py-2 rounded-md hover:bg-orange-600 transition-colors"
           >
             View Pending Interviews

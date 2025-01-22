@@ -110,7 +110,7 @@ const DeclinedInterviews: FC = () => {
           </p>
 
           <NavLink
-            to="/job-hunter/feed"
+            to="/dashboard/feed"
             className="bg-[#F5722E] text-white px-6 py-2 rounded-md hover:bg-orange-600 transition-colors"
           >
             Go to Feed

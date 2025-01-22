@@ -14,6 +14,7 @@ import { DatePicker } from "components";
 import { InvitationSentModal } from "features/job-hunter";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 
 interface ScheduleInterviewModalProps {
   isOpen: boolean;
@@ -55,6 +56,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
 }) => {
   const [isDatePickerOpen, setIsDatePickerOpen] = useState<boolean>(false);
   const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
+  const { showError } = useErrorModal();
 
   const formik = useFormik<FormValues>({
     initialValues: {
@@ -69,6 +71,10 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
         console.log("Form submitted with values:", values);
         setShowSuccessModal(true);
       } catch (error) {
+        showError(
+          'Interview Scheduling Failed',
+          'Unable to schedule the interview. Please try again.'
+        );
         console.error("Error sending invite:", error);
       } finally {
         setSubmitting(false);
