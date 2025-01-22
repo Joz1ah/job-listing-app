@@ -13,6 +13,7 @@ import {
 const apiRequest = async (
   store: EnhancedStore<any, any, any[]>
 ): Promise<any[]> => {
+  /*
   store.dispatch(pokemonApi.endpoints.getPokemonSpriteById.initiate(1))
 
   store.dispatch(akazaApiSignUp.endpoints.activate.initiate(1))
@@ -49,7 +50,7 @@ const apiRequest = async (
   store.dispatch(akazaApiSearch.endpoints.searchInterPersonal.initiate(1))
 
   store.dispatch(akazaApiAccount.endpoints.getUserInfo.initiate(1))
-
+*/
   return await Promise.all<any>(
     store.dispatch(
       pokemonApi.util.getRunningQueriesThunk(),

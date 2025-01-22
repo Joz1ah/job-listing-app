@@ -1,7 +1,7 @@
 import { FC } from "react";
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 
-import powered_by_stripe from 'assets/authnet-logo-light.svg?url';
+import authnet_logo from 'assets/authnet-logo-light.svg?url';
 import akazalogo from 'assets/akazalogo.png';
 import instagram_icon from 'assets/instagram.svg?url';
 import facebook_icon from 'assets/facebook.svg?url';
@@ -33,15 +33,15 @@ const Footer: FC = () => {
                 <nav>
                     <div>Connect with us</div>
                     <div>
-                        <div><NavLink to="/"><img src={instagram_icon}></img></NavLink></div>
-                        <div><NavLink to="/"><img src={facebook_icon}></img></NavLink></div>
-                        <div><NavLink to="/"><img src={tiktok_icon}></img></NavLink></div>
+                        <div><Link to="https://www.instagram.com/akazainc/" target="_blank" rel="noopener noreferrer"><img src={instagram_icon}></img></Link></div>
+                        <div><Link to="https://www.facebook.com/profile.php?id=61571547335535" target="_blank" rel="noopener noreferrer"><img src={facebook_icon}></img></Link></div>
+                        <div><Link to="https://www.tiktok.com/@akazainc" target="_blank" rel="noopener noreferrer"><img src={tiktok_icon}></img></Link></div>
                     </div>
                 </nav>
                 <nav>
                     <div>Payment Partner</div>
                     <div>
-                        <div><NavLink to="/"><img src={powered_by_stripe}></img></NavLink></div>
+                        <div><Link to="https://www.authorize.net/" target="_blank" rel="noopener noreferrer"><img src={authnet_logo}></img></Link></div>
                     </div>
                 </nav>
             </div>

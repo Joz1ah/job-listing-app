@@ -44,7 +44,7 @@ export const pokemonApi = createApiFunction({
 export const akazaApiSignUp = createApiFunction({
   reducerPath: 'apiSignUp',
   baseQuery: fetchBaseQuery({ 
-    baseUrl: 'https://akaza-sit-api-gateway---rev-2-2tninhtd.uk.gateway.dev/' ,
+    baseUrl: process.env.SIGNUP_API_URL ,
     //baseUrl: process.env.REACT_APP_SIGNUP_API_URL ,
     credentials: "include", 
     prepareHeaders: (headers) => {
@@ -128,7 +128,7 @@ export const akazaApiSignUp = createApiFunction({
 export const akazaApiAuth = createApiFunction({
   reducerPath: 'apiAuth',
   baseQuery: fetchBaseQuery({ 
-    baseUrl: 'https://akaza-sit-api-gateway---rev-2-2tninhtd.uk.gateway.dev/',
+    baseUrl: process.env.AUTH_API_URL,
     //baseUrl: process.env.REACT_APP_AUTH_API_URL ,
     credentials: "include", 
     prepareHeaders: (headers) => {
@@ -297,7 +297,7 @@ export const akazaApiAuth = createApiFunction({
 export const akazaApiSearch = createApiFunction({
   reducerPath: 'apiSearch',
   baseQuery: fetchBaseQuery({ 
-    baseUrl: 'https://akaza-sit-api-gateway---rev-2-2tninhtd.uk.gateway.dev/' ,
+    baseUrl: process.env.SEARCH_API_URL ,
     //baseUrl: process.env.REACT_APP_SEARCH_API_URL ,
     credentials: "include", 
     prepareHeaders: (headers) => {
@@ -342,7 +342,7 @@ export const akazaApiSearch = createApiFunction({
 export const akazaApiPayment = createApiFunction({
   reducerPath: 'apiPayment',
   baseQuery: fetchBaseQuery({ 
-    baseUrl: 'https://akaza-sit-api-gateway---rev-2-2tninhtd.uk.gateway.dev/' ,
+    baseUrl: process.env.PAYMENT_API_URL ,
     //baseUrl: process.env.REACT_APP_PAYMENT_API_URL ,
     credentials: "include", 
     prepareHeaders: (headers) => {
@@ -403,7 +403,7 @@ export const akazaApiPayment = createApiFunction({
 export const akazaApiJobFeed = createApiFunction({
   reducerPath: 'apiJobFeed',
   baseQuery: fetchBaseQuery({ 
-    baseUrl: 'https://akaza-sit-api-gateway---rev-2-2tninhtd.uk.gateway.dev/' ,
+    baseUrl: process.env.JOBFEED_API_URL ,
     //baseUrl: process.env.REACT_APP_JOBFEED_API_URL ,
     credentials: "include", 
     prepareHeaders: (headers) => {
@@ -441,7 +441,7 @@ export const akazaApiJobFeed = createApiFunction({
 export const akazaApiPerfectMatch = createApiFunction({
   reducerPath: 'apiPerfectMatch',
   baseQuery: fetchBaseQuery({ 
-    baseUrl: 'https://perfectmatch-sit.akaza.xyz/' ,
+    baseUrl: process.env.PERFECTMATCH_API_URL ,
     //baseUrl: process.env.REACT_APP_PERFECTMATCH_API_URL ,
     credentials: "include", 
     prepareHeaders: (headers) => {
@@ -480,7 +480,7 @@ export const akazaApiPerfectMatch = createApiFunction({
 export const akazaApiAccount = createApiFunction({
   reducerPath: 'apiAccount',
   baseQuery: fetchBaseQuery({ 
-    baseUrl: 'https://akaza-sit-api-gateway---rev-2-2tninhtd.uk.gateway.dev/',
+    baseUrl: process.env.ACCOUNT_API_URL,
     credentials: "include", 
     prepareHeaders: (headers) => {
       const token = Cookies.get('authToken');
@@ -497,6 +497,38 @@ export const akazaApiAccount = createApiFunction({
         method: 'GET',
       }),
       keepUnusedDataFor: 0,  // Remove unused data from the cache right away
+    }),
+  }),
+});
+
+
+export const localApi = createApiFunction({
+  reducerPath: 'apiLocal',
+  baseQuery: fetchBaseQuery({ 
+    baseUrl: process.env.BASE_URL,
+    credentials: "include", 
+    prepareHeaders: (headers) => {
+      const token = Cookies.get('authToken');
+      if (token) {
+        headers.set('Authorization', `Bearer ${token}`);
+      }
+      return headers;
+    },
+  }), 
+  endpoints: (builder) => ({
+    sendContactUsEmail: builder.mutation({
+      query: (payLoad) => ({
+        url: `/api/contact-us-send-email`,
+        method: 'POST',
+        body: {
+            "firstName": payLoad.firstName,
+            "lastName": payLoad.lastName,
+            "emailAddress": payLoad.emailAddress,
+            "userType": payLoad.userType,
+            "message": payLoad.message,
+            "subject":payLoad.subject,
+          }
+      }),
     }),
   }),
 });
@@ -553,3 +585,7 @@ export const {
 export const {
   useGetUserInfoQuery
 } = akazaApiAccount
+
+export const {
+  useSendContactUsEmailMutation
+} = localApi

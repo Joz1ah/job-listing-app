@@ -20,7 +20,7 @@ docker_build:
   script:
     - echo "Building Docker image..."
     - echo $CI_COMMIT_SHA
-    - docker build --no-cache --platform linux/amd64 -t gcr.io/$GOOGLE_PROJECT_ID/akaza-app:$CI_COMMIT_SHA .
+    - docker build --no-cache --platform linux/amd64 -t gcr.io/$GOOGLE_PROJECT_ID/akaza-app:$CI_COMMIT_SHA .    
   only:
     - main
 

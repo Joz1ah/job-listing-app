@@ -39,12 +39,16 @@ const filename = (ext: string): string =>
 const plugins: WebpackPluginInstance[] = [
   new DefinePlugin({
     NO_SSR: process.env.NO_SSR === 'true',
-    'process.env.REACT_APP_SIGNUP_API_URL': JSON.stringify(process.env.REACT_APP_SIGNUP_API_URL),
-    'process.env.REACT_APP_AUTH_API_URL': JSON.stringify(process.env.REACT_APP_AUTH_API_URL),
-    'process.env.REACT_APP_SEARCH_API_URL': JSON.stringify(process.env.REACT_APP_SEARCH_API_URL),
-    'process.env.REACT_APP_PAYMENT_API_URL': JSON.stringify(process.env.REACT_APP_PAYMENT_API_URL),
-    'process.env.REACT_APP_JOBFEED_API_URL': JSON.stringify(process.env.REACT_APP_JOBFEED_API_URL),
-    'process.env.REACT_APP_PERFECTMATCH_API_URL': JSON.stringify(process.env.REACT_APP_PERFECTMATCH_API_URL),
+    'process.env.BASE_URL': JSON.stringify(process.env.BASE_URL),
+    'process.env.SIGNUP_API_URL': JSON.stringify(process.env.SIGNUP_API_URL),
+    'process.env.AUTH_API_URL': JSON.stringify(process.env.AUTH_API_URL),
+    'process.env.SEARCH_API_URL': JSON.stringify(process.env.SEARCH_API_URL),
+    'process.env.PAYMENT_API_URL': JSON.stringify(process.env.PAYMENT_API_URL),
+    'process.env.JOBFEED_API_URL': JSON.stringify(process.env.JOBFEED_API_URL),
+    'process.env.PERFECTMATCH_API_URL': JSON.stringify(process.env.PERFECTMATCH_API_URL),
+    'process.env.ACCOUNT_API_URL': JSON.stringify(process.env.ACCOUNT_API_URL),
+    'process.env.AUTHORIZE_NET_CLIENT_KEY': JSON.stringify(process.env.AUTHORIZE_NET_CLIENT_KEY),
+    'process.env.AUTHORIZE_NET_API_LOGIN_ID': JSON.stringify(process.env.AUTHORIZE_NET_API_LOGIN_ID),
   }),
   ...(process.env.NO_SSR === 'true'
     ? [

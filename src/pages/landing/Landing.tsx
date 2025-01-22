@@ -192,10 +192,21 @@ const CustomInput: React.FC<CustomInputProps> = ({ field, form, ...props }) => {
 
 };
 
+console.log('process.env')
+console.log(JSON.stringify(process.env.ACCOUNT_API_URL))
+console.log(JSON.stringify(process.env.AUTHORIZE_NET_API_LOGIN_ID))
+console.log(JSON.stringify(process.env.AUTHORIZE_NET_CLIENT_KEY))
+console.log(JSON.stringify(process.env.AUTH_API_URL))
+console.log(JSON.stringify(process.env.BASE_URL))
+console.log(JSON.stringify(process.env.JOBFEED_API_URL))
+console.log(JSON.stringify(process.env.PAYMENT_API_URL))
+console.log(JSON.stringify(process.env.PERFECTMATCH_API_URL))
+console.log(JSON.stringify(process.env.SEARCH_API_URL))
+console.log(JSON.stringify(process.env.SIGNUP_API_URL))
+
 const Landing: FC = (): ReactElement => {
   const { isAuthenticated, user } = useAuth();
   const location = useLocation();
-  
   // Simple redirect if authenticated
   if (isAuthenticated && user?.type) {
     return <Navigate to={`/${user.type}`} replace />;
@@ -211,7 +222,9 @@ const Landing: FC = (): ReactElement => {
   });
   const [tempLoginEmail, setTempLoginEmail] = useState('');
   const [tempLoginPassword, setTempLoginPassword] = useState('');
-
+  // Hero Section States
+  const [rememberedSelectedSkills, setRememberedSelectedSkills] = useState<string[]>([]);
+  const [rememberedJobTitle, setRememberedJobTitle] = useState('');
   const heroStates = {
       'PERFECT_MATCH_ALGO' : 1,
       'JOB_TITLE_EMPLOYER' : 2,
@@ -234,7 +247,11 @@ const Landing: FC = (): ReactElement => {
       'SIGNUP_CONGRATULATIONS' : 9,
       'AUTHNET_PAYMENT' : 10,
       'PERFECT_MATCH_RESULTS': 11,
-      'AUTHNET_PAYMENT_FULL': 12
+      'AUTHNET_PAYMENT_FULL': 12,
+      'FORGOT_PASSWORD_EMAIL': 13,
+      'FORGOT_PASSWORD_NEW_PASSWORD': 14,
+      'FORGOT_PASSWORD_OTP': 15,
+      
   }
   const PLAN_SELECTION_ITEMS = {
     'FREE' : 1,
@@ -481,7 +498,7 @@ const Landing: FC = (): ReactElement => {
                 <Field type="checkbox" name="rememberMe" />
                 <label>Remember me</label>
               </div>
-              <div>Forgot password?</div>
+              <div className={styles['forgot-password']}>Forgot password?</div>
             </div>
   
             <div className={styles['action-buttons']}>
@@ -1864,8 +1881,8 @@ const CreditCardForm: React.FC = () => {
     setIsSubmitting(true)
     const secureData = {
       authData: {
-        clientKey: '7wuXYQ768E3G3Seuy6aTf28PfU3mJWu7Bbj564KfTPqRa7RXUPZvTsnKz9Jf7daJ', // Replace with your actual client key
-        apiLoginID: '83M29Sdd8', // Replace with your actual API login ID
+        clientKey: process.env.AUTHORIZE_NET_CLIENT_KEY, // Replace with your actual client key
+        apiLoginID: process.env.AUTHORIZE_NET_API_LOGIN_ID, // Replace with your actual API login ID
       },
       cardData: {
         cardNumber: values.cardNumber,
@@ -1875,26 +1892,9 @@ const CreditCardForm: React.FC = () => {
       },
     };
 
-    console.log('generating token...')
     Accept.dispatchData(secureData, async (acceptResponse: any) => {
       if (acceptResponse.messages.resultCode === 'Ok') {
         const token = acceptResponse.opaqueData.dataValue;
-        console.log(acceptResponse)
-        console.log('token generation success')
-        console.log(token)
-        // Send the token to your server for processing
-        console.log({
-          "provider": "authnet",
-          "userId": dataStates.userId,
-          "plan": 
-            currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY ? "Monthly" : 
-            currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL ? "Yearly" : '',
-          "amount":  
-            currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY ? 5 : 
-            currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL ? 55 : '',
-          "paymentMethodId": token,
-          "daysTrial": 0
-        })
         try {
           const res = await paymentSubmit({
             "provider": "authnet",
@@ -2139,7 +2139,9 @@ const AuthnetPaymentFullModal = () => {
             console.log(res)
             setModalState(modalStates.LOADING)
             setTimeout(()=>{
-              navigate(dataStates.selectedUserType === 'employer' ? '/dashboard/employer-profile' : '/dashboard/jobhunter-profile');
+              console.log(`navigating to ${dataStates.selectedUserType}`)
+              navigate(dataStates.selectedUserType === 'employer' ? '/employer/employer-profile' : '/job-hunter/jobhunter-profile');
+              console.log(`done navigating`)
             },1000)
           }).catch((err) => {
             showError(err?.data?.errors, err?.data?.message)
@@ -2206,7 +2208,7 @@ const AuthnetPaymentFullModal = () => {
             stateProvince: Yup.string()
               .required('State/Province is required'),
             zipPostalCode: Yup.string()
-              .matches(/^\d{5}(-\d{4})?$/, 'Zip/Postal code must be 5 digits or 5-4 digits')
+              .matches(/^[a-zA-Z0-9]{1,6}$/, 'Zip/Postal code must be alphanumeric and up to 6 characters')
               .required('Zip/Postal code is required'),
             city: Yup.string()
               .required('City is required'),
@@ -2731,7 +2733,7 @@ const HeroPerfectMatchAlgo = () => {
 const HeroJobTitleEmployer = () => {
   const heroNextButton = useRef<HTMLDivElement>(null);
   const heroPreviousButton = useRef<HTMLDivElement>(null);
-  const [jobTitle, setJobTitle] = useState('');
+  const [jobTitle, setJobTitle] = useState(rememberedJobTitle);
   const [error, setError] = useState('');
 
   const validationSchema = Yup.object().shape({
@@ -2756,12 +2758,15 @@ const HeroJobTitleEmployer = () => {
         const isValid = await validateJobTitle();
         if (isValid) {
           setError('');
+          setRememberedJobTitle(jobTitle)
           setHeroState(heroStates.SKILLSETS_EMPLOYER);
         }
       };
     }
     if (heroPreviousButton.current) {
       heroPreviousButton.current.onclick = () => {
+        setRememberedSelectedSkills([])
+        setRememberedJobTitle('')
         setError('');
         setHeroState(heroStates.PERFECT_MATCH_ALGO);
       };
@@ -2822,7 +2827,7 @@ const HeroJobTitleEmployer = () => {
 const HeroSkillSetsEmployer = () => {
   const heroEmployerButton = useRef<HTMLDivElement>(null);
   const heroPreviousButton = useRef<HTMLDivElement>(null);
-  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+  const [selectedSkills, setSelectedSkills] = useState<string[]>(rememberedSelectedSkills);
   const [error, setError] = useState('');
 
   const validationSchema = Yup.object().shape({
@@ -2849,6 +2854,7 @@ const HeroSkillSetsEmployer = () => {
       heroEmployerButton.current.onclick = async () => {
         const isValid = await validateSkills();
         if (isValid) {
+          setRememberedSelectedSkills(selectedSkills)
           setError('');
           setHeroState(heroStates.YEARS_OF_EXPERIENCE_EMPLOYER);
         }
@@ -3015,7 +3021,7 @@ const HeroYearsOfExperienceEmployer = () => {
 const HeroSkillSetsJobHunter = () => {
   const heroNextButton = useRef<HTMLDivElement>(null);
   const heroPreviousButton = useRef<HTMLDivElement>(null);
-  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+  const [selectedSkills, setSelectedSkills] = useState<string[]>(rememberedSelectedSkills);
   const [error, setError] = useState('');
 
   const validationSchema = Yup.object().shape({
@@ -3049,6 +3055,7 @@ const HeroSkillSetsJobHunter = () => {
       heroNextButton.current.onclick = async () => {
         const isValid = await validateSkills();
         if (isValid) {
+          setRememberedSelectedSkills(selectedSkills)
           setError('');
           setHeroState(heroStates.YEARS_OF_EXPERIENCE_JOBHUNTER);
         }
@@ -3056,6 +3063,7 @@ const HeroSkillSetsJobHunter = () => {
     }
     if (heroPreviousButton.current) {
       heroPreviousButton.current.onclick = () => {
+        setRememberedSelectedSkills([])
         setError('');
         setHeroState(heroStates.PERFECT_MATCH_ALGO);
       };
@@ -3358,6 +3366,7 @@ const ModalWrapper = () => {
       <NavigationHeader/>
       {isIndexRoute && (
         <>
+            <div className={styles['navigation-header-helper']}></div>
             <div className={`${styles['hero-container']}`}>
                 <HeroPerfectMatchAlgo/>
                 <HeroJobTitleEmployer/>
@@ -3376,62 +3385,22 @@ const ModalWrapper = () => {
             <div className={`${styles['pricing-container']}`}>
                 <div className={`${styles['desc1-wrapper']}`}>
                     <div className={`${styles.desc1}`}>
+                    { ['Perfect Match automation',
+                    'Ratings & Feedback',
+                    ' Access to diverse private sector industries',
+                    'Basic analytic page',
+                    'Access to exclusive informative content',
+                    'Live chat support'].map((label: string) => (
                         <div className={`${styles['sub-desc']}`}>
-                            <div className={`${styles['orange-check']}`}>
+                            <div>
                                 <img src={orange_check}></img>
                             </div>
                             <div>
-                                Perfect Match automation
+                                {label}
                             </div> 
                         </div>
-                        <div className={`${styles['sub-desc']}`}>
-                            <div className={`${styles['orange-check']}`}>
-                                <img src={orange_check}></img>
-                            </div>
-                            <div>
-                                Ratings & Feedback
-                            </div> 
-                        </div>
-                        <div className={`${styles['sub-desc']}`}>
-                            <div className={`${styles['orange-check']}`}>
-                                <img src={orange_check}></img>
-                            </div>
-                            <div>
-                                Access to diverse private sector industries
-                            </div> 
-                        </div>
-                        <div className={`${styles['sub-desc']}`}>
-                            <div className={`${styles['orange-check']}`}>
-                                <img src={orange_check}></img>
-                            </div>
-                            <div>
-                                Basic analytic page
-                            </div> 
-                        </div>
-                        <div className={`${styles['sub-desc']}`}>
-                            <div className={`${styles['orange-check']}`}>
-                                <img src={orange_check}></img>
-                            </div>
-                            <div>
-                                Basic analytic page
-                            </div> 
-                        </div>
-                        <div className={`${styles['sub-desc']}`}>
-                            <div className={`${styles['orange-check']}`}>
-                                <img src={orange_check}></img>
-                            </div>
-                            <div>
-                                Access to exclusive informative content
-                            </div> 
-                        </div>
-                        <div className={`${styles['sub-desc']}`}>
-                            <div className={`${styles['orange-check']}`}>
-                                <img src={orange_check}></img>
-                            </div>
-                            <div>
-                                Live chat support
-                            </div> 
-                        </div>
+                    )) }
+
                     </div>
                     <div className={`${styles['desc1-2']}`}>
                         <div className={`${styles['corner-recatangle']}`}>
@@ -3460,7 +3429,10 @@ const ModalWrapper = () => {
                             <div className={`${styles.white}`}>Efficiency</div>
                             <div className={`${styles.orange}`}>&</div>
                             <div className={`${styles.white}`}>Accountability</div>
-                            <div className={`${styles.orange}`}>is what we strive for!</div>
+                            { ['is','what','we','strive','for!'].map((label: string) => (
+                              <div className={`${styles.orange}`}>{label}</div>
+                              )) }
+                            
                         </div>
                         <div className={`${styles['sub-desc']}`}>We are committed to be the best at what we do. Our CEO is eager to connect with you personally to discuss how we can enhance your experience!</div>
                     </div>

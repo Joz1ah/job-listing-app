@@ -247,22 +247,6 @@ const routes: RouteObject[] = [
         index: true,
         element: null
       },
-      /* {
-        path: ROUTE_CONSTANTS.ABOUT_US,
-        element: <AboutUs />
-      },
-      {
-        path: ROUTE_CONSTANTS.CONTACT_US,
-        element: <ContactUs />
-      },
-      {
-        path: ROUTE_CONSTANTS.SUBSCRIPTION_PLAN,
-        element: <SubscriptionPlan />
-      },
-      {
-        path: ROUTE_CONSTANTS.FAQ,
-        element: <Faq />
-      } */
     ]
   },
   {
@@ -281,6 +265,21 @@ const routes: RouteObject[] = [
     path: ROUTE_CONSTANTS.FAQ,
     element: <LazyComponent component={Faq} />
   },
+  /*
+  {
+    path: ROUTE_CONSTANTS.HOME,
+    element: <LazyComponent component={Home} />
+  },
+  {
+    path: ROUTE_CONSTANTS.FETCH,
+    element: <LazyComponent component={Fetch} />
+  },
+  {
+    path: ROUTE_CONSTANTS.ABOUT,
+    element: <LazyComponent component={About} />
+  },
+  */
+  // ... rest of your routes remain the same
   {
     path: '*',
     element: <LazyComponent component={NotFound} />
