@@ -1,7 +1,7 @@
 import { FC, useState, useEffect, useRef } from "react";
 import sparkeIcon from "images/sparkle-icon.png";
 import { perfectMatch, others } from "mockData/jobs-data";
-import jobHunterAds from "images/job-hunter-ads.svg?url";
+import jobHunterAds from "images/job-hunter-feed-card-ads.svg?url";
 import jobHunterPopAds from "images/popup-hunter.svg?url";
 import {
   PerfectMatchEmptyState,

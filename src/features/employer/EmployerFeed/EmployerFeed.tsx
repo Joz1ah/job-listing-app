@@ -4,7 +4,7 @@ import { perfectMatch, others, Match } from "mockData/job-hunter-data";
 import { Button } from "components";
 import { AppCardSkeleton, BookmarkLimitHandler } from "components";
 import { AppCard } from "features/employer";
-import employerAds from "images/employer-ads.svg?url";
+import employerAds from "images/employer-feed-card-ads.svg?url";
 import employerPopAds from "images/popup-employer.svg?url";
 import {
   PerfectMatchEmptyState,

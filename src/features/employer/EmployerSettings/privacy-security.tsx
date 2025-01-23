@@ -70,7 +70,7 @@ const PrivacyAndSecuritySettings: FC = () => {
         resetForm();
         setIsSuccess(true);
       } catch (error: any) {
-        if (error.status === 400 || error.error === 'TypeError: Failed to fetch') {
+        if (error.status === 'FETCH_ERROR') {
           setFieldError('originalPassword', 'Original password is incorrect');
         } else {
           console.error('Failed to update password:', error);

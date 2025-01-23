@@ -284,9 +284,9 @@ export const akazaApiAuth = createApiFunction({
         url: 'settings/update-password',
         method: 'POST',
         body: {
-          oldPassword: payload.oldPassword,
-          newPassword: payload.newPassword,
-          confirmPassword: payload.confirmPassword
+          "oldPassword": payload.oldPassword,
+          "newPassword": payload.newPassword,
+          "confirmPassword": payload.confirmPassword
         },
       }),
     }),
