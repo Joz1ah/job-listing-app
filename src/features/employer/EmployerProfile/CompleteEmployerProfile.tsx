@@ -61,7 +61,13 @@ const validationSchema = Yup.object().shape({
   city: Yup.string().required("This field is required"),
   state: Yup.string().required("This field is required"),
   country: Yup.string().required("This field is required"),
-  companyOverview: Yup.string().required("This field is required"),
+  companyOverview: Yup.string()
+    .required("This field is required")
+    .test(
+      "maxWords",
+      "Must not exceed 500 words",
+      value => value?.split(/\s+/).filter(Boolean).length <= 500
+    ),
 });
 
 // Loading Overlay Component
@@ -258,7 +264,8 @@ const CompleteEmployerProfile: FC = () => {
                     value={values.emailAddress}
                     onChange={handleChange}
                     placeholder="Email Address"
-                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                    disabled={!!user?.data?.user?.email}
+                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD] disabled:opacity-50 disabled:cursor-not-allowed"
                   />
                 </InputField>
     
@@ -405,13 +412,12 @@ const CompleteEmployerProfile: FC = () => {
                     onChange={(value) => setFieldValue("country", value)}
                     className="bg-transparent border-[#AEADAD] h-[56px] hover:text-white border-2 focus:border-[#F5722E] w-[335px] rounded-[8px] text-white placeholder:text-[#AEADAD] px-3 py-2"
                     popoverClassName="w-[335px]"
-                    error={touched.country && errors.country ? errors.country : undefined}
                   />
                 </InputField>
               </div>
     
               <InputField
-                label="Job Description"
+                label="Company Overview"
                 error={errors.companyOverview}
                 touched={touched.companyOverview}
                 className="relative"
@@ -421,8 +427,11 @@ const CompleteEmployerProfile: FC = () => {
                   value={values.companyOverview}
                   onChange={handleChange}
                   className="bg-transparent border-[#AEADAD] h-[90px] pt-4 resize-none border-2 focus-within:border-[#F5722E] placeholder:text-[#AEADAD]"
-                  placeholder="Please provide a job description"
+                  placeholder="Please provide a company overview"
                 />
+                <span className="flex left-0 italic text-[11px] absolute">
+                  Maximum of 500 words
+                </span>
               </InputField>
     
               {/* Footer Buttons */}

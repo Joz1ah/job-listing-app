@@ -22,6 +22,7 @@ import amex_icon from "assets/credit-card-icons/cc_american-express.svg?url";
 import mastercard_icon from "assets/credit-card-icons/cc_mastercard.svg?url";
 import discover_icon from "assets/credit-card-icons/cc_discover.svg?url";
 import companyLogoLight from "images/company-logo-light.svg?url";
+import { NavLink } from "react-router-dom";
 
 interface Feature {
   icon: React.ReactNode;
@@ -125,7 +126,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
               <InputField label="Card Holder Name" variant="primary">
                 <Input
                   id="cardName"
-                  className="bg-transparent border-[#F5F5F7] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                  className="bg-transparent text-[#F5F5F7] border-[#F5F5F7] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
                   placeholder="Enter card holder name"
                 />
               </InputField>
@@ -135,7 +136,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
               <InputField label="Card Number" variant="primary">
                 <Input
                   id="cardNumber"
-                  className="bg-transparent border-[#F5F5F7] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                  className="bg-transparent text-[#F5F5F7] border-[#F5F5F7] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
                   placeholder="Enter card number"
                 />
               </InputField>
@@ -146,7 +147,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                 <InputField label="Expiry Date" variant="primary">
                   <Input
                     id="expiryDate"
-                    className="bg-transparent border-[#F5F5F7] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                    className="bg-transparent text-[#F5F5F7] border-[#F5F5F7] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
                     placeholder="XX/XX"
                   />
                 </InputField>
@@ -155,7 +156,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                 <InputField label="CVV" variant="primary">
                   <Input
                     id="cvv"
-                    className="bg-transparent border-[#F5F5F7] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                    className="bg-transparent text-[#F5F5F7] border-[#F5F5F7] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
                     placeholder="XXX"
                   />
                 </InputField>
@@ -190,32 +191,33 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
 };
 
 interface SuccessStepProps {
-  onGoToJob: () => void;
   onBack: () => void;
+  planType: "yearly" | "monthly" | null;
 }
 
-const SuccessStep: React.FC<SuccessStepProps> = ({ onGoToJob, onBack }) => {
+const SuccessStep: React.FC<SuccessStepProps> = ({ onBack, planType }) => {
   return (
     <div className="w-full h-[calc(100vh-200px)] flex flex-col items-center justify-center">
       <img src={star_icon} alt="star" />
 
       <h2 className="text-[#F5722E] text-[26px] font-normal mb-2">
-        Welcome to a Year of Savings!
+        {planType === "yearly" ? "Welcome to a Year of Savings!" : "You're All Set for Monthly Access!"}
       </h2>
 
       <p className="text-[#F5F5F7] text-[15px] font-light text-center mb-8">
-        You've unlocked a whole year of exclusive benefits and
-        <br />
-        cost savings. Let's get to work!
+        {planType === "yearly" 
+          ? "You've unlocked a whole year of exclusive benefits and\ncost savings. Let's get to work!"
+          : "Enjoy flexibility and exclusive tools to achieve your goals—one month at a time"}
       </p>
 
       <div className="flex flex-col space-y-3 items-center w-full">
-        <Button
-          onClick={onGoToJob}
-          className="bg-[#F5722E] text-[13px] hover:bg-[#F5722E]/90 text-white rounded p-0 w-[140px]"
-        >
-          Go To Job Feed
-        </Button>
+        <NavLink to='/dashboard/feed'>
+          <Button
+            className="bg-[#F5722E] text-[13px] hover:bg-[#F5722E]/90 text-white rounded p-0 w-[140px]"
+          >
+            Go To Job Feed
+          </Button>
+        </NavLink>
 
         <Button
           onClick={onBack}
@@ -269,19 +271,13 @@ const SubscriptionSettings: React.FC = () => {
   const handlePaymentSuccess = () => {
     setCurrentStep("success");
   };
-
-  const handleGoToJob = () => {
-    // Implement navigation to job post
-    console.log("Navigate to job post");
-  };
-
   const handleBackToPlans = () => {
     setSelectedPlan(null);
     setCurrentStep("plans");
   };
 
   if (currentStep === "success") {
-    return <SuccessStep onGoToJob={handleGoToJob} onBack={handleBackToPlans} />;
+    return <SuccessStep onBack={handleBackToPlans} planType={selectedPlan}/>;
   }
 
   if (currentStep === "payment" && selectedPlan) {

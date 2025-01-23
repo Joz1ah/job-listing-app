@@ -19,9 +19,9 @@ const PerfectMatchEmptyState: React.FC<EmptyStateProps> = ({
     <div className="text-center max-w-md">
       <h3 className="text-[26px] font-normal text-white mb-8">
         No{" "}
-        <span className="text-[#F5722E] inline-flex items-center">
+        <span className="text-[#F5722E] inline-flex items-center p-2">
+        <img src={sparkleIcon} alt="Sparkle" className="w-4 h-4 mr-1"/>
           Perfect Match{" "}
-          <img src={sparkleIcon} alt="Sparkle" className="w-4 h-4 ml-1" />
         </span>{" "}
         just yet, but we're still on the lookout!
       </h3>

@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 
 import sparkle_icon from "assets/images/sparkle-icon.png";
+import { useNavigate } from 'react-router-dom';
 
 interface CustomAccordionProps {
   isOpen: boolean;
@@ -57,6 +58,7 @@ const CustomAccordion: React.FC<CustomAccordionProps> = ({
 
 const SubscriptionDialog: React.FC = () => {
   const [isAccordionOpen, setIsAccordionOpen] = useState<boolean>(false);
+  const navigate = useNavigate();
   
   const benefits: Benefit[] = [
     { icon: <CalendarCheck className="w-5 h-5" />, text: 'Hire with Ease' },
@@ -80,12 +82,7 @@ const SubscriptionDialog: React.FC = () => {
 
   const handleContactUs = (): void => {
     // Handle contact us logic
-    console.log('Contact Us clicked');
-  };
-
-  const handleChatWithCEO = (): void => {
-    // Handle chat with CEO logic
-    console.log('Chat with CEO clicked');
+    navigate('/contact-us');
   };
 
   return (
@@ -133,18 +130,12 @@ const SubscriptionDialog: React.FC = () => {
                 We hate to see you go! Before you make your final decision, we'd love to 
                 help. Let's chat and see if there's a better way we can support you.
               </p>
-              <div className="flex flex-row gap-6">
+              <div className="flex justify-center">
                 <Button 
                   className="w-full bg-[#F5722E] hover:bg-[#F5722E]/90 text-[#F5F5F7] h-8 rounded-[2px]"
                   onClick={handleContactUs}
                 >
                   Contact Us
-                </Button>
-                <Button 
-                  className="w-full bg-[#F5722E] hover:bg-[#F5722E]/90 text-[#F5F5F7] h-8 rounded-[2px]"
-                  onClick={handleChatWithCEO}
-                >
-                  Chat with our CEO
                 </Button>
               </div>
             </div>

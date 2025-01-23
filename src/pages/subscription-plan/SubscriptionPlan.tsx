@@ -11,6 +11,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import sparkle_icon from "assets/images/sparkle-icon.png";
 import { DefaultLayout } from "layouts";
+import { useAuth } from "contexts/AuthContext/AuthContext";
 
 interface PlanFeature {
   icon: React.ReactNode;
@@ -33,15 +34,19 @@ const PlanCard: FC<PlanProps> = ({
   bestValue,
 }) => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
   const handleStartNow = () => {
-    // Navigate with state to indicate modal should open
-    navigate("/", {
-      state: {
-        openModal: true,
-        modalType: "SIGNUP_SELECT_USER_TYPE",
-      },
-    });
+    if (isAuthenticated) {
+      navigate("/dashboard/account-settings/subscription");
+    } else {
+      navigate("/", {
+        state: {
+          openModal: true,
+          modalType: "SIGNUP_SELECT_USER_TYPE",
+        },
+      });
+    }
   };
 
   const allFeatures = bestValue

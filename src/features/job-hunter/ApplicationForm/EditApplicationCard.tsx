@@ -391,9 +391,8 @@ const EditApplicationCard: FC = () => {
                     name="emailAddress"
                     value={values.emailAddress}
                     onChange={handleChange}
-                    placeholder="Email Address"
-                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
-                  />
+                    disabled={!!user?.data?.user?.email}
+                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD] disabled:opacity-50 disabled:cursor-not-allowed disabled:text-[#AEADAD]"                  />
                 </InputField>
               </div>
   
@@ -425,7 +424,6 @@ const EditApplicationCard: FC = () => {
                     onChange={(value) => setFieldValue("country", value)}
                     className="bg-transparent border-[#AEADAD] h-[56px] hover:text-white border-2 focus:border-[#F5722E] w-[335px] rounded-[8px] text-white placeholder:text-[#AEADAD] px-3 py-2"
                     popoverClassName="w-[335px]"
-                    error={touched.country && errors.country ? errors.country : undefined}
                   />
                 </InputField>
               </div>

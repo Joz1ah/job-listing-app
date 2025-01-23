@@ -266,7 +266,7 @@ const ExpiredSubModalEmployer: React.FC<ExpiredSubModalEmployerProps> = ({
               <InputField label="Card Holder Name" variant={selectedPlan === 'yearly' ? 'primary' : 'payment'}>
                 <Input
                   id="cardName"
-                  className={`bg-transparent ${selectedPlan === 'monthly' ? 'border-[#263238] placeholder:text-[#263238]' : 'border-[#F5F5F7] placeholder:text-[#F5F5F7]'} h-[56px] border-2 focus:border-[#F5722E]`}
+                  className={`bg-transparent ${selectedPlan === 'monthly' ? 'border-[#263238] placeholder:text-[#263238] text-[#263238]' : 'border-[#F5F5F7] placeholder:text-[#F5F5F7] text-[#F5F5F7]'} h-[56px] border-2 focus:border-[#F5722E]`}
                   placeholder="Enter card holder name"
                 />
               </InputField>
@@ -276,7 +276,7 @@ const ExpiredSubModalEmployer: React.FC<ExpiredSubModalEmployerProps> = ({
               <InputField label="Card Number" variant={selectedPlan === 'yearly' ? 'primary' : 'payment'}>
                 <Input
                   id="cardNumber"
-                  className={`bg-transparent ${selectedPlan === 'monthly' ? 'border-[#263238] placeholder:text-[#263238]' : 'border-[#F5F5F7] placeholder:text-[#F5F5F7]'} h-[56px] border-2 focus:border-[#F5722E]`}
+                  className={`bg-transparent ${selectedPlan === 'monthly' ? 'border-[#263238] placeholder:text-[#263238] text-[#263238]' : 'border-[#F5F5F7] placeholder:text-[#F5F5F7] text-[#F5F5F7]'} h-[56px] border-2 focus:border-[#F5722E]`}
                   placeholder="Enter card number"
                 />
               </InputField>
@@ -287,7 +287,7 @@ const ExpiredSubModalEmployer: React.FC<ExpiredSubModalEmployerProps> = ({
                 <InputField label="Expiry Date" variant={selectedPlan === 'yearly' ? 'primary' : 'payment'}>
                   <Input
                     id="expiryDate"
-                    className={`bg-transparent ${selectedPlan === 'monthly' ? 'border-[#263238] placeholder:text-[#263238]' : 'border-[#F5F5F7] placeholder:text-[#F5F5F7]'} h-[56px] border-2 focus:border-[#F5722E]`}
+                    className={`bg-transparent ${selectedPlan === 'monthly' ? 'border-[#263238] placeholder:text-[#263238] text-[#263238]' : 'border-[#F5F5F7] placeholder:text-[#F5F5F7] text-[#F5F5F7]'} h-[56px] border-2 focus:border-[#F5722E]`}
                     placeholder="XX/XX"
                   />
                 </InputField>
@@ -296,7 +296,7 @@ const ExpiredSubModalEmployer: React.FC<ExpiredSubModalEmployerProps> = ({
                 <InputField label="CVV" variant={selectedPlan === 'yearly' ? 'primary' : 'payment'}>
                   <Input
                     id="cvv"
-                    className={`bg-transparent ${selectedPlan === 'monthly' ? 'border-[#263238] placeholder:text-[#263238]' : 'border-[#F5F5F7] placeholder:text-[#F5F5F7]'} h-[56px] border-2 focus:border-[#F5722E]`}
+                    className={`bg-transparent ${selectedPlan === 'monthly' ? 'border-[#263238] placeholder:text-[#263238] text-[#263238]' : 'border-[#F5F5F7] placeholder:text-[#F5F5F7] text-[#F5F5F7]'} h-[56px] border-2 focus:border-[#F5722E]`}
                     placeholder="XXX"
                   />
                 </InputField>

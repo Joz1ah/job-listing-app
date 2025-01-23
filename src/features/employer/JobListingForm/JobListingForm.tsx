@@ -61,7 +61,13 @@ const validationSchema = Yup.object().shape({
   salaryRange: Yup.string().required("This field is required"),
   yearsOfExperience: Yup.string().required("This field is required"),
   priorityIndicator: Yup.string().required("This field is required"),
-  jobDescription: Yup.string().required("This field is required"),
+  jobDescription: Yup.string()
+  .required("This field is required")
+  .test(
+    "maxWords",
+    "Must not exceed 500 words",
+    value => value?.split(/\s+/).filter(Boolean).length <= 500
+  ),
   coreSkills: Yup.array()
     .min(3, "Please add at least 3 core skills")
     .required("This field is required"),

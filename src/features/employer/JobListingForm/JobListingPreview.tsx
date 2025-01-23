@@ -3,6 +3,7 @@ import { MapPin, X } from "lucide-react";
 import { Card, CardFooter } from "components";
 import { Button } from "components";
 import { selectOptions, FormData } from "mockData/job-listing-form-options";
+import { useAuth } from "contexts/AuthContext/AuthContext";
 
 interface JobListingPreviewProps {
   isOpen: boolean;
@@ -28,6 +29,10 @@ const JobListingPreview: React.FC<JobListingPreviewProps> = ({
     return option?.label || value;
   };
 
+  const capitalizeFirstLetter = (str: string): string => {
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  };
+
   // Get multiple labels for array values
   const getLabels = (
     values: string[],
@@ -37,9 +42,14 @@ const JobListingPreview: React.FC<JobListingPreviewProps> = ({
       const option = selectOptions[optionType].find(
         (opt) => opt.value === value,
       );
-      return option?.label || value;
+      const label = option?.label || value;
+      return ["coreSkills", "certifications", "interpersonalSkills"].includes(optionType) 
+        ? capitalizeFirstLetter(label)
+        : label;
     });
   };
+
+  const { user } = useAuth();
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 flex flex-col items-center overflow-y-auto p-4 pt-8">
@@ -54,7 +64,7 @@ const JobListingPreview: React.FC<JobListingPreviewProps> = ({
           {/* Title and Company */}
           <div>
             <h2 className="text-lg md:text-[17px] font-semibold">{formData.jobTitle}</h2>
-            <p className="text-sm md:text-[17px] text-[#263238] underline">ABC Corporation</p>
+            <p className="text-sm md:text-[17px] text-[#263238] underline">{user?.data?.user?.relatedDetails?.businessName}</p>
           </div>
 
           {/* Location */}
