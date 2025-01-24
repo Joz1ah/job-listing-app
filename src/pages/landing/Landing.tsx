@@ -192,18 +192,6 @@ const CustomInput: React.FC<CustomInputProps> = ({ field, form, ...props }) => {
 
 };
 
-console.log('process.env')
-console.log(JSON.stringify(process.env.ACCOUNT_API_URL))
-console.log(JSON.stringify(process.env.AUTHORIZE_NET_API_LOGIN_ID))
-console.log(JSON.stringify(process.env.AUTHORIZE_NET_CLIENT_KEY))
-console.log(JSON.stringify(process.env.AUTH_API_URL))
-console.log(JSON.stringify(process.env.BASE_URL))
-console.log(JSON.stringify(process.env.JOBFEED_API_URL))
-console.log(JSON.stringify(process.env.PAYMENT_API_URL))
-console.log(JSON.stringify(process.env.PERFECTMATCH_API_URL))
-console.log(JSON.stringify(process.env.SEARCH_API_URL))
-console.log(JSON.stringify(process.env.SIGNUP_API_URL))
-
 const Landing: FC = (): ReactElement => {
   const { isAuthenticated, user } = useAuth();
   const location = useLocation();
