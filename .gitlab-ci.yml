@@ -65,7 +65,6 @@ docker_promote:
   variables:
     GOOGLE_APPLICATION_CREDENTIALS: /tmp/key.json
 
-
 deployment:
   stage: deployment
   image: google/cloud-sdk:latest
