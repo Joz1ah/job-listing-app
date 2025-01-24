@@ -11,6 +11,7 @@ const BaseLayout = lazy(() => import('pages').then(module => ({ default: module.
 const NotFound = lazy(() => import('pages').then(module => ({ default: module.NotFoundPage })))
 const Landing = lazy(() => import('pages').then(module => ({ default: module.Landing })))
 const SubscriptionPlan = lazy(() => import('pages').then(module => ({ default: module.SubscriptionPlan })))
+const InterruptedSubscriptionPage = lazy(() => import('pages').then(module => ({ default: module.InterruptedSubscriptionPage })))
 const AboutUs = lazy(() => import('pages').then(module => ({ default: module.AboutUs })))
 const ContactUs = lazy(() => import('pages').then(module => ({ default: module.ContactUs })))
 const Faq = lazy(() => import('pages').then(module => ({ default: module.Faq })))
@@ -280,6 +281,10 @@ const routes: RouteObject[] = [
   {
     path: ROUTE_CONSTANTS.FAQ,
     element: <LazyComponent component={Faq} />
+  },
+  {
+    path: ROUTE_CONSTANTS.INTERRUPTED_SUBSCRIPTION,
+    element: <LazyComponent component={InterruptedSubscriptionPage} />
   },
   {
     path: '*',

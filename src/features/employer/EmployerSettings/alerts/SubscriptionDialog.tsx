@@ -61,7 +61,7 @@ const SubscriptionDialog: React.FC = () => {
     const navigate = useNavigate();
   
   const benefits: Benefit[] = [
-    { icon: <CalendarCheck className="w-5 h-5" />, text: 'Hire with Ease' },
+    { icon: <CalendarCheck className="w-5 h-5" />, text: 'Up to 5 Job Listings' },
     { icon: <Infinity className="w-5 h-5" />, text: 'Unlimited Interviews' },
     { icon: <img src={sparkle_icon} alt="sparkle" className="w-5 h-5" />, text: 'Perfect Match automation' },
     { icon: <ThumbsUp className="w-5 h-5" />, text: 'Insights and Feedback' },
