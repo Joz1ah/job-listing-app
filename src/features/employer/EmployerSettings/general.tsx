@@ -8,9 +8,11 @@ import { Switch } from "components";
 import googleLogo from 'images/google-logo-icon.svg?url';
 import { useEmployerContext } from "components";
 import { AdDialogWrapper } from "components";
-import jobHunterPopAds from "images/popup-hunter.svg?url";
+import jobHunterPopAds from "images/popup-employer.svg?url";
 import { TimezoneSelector } from "components";
 import { useAuth } from "contexts/AuthContext/AuthContext";
+import spinner_loading_fallback from 'assets/images/spinner-loading-akaza.svg?url';
+import { useGetAccountSettingsQuery, useUpdateAccountSettingsMutation } from 'api/akaza/akazaAPI';
 
 interface FormFieldProps {
   label: string;
@@ -18,12 +20,8 @@ interface FormFieldProps {
   className?: string;
 }
 
-interface NotificationState {
-  push: boolean;
-}
-
 const NOTIFICATION_OPTIONS = [
-  { key: "push", label: "Push Notifications" },
+  { key: "pushNotification", label: "Push Notifications" },
 ] as const;
 
 const THEME_OPTIONS = [
@@ -31,6 +29,13 @@ const THEME_OPTIONS = [
   { value: "light", label: "Light" },
 ] as const;
 
+const DEFAULT_SETTINGS = {
+  pushNotification: false,
+  theme: 'dark' as const,
+  timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  emailNotification: false,
+  smsNotification: false
+};
 
 const FormField: FC<FormFieldProps> = ({ label, children, className }) => {
   return (
@@ -48,36 +53,52 @@ const FormField: FC<FormFieldProps> = ({ label, children, className }) => {
 const GeneralSettings: FC = () => {
   const { subscriptionPlan } = useEmployerContext();
   const { user } = useAuth();
-  const [notifications, setNotifications] = useState<NotificationState>({
-    push: false,
-  });
-  const theme = "dark" as const;
-  const [timeZone, setTimeZone] = useState<string>(() => {
-    try {
-      return Intl.DateTimeFormat().resolvedOptions().timeZone;
-    } catch (error) {
-      console.error('Error detecting timezone:', error);
-      return 'UTC';
-    }
-  });
-  const [email, setEmail] = useState(user?.data?.user?.email);
-  const [isEditingEmail, setIsEditingEmail] = useState(false);
-  const [tempEmail, setTempEmail] = useState(email);
   const adTriggerRef = useRef<HTMLDivElement>(null);
 
-  const handleTimezoneChange = (newTimeZone: string) => {
-    setTimeZone(newTimeZone);
+  const [email, setEmail] = useState(user?.data?.user?.email || '');
+  const [isEditingEmail, setIsEditingEmail] = useState(false);
+  const [tempEmail, setTempEmail] = useState(email);
+
+  const { data: settingsData, isLoading: isLoadingSettings } = useGetAccountSettingsQuery(
+    undefined,
+    {
+      skip: !user?.data?.user,
+    }
+  );
+
+  const [updateSettings] = useUpdateAccountSettingsMutation();
+
+  const settings = settingsData?.data || DEFAULT_SETTINGS;
+
+  const handleTimezoneChange = async (newTimeZone: string) => {
+    if (!user?.data?.user?.id) return;
+
+    try {
+      await updateSettings({
+        ...settings,
+        timeZone: newTimeZone,
+      });
+    } catch (error) {
+      console.error('Error updating timezone:', error);
+    }
   };
 
-  const handleNotificationToggle = (type: keyof NotificationState) => {
+  const handleNotificationToggle = async () => {
     if (subscriptionPlan === 'freeTrial') {
       adTriggerRef.current?.click();
       return;
     }
-    setNotifications((prev) => ({
-      ...prev,
-      [type]: !prev[type],
-    }));
+
+    if (!user?.data?.user?.id) return;
+
+    try {
+      await updateSettings({
+        ...settings,
+        pushNotification: !settings.pushNotification,
+      });
+    } catch (error) {
+      console.error('Error updating notifications:', error);
+    }
   };
 
   const handleEmailEdit = () => {
@@ -89,6 +110,37 @@ const GeneralSettings: FC = () => {
       setIsEditingEmail(false);
     }
   };
+
+  const renderNotificationSwitch = () => (
+    <Switch
+      checked={settings.pushNotification}
+      onCheckedChange={handleNotificationToggle}
+      disabled={isLoadingSettings}
+      className={cn(
+        "data-[state=checked]:bg-[#F5722E] data-[state=unchecked]:bg-gray-600/70 h-5 w-9 [&>span]:h-4 [&>span]:w-4 [&>span[data-state=checked]]:translate-x-4",
+        subscriptionPlan === 'freeTrial' && "cursor-pointer",
+        isLoadingSettings && "opacity-50"
+      )}
+    />
+  );
+
+  const renderTimezoneSelector = () => (
+    <TimezoneSelector
+      className={cn("w-full", isLoadingSettings && "opacity-50")}
+      onTimezoneChange={handleTimezoneChange}
+      defaultTimezone={settings.timeZone}
+      disabled={isLoadingSettings}
+      key={settings.timeZone} // Force re-render when timezone changes
+    />
+  );
+
+  if (isLoadingSettings) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <img src={spinner_loading_fallback} alt="spinners" className="w-20 h-20"/>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full">
@@ -122,14 +174,7 @@ const GeneralSettings: FC = () => {
                 <div key={key} className="flex items-center justify-between mr-4">
                   <span className="text-white text-[15px]">{label}</span>
                   <div className="flex items-center">
-                    <Switch
-                      checked={notifications[key as keyof NotificationState]}
-                      onCheckedChange={() => handleNotificationToggle(key as keyof NotificationState)}
-                      className={cn(
-                        "data-[state=checked]:bg-[#F5722E] data-[state=unchecked]:bg-gray-600/70 h-5 w-9 [&>span]:h-4 [&>span]:w-4 [&>span[data-state=checked]]:translate-x-4",
-                        subscriptionPlan === 'freeTrial' && "cursor-pointer"
-                      )}
-                    />
+                    {renderNotificationSwitch()}
                     <div className="hidden">
                       <AdDialogWrapper
                         popupImage={jobHunterPopAds}
@@ -145,11 +190,7 @@ const GeneralSettings: FC = () => {
 
         {/* Time Zone */}
         <div className="w-full md:w-[330px]">
-          <TimezoneSelector
-            className="w-full"
-            onTimezoneChange={handleTimezoneChange}
-            defaultTimezone={timeZone}
-          />
+          {renderTimezoneSelector()}
         </div>
       </div>
 
@@ -203,12 +244,12 @@ const GeneralSettings: FC = () => {
                     <span className="relative flex items-center justify-center w-4 h-4">
                       <span
                         className={`absolute w-4 h-4 rounded-full border-2 ${
-                          value === theme ? "border-[#F5722E]" : "border-white"
+                          value === settings.theme ? "border-[#F5722E]" : "border-white"
                         }`}
                       />
                       <span
                         className={`w-2 h-2 rounded-full ${
-                          value === theme ? "bg-[#F5722E]" : "bg-transparent"
+                          value === settings.theme ? "bg-[#F5722E]" : "bg-transparent"
                         }`}
                       />
                     </span>
