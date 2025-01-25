@@ -23,15 +23,15 @@ const Sidebar: FC = () => {
   const shouldShowMobileView = !hideOnPagesMobile.includes(location.pathname);
   const shouldShowDesktopView = !hideOnPagesDesktop.includes(location.pathname);
 
-  const jobListings = [
-    { title: "Web Developer", path: "#" },
+  const jobListings: { title: string; path: string }[] = [
+    /* { title: "Web Developer", path: "#" },
     { title: "DevOps Engineer", path: "#" },
     { title: "Virtual Admin Assistant", path: "#" },
     { title: "Sr. Software Engineer", path: "#" },
     { title: "Jr. Shopify Developer", path: "#" },
     { title: "Mobile App Developer", path: "#" },
     { title: "Social Media Manager", path: "#" },
-    { title: "Content Creator", path: "#" },
+    { title: "Content Creator", path: "#" }, */
   ];
 
   const SelectComponent = () => {
@@ -41,20 +41,13 @@ const Sidebar: FC = () => {
     return (
       <div className="relative pt-4 w-full">
         <div className="relative">
-{/*           <div className="absolute -top-3 left-5 bg-[#242625] md:bg-[#2D3A41] px-1 z-20">
-            <div className="flex items-center">
-              <Label className="text-sm md:text-base font-normal text-white">
-                All Job Listing
-              </Label>
-            </div>
-          </div> */}
           {!isFirstJobListing && (
             <Select>
               <SelectTrigger 
                 className="bg-transparent border-[#AEADAD] h-[56px] border-2 text-white text-sm md:text-base"
               >
                 <SelectValue
-                  placeholder="Full Stack Developer"
+                  placeholder="Select Job Title"
                   className="text-left pl-4"
                 />
               </SelectTrigger>

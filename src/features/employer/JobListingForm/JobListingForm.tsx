@@ -139,7 +139,7 @@ const JobListingForm: FC = () => {
     } catch (error) {
       showError(
         'Job Listing Creation Failed',
-        'Unable to create job listing. Please try again or contact support.'
+        'You already have an active job listing with this title. Please use a different title.'
       );
       console.error("Error submitting job:", error);
     } finally {
