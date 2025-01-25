@@ -40,7 +40,7 @@ const ButtonNav = ({ btnFor, handleSetState }: ButtonNavProps) => {
       id={id}
       className={className}
     >
-      Logindawdawd
+      {btnFor === "login" ? "Login" : "Sign up"}
     </button>
   );
 };
