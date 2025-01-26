@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import styles from "./../landing.module.scss";
 import Video from "./Video";
 import { useModal } from "components/modal/useModal";
@@ -9,14 +9,16 @@ import video4 from "assets/mp4/girl-laughing-at-monitor.mp4";
 import akaza_icon from "assets/akaza-icon.png";
 import akaza_loading from "assets/akaza-loading.png";
 import sparkle_icon from "assets/sparkle-icon.svg?url";
+import { ModalContext } from "components/modal/modalContext";
 
 const HeroLoading = () => {
-  const { isModalOpen, handleSetSelectedModalHeader, toggleModal } = useModal();
+  const { handleSetSelectedModalHeader } = useModal();
+  const { isOpen, toggleModal } = useContext(ModalContext);
   const { heroState, heroStates, setModalState, modalStates } = useLanding();
   const [hasShownModal, setHasShownModal] = useState(false);
 
   useEffect(() => {
-    if (heroState === heroStates.LOADING && !hasShownModal && !isModalOpen) {
+    if (heroState === heroStates.LOADING && !hasShownModal && !isOpen) {
       const timer = setTimeout(() => {
         setHasShownModal(true);
         handleSetSelectedModalHeader(1);
@@ -26,7 +28,7 @@ const HeroLoading = () => {
 
       return () => clearTimeout(timer);
     }
-  }, [heroState, isModalOpen, hasShownModal]);
+  }, [heroState, isOpen, hasShownModal]);
 
   // Reset modal shown state when leaving loading state
   useEffect(() => {

@@ -17,7 +17,8 @@ import NavigationHeader from "./parts/NavigationHeader";
 import ModalWrapper from "./parts/ModalWrapper";
 import HeroContainer from "./parts/HeroContainer";
 import PricingContainer from "./parts/PricingContainer";
-import InfoGraphics from "./parts/InfoGraphics";
+import InfoGraphics from "./parts/InfoGraphics"; // Adjust the import path as necessary
+import { ModalContext } from "components/modal/modalContext";
 
 const Landing: FC = (): ReactElement => {
   const { modalStates, setModalState } = useLanding();
@@ -27,7 +28,7 @@ const Landing: FC = (): ReactElement => {
   if (isAuthenticated && user?.type) {
     return <Navigate to={`/${user.type}`} replace />;
   }
-  const { toggleModal, handleSetSelectedModalHeader } = useModal();
+  const { toggleModal, handleSetSelectedModalHeader, isModalOpen } = useModal();
 
   useEffect(() => {
     // Check if we have state from navigation indicating we should open the modal
@@ -45,22 +46,29 @@ const Landing: FC = (): ReactElement => {
   const isIndexRoute = useMatch("/");
 
   return (
-    <LandingContext.Provider value={{ isFreeTrial }}>
-      <PageMeta title="Akaza" />
-      <div className={styles.main}>
-        <NavigationHeader />
-        {isIndexRoute && (
-          <>
-            <HeroContainer />
-            <PricingContainer />
-            <InfoGraphics />
-          </>
-        )}
-        <Outlet />
-        <Footer />
-        <ModalWrapper />
-      </div>
-    </LandingContext.Provider>
+    <ModalContext.Provider
+      value={{
+        isOpen: isModalOpen,
+        toggleModal,
+      }}
+    >
+      <LandingContext.Provider value={{ isFreeTrial }}>
+        <PageMeta title="Akaza" />
+        <div className={styles.main}>
+          <NavigationHeader />
+          {isIndexRoute && (
+            <>
+              <HeroContainer />
+              <PricingContainer />
+              <InfoGraphics />
+            </>
+          )}
+          <Outlet />
+          <Footer />
+          <ModalWrapper />
+        </div>
+      </LandingContext.Provider>
+    </ModalContext.Provider>
   );
 };
 

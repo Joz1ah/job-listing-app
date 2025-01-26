@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 export enum MODAL_HEADER_TYPE {
   WITH_LOGO_AND_CLOSE = 1,
@@ -10,7 +10,7 @@ export const useModal = () => {
   const [selectedModalHeader, setSelectedModalHeader] =
     useState<MODAL_HEADER_TYPE>(MODAL_HEADER_TYPE.WITH_LOGO_AND_CLOSE);
 
-  const toggleModal = () => {
+  const toggleModal = useCallback(() => {
     setIsModalOpen((state) => {
       if (!state) {
         setSelectedModalHeader(MODAL_HEADER_TYPE.WITH_LOGO_AND_CLOSE);
@@ -18,7 +18,7 @@ export const useModal = () => {
 
       return !state;
     });
-  };
+  }, [isModalOpen]);
 
   const handleSetSelectedModalHeader = (headerType: MODAL_HEADER_TYPE) => {
     setSelectedModalHeader(headerType);
