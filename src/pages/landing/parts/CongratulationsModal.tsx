@@ -1,7 +1,7 @@
 import { useRef, useEffect } from "react";
 import styles from "./../landing.module.scss";
 import { useLanding } from "../useLanding";
-import { MODAL_STATES } from "store/types/modal.types";
+import { MODAL_STATES } from "store/modal/modal.types";
 
 const CongratulationsModal = () => {
   const { dataStates, handleSetModalState, modalState } = useLanding();

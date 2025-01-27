@@ -9,7 +9,7 @@ import * as Yup from "yup";
 
 import green_lock_icon from "assets/green-lock.svg?url";
 import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
-import { MODAL_STATES } from "store/types/modal.types";
+import { MODAL_STATES } from "store/modal/modal.types";
 
 interface FormValues {
   cardNumber: string;

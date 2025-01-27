@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { RootState } from "store/store";
-import { setModalState } from "store/slices/modalSlice";
-import { MODAL_STATES } from "store/types/modal.types";
+import { setModalState } from "store/modal/modal.slice";
+import { MODAL_STATES } from "store/modal/modal.types";
 
 export const useLanding = () => {
   const dispatch = useDispatch();

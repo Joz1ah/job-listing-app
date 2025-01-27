@@ -14,7 +14,7 @@ import type {
 import EmptyState from "./EmptyState";
 
 import sparkle_icon from "assets/sparkle-icon.svg?url";
-import { MODAL_HEADER_TYPE, MODAL_STATES } from "store/types/modal.types";
+import { MODAL_HEADER_TYPE, MODAL_STATES } from "store/modal/modal.types";
 
 const PerfectMatchResultsModal = () => {
   const { handleSetSelectedModalHeader, toggleModal } = useModal();

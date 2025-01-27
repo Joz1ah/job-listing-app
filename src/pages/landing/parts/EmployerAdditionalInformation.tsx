@@ -8,7 +8,7 @@ import * as Yup from "yup";
 import { useLanding } from "../useLanding";
 import { useModal } from "components/modal/useModal";
 import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
-import { MODAL_HEADER_TYPE, MODAL_STATES } from "store/types/modal.types";
+import { MODAL_HEADER_TYPE, MODAL_STATES } from "store/modal/modal.types";
 
 // Define the type for form data
 type FormData = {

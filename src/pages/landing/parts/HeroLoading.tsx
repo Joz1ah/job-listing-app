@@ -9,7 +9,7 @@ import video4 from "assets/mp4/girl-laughing-at-monitor.mp4";
 import akaza_icon from "assets/akaza-icon.png";
 import akaza_loading from "assets/akaza-loading.png";
 import sparkle_icon from "assets/sparkle-icon.svg?url";
-import { MODAL_HEADER_TYPE, MODAL_STATES } from "store/types/modal.types";
+import { MODAL_HEADER_TYPE, MODAL_STATES } from "store/modal/modal.types";
 
 const HeroLoading = () => {
   const { handleSetSelectedModalHeader, isModalOpen, toggleModal } = useModal();

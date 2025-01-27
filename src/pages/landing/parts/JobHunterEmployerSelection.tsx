@@ -2,7 +2,7 @@ import { useLanding } from "../useLanding";
 import styles from "./../landing.module.scss";
 import jobhunter_icon from "assets/jobhunter-icon.png";
 import employer_icon from "assets/employer-icon.png";
-import { MODAL_STATES } from "store/types/modal.types";
+import { MODAL_STATES } from "store/modal/modal.types";
 
 const JobHunterEmployerSelection = () => {
   const { setDataStates, handleSetModalState, modalState } = useLanding();

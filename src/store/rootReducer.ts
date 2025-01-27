@@ -16,7 +16,7 @@ import {
 } from "api";
 
 import { reduxHydrationAction } from "constants/commonConstants";
-import { modalReducer } from "./slices/modalSlice";
+import { modalReducer } from "./modal/modal.slice";
 
 export const rootReducer = {
   theme: themeReducer,

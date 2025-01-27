@@ -4,7 +4,7 @@ import styles from "./../landing.module.scss";
 import sparkle_icon from "assets/sparkle-icon.svg?url";
 import akaza_loading from "assets/akaza-loading.png";
 import akaza_icon from "assets/akaza-icon.png";
-import { MODAL_STATES } from "store/types/modal.types";
+import { MODAL_STATES } from "store/modal/modal.types";
 
 const LoadingModal = () => {
   const { modalState } = useLanding();

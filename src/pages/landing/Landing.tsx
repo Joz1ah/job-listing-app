@@ -18,7 +18,7 @@ import ModalWrapper from "./parts/ModalWrapper";
 import HeroContainer from "./parts/HeroContainer";
 import PricingContainer from "./parts/PricingContainer";
 import InfoGraphics from "./parts/InfoGraphics";
-import { MODAL_HEADER_TYPE, MODAL_STATES } from "store/types/modal.types";
+import { MODAL_HEADER_TYPE, MODAL_STATES } from "store/modal/modal.types";
 
 const Landing: FC = (): ReactElement => {
   const { handleSetModalState } = useLanding();

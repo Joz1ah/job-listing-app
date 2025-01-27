@@ -3,7 +3,7 @@ import {
   ModalState,
   MODAL_HEADER_TYPE,
   MODAL_STATES,
-} from "store/types/modal.types";
+} from "store/modal/modal.types";
 
 const initialState: ModalState = {
   isOpen: false,

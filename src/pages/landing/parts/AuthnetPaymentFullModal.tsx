@@ -14,7 +14,7 @@ import mastercard_icon from "assets/credit-card-icons/cc_mastercard.svg?url";
 import discover_icon from "assets/credit-card-icons/cc_discover.svg?url";
 import authnet_logo from "assets/authnet-logo2.svg?url";
 import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
-import { MODAL_STATES } from "store/types/modal.types";
+import { MODAL_STATES } from "store/modal/modal.types";
 
 interface PaymentFormValues {
   cardNumber: string;

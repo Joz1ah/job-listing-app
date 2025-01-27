@@ -2,7 +2,7 @@ import { useMenu } from "hooks";
 import { BaseMenu } from "layouts";
 import ButtonNav from "./ButtonNav";
 import { useLanding } from "../useLanding";
-import { MODAL_STATES } from "store/types/modal.types";
+import { MODAL_STATES } from "store/modal/modal.types";
 
 const NavigationHeader = () => {
   const { menuOpen, toggleMenu } = useMenu();

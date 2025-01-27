@@ -5,7 +5,7 @@ import styles from "./../landing.module.scss";
 import * as Yup from "yup";
 import { useLanding } from "../useLanding";
 import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
-import { MODAL_STATES } from "store/types/modal.types";
+import { MODAL_STATES } from "store/modal/modal.types";
 
 type ErrorFields = "email" | "password" | "passwordConfirm";
 type ErrorState = Record<ErrorFields, string>;

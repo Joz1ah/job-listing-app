@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
-import { toggle, setModalHeader } from "store/slices/modalSlice";
+import { toggle, setModalHeader } from "store/modal/modal.slice";
 import { RootState } from "store/store";
-import { MODAL_HEADER_TYPE } from "store/types/modal.types";
+import { MODAL_HEADER_TYPE } from "store/modal/modal.types";
 
 export const useModal = () => {
   const dispatch = useDispatch();

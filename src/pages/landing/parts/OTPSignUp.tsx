@@ -7,7 +7,7 @@ import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 import { useRef, useState, useEffect } from "react";
 import styles from "./../landing.module.scss";
 import { useLanding } from "../useLanding";
-import { MODAL_STATES } from "store/types/modal.types";
+import { MODAL_STATES } from "store/modal/modal.types";
 
 interface AutoLoginFormValues {
   email: string;

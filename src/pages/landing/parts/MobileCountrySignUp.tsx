@@ -5,7 +5,7 @@ import styles from "./../landing.module.scss";
 import { useModal } from "components/modal/useModal";
 import { useLanding } from "../useLanding";
 import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
-import { MODAL_HEADER_TYPE, MODAL_STATES } from "store/types/modal.types";
+import { MODAL_HEADER_TYPE, MODAL_STATES } from "store/modal/modal.types";
 
 const MobileCountrySignUp = () => {
   const { handleSetSelectedModalHeader } = useModal();

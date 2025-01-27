@@ -1,4 +1,4 @@
-import { MODAL_STATES } from "store/types/modal.types";
+import { MODAL_STATES } from "store/modal/modal.types";
 import { useLanding } from "../useLanding";
 import styles from "./../landing.module.scss";
 import LoginForm from "./LoginForm";

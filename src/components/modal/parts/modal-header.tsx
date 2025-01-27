@@ -3,7 +3,7 @@ import { useModal } from "../useModal";
 import close_icon from "assets/close.svg?url";
 import akazalogo_dark from "assets/akazalogo-dark.svg?url";
 import styles from "./../modalcontext.module.scss";
-import { MODAL_HEADER_TYPE } from "store/types/modal.types";
+import { MODAL_HEADER_TYPE } from "store/modal/modal.types";
 
 const ModalHeader = () => {
   const { selectedModalHeader, toggleModal } = useModal();
