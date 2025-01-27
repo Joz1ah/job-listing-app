@@ -6,11 +6,14 @@ import { Input, InputField, Textarea} from "components";
 import * as Yup from 'yup';
 import {useSendContactUsEmailMutation} from 'api/akaza/akazaAPI';
 
-import bgLogo from 'assets/contact-us/bg-logo.svg?url';
+//import bgLogo from 'assets/contact-us/bg-logo.svg?url';
+/*
 import bgLogoInverted from 'assets/contact-us/bg-logo-inverted.svg?url';
 import contactUsPerson from 'assets/contact-us/contact-us-person.png';
+*/
 import envelopecheck from 'assets/contact-us/envelope-check.svg?url';
 import phonecall from 'assets/contact-us/phonecall.svg?url';
+
 import paperPlane from 'assets/contact-us/paper-plane.svg?url';
 import {Spinner} from 'components/spinner/default/Spinner'
 import { useErrorModal } from 'contexts/ErrorModalContext/ErrorModalContext';
@@ -58,9 +61,13 @@ const ContactUs: FC = () => {
         <DefaultLayout>
             <div className={style['about-us-container']}>
                 <div className={style['form-container-wrapper']}>
+                    {
+                    /*
                     <div className={style['contact-us-bg1']}>
                             <img src={bgLogo}/>
                     </div>
+                    */
+                    }
                     <div className={style['form-container']}>
                         { !messageSuccess ?
                         <>
@@ -347,30 +354,18 @@ const ContactUs: FC = () => {
                         </div>
                         }
                     </div>
-                </div>
-                <div className={style['contact-details-container-wrapper']}>
-                    <div className={style['contact-details-container']}>
-                        <div className={style['contact-us-bg']}>
-                            <img src={bgLogo}/>
+                    <div className={style['contact-us-details-body']}>
+                        <div className={style['contact-us-details-item']}>
+                            <div><img src={envelopecheck}/></div>
+                            <div>support@akaza.io</div>
                         </div>
-                        <div className={style['contact-us-bg-inverted']}>
-                            <img src={bgLogoInverted}/>
-                        </div>
-                        <div className={style['contact-us-person']}>
-                            <img src={contactUsPerson}/>
-                        </div>
-                        <div className={style['contact-us-details-body']}>
-                            <div className={style['contact-us-details-item']}>
-                                <div><img src={envelopecheck}/></div>
-                                <div>support@akaza.io</div>
-                            </div>
-                            <div className={style['contact-us-details-item']}>
-                                <div><img src={phonecall}/></div>
-                                <div>+1 (365) 340-3326</div>
-                            </div>
+                        <div className={style['contact-us-details-item']}>
+                            <div><img src={phonecall}/></div>
+                            <div>+1 (365) 340-3326</div>
                         </div>
                     </div>
                 </div>
+
             </div>
         </DefaultLayout>
     )
