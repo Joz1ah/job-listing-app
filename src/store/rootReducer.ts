@@ -17,12 +17,16 @@ import {
 
 import { reduxHydrationAction } from "constants/commonConstants";
 import { modalReducer } from "./modal/modal.slice";
+import { heroReducer } from "./hero/hero.slice";
+import { userReducer } from "./user/user.slice";
 
 export const rootReducer = {
   theme: themeReducer,
   counter: counterReducer,
   modal: modalReducer,
+  hero: heroReducer,
   i18n: i18nReducer,
+  user: userReducer,
   [pokemonApi.reducerPath]: pokemonApi.reducer,
   [akazaApiSignUp.reducerPath]: akazaApiSignUp.reducer,
   [akazaApiAuth.reducerPath]: akazaApiAuth.reducer,

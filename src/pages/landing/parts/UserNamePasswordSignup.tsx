@@ -14,9 +14,8 @@ const UserNamePasswordSignup = () => {
   const {
     handleSetModalState,
     dataStates,
-    setDataStates,
-    setTempLoginEmail,
-    setTempLoginPassword,
+    handleSetCredentials,
+    handleSetTempCredentials,
     modalState,
   } = useLanding();
   const [credentials, setCredentials] = useState({
@@ -70,10 +69,12 @@ const UserNamePasswordSignup = () => {
         })
           .unwrap()
           .then(() => {
-            setTempLoginEmail(credentials.email);
-            setTempLoginPassword(credentials.password);
+            handleSetTempCredentials({
+              tempLoginEmail: credentials.email,
+              tempLoginPassword: credentials.password,
+            });
 
-            setDataStates({
+            handleSetCredentials({
               ...dataStates,
               email: credentials.email,
             });

@@ -5,7 +5,7 @@ import LoginForm from "./LoginForm";
 
 const LoginModal = () => {
   const { modalState } = useLanding();
-  console.log(">>MODAL STATE HERE", { modalState });
+
   return (
     <div
       id="step_login"

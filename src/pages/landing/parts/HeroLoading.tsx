@@ -10,14 +10,15 @@ import akaza_icon from "assets/akaza-icon.png";
 import akaza_loading from "assets/akaza-loading.png";
 import sparkle_icon from "assets/sparkle-icon.svg?url";
 import { MODAL_HEADER_TYPE, MODAL_STATES } from "store/modal/modal.types";
+import { HERO_STATES } from "store/hero/hero.types";
 
 const HeroLoading = () => {
   const { handleSetSelectedModalHeader, isModalOpen, toggleModal } = useModal();
-  const { heroState, heroStates, handleSetModalState } = useLanding();
+  const { heroState, handleSetModalState } = useLanding();
   const [hasShownModal, setHasShownModal] = useState(false);
 
   useEffect(() => {
-    if (heroState === heroStates.LOADING && !hasShownModal && !isModalOpen) {
+    if (heroState === HERO_STATES.LOADING && !hasShownModal && !isModalOpen) {
       const timer = setTimeout(() => {
         setHasShownModal(true);
         handleSetSelectedModalHeader(MODAL_HEADER_TYPE.WITH_LOGO_AND_CLOSE);
@@ -31,7 +32,7 @@ const HeroLoading = () => {
 
   // Reset modal shown state when leaving loading state
   useEffect(() => {
-    if (heroState !== heroStates.LOADING) {
+    if (heroState !== HERO_STATES.LOADING) {
       setHasShownModal(false);
     }
   }, [heroState]);
@@ -40,7 +41,7 @@ const HeroLoading = () => {
     <div
       id="loading_step"
       className={`${styles["hero-content"]}`}
-      hidden={heroState !== heroStates.LOADING}
+      hidden={heroState !== HERO_STATES.LOADING}
     >
       <Video src={video4} className={styles["hero-video"]} />
       <div

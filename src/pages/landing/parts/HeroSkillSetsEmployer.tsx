@@ -6,20 +6,13 @@ import styles from "./../landing.module.scss";
 
 import group_people_laptop from "assets/group-people-laptop.jpg";
 import arrow_left_icon from "assets/Keyboard-arrow-left.svg?url";
+import { HERO_STATES } from "store/hero/hero.types";
 
 const HeroSkillSetsEmployer = () => {
-  const {
-    rememberedSelectedSkills,
-    setRememberedSelectedSkills,
-    setHeroState,
-    heroStates,
-    heroState,
-  } = useLanding();
+  const { selectedSkills, handleSetSkills, handleSetHeroState, heroState } =
+    useLanding();
   const heroEmployerButton = useRef<HTMLDivElement>(null);
   const heroPreviousButton = useRef<HTMLDivElement>(null);
-  const [selectedSkills, setSelectedSkills] = useState<string[]>(
-    rememberedSelectedSkills,
-  );
   const [error, setError] = useState("");
 
   const validationSchema = Yup.object().shape({
@@ -49,22 +42,21 @@ const HeroSkillSetsEmployer = () => {
       heroEmployerButton.current.onclick = async () => {
         const isValid = await validateSkills();
         if (isValid) {
-          setRememberedSelectedSkills(selectedSkills);
           setError("");
-          setHeroState(heroStates.YEARS_OF_EXPERIENCE_EMPLOYER);
+          handleSetHeroState(HERO_STATES.YEARS_OF_EXPERIENCE_EMPLOYER);
         }
       };
     }
     if (heroPreviousButton.current) {
       heroPreviousButton.current.onclick = () => {
         setError("");
-        setHeroState(heroStates.JOB_TITLE_EMPLOYER);
+        handleSetHeroState(HERO_STATES.JOB_TITLE_EMPLOYER);
       };
     }
   };
 
   const handleSkillsChange = (skills: string[]) => {
-    setSelectedSkills(skills);
+    handleSetSkills(skills);
     if (error) setError("");
   };
 
@@ -73,7 +65,7 @@ const HeroSkillSetsEmployer = () => {
     <div
       id="step2_employer"
       className={`${styles["hero-content"]}`}
-      hidden={heroState !== heroStates.SKILLSETS_EMPLOYER}
+      hidden={heroState !== HERO_STATES.SKILLSETS_EMPLOYER}
     >
       <img src={group_people_laptop} />
       <div
@@ -88,7 +80,7 @@ const HeroSkillSetsEmployer = () => {
           </div>
           <div className={`${styles["search-wrapper"]}`}>
             <CoreSkillsTagInput
-              value={selectedSkills}
+              value={selectedSkills ?? []}
               onChange={handleSkillsChange}
               placeholder="Type and select your skill set"
               className={`bg-transparent border-none text-white min-h-9 ${error ? styles["input-error"] : ""}`}

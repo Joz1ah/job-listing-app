@@ -7,20 +7,13 @@ import * as Yup from "yup";
 
 import video3 from "assets/mp4/glasses-girl-in-meeting.mp4";
 import arrow_left_icon from "assets/Keyboard-arrow-left.svg?url";
+import { HERO_STATES } from "store/hero/hero.types";
 
 const HeroSkillSetsJobHunter = () => {
-  const {
-    rememberedSelectedSkills,
-    setRememberedSelectedSkills,
-    setHeroState,
-    heroStates,
-    heroState,
-  } = useLanding();
+  const { selectedSkills, handleSetSkills, handleSetHeroState, heroState } =
+    useLanding();
   const heroNextButton = useRef<HTMLDivElement>(null);
   const heroPreviousButton = useRef<HTMLDivElement>(null);
-  const [selectedSkills, setSelectedSkills] = useState<string[]>(
-    rememberedSelectedSkills,
-  );
   const [error, setError] = useState("");
 
   const validationSchema = Yup.object().shape({
@@ -47,7 +40,7 @@ const HeroSkillSetsJobHunter = () => {
 
   const handleSkillsChange = (skills: string[]) => {
     if (skills.length <= 5) {
-      setSelectedSkills(skills);
+      handleSetSkills(skills);
       if (error) setError("");
     }
   };
@@ -57,17 +50,16 @@ const HeroSkillSetsJobHunter = () => {
       heroNextButton.current.onclick = async () => {
         const isValid = await validateSkills();
         if (isValid) {
-          setRememberedSelectedSkills(selectedSkills);
           setError("");
-          setHeroState(heroStates.YEARS_OF_EXPERIENCE_JOBHUNTER);
+          handleSetHeroState(HERO_STATES.YEARS_OF_EXPERIENCE_JOBHUNTER);
         }
       };
     }
     if (heroPreviousButton.current) {
       heroPreviousButton.current.onclick = () => {
-        setRememberedSelectedSkills([]);
+        handleSetSkills([]);
         setError("");
-        setHeroState(heroStates.PERFECT_MATCH_ALGO);
+        handleSetHeroState(HERO_STATES.PERFECT_MATCH_ALGO);
       };
     }
   };
@@ -78,7 +70,7 @@ const HeroSkillSetsJobHunter = () => {
     <div
       id="step1_job_hunter"
       className={`${styles["hero-content"]}`}
-      hidden={heroState !== heroStates.SKILLSETS_JOBHUNTER}
+      hidden={heroState !== HERO_STATES.SKILLSETS_JOBHUNTER}
     >
       <div className={"absolute inset-0 overflow-hidden"}>
         <Video
@@ -97,7 +89,7 @@ const HeroSkillSetsJobHunter = () => {
           </div>
           <div className={`${styles["search-wrapper"]}`}>
             <CoreSkillsTagInput
-              value={selectedSkills}
+              value={selectedSkills ?? []}
               onChange={handleSkillsChange}
               placeholder="Type and select your skill set"
               className={`bg-transparent border-none text-white min-h-[36px] ${error ? styles["input-error"] : ""}`}

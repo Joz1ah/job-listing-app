@@ -5,9 +5,10 @@ import { useLanding } from "../useLanding";
 
 import arrow_left_icon from "assets/Keyboard-arrow-left.svg?url";
 import girl_with_dog_smiling_at_laptop from "assets/girl-with-dog-smiling-at-laptop.jpg";
+import { HERO_STATES } from "store/hero/hero.types";
 
 const HeroYearsOfExperienceJobHunter = () => {
-  const { heroState, setHeroState, heroStates } = useLanding();
+  const { heroState, handleSetHeroState } = useLanding();
   const heroNextButton = useRef<HTMLDivElement>(null);
   const heroPreviousButton = useRef<HTMLDivElement>(null);
   const [selectedExperience, setSelectedExperience] = useState("");
@@ -52,14 +53,14 @@ const HeroYearsOfExperienceJobHunter = () => {
         const isValid = await validateExperience();
         if (isValid) {
           setError("");
-          setHeroState(heroStates.LOADING);
+          handleSetHeroState(HERO_STATES.LOADING);
         }
       };
     }
     if (heroPreviousButton.current) {
       heroPreviousButton.current.onclick = () => {
         setError("");
-        setHeroState(heroStates.SKILLSETS_JOBHUNTER);
+        handleSetHeroState(HERO_STATES.SKILLSETS_JOBHUNTER);
       };
     }
   };
@@ -70,7 +71,7 @@ const HeroYearsOfExperienceJobHunter = () => {
     <div
       id="step2_job_hunter"
       className={`${styles["hero-content"]}`}
-      hidden={heroState !== heroStates.YEARS_OF_EXPERIENCE_JOBHUNTER}
+      hidden={heroState !== HERO_STATES.YEARS_OF_EXPERIENCE_JOBHUNTER}
     >
       <img src={girl_with_dog_smiling_at_laptop} />
       <div

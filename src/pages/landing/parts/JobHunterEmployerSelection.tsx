@@ -2,12 +2,14 @@ import { useLanding } from "../useLanding";
 import jobhunter_icon from "assets/jobhunter-icon.png";
 import employer_icon from "assets/employer-icon.png";
 import { MODAL_STATES } from "store/modal/modal.types";
+import { UserType } from "store/user/user.types";
 
 const JobHunterEmployerSelection = () => {
-  const { setDataStates, handleSetModalState, modalState } = useLanding();
+  const { handleSetCredentials, dataStates, handleSetModalState, modalState } =
+    useLanding();
 
-  const handleBtnClick = (type: "job_hunter" | "employer") => {
-    setDataStates((state) => ({ ...state, selectedUserType: type }));
+  const handleBtnClick = (type: UserType) => {
+    handleSetCredentials({ ...dataStates, selectedUserType: type });
     handleSetModalState(MODAL_STATES.SIGNUP_STEP2);
   };
 
@@ -30,7 +32,7 @@ const JobHunterEmployerSelection = () => {
               alt="Job Hunter Icon"
             />
             <button
-              onClick={() => handleBtnClick("job_hunter")}
+              onClick={() => handleBtnClick(UserType.JOB_HUNTER)}
               className="border border-3 border-orange-500 rounded-md flex w-32 h-12 sm:w-64 sm:h-16 p-2 justify-center items-center bg-gray-100 text-orange-500 font-semibold sm:text-lg border-3 text-base hover:bg-orange-500 hover:text-white"
             >
               Job Hunter
@@ -45,7 +47,7 @@ const JobHunterEmployerSelection = () => {
               alt="Employer Icon"
             />
             <button
-              onClick={() => handleBtnClick("employer")}
+              onClick={() => handleBtnClick(UserType.EMPLOYER)}
               className="border border-3 border-orange-500 rounded-md flex w-32 h-12 sm:w-64 sm:h-16 p-2 justify-center items-center bg-gray-100 text-orange-500 font-semibold sm:text-lg border-3 text-base hover:bg-orange-500 hover:text-white"
             >
               Employer

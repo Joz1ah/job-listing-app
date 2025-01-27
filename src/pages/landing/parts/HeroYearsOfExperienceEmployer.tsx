@@ -5,9 +5,10 @@ import { useLanding } from "../useLanding";
 
 import man_woman_looking_at_list from "assets/man-woman-looking-at-list.jpg";
 import arrow_left_icon from "assets/Keyboard-arrow-left.svg?url";
+import { HERO_STATES } from "store/hero/hero.types";
 
 const HeroYearsOfExperienceEmployer = () => {
-  const { heroState, setHeroState, heroStates } = useLanding();
+  const { heroState, handleSetHeroState } = useLanding();
   const heroNextButton = useRef<HTMLDivElement>(null);
   const heroPreviousButton = useRef<HTMLDivElement>(null);
   const [selectedExperience, setSelectedExperience] = useState("");
@@ -52,14 +53,14 @@ const HeroYearsOfExperienceEmployer = () => {
         const isValid = await validateExperience();
         if (isValid) {
           setError("");
-          setHeroState(heroStates.LOADING);
+          handleSetHeroState(HERO_STATES.LOADING);
         }
       };
     }
     if (heroPreviousButton.current) {
       heroPreviousButton.current.onclick = () => {
         setError("");
-        setHeroState(heroStates.SKILLSETS_EMPLOYER);
+        handleSetHeroState(HERO_STATES.SKILLSETS_EMPLOYER);
       };
     }
   };
@@ -70,7 +71,7 @@ const HeroYearsOfExperienceEmployer = () => {
     <div
       id="step3_employer"
       className={`${styles["hero-content"]}`}
-      hidden={heroState !== heroStates.YEARS_OF_EXPERIENCE_EMPLOYER}
+      hidden={heroState !== HERO_STATES.YEARS_OF_EXPERIENCE_EMPLOYER}
     >
       <img src={man_woman_looking_at_list} />
       <div

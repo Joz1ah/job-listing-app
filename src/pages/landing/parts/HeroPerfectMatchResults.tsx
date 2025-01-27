@@ -6,15 +6,16 @@ import { useLanding } from "../useLanding";
 import arrow_left_icon from "assets/Keyboard-arrow-left.svg?url";
 import video4 from "assets/mp4/girl-laughing-at-monitor.mp4";
 import sparkle_icon from "assets/sparkle-icon.svg?url";
+import { HERO_STATES } from "store/hero/hero.types";
 
 const HeroPerfectMatchResults = () => {
-  const { setHeroState, heroStates, heroState } = useLanding();
+  const { handleSetHeroState, heroState } = useLanding();
   const heroBackButton = useRef<HTMLDivElement>(null);
 
   const heroScreenActions = () => {
     if (heroBackButton.current) {
       heroBackButton.current.onclick = () => {
-        setHeroState(heroStates.PERFECT_MATCH_ALGO);
+        handleSetHeroState(HERO_STATES.PERFECT_MATCH_ALGO);
       };
     }
   };
@@ -25,7 +26,7 @@ const HeroPerfectMatchResults = () => {
     <div
       id="perfect_match_results"
       className={`${styles["hero-content"]}`}
-      hidden={heroState !== heroStates.PERFECT_MATCH_RESULTS}
+      hidden={heroState !== HERO_STATES.PERFECT_MATCH_RESULTS}
     >
       <Video src={video4} className={styles["hero-video"]} />
       <div

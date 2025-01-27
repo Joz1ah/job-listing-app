@@ -15,16 +15,12 @@ import EmptyState from "./EmptyState";
 
 import sparkle_icon from "assets/sparkle-icon.svg?url";
 import { MODAL_HEADER_TYPE, MODAL_STATES } from "store/modal/modal.types";
+import { HERO_STATES } from "store/hero/hero.types";
 
 const PerfectMatchResultsModal = () => {
   const { handleSetSelectedModalHeader, toggleModal } = useModal();
-  const {
-    dataStates,
-    handleSetModalState,
-    heroStates,
-    setHeroState,
-    modalState,
-  } = useLanding();
+  const { dataStates, handleSetModalState, handleSetHeroState, modalState } =
+    useLanding();
   const selectedUserType = dataStates.selectedUserType;
   const matchData =
     selectedUserType === "employer" ? employerMatches : jobMatches;
@@ -34,7 +30,7 @@ const PerfectMatchResultsModal = () => {
     // First, update the modal state to show signup step 2
     handleSetModalState(MODAL_STATES.SIGNUP_SELECT_USER_TYPE);
     handleSetSelectedModalHeader(MODAL_HEADER_TYPE.WITH_LOGO_AND_CLOSE);
-    setHeroState(heroStates.PERFECT_MATCH_ALGO);
+    handleSetHeroState(HERO_STATES.PERFECT_MATCH_ALGO);
 
     // Then open the modal with the updated state
     toggleModal();

@@ -1,46 +1,57 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
 import { RootState } from "store/store";
 import { setModalState } from "store/modal/modal.slice";
+import { setHeroState } from "store/hero/hero.slice";
 import { MODAL_STATES } from "store/modal/modal.types";
+import { HERO_STATES } from "store/hero/hero.types";
+import {
+  setTempCredentials,
+  setSelectedPlan,
+  setSkills,
+  setCredentials,
+} from "store/user/user.slice";
+import {
+  PLAN_SELECTION_ITEMS,
+  UserCredentials,
+  UserTempCredentials,
+} from "store/user/user.types";
 
 export const useLanding = () => {
   const dispatch = useDispatch();
-  const modalState = useSelector((state: RootState) => state.modal.modalState);
 
-  const [tempLoginEmail, setTempLoginEmail] = useState("");
-  const [tempLoginPassword, setTempLoginPassword] = useState("");
-  const [currentSelectedPlan, setCurrentSelectedPlan] = useState(3);
-  const [heroState, setHeroState] = useState(1);
-  const [dataStates, setDataStates] = useState({
-    selectedUserType: "",
-    email: "",
-    userId: 0,
-  });
-  const [rememberedSelectedSkills, setRememberedSelectedSkills] = useState<
-    string[]
-  >([]);
+  const modalState = useSelector((state: RootState) => state.modal.modalState);
+  const heroState = useSelector((state: RootState) => state.hero.heroState);
+  const {
+    tempLoginEmail,
+    tempLoginPassword,
+    currentSelectedPlan,
+    selectedSkills,
+    ...dataStates
+  } = useSelector((state: RootState) => state.user);
+
+  const handleSetCredentials = (creds: UserCredentials) => {
+    dispatch(setCredentials({ ...creds }));
+  };
+
+  const handleSetSkills = (skills: string[]) => {
+    dispatch(setSkills({ selectedSkills: skills }));
+  };
+
+  const handleSetSelectedPlan = (plan: PLAN_SELECTION_ITEMS) => {
+    dispatch(setSelectedPlan({ currentSelectedPlan: plan }));
+  };
+
+  const handleSetTempCredentials = (creds: UserTempCredentials) => {
+    dispatch(setTempCredentials({ ...creds }));
+  };
 
   const handleSetModalState = (state: MODAL_STATES) => {
     dispatch(setModalState(state));
   };
 
-  const heroStates = {
-    PERFECT_MATCH_ALGO: 1,
-    JOB_TITLE_EMPLOYER: 2,
-    SKILLSETS_EMPLOYER: 3,
-    YEARS_OF_EXPERIENCE_EMPLOYER: 4,
-    SKILLSETS_JOBHUNTER: 5,
-    YEARS_OF_EXPERIENCE_JOBHUNTER: 6,
-    LOADING: 7,
-    PERFECT_MATCH_RESULTS: 8,
-  } as const;
-
-  const PLAN_SELECTION_ITEMS = {
-    FREE: 1,
-    MONTHLY: 2,
-    ANNUAL: 3,
-  } as const;
+  const handleSetHeroState = (state: HERO_STATES) => {
+    dispatch(setHeroState(state));
+  };
 
   const createAuthNetTokenizer = async () => {
     const isDevOrStaging =
@@ -73,22 +84,19 @@ export const useLanding = () => {
   };
 
   return {
-    heroStates,
-    PLAN_SELECTION_ITEMS,
     modalState,
     handleSetModalState,
     dataStates,
-    setDataStates,
     tempLoginEmail,
-    setTempLoginEmail,
     tempLoginPassword,
-    setTempLoginPassword,
     currentSelectedPlan,
-    setCurrentSelectedPlan,
     createAuthNetTokenizer,
     heroState,
-    setHeroState,
-    rememberedSelectedSkills,
-    setRememberedSelectedSkills,
+    handleSetHeroState,
+    selectedSkills,
+    handleSetTempCredentials,
+    handleSetSelectedPlan,
+    handleSetSkills,
+    handleSetCredentials,
   };
 };

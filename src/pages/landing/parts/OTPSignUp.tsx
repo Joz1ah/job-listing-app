@@ -16,7 +16,7 @@ interface AutoLoginFormValues {
 
 const OTPSignUp = () => {
   const {
-    setDataStates,
+    handleSetCredentials,
     dataStates,
     tempLoginEmail,
     tempLoginPassword,
@@ -42,7 +42,7 @@ const OTPSignUp = () => {
       await loginSubmit(values)
         .unwrap()
         .then((res) => {
-          setDataStates((state) => ({ ...state, userId: res.data.user.id }));
+          handleSetCredentials({ ...dataStates, userId: res.data.user.id });
         });
     } catch (err: any) {
       console.log(err);
@@ -112,8 +112,8 @@ const OTPSignUp = () => {
             .unwrap()
             .then(() => {
               handleLogin({
-                email: tempLoginEmail,
-                password: tempLoginPassword,
+                email: String(tempLoginEmail),
+                password: String(tempLoginPassword),
               }).then(() => {
                 handleSetModalState(MODAL_STATES.SIGNUP_CONGRATULATIONS);
               });

@@ -15,6 +15,7 @@ import discover_icon from "assets/credit-card-icons/cc_discover.svg?url";
 import authnet_logo from "assets/authnet-logo2.svg?url";
 import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
 import { MODAL_STATES } from "store/modal/modal.types";
+import { PLAN_SELECTION_ITEMS } from "store/user/user.types";
 
 interface PaymentFormValues {
   cardNumber: string;
@@ -33,7 +34,6 @@ interface PaymentFormValues {
 const AuthnetPaymentFullModal = () => {
   const {
     currentSelectedPlan,
-    PLAN_SELECTION_ITEMS,
     dataStates,
     handleSetModalState,
     createAuthNetTokenizer,

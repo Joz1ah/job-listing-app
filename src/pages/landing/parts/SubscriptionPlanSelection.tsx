@@ -16,18 +16,18 @@ import subscription_chat_icon from "assets/subscription-plan-icons/chat.svg?url"
 import subscription_gift_icon from "assets/subscription-plan-icons/gift.svg?url";
 import subscription_bolt_icon from "assets/subscription-plan-icons/bolt.svg?url";
 import { MODAL_HEADER_TYPE, MODAL_STATES } from "store/modal/modal.types";
+import { PLAN_SELECTION_ITEMS } from "store/user/user.types";
 
 const SubscriptionPlanSelection = () => {
   const { handleSetSelectedModalHeader } = useModal();
   const {
     dataStates,
-    PLAN_SELECTION_ITEMS,
     currentSelectedPlan,
     tempLoginEmail,
     tempLoginPassword,
     handleSetModalState,
     modalState,
-    setCurrentSelectedPlan,
+    handleSetSelectedPlan,
   } = useLanding();
   const subscription_plan1 = useRef<HTMLDivElement>(null);
   const subscription_plan2 = useRef<HTMLDivElement>(null);
@@ -60,7 +60,7 @@ const SubscriptionPlanSelection = () => {
           if (response?.data?.token) {
             login(response.data.token);
             localStorage.setItem("subscriptionTier", "freeTrial");
-            localStorage.setItem("userType", userType);
+            localStorage.setItem("userType", String(userType));
             handleSetModalState(MODAL_STATES.LOADING);
             setTimeout(() => {
               navigate(
@@ -79,7 +79,7 @@ const SubscriptionPlanSelection = () => {
             ? "monthlyPlan"
             : "yearlyPlan";
         localStorage.setItem("pendingSubscriptionTier", selectedTier);
-        localStorage.setItem("userType", userType);
+        localStorage.setItem("userType", String(userType));
         handleSetModalState(MODAL_STATES.AUTHNET_PAYMENT_FULL);
       }
     };
@@ -87,11 +87,11 @@ const SubscriptionPlanSelection = () => {
     buttonSubscribe.current.onclick = handleSubscription;
 
     subscription_plan1.current.onclick = () =>
-      setCurrentSelectedPlan(PLAN_SELECTION_ITEMS.FREE);
+      handleSetSelectedPlan(PLAN_SELECTION_ITEMS.FREE);
     subscription_plan2.current.onclick = () =>
-      setCurrentSelectedPlan(PLAN_SELECTION_ITEMS.MONTHLY);
+      handleSetSelectedPlan(PLAN_SELECTION_ITEMS.MONTHLY);
     subscription_plan3.current.onclick = () =>
-      setCurrentSelectedPlan(PLAN_SELECTION_ITEMS.ANNUAL);
+      handleSetSelectedPlan(PLAN_SELECTION_ITEMS.ANNUAL);
   }, [
     currentSelectedPlan,
     navigate,

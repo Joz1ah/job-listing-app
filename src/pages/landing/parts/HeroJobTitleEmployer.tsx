@@ -6,10 +6,10 @@ import { useLanding } from "../useLanding";
 
 import video2 from "assets/mp4/video-conference-call-1.mp4";
 import arrow_left_icon from "assets/Keyboard-arrow-left.svg?url";
+import { HERO_STATES } from "store/hero/hero.types";
 
 const HeroJobTitleEmployer = () => {
-  const { heroState, heroStates, setHeroState, setRememberedSelectedSkills } =
-    useLanding();
+  const { heroState, handleSetHeroState, handleSetSkills } = useLanding();
   const heroNextButton = useRef<HTMLDivElement>(null);
   const heroPreviousButton = useRef<HTMLDivElement>(null);
   const [rememberedJobTitle, setRememberedJobTitle] = useState("");
@@ -39,16 +39,16 @@ const HeroJobTitleEmployer = () => {
         if (isValid) {
           setError("");
           setRememberedJobTitle(jobTitle);
-          setHeroState(heroStates.SKILLSETS_EMPLOYER);
+          handleSetHeroState(HERO_STATES.SKILLSETS_EMPLOYER);
         }
       };
     }
     if (heroPreviousButton.current) {
       heroPreviousButton.current.onclick = () => {
-        setRememberedSelectedSkills([]);
+        handleSetSkills([]);
         setRememberedJobTitle("");
         setError("");
-        setHeroState(heroStates.PERFECT_MATCH_ALGO);
+        handleSetHeroState(HERO_STATES.PERFECT_MATCH_ALGO);
       };
     }
   };
@@ -64,7 +64,7 @@ const HeroJobTitleEmployer = () => {
     <div
       id="step1_employer"
       className={`${styles["hero-content"]}`}
-      hidden={heroState !== heroStates.JOB_TITLE_EMPLOYER}
+      hidden={heroState !== HERO_STATES.JOB_TITLE_EMPLOYER}
     >
       <Video src={video2} className={styles["hero-video"]} />
       <div

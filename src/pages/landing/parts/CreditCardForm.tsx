@@ -10,6 +10,7 @@ import * as Yup from "yup";
 import green_lock_icon from "assets/green-lock.svg?url";
 import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
 import { MODAL_STATES } from "store/modal/modal.types";
+import { PLAN_SELECTION_ITEMS } from "store/user/user.types";
 
 interface FormValues {
   cardNumber: string;
@@ -24,7 +25,6 @@ const CreditCardForm: React.FC = () => {
     createAuthNetTokenizer,
     dataStates,
     currentSelectedPlan,
-    PLAN_SELECTION_ITEMS,
   } = useLanding();
   const [paymentSubmit] = usePaymentCreateMutation();
   const [isSubmitting, setIsSubmitting] = useState(false);
