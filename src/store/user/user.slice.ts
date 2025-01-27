@@ -14,7 +14,7 @@ const initialState: UserDataState = {
 };
 
 export const userSlice = createSlice({
-  name: "userData",
+  name: "user",
   initialState,
   reducers: {
     setTempCredentials: (state, action: PayloadAction<UserTempCredentials>) => {
