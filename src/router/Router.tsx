@@ -11,6 +11,7 @@ const BaseLayout = lazy(() => import('pages').then(module => ({ default: module.
 const NotFound = lazy(() => import('pages').then(module => ({ default: module.NotFoundPage })))
 const Landing = lazy(() => import('pages').then(module => ({ default: module.Landing })))
 const SubscriptionPlan = lazy(() => import('pages').then(module => ({ default: module.SubscriptionPlan })))
+const InterruptedSubscriptionPage = lazy(() => import('pages').then(module => ({ default: module.InterruptedSubscriptionPage })))
 const AboutUs = lazy(() => import('pages').then(module => ({ default: module.AboutUs })))
 const ContactUs = lazy(() => import('pages').then(module => ({ default: module.ContactUs })))
 const Faq = lazy(() => import('pages').then(module => ({ default: module.Faq })))
@@ -167,14 +168,15 @@ const ProtectedRoute = ({
   // Check if current route is a protected route
   const isProfileRoute = location.pathname === profileCompletionRoute;
   const isJobListingRoute = location.pathname.includes(ROUTE_CONSTANTS.JOB_LISTING);
+  const isAccountSettingsRoute = location.pathname.includes(ROUTE_CONSTANTS.ACCOUNT_SETTINGS_EMPLOYER);
 
   // First priority: Check if profile is incomplete
-  if (isProfileIncomplete && !isProfileRoute) {
+  if (isProfileIncomplete && !isProfileRoute && !isAccountSettingsRoute) {
     return <Navigate to={profileCompletionRoute} replace />;
   }
 
   // Second priority: Check for job listing only if profile is complete
-  if (!isProfileIncomplete && userType === 'employer' && jobCount === 0 && !isJobListingRoute) {
+  if (!isProfileIncomplete && userType === 'employer' && jobCount === 0 && !isJobListingRoute && !isAccountSettingsRoute) {
     return <Navigate to={ROUTE_CONSTANTS.JOB_LISTING} replace />;
   }
 
@@ -280,6 +282,10 @@ const routes: RouteObject[] = [
   },
   */
   // ... rest of your routes remain the same
+  {
+    path: ROUTE_CONSTANTS.INTERRUPTED_SUBSCRIPTION,
+    element: <LazyComponent component={InterruptedSubscriptionPage} />
+  },
   {
     path: '*',
     element: <LazyComponent component={NotFound} />

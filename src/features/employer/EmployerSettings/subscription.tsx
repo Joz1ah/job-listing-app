@@ -243,7 +243,7 @@ const SubscriptionSettings: React.FC = () => {
     yearly: [
       { icon: <Gift />, text: "PLUS ONE MONTH FREE" },
       { icon: <Infinity />, text: "Unlimited interview Invites" },
-      { icon: <CalendarCheck />, text: "Hire with Ease" },
+      { icon: <CalendarCheck />, text: "Up to 5 Job Listings" },
       {
         icon: <img src={sparkle_icon} className="w-5 h-5" />,
         text: "Perfect Match automation",
@@ -254,7 +254,7 @@ const SubscriptionSettings: React.FC = () => {
       { icon: <MessageCircleMore />, text: "Live chat support" },
     ],
     monthly: [
-      { icon: <CalendarCheck />, text: "Hire with Ease" },
+      { icon: <CalendarCheck />, text: "Up to 5 Job Listings" },
       { icon: <Infinity />, text: "Unlimited interviews" },
       {
         icon: <img src={sparkle_icon} className="w-5 h-5" />,
@@ -411,7 +411,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
           : "bg-[#F5F5F7BF]/75"
       }`}
     >
-      <div className="flex-1">
+
         {isHighlighted && (
           <div className="mb-2 flex gap-1">
             <Trophy size={20} className="text-[#F5722E]" />
@@ -430,27 +430,28 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
         >
           {description}
         </p>
-
-        <div className="space-y-3 mb-2">
-          {features.map((feature, index) => (
-            <div key={index} className="flex items-start gap-3">
-              <span className="text-[#F5722E]">
-                {React.cloneElement(feature.icon as React.ReactElement, {
-                  size: 20,
-                  className: "stroke-current",
-                })}
-              </span>
-              <span
-                className={`text-[13px] ${
-                  isHighlighted ? "text-[#F5F5F7]" : "text-[#263238]"
-                }`}
-              >
-                {feature.text}
-              </span>
-            </div>
-          ))}
+        <div className="flex-grow flex flex-col justify-center">
+          <div className="space-y-3 mb-2">
+            {features.map((feature, index) => (
+              <div key={index} className="flex items-start gap-3">
+                <span className="text-[#F5722E]">
+                  {React.cloneElement(feature.icon as React.ReactElement, {
+                    size: 20,
+                    className: "stroke-current",
+                  })}
+                </span>
+                <span
+                  className={`text-[13px] ${
+                    isHighlighted ? "text-[#F5F5F7]" : "text-[#263238]"
+                  }`}
+                >
+                  {feature.text}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+
 
       <div className="mt-auto flex justify-center">
         <Button

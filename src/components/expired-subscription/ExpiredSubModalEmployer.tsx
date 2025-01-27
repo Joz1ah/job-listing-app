@@ -52,7 +52,7 @@ const ExpiredSubModalEmployer: React.FC<ExpiredSubModalEmployerProps> = ({
     yearly: [
       { icon: <Gift />, text: "PLUS ONE MONTH FREE" },
       { icon: <Infinity />, text: "Unlimited interview Invites" },
-      { icon: <CalendarCheck />, text: "Hire with Ease" },
+      { icon: <CalendarCheck />, text: "Up to 5 Job Listings" },
       { icon: <ThumbsUp />, text: "Perfect Match automation" },
       { icon: <ChartNoAxesCombined />, text: "Insights and Feedback" },
       { icon: <LockKeyhole />, text: "Labour Market Insights" },
@@ -61,7 +61,7 @@ const ExpiredSubModalEmployer: React.FC<ExpiredSubModalEmployerProps> = ({
     ],
     monthly: [
       { icon: <Infinity />, text: "Unlimited Interview Invites" },
-      { icon: <CalendarCheck />, text: "Hire with Ease" },
+      { icon: <CalendarCheck />, text: "Up to 5 Job Listings" },
       { icon: <ThumbsUp />, text: "Perfect Match automation" },
       { icon: <ChartNoAxesCombined />, text: "Insights and Feedback" },
       { icon: <LockKeyhole />, text: "Labour Market Insights" },

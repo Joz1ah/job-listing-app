@@ -266,7 +266,7 @@ const ApplicationCardForm: FC = () => {
             <div className="flex items-center relative w-full mb-6 md:mb-10">
               <h1 className="flex-1 text-center text-xl md:text-[32px] pt-6 font-normal text-[#F5722E]">
                 <span className="inline-flex items-center gap-2 justify-center">
-                  Create Your Application Card
+                  Complete Your Application Card
                 </span>
               </h1>
             </div>
