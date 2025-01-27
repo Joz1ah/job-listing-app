@@ -14,13 +14,13 @@ import type {
 import EmptyState from "./EmptyState";
 
 import sparkle_icon from "assets/sparkle-icon.svg?url";
+import { MODAL_HEADER_TYPE, MODAL_STATES } from "store/types/modal.types";
 
 const PerfectMatchResultsModal = () => {
   const { handleSetSelectedModalHeader, toggleModal } = useModal();
   const {
     dataStates,
-    setModalState,
-    modalStates,
+    handleSetModalState,
     heroStates,
     setHeroState,
     modalState,
@@ -32,8 +32,8 @@ const PerfectMatchResultsModal = () => {
 
   const handleSignup = () => {
     // First, update the modal state to show signup step 2
-    setModalState(modalStates.SIGNUP_SELECT_USER_TYPE);
-    handleSetSelectedModalHeader(1);
+    handleSetModalState(MODAL_STATES.SIGNUP_SELECT_USER_TYPE);
+    handleSetSelectedModalHeader(MODAL_HEADER_TYPE.WITH_LOGO_AND_CLOSE);
     setHeroState(heroStates.PERFECT_MATCH_ALGO);
 
     // Then open the modal with the updated state
@@ -43,7 +43,7 @@ const PerfectMatchResultsModal = () => {
   return (
     <div
       className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
-      hidden={modalState !== modalStates.PERFECT_MATCH_RESULTS}
+      hidden={modalState !== MODAL_STATES.PERFECT_MATCH_RESULTS}
     >
       <div className="relative bg-[#F5F5F7] rounded-lg w-[800px] h-[550px] max-w-[90vw] px-4 py-8">
         <div className="flex flex-col items-center gap-12 pt-4">

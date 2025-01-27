@@ -14,6 +14,7 @@ import mastercard_icon from "assets/credit-card-icons/cc_mastercard.svg?url";
 import discover_icon from "assets/credit-card-icons/cc_discover.svg?url";
 import authnet_logo from "assets/authnet-logo2.svg?url";
 import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
+import { MODAL_STATES } from "store/types/modal.types";
 
 interface PaymentFormValues {
   cardNumber: string;
@@ -34,8 +35,7 @@ const AuthnetPaymentFullModal = () => {
     currentSelectedPlan,
     PLAN_SELECTION_ITEMS,
     dataStates,
-    modalStates,
-    setModalState,
+    handleSetModalState,
     createAuthNetTokenizer,
     modalState,
   } = useLanding();
@@ -140,7 +140,7 @@ const AuthnetPaymentFullModal = () => {
             .unwrap()
             .then((res) => {
               console.log(res);
-              setModalState(modalStates.LOADING);
+              handleSetModalState(MODAL_STATES.LOADING);
               setTimeout(() => {
                 console.log(`navigating to ${dataStates.selectedUserType}`);
                 navigate(
@@ -176,7 +176,7 @@ const AuthnetPaymentFullModal = () => {
   return (
     <div
       className={`${styles["modal-content"]}`}
-      hidden={modalState !== modalStates.AUTHNET_PAYMENT_FULL}
+      hidden={modalState !== MODAL_STATES.AUTHNET_PAYMENT_FULL}
     >
       <div className={`${styles["authnet-paymentfull-container"]}`}>
         <Formik

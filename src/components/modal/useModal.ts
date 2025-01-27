@@ -1,27 +1,20 @@
-import { useCallback, useState } from "react";
-
-export enum MODAL_HEADER_TYPE {
-  WITH_LOGO_AND_CLOSE = 1,
-  WITH_CLOSE = 2,
-}
+import { useDispatch, useSelector } from "react-redux";
+import { toggle, setModalHeader } from "store/slices/modalSlice";
+import { RootState } from "store/store";
+import { MODAL_HEADER_TYPE } from "store/types/modal.types";
 
 export const useModal = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedModalHeader, setSelectedModalHeader] =
-    useState<MODAL_HEADER_TYPE>(MODAL_HEADER_TYPE.WITH_LOGO_AND_CLOSE);
+  const dispatch = useDispatch();
+  const { isOpen: isModalOpen, selectedModalHeader } = useSelector(
+    (state: RootState) => state.modal,
+  );
 
-  const toggleModal = useCallback(() => {
-    setIsModalOpen((state) => {
-      if (!state) {
-        setSelectedModalHeader(MODAL_HEADER_TYPE.WITH_LOGO_AND_CLOSE);
-      }
-
-      return !state;
-    });
-  }, [isModalOpen]);
+  const toggleModal = () => {
+    dispatch(toggle());
+  };
 
   const handleSetSelectedModalHeader = (headerType: MODAL_HEADER_TYPE) => {
-    setSelectedModalHeader(headerType);
+    dispatch(setModalHeader(headerType));
   };
 
   return {

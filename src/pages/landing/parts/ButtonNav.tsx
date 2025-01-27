@@ -1,7 +1,7 @@
-import { useRef, memo, useCallback, useContext } from "react";
-import { ModalContext } from "components/modal/modalContext"; // Adjust the import path as necessary
+import { useRef, memo, useCallback } from "react";
 import styles from "./../landing.module.scss";
 import { useModal } from "components/modal/useModal";
+import { MODAL_HEADER_TYPE } from "store/types/modal.types";
 
 type ButtonNavProps = {
   btnFor: "login" | "signup";
@@ -9,24 +9,21 @@ type ButtonNavProps = {
 };
 
 const ButtonNav = ({ btnFor, handleSetState }: ButtonNavProps) => {
-  const { toggleModal, isOpen } = useContext(ModalContext);
-
-  const { handleSetSelectedModalHeader } = useModal();
+  const { handleSetSelectedModalHeader, isModalOpen, toggleModal } = useModal();
   const elementRef = useRef<HTMLButtonElement>(null);
   const toggleLogin = useCallback(() => {
-    console.log(">>isModalOpen", { isOpen });
-    if (isOpen) {
+    if (isModalOpen) {
       // We're switching modals, so don't toggle the mask
-      handleSetSelectedModalHeader(1);
+      handleSetSelectedModalHeader(MODAL_HEADER_TYPE.WITH_LOGO_AND_CLOSE);
       handleSetState();
       toggleModal();
     } else {
       // Normal opening of modal
-      handleSetSelectedModalHeader(1);
+      handleSetSelectedModalHeader(MODAL_HEADER_TYPE.WITH_LOGO_AND_CLOSE);
       handleSetState();
       toggleModal();
     }
-  }, [isOpen]);
+  }, [isModalOpen]);
 
   const className =
     btnFor === "login"

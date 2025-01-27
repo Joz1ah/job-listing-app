@@ -8,6 +8,7 @@ import * as Yup from "yup";
 import { useLanding } from "../useLanding";
 import { useModal } from "components/modal/useModal";
 import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
+import { MODAL_HEADER_TYPE, MODAL_STATES } from "store/types/modal.types";
 
 // Define the type for form data
 type FormData = {
@@ -40,13 +41,8 @@ const employerInfoSchema = Yup.object().shape({
 
 const EmployerAdditionalInformation = () => {
   const { handleSetSelectedModalHeader } = useModal();
-  const {
-    tempLoginEmail,
-    tempLoginPassword,
-    setModalState,
-    modalStates,
-    modalState,
-  } = useLanding();
+  const { tempLoginEmail, tempLoginPassword, handleSetModalState, modalState } =
+    useLanding();
   const [employerContactSubmit] = useEmployerContactMutation();
   const [loginSubmit] = useLoginMutation();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -161,8 +157,8 @@ const EmployerAdditionalInformation = () => {
             console.log("Employer contact submission successful:", response);
 
             // Continue to next step
-            handleSetSelectedModalHeader(2);
-            setModalState(modalStates.SIGNUP_STEP5);
+            handleSetSelectedModalHeader(MODAL_HEADER_TYPE.WITH_CLOSE);
+            handleSetModalState(MODAL_STATES.SIGNUP_STEP5);
           } catch (loginErr) {
             console.error("Error during login:", loginErr);
             alert(
@@ -177,8 +173,8 @@ const EmployerAdditionalInformation = () => {
         }
 
         // Continue to next step
-        handleSetSelectedModalHeader(2);
-        setModalState(modalStates.SIGNUP_STEP5);
+        handleSetSelectedModalHeader(MODAL_HEADER_TYPE.WITH_CLOSE);
+        handleSetModalState(MODAL_STATES.SIGNUP_STEP5);
       } catch (err: any) {
         console.error("Error submitting employer contact:", err);
 
@@ -220,14 +216,14 @@ const EmployerAdditionalInformation = () => {
   };
 
   const handlePrevious = () => {
-    setModalState(modalStates.SIGNUP_STEP3);
+    handleSetModalState(MODAL_STATES.SIGNUP_STEP3);
   };
 
   return (
     <div
       id="step4_signup"
       className={`${styles["modal-content"]}`}
-      hidden={modalState !== modalStates.SIGNUP_STEP4_EMPLOYER}
+      hidden={modalState !== MODAL_STATES.SIGNUP_STEP4_EMPLOYER}
     >
       <div className={`${styles["employer-additional-information-container"]}`}>
         <div className={`${styles["title-desc"]}`}>Additional Information</div>

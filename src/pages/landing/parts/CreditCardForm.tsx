@@ -9,6 +9,7 @@ import * as Yup from "yup";
 
 import green_lock_icon from "assets/green-lock.svg?url";
 import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
+import { MODAL_STATES } from "store/types/modal.types";
 
 interface FormValues {
   cardNumber: string;
@@ -19,8 +20,7 @@ interface FormValues {
 
 const CreditCardForm: React.FC = () => {
   const {
-    setModalState,
-    modalStates,
+    handleSetModalState,
     createAuthNetTokenizer,
     dataStates,
     currentSelectedPlan,
@@ -34,7 +34,7 @@ const CreditCardForm: React.FC = () => {
   useEffect(() => {
     if (previousButton.current) {
       previousButton.current.onclick = () => {
-        setModalState(modalStates.AUTHNET_PAYMENT);
+        handleSetModalState(MODAL_STATES.AUTHNET_PAYMENT);
       };
     }
     createAuthNetTokenizer();
@@ -121,7 +121,7 @@ const CreditCardForm: React.FC = () => {
             .unwrap()
             .then((res) => {
               console.log(res);
-              setModalState(modalStates.LOADING);
+              handleSetModalState(MODAL_STATES.LOADING);
               setTimeout(() => {
                 navigate("/dashboard");
               }, 1000);

@@ -15,6 +15,7 @@ import subscription_lock_icon from "assets/subscription-plan-icons/lock.svg?url"
 import subscription_chat_icon from "assets/subscription-plan-icons/chat.svg?url";
 import subscription_gift_icon from "assets/subscription-plan-icons/gift.svg?url";
 import subscription_bolt_icon from "assets/subscription-plan-icons/bolt.svg?url";
+import { MODAL_HEADER_TYPE, MODAL_STATES } from "store/types/modal.types";
 
 const SubscriptionPlanSelection = () => {
   const { handleSetSelectedModalHeader } = useModal();
@@ -24,8 +25,7 @@ const SubscriptionPlanSelection = () => {
     currentSelectedPlan,
     tempLoginEmail,
     tempLoginPassword,
-    setModalState,
-    modalStates,
+    handleSetModalState,
     modalState,
     setCurrentSelectedPlan,
   } = useLanding();
@@ -48,7 +48,7 @@ const SubscriptionPlanSelection = () => {
     }
 
     const handleSubscription = async () => {
-      handleSetSelectedModalHeader(1);
+      handleSetSelectedModalHeader(MODAL_HEADER_TYPE.WITH_LOGO_AND_CLOSE);
       const userType = dataStates.selectedUserType;
 
       if (currentSelectedPlan === PLAN_SELECTION_ITEMS.FREE) {
@@ -61,7 +61,7 @@ const SubscriptionPlanSelection = () => {
             login(response.data.token);
             localStorage.setItem("subscriptionTier", "freeTrial");
             localStorage.setItem("userType", userType);
-            setModalState(modalStates.LOADING);
+            handleSetModalState(MODAL_STATES.LOADING);
             setTimeout(() => {
               navigate(
                 userType === "employer"
@@ -80,7 +80,7 @@ const SubscriptionPlanSelection = () => {
             : "yearlyPlan";
         localStorage.setItem("pendingSubscriptionTier", selectedTier);
         localStorage.setItem("userType", userType);
-        setModalState(modalStates.AUTHNET_PAYMENT_FULL);
+        handleSetModalState(MODAL_STATES.AUTHNET_PAYMENT_FULL);
       }
     };
 
@@ -105,7 +105,7 @@ const SubscriptionPlanSelection = () => {
     <div
       id="step5_signup"
       className={`${styles["modal-content"]}`}
-      hidden={modalState !== modalStates.SIGNUP_STEP5}
+      hidden={modalState !== MODAL_STATES.SIGNUP_STEP5}
     >
       <div className={`${styles["subscription-plans-container"]}`}>
         <div className={`${styles["subscription-selection-items"]}`}>

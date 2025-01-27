@@ -7,6 +7,7 @@ import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 import { useRef, useState, useEffect } from "react";
 import styles from "./../landing.module.scss";
 import { useLanding } from "../useLanding";
+import { MODAL_STATES } from "store/types/modal.types";
 
 interface AutoLoginFormValues {
   email: string;
@@ -19,9 +20,8 @@ const OTPSignUp = () => {
     dataStates,
     tempLoginEmail,
     tempLoginPassword,
-    setModalState,
+    handleSetModalState,
     modalState,
-    modalStates,
   } = useLanding();
   const buttonContinue = useRef<HTMLButtonElement>(null);
   const [submitOTP] = useOtpVerifyMutation();
@@ -115,12 +115,12 @@ const OTPSignUp = () => {
                 email: tempLoginEmail,
                 password: tempLoginPassword,
               }).then(() => {
-                setModalState(modalStates.SIGNUP_CONGRATULATIONS);
+                handleSetModalState(MODAL_STATES.SIGNUP_CONGRATULATIONS);
               });
             });
 
           setTimeout(() => {
-            setModalState(modalStates.SIGNUP_CONGRATULATIONS);
+            handleSetModalState(MODAL_STATES.SIGNUP_CONGRATULATIONS);
           }, 1000);
         } catch (err: any) {
           console.log("OTP Error details:", err); // Log full error object
@@ -204,7 +204,7 @@ const OTPSignUp = () => {
             ref.current.value = "";
           }
         });
-        setModalState(modalStates.SIGNUP_STEP2);
+        handleSetModalState(MODAL_STATES.SIGNUP_STEP2);
       };
     }
   }, []);
@@ -219,7 +219,7 @@ const OTPSignUp = () => {
     <div
       id="step3_signup"
       className={`${styles["modal-content"]}`}
-      hidden={modalState !== modalStates.SIGNUP_STEP3}
+      hidden={modalState !== MODAL_STATES.SIGNUP_STEP3}
     >
       <div className={`${styles["verify-container"]}`}>
         <div className={`${styles.desc1}`}>Verify with One Time Password</div>
@@ -314,7 +314,7 @@ const OTPSignUp = () => {
                   ref.current.value = "";
                 }
               });
-              setModalState(modalStates.SIGNUP_STEP2);
+              handleSetModalState(MODAL_STATES.SIGNUP_STEP2);
             }}
             className={`${styles["button-custom-basic"]}`}
           >
@@ -355,7 +355,7 @@ const OTPSignUp = () => {
                 ref.current.value = "";
               }
             });
-            setModalState(modalStates.SIGNUP_STEP2);
+            handleSetModalState(MODAL_STATES.SIGNUP_STEP2);
           }}
         >
           <div className={`${styles["previous-button"]}`}></div>

@@ -4,14 +4,15 @@ import styles from "./../landing.module.scss";
 import sparkle_icon from "assets/sparkle-icon.svg?url";
 import akaza_loading from "assets/akaza-loading.png";
 import akaza_icon from "assets/akaza-icon.png";
+import { MODAL_STATES } from "store/types/modal.types";
 
 const LoadingModal = () => {
-  const { modalState, modalStates } = useLanding();
+  const { modalState } = useLanding();
   return (
     <div
       id="step6_signup"
       className={`${styles["modal-content"]}`}
-      hidden={modalState !== modalStates.LOADING}
+      hidden={modalState !== MODAL_STATES.LOADING}
     >
       <div className={`${styles["modal-loading-container"]}`}>
         <div className={`${styles["loading-description"]}`}>

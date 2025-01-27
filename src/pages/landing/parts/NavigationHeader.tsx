@@ -2,10 +2,11 @@ import { useMenu } from "hooks";
 import { BaseMenu } from "layouts";
 import ButtonNav from "./ButtonNav";
 import { useLanding } from "../useLanding";
+import { MODAL_STATES } from "store/types/modal.types";
 
 const NavigationHeader = () => {
   const { menuOpen, toggleMenu } = useMenu();
-  const { handleSetState } = useLanding();
+  const { handleSetModalState } = useLanding();
 
   return (
     <BaseMenu
@@ -14,13 +15,15 @@ const NavigationHeader = () => {
       onToggleMenu={toggleMenu}
       ButtonLoginNav={() => (
         <ButtonNav
-          handleSetState={() => handleSetState("login")}
+          handleSetState={() => handleSetModalState(MODAL_STATES.LOGIN)}
           btnFor="login"
         />
       )}
       ButtonSignUpNav={() => (
         <ButtonNav
-          handleSetState={() => handleSetState("signup")}
+          handleSetState={() =>
+            handleSetModalState(MODAL_STATES.SIGNUP_SELECT_USER_TYPE)
+          }
           btnFor="signup"
         />
       )}

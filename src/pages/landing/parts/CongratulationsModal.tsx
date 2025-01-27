@@ -1,17 +1,18 @@
 import { useRef, useEffect } from "react";
 import styles from "./../landing.module.scss";
 import { useLanding } from "../useLanding";
+import { MODAL_STATES } from "store/types/modal.types";
 
 const CongratulationsModal = () => {
-  const { dataStates, setModalState, modalStates, modalState } = useLanding();
+  const { dataStates, handleSetModalState, modalState } = useLanding();
   const nextButton = useRef<HTMLButtonElement>(null);
   const handleNext = () => {
     if (nextButton.current) {
       nextButton.current.onclick = () => {
         if (dataStates.selectedUserType == "job_hunter")
-          setModalState(modalStates.SIGNUP_STEP4);
+          handleSetModalState(MODAL_STATES.SIGNUP_STEP4);
         else if (dataStates.selectedUserType == "employer")
-          setModalState(modalStates.SIGNUP_STEP4_EMPLOYER);
+          handleSetModalState(MODAL_STATES.SIGNUP_STEP4_EMPLOYER);
       };
     }
   };
@@ -21,7 +22,7 @@ const CongratulationsModal = () => {
     <div
       id="step_congratulations"
       className={`${styles["modal-content"]}`}
-      hidden={modalState !== modalStates.SIGNUP_CONGRATULATIONS}
+      hidden={modalState !== MODAL_STATES.SIGNUP_CONGRATULATIONS}
     >
       <div className={`${styles["congratulations-container"]}`}>
         <div className={`${styles["checkmark-container"]}`}>

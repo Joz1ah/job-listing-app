@@ -1,19 +1,17 @@
-import { ReactNode, useContext } from "react";
+import { ReactNode } from "react";
 import styles from "./modalcontext.module.scss";
 import ModalHeader from "./parts/modal-header";
-import { ModalContext } from "./modalContext";
+import { useModal } from "./useModal";
 
 type ModalProps = {
   children: ReactNode;
 };
 
 const Modal = ({ children }: ModalProps) => {
-  const { isOpen } = useContext(ModalContext);
-
-  console.log(">>FROM MODAL", { isOpen });
+  const { isModalOpen } = useModal();
 
   return (
-    isOpen && (
+    isModalOpen && (
       <div
         className={`${styles["mask-overlay"]} ${styles["requires-no-scroll"]}`}
       >

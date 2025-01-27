@@ -17,24 +17,24 @@ import NavigationHeader from "./parts/NavigationHeader";
 import ModalWrapper from "./parts/ModalWrapper";
 import HeroContainer from "./parts/HeroContainer";
 import PricingContainer from "./parts/PricingContainer";
-import InfoGraphics from "./parts/InfoGraphics"; // Adjust the import path as necessary
-import { ModalContext } from "components/modal/modalContext";
+import InfoGraphics from "./parts/InfoGraphics";
+import { MODAL_HEADER_TYPE, MODAL_STATES } from "store/types/modal.types";
 
 const Landing: FC = (): ReactElement => {
-  const { modalStates, setModalState } = useLanding();
+  const { handleSetModalState } = useLanding();
   const { isAuthenticated, user } = useAuth();
   const location = useLocation();
   // Simple redirect if authenticated
   if (isAuthenticated && user?.type) {
     return <Navigate to={`/${user.type}`} replace />;
   }
-  const { toggleModal, handleSetSelectedModalHeader, isModalOpen } = useModal();
+  const { toggleModal, handleSetSelectedModalHeader } = useModal();
 
   useEffect(() => {
     // Check if we have state from navigation indicating we should open the modal
     if (location.state?.openModal) {
-      handleSetSelectedModalHeader(1);
-      setModalState(modalStates.SIGNUP_SELECT_USER_TYPE);
+      handleSetSelectedModalHeader(MODAL_HEADER_TYPE.WITH_LOGO_AND_CLOSE);
+      handleSetModalState(MODAL_STATES.SIGNUP_SELECT_USER_TYPE);
       toggleModal();
 
       // Clear the navigation state after using it
@@ -46,29 +46,22 @@ const Landing: FC = (): ReactElement => {
   const isIndexRoute = useMatch("/");
 
   return (
-    <ModalContext.Provider
-      value={{
-        isOpen: isModalOpen,
-        toggleModal,
-      }}
-    >
-      <LandingContext.Provider value={{ isFreeTrial }}>
-        <PageMeta title="Akaza" />
-        <div className={styles.main}>
-          <NavigationHeader />
-          {isIndexRoute && (
-            <>
-              <HeroContainer />
-              <PricingContainer />
-              <InfoGraphics />
-            </>
-          )}
-          <Outlet />
-          <Footer />
-          <ModalWrapper />
-        </div>
-      </LandingContext.Provider>
-    </ModalContext.Provider>
+    <LandingContext.Provider value={{ isFreeTrial }}>
+      <PageMeta title="Akaza" />
+      <div className={styles.main}>
+        <NavigationHeader />
+        {isIndexRoute && (
+          <>
+            <HeroContainer />
+            <PricingContainer />
+            <InfoGraphics />
+          </>
+        )}
+        <Outlet />
+        <Footer />
+        <ModalWrapper />
+      </div>
+    </LandingContext.Provider>
   );
 };
 

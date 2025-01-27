@@ -1,7 +1,13 @@
-import { useCallback, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+import { RootState } from "store/store";
+import { setModalState } from "store/slices/modalSlice";
+import { MODAL_STATES } from "store/types/modal.types";
 
 export const useLanding = () => {
-  const [modalState, setModalState] = useState(12);
+  const dispatch = useDispatch();
+  const modalState = useSelector((state: RootState) => state.modal.modalState);
+
   const [tempLoginEmail, setTempLoginEmail] = useState("");
   const [tempLoginPassword, setTempLoginPassword] = useState("");
   const [currentSelectedPlan, setCurrentSelectedPlan] = useState(3);
@@ -15,23 +21,9 @@ export const useLanding = () => {
     string[]
   >([]);
 
-  const modalStates = {
-    LOGIN: 1,
-    SIGNUP_SELECT_USER_TYPE: 2,
-    SIGNUP_STEP2: 3,
-    SIGNUP_STEP3: 4,
-    SIGNUP_STEP4: 5,
-    SIGNUP_STEP4_EMPLOYER: 6,
-    SIGNUP_STEP5: 7,
-    LOADING: 8,
-    SIGNUP_CONGRATULATIONS: 9,
-    AUTHNET_PAYMENT: 10,
-    PERFECT_MATCH_RESULTS: 11,
-    AUTHNET_PAYMENT_FULL: 12,
-    FORGOT_PASSWORD_EMAIL: 13,
-    FORGOT_PASSWORD_NEW_PASSWORD: 14,
-    FORGOT_PASSWORD_OTP: 15,
-  } as const;
+  const handleSetModalState = (state: MODAL_STATES) => {
+    dispatch(setModalState(state));
+  };
 
   const heroStates = {
     PERFECT_MATCH_ALGO: 1,
@@ -49,15 +41,6 @@ export const useLanding = () => {
     MONTHLY: 2,
     ANNUAL: 3,
   } as const;
-
-  const handleSetState = useCallback((btn: "signup" | "login") => {
-    console.log(">>btn", { btn });
-    if (btn === "signup") {
-      setModalState(modalStates.SIGNUP_SELECT_USER_TYPE);
-    } else {
-      setModalState(modalStates.LOGIN);
-    }
-  }, []);
 
   const createAuthNetTokenizer = async () => {
     const isDevOrStaging =
@@ -90,12 +73,10 @@ export const useLanding = () => {
   };
 
   return {
-    modalStates,
     heroStates,
     PLAN_SELECTION_ITEMS,
-    handleSetState,
     modalState,
-    setModalState,
+    handleSetModalState,
     dataStates,
     setDataStates,
     tempLoginEmail,

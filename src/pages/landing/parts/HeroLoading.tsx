@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import styles from "./../landing.module.scss";
 import Video from "./Video";
 import { useModal } from "components/modal/useModal";
@@ -9,26 +9,25 @@ import video4 from "assets/mp4/girl-laughing-at-monitor.mp4";
 import akaza_icon from "assets/akaza-icon.png";
 import akaza_loading from "assets/akaza-loading.png";
 import sparkle_icon from "assets/sparkle-icon.svg?url";
-import { ModalContext } from "components/modal/modalContext";
+import { MODAL_HEADER_TYPE, MODAL_STATES } from "store/types/modal.types";
 
 const HeroLoading = () => {
-  const { handleSetSelectedModalHeader } = useModal();
-  const { isOpen, toggleModal } = useContext(ModalContext);
-  const { heroState, heroStates, setModalState, modalStates } = useLanding();
+  const { handleSetSelectedModalHeader, isModalOpen, toggleModal } = useModal();
+  const { heroState, heroStates, handleSetModalState } = useLanding();
   const [hasShownModal, setHasShownModal] = useState(false);
 
   useEffect(() => {
-    if (heroState === heroStates.LOADING && !hasShownModal && !isOpen) {
+    if (heroState === heroStates.LOADING && !hasShownModal && !isModalOpen) {
       const timer = setTimeout(() => {
         setHasShownModal(true);
-        handleSetSelectedModalHeader(1);
-        setModalState(modalStates.PERFECT_MATCH_RESULTS);
+        handleSetSelectedModalHeader(MODAL_HEADER_TYPE.WITH_LOGO_AND_CLOSE);
+        handleSetModalState(MODAL_STATES.PERFECT_MATCH_RESULTS);
         toggleModal();
       }, 2000);
 
       return () => clearTimeout(timer);
     }
-  }, [heroState, isOpen, hasShownModal]);
+  }, [heroState, isModalOpen, hasShownModal]);
 
   // Reset modal shown state when leaving loading state
   useEffect(() => {

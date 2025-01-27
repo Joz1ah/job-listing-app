@@ -5,14 +5,14 @@ import styles from "./../landing.module.scss";
 import * as Yup from "yup";
 import { useLanding } from "../useLanding";
 import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
+import { MODAL_STATES } from "store/types/modal.types";
 
 type ErrorFields = "email" | "password" | "passwordConfirm";
 type ErrorState = Record<ErrorFields, string>;
 
 const UserNamePasswordSignup = () => {
   const {
-    setModalState,
-    modalStates,
+    handleSetModalState,
     dataStates,
     setDataStates,
     setTempLoginEmail,
@@ -52,7 +52,7 @@ const UserNamePasswordSignup = () => {
 
   const handlePrevious = (e: React.MouseEvent) => {
     e.preventDefault();
-    setModalState(modalStates.SIGNUP_SELECT_USER_TYPE);
+    handleSetModalState(MODAL_STATES.SIGNUP_SELECT_USER_TYPE);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -79,7 +79,7 @@ const UserNamePasswordSignup = () => {
             });
           });
 
-        setModalState(modalStates.SIGNUP_STEP3);
+        handleSetModalState(MODAL_STATES.SIGNUP_STEP3);
 
         await generateOTP({ email: credentials.email })
           .unwrap()
@@ -88,7 +88,7 @@ const UserNamePasswordSignup = () => {
           });
         setTimeout(() => {
           setIsSubmitting(false);
-          setModalState(modalStates.SIGNUP_STEP3);
+          handleSetModalState(MODAL_STATES.SIGNUP_STEP3);
         }, 1000);
       } catch (err: any) {
         setIsSubmitting(false);
@@ -135,7 +135,7 @@ const UserNamePasswordSignup = () => {
     <div
       id="step2_signup"
       className={`${styles["modal-content"]}`}
-      hidden={modalState !== modalStates.SIGNUP_STEP2}
+      hidden={modalState !== MODAL_STATES.SIGNUP_STEP2}
     >
       <div className={`${styles["password-confirmation-container"]}`}>
         <form onSubmit={handleSubmit}>

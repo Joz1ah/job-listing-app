@@ -7,13 +7,14 @@ import mastercard_icon from "assets/credit-card-icons/cc_mastercard.svg?url";
 import discover_icon from "assets/credit-card-icons/cc_discover.svg?url";
 import authnet_visa_solution from "assets/authnet-logo-light.svg?url";
 import CreditCardForm from "./CreditCardForm";
+import { MODAL_STATES } from "store/types/modal.types";
 
 const StripePaymentModal = () => {
-  const { modalState, modalStates } = useLanding();
+  const { modalState } = useLanding();
   return (
     <div
       className={`${styles["modal-content"]}`}
-      hidden={modalState !== modalStates.AUTHNET_PAYMENT}
+      hidden={modalState !== MODAL_STATES.AUTHNET_PAYMENT}
     >
       <div className={`${styles["stripe-payment-container"]}`}>
         <div className={`${styles["stripe-payment-form"]}`}>

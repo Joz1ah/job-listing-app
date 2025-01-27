@@ -17,12 +17,13 @@ import StripePaymentModal from "./StripePaymentModal";
 import SubscriptionPlanSelection from "./SubscriptionPlanSelection";
 import UserNamePasswordSignup from "./UserNamePasswordSignup";
 import { useLanding } from "../useLanding";
+import { MODAL_STATES } from "store/types/modal.types";
 
 const ModalWrapper = () => {
-  const { modalState, modalStates } = useLanding();
+  const { modalState } = useLanding();
   return (
     <>
-      {modalState !== modalStates.PERFECT_MATCH_RESULTS ? (
+      {modalState !== MODAL_STATES.PERFECT_MATCH_RESULTS ? (
         <Modal>
           <EmployerProvider initialTier="freeTrial">
             <JobHunterProvider initialTier="freeTrial">

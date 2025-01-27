@@ -1,13 +1,12 @@
-import { useContext, useRef } from "react";
-import { useModal, MODAL_HEADER_TYPE } from "../useModal";
+import { useRef } from "react";
+import { useModal } from "../useModal";
 import close_icon from "assets/close.svg?url";
 import akazalogo_dark from "assets/akazalogo-dark.svg?url";
 import styles from "./../modalcontext.module.scss";
-import { ModalContext } from "../modalContext";
+import { MODAL_HEADER_TYPE } from "store/types/modal.types";
 
 const ModalHeader = () => {
-  const { selectedModalHeader } = useModal();
-  const { toggleModal } = useContext(ModalContext);
+  const { selectedModalHeader, toggleModal } = useModal();
   const closeModalRef = useRef<HTMLImageElement>(null);
 
   return (

@@ -2,20 +2,20 @@ import { useLanding } from "../useLanding";
 import styles from "./../landing.module.scss";
 import jobhunter_icon from "assets/jobhunter-icon.png";
 import employer_icon from "assets/employer-icon.png";
+import { MODAL_STATES } from "store/types/modal.types";
 
 const JobHunterEmployerSelection = () => {
-  const { setDataStates, setModalState, modalStates, modalState } =
-    useLanding();
+  const { setDataStates, handleSetModalState, modalState } = useLanding();
 
   const handleBtnClick = (type: "job_hunter" | "employer") => {
     setDataStates((state) => ({ ...state, selectedUserType: type }));
-    setModalState(modalStates.SIGNUP_STEP2);
+    handleSetModalState(MODAL_STATES.SIGNUP_STEP2);
   };
 
   return (
     <div
       className={`${styles["modal-content"]}`}
-      hidden={modalState !== modalStates.SIGNUP_SELECT_USER_TYPE}
+      hidden={modalState !== MODAL_STATES.SIGNUP_SELECT_USER_TYPE}
     >
       <div className={`${styles["modal-title"]}`}>What best describes you?</div>
       <div className={`${styles["selection-items"]}`}>

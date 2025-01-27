@@ -5,10 +5,11 @@ import styles from "./../landing.module.scss";
 import { useModal } from "components/modal/useModal";
 import { useLanding } from "../useLanding";
 import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
+import { MODAL_HEADER_TYPE, MODAL_STATES } from "store/types/modal.types";
 
 const MobileCountrySignUp = () => {
   const { handleSetSelectedModalHeader } = useModal();
-  const { modalStates, setModalState, modalState } = useLanding();
+  const { handleSetModalState, modalState } = useLanding();
   const buttonNext = useRef<HTMLButtonElement>(null);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [country, setCountry] = useState("");
@@ -84,8 +85,8 @@ const MobileCountrySignUp = () => {
             }).unwrap();
 
             // If successful, move to next step
-            handleSetSelectedModalHeader(2);
-            setModalState(modalStates.SIGNUP_STEP5);
+            handleSetSelectedModalHeader(MODAL_HEADER_TYPE.WITH_CLOSE);
+            handleSetModalState(MODAL_STATES.SIGNUP_STEP5);
           } catch (err: any) {
             // Handle API errors
             console.error("Error submitting contact info:", err);
@@ -116,7 +117,7 @@ const MobileCountrySignUp = () => {
     <div
       id="step4_signup"
       className={styles["modal-content"]}
-      hidden={modalState !== modalStates.SIGNUP_STEP4}
+      hidden={modalState !== MODAL_STATES.SIGNUP_STEP4}
     >
       <div className={styles["country-mobtel-container"]}>
         <div className={styles["title-desc"]}>
@@ -169,7 +170,7 @@ const MobileCountrySignUp = () => {
         {/* Action Buttons */}
         <div className={styles["action-buttons"]}>
           <button
-            onClick={() => setModalState(modalStates.SIGNUP_STEP3)}
+            onClick={() => handleSetModalState(MODAL_STATES.SIGNUP_STEP3)}
             className={styles["button-custom-basic"]}
           >
             Previous
