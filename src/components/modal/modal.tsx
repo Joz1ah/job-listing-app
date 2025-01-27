@@ -18,7 +18,7 @@ const Modal = ({ children }: ModalProps) => {
         <div className={styles["mask_overlay"]}>
           <div className={`${styles["modal-container-wrapper"]}`}>
             <div className={`${styles["modal-container"]}`}>
-              <div className={`${styles["modal-item"]}`}>
+              <div className={`${styles["modal-item"]} h-[100px]`}>
                 <ModalHeader />
                 <div className={`${styles["modal-content-wrapper"]}`}>
                   {children}

@@ -8,8 +8,8 @@ body:has(.requires-no-scroll:not([hidden])) {
   height: 100%;
   top: 0;
   left: 0;
-  background: rgba(45, 58, 65, 0.50);
-  z-index: 1;
+  background: rgba(45, 58, 65, 0.5);
+  z-index: 999;
 }
 
 .modal-container-wrapper {
@@ -30,8 +30,8 @@ body:has(.requires-no-scroll:not([hidden])) {
   max-width: 642px;
   width: 100%;
   height: auto;
-  min-height: 554px;
-  background: #F5F5F7;
+  min-height: 490px;
+  background: #f5f5f7;
   border-radius: 8px;
 
   @media (max-width: 768px) {
@@ -73,5 +73,5 @@ body:has(.requires-no-scroll:not([hidden])) {
 }
 
 .modal-divider {
-  border-top: 1px solid #AEADAD;
+  border-top: 1px solid #aeadad;
 }
