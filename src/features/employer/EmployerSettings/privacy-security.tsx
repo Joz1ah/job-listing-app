@@ -16,6 +16,16 @@ interface FormData {
   confirmPassword: string;
 }
 
+interface ErrorResponse {
+  status: number;
+  data: {
+    errors: string;
+    message: string;
+    statusCode: number;
+    success: false;
+  }
+}
+
 const PrivacyAndSecuritySettings: FC = () => {
   const [updatePassword, { isLoading }] = useUpdatePasswordMutation();
   const [showOriginalPassword, setShowOriginalPassword] = React.useState(false);
@@ -69,11 +79,15 @@ const PrivacyAndSecuritySettings: FC = () => {
         
         resetForm();
         setIsSuccess(true);
-      } catch (error: any) {
-        if (error.status === 'FETCH_ERROR') {
-          setFieldError('originalPassword', 'Original password is incorrect');
+      } catch (error) {
+        if (error && 
+            typeof error === 'object' && 
+            'data' in error &&
+            typeof (error as ErrorResponse).data?.message === 'string' &&
+            (error as ErrorResponse).data.message === "Old password is incorrect") {
+          setFieldError('originalPassword', "Original password is incorrect");
         } else {
-          console.error('Failed to update password:', error);
+          setFieldError('originalPassword', 'An unexpected error occurred');
         }
         setIsSuccess(false);
       }

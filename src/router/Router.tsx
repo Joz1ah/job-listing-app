@@ -168,14 +168,15 @@ const ProtectedRoute = ({
   // Check if current route is a protected route
   const isProfileRoute = location.pathname === profileCompletionRoute;
   const isJobListingRoute = location.pathname.includes(ROUTE_CONSTANTS.JOB_LISTING);
+  const isAccountSettingsRoute = location.pathname.includes(ROUTE_CONSTANTS.ACCOUNT_SETTINGS_EMPLOYER);
 
   // First priority: Check if profile is incomplete
-  if (isProfileIncomplete && !isProfileRoute) {
+  if (isProfileIncomplete && !isProfileRoute && !isAccountSettingsRoute) {
     return <Navigate to={profileCompletionRoute} replace />;
   }
 
   // Second priority: Check for job listing only if profile is complete
-  if (!isProfileIncomplete && userType === 'employer' && jobCount === 0 && !isJobListingRoute) {
+  if (!isProfileIncomplete && userType === 'employer' && jobCount === 0 && !isJobListingRoute && !isAccountSettingsRoute) {
     return <Navigate to={ROUTE_CONSTANTS.JOB_LISTING} replace />;
   }
 

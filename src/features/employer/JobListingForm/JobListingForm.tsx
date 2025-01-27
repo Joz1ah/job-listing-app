@@ -136,12 +136,18 @@ const JobListingForm: FC = () => {
       await refreshUser();
 
       navigate("/dashboard");
-    } catch (error) {
-      showError(
-        'Job Listing Creation Failed',
-        'You already have an active job listing with this title. Please use a different title.'
-      );
-      console.error("Error submitting job:", error);
+    } catch (error: any) {
+      if (error?.data?.errors === "Job listing already exists.") {
+        showError(
+          'Job Listing Creation Failed',
+          'Job listing already exists. Please use a different Job title.'
+        );
+      } else {
+        showError(
+          'Job Listing Creation Failed',
+          'An unexpected error occurred while creating your job listing.'
+        );
+      }
     } finally {
       setIsSubmitting(false);
     }
