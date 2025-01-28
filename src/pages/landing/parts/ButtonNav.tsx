@@ -5,12 +5,17 @@ import { MODAL_HEADER_TYPE } from "store/modal/modal.types";
 
 type ButtonNavProps = {
   btnFor: "login" | "signup";
+  onClick?: () => void;
   handleSetState: () => void;
 };
 
-const ButtonNav = ({ btnFor, handleSetState }: ButtonNavProps) => {
+const ButtonNav = ({ btnFor, handleSetState, onClick }: ButtonNavProps) => {
   const { handleSetSelectedModalHeader, isModalOpen, toggleModal } = useModal();
   const elementRef = useRef<HTMLButtonElement>(null);
+  const handleButtonClick = useCallback(() => {
+    toggleLogin();
+    onClick?.();
+  }, [onClick]);
   const toggleLogin = useCallback(() => {
     if (isModalOpen) {
       // We're switching modals, so don't toggle the mask
@@ -35,7 +40,7 @@ const ButtonNav = ({ btnFor, handleSetState }: ButtonNavProps) => {
   return (
     <button
       ref={elementRef}
-      onClick={toggleLogin}
+      onClick={handleButtonClick}
       id={id}
       className={className}
     >
