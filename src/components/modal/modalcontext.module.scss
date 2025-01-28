@@ -9,7 +9,7 @@ body:has(.requires-no-scroll:not([hidden])) {
   top: 0;
   left: 0;
   background: rgba(45, 58, 65, 0.5);
-  z-index: 999;
+  z-index: 100;
 }
 
 .modal-container-wrapper {

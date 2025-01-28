@@ -38,7 +38,6 @@ import { isValidPhoneNumber } from "react-phone-number-input";
 import { useJobHunterProfileMutation } from "api/akaza/akazaAPI";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
-import { useCountrySelect } from "hooks/useCountrySelect";
 
 interface FormData {
   firstName: string;
@@ -123,7 +122,6 @@ const ApplicationCardForm: FC = () => {
   const [submitJobHunterProfile] = useJobHunterProfileMutation();
   const { refreshUser, user } = useAuth();
   const { showError } = useErrorModal();
-  const { handleToggle, open } = useCountrySelect();
 
   const {
     values,
@@ -401,8 +399,6 @@ const ApplicationCardForm: FC = () => {
                     onChange={(value) => setFieldValue("country", value)}
                     className="bg-transparent border-[#AEADAD] h-[56px] hover:text-white border-2 focus:border-[#F5722E] w-[335px] rounded-[8px] text-white placeholder:text-[#AEADAD] px-3 py-2"
                     popoverClassName="w-[335px]"
-                    handleToggle={handleToggle}
-                    open={open}
                   />
                 </InputField>
               </div>

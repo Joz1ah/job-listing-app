@@ -40,7 +40,6 @@ import * as Yup from "yup";
 
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
-import { useCountrySelect } from "hooks/useCountrySelect";
 
 interface FormData {
   firstName: string;
@@ -123,8 +122,6 @@ const EditApplicationCard: FC = () => {
   const [submitJobHunterProfile] = useJobHunterProfileMutation();
   const { keywordToIdMap, addMapping } = useContext(KeywordMappingContext);
   const { showError } = useErrorModal();
-
-  const { handleToggle, open } = useCountrySelect();
 
   // Parse employment type string into array
   const employmentTypes = user?.data?.user?.relatedDetails?.employmentType
@@ -436,8 +433,6 @@ const EditApplicationCard: FC = () => {
                     onChange={(value) => setFieldValue("country", value)}
                     className="bg-transparent border-[#AEADAD] h-[56px] hover:text-white border-2 focus:border-[#F5722E] w-[335px] rounded-[8px] text-white placeholder:text-[#AEADAD] px-3 py-2"
                     popoverClassName="w-[335px]"
-                    handleToggle={handleToggle}
-                    open={open}
                   />
                 </InputField>
               </div>

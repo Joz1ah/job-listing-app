@@ -9,7 +9,7 @@ import {
   CommandItem,
 } from "components";
 import { Popover, PopoverContent, PopoverTrigger } from "components";
-import { memo } from "react";
+import { memo, useState } from "react";
 
 interface CountrySelectProps {
   value: string;
@@ -17,8 +17,6 @@ interface CountrySelectProps {
   error?: string;
   className?: string;
   popoverClassName?: string;
-  open: boolean;
-  handleToggle: () => void;
 }
 
 const countries = [
@@ -225,12 +223,12 @@ const CountrySelect = ({
   error,
   className,
   popoverClassName,
-  handleToggle,
-  open,
 }: CountrySelectProps) => {
+  const [open, setOpen] = useState(false);
+
   return (
     <div className="relative w-full">
-      <Popover open={open} onOpenChange={handleToggle}>
+      <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
@@ -255,7 +253,7 @@ const CountrySelect = ({
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className={cn("w-[410px] p-0 rounded-none z-[60]", popoverClassName)}
+          className={cn("w-[410px] p-0 rounded-none", popoverClassName)}
         >
           <Command>
             <CommandInput placeholder="Search country..." className="h-9" />
@@ -267,7 +265,7 @@ const CountrySelect = ({
                   value={country}
                   onSelect={(currentValue) => {
                     onChange(currentValue === value ? "" : currentValue);
-                    handleToggle();
+                    setOpen(false);
                   }}
                   className={cn(
                     "relative flex items-center px-4 py-2 text-[14px] font-normal",

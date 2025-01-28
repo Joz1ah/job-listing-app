@@ -113,12 +113,6 @@ const MobileCountrySignUp = () => {
     }
   }, [phoneNumber, country, jobHunterContactSubmit]);
 
-  const [open, setOpen] = useState(false);
-
-  const handleOpenSelect = () => {
-    setOpen((state) => !state);
-  };
-
   return (
     <div
       id="step4_signup"
@@ -163,15 +157,13 @@ const MobileCountrySignUp = () => {
               <label className={styles["input-title-label"]}>Country</label>
               <label className={styles["input-title-label"]}>*</label>
             </div>
-            {/* <div className={styles["input-wrapper"]}> */}
-            <CountrySelect
-              value={country}
-              onChange={handleCountryChange}
-              error={countryError}
-              handleToggle={handleOpenSelect}
-              open={open}
-            />
-            {/* </div> */}
+            <div className={styles["input-wrapper"]}>
+              <CountrySelect
+                value={country}
+                onChange={handleCountryChange}
+                error={countryError}
+              />
+            </div>
           </div>
         </div>
 
