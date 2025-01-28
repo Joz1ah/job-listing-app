@@ -397,6 +397,15 @@ export const akazaApiPayment = createApiFunction({
         },
       }),
     }),
+    updateFreeTrialStatus: builder.mutation({
+      query: () => ({
+        url: '/payments/freeTrial',
+        method: 'POST',
+        body: {
+        },
+      }),
+    }),
+    
   }),
 });
 
@@ -614,7 +623,8 @@ export const {
 export const {
   usePaymentCreateMutation,
   usePaymentCardDetailsMutation,
-  usePaymentCancelMutation
+  usePaymentCancelMutation,
+  useUpdateFreeTrialStatusMutation
 } = akazaApiPayment
 
 export const {

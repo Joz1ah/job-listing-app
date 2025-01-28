@@ -2,11 +2,11 @@
     display: flex;
     flex-direction: column;
     min-height: 100vh; // Ensure the layout spans the full height of the viewport
-  
+
     .layout-main {
         flex: 1;
         padding: 1rem;
-        background-color: var(--main-bg-color, #f9f9f9); // Use CSS variable with fallback
+        background-color: var(--main-bg-color, #F5F5F7); // Use CSS variable with fallback
         margin-top: var(--header-height); // Push main content below the header
         @media (max-width: 768px) {
             margin-top:0;
