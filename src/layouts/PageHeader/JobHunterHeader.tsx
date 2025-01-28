@@ -29,23 +29,18 @@ const JobHunterHeader: FC = () => {
     </>
   );
 
-  // Format salary range from "71-100" to "$71,000 - $100,000"
-  const formatSalaryRange = (range: string) => {
-    if (range === "nego") return "Negotiable";
-    if (range === "121+") return "$121,000 or more";
-    
-    const [min, max] = range.split("-");
-    return `$${min},000 - $${max},000`;
-  };
-
-  // Format employment type (e.g., "full-time" to "Full Time", "contract" to "Contract Only")
-  const formatEmploymentType = (type: string) => {
-    const formattedType = type
-      .split("-")
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-    
-    return formattedType === "Contract" ? "Contract Only" : formattedType;
+  // Format employment type and filter to only show Full Time and Part Time
+  const formatEmploymentTypes = (types: string) => {
+    return types
+      .split(",")
+      .map(type => 
+        type
+          .split("-")
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" ")
+          .trim()
+      )
+      .filter(type => type === "Full Time" || type === "Part Time");
   };
 
   return (
@@ -84,7 +79,7 @@ const JobHunterHeader: FC = () => {
               Expected Salary:{" "}
             </span>
             <span className="outline outline-1 outline-[#F5722E] text-[#F5722E] px-1 font-semibold text-[13px] md:text-[15px] rounded-[2px]">
-              {formatSalaryRange(relatedDetails?.salaryRange || "0-0")}
+              {relatedDetails.salaryRange}
             </span>
           </div>
 
@@ -96,12 +91,12 @@ const JobHunterHeader: FC = () => {
             <span className="text-[13px] md:text-[15px]">
               Employment Preference:{" "}
             </span>
-                          {relatedDetails?.employmentType?.split(",").map((type: string) => (
+            {formatEmploymentTypes(relatedDetails?.employmentType || "").map((type: string) => (
               <span 
                 key={type}
                 className="outline outline-1 outline-[#F5722E] text-[#F5722E] px-1 text-[13px] md:text-[15px] rounded-[2px]"
               >
-                {formatEmploymentType(type.trim())}
+                {type}
               </span>
             ))}
           </div>
