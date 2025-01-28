@@ -1,23 +1,19 @@
-import { useRef, useEffect } from "react";
+import { useCallback } from "react";
 import styles from "./../landing.module.scss";
 import { useLanding } from "../useLanding";
 import { MODAL_STATES } from "store/modal/modal.types";
+import { UserType } from "store/user/user.types";
 
 const CongratulationsModal = () => {
   const { dataStates, handleSetModalState, modalState } = useLanding();
-  const nextButton = useRef<HTMLButtonElement>(null);
-  const handleNext = () => {
-    if (nextButton.current) {
-      nextButton.current.onclick = () => {
-        if (dataStates.selectedUserType == "job_hunter")
-          handleSetModalState(MODAL_STATES.SIGNUP_STEP4);
-        else if (dataStates.selectedUserType == "employer")
-          handleSetModalState(MODAL_STATES.SIGNUP_STEP4_EMPLOYER);
-      };
-    }
-  };
 
-  useEffect(handleNext, []);
+  const handleNext = useCallback(() => {
+    if (dataStates.selectedUserType === UserType.JOB_HUNTER)
+      handleSetModalState(MODAL_STATES.SIGNUP_STEP4);
+    else if (dataStates.selectedUserType === UserType.EMPLOYER)
+      handleSetModalState(MODAL_STATES.SIGNUP_STEP4_EMPLOYER);
+  }, [dataStates.selectedUserType]);
+
   return (
     <div
       id="step_congratulations"
@@ -54,7 +50,7 @@ const CongratulationsModal = () => {
         </div>
         <div className={`${styles["action-buttons"]}`}>
           <button
-            ref={nextButton}
+            onClick={handleNext}
             className={`${styles["button-custom-orange"]}`}
           >
             Next

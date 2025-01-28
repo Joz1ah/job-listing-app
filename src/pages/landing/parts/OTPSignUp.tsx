@@ -4,7 +4,7 @@ import {
   useOtpGenerateMutation,
 } from "api/akaza/akazaAPI";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import styles from "./../landing.module.scss";
 import { useLanding } from "../useLanding";
 import { MODAL_STATES } from "store/modal/modal.types";
@@ -23,7 +23,7 @@ const OTPSignUp = () => {
     handleSetModalState,
     modalState,
   } = useLanding();
-  const buttonContinue = useRef<HTMLButtonElement>(null);
+
   const [submitOTP] = useOtpVerifyMutation();
   const [loginSubmit] = useLoginMutation();
   const buttonPrevious = useRef<HTMLDivElement>(null);
@@ -88,65 +88,59 @@ const OTPSignUp = () => {
     e.preventDefault(); // Prevent default paste behavior
   };
 
-  const handleContinue = () => {
-    if (buttonContinue.current) {
-      buttonContinue.current.onclick = async () => {
-        const otp =
-          (ib1.current?.value || "") +
-          (ib2.current?.value || "") +
-          (ib3.current?.value || "") +
-          (ib4.current?.value || "") +
-          (ib5.current?.value || "") +
-          (ib6.current?.value || "");
+  const handleContinue = useCallback(async () => {
+    const otp =
+      (ib1.current?.value || "") +
+      (ib2.current?.value || "") +
+      (ib3.current?.value || "") +
+      (ib4.current?.value || "") +
+      (ib5.current?.value || "") +
+      (ib6.current?.value || "");
 
-        if (otp.length !== 6) {
-          alert("Please enter all 6 digits of the OTP");
-          return;
-        }
-
-        try {
-          setIsLoading(true);
-
-          await submitOTP({
-            email: dataStates.email,
-            otp: otp,
-          })
-            .unwrap()
-            .then(() => {
-              handleLogin({
-                email: String(tempLoginEmail),
-                password: String(tempLoginPassword),
-              }).then(() => {
-                handleSetModalState(MODAL_STATES.SIGNUP_CONGRATULATIONS);
-              });
-            });
-
-          setTimeout(() => {
-            handleSetModalState(MODAL_STATES.SIGNUP_CONGRATULATIONS);
-          }, 1000);
-        } catch (err: any) {
-          console.log("OTP Error details:", err); // Log full error object
-          if (err?.data?.message) {
-            showError(err?.data?.errors, err?.data?.message);
-          }
-
-          // Clear OTP fields on error
-          [ib1, ib2, ib3, ib4, ib5, ib6].forEach((ref) => {
-            if (ref.current) {
-              ref.current.value = "";
-            }
-          });
-          if (ib1.current) {
-            ib1.current.focus();
-          }
-        } finally {
-          setIsLoading(false);
-        }
-      };
+    if (otp.length !== 6) {
+      alert("Please enter all 6 digits of the OTP");
+      return;
     }
-  };
 
-  useEffect(handleContinue, []);
+    try {
+      setIsLoading(true);
+
+      await submitOTP({
+        email: dataStates.email,
+        otp: otp,
+      })
+        .unwrap()
+        .then(() => {
+          handleLogin({
+            email: String(tempLoginEmail),
+            password: String(tempLoginPassword),
+          }).then(() => {
+            handleSetModalState(MODAL_STATES.SIGNUP_CONGRATULATIONS);
+          });
+        });
+
+      setTimeout(() => {
+        handleSetModalState(MODAL_STATES.SIGNUP_CONGRATULATIONS);
+      }, 1000);
+    } catch (err: any) {
+      console.log("OTP Error details:", err); // Log full error object
+      if (err?.data?.message) {
+        showError(err?.data?.errors, err?.data?.message);
+      }
+
+      // Clear OTP fields on error
+      [ib1, ib2, ib3, ib4, ib5, ib6].forEach((ref) => {
+        if (ref.current) {
+          ref.current.value = "";
+        }
+      });
+      if (ib1.current) {
+        ib1.current.focus();
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }, [dataStates.email, tempLoginEmail, tempLoginPassword, showError]);
 
   const [generateOTP] = useOtpGenerateMutation();
 
@@ -305,7 +299,7 @@ const OTPSignUp = () => {
 
         <div className={`${styles["action-buttons"]}`}>
           <button
-            ref={buttonContinue}
+            onClick={handleContinue}
             className={`${styles["button-custom-orange"]} ${isLoading ? styles["loading"] : ""}`}
             disabled={isLoading}
           >

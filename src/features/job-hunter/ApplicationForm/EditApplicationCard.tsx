@@ -40,6 +40,7 @@ import * as Yup from "yup";
 
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
+import { useCountrySelect } from "hooks/useCountrySelect";
 
 interface FormData {
   firstName: string;
@@ -82,7 +83,10 @@ const validationSchema = Yup.object().shape({
       return value ? isValidPhoneNumber(value) : false;
     }),
   country: Yup.string().required("This field is required"),
-  employmentType: Yup.array().min(1, "Please select at least one employment type"),
+  employmentType: Yup.array().min(
+    1,
+    "Please select at least one employment type",
+  ),
   salaryRange: Yup.string().required("This field is required"),
   yearsOfExperience: Yup.string().required("This field is required"),
   coreSkills: Yup.array()
@@ -115,24 +119,27 @@ const EditApplicationCard: FC = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPreview, setShowPreview] = useState<boolean>(false);
-  const { user, refreshUser } = useAuth();  // Add refreshUser
+  const { user, refreshUser } = useAuth(); // Add refreshUser
   const [submitJobHunterProfile] = useJobHunterProfileMutation();
   const { keywordToIdMap, addMapping } = useContext(KeywordMappingContext);
   const { showError } = useErrorModal();
 
+  const { handleToggle, open } = useCountrySelect();
+
   // Parse employment type string into array
   const employmentTypes = user?.data?.user?.relatedDetails?.employmentType
-    ? user.data.user.relatedDetails.employmentType.split(',')
+    ? user.data.user.relatedDetails.employmentType.split(",")
     : [];
 
-  
-    useEffect(() => {
-      if (user?.data?.user?.relatedDetails?.JobHunterSkill) {
-        user.data.user.relatedDetails.JobHunterSkill.forEach((skill: JobHunterSkill) => {
+  useEffect(() => {
+    if (user?.data?.user?.relatedDetails?.JobHunterSkill) {
+      user.data.user.relatedDetails.JobHunterSkill.forEach(
+        (skill: JobHunterSkill) => {
           addMapping(skill.keyword, skill.id);
-        });
-      }
-    }, [user, addMapping]);
+        },
+      );
+    }
+  }, [user, addMapping]);
 
   const formik = useFormik<FormData>({
     initialValues: {
@@ -140,28 +147,32 @@ const EditApplicationCard: FC = () => {
       lastName: user?.data?.user?.relatedDetails?.lastName || "",
       birthday: user?.data?.user?.relatedDetails?.birthday || "",
       emailAddress: user?.data?.user?.email || "",
-      mobileNumber: user?.data?.user?.relatedDetails?.phoneNumber 
-        ? user.data.user.relatedDetails.phoneNumber.startsWith('+') 
-          ? user.data.user.relatedDetails.phoneNumber 
+      mobileNumber: user?.data?.user?.relatedDetails?.phoneNumber
+        ? user.data.user.relatedDetails.phoneNumber.startsWith("+")
+          ? user.data.user.relatedDetails.phoneNumber
           : `+${user.data.user.relatedDetails.phoneNumber}`
         : "",
       employmentType: employmentTypes,
       salaryRange: user?.data?.user?.relatedDetails?.salaryRange || "",
-      yearsOfExperience: user?.data?.user?.relatedDetails?.yearsOfExperience || "",
-      coreSkills: user?.data?.user?.relatedDetails?.JobHunterSkill
-      ?.filter((skill: JobHunterSkill) => skill.type === "core")
-      ?.map((skill: JobHunterSkill) => skill.keyword) || [],
-    interpersonalSkills: user?.data?.user?.relatedDetails?.JobHunterSkill
-      ?.filter((skill: JobHunterSkill) => skill.type === "interpersonal")
-      ?.map((skill: JobHunterSkill) => skill.keyword) || [],
+      yearsOfExperience:
+        user?.data?.user?.relatedDetails?.yearsOfExperience || "",
+      coreSkills:
+        user?.data?.user?.relatedDetails?.JobHunterSkill?.filter(
+          (skill: JobHunterSkill) => skill.type === "core",
+        )?.map((skill: JobHunterSkill) => skill.keyword) || [],
+      interpersonalSkills:
+        user?.data?.user?.relatedDetails?.JobHunterSkill?.filter(
+          (skill: JobHunterSkill) => skill.type === "interpersonal",
+        )?.map((skill: JobHunterSkill) => skill.keyword) || [],
       education: user?.data?.user?.relatedDetails?.education || "",
       languages: user?.data?.user?.relatedDetails?.language
         ? [user.data.user.relatedDetails.language]
         : [],
       country: user?.data?.user?.relatedDetails?.country || "",
-      certifications: user?.data?.user?.relatedDetails?.JobHunterSkill
-      ?.filter((skill: JobHunterSkill) => skill.type === "certification")
-      ?.map((skill: JobHunterSkill) => skill.keyword) || [],
+      certifications:
+        user?.data?.user?.relatedDetails?.JobHunterSkill?.filter(
+          (skill: JobHunterSkill) => skill.type === "certification",
+        )?.map((skill: JobHunterSkill) => skill.keyword) || [],
     },
     validationSchema,
     validateOnMount: true,
@@ -170,14 +181,14 @@ const EditApplicationCard: FC = () => {
     },
   });
 
-  const { 
-    values, 
-    errors, 
-    touched, 
-    handleChange, 
-    setFieldValue, 
+  const {
+    values,
+    errors,
+    touched,
+    handleChange,
+    setFieldValue,
     handleSubmit,
-    isValid 
+    isValid,
   } = formik;
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -195,8 +206,8 @@ const EditApplicationCard: FC = () => {
     setIsSubmitting(true);
 
     try {
-      const formattedPhoneNumber = values.mobileNumber.replace(/[^\d]/g, '');
-      
+      const formattedPhoneNumber = values.mobileNumber.replace(/[^\d]/g, "");
+
       // Define language options
       const languages = [
         { label: "Arabic", value: "ar" },
@@ -221,31 +232,31 @@ const EditApplicationCard: FC = () => {
         { label: "Tagalog", value: "tl" },
         { label: "Thai", value: "th" },
         { label: "Turkish", value: "tr" },
-        { label: "Vietnamese", value: "vi" }
+        { label: "Vietnamese", value: "vi" },
       ];
 
       // Transform keywords to IDs during submission
       const coreSkillIds = values.coreSkills
-        .map(keyword => keywordToIdMap[keyword])
+        .map((keyword) => keywordToIdMap[keyword])
         .filter(Boolean);
 
       const interpersonalSkillIds = values.interpersonalSkills
-        .map(keyword => keywordToIdMap[keyword])
+        .map((keyword) => keywordToIdMap[keyword])
         .filter(Boolean);
 
       const certificationIds = values.certifications
-        .map(keyword => keywordToIdMap[keyword])
+        .map((keyword) => keywordToIdMap[keyword])
         .filter(Boolean);
 
-        const formattedLanguages = values.languages
-        .map(lang => {
-          const languageOption = languages.find(opt => opt.value === lang);
+      const formattedLanguages = values.languages
+        .map((lang) => {
+          const languageOption = languages.find((opt) => opt.value === lang);
           return languageOption?.label || lang;
         })
-        .join(',');
-      
-      const formattedEmploymentTypes = values.employmentType.join(',');
-      
+        .join(",");
+
+      const formattedEmploymentTypes = values.employmentType.join(",");
+
       const payload = {
         firstName: values.firstName,
         lastName: values.lastName,
@@ -261,19 +272,19 @@ const EditApplicationCard: FC = () => {
         interpersonal: interpersonalSkillIds,
         certification: certificationIds,
         salaryRange: values.salaryRange,
-        country: values.country
+        country: values.country,
       };
-  
+
       await submitJobHunterProfile(payload).unwrap();
-      
+
       // Refresh user data in auth context
       await refreshUser();
-      
+
       navigate("/dashboard/feed");
     } catch (error) {
       showError(
-        'Profile Update Failed',
-        'Unable to update your application card. Please try again or contact support if the issue persists.'
+        "Profile Update Failed",
+        "Unable to update your application card. Please try again or contact support if the issue persists.",
       );
       console.error("Error submitting profile:", error);
     } finally {
@@ -290,21 +301,21 @@ const EditApplicationCard: FC = () => {
         onConfirm={handleFormSubmit}
       />
       {isSubmitting && <LoadingOverlay />}
-      
+
       <div className="flex flex-col xl:flex-row gap-8 pt-6">
         <div className="w-full md:w-[800px] min-h-[960px] bg-[#242625] md:bg-[#2D3A41] text-white">
           <div className="flex items-center relative w-full mb-6 md:mb-10">
             <NavLink to="/dashboard/feed" className="absolute left-4 top-6">
               <ChevronLeft strokeWidth={4} className="h-6 w-6 ml-4" />
             </NavLink>
-  
+
             <h1 className="flex-1 text-center text-xl md:text-[32px] pt-6 font-normal text-[#F5722E]">
               <span className="inline-flex items-center gap-2 justify-center">
                 Edit Your Application Card
               </span>
             </h1>
           </div>
-  
+
           <form
             onSubmit={handleSubmit}
             onKeyDown={handleKeyDown}
@@ -328,7 +339,7 @@ const EditApplicationCard: FC = () => {
                   />
                 </InputField>
               </div>
-  
+
               <div>
                 <InputField
                   label="Last Name"
@@ -345,7 +356,7 @@ const EditApplicationCard: FC = () => {
                   />
                 </InputField>
               </div>
-  
+
               {/* Birthday / Languages */}
               <div>
                 <InputField
@@ -360,7 +371,7 @@ const EditApplicationCard: FC = () => {
                   />
                 </InputField>
               </div>
-  
+
               <div>
                 <InputField
                   label="Languages"
@@ -378,7 +389,7 @@ const EditApplicationCard: FC = () => {
                   />
                 </InputField>
               </div>
-  
+
               {/* Email / Mobile */}
               <div>
                 <InputField
@@ -392,10 +403,11 @@ const EditApplicationCard: FC = () => {
                     value={values.emailAddress}
                     onChange={handleChange}
                     disabled={!!user?.data?.user?.email}
-                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD] disabled:opacity-50 disabled:cursor-not-allowed disabled:text-[#AEADAD]"                  />
+                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD] disabled:opacity-50 disabled:cursor-not-allowed disabled:text-[#AEADAD]"
+                  />
                 </InputField>
               </div>
-  
+
               <div>
                 <InputField
                   label="Mobile Number"
@@ -411,10 +423,10 @@ const EditApplicationCard: FC = () => {
                   />
                 </InputField>
               </div>
-  
+
               {/* Country / Employment */}
               <div>
-              <InputField
+                <InputField
                   label="Country of Residence"
                   error={errors.country}
                   touched={touched.country}
@@ -424,10 +436,12 @@ const EditApplicationCard: FC = () => {
                     onChange={(value) => setFieldValue("country", value)}
                     className="bg-transparent border-[#AEADAD] h-[56px] hover:text-white border-2 focus:border-[#F5722E] w-[335px] rounded-[8px] text-white placeholder:text-[#AEADAD] px-3 py-2"
                     popoverClassName="w-[335px]"
+                    handleToggle={handleToggle}
+                    open={open}
                   />
                 </InputField>
               </div>
-  
+
               <div>
                 <InputField
                   label="Employment Type"
@@ -443,7 +457,7 @@ const EditApplicationCard: FC = () => {
                   />
                 </InputField>
               </div>
-  
+
               {/* Education / Years */}
               <div>
                 <InputField
@@ -463,7 +477,9 @@ const EditApplicationCard: FC = () => {
                       {selectOptions.education.map(({ value, label }) => (
                         <SelectItem
                           key={value}
-                          className={cn("rounded-none justify-start pl-3 h-[55px]")}
+                          className={cn(
+                            "rounded-none justify-start pl-3 h-[55px]",
+                          )}
                           value={value}
                         >
                           <div className="py-3 w-full text-center">{label}</div>
@@ -473,7 +489,7 @@ const EditApplicationCard: FC = () => {
                   </Select>
                 </InputField>
               </div>
-  
+
               <div>
                 <InputField
                   label="Years of Experience"
@@ -483,26 +499,34 @@ const EditApplicationCard: FC = () => {
                   <Select
                     name="yearsOfExperience"
                     value={values.yearsOfExperience}
-                    onValueChange={(value) => setFieldValue("yearsOfExperience", value)}
+                    onValueChange={(value) =>
+                      setFieldValue("yearsOfExperience", value)
+                    }
                   >
                     <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
                       <SelectValue placeholder="Select Years of Experience" />
                     </SelectTrigger>
                     <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none">
-                      {selectOptions.yearsOfExperience.map(({ value, label }) => (
-                        <SelectItem
-                          key={value}
-                          className={cn("rounded-none justify-start pl-3 h-[55px]")}
-                          value={value}
-                        >
-                          <div className="py-3 w-full text-center">{label}</div>
-                        </SelectItem>
-                      ))}
+                      {selectOptions.yearsOfExperience.map(
+                        ({ value, label }) => (
+                          <SelectItem
+                            key={value}
+                            className={cn(
+                              "rounded-none justify-start pl-3 h-[55px]",
+                            )}
+                            value={value}
+                          >
+                            <div className="py-3 w-full text-center">
+                              {label}
+                            </div>
+                          </SelectItem>
+                        ),
+                      )}
                     </SelectContent>
                   </Select>
                 </InputField>
               </div>
-  
+
               {/* Core Skills / Salary */}
               <div>
                 <InputField
@@ -524,7 +548,7 @@ const EditApplicationCard: FC = () => {
                   />
                 </InputField>
               </div>
-  
+
               <div>
                 <InputField
                   label="Salary Range"
@@ -534,7 +558,9 @@ const EditApplicationCard: FC = () => {
                   <Select
                     name="salaryRange"
                     value={values.salaryRange}
-                    onValueChange={(value) => setFieldValue("salaryRange", value)}
+                    onValueChange={(value) =>
+                      setFieldValue("salaryRange", value)
+                    }
                   >
                     <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
                       <SelectValue placeholder="Select Salary Range" />
@@ -543,7 +569,9 @@ const EditApplicationCard: FC = () => {
                       {selectOptions.salaryRange.map(({ value, label }) => (
                         <SelectItem
                           key={value}
-                          className={cn("rounded-none justify-start pl-3 h-[55px]")}
+                          className={cn(
+                            "rounded-none justify-start pl-3 h-[55px]",
+                          )}
                           value={value}
                         >
                           <div className="py-3 w-full text-center">{label}</div>
@@ -553,7 +581,7 @@ const EditApplicationCard: FC = () => {
                   </Select>
                 </InputField>
               </div>
-  
+
               {/* Interpersonal / Certificates */}
               <div>
                 <InputField
@@ -566,7 +594,9 @@ const EditApplicationCard: FC = () => {
                 >
                   <InterpersonalSkillsTagInput
                     value={values.interpersonalSkills || []}
-                    onChange={(value) => setFieldValue("interpersonalSkills", value)}
+                    onChange={(value) =>
+                      setFieldValue("interpersonalSkills", value)
+                    }
                     className="h-[99px] pt-1 px-1"
                     alternateColors={{
                       firstColor: "#168AAD",
@@ -576,7 +606,7 @@ const EditApplicationCard: FC = () => {
                   />
                 </InputField>
               </div>
-  
+
               <div>
                 <InputField
                   label="Certificates"
@@ -596,7 +626,7 @@ const EditApplicationCard: FC = () => {
                 </InputField>
               </div>
             </div>
-  
+
             {/* Footer Button */}
             <div className="flex justify-center md:justify-end md:mt-[60px] mb-0">
               <Button

@@ -1,63 +1,236 @@
-import React from "react"
-import { ChevronDown } from "lucide-react"
-import { cn } from "lib/utils"
-import { Button } from "components"
+import { ChevronDown } from "lucide-react";
+import { cn } from "lib/utils";
+import { Button } from "components";
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
-} from "components"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "components"
+} from "components";
+import { Popover, PopoverContent, PopoverTrigger } from "components";
+import { memo } from "react";
 
 interface CountrySelectProps {
-  value: string
-  onChange: (value: string) => void
-  error?: string
-  className?: string
-  popoverClassName?: string
+  value: string;
+  onChange: (value: string) => void;
+  error?: string;
+  className?: string;
+  popoverClassName?: string;
+  open: boolean;
+  handleToggle: () => void;
 }
 
 const countries = [
-  "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria", 
-  "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", 
-  "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon", 
-  "Canada", "Cape Verde", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo", "Costa Rica", 
-  "Croatia", "Cuba", "Cyprus", "Czech Republic", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "East Timor", 
-  "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Ethiopia", "Fiji", "Finland", "France", 
-  "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", 
-  "Haiti", "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Ivory Coast", 
-  "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "North Korea", "South Korea", "Kuwait", "Kyrgyzstan", "Laos", 
-  "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Macedonia", "Madagascar", 
-  "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", 
-  "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", 
-  "New Zealand", "Nicaragua", "Niger", "Nigeria", "Norway", "Oman", "Pakistan", "Palau", "Palestine", "Panama", "Papua New Guinea", 
-  "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis", 
-  "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", 
-  "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", 
-  "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Swaziland", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", 
-  "Tanzania", "Thailand", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda", 
-  "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City", 
-  "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
-]
+  "Afghanistan",
+  "Albania",
+  "Algeria",
+  "Andorra",
+  "Angola",
+  "Antigua and Barbuda",
+  "Argentina",
+  "Armenia",
+  "Australia",
+  "Austria",
+  "Azerbaijan",
+  "Bahamas",
+  "Bahrain",
+  "Bangladesh",
+  "Barbados",
+  "Belarus",
+  "Belgium",
+  "Belize",
+  "Benin",
+  "Bhutan",
+  "Bolivia",
+  "Bosnia and Herzegovina",
+  "Botswana",
+  "Brazil",
+  "Brunei",
+  "Bulgaria",
+  "Burkina Faso",
+  "Burundi",
+  "Cambodia",
+  "Cameroon",
+  "Canada",
+  "Cape Verde",
+  "Central African Republic",
+  "Chad",
+  "Chile",
+  "China",
+  "Colombia",
+  "Comoros",
+  "Congo",
+  "Costa Rica",
+  "Croatia",
+  "Cuba",
+  "Cyprus",
+  "Czech Republic",
+  "Denmark",
+  "Djibouti",
+  "Dominica",
+  "Dominican Republic",
+  "East Timor",
+  "Ecuador",
+  "Egypt",
+  "El Salvador",
+  "Equatorial Guinea",
+  "Eritrea",
+  "Estonia",
+  "Ethiopia",
+  "Fiji",
+  "Finland",
+  "France",
+  "Gabon",
+  "Gambia",
+  "Georgia",
+  "Germany",
+  "Ghana",
+  "Greece",
+  "Grenada",
+  "Guatemala",
+  "Guinea",
+  "Guinea-Bissau",
+  "Guyana",
+  "Haiti",
+  "Honduras",
+  "Hungary",
+  "Iceland",
+  "India",
+  "Indonesia",
+  "Iran",
+  "Iraq",
+  "Ireland",
+  "Israel",
+  "Italy",
+  "Ivory Coast",
+  "Jamaica",
+  "Japan",
+  "Jordan",
+  "Kazakhstan",
+  "Kenya",
+  "Kiribati",
+  "North Korea",
+  "South Korea",
+  "Kuwait",
+  "Kyrgyzstan",
+  "Laos",
+  "Latvia",
+  "Lebanon",
+  "Lesotho",
+  "Liberia",
+  "Libya",
+  "Liechtenstein",
+  "Lithuania",
+  "Luxembourg",
+  "Macedonia",
+  "Madagascar",
+  "Malawi",
+  "Malaysia",
+  "Maldives",
+  "Mali",
+  "Malta",
+  "Marshall Islands",
+  "Mauritania",
+  "Mauritius",
+  "Mexico",
+  "Micronesia",
+  "Moldova",
+  "Monaco",
+  "Mongolia",
+  "Montenegro",
+  "Morocco",
+  "Mozambique",
+  "Myanmar",
+  "Namibia",
+  "Nauru",
+  "Nepal",
+  "Netherlands",
+  "New Zealand",
+  "Nicaragua",
+  "Niger",
+  "Nigeria",
+  "Norway",
+  "Oman",
+  "Pakistan",
+  "Palau",
+  "Palestine",
+  "Panama",
+  "Papua New Guinea",
+  "Paraguay",
+  "Peru",
+  "Philippines",
+  "Poland",
+  "Portugal",
+  "Qatar",
+  "Romania",
+  "Russia",
+  "Rwanda",
+  "Saint Kitts and Nevis",
+  "Saint Lucia",
+  "Saint Vincent and the Grenadines",
+  "Samoa",
+  "San Marino",
+  "Sao Tome and Principe",
+  "Saudi Arabia",
+  "Senegal",
+  "Serbia",
+  "Seychelles",
+  "Sierra Leone",
+  "Singapore",
+  "Slovakia",
+  "Slovenia",
+  "Solomon Islands",
+  "Somalia",
+  "South Africa",
+  "South Sudan",
+  "Spain",
+  "Sri Lanka",
+  "Sudan",
+  "Suriname",
+  "Swaziland",
+  "Sweden",
+  "Switzerland",
+  "Syria",
+  "Taiwan",
+  "Tajikistan",
+  "Tanzania",
+  "Thailand",
+  "Togo",
+  "Tonga",
+  "Trinidad and Tobago",
+  "Tunisia",
+  "Turkey",
+  "Turkmenistan",
+  "Tuvalu",
+  "Uganda",
+  "Ukraine",
+  "United Arab Emirates",
+  "United Kingdom",
+  "United States",
+  "Uruguay",
+  "Uzbekistan",
+  "Vanuatu",
+  "Vatican City",
+  "Venezuela",
+  "Vietnam",
+  "Yemen",
+  "Zambia",
+  "Zimbabwe",
+];
 
 const CountrySelect = ({
   value,
   onChange,
   error,
   className,
-  popoverClassName,  // Accept the new prop
+  popoverClassName,
+  handleToggle,
+  open,
 }: CountrySelectProps) => {
-  const [open, setOpen] = React.useState(false)
-
   return (
-    <div className="relative w-full"> {/* Changed from w-[410px] to w-full */}
-      <Popover open={open} onOpenChange={setOpen}>
+    <div className="relative w-full">
+      <Popover open={open} onOpenChange={handleToggle}>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
@@ -68,25 +241,24 @@ const CountrySelect = ({
               "border-0 rounded-none shadow-none hover:bg-transparent hover:no-underline focus:ring-0 focus:ring-offset-0",
               "text-[14px] text-[#263238] font-medium h-[38px]",
               error ? "border-red-500" : "",
-              className
+              className,
             )}
           >
             <span className="truncate">
               {value
                 ? countries.find(
-                    (country) => country.toLowerCase() === value.toLowerCase()
+                    (country) => country.toLowerCase() === value.toLowerCase(),
                   )
                 : "Select country..."}
             </span>
             <ChevronDown className="h-4 w-4 opacity-50 flex-shrink-0 ml-2" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className={cn("w-[410px] p-0 rounded-none", popoverClassName)}>
+        <PopoverContent
+          className={cn("w-[410px] p-0 rounded-none z-[60]", popoverClassName)}
+        >
           <Command>
-            <CommandInput 
-              placeholder="Search country..." 
-              className="h-9"
-            />
+            <CommandInput placeholder="Search country..." className="h-9" />
             <CommandEmpty>No country found.</CommandEmpty>
             <CommandGroup className="max-h-64 overflow-auto">
               {countries.map((country) => (
@@ -94,13 +266,14 @@ const CountrySelect = ({
                   key={country}
                   value={country}
                   onSelect={(currentValue) => {
-                    onChange(currentValue === value ? "" : currentValue)
-                    setOpen(false)
+                    onChange(currentValue === value ? "" : currentValue);
+                    handleToggle();
                   }}
                   className={cn(
                     "relative flex items-center px-4 py-2 text-[14px] font-normal",
                     "hover:bg-[#F5722E] hover:text-white",
-                    value.toLowerCase() === country.toLowerCase() && "bg-[#F5722E] text-white"
+                    value.toLowerCase() === country.toLowerCase() &&
+                      "bg-[#F5722E] text-white",
                   )}
                 >
                   {value.toLowerCase() === country.toLowerCase() && (
@@ -119,7 +292,7 @@ const CountrySelect = ({
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export { CountrySelect }
+export default memo(CountrySelect);
