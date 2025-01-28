@@ -20,6 +20,7 @@ interface TimezoneSelectorProps {
   className?: string;
   onTimezoneChange?: (timezone: string) => void;
   defaultTimezone?: string;
+  disabled?: boolean;
 }
 
 const POPULAR_TIMEZONES: TimezoneOption[] = [
@@ -42,60 +43,65 @@ const POPULAR_TIMEZONES: TimezoneOption[] = [
 ] as const;
 
 const TimezoneSelector: React.FC<TimezoneSelectorProps> = ({ 
-    className,
-    onTimezoneChange,
-    defaultTimezone = 'UTC'
-  }) => {
-    const [currentTimezone, setCurrentTimezone] = useState<string>(defaultTimezone);
-  
-    useEffect(() => {
-      if (defaultTimezone && defaultTimezone !== currentTimezone) {
-        setCurrentTimezone(defaultTimezone);
-      }
-    }, [defaultTimezone]);
-  
-    const handleTimezoneChange = (newTimezone: string) => {
-      setCurrentTimezone(newTimezone);
-      onTimezoneChange?.(newTimezone);
-    };
-  
-    return (
-      <div className={cn("relative pt-4", className)}>
-        <div className="relative">
-          <div className="absolute -top-3 left-4 bg-[#2D3A41] px-2 z-20">
-            <div className="flex items-center gap-2">
-              <Label className="text-sm font-normal text-white">Time zone</Label>
-              <Tooltip content="Select your preferred timezone. Times will be displayed according to this setting.">
-                <Info className="w-3 h-3 text-[#2D3A41] fill-white" />
-              </Tooltip>
-            </div>
-          </div>
-          <Select 
-            value={currentTimezone}
-            onValueChange={handleTimezoneChange}
-          >
-            <SelectTrigger 
-              className="bg-transparent text-white border-[#AEADAD] h-14 border-2"
-            >
-              <SelectValue>
-                {POPULAR_TIMEZONES.find(tz => tz.value === currentTimezone)?.label || 'Select timezone'}
-              </SelectValue>
-            </SelectTrigger>
-            <SelectContent className="bg-[#F5F5F7] max-h-80 overflow-y-auto rounded-none">
-              {POPULAR_TIMEZONES.map((timezone) => (
-                <SelectItem
-                  key={timezone.value}
-                  value={timezone.value}
-                  className="text-black py-3 hover:bg-orange-500 rounded-none"
-                >
-                  {timezone.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-    );
+  className,
+  onTimezoneChange,
+  defaultTimezone = 'UTC',
+  disabled = false
+}) => {
+  const [currentTimezone, setCurrentTimezone] = useState<string>(defaultTimezone);
+
+  useEffect(() => {
+    if (defaultTimezone && defaultTimezone !== currentTimezone) {
+      setCurrentTimezone(defaultTimezone);
+    }
+  }, [defaultTimezone]);
+
+  const handleTimezoneChange = (newTimezone: string) => {
+    setCurrentTimezone(newTimezone);
+    onTimezoneChange?.(newTimezone);
   };
+
+  return (
+    <div className={cn("relative pt-4", className)}>
+      <div className="relative">
+        <div className="absolute -top-3 left-4 bg-[#2D3A41] px-2 z-20">
+          <div className="flex items-center gap-2">
+            <Label className="text-sm font-normal text-white">Time zone</Label>
+            <Tooltip content="Select your preferred timezone. Times will be displayed according to this setting.">
+              <Info className="w-3 h-3 text-[#2D3A41] fill-white" />
+            </Tooltip>
+          </div>
+        </div>
+        <Select 
+          value={currentTimezone}
+          onValueChange={handleTimezoneChange}
+          disabled={disabled}
+        >
+          <SelectTrigger 
+            className={cn(
+              "bg-transparent text-white border-[#AEADAD] h-14 border-2",
+              disabled && "opacity-50 cursor-not-allowed"
+            )}
+          >
+            <SelectValue>
+              {POPULAR_TIMEZONES.find(tz => tz.value === currentTimezone)?.label || 'Select timezone'}
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent className="bg-[#F5F5F7] max-h-80 overflow-y-auto rounded-none">
+            {POPULAR_TIMEZONES.map((timezone) => (
+              <SelectItem
+                key={timezone.value}
+                value={timezone.value}
+                className="text-black py-3 hover:bg-orange-500 rounded-none"
+              >
+                {timezone.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+    </div>
+  );
+};
 
 export { TimezoneSelector }

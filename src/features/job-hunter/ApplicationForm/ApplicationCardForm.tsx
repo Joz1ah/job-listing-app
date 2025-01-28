@@ -266,7 +266,7 @@ const ApplicationCardForm: FC = () => {
             <div className="flex items-center relative w-full mb-6 md:mb-10">
               <h1 className="flex-1 text-center text-xl md:text-[32px] pt-6 font-normal text-[#F5722E]">
                 <span className="inline-flex items-center gap-2 justify-center">
-                  Create Your Application Card
+                  Complete Your Application Card
                 </span>
               </h1>
             </div>
@@ -358,7 +358,8 @@ const ApplicationCardForm: FC = () => {
                       value={values.emailAddress}
                       onChange={handleChange}
                       placeholder="Email Address"
-                      className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                      disabled={!!user?.data?.user?.email}
+                      className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD] disabled:opacity-50 disabled:cursor-not-allowed"
                     />
                   </InputField>
                 </div>
@@ -391,7 +392,6 @@ const ApplicationCardForm: FC = () => {
                     onChange={(value) => setFieldValue("country", value)}
                     className="bg-transparent border-[#AEADAD] h-[56px] hover:text-white border-2 focus:border-[#F5722E] w-[335px] rounded-[8px] text-white placeholder:text-[#AEADAD] px-3 py-2"
                     popoverClassName="w-[335px]"
-                    error={touched.country && errors.country ? errors.country : undefined}
                   />
                 </InputField>
               </div>

@@ -10,6 +10,7 @@ const inputWrapperVariants = cva("relative pt-4 w-full", {
       default: "",
       primary: "",
       secondary: "",
+      payment: "",
       tulleGray: "",
     },
   },
@@ -24,6 +25,7 @@ const labelVariants = cva("font-normal", {
       default: "text-white",
       primary: "text-white",
       secondary: "text-[#263238]",
+      payment: "text-[#263238]",
       tulleGray: "text-[#263238]",
     },
     size: {
@@ -44,6 +46,7 @@ const labelWrapperVariants = cva("absolute -top-3 left-4 px-2 z-20", {
       default: "bg-[#242625] md:bg-[#2D3A41]",
       primary: "bg-[#2D3A41]",
       secondary: "bg-white",
+      payment: "bg-[#F9E2CE]",
       tulleGray: "bg-[#F5F5F7]",
     },
   },
@@ -58,6 +61,7 @@ const alertIconVariants = cva("fill-[#E63946]", {
       default: "text-[#242625] md:text-[#2D3A41]",
       primary: "text-[#2D3A41]",
       secondary: "text-white",
+      payment: "bg-[#F5F5F7]",
       tulleGray: "bg-[#F5F5F7]",
     },
   },
@@ -72,6 +76,7 @@ const tooltipIconVariants = cva("relative -top-1 cursor-pointer", {
       default: "text-[#2D3A41] fill-[#AEADAD]",
       primary: "text-primary fill-[#AEADAD]",
       secondary: "text-gray-600 fill-gray-400",
+      payment: "text-gray-600 fill-gray-400",
       tulleGray: "text-gray-600 fill-gray-400",
     },
     size: {
@@ -97,7 +102,6 @@ interface InputFieldProps
   tooltipContent?: string | React.ReactNode;
   size?: "sm" | "md" | "lg";
   children: React.ReactNode;
-  variant?: "default" | "primary" | "secondary" | "tulleGray" | null;
 }
 
 const InputField = React.forwardRef<HTMLDivElement, InputFieldProps>(

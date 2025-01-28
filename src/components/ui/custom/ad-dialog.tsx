@@ -6,7 +6,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-  AlertDialogOverlay
+  AlertDialogOverlay,
+  AlertDialogDescription
 } from 'components';
 
 interface AdDialogWrapperProps {
@@ -20,7 +21,7 @@ const AdDialogWrapper = forwardRef<HTMLDivElement, AdDialogWrapperProps>(
     const navigate = useNavigate();
 
     const handleImageClick = () => {
-      navigate('account-settings/subscription');
+      navigate('/dashboard/account-settings/subscription');
       setIsOpen(false);
     };
 
@@ -40,6 +41,9 @@ const AdDialogWrapper = forwardRef<HTMLDivElement, AdDialogWrapperProps>(
         </AlertDialogTrigger>
         <AlertDialogOverlay className="bg-black/50" />
         <AlertDialogContent className="bg-white p-0 border-none">
+        <AlertDialogDescription className="hidden absolute" aria-hidden="false">
+            View subscription offer details
+          </AlertDialogDescription>
           <AlertDialogHeader>
             <AlertDialogTitle asChild>
               <img

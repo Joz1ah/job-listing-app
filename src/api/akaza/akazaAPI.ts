@@ -284,9 +284,9 @@ export const akazaApiAuth = createApiFunction({
         url: 'settings/update-password',
         method: 'POST',
         body: {
-          oldPassword: payload.oldPassword,
-          newPassword: payload.newPassword,
-          confirmPassword: payload.confirmPassword
+          "oldPassword": payload.oldPassword,
+          "newPassword": payload.newPassword,
+          "confirmPassword": payload.confirmPassword
         },
       }),
     }),
@@ -489,14 +489,61 @@ export const akazaApiAccount = createApiFunction({
       }
       return headers;
     },
-  }), 
+  }),
+  tagTypes: ['AccountSettings'],
   endpoints: (builder) => ({
     getUserInfo: builder.query({
       query: () => ({
         url: `account/info`,
         method: 'GET',
       }),
-      keepUnusedDataFor: 0,  // Remove unused data from the cache right away
+      keepUnusedDataFor: 0,
+    }),
+    getAccountSettings: builder.query({
+      query: () => ({
+        url: 'settings/account-setting-info',
+        method: 'GET',
+      }),
+      providesTags: ['AccountSettings'],
+    }),
+    updateAccountSettings: builder.mutation({
+      query: (payload) => ({
+        url: 'settings/account-settings',
+        method: 'POST',
+        body: {
+          timeZone: payload.timeZone,
+          theme: payload.theme,
+          pushNotification: payload.pushNotification,
+          emailNotification: payload.emailNotification,
+          smsNotification: payload.smsNotification
+        },
+      }),
+      invalidatesTags: ['AccountSettings'],
+      // Add optimistic updates
+      async onQueryStarted(patch, { dispatch, queryFulfilled }) {
+        // Get the current cache key
+        const patchResult = dispatch(
+          akazaApiAccount.util.updateQueryData('getAccountSettings', undefined, (draft) => {
+            // Update the cached data optimistically
+            if (draft?.data) {
+              Object.assign(draft.data, {
+                timeZone: patch.timeZone,
+                theme: patch.theme,
+                pushNotification: patch.pushNotification,
+                emailNotification: patch.emailNotification,
+                smsNotification: patch.smsNotification
+              });
+            }
+          })
+        );
+
+        try {
+          await queryFulfilled;
+        } catch {
+          // If the mutation fails, undo the optimistic update
+          patchResult.undo();
+        }
+      },
     }),
   }),
 });
@@ -583,7 +630,9 @@ export const {
 
 
 export const {
-  useGetUserInfoQuery
+  useGetUserInfoQuery,
+  useGetAccountSettingsQuery,
+  useUpdateAccountSettingsMutation
 } = akazaApiAccount
 
 export const {

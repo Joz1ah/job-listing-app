@@ -2,6 +2,7 @@ stages:
   - build
   - docker_build
   - docker_push
+  - docker_promote
   - deployment
 
 build:
@@ -12,6 +13,7 @@ build:
     - npm run build
   only:
     - main
+    - production
 
 docker_build:
   stage: docker_build
@@ -20,10 +22,10 @@ docker_build:
   script:
     - echo "Building Docker image..."
     - echo $CI_COMMIT_SHA
-    - docker build --no-cache --platform linux/amd64 -t gcr.io/$GOOGLE_PROJECT_ID/akaza-app:$CI_COMMIT_SHA .    
+    - docker build --no-cache --platform linux/amd64 -t gcr.io/$GOOGLE_PROJECT_ID/akaza-app:$CI_COMMIT_SHA .
   only:
     - main
-
+    - production
 
 docker_push:
   stage: docker_push
@@ -41,8 +43,28 @@ docker_push:
     - docker push gcr.io/$GOOGLE_PROJECT_ID/akaza-app:$CI_COMMIT_SHA
   only:
     - main
+    - production    
   variables:
     GOOGLE_APPLICATION_CREDENTIALS: /tmp/sa-key.json
+
+docker_promote:
+  stage: docker_promote
+  image: google/cloud-sdk:latest
+  before_script:
+    - echo "$SERVICE_ACCOUNT_KEYS" > /tmp/key.json  
+    - gcloud auth activate-service-account --key-file=/tmp/key.json
+    - gcloud config set project $GOOGLE_PROJECT_ID
+    - gcloud auth configure-docker gcr.io
+  script:
+    - echo "Promoting Docker image to production..."
+    - docker pull gcr.io/$GOOGLE_PROJECT_ID/akaza-app:$CI_COMMIT_SHA
+    - docker tag gcr.io/$GOOGLE_PROJECT_ID/akaza-app:$CI_COMMIT_SHA gcr.io/$GOOGLE_PROJECT_ID/production-app:$CI_COMMIT_SHA
+    - docker push gcr.io/$GOOGLE_PROJECT_ID/production-app:$CI_COMMIT_SHA
+  only:
+    - production
+  variables:
+    GOOGLE_APPLICATION_CREDENTIALS: /tmp/key.json
+
 deployment:
   stage: deployment
   image: google/cloud-sdk:latest
@@ -50,6 +72,18 @@ deployment:
     - echo "Setting up SSH key for remote access"
     - apt-get update && apt-get install -y jq
     - mkdir -p ~/.ssh
+    - |
+      if [[ "$CI_COMMIT_REF_NAME" == "production" ]]; then
+        echo "$SSH_PRIVATE_KEY" | sed 's/\r$//' > ~/.ssh/id_rsa
+        export SSH_HOST="$SSH_HOST_APP"
+        export SSH_USER="$SSH_USER_PRODUCTION_SERVICE"
+        echo "Production deployment: Using SSH_USER=$SSH_USER and SSH_HOST=$SSH_HOST"
+      else
+        echo "$SSH_PRIVATE_KEY" | sed 's/\r$//' > ~/.ssh/id_rsa
+        export SSH_HOST="$SSH_HOST"
+        export SSH_USER="$SSH_USER"
+        echo "Non-production deployment: Using SSH_USER=$SSH_USER and SSH_HOST=$SSH_HOST"
+      fi    
     - echo "$SSH_PRIVATE_KEY" | sed 's/\r$//' > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
     - ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
@@ -57,26 +91,45 @@ deployment:
   script:
     - echo "Please wait deploying to the remote server..."
     - |
+      APP_COMMIT_SHA=$(curl --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" "https://git.instance-20240927-104826.com/api/v4/projects/1/pipelines" | jq -r '.[0].sha')
       API_SIGNUP_COMMIT_SHA=$(curl --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" "https://git.instance-20240927-104826.com/api/v4/projects/7/pipelines" | jq -r '.[0].sha')      
       API_AUTH_COMMIT_SHA=$(curl --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" "https://git.instance-20240927-104826.com/api/v4/projects/10/pipelines" | jq -r '.[0].sha')
-      API_PAYMENT_COMMIT_SHA=$(curl --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" "https://git.instance-20240927-104826.com/api/v4/projects/14/pipelines" | jq -r '.[0].sha')      
-      API_SEARCH_COMMIT_SHA=$(curl --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" "https://git.instance-20240927-104826.com/api/v4/projects/15/pipelines" | jq -r '.[0].sha')      
+      API_PAYMENT_COMMIT_SHA=$(curl --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" "https://git.instance-20240927-104826.com/api/v4/projects/14/pipelines" | jq -r '.[0].sha')
+      API_SEARCH_COMMIT_SHA=$(curl --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" "https://git.instance-20240927-104826.com/api/v4/projects/15/pipelines" | jq -r '.[0].sha')
       API_JOBFEED_COMMIT_SHA=$(curl --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" "https://git.instance-20240927-104826.com/api/v4/projects/12/pipelines" | jq -r '.[0].sha')
       API_PERFECTMATCH_COMMIT_SHA=$(curl --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" "https://git.instance-20240927-104826.com/api/v4/projects/18/pipelines" | jq -r '.[0].sha')
       API_NOTIFICATION_COMMIT_SHA=$(curl --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" "https://git.instance-20240927-104826.com/api/v4/projects/21/pipelines" | jq -r '.[0].sha')    
+      API_INTERVIEW_COMMIT_SHA=$(curl --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" "https://git.instance-20240927-104826.com/api/v4/projects/22/pipelines" | jq -r '.[0].sha')    
       API_ACCOUNT_COMMIT_SHA=$(curl --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" "https://git.instance-20240927-104826.com/api/v4/projects/24/pipelines" | jq -r '.[0].sha')
-
-      echo "Retrieved commit API_SIGNUP_COMMIT_SHA: $API_SIGNUP_COMMIT_SHA"
+      API_SETTING_COMMIT_SHA=$(curl --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" "https://git.instance-20240927-104826.com/api/v4/projects/25/pipelines" | jq -r '.[0].sha')
+      echo "Retrieved commit APP_COMMIT_SHA: $APP_COMMIT_SHA"
       echo "Retrieved commit API_AUTH_COMMIT_SHA: $API_AUTH_COMMIT_SHA"
       echo "Retrieved commit API_PAYMENT_COMMIT_SHA: $API_PAYMENT_COMMIT_SHA"
       echo "Retrieved commit API_SEARCH_COMMIT_SHA: $API_SEARCH_COMMIT_SHA"
       echo "Retrieved commit API_JOBFEED_COMMIT_SHA: $API_JOBFEED_COMMIT_SHA"
       echo "Retrieved commit API_PERFECTMATCH_COMMIT_SHA: $API_PERFECTMATCH_COMMIT_SHA"
       echo "Retrieved commit API_NOTIFICATION_COMMIT_SHA: $API_NOTIFICATION_COMMIT_SHA"
+      echo "Retrieved commit API_INTERVIEW_COMMIT_SHA: $API_INTERVIEW_COMMIT_SHA"
       echo "Retrieved commit API_ACCOUNT_COMMIT_SHA: $API_ACCOUNT_COMMIT_SHA"
-      
-      ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "/home/sit-deployer/sit/akaza-app/deploy.sh $CI_COMMIT_SHA $API_SIGNUP_COMMIT_SHA $API_AUTH_COMMIT_SHA $API_PAYMENT_COMMIT_SHA $API_SEARCH_COMMIT_SHA $API_JOBFEED_COMMIT_SHA $API_PERFECTMATCH_COMMIT_SHA $API_NOTIFICATION_COMMIT_SHA $API_ACCOUNT_COMMIT_SHA"
+      echo "Retrieved commit API_SETTING_COMMIT_SHA: $API_SETTING_COMMIT_SHA"
+      echo "SSH_USER: $SSH_USER"
+      echo "SSH_HOST: $SSH_HOST"
+      echo "Checking for deploy.sh..."
+      echo -e "$GOOGLE_PROJECT_ID\n$API_SIGNUP_COMMIT_SHA\n$APP_COMMIT_SHA\n$API_AUTH_COMMIT_SHA\n$API_PAYMENT_COMMIT_SHA\n$API_SEARCH_COMMIT_SHA\n$API_JOBFEED_COMMIT_SHA\n$API_PERFECTMATCH_COMMIT_SHA\n$API_NOTIFICATION_COMMIT_SHA\n$API_INTERVIEW_COMMIT_SHA\n$API_ACCOUNT_COMMIT_SHA\n$API_SETTING_COMMIT_SHA" > /tmp/deploy_vars.txt
+      echo "Verifying deploy_vars.txt exists in /tmp"
+      ls -l /tmp/deploy_vars.txt
+      echo "Transferring deploy_vars.txt to remote server"
+      scp /tmp/deploy_vars.txt $SSH_USER@$SSH_HOST:/tmp/deploy_vars.txt
+      echo "Deploying to remote server"
+      if [[ "$CI_COMMIT_REF_NAME" == "production" ]]; then
+        DEPLOY_PATH="/home/production"
+        ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "$DEPLOY_PATH/deploy.sh $CI_COMMIT_SHA" 
+      else
+        DEPLOY_PATH="/home/sit-deployer/sit/akaza-app"
+        ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "$DEPLOY_PATH/deploy.sh  /tmp/deploy_vars.txt" 
+      fi      
   only:
     - main
+    - production    
   variables:
     GOOGLE_APPLICATION_CREDENTIALS: /tmp/key.json

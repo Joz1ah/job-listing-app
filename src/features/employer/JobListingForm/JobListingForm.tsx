@@ -61,7 +61,13 @@ const validationSchema = Yup.object().shape({
   salaryRange: Yup.string().required("This field is required"),
   yearsOfExperience: Yup.string().required("This field is required"),
   priorityIndicator: Yup.string().required("This field is required"),
-  jobDescription: Yup.string().required("This field is required"),
+  jobDescription: Yup.string()
+  .required("This field is required")
+  .test(
+    "maxWords",
+    "Must not exceed 500 words",
+    value => value?.split(/\s+/).filter(Boolean).length <= 500
+  ),
   coreSkills: Yup.array()
     .min(3, "Please add at least 3 core skills")
     .required("This field is required"),
@@ -130,12 +136,18 @@ const JobListingForm: FC = () => {
       await refreshUser();
 
       navigate("/dashboard");
-    } catch (error) {
-      showError(
-        'Job Listing Creation Failed',
-        'Unable to create job listing. Please try again or contact support.'
-      );
-      console.error("Error submitting job:", error);
+    } catch (error: any) {
+      if (error?.data?.errors === "Job listing already exists.") {
+        showError(
+          'Job Listing Creation Failed',
+          'Job listing already exists. Please use a different Job title.'
+        );
+      } else {
+        showError(
+          'Job Listing Creation Failed',
+          'An unexpected error occurred while creating your job listing.'
+        );
+      }
     } finally {
       setIsSubmitting(false);
     }

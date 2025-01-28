@@ -31,7 +31,7 @@ export interface JobMatch {
 
 // Sample data for employer view (applicants)
 export const employerMatches: EmployerMatch[] = [
-    {
+    /* {
         id: 1,
         firstName: "Olivia",
         lastName: "Davis",
@@ -95,12 +95,12 @@ export const employerMatches: EmployerMatch[] = [
         salaryExpectation: "$81,000-$100,000",
         language: ["English"],
         isNew: false
-    }
+    } */
 ];
 
 // Sample data for job hunter view (job listings)
 export const jobMatches: JobMatch[] = [
-    {
+    /* {
         employerId: 1,
         position: "Software Engineer",
         company: "Fintech Solutions Ltd",
@@ -159,5 +159,5 @@ export const jobMatches: JobMatch[] = [
         lookingFor: ["Full Time", "Part Time"],
         salaryExpectation: "$81,000-$100,000",
         isNew: false
-    }
+    } */
 ];

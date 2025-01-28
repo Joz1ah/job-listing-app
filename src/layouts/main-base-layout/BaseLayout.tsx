@@ -1,4 +1,3 @@
-// layouts/BaseLayout.tsx
 import { FC, useState, useEffect, useMemo } from "react";
 import { Outlet } from "react-router-dom";
 import { useMenu } from "hooks";
@@ -54,7 +53,6 @@ const AuthenticatedLayoutContent: FC = () => {
   const desktopMenuItems = isEmployer ? employerDesktopMenu : jobHunterDesktopMenu;
   const mobileMenuItems = isEmployer ? employerMobileMenu : jobHunterMobileMenu;
   
-  // Compute display name based on user type and profile data
   const displayName = useMemo(() => {
     if (!user) return isEmployer ? "Company Name" : "User Name";
     
@@ -126,12 +124,27 @@ const AuthenticatedLayoutContent: FC = () => {
 const BaseLayout: FC = () => {
   const { user } = useAuth();
   const userType = user?.data?.user?.type;
-  const storedTier = localStorage.getItem('subscriptionTier') as SubscriptionPlan || 'freeTrial';
+  
+  // Get subscription plan from user info
+  const getSubscriptionPlan = (): SubscriptionPlan => {
+    const activeSubscription = user?.data?.user?.subscriptions?.[0];
+    
+    // If there's an active subscription, return its plan (Monthly or Yearly)
+    if (activeSubscription?.status === 'active') {
+      if (activeSubscription.plan === 'Monthly') return 'monthlyPlan';
+      if (activeSubscription.plan === 'Yearly') return 'yearlyPlan';
+    }
+    
+    // Default to freeTrial
+    return 'freeTrial';
+  };
+
+  const subscriptionPlan = getSubscriptionPlan();
 
   // Render the appropriate provider based on user type
   if (userType === 'employer') {
     return (
-      <EmployerProvider initialTier={storedTier}>
+      <EmployerProvider initialTier={subscriptionPlan}>
         <AuthenticatedLayoutContent />
       </EmployerProvider>
     );
@@ -139,7 +152,7 @@ const BaseLayout: FC = () => {
 
   if (userType === 'job_hunter') {
     return (
-      <JobHunterProvider initialTier={storedTier}>
+      <JobHunterProvider initialTier={subscriptionPlan}>
         <AuthenticatedLayoutContent />
       </JobHunterProvider>
     );
