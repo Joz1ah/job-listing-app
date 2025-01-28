@@ -3,8 +3,6 @@ import { NavLink, Link, useLocation } from "react-router-dom";
 import { Button } from "components/ui/shadcn/buttons";
 import { ChevronDown, Plus, ChevronUp } from "lucide-react";
 import { NotificationFeed } from "components";
-/* import { Info } from "lucide-react";
-import verifiedIcon from "images/verified.svg?url"; */
 import companyLogo from "images/company-logo.png";
 import akazaLogoWhite from "images/akaza-logo-white.png";
 import menuButton from "images/menu-button.png";
@@ -110,13 +108,6 @@ const BaseMenu: FC<MenuProps> = ({
     }
   };
 
-/*   const renderStatusIcon = () => {
-    if (subscriptionPlan === 'freeTrial') {
-      return <Info className="w-4 h-4 text-[#2D3A41] fill-white" />;
-    }
-    return <img src={verifiedIcon} className="w-4 h-4" alt="Verified" />;
-  }; */
-
   const handleNotificationClick = () => {
     if (isMenuOpen) {
       onToggleMenu();
@@ -126,8 +117,8 @@ const BaseMenu: FC<MenuProps> = ({
   const renderMenuItem = (item: NavItem) => {
     const baseClassName = `${
       item.isSpecial
-        ? "text-[#F5722E] hover:text-orange-600"
-        : "hover:text-[#F5722E]"
+        ? "text-[#F5722E] transition-colors duration-200 ease-in-out hover:text-[#F5722E]/80"
+        : "transition-colors duration-200 ease-in-out hover:text-[#F5722E]"
     } py-3 sm:py-2 inline-block text-sm`;
 
     if (item.isAction) {
@@ -180,22 +171,22 @@ const BaseMenu: FC<MenuProps> = ({
           <div className="flex items-center gap-4 lg:gap-8">
             <nav className="flex-shrink">
               <ul className="flex gap-4 lg:gap-8 text-white text-[14px] lg:text-[16px] font-light whitespace-nowrap items-center">
-                <li className="hover:text-[#F5722E]">
+                <li className="transition-colors duration-200 ease-in-out hover:text-[#F5722E]">
                   <NavLink to='/about-us' onClick={handleNavLinkClick}>
                     About us
                   </NavLink>
                 </li>
-                <li className="hover:text-[#F5722E]">
+                <li className="transition-colors duration-200 ease-in-out hover:text-[#F5722E]">
                   <NavLink to='/contact-us' onClick={handleNavLinkClick}>
                     Contact us
                   </NavLink>
                 </li>
-                <li className="hover:text-[#F5722E]">
+                <li className="transition-colors duration-200 ease-in-out hover:text-[#F5722E]">
                   <NavLink to='/subscription-plan' onClick={handleNavLinkClick}>
                     Subscription plans
                   </NavLink>
                 </li>
-                <li className="hover:text-[#F5722E]">
+                <li className="transition-colors duration-200 ease-in-out hover:text-[#F5722E]">
                   <Link to='https://support.akaza.io/' onClick={handleNavLinkClick}>
                     FAQ
                   </Link>
@@ -233,13 +224,12 @@ const BaseMenu: FC<MenuProps> = ({
             <>
               {renderNotificationFeed()}
               <div className="flex items-center gap-2 flex-shrink-0 min-w-0">
-              <span 
-                className="text-white font-medium text-[14px] lg:text-[18px] truncate block max-w-[100px] lg:max-w-[200px]"
-                title={userName}
-              >
-                {userName}
-              </span>
-                {/* {renderStatusIcon()} */}
+                <span 
+                  className="text-white font-medium text-[14px] lg:text-[18px] truncate block max-w-[100px] lg:max-w-[200px]"
+                  title={userName}
+                >
+                  {userName}
+                </span>
                 <div className="relative w-6 h-6">
                   <div
                     className={`absolute inset-0 transform transition-all duration-300 ease-in-out ${
@@ -278,39 +268,19 @@ const BaseMenu: FC<MenuProps> = ({
       </header>
 
       {/* Mobile Header */}
-      <header className="md:hidden bg-[#2D3A41] py-4 px-2 flex justify-between items-center z-50 shadow-md">
+      <header className="md:hidden bg-[#080808] py-4 px-2 flex justify-between items-center z-50 shadow-md">
         <img src={akazaLogoWhite} alt="Akaza Logo" className="h-8" />
         <div className="flex items-center space-x-4">
-          {isAuthenticated ? (
-            <>
-              {renderNotificationFeed()}
-              <Button
-                variant="custom"
-                className="text-[#F5722E] bg-transparent"
-                size="icon"
-                onClick={onToggleMenu}
-                aria-label="Toggle menu"
-              >
-                <img src={menuButton} className="h-12 w-12" alt="Menu" />
-              </Button>
-            </>
-          ) : (
-            <>
-              <div className="flex items-center gap-4">
-                {ButtonLoginNav && <ButtonLoginNav />}
-                {ButtonSignUpNav && <ButtonSignUpNav />}
-              </div>
-              <Button
-                variant="custom"
-                className="text-[#F5722E] bg-transparent"
-                size="icon"
-                onClick={onToggleMenu}
-                aria-label="Toggle menu"
-              >
-                <img src={menuButton} className="h-12 w-12" alt="Menu" />
-              </Button>
-            </>
-          )}
+          {isAuthenticated && renderNotificationFeed()}
+          <Button
+            variant="custom"
+            className="text-[#F5722E] bg-transparent"
+            size="icon"
+            onClick={onToggleMenu}
+            aria-label="Toggle menu"
+          >
+            <img src={menuButton} className="h-12 w-12" alt="Menu" />
+          </Button>
         </div>
       </header>
 
@@ -329,10 +299,22 @@ const BaseMenu: FC<MenuProps> = ({
           className={`fixed top-0 right-0 h-screen w-full md:w-[440px] bg-black text-white shadow-xl transition-transform duration-500 ease-in-out z-[999] ${
             isMenuOpen ? "translate-x-0" : "translate-x-full"
           }`}
-          style={{ marginTop: isMobile ? "72px" : "72px" }}
+          style={{ marginTop: isMobile ? "71px" : "71px" }}
         >
           <div className="h-full overflow-y-auto">
             <nav className="flex flex-col text-white w-full pt-6">
+              {/* Login/Signup buttons at top of sliding menu for mobile */}
+              {!isAuthenticated && isMobile && (
+                <>
+                  <div className="flex flex-row justify-center gap-4 px-2 sm:pr-4 sm:pl-0 mb-4">
+                    {ButtonLoginNav && <ButtonLoginNav />}
+                    {ButtonSignUpNav && <ButtonSignUpNav />}
+                  </div>
+                  <div className="flex justify-center w-full">
+                    <hr className="border-t border-white w-full my-0" />
+                  </div>
+                </>
+              )}
               {currentMenuItems.map((item, index) => (
                 <div key={`${item.path}-${index}`}>
                   <div className="w-full text-end px-2 sm:pr-4 sm:pl-0">
@@ -356,6 +338,8 @@ const BaseMenu: FC<MenuProps> = ({
                   )}
                 </div>
               ))}
+              
+
             </nav>
           </div>
         </div>
