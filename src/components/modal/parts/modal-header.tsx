@@ -21,7 +21,9 @@ const ModalHeader = () => {
               src={close_icon}
               alt="Close"
               style={{ width: "24px", height: "24px", marginLeft: "auto" }}
-              onClick={toggleModal}
+              onClick={() => {
+                toggleModal();
+              }}
             />
           </div>
           <div className={`${styles["modal-divider"]}`}></div>

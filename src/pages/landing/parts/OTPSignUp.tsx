@@ -37,6 +37,8 @@ const OTPSignUp = () => {
 
   const [isLoading, setIsLoading] = useState(false);
 
+  const otpTimerRef = useRef<NodeJS.Timeout>();
+
   const handleLogin = async (values: AutoLoginFormValues) => {
     try {
       await loginSubmit(values)
@@ -169,20 +171,22 @@ const OTPSignUp = () => {
   const [countdown, setCountdown] = useState(180);
 
   useEffect(() => {
-    // Start the countdown when component mounts
-    const timer = setInterval(() => {
-      setCountdown((prevCount) => {
-        if (prevCount <= 0) {
-          clearInterval(timer);
-          return 0;
-        }
-        return prevCount - 1;
-      });
-    }, 1000);
+    if (modalState === MODAL_STATES.SIGNUP_STEP3) {
+      // Start the countdown when component mounts
+      otpTimerRef.current = setInterval(() => {
+        setCountdown((prevCount) => {
+          if (prevCount <= 0) {
+            clearInterval(otpTimerRef.current);
+            return 0;
+          }
+          return prevCount - 1;
+        });
+      }, 1000);
+    }
 
     // Cleanup timer on component unmount
-    return () => clearInterval(timer);
-  }, [countdown]);
+    return () => clearInterval(otpTimerRef.current);
+  }, [modalState]);
 
   const handleResendClick = async () => {
     try {

@@ -33,7 +33,7 @@ const PerfectMatchResultsModal = () => {
     handleSetHeroState(HERO_STATES.PERFECT_MATCH_ALGO);
 
     // Then open the modal with the updated state
-    toggleModal();
+    toggleModal(true);
   };
 
   return (

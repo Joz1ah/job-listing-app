@@ -15,13 +15,15 @@ export const modalSlice = createSlice({
   name: "modal",
   initialState,
   reducers: {
-    toggle: (state) => {
+    toggle: (state, action: PayloadAction<boolean>) => {
+      const modalState = action.payload;
+
       return {
         ...state,
         selectedModalHeader: !state.isOpen
           ? MODAL_HEADER_TYPE.WITH_LOGO_AND_CLOSE
           : state.selectedModalHeader,
-        isOpen: !state.isOpen,
+        isOpen: modalState,
       };
     },
     setModalHeader: (state, action: PayloadAction<MODAL_HEADER_TYPE>) => {

@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import styles from "./../landing.module.scss";
 import * as Yup from "yup";
 import { useLanding } from "../useLanding";
@@ -9,8 +9,6 @@ import { HERO_STATES } from "store/hero/hero.types";
 
 const HeroYearsOfExperienceJobHunter = () => {
   const { heroState, handleSetHeroState } = useLanding();
-  const heroNextButton = useRef<HTMLDivElement>(null);
-  const heroPreviousButton = useRef<HTMLDivElement>(null);
   const [selectedExperience, setSelectedExperience] = useState("");
   const [error, setError] = useState("");
 
@@ -18,7 +16,7 @@ const HeroYearsOfExperienceJobHunter = () => {
     experience: Yup.string().required("This field is required"),
   });
 
-  const validateExperience = async () => {
+  const validateExperience = useCallback(async () => {
     try {
       await validationSchema.validate(
         { experience: selectedExperience },
@@ -31,7 +29,7 @@ const HeroYearsOfExperienceJobHunter = () => {
       }
       return false;
     }
-  };
+  }, [selectedExperience]);
 
   const handleExperienceSelect = (experience: string) => {
     setSelectedExperience(experience);
@@ -47,25 +45,18 @@ const HeroYearsOfExperienceJobHunter = () => {
     "10+ years",
   ];
 
-  const heroScreenActions = () => {
-    if (heroNextButton.current) {
-      heroNextButton.current.onclick = async () => {
-        const isValid = await validateExperience();
-        if (isValid) {
-          setError("");
-          handleSetHeroState(HERO_STATES.LOADING);
-        }
-      };
+  const handleClickNext = useCallback(async () => {
+    const isValid = await validateExperience();
+    if (isValid) {
+      setError("");
+      handleSetHeroState(HERO_STATES.LOADING);
     }
-    if (heroPreviousButton.current) {
-      heroPreviousButton.current.onclick = () => {
-        setError("");
-        handleSetHeroState(HERO_STATES.SKILLSETS_JOBHUNTER);
-      };
-    }
-  };
+  }, [validateExperience]);
 
-  useEffect(heroScreenActions, [selectedExperience]);
+  const handleClickPrevious = () => {
+    setError("");
+    handleSetHeroState(HERO_STATES.SKILLSETS_JOBHUNTER);
+  };
 
   return (
     <div
@@ -106,22 +97,22 @@ const HeroYearsOfExperienceJobHunter = () => {
             </div>
           )}
           <div className={`${styles["hero-button-container2"]}`}>
-            <div
-              ref={heroNextButton}
-              className={`${styles["button-custom-orange"]} ${styles["noselect"]}`}
+            <button
+              onClick={handleClickNext}
+              className={`${styles["button-custom-orange"]} ${styles["noselect"]} z-50`}
             >
               Next
-            </div>
-            <div
-              ref={heroPreviousButton}
-              className={`${styles["button-custom-transparent"]} ${styles["noselect"]}`}
+            </button>
+            <button
+              onClick={handleClickPrevious}
+              className={`${styles["button-custom-transparent"]} ${styles["noselect"]} z-50`}
             >
               <img
                 className={`${styles["caret-left"]}`}
                 src={arrow_left_icon}
               ></img>
               <div>Previous</div>
-            </div>
+            </button>
           </div>
         </div>
       </div>
