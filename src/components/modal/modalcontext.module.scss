@@ -52,6 +52,10 @@ body:has(.requires-no-scroll:not([hidden])) {
   padding: 6px 31px 9px 19px;
   align-items: center;
   width: 100%;
+  
+  @media (max-width: 768px) {
+    padding: 3px 16px 4px 9px;
+  }
 }
 
 .modal-content-wrapper {

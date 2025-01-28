@@ -17,6 +17,12 @@ module.exports = {
       fontFamily: {
         sans: ['Poppins', 'sans-serif'],
       },
+      width: {
+        'modal-image-w': '10rem',
+      },
+      height: {
+        'modal-image-h': '12rem',
+      },
       fontWeight: {
         light: 300,
         normal: 400,
