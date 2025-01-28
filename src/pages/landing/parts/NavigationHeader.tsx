@@ -16,6 +16,7 @@ const NavigationHeader = () => {
       ButtonLoginNav={() => (
         <ButtonNav
           handleSetState={() => handleSetModalState(MODAL_STATES.LOGIN)}
+          onClick={() => menuOpen ? toggleMenu() : null}
           btnFor="login"
         />
       )}
@@ -24,6 +25,7 @@ const NavigationHeader = () => {
           handleSetState={() =>
             handleSetModalState(MODAL_STATES.SIGNUP_SELECT_USER_TYPE)
           }
+          onClick={() => menuOpen ? toggleMenu() : null}
           btnFor="signup"
         />
       )}
