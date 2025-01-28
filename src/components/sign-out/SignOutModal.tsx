@@ -1,9 +1,11 @@
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { X } from 'lucide-react';
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { X } from "lucide-react";
 import companyLogo from "images/company-logo.png";
-import { useAuth } from 'contexts/AuthContext/AuthContext';
-import { useErrorModal } from 'contexts/ErrorModalContext/ErrorModalContext';
+import { useAuth } from "contexts/AuthContext/AuthContext";
+import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
+import { resetAction } from "store/store";
+import { useDispatch } from "react-redux";
 
 interface SignOutModalProps {
   isOpen: boolean;
@@ -14,20 +16,21 @@ const SignOutModal = ({ isOpen, onClose }: SignOutModalProps) => {
   const navigate = useNavigate();
   const { logout } = useAuth();
   const { showError } = useErrorModal();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+      if (event.key === "Escape") {
         onClose();
       }
     };
 
     if (isOpen) {
-      document.addEventListener('keydown', handleEscape);
+      document.addEventListener("keydown", handleEscape);
     }
 
     return () => {
-      document.removeEventListener('keydown', handleEscape);
+      document.removeEventListener("keydown", handleEscape);
     };
   }, [isOpen, onClose]);
 
@@ -42,23 +45,24 @@ const SignOutModal = ({ isOpen, onClose }: SignOutModalProps) => {
       await logout();
       localStorage.clear();
       sessionStorage.clear();
+      dispatch(resetAction());
       onClose();
-      navigate('/');
+      navigate("/");
     } catch (error) {
       showError(
-        'Sign Out Failed',
-        'Unable to sign out properly. Please try again or contact support if the issue persists.'
+        "Sign Out Failed",
+        "Unable to sign out properly. Please try again or contact support if the issue persists.",
       );
-      console.error('Sign out failed:', error);
+      console.error("Sign out failed:", error);
     }
   };
 
   return (
-    <div 
+    <div
       className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
       onClick={onClose}
     >
-      <div 
+      <div
         className="bg-[#2D3A41] w-full max-w-[740px] h-[300px] relative"
         onClick={handleContentClick}
       >
@@ -74,11 +78,7 @@ const SignOutModal = ({ isOpen, onClose }: SignOutModalProps) => {
         <div className="flex flex-col h-full">
           {/* Logo section with bottom border */}
           <div className="p-4 border-b border-gray-600">
-            <img 
-              src={companyLogo}
-              alt="Logo" 
-              className="w-[150px] h-12"
-            />
+            <img src={companyLogo} alt="Logo" className="w-[150px] h-12" />
           </div>
 
           <div className="mt-4">
@@ -109,4 +109,4 @@ const SignOutModal = ({ isOpen, onClose }: SignOutModalProps) => {
   );
 };
 
-export { SignOutModal }
+export { SignOutModal };
