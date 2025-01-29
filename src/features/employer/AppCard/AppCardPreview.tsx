@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Bookmark, MapPin, MoreVertical } from "lucide-react";
+import sparkle_icon from "assets/images/sparkle-icon.png";
 import {
   Card,
   CardHeader,
@@ -109,7 +110,8 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
     <div className="flex flex-col items-center md:items-start md:w-[436px] pb-6">
       <div className="flex justify-center md:justify-start items-center flex-wrap text-white text-base mb-6 md:mb-2 px-6 md:px-0">
         <span>This is how your</span>
-        <div className="flex items-center mx-1">
+        <div className="flex items-center gap-1 mx-1">
+          <img src={sparkle_icon} alt="sparkle" className="inline-block" />
           <span className="text-[#F5722E]">Perfect Match</span>
         </div>
         <span>application card will appear to your future Employers.</span>

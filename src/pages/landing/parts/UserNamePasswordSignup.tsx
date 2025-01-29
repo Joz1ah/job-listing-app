@@ -133,13 +133,15 @@ const UserNamePasswordSignup = () => {
   };
 
   return (
+    modalState && modalState == MODAL_STATES.SIGNUP_STEP2 ?
     <div
-      id="step2_signup"
       className={`${styles["modal-content"]}`}
-      hidden={modalState !== MODAL_STATES.SIGNUP_STEP2}
     >
       <div className={`${styles["password-confirmation-container"]}`}>
         <form onSubmit={handleSubmit}>
+          <div className={styles['form-label']}>
+            <h1>Sign Up</h1>
+          </div>
           <div className={`${styles["password-input-fields"]}`}>
             <div className={`${styles["transparent-input-field"]}`}>
               <div className={`${styles["input-container"]}`}>
@@ -273,6 +275,7 @@ const UserNamePasswordSignup = () => {
         </form>
       </div>
     </div>
+    :<></>
   );
 };
 

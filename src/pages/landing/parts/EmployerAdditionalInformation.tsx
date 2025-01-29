@@ -220,10 +220,10 @@ const EmployerAdditionalInformation = () => {
   };
 
   return (
+    modalState && modalState == MODAL_STATES.SIGNUP_STEP4_EMPLOYER ?
     <div
       id="step4_signup"
       className={`${styles["modal-content"]}`}
-      hidden={modalState !== MODAL_STATES.SIGNUP_STEP4_EMPLOYER}
     >
       <div className={`${styles["employer-additional-information-container"]}`}>
         <div className={`${styles["title-desc"]}`}>Additional Information</div>
@@ -358,6 +358,7 @@ const EmployerAdditionalInformation = () => {
         </div>
       </div>
     </div>
+    :<></>
   );
 };
 

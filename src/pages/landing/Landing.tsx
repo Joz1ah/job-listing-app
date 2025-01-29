@@ -1,9 +1,8 @@
-import { FC, useEffect, ReactElement } from "react";
-import { FooterEngagement as Footer } from "layouts";
+import { FC, ReactElement } from "react";
 import { PageMeta } from "components";
 import { LandingContext } from "components";
+import { DefaultLayout } from 'layouts';
 
-import { useLocation } from "react-router-dom";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import { Outlet, useMatch } from "react-router-dom";
 import { Navigate } from "react-router-dom";
@@ -11,45 +10,24 @@ import { Navigate } from "react-router-dom";
 import _5dollarspermonth from "assets/5dollarspermonth.svg?url";
 
 import styles from "./landing.module.scss";
-import { useModal } from "components/modal/useModal";
-import { useLanding } from "./useLanding";
-import NavigationHeader from "./parts/NavigationHeader";
-import ModalWrapper from "./parts/ModalWrapper";
 import HeroContainer from "./parts/HeroContainer";
 import PricingContainer from "./parts/PricingContainer";
 import InfoGraphics from "./parts/InfoGraphics";
-import { MODAL_HEADER_TYPE, MODAL_STATES } from "store/modal/modal.types";
 
 const Landing: FC = (): ReactElement => {
-  const { handleSetModalState } = useLanding();
   const { isAuthenticated, user } = useAuth();
-  const location = useLocation();
   // Simple redirect if authenticated
   if (isAuthenticated && user?.type) {
     return <Navigate to={`/${user.type}`} replace />;
   }
-  const { toggleModal, handleSetSelectedModalHeader } = useModal();
-
-  useEffect(() => {
-    // Check if we have state from navigation indicating we should open the modal
-    if (location.state?.openModal) {
-      handleSetSelectedModalHeader(MODAL_HEADER_TYPE.WITH_LOGO_AND_CLOSE);
-      handleSetModalState(MODAL_STATES.SIGNUP_SELECT_USER_TYPE);
-      toggleModal();
-
-      // Clear the navigation state after using it
-      window.history.replaceState({}, document.title);
-    }
-  }, [location]);
-
   const isFreeTrial = false;
   const isIndexRoute = useMatch("/");
 
   return (
     <LandingContext.Provider value={{ isFreeTrial }}>
       <PageMeta title="Akaza" />
+      <DefaultLayout className={styles['landing-container']}>
       <div className={styles.main}>
-        <NavigationHeader />
         {isIndexRoute && (
           <>
             <HeroContainer />
@@ -58,9 +36,8 @@ const Landing: FC = (): ReactElement => {
           </>
         )}
         <Outlet />
-        <Footer />
-        <ModalWrapper />
       </div>
+      </DefaultLayout>
     </LandingContext.Provider>
   );
 };

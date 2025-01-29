@@ -59,7 +59,7 @@ const ContactUs: FC = () => {
     }
     return (
         <DefaultLayout>
-            <div className={style['about-us-container']}>
+            <div className={style['contact-us-container']}>
                 <div className={style['form-container-wrapper']}>
                     {
                     /*

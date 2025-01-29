@@ -15,10 +15,11 @@ const CongratulationsModal = () => {
   }, [dataStates.selectedUserType]);
 
   return (
+    
+    modalState && modalState == MODAL_STATES.SIGNUP_CONGRATULATIONS ?
     <div
       id="step_congratulations"
       className={`${styles["modal-content"]}`}
-      hidden={modalState !== MODAL_STATES.SIGNUP_CONGRATULATIONS}
     >
       <div className={`${styles["congratulations-container"]}`}>
         <div className={`${styles["checkmark-container"]}`}>
@@ -58,6 +59,7 @@ const CongratulationsModal = () => {
         </div>
       </div>
     </div>
+    :<></>
   );
 };
 

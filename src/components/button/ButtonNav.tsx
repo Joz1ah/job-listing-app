@@ -1,5 +1,5 @@
 import { useRef, memo, useCallback } from "react";
-import styles from "./../landing.module.scss";
+import styles from "pages/landing/landing.module.scss";
 import { useModal } from "components/modal/useModal";
 import { MODAL_HEADER_TYPE } from "store/modal/modal.types";
 

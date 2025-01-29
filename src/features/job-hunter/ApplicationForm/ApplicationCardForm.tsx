@@ -397,7 +397,7 @@ const ApplicationCardForm: FC = () => {
                   <CountrySelect
                     value={values.country || ""}
                     onChange={(value) => setFieldValue("country", value)}
-                    className="bg-transparent border-[#AEADAD] h-[56px] hover:text-white border-2 focus:border-[#F5722E] w-[335px] rounded-[8px] text-white placeholder:text-[#AEADAD] px-3 py-2"
+                    className="bg-transparent border-[#AEADAD] h-[56px] hover:text-white border-2 focus:border-[#F5722E] w-full md:w-[335px] rounded-[8px] text-white placeholder:text-[#AEADAD] px-3 py-2"
                     popoverClassName="w-[335px]"
                   />
                 </InputField>

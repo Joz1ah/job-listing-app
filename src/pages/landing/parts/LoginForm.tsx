@@ -83,6 +83,9 @@ const LoginForm = () => {
     >
       {({ errors, touched, isSubmitting }) => (
         <Form>
+          <div className={styles['form-label']}>
+            <h1>Login</h1>
+          </div>
           <div className={styles["password-input-fields"]}>
             <div className={styles["transparent-input-field"]}>
               <div className={styles["input-container"]}>

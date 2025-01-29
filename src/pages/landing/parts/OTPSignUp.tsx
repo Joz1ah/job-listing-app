@@ -214,10 +214,10 @@ const OTPSignUp = () => {
   };
 
   return (
+    modalState && modalState == MODAL_STATES.SIGNUP_STEP3 ?
     <div
       id="step3_signup"
       className={`${styles["modal-content"]}`}
-      hidden={modalState !== MODAL_STATES.SIGNUP_STEP3}
     >
       <div className={`${styles["verify-container"]}`}>
         <div className={`${styles.desc1}`}>Verify with One Time Password</div>
@@ -362,6 +362,7 @@ const OTPSignUp = () => {
         </div>
       </div>
     </div>
+    :<></>
   );
 };
 
