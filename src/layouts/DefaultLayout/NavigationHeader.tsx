@@ -1,7 +1,7 @@
 import { useMenu } from "hooks";
 import { BaseMenu } from "layouts";
-import ButtonNav from "./ButtonNav";
-import { useLanding } from "../useLanding";
+import ButtonNav from "components/button/ButtonNav";
+import { useLanding } from "../../pages/landing/useLanding";
 import { MODAL_STATES } from "store/modal/modal.types";
 
 const NavigationHeader = () => {

@@ -12,9 +12,9 @@ import { MODAL_STATES } from "store/modal/modal.types";
 const StripePaymentModal = () => {
   const { modalState } = useLanding();
   return (
+    modalState && modalState == MODAL_STATES.AUTHNET_PAYMENT ?
     <div
       className={`${styles["modal-content"]}`}
-      hidden={modalState !== MODAL_STATES.AUTHNET_PAYMENT}
     >
       <div className={`${styles["stripe-payment-container"]}`}>
         <div className={`${styles["stripe-payment-form"]}`}>
@@ -42,6 +42,7 @@ const StripePaymentModal = () => {
         </div>
       </div>
     </div>
+    :<></>
   );
 };
 

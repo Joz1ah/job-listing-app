@@ -114,10 +114,10 @@ const MobileCountrySignUp = () => {
   }, [phoneNumber, country, jobHunterContactSubmit]);
 
   return (
+    modalState && modalState == MODAL_STATES.SIGNUP_STEP4 ?
     <div
       id="step4_signup"
       className={styles["modal-content"]}
-      hidden={modalState !== MODAL_STATES.SIGNUP_STEP4}
     >
       <div className={styles["country-mobtel-container"]}>
         <div className={styles["title-desc"]}>
@@ -196,6 +196,7 @@ const MobileCountrySignUp = () => {
         </div>
       </div>
     </div>
+    :<></>
   );
 };
 

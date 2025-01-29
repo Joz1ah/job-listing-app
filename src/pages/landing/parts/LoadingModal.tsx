@@ -9,10 +9,11 @@ import { MODAL_STATES } from "store/modal/modal.types";
 const LoadingModal = () => {
   const { modalState } = useLanding();
   return (
+    
+    modalState && modalState == MODAL_STATES.LOADING ?
     <div
       id="step6_signup"
       className={`${styles["modal-content"]}`}
-      hidden={modalState !== MODAL_STATES.LOADING}
     >
       <div className={`${styles["modal-loading-container"]}`}>
         <div className={`${styles["loading-description"]}`}>
@@ -39,6 +40,7 @@ const LoadingModal = () => {
         </div>
       </div>
     </div>
+    : null
   );
 };
 

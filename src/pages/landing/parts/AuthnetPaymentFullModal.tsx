@@ -174,9 +174,9 @@ const AuthnetPaymentFullModal = () => {
   }, []);
 
   return (
+    modalState && modalState == MODAL_STATES.AUTHNET_PAYMENT_FULL ?
     <div
       className={`${styles["modal-content"]}`}
-      hidden={modalState !== MODAL_STATES.AUTHNET_PAYMENT_FULL}
     >
       <div className={`${styles["authnet-paymentfull-container"]}`}>
         <Formik
@@ -642,6 +642,7 @@ const AuthnetPaymentFullModal = () => {
         </div>
       </div>
     </div>
+    :<></>
   );
 };
 

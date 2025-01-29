@@ -133,10 +133,9 @@ const UserNamePasswordSignup = () => {
   };
 
   return (
+    modalState && modalState == MODAL_STATES.SIGNUP_STEP2 ?
     <div
-      id="step2_signup"
       className={`${styles["modal-content"]}`}
-      hidden={modalState !== MODAL_STATES.SIGNUP_STEP2}
     >
       <div className={`${styles["password-confirmation-container"]}`}>
         <form onSubmit={handleSubmit}>
@@ -273,6 +272,7 @@ const UserNamePasswordSignup = () => {
         </form>
       </div>
     </div>
+    :<></>
   );
 };
 

@@ -4,18 +4,18 @@ import {
   BookmarkProvider,
 } from "components";
 import Modal from "components/modal/modal";
-import AuthnetPaymentFullModal from "./AuthnetPaymentFullModal";
-import CongratulationsModal from "./CongratulationsModal";
-import EmployerAdditionalInformation from "./EmployerAdditionalInformation";
+ import AuthnetPaymentFullModal from "./AuthnetPaymentFullModal";
+ import CongratulationsModal from "./CongratulationsModal";
+ import EmployerAdditionalInformation from "./EmployerAdditionalInformation";
 import JobHunterEmployerSelection from "./JobHunterEmployerSelection";
-import LoadingModal from "./LoadingModal";
+ import LoadingModal from "./LoadingModal";
 import LoginModal from "./LoginModal";
-import MobileCountrySignUp from "./MobileCountrySignUp";
-import OTPSignUp from "./OTPSignUp";
+ import MobileCountrySignUp from "./MobileCountrySignUp";
+ import OTPSignUp from "./OTPSignUp";
 import PerfectMatchResultsModal from "./PerfectMatchResultsModal";
-import StripePaymentModal from "./StripePaymentModal";
-import SubscriptionPlanSelection from "./SubscriptionPlanSelection";
-import UserNamePasswordSignup from "./UserNamePasswordSignup";
+ import StripePaymentModal from "./StripePaymentModal";
+ import SubscriptionPlanSelection from "./SubscriptionPlanSelection";
+ import UserNamePasswordSignup from "./UserNamePasswordSignup";
 import { useLanding } from "../useLanding";
 import { MODAL_STATES } from "store/modal/modal.types";
 

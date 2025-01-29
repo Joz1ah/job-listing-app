@@ -102,10 +102,9 @@ const SubscriptionPlanSelection = () => {
   ]);
 
   return (
+    modalState && modalState == MODAL_STATES.SIGNUP_STEP5 ?
     <div
-      id="step5_signup"
       className={`${styles["modal-content"]}`}
-      hidden={modalState !== MODAL_STATES.SIGNUP_STEP5}
     >
       <div className={`${styles["subscription-plans-container"]}`}>
         <div className={`${styles["subscription-selection-items"]}`}>
@@ -249,6 +248,7 @@ const SubscriptionPlanSelection = () => {
         </div>
       </div>
     </div>
+    :<></>
   );
 };
 

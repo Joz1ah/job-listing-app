@@ -1,3 +1,6 @@
+:root{
+    --header-height: 72px;
+}
 .layout-container {
     display: flex;
     flex-direction: column;
@@ -5,7 +8,6 @@
 
     .layout-main {
         flex: 1;
-        padding: 1rem;
         background-color: var(--main-bg-color, #F5F5F7); // Use CSS variable with fallback
         margin-top: var(--header-height); // Push main content below the header
         @media (max-width: 768px) {
