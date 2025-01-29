@@ -7,6 +7,9 @@ import { useNavigate } from "react-router-dom";
 import styles from "./../landing.module.scss";
 import { useLanding } from "../useLanding";
 import * as Yup from "yup";
+import { useAuth } from "contexts/AuthContext/AuthContext";
+import { useLoginMutation } from "api/akaza/akazaAPI";
+import { ROUTE_CONSTANTS } from "constants/routeConstants";
 
 import visa_icon from "assets/credit-card-icons/cc_visa.svg?url";
 import amex_icon from "assets/credit-card-icons/cc_american-express.svg?url";
@@ -34,15 +37,18 @@ interface PaymentFormValues {
 const AuthnetPaymentFullModal = () => {
   const {
     currentSelectedPlan,
-    dataStates,
     handleSetModalState,
     createAuthNetTokenizer,
     modalState,
+    tempLoginEmail,     // Add this from your context/state management
+    tempLoginPassword,  // Add this from your context/state management
   } = useLanding();
   const [paymentSubmit] = usePaymentCreateMutation();
+  const [loginSubmit] = useLoginMutation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const { showError } = useErrorModal();
+  const { login } = useAuth(); 
 
   const formatExpirationDate = (value: string): string => {
     const cleaned = value.replace(/[^0-9]/g, ""); // Remove non-numeric characters
@@ -68,65 +74,30 @@ const AuthnetPaymentFullModal = () => {
   };
 
   const handleSubmit = async (values: PaymentFormValues) => {
-    console.log("values");
-    console.log(values);
     setIsSubmitting(true);
     const secureData = {
       authData: {
-        clientKey:
-          "7wuXYQ768E3G3Seuy6aTf28PfU3mJWu7Bbj564KfTPqRa7RXUPZvTsnKz9Jf7daJ", // Replace with your actual client key
-        apiLoginID: "83M29Sdd8", // Replace with your actual API login ID
+        clientKey: "7wuXYQ768E3G3Seuy6aTf28PfU3mJWu7Bbj564KfTPqRa7RXUPZvTsnKz9Jf7daJ",
+        apiLoginID: "83M29Sdd8",
       },
       cardData: {
         cardNumber: values.cardNumber,
-        month: values.expiryDate.split("/")[0],
-        year: values.expiryDate.split("/")[1],
+        month: values.expiryDate.split('/')[0],
+        year: values.expiryDate.split('/')[1],
         cardCode: values.cvv,
       },
     };
 
-    console.log("generating token...");
     Accept.dispatchData(secureData, async (acceptResponse: any) => {
       if (acceptResponse.messages.resultCode === "Ok") {
         const token = acceptResponse.opaqueData.dataValue;
-        console.log(acceptResponse);
-        console.log("token generation success");
-        console.log(token);
-        // Send the token to your server for processing
-        console.log({
-          provider: "authnet",
-          userId: dataStates.userId,
-          plan:
-            currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY
-              ? "Monthly"
-              : currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL
-                ? "Yearly"
-                : "",
-          amount:
-            currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY
-              ? 5
-              : currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL
-                ? 55
-                : "",
-          paymentMethodId: token,
-          daysTrial: 0,
-        });
         try {
-          const res = await paymentSubmit({
+          const paymentResponse = await paymentSubmit({
             provider: "authnet",
-            //"userId": dataStates.userId,
-            plan:
-              currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY
-                ? "Monthly"
-                : currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL
-                  ? "Yearly"
-                  : "",
-            amount:
-              currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY
-                ? 5
-                : currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL
-                  ? 55
-                  : "",
+            plan: currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY ? "Monthly" : 
+                  currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL ? "Yearly" : "",
+            amount: currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY ? 5 : 
+                   currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL ? 55 : "",
             paymentMethodId: token,
             daysTrial: 0,
             firstName: values.firstName,
@@ -136,35 +107,46 @@ const AuthnetPaymentFullModal = () => {
             state: values.stateProvince,
             zip: values.zipPostalCode,
             country: values.country,
-          })
-            .unwrap()
-            .then((res) => {
-              console.log(res);
+          }).unwrap();
+
+          console.log('Payment successful:', paymentResponse);
+          
+          // After successful payment, attempt login
+          try {
+            const loginResponse = await loginSubmit({
+              email: tempLoginEmail,
+              password: tempLoginPassword
+            }).unwrap();
+
+            // If login successful, set the token
+            if (loginResponse?.data?.token) {
+              login(loginResponse.data.token);
               handleSetModalState(MODAL_STATES.LOADING);
+
+              // Get user type for navigation
+              const userType = loginResponse.data.user?.type;
+              const navigationTarget = userType === 'employer' 
+                ? ROUTE_CONSTANTS.COMPLETE_PROFILE
+                : ROUTE_CONSTANTS.CREATE_APPLICATION
+
               setTimeout(() => {
-                console.log(`navigating to ${dataStates.selectedUserType}`);
-                navigate(
-                  dataStates.selectedUserType === "employer"
-                    ? "/employer/employer-profile"
-                    : "/job-hunter/jobhunter-profile",
-                );
-                console.log(`done navigating`);
+                navigate(navigationTarget, { replace: true });
               }, 1000);
-            })
-            .catch((err) => {
-              showError(err?.data?.errors, err?.data?.message);
-              setIsSubmitting(false);
-              console.log(err);
-            });
-          console.log(res);
+            }
+          } catch (loginErr) {
+            console.error('Login error after payment:', loginErr);
+            showError('Login Error', 'Payment successful but login failed. Please try logging in manually.');
+            setIsSubmitting(false);
+          }
+
         } catch (err: any) {
-          console.log(err);
-        } finally {
+          showError(err?.data?.errors, err?.data?.message);
           setIsSubmitting(false);
+          console.error('Payment submission error:', err);
         }
       } else {
         setIsSubmitting(false);
-        alert("Error: " + acceptResponse.messages.message[0].text); // Use acceptResponse here
+        alert('Error: ' + acceptResponse.messages.message[0].text);
       }
     });
   };

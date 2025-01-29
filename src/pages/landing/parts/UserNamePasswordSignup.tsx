@@ -139,6 +139,9 @@ const UserNamePasswordSignup = () => {
     >
       <div className={`${styles["password-confirmation-container"]}`}>
         <form onSubmit={handleSubmit}>
+          <div className={styles['form-label']}>
+            <h1>Sign Up</h1>
+          </div>
           <div className={`${styles["password-input-fields"]}`}>
             <div className={`${styles["transparent-input-field"]}`}>
               <div className={`${styles["input-container"]}`}>

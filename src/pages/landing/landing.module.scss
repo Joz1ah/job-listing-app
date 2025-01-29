@@ -899,6 +899,17 @@ body {
   margin-top: 18px;
 }
 
+.form-label {
+  margin-bottom: 24px;
+  
+  h1 {
+    color: #F5722E;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: normal;
+  }
+}
+
 .modal-content .password-confirmation-container,
 .modal-content .country-mobtel-container {
   flex-basis: 100%;

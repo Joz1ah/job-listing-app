@@ -12,6 +12,7 @@ interface NavItem {
   path: string;
   isSpecial?: boolean;
   isAction?: boolean;
+  isExternal?: boolean;
   action?: () => void;
 }
 
@@ -52,7 +53,7 @@ const BaseMenu: FC<MenuProps> = ({
     { name: "About us", path: "/about-us" },
     { name: "Contact us", path: "/contact-us" },
     { name: "Subscription plans", path: "/subscription-plan" },
-    { name: "FAQ", path: "/faq" }
+    { name: "FAQ", path: "/https://support.akaza.io/", isExternal: true  }
   ];
 
   const handleItemClick = (item: NavItem) => {
@@ -121,14 +122,17 @@ const BaseMenu: FC<MenuProps> = ({
         : "transition-colors duration-200 ease-in-out hover:text-[#F5722E]"
     } py-3 sm:py-2 inline-block text-sm`;
 
-    if (item.isAction) {
+    if (item.isExternal) {
       return (
-        <button
-          onClick={() => handleItemClick(item)}
+        <a
+          href={item.path}
+          target="_blank"
+          rel="noopener noreferrer"
           className={baseClassName}
+          onClick={() => handleItemClick(item)}
         >
           {item.name}
-        </button>
+        </a>
       );
     }
 
@@ -187,9 +191,14 @@ const BaseMenu: FC<MenuProps> = ({
                   </NavLink>
                 </li>
                 <li className="transition-colors duration-200 ease-in-out hover:text-[#F5722E]">
-                  <Link to='https://support.akaza.io/' onClick={handleNavLinkClick}>
-                    FAQ
-                  </Link>
+                <Link 
+                  to='https://support.akaza.io/' 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={handleNavLinkClick}
+                >
+                  FAQ
+                </Link>
                 </li>
                 {isAuthenticated && isEmployer && (
                   <li>
@@ -269,7 +278,13 @@ const BaseMenu: FC<MenuProps> = ({
 
       {/* Mobile Header */}
       <header className="md:hidden bg-[#080808] py-4 px-2 flex justify-between items-center z-50 shadow-md">
+      <NavLink
+            to={isAuthenticated ? (userType === 'employer' ? '/dashboard' : '/dashboard') : '/'}
+            onClick={handleNavLinkClick}
+            className="flex-shrink-0"
+          >
         <img src={akazaLogoWhite} alt="Akaza Logo" className="h-8" />
+        </NavLink>
         <div className="flex items-center space-x-4">
           {isAuthenticated && renderNotificationFeed()}
           <Button

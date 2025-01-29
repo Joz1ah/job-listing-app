@@ -35,12 +35,11 @@ export const DefaultLayout: React.FC<DefaultLayoutProps> = ({
   const { handleSetModalState } = useLanding();
   const location = useLocation();
   const { menuOpen, toggleMenu } = useMenu();
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const [showSignOutModal, setShowSignOutModal] = React.useState(false);
   const [shouldRenderModal, setShouldRenderModal] = React.useState(false);
 
   const userType = user?.data?.user?.type;
-  const isAuthenticated = !!user;
   const isEmployer = userType === "employer";
 
   const { toggleModal, handleSetSelectedModalHeader } = useModal();

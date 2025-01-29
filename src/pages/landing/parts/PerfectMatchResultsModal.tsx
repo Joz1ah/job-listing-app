@@ -43,15 +43,15 @@ const PerfectMatchResultsModal = () => {
     >
       <div className="relative bg-[#F5F5F7] rounded-lg w-[800px] h-[550px] max-w-[90vw] px-4 py-8">
         <div className="flex flex-col items-center gap-12 pt-4">
+        {hasMatches ? (
           <h2 className="text-[#F5722E] text-2xl font-medium flex flex-row">
             Here's Your
-            <img
-              src={sparkle_icon}
-              className="w-5 h-5 ml-2 mt-1"
-              alt="sparkle"
-            />
+            <img src={sparkle_icon} className="w-5 h-5 ml-2 mt-1" alt="sparkle"/>
             Perfect Match
           </h2>
+        ) : (
+          <div className="h-[32px]" />
+        )}
 
           {hasMatches ? (
             <Carousel

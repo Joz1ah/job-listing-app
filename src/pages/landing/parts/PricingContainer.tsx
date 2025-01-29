@@ -69,9 +69,13 @@ const PricingContainer = () => {
         </div>
         <div className={`${styles["button-wrapper"]}`}>
           <button className={`${styles["button-regular"]}`}>
-            <Link to={"https://calendly.com/ceo-akaza/intro-to-akaza"}>
-              Schedule a call
-            </Link>
+          <Link 
+            to={"https://calendly.com/ceo-akaza/intro-to-akaza"}
+            target="_blank" 
+            rel="noopener noreferrer"
+          >
+            Schedule a call
+          </Link>
           </button>
         </div>
       </div>
