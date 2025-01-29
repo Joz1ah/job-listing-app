@@ -253,7 +253,11 @@ const CountrySelect = ({
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className={cn("w-[410px] p-0 rounded-none", popoverClassName)}
+          className={cn(
+            "p-0 rounded-none w-[var(--radix-popover-trigger-width)] max-w-[410px] min-w-[280px]",
+            popoverClassName
+          )}
+          align="start"
         >
           <Command>
             <CommandInput placeholder="Search country..." className="h-9" />

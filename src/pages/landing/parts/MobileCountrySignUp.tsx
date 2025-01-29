@@ -1,202 +1,159 @@
 import { useJobHunterContactMutation } from "api/akaza/akazaAPI";
 import { PhoneInputLanding, CountrySelect } from "components";
-import { useRef, useState, useEffect } from "react";
+import { Formik, Form } from 'formik';
+import * as Yup from 'yup';
 import styles from "./../landing.module.scss";
 import { useModal } from "components/modal/useModal";
 import { useLanding } from "../useLanding";
 import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
 import { MODAL_HEADER_TYPE, MODAL_STATES } from "store/modal/modal.types";
 
+interface FormValues {
+  phoneNumber: string;
+  country: string;
+}
+
 const MobileCountrySignUp = () => {
   const { handleSetSelectedModalHeader } = useModal();
   const { handleSetModalState, modalState } = useLanding();
-  const buttonNext = useRef<HTMLButtonElement>(null);
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [country, setCountry] = useState("");
-  const [phoneError, setPhoneError] = useState("");
-  const [countryError, setCountryError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Add the mutation hook
   const [jobHunterContactSubmit] = useJobHunterContactMutation();
 
-  const validatePhoneNumber = (phone: string): boolean => {
-    const cleanPhone = phone.replace(/\D/g, "");
-
-    if (!cleanPhone) {
-      setPhoneError("This field is required");
-      return false;
-    }
-
-    if (cleanPhone.length < 8 || cleanPhone.length > 15) {
-      setPhoneError("Phone number must be between 8 and 15 digits");
-      return false;
-    }
-
-    setPhoneError("");
-    return true;
+  const initialValues: FormValues = {
+    phoneNumber: '',
+    country: ''
   };
 
-  const validateForm = () => {
-    const isPhoneValid = validatePhoneNumber(phoneNumber);
-    let isCountryValid = true;
+  const validationSchema = Yup.object({
+    phoneNumber: Yup.string()
+      .required('This field is required')
+      .test('phone', 'Phone number must be between 8 and 15 digits', (value) => {
+        if (!value) return false;
+        const cleanPhone = value.replace(/\D/g, '');
+        return cleanPhone.length >= 8 && cleanPhone.length <= 15;
+      }),
+    country: Yup.string()
+      .required('This field is required')
+  });
 
-    if (!country) {
-      setCountryError("This field is required");
-      isCountryValid = false;
-    } else {
-      setCountryError("");
-    }
-
-    return isPhoneValid && isCountryValid;
-  };
-
-  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
-    setPhoneNumber(newValue);
-    if (phoneError) {
-      if (newValue.trim()) {
-        validatePhoneNumber(newValue);
-      } else {
-        setPhoneError("");
-      }
-    }
-  };
-
-  const handleCountryChange = (value: string) => {
-    setCountry(value);
-    if (countryError) setCountryError("");
-    if (phoneNumber) {
-      validatePhoneNumber(phoneNumber);
-    }
-  };
-
-  useEffect(() => {
-    if (buttonNext.current) {
-      buttonNext.current.onclick = async () => {
-        if (validateForm()) {
+  return (
+    modalState && modalState === MODAL_STATES.SIGNUP_STEP4 ?
+    <div id="step4_signup" className={styles["modal-content"]}>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={async (values, { setErrors }) => {
           try {
-            setIsSubmitting(true);
-
-            // Submit the form data to the API
             await jobHunterContactSubmit({
-              phoneNumber: phoneNumber.replace(/[^\d]/g, ""),
-              country: country,
+              phoneNumber: values.phoneNumber.replace(/[^\d]/g, ''),
+              country: values.country
             }).unwrap();
 
-            // If successful, move to next step
             handleSetSelectedModalHeader(MODAL_HEADER_TYPE.WITH_CLOSE);
             handleSetModalState(MODAL_STATES.SIGNUP_STEP5);
           } catch (err: any) {
-            // Handle API errors
-            console.error("Error submitting contact info:", err);
-
+            console.error('Error submitting contact info:', err);
+            
             if (err.status === 400) {
-              // Handle validation errors from the API
+              const formErrors: { [key: string]: string } = {};
               if (err.data?.errors?.phoneNumber) {
-                setPhoneError(err.data.errors.phoneNumber[0]);
+                formErrors.phoneNumber = err.data.errors.phoneNumber[0];
               }
               if (err.data?.errors?.country) {
-                setCountryError(err.data.errors.country[0]);
+                formErrors.country = err.data.errors.country[0];
               }
+              setErrors(formErrors);
             } else {
-              // Handle other types of errors
-              alert(
-                "An error occurred while saving your information. Please try again.",
-              );
+              alert('An error occurred while saving your information. Please try again.');
             }
-          } finally {
-            setIsSubmitting(false);
           }
-        }
-      };
-    }
-  }, [phoneNumber, country, jobHunterContactSubmit]);
-
-  return (
-    modalState && modalState == MODAL_STATES.SIGNUP_STEP4 ?
-    <div
-      id="step4_signup"
-      className={styles["modal-content"]}
-    >
-      <div className={styles["country-mobtel-container"]}>
-        <div className={styles["title-desc"]}>
-          The information you provide will only be used for internal and
-          verification purposes.
-        </div>
-
-        <div className={styles["input-fields-container"]}>
-          {/* Phone Number Input */}
-          <div className={styles["input-container"]}>
-            <div className={styles["input-title-label-container"]}>
-              <label className={styles["input-title-label"]}>
-                Mobile Number
-              </label>
-              <label className={styles["input-title-label"]}>*</label>
+        }}
+      >
+        {({ values, errors, touched, handleChange, setFieldValue, isSubmitting }) => (
+          <Form className={styles["country-mobtel-container"]}>
+            <div className={styles["title-desc"]}>
+              The information you provide will only be used for internal and verification purposes.
             </div>
-            <PhoneInputLanding
-              name="phoneNumber"
-              value={phoneNumber}
-              onChange={handlePhoneChange}
-              defaultCountry="PH"
-              className={styles["phone-input-wrapper"]}
-              onCountryChange={(country) => {
-                handleCountryChange(country || "");
-              }}
-            />
-            {phoneError && (
-              <div className="absolute text-red-500 text-[10px] mt-1 font-light bottom-0 right-0">
-                {phoneError}
-              </div>
-            )}
-          </div>
 
-          {/* Country Input */}
-          <div className={styles["input-container"]}>
-            <div className={styles["input-title-label-container"]}>
-              <label className={styles["input-title-label"]}>Country</label>
-              <label className={styles["input-title-label"]}>*</label>
-            </div>
-            <div className={styles["input-wrapper"]}>
-              <CountrySelect
-                value={country}
-                onChange={handleCountryChange}
-                error={countryError}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className={styles["action-buttons"]}>
-          <button
-            onClick={() => handleSetModalState(MODAL_STATES.SIGNUP_STEP3)}
-            className={styles["button-custom-basic"]}
-          >
-            Previous
-          </button>
-          <button
-            ref={buttonNext}
-            className={styles["button-custom-orange"]}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? (
-              <>
-                <img
-                  src={button_loading_spinner}
-                  alt="Loading"
-                  className={styles["button-spinner"]}
+            <div className={styles["input-fields-container"]}>
+              {/* Phone Number Input */}
+              <div className={styles["input-container"]}>
+                <div className={styles["input-title-label-container"]}>
+                  <label className={styles["input-title-label"]}>Mobile Number</label>
+                  <label className={styles["input-title-label"]}>*</label>
+                </div>
+                <PhoneInputLanding
+                  name="phoneNumber"
+                  value={values.phoneNumber}
+                  onChange={(e) => {
+                    handleChange(e);
+                    setFieldValue('phoneNumber', e.target.value);
+                  }}
+                  defaultCountry="PH"
+                  className={styles["phone-input-wrapper"]}
+                  onCountryChange={(country) => {
+                    setFieldValue('country', country || '');
+                  }}
                 />
-                Loading...
-              </>
-            ) : (
-              "Next"
-            )}
-          </button>
-        </div>
-      </div>
+                {touched.phoneNumber && errors.phoneNumber && (
+                  <div className="absolute text-red-500 text-[10px] mt-1 font-light bottom-0 right-0 top-[100%]">
+                    {errors.phoneNumber}
+                  </div>
+                )}
+              </div>
+
+              {/* Country Input */}
+              <div className={styles["input-container"]}>
+                <div className={styles["input-title-label-container"]}>
+                  <label className={styles["input-title-label"]}>Country</label>
+                  <label className={styles["input-title-label"]}>*</label>
+                </div>
+                <div className={styles["input-wrapper"]}>
+                  <CountrySelect
+                    value={values.country}
+                    onChange={(value) => setFieldValue('country', value)}
+                  />
+                  {touched.country && errors.country && (
+                    <div className="absolute text-red-500 text-[10px] mt-1 font-light bottom-0 right-0 top-[100%]">
+                      {errors.country}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className={styles["action-buttons"]}>
+              <button
+                type="button"
+                onClick={() => handleSetModalState(MODAL_STATES.SIGNUP_STEP3)}
+                className={styles["button-custom-basic"]}
+              >
+                Previous
+              </button>
+              <button
+                type="submit"
+                className={styles["button-custom-orange"]}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>
+                    <img
+                      src={button_loading_spinner}
+                      alt="Loading"
+                      className={styles["button-spinner"]}
+                    />
+                    Loading...
+                  </>
+                ) : (
+                  "Next"
+                )}
+              </button>
+            </div>
+          </Form>
+        )}
+      </Formik>
     </div>
-    :<></>
+    : <></>
   );
 };
 
