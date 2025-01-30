@@ -45,6 +45,7 @@ interface FormData {
   firstName: string;
   lastName: string;
   birthday: string;
+  location: string;
   emailAddress: string;
   mobileNumber: string;
   employmentType: string[];
@@ -87,6 +88,7 @@ const validationSchema = Yup.object().shape({
     "Please select at least one employment type",
   ),
   salaryRange: Yup.string().required("This field is required"),
+  location: Yup.string().required("This field is required"),
   yearsOfExperience: Yup.string().required("This field is required"),
   coreSkills: Yup.array()
     .min(3, "Please add at least 3 core skills")
@@ -143,6 +145,7 @@ const EditApplicationCard: FC = () => {
       firstName: user?.data?.user?.relatedDetails?.firstName || "",
       lastName: user?.data?.user?.relatedDetails?.lastName || "",
       birthday: user?.data?.user?.relatedDetails?.birthday || "",
+      location: user?.data?.user?.relatedDetails?.location || "",
       emailAddress: user?.data?.user?.email || "",
       mobileNumber: user?.data?.user?.relatedDetails?.phoneNumber
         ? user.data.user.relatedDetails.phoneNumber.startsWith("+")
@@ -257,7 +260,7 @@ const EditApplicationCard: FC = () => {
       const payload = {
         firstName: values.firstName,
         lastName: values.lastName,
-        location: values.country,
+        location: values.location,
         language: formattedLanguages,
         birthday: values.birthday,
         email: values.emailAddress,
@@ -316,7 +319,7 @@ const EditApplicationCard: FC = () => {
           <form
             onSubmit={handleSubmit}
             onKeyDown={handleKeyDown}
-            className="p-4 md:p-8"
+            className="p-8"
           >
             <div className="grid grid-cols-1 md:grid-cols-2 md:gap-x-[65px] gap-y-6">
               {/* First Name / Last Name */}
@@ -354,17 +357,21 @@ const EditApplicationCard: FC = () => {
                 </InputField>
               </div>
 
-              {/* Birthday / Languages */}
+              {/* Location / Languages */}
+
               <div>
                 <InputField
-                  label="Birthday"
-                  error={errors.birthday}
-                  touched={touched.birthday}
+                  label="Location"
+                  className="bg-transparent"
+                  error={errors.location}
+                  touched={touched.location}
                 >
-                  <BirthdayInput
-                    name="birthday"
-                    value={values.birthday}
-                    onChange={(name, value) => setFieldValue(name, value)}
+                  <Input
+                    name="location"
+                    value={values.location}
+                    onChange={handleChange}
+                    placeholder="Add location"
+                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
                   />
                 </InputField>
               </div>
@@ -387,24 +394,37 @@ const EditApplicationCard: FC = () => {
                 </InputField>
               </div>
 
-              {/* Email / Mobile */}
+              {/* Birthday / Country */}
               <div>
                 <InputField
-                  label="Email Address"
-                  className="bg-transparent"
-                  error={errors.emailAddress}
-                  touched={touched.emailAddress}
+                  label="Birthday"
+                  error={errors.birthday}
+                  touched={touched.birthday}
                 >
-                  <Input
-                    name="emailAddress"
-                    value={values.emailAddress}
-                    onChange={handleChange}
-                    disabled={!!user?.data?.user?.email}
-                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD] disabled:opacity-50 disabled:cursor-not-allowed disabled:text-[#AEADAD]"
+                  <BirthdayInput
+                    name="birthday"
+                    value={values.birthday}
+                    onChange={(name, value) => setFieldValue(name, value)}
                   />
                 </InputField>
               </div>
 
+              <div>
+                <InputField
+                  label="Country of Residence"
+                  error={errors.country}
+                  touched={touched.country}
+                >
+                  <CountrySelect
+                    value={values.country || ""}
+                    onChange={(value) => setFieldValue("country", value)}
+                    className="bg-transparent border-[#AEADAD] h-[56px] hover:text-white border-2 focus:border-[#F5722E] w-full md:w-[335px] rounded-[8px] text-white placeholder:text-[#AEADAD] px-3 py-2"
+                    popoverClassName="w-[335px]"
+                  />
+                </InputField>
+              </div>
+
+              {/* Mobile / Email */}
               <div>
                 <InputField
                   label="Mobile Number"
@@ -421,22 +441,25 @@ const EditApplicationCard: FC = () => {
                 </InputField>
               </div>
 
-              {/* Country / Employment */}
               <div>
                 <InputField
-                  label="Country of Residence"
-                  error={errors.country}
-                  touched={touched.country}
+                  label="Email Address"
+                  className="bg-transparent"
+                  error={errors.emailAddress}
+                  touched={touched.emailAddress}
                 >
-                  <CountrySelect
-                    value={values.country || ""}
-                    onChange={(value) => setFieldValue("country", value)}
-                    className="bg-transparent border-[#AEADAD] h-[56px] hover:text-white border-2 focus:border-[#F5722E] w-[335px] rounded-[8px] text-white placeholder:text-[#AEADAD] px-3 py-2"
-                    popoverClassName="w-[335px]"
+                  <Input
+                    name="emailAddress"
+                    value={values.emailAddress}
+                    onChange={handleChange}
+                    placeholder="Email Address"
+                    disabled={!!user?.data?.user?.email}
+                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD] disabled:opacity-50 disabled:cursor-not-allowed"
                   />
                 </InputField>
               </div>
 
+              {/* Employment / Education */}
               <div>
                 <InputField
                   label="Employment Type"
@@ -453,7 +476,6 @@ const EditApplicationCard: FC = () => {
                 </InputField>
               </div>
 
-              {/* Education / Years */}
               <div>
                 <InputField
                   label="Education"
@@ -485,6 +507,41 @@ const EditApplicationCard: FC = () => {
                 </InputField>
               </div>
 
+              {/* Salary / Years */}
+
+              <div>
+                <InputField
+                  label="Salary Range"
+                  error={errors.salaryRange}
+                  touched={touched.salaryRange}
+                >
+                  <Select
+                    name="salaryRange"
+                    value={values.salaryRange}
+                    onValueChange={(value) =>
+                      setFieldValue("salaryRange", value)
+                    }
+                  >
+                    <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
+                      <SelectValue placeholder="Select Salary Range" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none">
+                      {selectOptions.salaryRange.map(({ value, label }) => (
+                        <SelectItem
+                          key={value}
+                          className={cn(
+                            "rounded-none justify-start pl-3 h-[55px]",
+                          )}
+                          value={value}
+                        >
+                          <div className="py-3 w-full text-center">{label}</div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </InputField>
+              </div>
+              
               <div>
                 <InputField
                   label="Years of Experience"
@@ -522,7 +579,7 @@ const EditApplicationCard: FC = () => {
                 </InputField>
               </div>
 
-              {/* Core Skills / Salary */}
+              {/* Core Skills / Interpersonal Skills */}
               <div>
                 <InputField
                   label="Core Skills"
@@ -546,46 +603,11 @@ const EditApplicationCard: FC = () => {
 
               <div>
                 <InputField
-                  label="Salary Range"
-                  error={errors.salaryRange}
-                  touched={touched.salaryRange}
-                >
-                  <Select
-                    name="salaryRange"
-                    value={values.salaryRange}
-                    onValueChange={(value) =>
-                      setFieldValue("salaryRange", value)
-                    }
-                  >
-                    <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
-                      <SelectValue placeholder="Select Salary Range" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none">
-                      {selectOptions.salaryRange.map(({ value, label }) => (
-                        <SelectItem
-                          key={value}
-                          className={cn(
-                            "rounded-none justify-start pl-3 h-[55px]",
-                          )}
-                          value={value}
-                        >
-                          <div className="py-3 w-full text-center">{label}</div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </InputField>
-              </div>
-
-              {/* Interpersonal / Certificates */}
-              <div>
-                <InputField
                   label="Interpersonal Skills"
                   error={errors.interpersonalSkills}
                   touched={touched.interpersonalSkills}
                   showIcon={true}
                   tooltipContent="Personal qualities like communication, teamwork, and problem-solving."
-                  className="mb-8 md:mb-14"
                 >
                   <InterpersonalSkillsTagInput
                     value={values.interpersonalSkills || []}
@@ -602,6 +624,7 @@ const EditApplicationCard: FC = () => {
                 </InputField>
               </div>
 
+              {/* Certificates */}
               <div>
                 <InputField
                   label="Certificates"
