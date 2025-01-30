@@ -38,9 +38,14 @@ export const modalSlice = createSlice({
         modalState: action.payload,
       };
     },
+    resetModal: () => {
+      return {
+        ...initialState
+      };
+    },
   },
 });
 
-export const { toggle, setModalHeader, setModalState } = modalSlice.actions;
+export const { toggle, setModalHeader, setModalState, resetModal } = modalSlice.actions;
 
 export const modalReducer = modalSlice.reducer;

@@ -142,7 +142,7 @@ const MobileCountrySignUp = () => {
                       alt="Loading"
                       className={styles["button-spinner"]}
                     />
-                    Loading...
+                    Next
                   </>
                 ) : (
                   "Next"

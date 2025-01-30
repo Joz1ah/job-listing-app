@@ -7,6 +7,8 @@ import { Footer } from "layouts/Footer/Engagement/Footer";
 import cn from 'classnames';
 import ButtonNav from "../../components/button/ButtonNav";
 import { useAuth } from "contexts/AuthContext/AuthContext";
+import { useDispatch } from "react-redux";
+import { resetModal } from "store/modal/modal.slice";
 import {
   employerDesktopMenu,
   employerMobileMenu,
@@ -38,6 +40,7 @@ export const DefaultLayout: React.FC<DefaultLayoutProps> = ({
   const { user, isAuthenticated } = useAuth();
   const [showSignOutModal, setShowSignOutModal] = React.useState(false);
   const [shouldRenderModal, setShouldRenderModal] = React.useState(false);
+  const dispatch = useDispatch();
 
   const userType = user?.data?.user?.type;
   const isEmployer = userType === "employer";
@@ -45,16 +48,23 @@ export const DefaultLayout: React.FC<DefaultLayoutProps> = ({
   const { toggleModal, handleSetSelectedModalHeader } = useModal();
 
   useEffect(() => {
+    // Close modal on location change unless we specifically want it open
+    if (!location.state?.openModal) {
+      dispatch(resetModal());
+    }
+  }, [location.pathname]);
+
+  useEffect(() => {
     // Check if we have state from navigation indicating we should open the modal
     if (location.state?.openModal) {
       handleSetSelectedModalHeader(MODAL_HEADER_TYPE.WITH_LOGO_AND_CLOSE);
       handleSetModalState(MODAL_STATES.SIGNUP_SELECT_USER_TYPE);
-      toggleModal();
+      toggleModal(true);
 
       // Clear the navigation state after using it
       window.history.replaceState({}, document.title);
     }
-  }, [location]);
+  }, [location.state]);
 
   // Compute display name based on user type and profile data
   const displayName = useMemo(() => {
