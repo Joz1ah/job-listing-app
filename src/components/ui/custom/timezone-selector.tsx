@@ -24,22 +24,29 @@ interface TimezoneSelectorProps {
 }
 
 const POPULAR_TIMEZONES: TimezoneOption[] = [
-  { value: 'UTC', label: '(UTC+00:00) Coordinated Universal Time' },
-  { value: 'America/New_York', label: '(GMT-05:00) Eastern Time' },
-  { value: 'America/Chicago', label: '(GMT-06:00) Central Time' },
-  { value: 'America/Denver', label: '(GMT-07:00) Mountain Time' },
-  { value: 'America/Los_Angeles', label: '(GMT-08:00) Pacific Time' },
-  { value: 'America/Anchorage', label: '(GMT-09:00) Alaska Time' },
-  { value: 'Pacific/Honolulu', label: '(GMT-10:00) Hawaii Time' },
-  { value: 'Europe/London', label: '(GMT+00:00) London' },
-  { value: 'Europe/Paris', label: '(GMT+01:00) Paris' },
-  { value: 'Europe/Berlin', label: '(GMT+01:00) Berlin' },
-  { value: 'Asia/Dubai', label: '(GMT+04:00) Dubai' },
-  { value: 'Asia/Singapore', label: '(GMT+08:00) Singapore' },
-  { value: 'Asia/Tokyo', label: '(GMT+09:00) Tokyo' },
-  { value: 'Asia/Shanghai', label: '(GMT+08:00) China' },
-  { value: 'Australia/Sydney', label: '(GMT+11:00) Sydney' },
-  { value: 'Pacific/Auckland', label: '(GMT+13:00) Auckland' }
+{ value: 'UTC', label: '(UTC+00:00) Coordinated Universal Time' },
+{ value: 'America/St_Johns', label: '(GMT-03:30) Newfoundland Time' },
+{ value: 'America/Halifax', label: '(GMT-04:00) Atlantic Time' }, 
+{ value: 'America/Toronto', label: '(GMT-05:00) Eastern Time - Toronto' },
+{ value: 'America/New_York', label: '(GMT-05:00) Eastern Time' },
+{ value: 'America/Winnipeg', label: '(GMT-06:00) Central Time - Winnipeg' },
+{ value: 'America/Regina', label: '(GMT-06:00) Central Time - Saskatchewan' },
+{ value: 'America/Chicago', label: '(GMT-06:00) Central Time' },
+{ value: 'America/Edmonton', label: '(GMT-07:00) Mountain Time - Edmonton' },
+{ value: 'America/Denver', label: '(GMT-07:00) Mountain Time' },
+{ value: 'America/Vancouver', label: '(GMT-08:00) Pacific Time - Vancouver' },
+{ value: 'America/Los_Angeles', label: '(GMT-08:00) Pacific Time' },
+{ value: 'America/Anchorage', label: '(GMT-09:00) Alaska Time' },
+{ value: 'Pacific/Honolulu', label: '(GMT-10:00) Hawaii Time' },
+{ value: 'Europe/London', label: '(GMT+00:00) London' },
+{ value: 'Europe/Paris', label: '(GMT+01:00) Paris' },
+{ value: 'Europe/Berlin', label: '(GMT+01:00) Berlin' },
+{ value: 'Asia/Dubai', label: '(GMT+04:00) Dubai' },
+{ value: 'Asia/Singapore', label: '(GMT+08:00) Singapore' },
+{ value: 'Asia/Tokyo', label: '(GMT+09:00) Tokyo' },
+{ value: 'Asia/Shanghai', label: '(GMT+08:00) China' },
+{ value: 'Australia/Sydney', label: '(GMT+11:00) Sydney' },
+{ value: 'Pacific/Auckland', label: '(GMT+13:00) Auckland' }
 ] as const;
 
 const TimezoneSelector: React.FC<TimezoneSelectorProps> = ({ 

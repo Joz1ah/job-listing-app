@@ -1110,15 +1110,8 @@ body {
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-}
-
-.verify-container > .otp-input-fields {
-  margin-top: 60px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .verify-container > .action-buttons {
@@ -1130,27 +1123,92 @@ body {
   gap: 10px;
 }
 
-.verify-container > .otp-input-fields > div > input {
-  width: 40px;
-  height: 48px;
-  border: 2px solid #aeadad;
-  font-size: 20px;
-  text-align: center;
-  font-family: Poppins-R;
-  border-radius: 4px;
-  -moz-appearance: textfield;
-  appearance: textfield;
+.verify-container {
+  .otp-input-fields {
+    position: relative;
+    margin-top: 60px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
 
-  @media (min-width: 768px) {
-    width: 47px;
-    height: 55px;
-    font-size: 24px;
+    &.error {
+      animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+      
+      input {
+        border-color: #ff0000;
+        
+        &:focus {
+          border-color: #ff0000;
+          box-shadow: 0 0 0 1px #ff0000;
+        }
+      }
+    }
+
+    > div {
+      input {
+        width: 40px;
+        height: 48px;
+        border: 2px solid #aeadad;
+        font-size: 20px;
+        text-align: center;
+        font-family: Poppins-R;
+        border-radius: 4px;
+        -moz-appearance: textfield;
+        appearance: textfield;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+        @media (min-width: 768px) {
+          width: 47px;
+          height: 55px;
+          font-size: 24px;
+        }
+
+        &:focus {
+          outline: none;
+          border: 2px solid #f5722e;
+          box-shadow: 0 0 0 1px #f5722e;
+        }
+
+        // Remove spinners for number input
+        &::-webkit-inner-spin-button,
+        &::-webkit-outer-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+      }
+    }
   }
 
-  &:focus {
-    outline: none;
-    border: 2px solid #f5722e;
-    box-shadow: 0 0 0 1px #f5722e;
+  .error-message {
+    position: absolute;
+    right: 30%;
+    left: 30%;
+    color: #ff0000;
+    text-align: center;
+    margin-top: 8px;
+    font-size: 14px;
+    font-style: italic;
+    font-family: Poppins-R;
+    min-height: 20px;
+
+    @media (max-width: 768px) {
+    right: 10%;
+    left: 10%;
+    }
+  }
+}
+
+@keyframes shake {
+  0%, 100% { 
+    transform: translateX(0); 
+  }
+  10%, 30%, 50%, 70%, 90% { 
+    transform: translateX(-2px); 
+  }
+  20%, 40%, 60%, 80% { 
+    transform: translateX(2px); 
   }
 }
 

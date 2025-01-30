@@ -143,6 +143,17 @@ const ProtectedRoute = ({
   const userType = user?.data?.user?.type;
   const userDetails = user?.data?.user?.relatedDetails;
   const jobCount = user?.data?.user?.jobCounts?.count;
+  const freeTrial = user?.data?.user?.freeTrial;
+  const isOnboarded = user?.data?.user?.isOnboarded;
+
+  // Check for interrupted subscription condition
+  const isInterruptedSubscription = freeTrial === true && isOnboarded === false;
+  const isOnSubscriptionPage = location.pathname === ROUTE_CONSTANTS.INTERRUPTED_SUBSCRIPTION;
+
+  // Redirect to interrupted subscription page if conditions are met
+  if (isInterruptedSubscription && !isOnSubscriptionPage) {
+    return <Navigate to={ROUTE_CONSTANTS.INTERRUPTED_SUBSCRIPTION} replace />;
+  }
 
   // Different profile completion checks based on user type
   const isEmployerProfileIncomplete = userType === 'employer' && (
@@ -199,6 +210,28 @@ const DashboardRedirectRoute = ({ children }: { children: React.ReactNode }) => 
   if (isAuthenticated && user?.data?.user?.type) {
 
     return <Navigate to={ROUTE_CONSTANTS.DASHBOARD} replace />;
+  }
+
+  return <>{children}</>;
+};
+
+const InterruptedSubscriptionRoute = ({ children }: { children: React.ReactNode }) => {
+  if (isServer) return null;
+  const { isAuthenticated, user, isLoading } = useAuth();
+  
+  if (isLoading) {
+    return <LoadingFallback />;
+  }
+
+  // If user is authenticated, check if they should access this page
+  if (isAuthenticated && user?.data?.user) {
+    const freeTrial = user?.data?.user?.freeTrial;
+    const isOnboarded = user?.data?.user?.isOnboarded;
+    
+    // Only allow access if user has freeTrial and is not onboarded
+    if (!(freeTrial === true && isOnboarded === false)) {
+      return <Navigate to={ROUTE_CONSTANTS.DASHBOARD} replace />;
+    }
   }
 
   return <>{children}</>;
@@ -284,7 +317,11 @@ const routes: RouteObject[] = [
   // ... rest of your routes remain the same
   {
     path: ROUTE_CONSTANTS.INTERRUPTED_SUBSCRIPTION,
-    element: <LazyComponent component={InterruptedSubscriptionPage} />
+    element: (
+      <InterruptedSubscriptionRoute>
+        <LazyComponent component={InterruptedSubscriptionPage} />
+      </InterruptedSubscriptionRoute>
+    )
   },
   {
     path: '*',

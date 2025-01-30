@@ -1,4 +1,4 @@
-import { useLoginMutation } from "api/akaza/akazaAPI";
+import { useLoginMutation, useUpdateFreeTrialStatusMutation } from "api/akaza/akazaAPI";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import { useNavigate } from "react-router-dom";
 import styles from "./../landing.module.scss";
@@ -16,6 +16,8 @@ import subscription_gift_icon from "assets/subscription-plan-icons/gift.svg?url"
 import subscription_bolt_icon from "assets/subscription-plan-icons/bolt.svg?url";
 import { MODAL_HEADER_TYPE, MODAL_STATES } from "store/modal/modal.types";
 import { PLAN_SELECTION_ITEMS } from "store/user/user.types";
+import { ROUTE_CONSTANTS } from "constants/routeConstants";
+import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 
 const SubscriptionPlanSelection = () => {
   const { handleSetSelectedModalHeader } = useModal();
@@ -31,6 +33,8 @@ const SubscriptionPlanSelection = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [loginSubmit] = useLoginMutation();
+  const [updateFreeTrialStatus] = useUpdateFreeTrialStatusMutation();
+  const { showError } = useErrorModal();
 
   const handleSubscription = async () => {
     handleSetSelectedModalHeader(MODAL_HEADER_TYPE.WITH_LOGO_AND_CLOSE);
@@ -42,29 +46,32 @@ const SubscriptionPlanSelection = () => {
           email: tempLoginEmail,
           password: tempLoginPassword,
         }).unwrap();
+        
         if (response?.data?.token) {
           login(response.data.token);
-          localStorage.setItem("subscriptionTier", "freeTrial");
-          localStorage.setItem("userType", String(userType));
+          
+          // Update free trial status
+          try {
+            await updateFreeTrialStatus({}).unwrap();
+          } catch (trialError) {
+            console.error("Failed to update free trial status:", trialError);
+            // Continue with navigation even if free trial update fails
+          }
+          
           handleSetModalState(MODAL_STATES.LOADING);
           setTimeout(() => {
             navigate(
               userType === "employer"
-                ? "/dashboard/employer-profile"
-                : "/dashboard/jobhunter-profile",
+                ? ROUTE_CONSTANTS.COMPLETE_PROFILE
+                : ROUTE_CONSTANTS.CREATE_APPLICATION
             );
           }, 1000);
         }
       } catch (error) {
         console.error("Auto-login failed:", error);
+        showError('Login Error', 'Failed to login. Please try again.');
       }
     } else {
-      const selectedTier =
-        currentSelectedPlan === PLAN_SELECTION_ITEMS.MONTHLY
-          ? "monthlyPlan"
-          : "yearlyPlan";
-      localStorage.setItem("pendingSubscriptionTier", selectedTier);
-      localStorage.setItem("userType", String(userType));
       handleSetModalState(MODAL_STATES.AUTHNET_PAYMENT_FULL);
     }
   };
@@ -195,7 +202,6 @@ const SubscriptionPlanSelection = () => {
                 <div>FREE FOR THREE DAYS</div>
               </div>
             )}
-
           </div>
           <div
             onClick={handleSubscription}
