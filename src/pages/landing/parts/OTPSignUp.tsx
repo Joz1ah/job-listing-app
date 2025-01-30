@@ -1,10 +1,9 @@
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import {
   useOtpVerifyMutation,
   useLoginMutation,
   useOtpGenerateMutation,
 } from "api/akaza/akazaAPI";
-import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
-import { useRef, useState, useEffect, useCallback } from "react";
 import styles from "./../landing.module.scss";
 import { useLanding } from "../useLanding";
 import { MODAL_STATES } from "store/modal/modal.types";
@@ -33,9 +32,10 @@ const OTPSignUp = () => {
   const ib4 = useRef<HTMLInputElement>(null);
   const ib5 = useRef<HTMLInputElement>(null);
   const ib6 = useRef<HTMLInputElement>(null);
-  const { showError } = useErrorModal();
 
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [hasError, setHasError] = useState(false);
 
   const otpTimerRef = useRef<NodeJS.Timeout>();
 
@@ -52,6 +52,8 @@ const OTPSignUp = () => {
   };
 
   const handleOnInput = (ref: any, nextRef: any) => {
+    setErrorMessage('');
+    setHasError(false);
     let currentInput = ref.current;
     currentInput.value = currentInput.value.replace(/[^0-9]/g, "");
 
@@ -76,16 +78,18 @@ const OTPSignUp = () => {
           refArray[index].current.value = digit;
         }
       });
+      setErrorMessage('');
+      setHasError(false);
     } else {
-      // If pasted OTP is not of 6 digits, you can show an error or clear fields
-      showError("Error", "Please paste a valid 6-digit OTP.");
+      setErrorMessage('Please paste a valid 6-digit OTP');
+      setHasError(true);
       refArray.forEach((ref) => {
         if (ref.current) {
           ref.current.value = "";
         }
       });
     }
-    e.preventDefault(); // Prevent default paste behavior
+    e.preventDefault();
   };
 
   const handleContinue = useCallback(async () => {
@@ -98,12 +102,15 @@ const OTPSignUp = () => {
       (ib6.current?.value || "");
 
     if (otp.length !== 6) {
-      alert("Please enter all 6 digits of the OTP");
+      setErrorMessage('Please enter all 6 digits of the OTP');
+      setHasError(true);
       return;
     }
 
     try {
       setIsLoading(true);
+      setErrorMessage('');
+      setHasError(false);
 
       await submitOTP({
         email: dataStates.email,
@@ -123,12 +130,14 @@ const OTPSignUp = () => {
         handleSetModalState(MODAL_STATES.SIGNUP_CONGRATULATIONS);
       }, 1000);
     } catch (err: any) {
-      console.log("OTP Error details:", err); // Log full error object
-      if (err?.data?.message) {
-        showError(err?.data?.errors, err?.data?.message);
+      console.log("OTP Error details:", err);
+      if (err?.data?.message?.toLowerCase().includes('expired')) {
+        setErrorMessage('Your OTP has expired');
+      } else {
+        setErrorMessage('Please provide the valid OTP');
       }
+      setHasError(true);
 
-      // Clear OTP fields on error
       [ib1, ib2, ib3, ib4, ib5, ib6].forEach((ref) => {
         if (ref.current) {
           ref.current.value = "";
@@ -140,25 +149,27 @@ const OTPSignUp = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [dataStates.email, tempLoginEmail, tempLoginPassword, showError]);
+  }, [dataStates.email, tempLoginEmail, tempLoginPassword]);
 
   const [generateOTP] = useOtpGenerateMutation();
 
   const resendOTP = async () => {
     try {
+      setErrorMessage('');
+      setHasError(false);
       await generateOTP({ email: dataStates.email })
         .unwrap()
         .then(() => {
           console.log("OTP resent successfully");
-          // Optionally add success toast/notification here
         })
         .catch((error) => {
           console.error("Failed to resend OTP:", error);
-          // Optionally add error toast/notification here
+          setErrorMessage('Failed to resend OTP. Please try again.');
+          setHasError(true);
         });
     } catch (error) {
       console.error("Error in resendOTP:", error);
-      throw error; // Propagate error to handleResendClick
+      throw error;
     }
   };
 
@@ -166,7 +177,6 @@ const OTPSignUp = () => {
 
   useEffect(() => {
     if (modalState === MODAL_STATES.SIGNUP_STEP3) {
-      // Start the countdown when component mounts
       otpTimerRef.current = setInterval(() => {
         setCountdown((prevCount) => {
           if (prevCount <= 0) {
@@ -178,34 +188,17 @@ const OTPSignUp = () => {
       }, 1000);
     }
 
-    // Cleanup timer on component unmount
     return () => clearInterval(otpTimerRef.current);
   }, [modalState]);
 
   const handleResendClick = async () => {
     try {
-      // Add your resend OTP logic here
       await resendOTP();
-
       setCountdown(180);
     } catch (error) {
-      // Handle error
       console.error("Failed to resend OTP:", error);
     }
   };
-
-  useEffect(() => {
-    if (buttonPrevious.current) {
-      buttonPrevious.current.onclick = () => {
-        [ib1, ib2, ib3, ib4, ib5, ib6].forEach((ref) => {
-          if (ref.current) {
-            ref.current.value = "";
-          }
-        });
-        handleSetModalState(MODAL_STATES.SIGNUP_STEP2);
-      };
-    }
-  }, []);
 
   const formatTime = (timeInSeconds: number): string => {
     const minutes = Math.floor(timeInSeconds / 60);
@@ -217,18 +210,18 @@ const OTPSignUp = () => {
     modalState && modalState == MODAL_STATES.SIGNUP_STEP3 ?
     <div
       id="step3_signup"
-      className={`${styles["modal-content"]}`}
+      className={styles["modal-content"]}
     >
-      <div className={`${styles["verify-container"]}`}>
-        <div className={`${styles.desc1}`}>Verify with One Time Password</div>
-        <div className={`${styles.desc2}`}>
+      <div className={styles["verify-container"]}>
+        <div className={styles.desc1}>Verify with One Time Password</div>
+        <div className={styles.desc2}>
           To ensure your security, please enter the One - Time Password
         </div>
-        <div className={`${styles.desc2}`}>
+        <div className={styles.desc2}>
           (OTP) sent to your registered email below.
         </div>
 
-        <div className={`${styles["otp-input-fields"]}`}>
+        <div className={`${styles["otp-input-fields"]} ${hasError ? styles.error : ''}`}>
           <div>
             <input
               onInput={() => handleOnInput(ib1, ib2)}
@@ -297,10 +290,16 @@ const OTPSignUp = () => {
           </div>
         </div>
 
-        <div className={`${styles["action-buttons"]}`}>
+        {errorMessage && (
+          <div className={`${styles["error-message"]} ${hasError ? styles.shake : ''}`}>
+            {errorMessage}
+          </div>
+        )}
+
+        <div className={styles["action-buttons"]}>
           <button
             onClick={handleContinue}
-            className={`${styles["button-custom-orange"]} ${isLoading ? styles["loading"] : ""}`}
+            className={`${styles["button-custom-orange"]} ${isLoading ? styles.loading : ""}`}
             disabled={isLoading}
           >
             {isLoading ? "Verifying..." : "Continue"}
@@ -314,29 +313,29 @@ const OTPSignUp = () => {
               });
               handleSetModalState(MODAL_STATES.SIGNUP_STEP2);
             }}
-            className={`${styles["button-custom-basic"]}`}
+            className={styles["button-custom-basic"]}
           >
             Cancel
           </button>
         </div>
 
-        <div className={`${styles["resend-container"]}`}>
-          <label className={`${styles["resend-label1"]}`}>
+        <div className={styles["resend-container"]}>
+          <label className={styles["resend-label1"]}>
             Didn't receive the email?
           </label>
           {countdown > 0 ? (
             <>
-              <label className={`${styles["resend-label2"]}`}>
+              <label className={styles["resend-label2"]}>
                 Click to resend in{" "}
               </label>
-              <label className={`${styles["resend-label3"]}`}>
+              <label className={styles["resend-label3"]}>
                 {formatTime(countdown)}
               </label>
             </>
           ) : (
             <label
               onClick={handleResendClick}
-              className={`${styles["resend-button"]}`}
+              className={styles["resend-button"]}
             >
               Click to resend
             </label>
@@ -346,7 +345,7 @@ const OTPSignUp = () => {
         <div
           ref={buttonPrevious}
           id="btn_signup_step3_previous"
-          className={`${styles["previous-button-container"]}`}
+          className={styles["previous-button-container"]}
           onClick={() => {
             [ib1, ib2, ib3, ib4, ib5, ib6].forEach((ref) => {
               if (ref.current) {
@@ -356,13 +355,13 @@ const OTPSignUp = () => {
             handleSetModalState(MODAL_STATES.SIGNUP_STEP2);
           }}
         >
-          <div className={`${styles["previous-button"]}`}></div>
-          <div className={`${styles["caret-left"]}`}></div>
-          <div className={`${styles["previous-button-label"]}`}>Previous</div>
+          <div className={styles["previous-button"]}></div>
+          <div className={styles["caret-left"]}></div>
+          <div className={styles["previous-button-label"]}>Previous</div>
         </div>
       </div>
     </div>
-    :<></>
+    : <></>
   );
 };
 
