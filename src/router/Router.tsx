@@ -223,17 +223,12 @@ const InterruptedSubscriptionRoute = ({ children }: { children: React.ReactNode 
     return <LoadingFallback />;
   }
 
-  // If user is authenticated, check if they should access this page
-  if (isAuthenticated && user?.data?.user) {
-    const freeTrial = user?.data?.user?.freeTrial;
-    const isOnboarded = user?.data?.user?.isOnboarded;
-    
-    // Only allow access if user has freeTrial and is not onboarded
-    if (!(freeTrial === true && isOnboarded === false)) {
-      return <Navigate to={ROUTE_CONSTANTS.DASHBOARD} replace />;
-    }
+  // If user is authenticated, check if they are already onboarded
+  if (isAuthenticated && user?.data?.user?.isOnboarded) {
+    return <Navigate to={ROUTE_CONSTANTS.DASHBOARD} replace />;
   }
 
+  // Allow access to unauthenticated users or non-onboarded users
   return <>{children}</>;
 };
 

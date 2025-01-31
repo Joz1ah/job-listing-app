@@ -5,6 +5,7 @@ interface NavItem {
   isSpecial?: boolean;
   isAction?: boolean;
   action?: () => void;
+  isExternal?: boolean;
 }
   
   export const employerDesktopMenu: NavItem[] = [
@@ -31,9 +32,14 @@ interface NavItem {
     { name: 'BOOKMARKED JOBS', path: '/dashboard/bookmarked-jobs'},
     /* { name: 'REPORTS & ANALYTICS', path: '/dashboard/reports-and-analytics' }, */
     { name: 'INTERVIEWS', path: '/dashboard/interviews' },
-    { name: 'ABOUT US', path: '#'},
-    { name: 'CONTACT US', path: '#'},
+    { name: 'ABOUT US', path: '/about-us'},
+    { name: 'CONTACT US', path: '/contact-us'},
     { name: '✦ YOUR SUBSCRIPTION', path: '/dashboard/account-settings/subscription', isSpecial: true },
+    {
+      name: "FAQ",
+      path: "https://support.akaza.io/",
+      isExternal: true
+    },
     { name: 'ACCOUNT SETTINGS', path: '/dashboard/account-settings'},
     { 
       name: 'SIGN OUT',
@@ -61,10 +67,14 @@ interface NavItem {
     { name: 'EDIT APPLICATION CARD', path: '/dashboard/edit-application' },
     { name: 'BOOKMARKED JOBS', path: '/dashboard/bookmarked-jobs'},
     { name: 'INTERVIEWS', path: '/dashboard/interviews'},
-    { name: 'ABOUT US', path: '#'},
-    { name: 'CONTACT US', path: '#' },
+    { name: 'ABOUT US', path: '/about-us'},
+    { name: 'CONTACT US', path: '/contact-us' },
     { name: '✦ YOUR SUBSCRIPTION', path: '/dashboard/account-settings/subscription', isSpecial: true },
-    { name: 'FAQ', path: '#'},
+    {
+      name: "FAQ",
+      path: "https://support.akaza.io/",
+      isExternal: true
+    },
     { name: 'ACCOUNT SETTINGS', path: '/dashboard/account-settings'},
     { 
       name: 'SIGN OUT',
