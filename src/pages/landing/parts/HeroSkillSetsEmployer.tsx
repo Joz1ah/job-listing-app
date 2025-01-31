@@ -67,7 +67,7 @@ const HeroSkillSetsEmployer = () => {
       className={`${styles["hero-content"]}`}
       hidden={heroState !== HERO_STATES.SKILLSETS_EMPLOYER}
     >
-      <img src={group_people_laptop} />
+      <img src={group_people_laptop} className="w-full h-full object-cover" />
       <div
         className={`${styles["hero-container-overlay"]} ${styles["gradient-left-dark"]}`}
       >

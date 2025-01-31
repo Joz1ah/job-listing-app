@@ -45,8 +45,8 @@ const PricingContainer = () => {
           <div className={`${styles["corner-bottom-stripes"]}`}>
             <img src={corner_bottom_stripes}></img>
           </div>
-          <div className={`${styles["corner-flame"]}`}>
-            <img src={flame_vector}></img>
+          <div className={`${styles["corner-flame"]} relative z-0`}>
+            <img src={flame_vector} className="relative z-0" />
           </div>
         </div>
       </div>
@@ -69,13 +69,13 @@ const PricingContainer = () => {
         </div>
         <div className={`${styles["button-wrapper"]}`}>
           <button className={`${styles["button-regular"]}`}>
-          <Link 
-            to={"https://calendly.com/ceo-akaza/intro-to-akaza"}
-            target="_blank" 
-            rel="noopener noreferrer"
-          >
-            Schedule a call
-          </Link>
+            <Link
+              to={"https://calendly.com/ceo-akaza/intro-to-akaza"}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Schedule a call
+            </Link>
           </button>
         </div>
       </div>
