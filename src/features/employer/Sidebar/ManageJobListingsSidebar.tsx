@@ -94,8 +94,8 @@ const ManageJobListingsSidebar: FC<ManageJobsSidebarProps> = ({
       {/* Mobile/Tablet View */}
       <div className="lg:hidden w-full">
         <div className="px-4 md:px-6 py-4 md:mt-6 space-y-4">{userInfo}</div>
-        <div className="w-full px-4 overflow-x-auto">
-          <div className="flex space-x-8 md:space-x-6 min-w-max">
+        <div className="w-full px-4">
+          <div className="flex justify-center gap-10 items-center">
             {jobListingsMenu.map((item) => (
               <Link
                 key={item.path}
