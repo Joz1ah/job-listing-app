@@ -40,7 +40,7 @@ const PlanCard: FC<PlanProps> = ({
     if (isAuthenticated) {
       navigate("/dashboard/account-settings/subscription");
     } else {
-      navigate("/", {
+      navigate("#", {
         state: {
           openModal: true,
           modalType: "SIGNUP_SELECT_USER_TYPE",

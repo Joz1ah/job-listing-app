@@ -3,7 +3,6 @@ import { InputField, Input } from "components";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 import { useState, useEffect } from "react";
 import { Formik, Field, FieldProps } from "formik";
-import { useNavigate } from "react-router-dom";
 import styles from "./../landing.module.scss";
 import { useLanding } from "../useLanding";
 import * as Yup from "yup";
@@ -46,7 +45,6 @@ const AuthnetPaymentFullModal = () => {
   const [paymentSubmit] = usePaymentCreateMutation();
   const [loginSubmit] = useLoginMutation();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const navigate = useNavigate();
   const { showError } = useErrorModal();
   const { login } = useAuth(); 
 
@@ -117,21 +115,19 @@ const AuthnetPaymentFullModal = () => {
               email: tempLoginEmail,
               password: tempLoginPassword
             }).unwrap();
-
+          
             // If login successful, set the token
             if (loginResponse?.data?.token) {
               login(loginResponse.data.token);
               handleSetModalState(MODAL_STATES.LOADING);
-
+          
               // Get user type for navigation
               const userType = loginResponse.data.user?.type;
               const navigationTarget = userType === 'employer' 
                 ? ROUTE_CONSTANTS.COMPLETE_PROFILE
-                : ROUTE_CONSTANTS.CREATE_APPLICATION
-
-              setTimeout(() => {
-                navigate(navigationTarget, { replace: true });
-              }, 1000);
+                : ROUTE_CONSTANTS.CREATE_APPLICATION;
+          
+              window.location.href = navigationTarget;
             }
           } catch (loginErr) {
             console.error('Login error after payment:', loginErr);

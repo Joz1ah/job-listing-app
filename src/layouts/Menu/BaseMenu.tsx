@@ -109,6 +109,13 @@ const BaseMenu: FC<MenuProps> = ({
     }
   };
 
+  const handleLogoClick = () => {
+    if (isMenuOpen) {
+      onToggleMenu();
+    }
+    window.location.href = '/';
+  };
+
   const handleNotificationClick = () => {
     if (isMenuOpen) {
       onToggleMenu();
@@ -162,8 +169,8 @@ const BaseMenu: FC<MenuProps> = ({
       <header className="hidden md:flex fixed top-0 left-0 right-0 bg-[#2D3A41] h-[72px] px-4 justify-between items-center z-50 shadow-md">
         <div className="flex items-center gap-4">
           <NavLink
-            to={isAuthenticated ? (userType === 'employer' ? '/dashboard' : '/dashboard') : '/'}
-            onClick={handleNavLinkClick}
+            to={'/'}
+            onClick={handleLogoClick}
             className="flex-shrink-0"
           >
             <img
@@ -279,8 +286,8 @@ const BaseMenu: FC<MenuProps> = ({
       {/* Mobile Header */}
       <header className="md:hidden bg-[#080808] py-4 px-2 flex justify-between items-center z-50 shadow-md">
       <NavLink
-            to={isAuthenticated ? (userType === 'employer' ? '/dashboard' : '/dashboard') : '/'}
-            onClick={handleNavLinkClick}
+            to={'/'}
+            onClick={handleLogoClick}
             className="flex-shrink-0"
           >
         <img src={akazaLogoWhite} alt="Akaza Logo" className="h-8" />

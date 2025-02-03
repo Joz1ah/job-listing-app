@@ -7,10 +7,10 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  /* Label */
 } from "components";
 import { cn } from "lib/utils";
 import { useAuth } from "contexts/AuthContext/AuthContext";
+import { useEmployerContext } from "components";
 
 const Sidebar: FC = () => {
   const location = useLocation();
@@ -19,32 +19,28 @@ const Sidebar: FC = () => {
     "/dashboard/employer-profile",
   ];
   const hideOnPagesDesktop = ["/dashboard/employer-profile"];
-
+  const { subscriptionPlan } = useEmployerContext();
+  
   const shouldShowMobileView = !hideOnPagesMobile.includes(location.pathname);
   const shouldShowDesktopView = !hideOnPagesDesktop.includes(location.pathname);
 
-  const jobListings: { title: string; path: string }[] = [
-    /* { title: "Web Developer", path: "#" },
-    { title: "DevOps Engineer", path: "#" },
-    { title: "Virtual Admin Assistant", path: "#" },
-    { title: "Sr. Software Engineer", path: "#" },
-    { title: "Jr. Shopify Developer", path: "#" },
-    { title: "Mobile App Developer", path: "#" },
-    { title: "Social Media Manager", path: "#" },
-    { title: "Content Creator", path: "#" }, */
-  ];
+  const jobListings: { title: string; path: string }[] = [];
 
   const SelectComponent = () => {
     const { user } = useAuth();
     const isFirstJobListing = user?.data?.user?.jobCounts?.count === 0;
+    const isFreeTrial = subscriptionPlan === 'freeTrial';
     
     return (
       <div className="relative pt-4 w-full">
         <div className="relative">
           {!isFirstJobListing && (
-            <Select>
+            <Select disabled={isFreeTrial}>
               <SelectTrigger 
-                className="bg-transparent border-[#AEADAD] h-[56px] border-2 text-white text-sm md:text-base"
+                className={cn(
+                  "bg-transparent border-[#AEADAD] h-[56px] border-2 text-white text-sm md:text-base",
+                  isFreeTrial && "opacity-50 cursor-not-allowed"
+                )}
               >
                 <SelectValue
                   placeholder="Select Job Title"

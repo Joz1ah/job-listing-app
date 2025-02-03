@@ -9,12 +9,22 @@ import tiktok_icon from 'assets/tiktok.svg?url';
 
 import styles from './footer.module.scss'
 const Footer: FC = () => {
+  const handleLogoClick = () => {
+    window.location.href = '/';
+  };
+
   return (
     <footer>
         <div className={`${styles.footer}`}>
             <div className={`${styles['footer-desc']}`}>
                 <div>
-                    <img src={akazalogo} width="161px" height="50px" />
+                    <img 
+                      src={akazalogo} 
+                      width="161px" 
+                      height="50px" 
+                      onClick={handleLogoClick} 
+                      style={{ cursor: 'pointer' }} 
+                    />
                     <div>Copyright © 2025 Akaza</div>
                     <div>All rights reserved</div>
                 </div>

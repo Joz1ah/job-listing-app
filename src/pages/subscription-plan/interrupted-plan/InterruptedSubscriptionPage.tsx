@@ -20,6 +20,11 @@ import visa_icon from "assets/credit-card-icons/cc_visa.svg?url";
 import amex_icon from "assets/credit-card-icons/cc_american-express.svg?url";
 import mastercard_icon from "assets/credit-card-icons/cc_mastercard.svg?url";
 import discover_icon from "assets/credit-card-icons/cc_discover.svg?url";
+import { useUpdateFreeTrialStatusMutation } from "api/akaza/akazaAPI";
+import { useAuth } from "contexts/AuthContext/AuthContext";
+import SubscriptionSuccessModal from "./SubscriptionSuccessModal";
+import { FreeTrialConfirmationModal } from "./FreeTrialConfirmationModal";
+import { FreeTrialSuccessModal } from "./FreeTrialSuccessModal";
 
 type PlanProps = {
   type: string;
@@ -118,6 +123,22 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
   onBack,
   onSuccess,
 }) => {
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsProcessing(true);
+    try {
+      // Simulating payment processing
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      onSuccess();
+    } catch (error) {
+      console.error('Payment processing failed:', error);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#242625] p-4 md:p-8">
       <div className="max-w-6xl mx-auto">
@@ -150,10 +171,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
 
           <div className="w-full md:w-[743px] h-[514px] bg-[#2D3A41] p-6 rounded flex justify-center">
             <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                onSuccess();
-              }}
+              onSubmit={handleSubmit}
               className="space-y-6 w-full md:w-[350px]"
             >
               <div className="flex justify-center mb-6">
@@ -210,8 +228,9 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                 <Button
                   type="submit"
                   className="w-full bg-[#F5722E] hover:bg-[#F5722E]/90 text-white h-10 rounded"
+                  disabled={isProcessing}
                 >
-                  Pay & Upgrade
+                  {isProcessing ? "Payment Procesing" : "Pay & Upgrade"}
                 </Button>
 
                 <div className="flex flex-col items-start">
@@ -323,7 +342,18 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   );
 };
 
-const FreeTrial: React.FC = () => {
+interface FreeTrialProps {
+  onBack: () => void;
+}
+
+const FreeTrial: React.FC<FreeTrialProps> = ({onBack}) => {
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [updateFreeTrialStatus] = useUpdateFreeTrialStatusMutation();
+  const [isLoading, setIsLoading] = useState(false);
+  const { user } = useAuth();
+  const isEmployer = user?.data?.user?.type === 'employer';
+
   const freeFeatures = [
     {
       icon: <img src={sparkle_icon_green} className="w-4 h-4" alt="sparkle" />,
@@ -335,7 +365,15 @@ const FreeTrial: React.FC = () => {
 
   const yearlyFeatures = [
     { icon: <Gift />, text: "PLUS ONE MONTH FREE" },
-    { icon: <CalendarCheck />, text: "Send up to 3 Interview Invites" },
+    ...(isEmployer 
+      ? [
+          { icon: <Infinity />, text: "Unlimited Interview Invites" },
+          { icon: <CalendarCheck />, text: "Up to 5 Job Listings" },
+        ]
+      : [
+          { icon: <CalendarCheck />, text: "Send up to 3 Interview Invites" },
+        ]
+    ),
     {
       icon: <img src={sparkle_icon} className="w-4 h-4" alt="sparkle" />,
       text: "Perfect Match automation",
@@ -347,7 +385,15 @@ const FreeTrial: React.FC = () => {
   ];
 
   const monthlyFeatures = [
-    { icon: <CalendarCheck />, text: "Up to 5 Job Listings" },
+    ...(isEmployer 
+      ? [
+          { icon: <Infinity />, text: "Unlimited Interview Invites" },
+          { icon: <CalendarCheck />, text: "Up to 5 Job Listings" },
+        ]
+      : [
+          { icon: <CalendarCheck />, text: "Send up to 3 Interview Invites" },
+        ]
+    ),
     {
       icon: <img src={sparkle_icon} className="w-4 h-4" alt="sparkle" />,
       text: "Perfect Match automation",
@@ -358,9 +404,33 @@ const FreeTrial: React.FC = () => {
     { icon: <MessageCircleMore />, text: "Live chat support" },
   ];
 
+  const handleStartFreeTrial = () => {
+    setShowConfirmationModal(true);
+  };
+
+  const handleConfirmFreeTrial = async () => {
+    setIsLoading(true);
+    try {
+      await updateFreeTrialStatus({}).unwrap();
+      setShowConfirmationModal(false);
+      setShowSuccessModal(true);
+    } catch (error) {
+      console.error('Error updating free trial status:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#242625] p-4 md:p-8">
       <div className="max-w-6xl mx-auto">
+      <button
+          onClick={onBack}
+          className="flex items-center text-[#F5722E] mb-6"
+        >
+          <ArrowLeft size={20} />
+          <span className="ml-2">Back to Plans</span>
+        </button>
         <div className="text-left max-w-3xl mx-auto mb-8">
           <h1 className="text-3xl text-[#F5722E] mb-1">
             Get Started with a Free Subscription – No Cost, Just Benefits!
@@ -375,7 +445,6 @@ const FreeTrial: React.FC = () => {
         <div className="h-[3px] bg-[#F5722E] mt-4 mb-10" />
 
         <div className="flex flex-col lg:flex-row items-center lg:items-start gap-6">
-          {/* Free Trial Card */}
           <div className="w-[360px] flex-shrink-0">
             <PricingCard
               type="Free"
@@ -387,7 +456,6 @@ const FreeTrial: React.FC = () => {
             />
           </div>
 
-          {/* Subscription Cards Container */}
           <div className="w-full xl:min-w-[745px] h-auto xl:h-[515px] bg-[#2D3A41] flex flex-col items-center p-4">
             <h2 className="text-2xl text-[#F5722E] mb-2 font-medium text-center">
               Choose the Best Plan for Ultimate Access and Benefits!
@@ -412,9 +480,28 @@ const FreeTrial: React.FC = () => {
               />
             </div>
 
-            <Button variant="link" className="text-[#F5722E] text-md mt-4">
+            <Button 
+              variant="link" 
+              className="text-[#F5722E] text-md mt-4"
+              onClick={handleStartFreeTrial}
+            >
               Continue to the Free Trial
             </Button>
+
+            <FreeTrialConfirmationModal
+              isOpen={showConfirmationModal}
+              onClose={() => setShowConfirmationModal(false)}
+              onConfirm={handleConfirmFreeTrial}
+              isLoading={isLoading}
+            />
+
+            <FreeTrialSuccessModal
+              isOpen={showSuccessModal}
+              onClose={() => {
+                setShowSuccessModal(false);
+                window.location.href = '/dashboard';
+              }}
+            />
           </div>
         </div>
       </div>
@@ -422,36 +509,12 @@ const FreeTrial: React.FC = () => {
   );
 };
 
-const SuccessStep: React.FC<{ type: string }> = ({ type }) => (
-  <div className="min-h-screen w-full flex items-center justify-center">
-    {/* Your original component with its styles intact */}
-    <div className="text-center">
-      <Trophy size={48} className="text-[#F5722E] mx-auto mb-4" />
-      <h2 className="text-2xl text-[#F5722E] mb-4">
-        {type === "Free"
-          ? "Welcome to Your Free Trial!"
-          : `Welcome to Your ${type} Plan!`}
-      </h2>
-      <p className="text-[#F8F8FF] mb-8">
-        {type === "Free"
-          ? "You now have full access to try our features for the next 3 days."
-          : `You've unlocked all premium features with your ${type.toLowerCase()} subscription.`}
-      </p>
-      <Button
-        onClick={() => (window.location.href = "/dashboard")}
-        className="px-6 py-3 bg-[#F5722E] text-white hover:bg-[#F5722E]/90 rounded"
-      >
-        Go to Dashboard
-      </Button>
-    </div>
-  </div>
-);
-
 const InterruptedSubscriptionPage: React.FC = () => {
-  const [step, setStep] = useState<
-    "plans" | "payment" | "success" | "free-trial"
-  >("plans");
+  const [step, setStep] = useState<"plans" | "payment" | "free-trial">("plans");
   const [selectedPlan, setSelectedPlan] = useState<PlanProps | null>(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const { user } = useAuth();
+  const isEmployer = user?.data?.user?.type === 'employer';
 
   const plans: PlanProps[] = [
     {
@@ -461,8 +524,15 @@ const InterruptedSubscriptionPage: React.FC = () => {
       buttonText: "Choose Plan",
       features: [
         { icon: <Gift />, text: "PLUS ONE MONTH FREE" },
-        { icon: <Infinity />, text: "Unlimited Interview Invites" },
-        { icon: <CalendarCheck />, text: "Up to 5 Job Listings" },
+        ...(isEmployer 
+          ? [
+              { icon: <Infinity />, text: "Unlimited Interview Invites" },
+              { icon: <CalendarCheck />, text: "Up to 5 Job Listings" },
+            ]
+          : [
+              { icon: <CalendarCheck />, text: "Send up to 3 Interview Invites" },
+            ]
+        ),
         {
           icon: <img src={sparkle_icon_green} className="w-4 h-4" />,
           text: "Perfect Match automation",
@@ -480,8 +550,15 @@ const InterruptedSubscriptionPage: React.FC = () => {
       subtext: "flexible monthly access",
       buttonText: "Choose Plan",
       features: [
-        { icon: <Infinity />, text: "Unlimited Interview Invites" },
-        { icon: <CalendarCheck />, text: "Up to 5 Job Listings" },
+        ...(isEmployer 
+          ? [
+              { icon: <Infinity />, text: "Unlimited Interview Invites" },
+              { icon: <CalendarCheck />, text: "Up to 5 Job Listings" },
+            ]
+          : [
+              { icon: <CalendarCheck />, text: "Send up to 3 Interview Invites" },
+            ]
+        ),
         {
           icon: <img src={sparkle_icon_green} className="w-4 h-4" />,
           text: "Perfect Match automation",
@@ -523,7 +600,7 @@ const InterruptedSubscriptionPage: React.FC = () => {
   };
 
   const handlePaymentSuccess = () => {
-    setStep("success");
+    setShowSuccessModal(true);
   };
 
   const renderContent = () => {
@@ -538,10 +615,8 @@ const InterruptedSubscriptionPage: React.FC = () => {
             />
           )
         );
-      case "success":
-        return selectedPlan && <SuccessStep type={selectedPlan.type} />;
       case "free-trial":
-        return <FreeTrial />;
+        return <FreeTrial onBack={handleBack}/>;
       default:
         return (
           <>
@@ -575,6 +650,13 @@ const InterruptedSubscriptionPage: React.FC = () => {
       <div className="min-h-screen bg-[#242625] p-8">
         <div className="max-w-6xl mx-auto">{renderContent()}</div>
       </div>
+      {selectedPlan && (
+        <SubscriptionSuccessModal
+          isOpen={showSuccessModal}
+          onClose={() => setShowSuccessModal(false)}
+          type={selectedPlan.type}
+        />
+      )}
     </DefaultLayout>
   );
 };
