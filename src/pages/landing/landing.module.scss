@@ -1541,75 +1541,70 @@ body {
   flex-direction: column;
   gap: 12px;
   padding: 8px;
-}
-
-.subscription-selection-items > .subscription-item {
-  display: flex;
-  flex-direction: row;
-  min-height: 111px;
-  border-radius: 2px;
-  background: #fff;
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-  align-items: center;
-}
-
-.subscription-selection-items > .subscription-item.selected {
-  box-sizing: border-box;
-  border-image: linear-gradient(to right, #ffc9ad 0%, #8f431b 100%) 1;
-  border-width: 4px;
-  border-style: solid;
-  margin: -4px;
-}
-.subscription-selection-items > .subscription-item > :nth-child(1),
-.subscription-selection-items > .subscription-item > :nth-child(2) {
-  flex: 1;
-}
-
-.subscription-selection-items > .subscription-item > :nth-child(3) {
-  padding-left: 8px;
-  padding-right: 8px;
-}
-
-.subscription-item > .subscription-item-pricing-container {
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-}
-
-.subscription-item
-  > .subscription-item-pricing-container
-  > .subscription-item-pricing-desc {
-  flex: 0 0 50%; /* Each item takes 50% of the container height */
-  justify-content: flex-end; /* Align content to the bottom */
-  color: #f5722e;
-  font-family: Poppins-R;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 700;
-  letter-spacing: -0.4px;
-}
-
-.subscription-item
-  > .subscription-item-pricing-container
-  > .subscription-item-pricing-subdesc {
-  flex: 0 0 50%; /* Each item takes 50% of the container height */
-  justify-content: flex-start; /* Align content to the top */
-  color: #263238;
-  font-family: Poppins-R;
-  font-size: 10px;
-  font-style: normal;
-  font-weight: 300;
-  text-align: center;
-}
-
-.subscription-item > .subscription-item-pricing-desc {
-  color: var(--Default-Grey-Text, #263238);
-  font-family: Poppins-L;
-  font-size: 11px;
-  font-style: normal;
-  font-weight: 300;
-  line-height: 28px; /* 254.545% */
-  letter-spacing: -0.66px;
+  > .subscription-item {
+    display: flex;
+    flex-direction: row;
+    min-height: 111px;
+    border-radius: 2px;
+    background: #fff;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    align-items: center;
+    @media (max-width: 768px) {
+      min-width: 190px;
+      flex-direction: column;
+    }
+  }
+  > .subscription-item.selected {
+    box-sizing: border-box;
+    border-image: linear-gradient(to right, #ffc9ad 0%, #8f431b 100%) 1;
+    border-width: 4px;
+    border-style: solid;
+    margin: -4px;
+  }
+  > .subscription-item{
+    > :nth-child(1),
+    > :nth-child(2) {
+      flex: 1;
+    }
+    > :nth-child(3) {
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+    > .subscription-item-pricing-container {
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      > .subscription-item-pricing-desc {
+        flex: 0 0 50%; /* Each item takes 50% of the container height */
+        justify-content: flex-end; /* Align content to the bottom */
+        color: #f5722e;
+        font-family: Poppins-R;
+        font-size: 20px;
+        font-style: normal;
+        font-weight: 700;
+        letter-spacing: -0.4px;
+      }
+      > .subscription-item-pricing-subdesc {
+        flex: 0 0 50%; /* Each item takes 50% of the container height */
+        justify-content: flex-start; /* Align content to the top */
+        color: #263238;
+        font-family: Poppins-R;
+        font-size: 10px;
+        font-style: normal;
+        font-weight: 300;
+        text-align: center;
+      }
+    }
+    > .subscription-item-pricing-desc {
+      color: var(--Default-Grey-Text, #263238);
+      font-family: Poppins-L;
+      font-size: 11px;
+      font-style: normal;
+      font-weight: 300;
+      line-height: 28px; /* 254.545% */
+      letter-spacing: -0.66px;
+    }
+  } 
 }
 
 .subscription-item

@@ -65,7 +65,7 @@ body:has(.requires-no-scroll:not([hidden])) {
   overflow: hidden;
 }
 
-.modal-header:has(.close-modal2) {
+.modal-header:has(.close-modal) {
   padding: 4px 7px 0px 0px;
   display: flex;
   justify-content: end;
