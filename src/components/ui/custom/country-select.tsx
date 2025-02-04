@@ -17,6 +17,7 @@ interface CountrySelectProps {
   error?: string;
   className?: string;
   popoverClassName?: string;
+  placeholder?: string;
 }
 
 const countries = [

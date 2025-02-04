@@ -33,7 +33,7 @@ const PerfectMatchEmptyState: React.FC<EmptyStateProps> = ({
 
       <div className="space-y-4">
         <NavLink to="/dashboard/job-listing">
-          <Button className="bg-[#F5722E] hover:bg-[#F5722E]/90 rounded-sm items-center p-0 w-[180px]">
+          <Button className="bg-[#F5722E] hover:bg-[#F5722E]/90 rounded-sm text-lg font-semibold items-center p-0 w-[250px] h-[50px]">
             Create Job Listing
           </Button>
         </NavLink>
@@ -68,7 +68,7 @@ const OtherApplicationEmptyState: React.FC = () => (
 
       <div className="space-y-4">
         <NavLink to="/dashboard/job-listing">
-          <Button className="bg-[#F5722E] hover:bg-[#F5722E]/90 rounded-sm items-center p-0 w-[180px]">
+          <Button className="bg-[#F5722E] hover:bg-[#F5722E]/90 rounded-sm text-lg font-semibold items-center p-0 w-[250px] h-[50px]">
             Create Job Listing
           </Button>
         </NavLink>

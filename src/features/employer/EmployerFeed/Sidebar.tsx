@@ -43,7 +43,7 @@ const Sidebar: FC = () => {
                 )}
               >
                 <SelectValue
-                  placeholder="Select Job Title"
+                  placeholder="Job Listings will apear here"
                   className="text-left pl-4"
                 />
               </SelectTrigger>

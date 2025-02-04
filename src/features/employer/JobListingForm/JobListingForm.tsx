@@ -329,7 +329,7 @@ const JobListingForm: FC = () => {
               value={values.location}
               onChange={handleChange}
               className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus-within:border-[#F5722E] placeholder:text-[#AEADAD]"
-              placeholder="Type and enter country"
+              placeholder="Add Location"
             />
           </InputField>
 
