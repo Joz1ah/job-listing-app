@@ -105,7 +105,15 @@ const JobListingForm: FC = () => {
     setIsSubmitting(true);
 
     try {
-      const coreSkillIds = values.coreSkills
+      // Combine all skills and certifications
+      const allKeywords = [
+        ...values.coreSkills,
+        ...values.interpersonalSkills,
+        ...values.certifications
+      ];
+      
+      // Map all keywords to their IDs
+      const keywordIds = allKeywords
         .map((keyword) => keywordToIdMap[keyword])
         .filter(Boolean)
         .map((id) => Number(id));
@@ -124,7 +132,7 @@ const JobListingForm: FC = () => {
         ).toISOString(),
         education: values.education,
         language: values.languages.join(","),
-        keywords: coreSkillIds,
+        keywords: keywordIds,
       };
 
       // Validate payload before submission
