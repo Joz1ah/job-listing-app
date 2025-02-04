@@ -1,7 +1,6 @@
 import { useSignUpMutation, useOtpGenerateMutation } from "api/akaza/akazaAPI";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import styles from "./../landing.module.scss";
 import * as Yup from "yup";
 import { useLanding } from "../useLanding";
 import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
@@ -132,150 +131,140 @@ const UserNamePasswordSignup = () => {
     return ["email", "password", "passwordConfirm"].includes(value);
   };
 
-  return (
-    modalState && modalState == MODAL_STATES.SIGNUP_STEP2 ?
+  return modalState && modalState == MODAL_STATES.SIGNUP_STEP2 ? (
     <div
-      className={`${styles["modal-content"]}`}
+      id="aniez"
+      className="flex flex-col h-full w-full justify-center items-center"
     >
-      <div className={`${styles["password-confirmation-container"]}`}>
-        <form onSubmit={handleSubmit}>
-          <div className={styles['form-label']}>
-            <h1>Sign Up</h1>
+      <form onSubmit={handleSubmit} className="w-full max-w-md">
+        <div className="mb-6 text-left">
+          <h1 className="text-2xl font-semibold text-orange-500">Sign Up</h1>
+        </div>
+        <div className="flex flex-col gap-4">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Email"
+              onChange={(e) =>
+                setCredentials({ ...credentials, email: e.target.value })
+              }
+              required
+              className="w-full p-2 border-b-2 border-gray-300 focus:border-orange-500 focus:outline-none"
+            />
+            {organizedErrors.email && (
+              <div className="text-red-500 text-xs mt-1">
+                {organizedErrors.email}
+              </div>
+            )}
           </div>
-          <div className={`${styles["password-input-fields"]}`}>
-            <div className={`${styles["transparent-input-field"]}`}>
-              <div className={`${styles["input-container"]}`}>
-                <input
-                  type="text"
-                  placeholder="Email"
-                  onChange={(e) =>
-                    setCredentials({ ...credentials, email: e.target.value })
-                  }
-                  required
-                ></input>
-              </div>
-              {organizedErrors.email && (
-                <div className={`${styles["error-label"]}`}>
-                  {organizedErrors.email}
-                </div>
-              )}
-            </div>
-            <div
-              id="signup_password"
-              className={`${styles["transparent-input-field"]}`}
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              onChange={(e) =>
+                setCredentials({
+                  ...credentials,
+                  password: e.target.value,
+                })
+              }
+              required
+              className="w-full p-2 border-b-2 border-gray-300 focus:border-orange-500 focus:outline-none"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              tabIndex={-1}
+              className="absolute right-2 top-2 text-gray-500"
             >
-              <div className={`${styles["input-container"]}`}>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Password"
-                  onChange={(e) =>
-                    setCredentials({
-                      ...credentials,
-                      password: e.target.value,
-                    })
-                  }
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  tabIndex={-1}
-                  className={styles["toggle-visibility"]}
-                >
-                  {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
-                </button>
+              {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
+            </button>
+            {organizedErrors.password && (
+              <div className="text-red-500 text-xs mt-1">
+                {organizedErrors.password}
               </div>
-              {organizedErrors.password && (
-                <div className={`${styles["error-label"]}`}>
-                  {organizedErrors.password}
-                </div>
-              )}
-            </div>
+            )}
+          </div>
+          <div className="relative">
+            <input
+              type={showConfirmPassword ? "text" : "password"}
+              placeholder="Confirm password"
+              onChange={(e) =>
+                setCredentials({
+                  ...credentials,
+                  passwordConfirm: e.target.value,
+                })
+              }
+              required
+              className="w-full p-2 border-b-2 border-gray-300 focus:border-orange-500 focus:outline-none"
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              tabIndex={-1}
+              className="absolute right-2 top-2 text-gray-500"
+            >
+              {showConfirmPassword ? <Eye size={20} /> : <EyeOff size={20} />}
+            </button>
+            {organizedErrors.passwordConfirm && (
+              <div className="text-red-500 text-xs mt-1">
+                {organizedErrors.passwordConfirm}
+              </div>
+            )}
+          </div>
+        </div>
 
-            <div
-              id="signup_password_confirm"
-              className={`${styles["transparent-input-field"]}`}
-            >
-              <div className={`${styles["input-container"]}`}>
-                <input
-                  type={showConfirmPassword ? "text" : "password"}
-                  placeholder="Confirm password"
-                  onChange={(e) =>
-                    setCredentials({
-                      ...credentials,
-                      passwordConfirm: e.target.value,
-                    })
-                  }
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  tabIndex={-1}
-                  className={styles["toggle-visibility"]}
-                >
-                  {showConfirmPassword ? (
-                    <Eye size={20} />
-                  ) : (
-                    <EyeOff size={20} />
-                  )}
-                </button>
-              </div>
-              {organizedErrors.passwordConfirm && (
-                <div className={`${styles["error-label"]}`}>
-                  {organizedErrors.passwordConfirm}
-                </div>
-              )}
-            </div>
-          </div>
-          <div className={`${styles["continue-signup-terms-and-conditions"]}`}>
+        <div className="mt-0 sm:mt-16">
+          <div className="mt-6 text-center text-sm text-gray-600">
+            <div>By clicking "Next," you agree to our</div>
             <div>
-              <div>By clicking "Next," you agree to our</div>
-              <div>
-                <a
-                  href="https://app.websitepolicies.com/policies/view/azn4i7fg"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <u className={styles["link"]}>Terms & Conditions</u>
-                </a>
-                and
-                <a
-                  href="https://app.websitepolicies.com/policies/view/2albjkzj"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <u className={styles["link"]}>Privacy Policy.</u>
-                </a>
-              </div>
+              <a
+                href="https://app.websitepolicies.com/policies/view/azn4i7fg"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-orange-500 underline"
+              >
+                Terms & Conditions
+              </a>
+              &nbsp;and&nbsp;
+              <a
+                href="https://app.websitepolicies.com/policies/view/2albjkzj"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-orange-500 underline"
+              >
+                Privacy Policy.
+              </a>
             </div>
           </div>
-          <div className={`${styles["action-buttons"]}`}>
+          <div className="mt-6 flex justify-center items-center gap-4">
             <button
               onClick={handlePrevious}
               type="button"
-              className={`${styles["button-custom-basic"]}`}
+              className="w-24 h-10 border-2 border-orange-500 text-orange-500 rounded-md hover:bg-orange-500 hover:text-white transition-colors"
             >
               Previous
             </button>
             <button
               type="submit"
-              className={styles["button-custom-orange"]}
+              className="w-24 h-10 bg-orange-500 text-white rounded-md hover:bg-orange-600 transition-colors flex items-center justify-center"
               disabled={isSubmitting}
             >
-              <img
-                src={button_loading_spinner}
-                alt="Loading"
-                className={styles["button-spinner"]}
-                hidden={!isSubmitting}
-              />
-              Next
+              {isSubmitting ? (
+                <img
+                  src={button_loading_spinner}
+                  alt="Loading"
+                  className="w-6 h-6"
+                />
+              ) : (
+                "Next"
+              )}
             </button>
           </div>
-        </form>
-      </div>
+        </div>
+      </form>
     </div>
-    :<></>
+  ) : (
+    <></>
   );
 };
 

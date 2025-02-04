@@ -34,7 +34,7 @@ const employerInfoSchema = Yup.object().shape({
   website: Yup.string()
     .required("This field is required")
     .matches(
-      /^https?:\/\/.+/,
+      /^https?:\/\/.+$/i,
       'Website URL must start with "http://" or "https://"',
     ),
 });
@@ -219,12 +219,8 @@ const EmployerAdditionalInformation = () => {
     handleSetModalState(MODAL_STATES.SIGNUP_STEP3);
   };
 
-  return (
-    modalState && modalState == MODAL_STATES.SIGNUP_STEP4_EMPLOYER ?
-    <div
-      id="step4_signup"
-      className={`${styles["modal-content"]}`}
-    >
+  return modalState && modalState == MODAL_STATES.SIGNUP_STEP4_EMPLOYER ? (
+    <div id="step4_signup" className={`${styles["modal-content"]}`}>
       <div className={`${styles["employer-additional-information-container"]}`}>
         <div className={`${styles["title-desc"]}`}>Additional Information</div>
         <div className={`${styles["form-field"]}`}>
@@ -358,7 +354,8 @@ const EmployerAdditionalInformation = () => {
         </div>
       </div>
     </div>
-    :<></>
+  ) : (
+    <></>
   );
 };
 
