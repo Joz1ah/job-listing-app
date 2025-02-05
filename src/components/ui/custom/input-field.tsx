@@ -169,7 +169,7 @@ const InputField = React.forwardRef<HTMLDivElement, InputFieldProps>(
         </div>
 
         {showError && (
-          <div className="absolute right-1 text-xs italic text-[#E63946] mt-1">
+          <div className="right-1 text-xs italic text-[#E63946] mt-1">
             {errorMessage}
           </div>
         )}
