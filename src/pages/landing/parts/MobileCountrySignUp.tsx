@@ -68,7 +68,7 @@ const MobileCountrySignUp = () => {
           }
         }}
       >
-        {({ values, errors, touched, handleChange, setFieldValue, isSubmitting }) => (
+        {({ values, errors, touched, handleChange, setFieldValue, isSubmitting, isValid, dirty }) => (
           <Form className={styles["country-mobtel-container"]}>
             <div className={styles["title-desc"]}>
               The information you provide will only be used for internal and verification purposes.
@@ -90,8 +90,8 @@ const MobileCountrySignUp = () => {
                   }}
                   defaultCountry="PH"
                   className={styles["phone-input-wrapper"]}
-                  onCountryChange={(country) => {
-                    setFieldValue('country', country || '');
+                  onCountryChange={() => {
+                    return;
                   }}
                 />
                 {touched.phoneNumber && errors.phoneNumber && (
@@ -132,8 +132,8 @@ const MobileCountrySignUp = () => {
               </button>
               <button
                 type="submit"
-                className={styles["button-custom-orange"]}
-                disabled={isSubmitting}
+                className={`${styles["button-custom-orange-next"]} ${(!isValid || !dirty) ? styles["button-custom-orange-next-disabled"] : ''}`}
+                disabled={isSubmitting || !isValid}
               >
                 {isSubmitting ? (
                   <>

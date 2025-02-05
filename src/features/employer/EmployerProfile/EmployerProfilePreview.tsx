@@ -56,7 +56,7 @@ const EmployerProfilePreview: React.FC<EmployerProfilePreviewProps> = ({
         <div className="p-4 md:p-8 space-y-3">
           {/* Company Name and Industry */}
           <div>
-            <h2 className="text-lg md:text-[17px] font-semibold text-[#263238]">
+            <h2 className="text-lg md:text-[17px] font-semibold text-[#263238] pt-4 md:pt-0">
               {formData.businessName}
             </h2>
             <div className="flex items-center gap-2 text-sm md:text-[17px] mt-1">

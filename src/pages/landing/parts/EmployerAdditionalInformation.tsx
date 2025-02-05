@@ -22,21 +22,33 @@ type FormData = {
 
 const employerInfoSchema = Yup.object().shape({
   firstName: Yup.string().trim().required("This field is required"),
-
   lastName: Yup.string().trim().required("This field is required"),
-
   position: Yup.string().trim().required("This field is required"),
-
   businessName: Yup.string().trim().required("This field is required"),
-
-  address: Yup.string().trim().required("This field is required"),
-
+  address: Yup.string()
+    .trim()
+    .required("This field is required")
+    .max(250, "Address must not exceed 250 characters"),
   website: Yup.string()
+    .trim()
     .required("This field is required")
     .matches(
-      /^https?:\/\/.+/,
-      'Website URL must start with "http://" or "https://"',
-    ),
+      /^(?:https?:\/\/)(.+)/i,
+      {
+        message: 'Website URL must start with "http://" or "https://" and include a domain',
+        excludeEmptyString: true  // Skip this validation if string is empty
+      }
+    )
+    .test({
+      name: 'protocol-check',
+      message: 'Website URL must be valid with content after protocol',
+      test: (value) => {
+        if (!value) return true;  // Skip this validation if string is empty
+        const lowerValue = value.toLowerCase();
+        return (lowerValue.startsWith('http://') && lowerValue.length > 7) || 
+               (lowerValue.startsWith('https://') && lowerValue.length > 8);
+      }
+    }),
 });
 
 const EmployerAdditionalInformation = () => {

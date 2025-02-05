@@ -1,5 +1,5 @@
 import React from "react";
-import { MapPin, Mail, Phone, Calendar, X } from "lucide-react";
+import { MapPin, /* Mail, Phone, Calendar, */ X } from "lucide-react";
 import { Card, CardFooter } from "components";
 import { Button } from "components";
 import { selectOptions, FormData } from "mockData/app-form-options";
@@ -37,6 +37,13 @@ const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
     });
   };
 
+  const toTitleCase = (text: string): string => {
+    return text
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
+  };
+
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 flex flex-col items-center overflow-y-auto p-4 pt-8">
       <Card className="bg-white w-full max-w-[760px] h-auto relative mt-12">
@@ -49,25 +56,25 @@ const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
         <div className="p-4 md:p-8 space-y-3">
           {/* Personal Information */}
           <div>
-            <h2 className="text-lg md:text-[17px] font-semibold text-[#263238]">
+            <h2 className="text-3xl md:text-3xl font-semibold text-[#263238]">
               {formData.firstName} {formData.lastName}
             </h2>
-            <div className="flex items-center gap-2 text-sm md:text-[17px] mt-1">
+            {/* <div className="flex items-center gap-2 text-sm md:text-[17px] mt-1">
               <Calendar size={16} className="text-[#F5722E]" />
               <span className="text-[#263238]">{formData.birthday}</span>
-            </div>
+            </div> */}
           </div>
 
           {/* Contact Information */}
           <div className="space-y-2">
-            <div className="flex items-center gap-2 text-sm md:text-[17px]">
+            {/* <div className="flex items-center gap-2 text-sm md:text-[17px]">
               <Mail size={16} className="text-[#F5722E]" />
               <span className="text-[#263238]">{formData.emailAddress}</span>
             </div>
             <div className="flex items-center gap-2 text-sm md:text-[17px]">
               <Phone size={16} className="text-[#F5722E]" />
               <span className="text-[#263238]">{formData.mobileNumber}</span>
-            </div>
+            </div> */}
             <div className="flex items-center gap-2 text-sm md:text-[17px]">
               <MapPin size={16} className="text-[#F5722E]" />
               <span className="text-[#263238]">Based in {getLabel(formData.country, "country")}</span>
@@ -85,7 +92,7 @@ const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
                     index % 2 === 0 ? "bg-[#168AAD]" : "bg-[#184E77]"
                   } text-white text-xs md:text-[17px] font-semibold px-2 md:px-3 py-1 rounded`}
                 >
-                  {skill}
+                  {toTitleCase(skill)}
                 </span>
               ))}
             </div>
@@ -155,9 +162,9 @@ const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
                     key={cert}
                     className={`${
                       index % 2 === 0 ? "bg-[#168AAD]" : "bg-[#184E77]"
-                    } text-white text-xs md:text-[17px] font-semibold px-2 md:px-3 py-1 rounded`}
+                    } text-white text-xs md:text-[17px] font-semibold px-2 md:px-3 py-0.5 max-w-[150px] md:max-w-none inline-block md:inline truncate md:truncate-none`}
                   >
-                    {cert}
+                    {toTitleCase(cert)}
                   </span>
                 ))}
               </div>
@@ -179,7 +186,7 @@ const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
                     index % 2 === 0 ? "bg-[#168AAD]" : "bg-[#184E77]"
                   } text-white text-xs md:text-[17px] font-semibold px-2 md:px-3 py-1 rounded`}
                 >
-                  {skill}
+                  {toTitleCase(skill)}
                 </span>
               ))}
             </div>
