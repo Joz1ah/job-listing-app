@@ -244,7 +244,6 @@ body {
   font-style: normal;
   font-weight: 500;
   line-height: 44px;
-  cursor: not-allowed;  // Start with disabled cursor
 
   @media (min-width: 768px) {
     width: 410px;
@@ -278,10 +277,15 @@ body {
   font-size: 16px;
   font-style: normal;
   font-weight: 500;
-  line-height: 44px; /* 275% */
+  line-height: 44px;
 
   @media (min-width: 768px) {
     width: 410px;
+  }
+
+  &.incomplete {
+    background-color: #AEADAD;
+    border-color: #AEADAD;
   }
 }
 
@@ -1526,7 +1530,7 @@ body {
         height: 32px;
 
         &::placeholder {
-          color: #263238;
+          color: #AEADAD;
         }
       }
     }

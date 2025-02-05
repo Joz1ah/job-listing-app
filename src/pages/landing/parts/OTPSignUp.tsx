@@ -36,6 +36,7 @@ const OTPSignUp = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [hasError, setHasError] = useState(false);
+  const [isComplete, setIsComplete] = useState(false);
 
   const otpTimerRef = useRef<NodeJS.Timeout>();
 
@@ -56,11 +57,16 @@ const OTPSignUp = () => {
     setHasError(false);
     let currentInput = ref.current;
     currentInput.value = currentInput.value.replace(/[^0-9]/g, "");
-
+  
     if (currentInput.value.length > currentInput.maxLength)
       currentInput.value = currentInput.value.slice(0, currentInput.maxLength);
     if (currentInput.value.length >= currentInput.maxLength)
       nextRef.current.focus();
+      
+    const allInputsFilled = [ib1, ib2, ib3, ib4, ib5, ib6].every(
+      (ref) => ref.current?.value?.length === 1
+    );
+    setIsComplete(allInputsFilled);
   };
 
   const handleOnKeyDown = (e: any, ref: any, refFocus: any) => {
@@ -80,9 +86,11 @@ const OTPSignUp = () => {
       });
       setErrorMessage('');
       setHasError(false);
+      setIsComplete(true);
     } else {
       setErrorMessage('Please paste a valid 6-digit OTP');
       setHasError(true);
+      setIsComplete(false);
       refArray.forEach((ref) => {
         if (ref.current) {
           ref.current.value = "";
@@ -91,6 +99,7 @@ const OTPSignUp = () => {
     }
     e.preventDefault();
   };
+  
 
   const handleContinue = useCallback(async () => {
     const otp =
@@ -297,14 +306,14 @@ const OTPSignUp = () => {
         )}
 
         <div className={styles["action-buttons"]}>
-          <button
-            onClick={handleContinue}
-            className={`${styles["button-custom-orange"]} ${isLoading ? styles.loading : ""}`}
-            disabled={isLoading}
-          >
-            {isLoading ? "Verifying..." : "Continue"}
-          </button>
-          <button
+        <button
+          onClick={handleContinue}
+          className={`${styles["button-custom-orange"]} ${isLoading ? styles.loading : ""} ${!isComplete ? styles.incomplete : ''}`}
+          disabled={isLoading}
+        >
+          {isLoading ? "Verifying..." : "Continue"}
+        </button>
+          {/* <button
             onClick={() => {
               [ib1, ib2, ib3, ib4, ib5, ib6].forEach((ref) => {
                 if (ref.current) {
@@ -316,7 +325,7 @@ const OTPSignUp = () => {
             className={styles["button-custom-basic"]}
           >
             Cancel
-          </button>
+          </button> */}
         </div>
 
         <div className={styles["resend-container"]}>

@@ -89,7 +89,11 @@ const CountrySelect = ({
           </div>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[300px] p-0 bg-white border-[#AEADAD]" align="end">
+      <PopoverContent className="w-[300px] p-0 bg-white border-[#AEADAD]" 
+          align="end" 
+          side="bottom"
+          avoidCollisions={false}
+          collisionPadding={0}>
         <Command className="bg-white">
           <CommandInput placeholder="Search country..." className="text-black" />
           <CommandList>
