@@ -1,4 +1,3 @@
-import styles from "./../landing.module.scss";
 import HeroJobTitleEmployer from "./HeroJobTitleEmployer";
 import HeroLoading from "./HeroLoading";
 import HeroPerfectMatchAlgo from "./HeroPerfectMatchAlgo";
@@ -10,7 +9,7 @@ import HeroYearsOfExperienceJobHunter from "./HeroYearsOfExperienceJobHunter";
 
 const HeroContainer = () => {
   return (
-    <div className={`${styles["hero-container"]}`}>
+    <div className="relative overflow-hidden h-full">
       <HeroPerfectMatchAlgo />
       <HeroJobTitleEmployer />
       <HeroSkillSetsEmployer />
