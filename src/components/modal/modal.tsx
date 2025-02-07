@@ -12,11 +12,9 @@ const Modal = ({ children }: ModalProps) => {
   return (
     isModalOpen && (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-        <div className="relative bg-white shadow-lg w-[397px] h-[490px]">
+        <div className="relative bg-white shadow-lg w-[397px] h-[490px] overflow-x-hidden overflow-y-auto">
           <ModalHeader />
-          <div className="w-full h-[438px] overflow-x-hidden overflow-y-auto p-4">
-            {children}
-          </div>
+          <div className="w-full p-4">{children}</div>
         </div>
       </div>
     )

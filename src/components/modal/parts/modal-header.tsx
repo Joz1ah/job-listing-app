@@ -9,7 +9,7 @@ const ModalHeader = () => {
   const closeModalRef = useRef<HTMLImageElement>(null);
 
   return (
-    <div className="w-full h-[52px]">
+    <div className="w-full">
       {selectedModalHeader === MODAL_HEADER_TYPE.WITH_LOGO_AND_CLOSE && (
         <>
           <div className="flex items-center justify-between p-4 border-b border-gray-200">
