@@ -5,7 +5,6 @@ import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
-import styles from "./../landing.module.scss";
 import * as Yup from "yup";
 
 interface LoginFormValues {
@@ -81,38 +80,40 @@ const LoginForm = () => {
       validationSchema={LoginSchema}
       onSubmit={handleSubmit}
     >
-      {({ errors, touched, isSubmitting }) => (
-        <Form>
-          <div className={styles['form-label']}>
-            <h1>Login</h1>
+      {({ errors, touched, isSubmitting, values: { email, password } }) => (
+        <Form className="flex flex-col gap-[10px] w-full py-8">
+          <div className="text-left">
+            <h1 className="text-[14px] font-bold text-[#F5722E]">
+              Job Hunter Login
+            </h1>
           </div>
-          <div className={styles["password-input-fields"]}>
-            <div className={styles["transparent-input-field"]}>
-              <div className={styles["input-container"]}>
+          <div className="flex flex-col gap-2">
+            <div>
+              <div className="relative">
                 <Field
                   name="email"
                   type="text"
                   placeholder="Email"
-                  className={`${touched.email && errors.email ? styles["input-error"] : ""}`}
+                  className={`w-full p-2 border-b-2 focus:border-orange-500 focus:outline-none ${touched.email && errors.email ? "border-red-500" : "border-gray-300"}`}
                 />
               </div>
               <ErrorMessage
                 name="email"
                 component="div"
-                className={styles["error-label"]}
+                className="text-red-500 text-sm mt-1"
               />
             </div>
-            <div className={styles["transparent-input-field"]}>
-              <div className={styles["input-container"]}>
+            <div>
+              <div className="relative">
                 <Field
                   name="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Password"
-                  className={`${touched.password && errors.password ? styles["input-error"] : ""}`}
+                  className={`w-full p-2 border-b-2 focus:border-orange-500 focus:outline-none ${touched.password && errors.password ? "border-red-500" : "border-gray-300"}`}
                 />
                 <button
                   type="button"
-                  className={styles["toggle-visibility"]}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500"
                   onClick={() => setShowPassword(!showPassword)}
                   tabIndex={-1}
                   aria-label={showPassword ? "Hide Password" : "Show Password"}
@@ -123,33 +124,34 @@ const LoginForm = () => {
               <ErrorMessage
                 name="password"
                 component="div"
-                className={styles["error-label"]}
+                className="text-red-500 text-sm mt-1"
               />
             </div>
-            <div className={styles["outer-error-label"]}>
+            <div className="text-red-500 text-sm mt-1">
               {apiLoginErrorMessage ? apiLoginErrorMessage : ""}
             </div>
           </div>
 
-          <div className={styles["login-options"]}>
-            <div>
-              <Field type="checkbox" name="rememberMe" />
-              <label>Remember me</label>
+          <div className="flex justify-between items-center">
+            <div className="flex items-center">
+              <Field type="checkbox" name="rememberMe" className="mr-2" />
+              <label className="text-[10px]">Remember me</label>
             </div>
-            <div className={styles["forgot-password"]}>Forgot password?</div>
+            <div className="text-[10px] text-[#F5722E] cursor-pointer">
+              Forgot password?
+            </div>
           </div>
 
-          <div className={styles["action-buttons"]}>
+          <div className="text-center">
             <button
               type="submit"
-              className={styles["button-custom-orange"]}
-              disabled={isSubmitting}
+              className={`${email && password ? "bg-[#F5722E]" : "bg-[#AEADAD]"} text-white py-2 px-4 rounded disabled:opacity-50 w-full h-[45px]`}
+              disabled={isSubmitting || !email || !password}
             >
               <img
                 src={button_loading_spinner}
                 alt="Loading"
-                className={styles["button-spinner"]}
-                hidden={!isSubmitting}
+                className={`inline-block mr-2 h-full ${isSubmitting ? "block animate-spin" : "hidden"}`}
               />
               {isSubmitting ? "Logging in..." : "Login"}
             </button>
