@@ -132,14 +132,8 @@ const UserNamePasswordSignup = () => {
   };
 
   return modalState && modalState == MODAL_STATES.SIGNUP_STEP2 ? (
-    <div
-      id="aniez"
-      className="flex flex-col h-full w-full justify-center items-center"
-    >
-      <form onSubmit={handleSubmit} className="w-full max-w-md">
-        <div className="mb-6 text-left">
-          <h1 className="text-2xl font-semibold text-orange-500">Sign Up</h1>
-        </div>
+    <div className="flex flex-col h-full w-full justify-center items-center">
+      <form onSubmit={handleSubmit} className="w-full h-full">
         <div className="flex flex-col gap-4">
           <div className="relative">
             <input
@@ -149,10 +143,10 @@ const UserNamePasswordSignup = () => {
                 setCredentials({ ...credentials, email: e.target.value })
               }
               required
-              className="w-full p-2 border-b-2 border-gray-300 focus:border-orange-500 focus:outline-none"
+              className="w-full py-2 border-b-2 border-gray-300 focus:border-orange-500 focus:outline-none"
             />
             {organizedErrors.email && (
-              <div className="text-red-500 text-xs mt-1">
+              <div className="text-[#4BAF66] text-[10px] mt-1">
                 {organizedErrors.email}
               </div>
             )}
@@ -168,7 +162,7 @@ const UserNamePasswordSignup = () => {
                 })
               }
               required
-              className="w-full p-2 border-b-2 border-gray-300 focus:border-orange-500 focus:outline-none"
+              className="w-full py-2 border-b-2 border-gray-300 focus:border-orange-500 focus:outline-none"
             />
             <button
               type="button"
@@ -179,7 +173,7 @@ const UserNamePasswordSignup = () => {
               {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
             </button>
             {organizedErrors.password && (
-              <div className="text-red-500 text-xs mt-1">
+              <div className="text-[#4BAF66] text-[10px] mt-1">
                 {organizedErrors.password}
               </div>
             )}
@@ -195,7 +189,7 @@ const UserNamePasswordSignup = () => {
                 })
               }
               required
-              className="w-full p-2 border-b-2 border-gray-300 focus:border-orange-500 focus:outline-none"
+              className="w-full py-2 border-b-2 border-gray-300 focus:border-orange-500 focus:outline-none"
             />
             <button
               type="button"
@@ -206,7 +200,7 @@ const UserNamePasswordSignup = () => {
               {showConfirmPassword ? <Eye size={20} /> : <EyeOff size={20} />}
             </button>
             {organizedErrors.passwordConfirm && (
-              <div className="text-red-500 text-xs mt-1">
+              <div className="text-[#4BAF66] text-[10px] mt-1">
                 {organizedErrors.passwordConfirm}
               </div>
             )}
@@ -215,45 +209,49 @@ const UserNamePasswordSignup = () => {
 
         <div className="mt-0 sm:mt-16">
           <div className="mt-6 text-center text-sm text-gray-600">
-            <div>By clicking "Next," you agree to our</div>
+            <span className="text-[#525254] text-[12px] font-[400]">
+              By clicking "Next," you agree to our
+            </span>
             <div>
               <a
                 href="https://app.websitepolicies.com/policies/view/azn4i7fg"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-orange-500 underline"
+                className="text-[#F5722E] text-[12px]"
               >
                 Terms & Conditions
               </a>
-              &nbsp;and&nbsp;
+              <span className="text-[#525254] text-[12px] font-[400]">
+                &nbsp;and&nbsp;
+              </span>
               <a
                 href="https://app.websitepolicies.com/policies/view/2albjkzj"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-orange-500 underline"
+                className="text-[#F5722E] text-[12px]"
               >
                 Privacy Policy.
               </a>
             </div>
           </div>
-          <div className="mt-6 flex justify-center items-center gap-4">
+          <div className="mt-5 flex justify-center items-center gap-4">
             <button
               onClick={handlePrevious}
               type="button"
-              className="w-24 h-10 border-2 border-orange-500 text-orange-500 rounded-md hover:bg-orange-500 hover:text-white transition-colors"
+              className="w-24 h-10 border-2 border-orange-500 text-orange-500 rounded-md"
             >
               Previous
             </button>
             <button
               type="submit"
-              className="w-24 h-10 bg-orange-500 text-white rounded-md hover:bg-orange-600 transition-colors flex items-center justify-center"
+              className="w-24 h-10 bg-orange-500 text-white rounded-md flex items-center justify-center"
               disabled={isSubmitting}
             >
               {isSubmitting ? (
                 <img
                   src={button_loading_spinner}
                   alt="Loading"
-                  className="w-6 h-6"
+                  className="w-6 h-6 animate-spin"
                 />
               ) : (
                 "Next"

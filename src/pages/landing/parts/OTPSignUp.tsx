@@ -56,7 +56,7 @@ const OTPSignUp = () => {
     setHasError(false);
     let currentInput = ref.current;
     currentInput.value = currentInput.value.replace(/[^0-9]/g, "");
-  
+
     if (currentInput.value.length > currentInput.maxLength)
       currentInput.value = currentInput.value.slice(0, currentInput.maxLength);
     if (currentInput.value.length >= currentInput.maxLength)
@@ -120,7 +120,6 @@ const OTPSignUp = () => {
         !!ib6.current?.value,
     );
   };
-  
 
   const handleContinue = useCallback(async () => {
     const otp =
@@ -242,10 +241,10 @@ const OTPSignUp = () => {
       className="flex flex-col w-full h-full  justify-center items-center"
     >
       <div id="verify-container" className="space-y-4 w-full">
-        <div className="text-lg sm:text-xl text-orange-500 font-semibold text-center">
+        <div className="text-[28px] text-[#F5722E] font-[500] text-center">
           Verify with One Time Password
         </div>
-        <div className="text-sm sm:text-base text-gray-700 text-center">
+        <div className="text-[10px] text-[#525254] font-[400] text-center">
           To ensure your security, please enter the One-Time Password (OTP) sent
           to your registered email below.
         </div>
@@ -262,7 +261,8 @@ const OTPSignUp = () => {
               pattern="[0-9]*"
               maxLength={1}
               onPaste={(e) => handleOnPaste(e, [ib1, ib2, ib3, ib4, ib5, ib6])}
-              className="w-10 h-10 sm:w-12 sm:h-12 text-center border-2 border-gray-300 rounded focus:border-orange-500 focus:outline-none"
+              className="w-10 h-10 sm:w-12 sm:h-12 text-center border-2 border-gray-300 rounded focus:border-orange-500 focus:outline-none appearance-none"
+              style={{ MozAppearance: "textfield" }}
             />
           </div>
           <div>
@@ -274,7 +274,8 @@ const OTPSignUp = () => {
               pattern="[0-9]*"
               maxLength={1}
               onPaste={(e) => handleOnPaste(e, [ib1, ib2, ib3, ib4, ib5, ib6])}
-              className="w-10 h-10 sm:w-12 sm:h-12 text-center border-2 border-gray-300 rounded focus:border-orange-500 focus:outline-none"
+              className="w-10 h-10 sm:w-12 sm:h-12 text-center border-2 border-gray-300 rounded focus:border-orange-500 focus:outline-none appearance-none"
+              style={{ MozAppearance: "textfield" }}
             />
           </div>
           <div>
@@ -286,7 +287,8 @@ const OTPSignUp = () => {
               pattern="[0-9]*"
               maxLength={1}
               onPaste={(e) => handleOnPaste(e, [ib1, ib2, ib3, ib4, ib5, ib6])}
-              className="w-10 h-10 sm:w-12 sm:h-12 text-center border-2 border-gray-300 rounded focus:border-orange-500 focus:outline-none"
+              className="w-10 h-10 sm:w-12 sm:h-12 text-center border-2 border-gray-300 rounded focus:border-orange-500 focus:outline-none appearance-none"
+              style={{ MozAppearance: "textfield" }}
             />
           </div>
           <div>
@@ -298,7 +300,8 @@ const OTPSignUp = () => {
               pattern="[0-9]*"
               maxLength={1}
               onPaste={(e) => handleOnPaste(e, [ib1, ib2, ib3, ib4, ib5, ib6])}
-              className="w-10 h-10 sm:w-12 sm:h-12 text-center border-2 border-gray-300 rounded focus:border-orange-500 focus:outline-none"
+              className="w-10 h-10 sm:w-12 sm:h-12 text-center border-2 border-gray-300 rounded focus:border-orange-500 focus:outline-none appearance-none"
+              style={{ MozAppearance: "textfield" }}
             />
           </div>
           <div>
@@ -310,7 +313,8 @@ const OTPSignUp = () => {
               pattern="[0-9]*"
               maxLength={1}
               onPaste={(e) => handleOnPaste(e, [ib1, ib2, ib3, ib4, ib5, ib6])}
-              className="w-10 h-10 sm:w-12 sm:h-12 text-center border-2 border-gray-300 rounded focus:border-orange-500 focus:outline-none"
+              className="w-10 h-10 sm:w-12 sm:h-12 text-center border-2 border-gray-300 rounded focus:border-orange-500 focus:outline-none appearance-none"
+              style={{ MozAppearance: "textfield" }}
             />
           </div>
           <div>
@@ -322,7 +326,8 @@ const OTPSignUp = () => {
               pattern="[0-9]*"
               maxLength={1}
               onPaste={(e) => handleOnPaste(e, [ib1, ib2, ib3, ib4, ib5, ib6])}
-              className="w-10 h-10 sm:w-12 sm:h-12 text-center border-2 border-gray-300 rounded focus:border-orange-500 focus:outline-none"
+              className="w-10 h-10 sm:w-12 sm:h-12 text-center border-2 border-gray-300 rounded focus:border-orange-500 focus:outline-none appearance-none"
+              style={{ MozAppearance: "textfield" }}
             />
           </div>
         </div>
@@ -344,18 +349,22 @@ const OTPSignUp = () => {
         </div>
 
         <div className="text-center mt-4">
-          <label className="text-gray-500">Didn't receive the email?</label>
+          <label className="text-[#AEADAD] text-[11px]">
+            Didn't receive the email?&nbsp;
+          </label>
           {countdown > 0 ? (
             <>
-              <label className="text-orange-500 ml-2">
+              <label className="text-[#F5722E] text-[11px] underline">
                 Click to resend in{" "}
               </label>
-              <label className="text-orange-500">{formatTime(countdown)}</label>
+              <label className="text-[#F5722E] text-[11px]">
+                {formatTime(countdown)}
+              </label>
             </>
           ) : (
             <label
               onClick={handleResendClick}
-              className="text-orange-500 underline cursor-pointer ml-2"
+              className="text-[#F5722E] text-[11px] underline cursor-pointer ml-2"
             >
               Click to resend
             </label>
@@ -375,8 +384,12 @@ const OTPSignUp = () => {
             handleSetModalState(MODAL_STATES.SIGNUP_STEP2);
           }}
         >
-          <div className="inline-block mr-2">&larr;</div>
-          <div className="inline-block">Previous</div>
+          <div className="inline-block mr-2 text-[10px] text-[#AEADAD]">
+            &larr;
+          </div>
+          <div className="inline-block text-[10px] text-[#AEADAD]">
+            Back to login
+          </div>
         </div>
       </div>
     </div>

@@ -17,47 +17,45 @@ const CongratulationsModal = () => {
   return modalState && modalState == MODAL_STATES.SIGNUP_CONGRATULATIONS ? (
     <div
       id="step_congratulations"
-      className="flex flex-col items-center justify-center w-full h-full p-4"
+      className="flex flex-col items-center justify-center w-full h-full"
     >
-      <div className="flex flex-col items-center justify-center w-full h-full p-4">
-        <div className="flex items-center justify-center mb-4">
-          <svg
-            className={`w-[180px] h-[161px] text-green-500 ${styles["checkmark"]}`}
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 52 52"
-          >
-            <circle
-              className={`stroke-current text-green-500 ${styles["checkmark__circle"]}`}
-              cx="26"
-              cy="26"
-              r="25"
-              fill="none"
-            />
-            <path
-              className={`stroke-current text-green-500 ${styles["checkmark__check"]}`}
-              fill="none"
-              d="M14.1 27.2l7.1 7.2 16.7-16.8"
-            />
-          </svg>
-        </div>
-        <div className="text-center text-[26px] font-semibold text-orange-500 mb-2">
-          Congratulations!
-        </div>
-        <div className="flex flex-col w-full justify-center items-center mb-4">
-          <span className="text-[15px] text-gray-700 text-center">
-            You've successfully signed up.
-          </span>
-          <span className="text-[15px] text-gray-700 text-center">
-            Welcome aboard—happy exploring!
-          </span>
-        </div>
-        <button
-          onClick={handleNext}
-          className="px-6 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600"
+      <div>
+        <svg
+          className={`${styles["checkmark"]}`}
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 52 52"
         >
-          Next
-        </button>
+          <circle
+            className={`${styles["checkmark__circle"]}`}
+            cx="26"
+            cy="26"
+            r="25"
+            fill="none"
+          />
+          <path
+            className={`${styles["checkmark__check"]}`}
+            fill="none"
+            d="M14.1 27.2l7.1 7.2 16.7-16.8"
+          />
+        </svg>
       </div>
+      <div className="text-center text-[26px] font-semibold text-orange-500 mb-2">
+        Congratulations!
+      </div>
+      <div className="flex flex-col w-full justify-center items-center mb-4">
+        <span className="text-[15px] text-gray-700 text-center">
+          You've successfully signed up.
+        </span>
+        <span className="text-[15px] text-gray-700 text-center">
+          Welcome aboard—happy exploring!
+        </span>
+      </div>
+      <button
+        onClick={handleNext}
+        className="px-6 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600"
+      >
+        Next
+      </button>
     </div>
   ) : (
     <></>
