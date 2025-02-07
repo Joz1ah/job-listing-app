@@ -38,7 +38,7 @@ const EmployerHeader: FC = () => {
 
   return (
     <div
-      className={`w-full pt-8 pb-6 ${
+      className={`w-full pt-8 pb-6 hidden md:block ${
         hideOnMobile ? "hidden md:block" : "block"
       } ${hideOnDesktop ? "md:hidden" : ""}`}
     >

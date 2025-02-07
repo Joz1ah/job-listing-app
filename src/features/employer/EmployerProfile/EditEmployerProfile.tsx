@@ -194,13 +194,13 @@ const EditEmployerProfile: FC = () => {
       {isSubmitting && <LoadingOverlay />}
 
       <div className="flex gap-8 px-4 md:px-8 lg:px-12 py-6 justify-center">
-        <div className="w-full md:w-[800px] min-h-[825px] bg-[#242625] md:bg-[#2D3A41] text-white">
+        <div className="w-full md:w-[800px] min-h-[825px] bg-[#2D3A41] text-white">
           <div className="flex items-center relative w-full mb-6 md:mb-10">
             <NavLink to="/dashboard/feed" className="absolute left-4 top-6">
               <ChevronLeft strokeWidth={4} className="h-6 w-6" />
             </NavLink>
 
-            <h1 className="flex-1 text-center text-xl md:text-[32px] pt-6 font-normal text-[#F5722E]">
+            <h1 className="flex-1 text-center text-xl md:text-[32px] md:pt-6 font-normal text-[#F5722E]">
               <span className="inline-flex items-center gap-2 justify-center">
                 Edit Your Company Profile
               </span>
@@ -220,6 +220,7 @@ const EditEmployerProfile: FC = () => {
               touched={touched.businessName}
               showIcon={true}
               tooltipContent="Please enter your company's complete legal business name e.g. "
+              variant="primary"
             >
               <Input
                 name="businessName"
@@ -237,6 +238,7 @@ const EditEmployerProfile: FC = () => {
                 className="bg-transparent"
                 error={errors.firstName}
                 touched={touched.firstName}
+                variant="primary"
               >
                 <Input
                   name="firstName"
@@ -252,6 +254,7 @@ const EditEmployerProfile: FC = () => {
                 className="bg-transparent"
                 error={errors.lastName}
                 touched={touched.lastName}
+                variant="primary"
               >
                 <Input
                   name="lastName"
@@ -267,6 +270,7 @@ const EditEmployerProfile: FC = () => {
                 className="bg-transparent"
                 error={errors.emailAddress}
                 touched={touched.emailAddress}
+                variant="primary"
               >
                 <Input
                   name="emailAddress"
@@ -282,6 +286,7 @@ const EditEmployerProfile: FC = () => {
                 label="Mobile Number"
                 error={errors.mobileNumber}
                 touched={touched.mobileNumber}
+                variant="primary"
               >
                 <PhoneInput
                   name="mobileNumber"
@@ -297,6 +302,7 @@ const EditEmployerProfile: FC = () => {
                 className="bg-transparent"
                 error={errors.position}
                 touched={touched.position}
+                variant="primary"
               >
                 <Input
                   name="position"
@@ -312,6 +318,7 @@ const EditEmployerProfile: FC = () => {
                 className="bg-transparent"
                 error={errors.companyWebsite}
                 touched={touched.companyWebsite}
+                variant="primary"
               >
                 <Input
                   name="companyWebsite"
@@ -327,6 +334,7 @@ const EditEmployerProfile: FC = () => {
                 className="bg-transparent"
                 error={errors.industry}
                 touched={touched.industry}
+                variant="primary"
               >
                 <IndustrySearch
                   onValueChange={(value) => setFieldValue("industry", value)}
@@ -338,6 +346,7 @@ const EditEmployerProfile: FC = () => {
                 className="bg-transparent"
                 error={errors.yearFounded}
                 touched={touched.yearFounded}
+                variant="primary"
               >
                 <Input
                   name="yearFounded"
@@ -350,7 +359,7 @@ const EditEmployerProfile: FC = () => {
             </div>
 
             {/* Company Address Section */}
-            <h2 className="text-white text-lg mb-4 flex justify-center">
+            <h2 className="text-white text-[16px] md:text-lg mb-4 pt-10 md:pt-4 flex justify-center">
               Complete Company Address
             </h2>
 
@@ -359,6 +368,7 @@ const EditEmployerProfile: FC = () => {
                 label="Unit No./Building"
                 error={errors.unitAndBldg}
                 touched={touched.unitAndBldg}
+                variant="primary"
               >
                 <Input
                   name="unitAndBldg"
@@ -373,6 +383,7 @@ const EditEmployerProfile: FC = () => {
                 label="Street Address"
                 error={errors.streetAddress}
                 touched={touched.streetAddress}
+                variant="primary"
               >
                 <Input
                   name="streetAddress"
@@ -387,6 +398,7 @@ const EditEmployerProfile: FC = () => {
                 label="City"
                 error={errors.city}
                 touched={touched.city}
+                variant="primary"
               >
                 <Input
                   name="city"
@@ -401,6 +413,7 @@ const EditEmployerProfile: FC = () => {
                 label="State/Province/Region"
                 error={errors.state}
                 touched={touched.state}
+                variant="primary"
               >
                 <Input
                   name="state"
@@ -417,11 +430,12 @@ const EditEmployerProfile: FC = () => {
                 label="Country"
                 error={errors.country}
                 touched={touched.country}
+                variant="primary"
               >
                 <CountrySelect
                   value={values.country || ""}
                   onChange={(value) => setFieldValue("country", value)}
-                  className="bg-transparent border-[#AEADAD] h-[56px] hover:text-white border-2 focus:border-[#F5722E] w-[335px] rounded-[8px] text-white placeholder:text-[#AEADAD] px-3 py-2"
+                  className="bg-transparent border-[#AEADAD] h-[56px] hover:text-white border-2 focus:border-[#F5722E] w-full rounded-[8px] text-white placeholder:text-[#AEADAD] px-3 py-2"
                   popoverClassName="w-[335px]"
                 />
               </InputField>
@@ -432,6 +446,7 @@ const EditEmployerProfile: FC = () => {
               error={errors.companyOverview}
               touched={touched.companyOverview}
               className="relative"
+              variant="primary"
             >
               <Textarea
                 name="companyOverview"

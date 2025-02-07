@@ -212,7 +212,7 @@ const JobListingForm: FC = () => {
         onConfirm={handlePreviewConfirm}
       />
       {isSubmitting && <LoadingOverlay />}
-      <div className="w-full max-w-[927px] min-h-[825px] bg-transparent md:bg-[#2D3A41] text-white mx-2 px-4 py-8 md:py-12">
+      <div className="w-full max-w-[927px] min-h-[825px] bg-[#2D3A41] text-white mx-2 px-4 py-8 md:py-12">
         <div className="flex items-center relative w-full mb-6 md:mb-14">
           {!isFirstJobListing && (
             <NavLink to="/dashboard/feed" className="absolute left-0 md:left-4">
@@ -237,6 +237,7 @@ const JobListingForm: FC = () => {
             className="bg-transparent"
             error={errors.jobTitle}
             touched={touched.jobTitle}
+            variant="primary"
           >
             <Input
               name="jobTitle"
@@ -252,6 +253,7 @@ const JobListingForm: FC = () => {
             error={errors.priorityIndicator}
             touched={touched.priorityIndicator}
             showIcon={true}
+            variant="primary"
             tooltipContent={
               <div className="flex flex-wrap items-center justify-start">
                 <span>This will sort your</span>
@@ -311,6 +313,7 @@ const JobListingForm: FC = () => {
             touched={touched.employmentType}
             showIcon={true}
             tooltipContent="You may select one up to three employment types that you are looking for"
+            variant="primary"
           >
             <MultiSelect
               value={values.employmentType}
@@ -323,6 +326,7 @@ const JobListingForm: FC = () => {
             label="Location"
             error={errors.location}
             touched={touched.location}
+            variant="primary"
           >
             <Input
               name="location"
@@ -337,6 +341,7 @@ const JobListingForm: FC = () => {
             label="Salary Range"
             error={errors.salaryRange}
             touched={touched.salaryRange}
+            variant="primary"
           >
             <Select
               name="salaryRange"
@@ -364,6 +369,7 @@ const JobListingForm: FC = () => {
             label="Education"
             error={errors.education}
             touched={touched.education}
+            variant="primary"
           >
             <Select
               name="education"
@@ -393,6 +399,7 @@ const JobListingForm: FC = () => {
             touched={touched.languages}
             showIcon={true}
             tooltipContent="Feel free to enter up to 4 languages in which you are fluent, both in speaking and writing."
+            variant="primary"
           >
             <LanguageTagInput
               value={values.languages || []}
@@ -407,6 +414,7 @@ const JobListingForm: FC = () => {
             label="Years of Experience"
             error={errors.yearsOfExperience}
             touched={touched.yearsOfExperience}
+            variant="primary"
           >
             <Select
               name="yearsOfExperience"
@@ -438,6 +446,7 @@ const JobListingForm: FC = () => {
             touched={touched.coreSkills}
             showIcon={true}
             tooltipContent="Job-specific, measurable abilities like software proficiency, coding, or design tools."
+            variant="primary"
           >
             <CoreSkillsTagInput
               value={values.coreSkills || []}
@@ -457,6 +466,7 @@ const JobListingForm: FC = () => {
             touched={touched.interpersonalSkills}
             showIcon={true}
             tooltipContent="Personal qualities like communication, teamwork, and problem-solving."
+            variant="primary"
           >
             <InterpersonalSkillsTagInput
               value={values.interpersonalSkills || []}
@@ -476,6 +486,7 @@ const JobListingForm: FC = () => {
             touched={touched.certifications}
             showIcon={true}
             tooltipContent="Job-specific, measurable abilities like software proficiency, coding, or design tools."
+            variant="primary"
           >
             <CertificationTagInput
               value={values.certifications || []}
@@ -494,6 +505,7 @@ const JobListingForm: FC = () => {
             error={errors.jobDescription}
             touched={touched.jobDescription}
             className="relative"
+            variant="primary"
           >
             <Textarea
               name="jobDescription"

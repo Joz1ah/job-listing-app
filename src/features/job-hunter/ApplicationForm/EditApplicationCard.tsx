@@ -303,13 +303,13 @@ const EditApplicationCard: FC = () => {
       {isSubmitting && <LoadingOverlay />}
 
       <div className="flex flex-col xl:flex-row gap-8 pt-6">
-        <div className="w-full md:w-[800px] min-h-[960px] bg-[#242625] md:bg-[#2D3A41] text-white">
-          <div className="flex items-center relative w-full mb-6 md:mb-10">
+        <div className="w-full md:w-[800px] min-h-[960px] bg-[#2D3A41] text-white">
+          <div className="flex items-center relative w-full md:mb-10">
             <NavLink to="/dashboard/feed" className="absolute left-4 top-6">
               <ChevronLeft strokeWidth={4} className="h-6 w-6 ml-4" />
             </NavLink>
 
-            <h1 className="flex-1 text-center text-xl md:text-[32px] pt-6 font-normal text-[#F5722E]">
+            <h1 className="flex-1 text-center text-xl md:text-[32px] md:pt-6 font-normal text-[#F5722E]">
               <span className="inline-flex items-center gap-2 justify-center">
                 Edit Your Application Card
               </span>
@@ -329,6 +329,7 @@ const EditApplicationCard: FC = () => {
                   className="bg-transparent"
                   error={errors.firstName}
                   touched={touched.firstName}
+                  variant="primary"
                 >
                   <Input
                     name="firstName"
@@ -346,6 +347,7 @@ const EditApplicationCard: FC = () => {
                   className="bg-transparent"
                   error={errors.lastName}
                   touched={touched.lastName}
+                  variant="primary"
                 >
                   <Input
                     name="lastName"
@@ -365,6 +367,7 @@ const EditApplicationCard: FC = () => {
                   className="bg-transparent"
                   error={errors.location}
                   touched={touched.location}
+                  variant="primary"
                 >
                   <Input
                     name="location"
@@ -383,6 +386,7 @@ const EditApplicationCard: FC = () => {
                   touched={touched.languages}
                   showIcon={true}
                   tooltipContent="Feel free to enter up to 4 languages in which you are fluent, both in speaking and writing."
+                  variant="primary"
                 >
                   <LanguageTagInput
                     value={values.languages || []}
@@ -400,6 +404,7 @@ const EditApplicationCard: FC = () => {
                   label="Birthday"
                   error={errors.birthday}
                   touched={touched.birthday}
+                  variant="primary"
                 >
                   <BirthdayInput
                     name="birthday"
@@ -414,6 +419,7 @@ const EditApplicationCard: FC = () => {
                   label="Country of Residence"
                   error={errors.country}
                   touched={touched.country}
+                  variant="primary"
                 >
                   <CountrySelect
                     value={values.country || ""}
@@ -430,6 +436,7 @@ const EditApplicationCard: FC = () => {
                   label="Mobile Number"
                   error={errors.mobileNumber}
                   touched={touched.mobileNumber}
+                  variant="primary"
                 >
                   <PhoneInput
                     name="mobileNumber"
@@ -447,6 +454,7 @@ const EditApplicationCard: FC = () => {
                   className="bg-transparent"
                   error={errors.emailAddress}
                   touched={touched.emailAddress}
+                  variant="primary"
                 >
                   <Input
                     name="emailAddress"
@@ -467,6 +475,7 @@ const EditApplicationCard: FC = () => {
                   touched={touched.employmentType}
                   showIcon={true}
                   tooltipContent="You may select one up to three employment types that you are looking for"
+                  variant="primary"
                 >
                   <MultiSelect
                     value={values.employmentType}
@@ -481,6 +490,7 @@ const EditApplicationCard: FC = () => {
                   label="Education"
                   error={errors.education}
                   touched={touched.education}
+                  variant="primary"
                 >
                   <Select
                     name="education"
@@ -514,6 +524,7 @@ const EditApplicationCard: FC = () => {
                   label="Salary Expectation"
                   error={errors.salaryRange}
                   touched={touched.salaryRange}
+                  variant="primary"
                 >
                   <Select
                     name="salaryRange"
@@ -547,6 +558,7 @@ const EditApplicationCard: FC = () => {
                   label="Years of Experience"
                   error={errors.yearsOfExperience}
                   touched={touched.yearsOfExperience}
+                  variant="primary"
                 >
                   <Select
                     name="yearsOfExperience"
@@ -587,6 +599,7 @@ const EditApplicationCard: FC = () => {
                   touched={touched.coreSkills}
                   showIcon={true}
                   tooltipContent="Job-specific, measurable abilities like software proficiency, coding, or design tools."
+                  variant="primary"
                 >
                   <CoreSkillsTagInput
                     value={values.coreSkills || []}
@@ -608,6 +621,7 @@ const EditApplicationCard: FC = () => {
                   touched={touched.interpersonalSkills}
                   showIcon={true}
                   tooltipContent="Personal qualities like communication, teamwork, and problem-solving."
+                  variant="primary"
                 >
                   <InterpersonalSkillsTagInput
                     value={values.interpersonalSkills || []}
@@ -633,6 +647,7 @@ const EditApplicationCard: FC = () => {
                   showIcon={true}
                   tooltipContent="Job-specific, measurable abilities like software proficiency, coding, or design tools."
                   className="mb-14"
+                  variant="primary"
                 >
                   <CertificationTagInput
                     value={values.certifications || []}

@@ -81,7 +81,7 @@ const JobListingPreview: React.FC<JobListingPreviewProps> = ({
                 (skill, index) => (
                   <span
                     key={skill}
-                    className={`${index % 2 === 0 ? "bg-[#168AAD]" : "bg-[#184E77]"} text-white text-xs md:text-[17px] font-semibold px-2 md:px-3 py-1 rounded`}
+                    className={`${index % 2 === 0 ? "bg-[#184E77]" : "bg-[#168AAD]"} text-white text-xs md:text-[17px] font-semibold px-2 md:px-3 py-1 rounded`}
                   >
                     {skill}
                   </span>
@@ -138,7 +138,7 @@ const JobListingPreview: React.FC<JobListingPreviewProps> = ({
                   (cert) => (
                     <span
                       key={cert}
-                      className="text-[#F5722E] border border-[#F5722E] rounded px-2 md:px-3 py-0.5 max-w-[150px] md:max-w-none inline-block md:inline truncate md:truncate-none"
+                      className="text-[#F5722E] border border-[#F5722E] rounded text-xs md:text-[17px] px-2 md:px-3 py-0.5 max-w-[150px] md:max-w-none inline-block md:inline truncate md:truncate-none"
                     >
                       {cert}
                     </span>
@@ -160,7 +160,7 @@ const JobListingPreview: React.FC<JobListingPreviewProps> = ({
                 (skill, index) => (
                   <span
                     key={skill}
-                    className={`${index % 2 === 0 ? "bg-[#168AAD]" : "bg-[#184E77]"} text-white text-xs md:text-[17px] font-semibold px-2 md:px-3 py-1 rounded`}
+                    className={`${index % 2 === 0 ? "bg-[#184E77]" : "bg-[#168AAD]"} text-white text-xs md:text-[17px] font-semibold px-2 md:px-3 py-1 rounded`}
                   >
                     {skill}
                   </span>
