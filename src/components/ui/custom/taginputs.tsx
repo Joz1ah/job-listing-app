@@ -423,9 +423,8 @@ const LanguageTagInput: React.FC<Omit<TagInputProps, 'options'>> = (props) => {
     <TagInputs
       {...props}
       options={languages}
-      maxTags={3}
+      maxTags={4}
       suggestionTitle="Select Language"
-      placeholder={props.placeholder || "Type to search languages"}
     />
   );
 };
@@ -473,6 +472,7 @@ const CertificationTagInput: React.FC<Omit<TagInputProps, 'options'>> = (props) 
       suggestionTitle="Select Certifications"
       placeholder={props.placeholder || "Type to search certifications"}
       onInputChange={handleSearch}
+      maxTagLength={10}
     />
   );
 };

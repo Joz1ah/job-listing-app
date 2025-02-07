@@ -92,11 +92,19 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
   };
 
   // Format skills using the skillsMap
-  const formattedSkills = values.coreSkills?.map(skillId => 
-    skillsMap[skillId] ? 
-      skillsMap[skillId].charAt(0).toUpperCase() + skillsMap[skillId].slice(1) : 
-      skillId
-  ) || [];
+  const formattedSkills = values.coreSkills?.map(skillId => {
+    const skill = skillsMap[skillId] || skillId;
+    return skill.split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
+  }) || [];
+
+  const truncateLanguage = (language: string) => {
+    if (language.length > 16) {
+      return `${language.slice(0, 8)}...`;
+    }
+    return language;
+  };
 
   const hasName = values.firstName || values.lastName;
   const hasCountry = values.country;
@@ -119,7 +127,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
 
       <div className="w-full xl:w-auto flex xl:block justify-center">
         <Card className="bg-white border-none w-full md:w-[436px] h-auto md:h-[275px] hidden md:block">
-          <CardHeader className="flex flex-col justify-between items-start pb-0">
+          <CardHeader className="flex flex-col justify-between items-start pb-3">
             <div className="flex flex-row -mt-4 justify-between w-full">
               <span className="text-[13px] text-[#F5722E] font-bold italic">
                 ☆ NEW
@@ -156,15 +164,15 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
 
           <CardContent>
             {hasSkills ? (
-              <div className="h-[60px] mb-3">
+              <div className="h-[60px] mb-0">
                 <p className="text-[13px] font-light text-[#263238]">
                   Core Skills:
                 </p>
-                <div className="flex flex-wrap gap-1 mt-1">
+                <div className="flex flex-wrap gap-1">
                   {formattedSkills.slice(0, 5).map((skill, i) => (
                     <span
                       key={i}
-                      className={`text-white text-xs font-semibold px-1.5 py-0.5 rounded-[2px] inline-block ${
+                      className={`text-white text-xs font-semibold px-1.5 py-0 rounded-[2px] inline-block ${
                         i % 2 === 0 ? "bg-[#168AAD]" : "bg-[#184E77]"
                       }`}
                     >
@@ -174,15 +182,15 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
                 </div>
               </div>
             ) : (
-              <div className="h-[70px] md:h-[60px] mb-3">
+              <div className="h-[70px] md:h-[60px] mb-1">
                 <p className="text-[13px] font-light text-[#263238]">
                   Core Skills:
                 </p>
-                <div className="flex flex-wrap gap-1 mt-1">
+                <div className="flex flex-wrap gap-1">
                   {[0, 1, 2, 3, 4].map((i) => (
                     <span
                       key={i}
-                      className={`text-white text-xs font-semibold px-1.5 py-0.5 rounded-[2px] inline-block ${
+                      className={`text-white text-xs font-semibold px-1.5 py-0 rounded-[2px] inline-block ${
                         i % 2 === 0 ? "bg-[#168AAD]" : "bg-[#184E77]"
                       }`}
                     >
@@ -199,7 +207,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
                   Experience:
                 </span>
                 <span
-                  className={`text-[13px] font-light ${hasExperience ? "" : "text-[#F5722E] rounded-[4px] text-[12px] px-1 h-[18px] flex justify-center items-center outline outline-1 outline-[#F5722E]"}`}
+                  className="text-[13px] font-light text-[#F5722E] rounded px-1 py-0.5 h-[18px] flex justify-center items-center border border-[#F5722E]"
                 >
                   {hasExperience
                     ? getLabel("yearsOfExperience", values.yearsOfExperience)
@@ -208,21 +216,23 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
               </div>
 
               <div className="flex gap-2">
-                <span className="text-[13px] font-light text-[#263238]">
+                <span className="text-sm font-light text-gray-800">
                   Looking for:
                 </span>
                 {hasEmploymentType ? (
                   values.employmentType?.map((type, index) => (
                     <span
                       key={index}
-                      className="bg-[#F5722E] text-white rounded-[4px] text-[12px] px-1 h-[18px] flex justify-center items-center"
+                      className={`text-white rounded px-1 h-5 flex justify-center items-center text-xs ${
+                        type === 'Part Time' ? 'bg-[#BF532C]' : 'bg-[#F5722E]'
+                      }`}
                     >
                       {getLabel("employmentType", type) as string}
                     </span>
                   ))
                 ) : (
-                  <span className="bg-[#F5722E] text-white rounded-[4px] text-[12px] px-1 h-[18px] flex justify-center items-center">
-                    your job preference
+                  <span className="bg-[#F5722E] text-white rounded px-1 h-5 flex justify-center items-center text-xs">
+                    Your job preference
                   </span>
                 )}
               </div>
@@ -232,11 +242,11 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
                   Salary Expectation:
                 </span>
                 {hasSalary ? (
-                  <span className="bg-[#F5722E] text-white rounded-[4px] text-[12px] px-1 h-[18px] flex justify-center items-center">
+                  <span className="bg-[#8C4227] text-white rounded-[4px] text-[12px] px-1 h-[18px] flex justify-center items-center">
                     {getLabel("salaryRange", values.salaryRange)}
                   </span>
                 ) : (
-                  <span className="bg-[#F5722E] text-white rounded-[4px] text-[12px] px-1 h-[18px] flex justify-center items-center">
+                  <span className="bg-[#8C4227] text-white rounded-[4px] text-[12px] px-1 h-[18px] flex justify-center items-center">
                     Amount in USD
                   </span>
                 )}
@@ -250,14 +260,14 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
                   values.languages?.map((lang, index) => (
                     <span
                       key={index}
-                      className="text-[#F5722E] rounded-[4px] text-[12px] px-1 h-[18px] flex justify-center items-center outline outline-1 outline-[#F5722E]"
+                      className="text-[13px] font-light text-[#F5722E] rounded px-1 h-[18px] flex justify-center items-center border border-[#F5722E]"
                     >
-                      {getLabel("languages", lang) as string}
+                       {truncateLanguage(getLabel("languages", lang) as string)}
                     </span>
                   ))
                 ) : (
-                  <span className="text-[#F5722E] rounded-[4px] text-[12px] px-1 h-[18px] flex justify-center items-center outline outline-1 outline-[#F5722E]">
-                    languages spoken & written
+                  <span className="text-[13px] font-light text-[#F5722E] rounded px-1 h-[18px] flex justify-center items-center border border-[#F5722E]">
+                    Languages spoken & written
                   </span>
                 )}
               </div>
@@ -327,7 +337,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
                     })}
                   </div>
                 </div>
-
+            
                 <div className="flex gap-2 mt-3">
                   <span className="text-[13px] font-light">Experience:</span>
                   <span className="text-[#F5722E] rounded-[4px] text-[12px] px-1 h-[18px] flex justify-center items-center outline outline-1 outline-[#F5722E]">
@@ -374,7 +384,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
                         key={index}
                         className="text-[#F5722E] rounded-[4px] text-[12px] px-1 h-[18px] flex justify-center items-center outline outline-1 outline-[#F5722E]"
                       >
-                        {getLabel("languages", lang) as string}
+                        {truncateLanguage(getLabel("languages", lang) as string)}
                       </span>
                     ))
                   ) : (

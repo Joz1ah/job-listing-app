@@ -343,7 +343,7 @@ const ApplicationCardForm: FC = () => {
 
               <div>
                 <InputField
-                  label="Languages"
+                  label="Language"
                   error={errors.languages}
                   touched={touched.languages}
                   showIcon={true}
@@ -354,7 +354,7 @@ const ApplicationCardForm: FC = () => {
                     onChange={(value) => setFieldValue("languages", value)}
                     className="min-h-[56px] pt-1 px-1"
                     tagClassName="bg-[#F5722E]"
-                    placeholder="Type and enter to add language"
+                    placeholder="Select Language"
                   />
                 </InputField>
               </div>
@@ -424,23 +424,7 @@ const ApplicationCardForm: FC = () => {
                 </InputField>
               </div>
 
-              {/* Employment / Education */}
-              <div>
-                <InputField
-                  label="Employment Type"
-                  error={errors.employmentType}
-                  touched={touched.employmentType}
-                  showIcon={true}
-                  tooltipContent="You may select one up to three employment types that you are looking for"
-                >
-                  <MultiSelect
-                    value={values.employmentType}
-                    onChange={(value) => setFieldValue("employmentType", value)}
-                    options={selectOptions.employmentType}
-                  />
-                </InputField>
-              </div>
-
+              {/* Education / Employment */}
               <div>
                 <InputField
                   label="Education"
@@ -472,11 +456,27 @@ const ApplicationCardForm: FC = () => {
                 </InputField>
               </div>
 
+              <div>
+                <InputField
+                  label="Employment Type"
+                  error={errors.employmentType}
+                  touched={touched.employmentType}
+                  showIcon={true}
+                  tooltipContent="You may select one up to three employment types that you are looking for"
+                >
+                  <MultiSelect
+                    value={values.employmentType}
+                    onChange={(value) => setFieldValue("employmentType", value)}
+                    options={selectOptions.employmentType}
+                  />
+                </InputField>
+              </div>
+
               {/* Salary / Years */}
 
               <div>
                 <InputField
-                  label="Salary Range"
+                  label="Salary Expectation"
                   error={errors.salaryRange}
                   touched={touched.salaryRange}
                 >
@@ -558,8 +558,8 @@ const ApplicationCardForm: FC = () => {
                     onChange={(value) => setFieldValue("coreSkills", value)}
                     className="h-[99px] pt-1 px-1"
                     alternateColors={{
-                      firstColor: "#168AAD",
-                      secondColor: "#184E77",
+                      firstColor: "#184E77",
+                      secondColor: "#168AAD",
                     }}
                     placeholder="Type and enter to add core skill"
                   />
@@ -581,8 +581,8 @@ const ApplicationCardForm: FC = () => {
                     }
                     className="h-[99px] pt-1 px-1"
                     alternateColors={{
-                      firstColor: "#168AAD",
-                      secondColor: "#184E77",
+                      firstColor: "#184E77",
+                      secondColor: "#168AAD",
                     }}
                     placeholder="Type and enter to add interpersonal skill"
                   />
@@ -603,7 +603,10 @@ const ApplicationCardForm: FC = () => {
                     value={values.certifications || []}
                     onChange={(value) => setFieldValue("certifications", value)}
                     className="h-[56px] pt-1 px-1"
-                    tagClassName="bg-[#168AAD]"
+                    alternateColors={{
+                      firstColor: "#184E77",
+                      secondColor: "#168AAD",
+                    }}
                     placeholder="Type and enter to add certificate"
                   />
                 </InputField>

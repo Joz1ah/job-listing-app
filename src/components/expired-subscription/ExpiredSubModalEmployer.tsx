@@ -8,13 +8,13 @@ import {
   MessageCircleMore,
   Trophy,
   Infinity,
-  ChevronLeft
+  ChevronLeft,
 } from "lucide-react";
 import { Dialog, DialogContent } from "components";
 import { Button } from "components";
 import { Input } from "components";
 import { InputField } from "components";
-import { NavLink } from 'react-router-dom';
+import { NavLink } from "react-router-dom";
 
 import visa_icon from "assets/credit-card-icons/cc_visa.svg?url";
 import amex_icon from "assets/credit-card-icons/cc_american-express.svg?url";
@@ -79,7 +79,7 @@ const ExpiredSubModalEmployer: React.FC<ExpiredSubModalEmployerProps> = ({
 
   const onBack = () => {
     setCurrentStep("plans");
-    setSelectedPlan(null);  // Optionally reset the selected plan
+    setSelectedPlan(null); // Optionally reset the selected plan
   };
 
   const renderPlansStep = (): JSX.Element => (
@@ -188,18 +188,24 @@ const ExpiredSubModalEmployer: React.FC<ExpiredSubModalEmployerProps> = ({
   );
 
   const renderPaymentStep = (): JSX.Element => (
-    <div className={`w-full ${selectedPlan === 'monthly' ? 'bg-[#F9E2CE]' : 'bg-[#2D3A41]'} px-4 py-2`}>
+    <div
+      className={`w-full ${selectedPlan === "monthly" ? "bg-[#F9E2CE]" : "bg-[#2D3A41]"} px-4 py-2`}
+    >
       <div>
         <div className="mb-2">
-        <button 
-          onClick={onBack}
-          className={`flex items-center text-${selectedPlan === 'yearly' ? '[#F5F5F7]' : '[#F5722E]'} text-[11px] bg-transparent pr-1 rounded-md border border-${selectedPlan === 'yearly' ? '[#F5F5F7]' : '[#F5722E]'} mb-1`}
-
-        >
-          <ChevronLeft className="w-4 h-4" />
-          <span className="ml-1">Back To Plans</span>
-        </button>
-        <img src={selectedPlan === 'monthly' ? companyLogoDark : companyLogoLight} className="w-[80px] h-[25px] -ml-1 mb-1" />
+          <button
+            onClick={onBack}
+            className={`flex items-center text-${selectedPlan === "yearly" ? "[#F5F5F7]" : "[#F5722E]"} text-[11px] bg-transparent pr-1 rounded-md border border-${selectedPlan === "yearly" ? "[#F5F5F7]" : "[#F5722E]"} mb-1`}
+          >
+            <ChevronLeft className="w-4 h-4" />
+            <span className="ml-1">Back To Plans</span>
+          </button>
+          <img
+            src={
+              selectedPlan === "monthly" ? companyLogoDark : companyLogoLight
+            }
+            className="w-[80px] h-[25px] -ml-1 mb-1"
+          />
           <div className="flex flex-row gap-1 mb-2">
             <span className="text-[#F5722E] italic font-bold text-xs">
               Best Value
@@ -207,14 +213,16 @@ const ExpiredSubModalEmployer: React.FC<ExpiredSubModalEmployerProps> = ({
             <Trophy className="w-4 h-4 text-[#F5722E]" />
           </div>
         </div>
-  
+
         <div className="flex items-center gap-2 mb-2">
           <span className="text-[#F5722E] font-semibold text-[22px]">
             {selectedPlan === "yearly" ? "Yearly Plan" : "Monthly Plan"}
           </span>
         </div>
-  
-        <p className={`text-[13px] font-light ${selectedPlan === 'monthly' ? 'text-[#263238]' : 'text-[#F5F5F7]'} mb-2`}>
+
+        <p
+          className={`text-[13px] font-light ${selectedPlan === "monthly" ? "text-[#263238]" : "text-[#F5F5F7]"} mb-2`}
+        >
           Maximize your reach, save more, and hire the best talent faster
         </p>
       </div>
@@ -229,11 +237,13 @@ const ExpiredSubModalEmployer: React.FC<ExpiredSubModalEmployerProps> = ({
                 /{selectedPlan === "yearly" ? "year" : "month"}
               </span>
             </div>
-            <span className={`text-[13px] ${selectedPlan === 'monthly' ? 'text-[#263238]' : 'text-[#F5F5F7]'} -mt-2 font-extralight`}>
+            <span
+              className={`text-[13px] ${selectedPlan === "monthly" ? "text-[#263238]" : "text-[#F5F5F7]"} -mt-2 font-extralight`}
+            >
               + transaction fee
             </span>
           </div>
-  
+
           <div className="space-y-4">
             {selectedPlan &&
               features[selectedPlan].map((feature, index) => (
@@ -244,14 +254,16 @@ const ExpiredSubModalEmployer: React.FC<ExpiredSubModalEmployerProps> = ({
                       className: "stroke-current",
                     })}
                   </span>
-                  <span className={`${selectedPlan === 'monthly' ? 'text-[#263238]' : 'text-[#F5F5F7]'} text-sm`}>
+                  <span
+                    className={`${selectedPlan === "monthly" ? "text-[#263238]" : "text-[#F5F5F7]"} text-sm`}
+                  >
                     {feature.text}
                   </span>
                 </div>
               ))}
           </div>
         </div>
-  
+
         <div>
           <div className="flex justify-center">
             <div className="flex gap-2">
@@ -263,47 +275,59 @@ const ExpiredSubModalEmployer: React.FC<ExpiredSubModalEmployerProps> = ({
           </div>
           <div className="space-y-6">
             <div>
-              <InputField label="Card Holder Name" variant={selectedPlan === 'yearly' ? 'primary' : 'payment'}>
+              <InputField
+                label="Card Holder Name"
+                variant={selectedPlan === "yearly" ? "primary" : "payment"}
+              >
                 <Input
                   id="cardName"
-                  className={`bg-transparent ${selectedPlan === 'monthly' ? 'border-[#263238] placeholder:text-[#263238] text-[#263238]' : 'border-[#F5F5F7] placeholder:text-[#F5F5F7] text-[#F5F5F7]'} h-[56px] border-2 focus:border-[#F5722E]`}
+                  className={`bg-transparent ${selectedPlan === "monthly" ? "border-[#263238] placeholder:text-[#263238] text-[#263238]" : "border-[#F5F5F7] placeholder:text-[#F5F5F7] text-[#F5F5F7]"} h-[56px] border-2 focus:border-[#F5722E]`}
                   placeholder="Enter card holder name"
                 />
               </InputField>
             </div>
-  
+
             <div>
-              <InputField label="Card Number" variant={selectedPlan === 'yearly' ? 'primary' : 'payment'}>
+              <InputField
+                label="Card Number"
+                variant={selectedPlan === "yearly" ? "primary" : "payment"}
+              >
                 <Input
                   id="cardNumber"
-                  className={`bg-transparent ${selectedPlan === 'monthly' ? 'border-[#263238] placeholder:text-[#263238] text-[#263238]' : 'border-[#F5F5F7] placeholder:text-[#F5F5F7] text-[#F5F5F7]'} h-[56px] border-2 focus:border-[#F5722E]`}
+                  className={`bg-transparent ${selectedPlan === "monthly" ? "border-[#263238] placeholder:text-[#263238] text-[#263238]" : "border-[#F5F5F7] placeholder:text-[#F5F5F7] text-[#F5F5F7]"} h-[56px] border-2 focus:border-[#F5722E]`}
                   placeholder="Enter card number"
                 />
               </InputField>
             </div>
-  
+
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <InputField label="Expiry Date" variant={selectedPlan === 'yearly' ? 'primary' : 'payment'}>
+                <InputField
+                  label="Expiry Date"
+                  variant={selectedPlan === "yearly" ? "primary" : "payment"}
+                >
                   <Input
                     id="expiryDate"
-                    className={`bg-transparent ${selectedPlan === 'monthly' ? 'border-[#263238] placeholder:text-[#263238] text-[#263238]' : 'border-[#F5F5F7] placeholder:text-[#F5F5F7] text-[#F5F5F7]'} h-[56px] border-2 focus:border-[#F5722E]`}
+                    className={`bg-transparent ${selectedPlan === "monthly" ? "border-[#263238] placeholder:text-[#263238] text-[#263238]" : "border-[#F5F5F7] placeholder:text-[#F5F5F7] text-[#F5F5F7]"} h-[56px] border-2 focus:border-[#F5722E]`}
                     placeholder="XX/XX"
                   />
                 </InputField>
               </div>
               <div>
-                <InputField label="CVV" variant={selectedPlan === 'yearly' ? 'primary' : 'payment'}>
+                <InputField
+                  label="CVV"
+                  variant={selectedPlan === "yearly" ? "primary" : "payment"}
+                >
                   <Input
                     id="cvv"
-                    className={`bg-transparent ${selectedPlan === 'monthly' ? 'border-[#263238] placeholder:text-[#263238] text-[#263238]' : 'border-[#F5F5F7] placeholder:text-[#F5F5F7] text-[#F5F5F7]'} h-[56px] border-2 focus:border-[#F5722E]`}
+                    className={`bg-transparent ${selectedPlan === "monthly" ? "border-[#263238] placeholder:text-[#263238] text-[#263238]" : "border-[#F5F5F7] placeholder:text-[#F5F5F7] text-[#F5F5F7]"} h-[56px] border-2 focus:border-[#F5722E]`}
                     placeholder="XXX"
                   />
                 </InputField>
               </div>
             </div>
           </div>
-  
+
           <div className="space-y-3 mt-6">
             <Button
               onClick={() => setCurrentStep("success")}
@@ -311,7 +335,7 @@ const ExpiredSubModalEmployer: React.FC<ExpiredSubModalEmployerProps> = ({
             >
               Pay & Upgrade
             </Button>
-  
+
             <div className="flex flex-col items-start">
               <div className="flex items-center">
                 <LockKeyhole className="text-[#4BAF66]" size={11} />
@@ -319,7 +343,9 @@ const ExpiredSubModalEmployer: React.FC<ExpiredSubModalEmployerProps> = ({
                   Security & Policy
                 </a>
               </div>
-              <p className={`text-[10px] ${selectedPlan === 'monthly' ? 'text-[#263238]' : 'text-[#F5F5F7]'}`}>
+              <p
+                className={`text-[10px] ${selectedPlan === "monthly" ? "text-[#263238]" : "text-[#F5F5F7]"}`}
+              >
                 We maintain industry-standard physical, technical, and
                 administrative measures to safeguard your personal information
               </p>
@@ -331,15 +357,21 @@ const ExpiredSubModalEmployer: React.FC<ExpiredSubModalEmployerProps> = ({
   );
 
   const renderSuccessStep = (): JSX.Element => (
-    <div className={`w-full h-auto flex flex-col items-center justify-center ${selectedPlan === 'monthly' ? 'bg-[#F9E2CE]' : 'bg-[#2D3A41]'}`}>
+    <div
+      className={`w-full h-auto flex flex-col items-center justify-center ${selectedPlan === "monthly" ? "bg-[#F9E2CE]" : "bg-[#2D3A41]"}`}
+    >
       <h2 className="text-[#F5722E] text-[26px] font-normal mb-2">
         Great News: You're All Set!
       </h2>
 
-      <p className={`text-[15px] font-light text-center ${selectedPlan === 'monthly' ? 'text-[#263238]' : 'text-[#F5F5F7]'}`}>
+      <p
+        className={`text-[15px] font-light text-center ${selectedPlan === "monthly" ? "text-[#263238]" : "text-[#F5F5F7]"}`}
+      >
         Akaza is your gateway to flexible work opportunities.
       </p>
-      <p className={`text-[15px] font-light text-center mb-8 ${selectedPlan === 'monthly' ? 'text-[#263238]' : 'text-[#F5F5F7]'}`}>
+      <p
+        className={`text-[15px] font-light text-center mb-8 ${selectedPlan === "monthly" ? "text-[#263238]" : "text-[#F5F5F7]"}`}
+      >
         Click below to begin exploring!
       </p>
 
@@ -363,7 +395,7 @@ const ExpiredSubModalEmployer: React.FC<ExpiredSubModalEmployerProps> = ({
         </NavLink>
       </div>
     </div>
-);
+  );
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
