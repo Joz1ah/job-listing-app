@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
 import { Bell, Ellipsis, ChevronDown } from "lucide-react";
-import { ScrollArea } from "components";
+//import { ScrollArea } from "components";
 import { Badge } from "components";
 import {
   Popover,
@@ -29,7 +29,7 @@ const initialNewNotifications: NotificationItem[] = [
     message:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.",
     timestamp: new Date(Date.now() - 1000 * 20),
-    unread: true,
+    unread: false,
   },
   {
     id: "2",
@@ -269,13 +269,13 @@ const NotificationFeed: FC<NotificationFeedProps> = ({ subscriptionPlan }) => {
                 )}
               </div>
 
+              {/* 
               <div className="h-[2px] bg-white w-full" />
-
               <ScrollArea className="h-[400px]">
                 {olderNotifications.map((notification) => (
                   <NotificationItem key={notification.id} notification={notification} />
                 ))}
-              </ScrollArea>
+              </ScrollArea> */}
 
               <button 
                 onClick={handleClearNotifications}

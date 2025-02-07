@@ -586,6 +586,13 @@ export const localApi = createApiFunction({
           }
       }),
     }),
+    sseNotifications: builder.query({
+      query: () => ({
+        url: `/api/notifications/stream`,
+        method: 'GET',
+      }),
+      keepUnusedDataFor: 0,
+    }),
   }),
 });
 
@@ -646,5 +653,6 @@ export const {
 } = akazaApiAccount
 
 export const {
-  useSendContactUsEmailMutation
+  useSendContactUsEmailMutation,
+  useSseNotificationsQuery
 } = localApi
