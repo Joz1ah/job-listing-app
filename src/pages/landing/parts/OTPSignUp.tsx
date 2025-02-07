@@ -98,11 +98,11 @@ const OTPSignUp = () => {
       });
       setErrorMessage("");
       setHasError(false);
-      setIsComplete(true);
+      //setIsComplete(true);
     } else {
       setErrorMessage("Please paste a valid 6-digit OTP");
       setHasError(true);
-      setIsComplete(false);
+      //setIsComplete(false);
       refArray.forEach((ref) => {
         if (ref.current) {
           ref.current.value = "";
