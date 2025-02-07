@@ -6,7 +6,7 @@ import {
   LockKeyhole,
   MessageCircleMore,
   Trophy,
-  Gift,
+  //Gift,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import sparkle_icon from "assets/images/sparkle-icon.png";
@@ -50,9 +50,7 @@ const PlanCard: FC<PlanProps> = ({
     }
   };
 
-  const allFeatures = bestValue
-    ? [{ icon: <Gift size={16} />, text: "PLUS ONE MONTH FREE" }, ...features]
-    : features;
+  const allFeatures =  features;
 
   return (
     <div
@@ -115,7 +113,7 @@ const PlanCard: FC<PlanProps> = ({
         </div>
 
         {/* Right column */}
-        <div className="flex flex-col justify-end">
+        <div className="flex flex-col justify-center">
           <div className="flex flex-col gap-2">
             {allFeatures.map((feature, index) => (
               <div key={index} className="flex items-center gap-2">
@@ -145,11 +143,19 @@ const SubscriptionPlan: FC = () => {
     { icon: <LockKeyhole size={16} />, text: "Exclusive Employer Resources" },
     { icon: <MessageCircleMore size={16} />, text: "Live chat support" },
   ];
+  const featuresFreeTrial = [
+    {
+      icon: <img src={sparkle_icon} className="w-4 h-4" />,
+      text: "Perfect Match automation",
+    },
+    { icon: <MessageCircleMore size={16} />, text: "Live chat support" },
+    { icon: <MessageCircleMore size={16} />, text: "No credit or debit card required" },
+  ];
 
   return (
     <DefaultLayout>
       <div className={`${styles['subscription-plan-container']} pb-10 md:pt-10`}>
-        <div className="max-w-2xl mx-auto px-4">
+        <div className=" mx-auto px-4">
           <div className="space-y-6 pt-4">
             <PlanCard
               title="Yearly Plan"
@@ -168,7 +174,7 @@ const SubscriptionPlan: FC = () => {
               title="Free Trial"
               price="0"
               period="for 3 days only"
-              features={features}
+              features={featuresFreeTrial}
             />
           </div>
         </div>
