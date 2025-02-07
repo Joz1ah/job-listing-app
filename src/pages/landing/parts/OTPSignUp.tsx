@@ -1,10 +1,9 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import {
   useOtpVerifyMutation,
   useLoginMutation,
   useOtpGenerateMutation,
 } from "api/akaza/akazaAPI";
-import styles from "./../landing.module.scss";
 import { useLanding } from "../useLanding";
 import { MODAL_STATES } from "store/modal/modal.types";
 
@@ -34,9 +33,9 @@ const OTPSignUp = () => {
   const ib6 = useRef<HTMLInputElement>(null);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
   const [hasError, setHasError] = useState(false);
-  const [isComplete, setIsComplete] = useState(false);
+  const [areFieldsPopulated, setAreFieldsPopulated] = useState(false);
 
   const otpTimerRef = useRef<NodeJS.Timeout>();
 
@@ -53,7 +52,7 @@ const OTPSignUp = () => {
   };
 
   const handleOnInput = (ref: any, nextRef: any) => {
-    setErrorMessage('');
+    setErrorMessage("");
     setHasError(false);
     let currentInput = ref.current;
     currentInput.value = currentInput.value.replace(/[^0-9]/g, "");
@@ -62,11 +61,15 @@ const OTPSignUp = () => {
       currentInput.value = currentInput.value.slice(0, currentInput.maxLength);
     if (currentInput.value.length >= currentInput.maxLength)
       nextRef.current.focus();
-      
-    const allInputsFilled = [ib1, ib2, ib3, ib4, ib5, ib6].every(
-      (ref) => ref.current?.value?.length === 1
+
+    setAreFieldsPopulated(
+      !!ib1.current?.value &&
+        !!ib2.current?.value &&
+        !!ib3.current?.value &&
+        !!ib4.current?.value &&
+        !!ib5.current?.value &&
+        !!ib6.current?.value,
     );
-    setIsComplete(allInputsFilled);
   };
 
   const handleOnKeyDown = (e: any, ref: any, refFocus: any) => {
@@ -74,6 +77,15 @@ const OTPSignUp = () => {
       ref.current.value = "";
       refFocus.current.focus();
     }
+
+    setAreFieldsPopulated(
+      !!ib1.current?.value &&
+        !!ib2.current?.value &&
+        !!ib3.current?.value &&
+        !!ib4.current?.value &&
+        !!ib5.current?.value &&
+        !!ib6.current?.value,
+    );
   };
 
   const handleOnPaste = (e: React.ClipboardEvent, refArray: any[]) => {
@@ -84,11 +96,11 @@ const OTPSignUp = () => {
           refArray[index].current.value = digit;
         }
       });
-      setErrorMessage('');
+      setErrorMessage("");
       setHasError(false);
       setIsComplete(true);
     } else {
-      setErrorMessage('Please paste a valid 6-digit OTP');
+      setErrorMessage("Please paste a valid 6-digit OTP");
       setHasError(true);
       setIsComplete(false);
       refArray.forEach((ref) => {
@@ -98,6 +110,15 @@ const OTPSignUp = () => {
       });
     }
     e.preventDefault();
+
+    setAreFieldsPopulated(
+      !!ib1.current?.value &&
+        !!ib2.current?.value &&
+        !!ib3.current?.value &&
+        !!ib4.current?.value &&
+        !!ib5.current?.value &&
+        !!ib6.current?.value,
+    );
   };
   
 
@@ -111,14 +132,14 @@ const OTPSignUp = () => {
       (ib6.current?.value || "");
 
     if (otp.length !== 6) {
-      setErrorMessage('Please enter all 6 digits of the OTP');
+      setErrorMessage("Please enter all 6 digits of the OTP");
       setHasError(true);
       return;
     }
 
     try {
       setIsLoading(true);
-      setErrorMessage('');
+      setErrorMessage("");
       setHasError(false);
 
       await submitOTP({
@@ -140,10 +161,10 @@ const OTPSignUp = () => {
       }, 1000);
     } catch (err: any) {
       console.log("OTP Error details:", err);
-      if (err?.data?.message?.toLowerCase().includes('expired')) {
-        setErrorMessage('Your OTP has expired');
+      if (err?.data?.message?.toLowerCase().includes("expired")) {
+        setErrorMessage("Your OTP has expired");
       } else {
-        setErrorMessage('Please provide the valid OTP');
+        setErrorMessage("Please provide the valid OTP");
       }
       setHasError(true);
 
@@ -164,7 +185,7 @@ const OTPSignUp = () => {
 
   const resendOTP = async () => {
     try {
-      setErrorMessage('');
+      setErrorMessage("");
       setHasError(false);
       await generateOTP({ email: dataStates.email })
         .unwrap()
@@ -173,7 +194,7 @@ const OTPSignUp = () => {
         })
         .catch((error) => {
           console.error("Failed to resend OTP:", error);
-          setErrorMessage('Failed to resend OTP. Please try again.');
+          setErrorMessage("Failed to resend OTP. Please try again.");
           setHasError(true);
         });
     } catch (error) {
@@ -215,22 +236,23 @@ const OTPSignUp = () => {
     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   };
 
-  return (
-    modalState && modalState == MODAL_STATES.SIGNUP_STEP3 ?
+  return modalState && modalState == MODAL_STATES.SIGNUP_STEP3 ? (
     <div
       id="step3_signup"
-      className={styles["modal-content"]}
+      className="flex flex-col w-full h-full  justify-center items-center"
     >
-      <div className={styles["verify-container"]}>
-        <div className={styles.desc1}>Verify with One Time Password</div>
-        <div className={styles.desc2}>
-          To ensure your security, please enter the One - Time Password
+      <div id="verify-container" className="space-y-4 w-full">
+        <div className="text-lg sm:text-xl text-orange-500 font-semibold text-center">
+          Verify with One Time Password
         </div>
-        <div className={styles.desc2}>
-          (OTP) sent to your registered email below.
+        <div className="text-sm sm:text-base text-gray-700 text-center">
+          To ensure your security, please enter the One-Time Password (OTP) sent
+          to your registered email below.
         </div>
 
-        <div className={`${styles["otp-input-fields"]} ${hasError ? styles.error : ''}`}>
+        <div
+          className={`flex flex-wrap justify-center gap-2 ${hasError ? "animate-shake" : ""}`}
+        >
           <div>
             <input
               onInput={() => handleOnInput(ib1, ib2)}
@@ -240,6 +262,7 @@ const OTPSignUp = () => {
               pattern="[0-9]*"
               maxLength={1}
               onPaste={(e) => handleOnPaste(e, [ib1, ib2, ib3, ib4, ib5, ib6])}
+              className="w-10 h-10 sm:w-12 sm:h-12 text-center border-2 border-gray-300 rounded focus:border-orange-500 focus:outline-none"
             />
           </div>
           <div>
@@ -251,6 +274,7 @@ const OTPSignUp = () => {
               pattern="[0-9]*"
               maxLength={1}
               onPaste={(e) => handleOnPaste(e, [ib1, ib2, ib3, ib4, ib5, ib6])}
+              className="w-10 h-10 sm:w-12 sm:h-12 text-center border-2 border-gray-300 rounded focus:border-orange-500 focus:outline-none"
             />
           </div>
           <div>
@@ -262,6 +286,7 @@ const OTPSignUp = () => {
               pattern="[0-9]*"
               maxLength={1}
               onPaste={(e) => handleOnPaste(e, [ib1, ib2, ib3, ib4, ib5, ib6])}
+              className="w-10 h-10 sm:w-12 sm:h-12 text-center border-2 border-gray-300 rounded focus:border-orange-500 focus:outline-none"
             />
           </div>
           <div>
@@ -273,6 +298,7 @@ const OTPSignUp = () => {
               pattern="[0-9]*"
               maxLength={1}
               onPaste={(e) => handleOnPaste(e, [ib1, ib2, ib3, ib4, ib5, ib6])}
+              className="w-10 h-10 sm:w-12 sm:h-12 text-center border-2 border-gray-300 rounded focus:border-orange-500 focus:outline-none"
             />
           </div>
           <div>
@@ -284,6 +310,7 @@ const OTPSignUp = () => {
               pattern="[0-9]*"
               maxLength={1}
               onPaste={(e) => handleOnPaste(e, [ib1, ib2, ib3, ib4, ib5, ib6])}
+              className="w-10 h-10 sm:w-12 sm:h-12 text-center border-2 border-gray-300 rounded focus:border-orange-500 focus:outline-none"
             />
           </div>
           <div>
@@ -295,56 +322,40 @@ const OTPSignUp = () => {
               pattern="[0-9]*"
               maxLength={1}
               onPaste={(e) => handleOnPaste(e, [ib1, ib2, ib3, ib4, ib5, ib6])}
+              className="w-10 h-10 sm:w-12 sm:h-12 text-center border-2 border-gray-300 rounded focus:border-orange-500 focus:outline-none"
             />
           </div>
         </div>
 
         {errorMessage && (
-          <div className={`${styles["error-message"]} ${hasError ? styles.shake : ''}`}>
+          <div className="text-red-500 text-center mt-2 text-sm italic">
             {errorMessage}
           </div>
         )}
 
-        <div className={styles["action-buttons"]}>
-        <button
-          onClick={handleContinue}
-          className={`${styles["button-custom-orange"]} ${isLoading ? styles.loading : ""} ${!isComplete ? styles.incomplete : ''}`}
-          disabled={isLoading}
-        >
-          {isLoading ? "Verifying..." : "Continue"}
-        </button>
-          {/* <button
-            onClick={() => {
-              [ib1, ib2, ib3, ib4, ib5, ib6].forEach((ref) => {
-                if (ref.current) {
-                  ref.current.value = "";
-                }
-              });
-              handleSetModalState(MODAL_STATES.SIGNUP_STEP2);
-            }}
-            className={styles["button-custom-basic"]}
+        <div className="mt-4 w-full flex justify-center">
+          <button
+            onClick={handleContinue}
+            className={`w-full max-w-[calc(6*3rem+5*0.5rem)] px-4 py-2 ${areFieldsPopulated ? "bg-orange-500" : "bg-[#aeadad]"} text-white rounded-md ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+            disabled={isLoading || !areFieldsPopulated}
           >
-            Cancel
-          </button> */}
+            {isLoading ? "Verifying..." : "Continue"}
+          </button>
         </div>
 
-        <div className={styles["resend-container"]}>
-          <label className={styles["resend-label1"]}>
-            Didn't receive the email?
-          </label>
+        <div className="text-center mt-4">
+          <label className="text-gray-500">Didn't receive the email?</label>
           {countdown > 0 ? (
             <>
-              <label className={styles["resend-label2"]}>
+              <label className="text-orange-500 ml-2">
                 Click to resend in{" "}
               </label>
-              <label className={styles["resend-label3"]}>
-                {formatTime(countdown)}
-              </label>
+              <label className="text-orange-500">{formatTime(countdown)}</label>
             </>
           ) : (
             <label
               onClick={handleResendClick}
-              className={styles["resend-button"]}
+              className="text-orange-500 underline cursor-pointer ml-2"
             >
               Click to resend
             </label>
@@ -354,7 +365,7 @@ const OTPSignUp = () => {
         <div
           ref={buttonPrevious}
           id="btn_signup_step3_previous"
-          className={styles["previous-button-container"]}
+          className="text-center text-gray-500 mt-4 cursor-pointer"
           onClick={() => {
             [ib1, ib2, ib3, ib4, ib5, ib6].forEach((ref) => {
               if (ref.current) {
@@ -364,13 +375,13 @@ const OTPSignUp = () => {
             handleSetModalState(MODAL_STATES.SIGNUP_STEP2);
           }}
         >
-          <div className={styles["previous-button"]}></div>
-          <div className={styles["caret-left"]}></div>
-          <div className={styles["previous-button-label"]}>Previous</div>
+          <div className="inline-block mr-2">&larr;</div>
+          <div className="inline-block">Previous</div>
         </div>
       </div>
     </div>
-    : <></>
+  ) : (
+    <></>
   );
 };
 

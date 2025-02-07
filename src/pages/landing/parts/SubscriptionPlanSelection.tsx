@@ -1,7 +1,9 @@
-import { useLoginMutation, useUpdateFreeTrialStatusMutation } from "api/akaza/akazaAPI";
+import {
+  useLoginMutation,
+  useUpdateFreeTrialStatusMutation,
+} from "api/akaza/akazaAPI";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import { useNavigate } from "react-router-dom";
-import styles from "./../landing.module.scss";
 import { useModal } from "components/modal/useModal";
 import { useLanding } from "../useLanding";
 import unchecked_green from "assets/toggles/unchecked-green.svg?url";
@@ -18,6 +20,9 @@ import { MODAL_HEADER_TYPE, MODAL_STATES } from "store/modal/modal.types";
 import { PLAN_SELECTION_ITEMS } from "store/user/user.types";
 import { ROUTE_CONSTANTS } from "constants/routeConstants";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
+import { useCallback } from "react";
+import PriceTag from "./SubscriptionPlanSelection/PriceTag";
+import PlanBenefit from "./SubscriptionPlanSelection/PlanBenefit";
 
 const SubscriptionPlanSelection = () => {
   const { handleSetSelectedModalHeader } = useModal();
@@ -46,10 +51,10 @@ const SubscriptionPlanSelection = () => {
           email: tempLoginEmail,
           password: tempLoginPassword,
         }).unwrap();
-        
+
         if (response?.data?.token) {
           login(response.data.token);
-          
+
           // Update free trial status
           try {
             await updateFreeTrialStatus({}).unwrap();
@@ -57,169 +62,181 @@ const SubscriptionPlanSelection = () => {
             console.error("Failed to update free trial status:", trialError);
             // Continue with navigation even if free trial update fails
           }
-          
+
           handleSetModalState(MODAL_STATES.LOADING);
           setTimeout(() => {
             navigate(
               userType === "employer"
                 ? ROUTE_CONSTANTS.COMPLETE_PROFILE
-                : ROUTE_CONSTANTS.CREATE_APPLICATION
+                : ROUTE_CONSTANTS.CREATE_APPLICATION,
             );
           }, 1000);
         }
       } catch (error) {
         console.error("Auto-login failed:", error);
-        showError('Login Error', 'Failed to login. Please try again.');
+        showError("Login Error", "Failed to login. Please try again.");
       }
     } else {
       handleSetModalState(MODAL_STATES.AUTHNET_PAYMENT_FULL);
     }
   };
 
-  return (
-    modalState && modalState == MODAL_STATES.SIGNUP_STEP5 ?
-    <div
-      className={`${styles["modal-content"]}`}
-    >
-      <div className={`${styles["subscription-plans-container"]}`}>
-        <div className={`${styles["subscription-selection-items"]}`}>
-          <div
-            onClick={() => handleSetSelectedPlan(PLAN_SELECTION_ITEMS.FREE)}
-            className={`${styles["subscription-item"]} ${styles["noselect"]}
-                ${currentSelectedPlan === PLAN_SELECTION_ITEMS.FREE ? styles["selected"] : ""}`}
-          >
-            <div className={`${styles["subscription-item-pricing-container"]}`}>
-              <div className={`${styles["subscription-item-pricing-desc"]}`}>
-                Free
-              </div>
-              <div className={`${styles["subscription-item-pricing-subdesc"]}`}>
-                enjoy with zero fees
-              </div>
-            </div>
-            <div className={`${styles["subscription-item-pricing-desc"]}`}>
-              3-days Free Trial
-            </div>
-            <div className={`${styles["subscription-check-icon"]}`}>
-              <img src={unchecked_green} />
-            </div>
-          </div>
+  const isSelected = useCallback(
+    (refPlan: PLAN_SELECTION_ITEMS) => {
+      return currentSelectedPlan === refPlan;
+    },
+    [currentSelectedPlan],
+  );
 
-          <div
-            onClick={() => handleSetSelectedPlan(PLAN_SELECTION_ITEMS.MONTHLY)}
-            className={`${styles["subscription-item"]} ${styles["noselect"]}
-                ${currentSelectedPlan === PLAN_SELECTION_ITEMS.MONTHLY ? styles["selected"] : ""}`}
-          >
-            <div className={`${styles["subscription-item-pricing-container"]}`}>
-              <div className={`${styles["subscription-item-pricing-desc"]}`}>
-                <label>$</label>
-                <label>5</label>
-                <label>/month</label>
-              </div>
-              <div className={`${styles["subscription-item-pricing-subdesc"]}`}>
-                + transaction fee
-              </div>
-            </div>
-            <div className={`${styles["subscription-item-pricing-desc"]}`}>
-              flexible monthly access
-            </div>
-            <div className={`${styles["subscription-check-icon"]}`}>
-              <img src={unchecked_green} />
-            </div>
-          </div>
+  const summaryLabel: Record<PLAN_SELECTION_ITEMS, string> = {
+    [PLAN_SELECTION_ITEMS.FREE]: "Free Trial",
+    [PLAN_SELECTION_ITEMS.MONTHLY]: "Monthly Plan",
+    [PLAN_SELECTION_ITEMS.ANNUAL]: "Yearly Plan",
+  };
 
-          <div
-            onClick={() => handleSetSelectedPlan(PLAN_SELECTION_ITEMS.ANNUAL)}
-            className={`${styles["subscription-item"]} ${styles["noselect"]} 
-                ${currentSelectedPlan === PLAN_SELECTION_ITEMS.ANNUAL ? styles["selected"] : ""}`}
-          >
-            <div className={`${styles["subscription-item-pricing-container"]}`}>
-              <div className={`${styles["subscription-item-pricing-desc"]}`}>
-                <label>$</label>
-                <label>55</label>
-                <label>/year</label>
-              </div>
-              <div className={`${styles["subscription-item-pricing-subdesc"]}`}>
-                + transaction fee
-              </div>
-            </div>
-            <div className={`${styles["subscription-item-pricing-desc"]}`}>
-              plus one month free
-            </div>
-            <div className={`${styles["subscription-check-icon"]}`}>
-              <img src={checked_green} />
-            </div>
-          </div>
+  const defaultBenefits: {
+    icon: string;
+    iconAlt: string;
+    text: string;
+  }[] = [
+    {
+      icon: subscription_sparkle_icon,
+      iconAlt: "Sparkle",
+      text: "Perfect Match automation",
+    },
+    {
+      icon: subscription_thumbsup_icon,
+      iconAlt: "Thumbs Up",
+      text: "Ratings & Feedback",
+    },
+    {
+      icon: subscription_shield_person_icon,
+      iconAlt: "Shield Person",
+      text: "Access to diverse private sector industries",
+    },
+    {
+      icon: subscription_linegraph_icon,
+      iconAlt: "Line Graph",
+      text: "Basic analytic page",
+    },
+    {
+      icon: subscription_lock_icon,
+      iconAlt: "Lock",
+      text: "Access to exclusive informative content",
+    },
+    {
+      icon: subscription_chat_icon,
+      iconAlt: "Chat",
+      text: "Live chat support",
+    },
+  ];
+
+  return modalState && modalState == MODAL_STATES.SIGNUP_STEP5 ? (
+    <div className="flex items-center justify-center w-full h-full max-h-full sm:max-w-screen-sm">
+      <div className="flex w-full gap-1">
+        <div className="flex flex-col w-full gap-4">
+          <PriceTag
+            key="free-tag"
+            handler={() => handleSetSelectedPlan(PLAN_SELECTION_ITEMS.FREE)}
+            icon={
+              isSelected(PLAN_SELECTION_ITEMS.FREE)
+                ? checked_green
+                : unchecked_green
+            }
+            label="Free"
+            selectedPlan={currentSelectedPlan}
+            text1="enjoy with zero fees"
+            text2="3-days Free Trial"
+            planRef={PLAN_SELECTION_ITEMS.FREE}
+          />
+
+          <PriceTag
+            key="monthly-tag"
+            handler={() => handleSetSelectedPlan(PLAN_SELECTION_ITEMS.MONTHLY)}
+            icon={
+              isSelected(PLAN_SELECTION_ITEMS.MONTHLY)
+                ? checked_green
+                : unchecked_green
+            }
+            label={
+              <>
+                <span>$</span>
+                <span className="text-2xl">5</span>
+                <span>/month</span>
+              </>
+            }
+            selectedPlan={currentSelectedPlan}
+            text1="+ $0.48 transaction fee"
+            text2="flexible monthly access"
+            planRef={PLAN_SELECTION_ITEMS.MONTHLY}
+          />
+
+          <PriceTag
+            key="annual-tag"
+            handler={() => handleSetSelectedPlan(PLAN_SELECTION_ITEMS.ANNUAL)}
+            icon={
+              isSelected(PLAN_SELECTION_ITEMS.ANNUAL)
+                ? checked_green
+                : unchecked_green
+            }
+            label={
+              <>
+                <span>$</span>
+                <span className="text-2xl">55</span>
+                <span>/year</span>
+              </>
+            }
+            selectedPlan={currentSelectedPlan}
+            text1="+ $5.28 transaction fee"
+            text2="plus one month free"
+            planRef={PLAN_SELECTION_ITEMS.ANNUAL}
+          />
         </div>
+
         <div
           id="outline_container"
-          className={`${styles["subscription-selection-description-container"]}`}
+          className="flex flex-col items-center justify-center p-4 border rounded-md bg-orange-500 text-white w-full"
         >
-          <div className={`${styles["selection-description-title"]}`}>
-            {currentSelectedPlan == PLAN_SELECTION_ITEMS.FREE
-              ? "Your Free Trial includes:"
-              : currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY
-                ? "Your Monthly Plan includes:"
-                : currentSelectedPlan == PLAN_SELECTION_ITEMS.ANNUAL
-                  ? "Your Yearly Plan includes:"
-                  : ""}
+          <div className="text-lg font-semibold mb-4 md:text-base">
+            {currentSelectedPlan
+              ? `Your ${summaryLabel[currentSelectedPlan]} includes:`
+              : ""}
           </div>
-          <div
-            className={`${styles["selection-description-outline-container"]}`}
-          >
-            <div className={`${styles["selection-description-outline"]}`}>
-              <img src={subscription_sparkle_icon}></img>
-              <div>Perfect Match automation</div>
-            </div>
-            <div className={`${styles["selection-description-outline"]}`}>
-              <img src={subscription_thumbsup_icon}></img>
-              <div>Ratings & Feedback</div>
-            </div>
-            <div className={`${styles["selection-description-outline"]}`}>
-              <img src={subscription_shield_person_icon}></img>
-              <div>Access to diverse private sector industries</div>
-            </div>
-            <div className={`${styles["selection-description-outline"]}`}>
-              <img src={subscription_linegraph_icon}></img>
-              <div>Basic analytic page</div>
-            </div>
-            <div className={`${styles["selection-description-outline"]}`}>
-              <img src={subscription_lock_icon}></img>
-              <div>Access to exclusive informative content</div>
-            </div>
-            <div className={`${styles["selection-description-outline"]}`}>
-              <img src={subscription_chat_icon}></img>
-              <div>Live chat support</div>
-            </div>
+          <div className="flex flex-col gap-2">
+            {defaultBenefits.map(({ icon, iconAlt, text }, index) => (
+              <PlanBenefit
+                icon={icon}
+                iconAlt={iconAlt}
+                text={text}
+                key={index}
+              />
+            ))}
             {currentSelectedPlan === PLAN_SELECTION_ITEMS.ANNUAL && (
-              <div className={`${styles['selection-description-outline']}`}>
-                <img src={subscription_gift_icon} />
-                <div>PLUS ONE MONTH FREE</div>
-              </div>
+              <PlanBenefit
+                icon={subscription_gift_icon}
+                iconAlt="Gift"
+                text="PLUS ONE MONTH FREE"
+              />
             )}
             {currentSelectedPlan === PLAN_SELECTION_ITEMS.FREE && (
-              <div className={`${styles['selection-description-outline']}`}>
-                <img src={subscription_bolt_icon} />
-                <div>FREE FOR THREE DAYS</div>
-              </div>
+              <PlanBenefit
+                icon={subscription_bolt_icon}
+                iconAlt="Bolt"
+                text="FREE FOR THREE DAYS"
+              />
             )}
           </div>
-          <div
+          <button
             onClick={handleSubscription}
-            className={`${styles["action-button"]} ${styles["noselect"]}`}
+            className="mt-4 px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
           >
             Subscribe Today
-          </div>
-          <div
-            id="btn_free_trial"
-            className={`${styles["action-button action-button-orange"]} ${styles["noselect"]}`}
-            hidden
-          >
-            Start Free Trial
-          </div>
+          </button>
         </div>
       </div>
     </div>
-    :<></>
+  ) : (
+    <></>
   );
 };
 

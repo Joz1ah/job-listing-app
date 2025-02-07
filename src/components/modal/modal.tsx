@@ -1,5 +1,4 @@
 import { ReactNode } from "react";
-import styles from "./modalcontext.module.scss";
 import ModalHeader from "./parts/modal-header";
 import { useModal } from "./useModal";
 
@@ -12,20 +11,10 @@ const Modal = ({ children }: ModalProps) => {
 
   return (
     isModalOpen && (
-      <div
-        className={`${styles["mask-overlay"]} ${styles["requires-no-scroll"]}`}
-      >
-        <div className={styles["mask_overlay"]}>
-          <div className={`${styles["modal-container-wrapper"]}`}>
-            <div className={`${styles["modal-container"]}`}>
-              <div className={`${styles["modal-item"]} h-[100px]`}>
-                <ModalHeader />
-                <div className={`${styles["modal-content-wrapper"]}`}>
-                  {children}
-                </div>
-              </div>
-            </div>
-          </div>
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="relative bg-white shadow-lg w-full max-w-xl h-auto max-h-[490px] sm:max-h-screen overflow-x-hidden overflow-y-auto">
+          <ModalHeader />
+          <div className="p-4">{children}</div>
         </div>
       </div>
     )

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import * as RPNInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
 import { ChevronDown } from "lucide-react";
@@ -12,29 +12,27 @@ import {
   CommandList,
 } from "components";
 import { Input } from "components";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "components";
+import { Popover, PopoverContent, PopoverTrigger } from "components";
 import { ScrollArea } from "components";
 
-const cn = (...classes: (string | undefined)[]) => classes.filter(Boolean).join(' ');
+const cn = (...classes: (string | undefined)[]) =>
+  classes.filter(Boolean).join(" ");
 
 // Input Component
-const InputComponent = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(
-  ({ className, ...props }, ref) => (
-    <Input
-      className={cn(
-        "rounded-none border-none bg-transparent text-white h-full pr-24",
-        "placeholder:text-white/50 focus-visible:ring-0 focus-visible:ring-offset-0",
-        className
-      )}
-      {...props}
-      ref={ref}
-    />
-  )
-);
+const InputComponent = React.forwardRef<
+  HTMLInputElement,
+  React.InputHTMLAttributes<HTMLInputElement>
+>(({ className, ...props }, ref) => (
+  <Input
+    className={cn(
+      "rounded-none border-none bg-transparent text-[#263238] h-full pr-24",
+      "placeholder:text-gray-50/50 focus-visible:ring-0 focus-visible:ring-offset-0",
+      className,
+    )}
+    {...props}
+    ref={ref}
+  />
+));
 InputComponent.displayName = "InputComponent";
 
 // Flag Component
@@ -66,7 +64,7 @@ const CountrySelect = ({
     (country: RPNInput.Country) => {
       onChange(country);
     },
-    [onChange]
+    [onChange],
   );
 
   return (
@@ -79,7 +77,7 @@ const CountrySelect = ({
             "flex items-center gap-1 h-full px-2",
             "bg-transparent hover:bg-transparent min-w-[80px]",
             "border-none focus-visible:ring-0 focus-visible:ring-offset-0",
-            "absolute right-0 top-0"
+            "absolute right-0 top-0",
           )}
           disabled={disabled}
         >
@@ -95,10 +93,15 @@ const CountrySelect = ({
           avoidCollisions={false}
           collisionPadding={0}>
         <Command className="bg-white">
-          <CommandInput placeholder="Search country..." className="text-black" />
+          <CommandInput
+            placeholder="Search country..."
+            className="text-black"
+          />
           <CommandList>
             <ScrollArea className="h-72">
-              <CommandEmpty className="text-white">No country found.</CommandEmpty>
+              <CommandEmpty className="text-white">
+                No country found.
+              </CommandEmpty>
               <CommandGroup>
                 {options
                   .filter((x) => x.value)
@@ -135,54 +138,57 @@ type PhoneInputLandingProps = {
   onChange: (e: React.ChangeEvent<any>) => void;
   className?: string;
   defaultCountry?: RPNInput.Country;
-} & Omit<RPNInput.Props<typeof RPNInput.default>, 'onChange' | 'value'>;
+} & Omit<RPNInput.Props<typeof RPNInput.default>, "onChange" | "value">;
 
 // Main PhoneInputLanding Component
-const PhoneInputLanding = React.forwardRef<React.ElementRef<typeof RPNInput.default>, PhoneInputLandingProps>(
-  ({ className, onChange, name, value, ...props }, ref) => {
-    const handlePhoneChange = (phoneValue: RPNInput.Value) => {
-      const formattedValue = phoneValue ? phoneValue.toString().replace(/[^\d+]/g, '') : "";
-      
-      const syntheticEvent = {
-        target: {
-          name,
-          value: formattedValue || ""
-        },
-        type: 'change',
-        preventDefault: () => {},
-        stopPropagation: () => {},
-        currentTarget: { name, value: formattedValue || "" },
-        nativeEvent: new Event('change'),
-        bubbles: true,
-        cancelable: true,
-        defaultPrevented: false,
-        eventPhase: 0,
-        isTrusted: true,
-        timeStamp: Date.now(),
-      } as React.ChangeEvent<HTMLInputElement>;
+const PhoneInputLanding = React.forwardRef<
+  React.ElementRef<typeof RPNInput.default>,
+  PhoneInputLandingProps
+>(({ className, onChange, name, value, ...props }, ref) => {
+  const handlePhoneChange = (phoneValue: RPNInput.Value) => {
+    const formattedValue = phoneValue
+      ? phoneValue.toString().replace(/[^\d+]/g, "")
+      : "";
 
-      onChange(syntheticEvent);
-    };
+    const syntheticEvent = {
+      target: {
+        name,
+        value: formattedValue || "",
+      },
+      type: "change",
+      preventDefault: () => {},
+      stopPropagation: () => {},
+      currentTarget: { name, value: formattedValue || "" },
+      nativeEvent: new Event("change"),
+      bubbles: true,
+      cancelable: true,
+      defaultPrevented: false,
+      eventPhase: 0,
+      isTrusted: true,
+      timeStamp: Date.now(),
+    } as React.ChangeEvent<HTMLInputElement>;
 
-    return (
-      <div className={cn("relative w-full", className)}>
-        <RPNInput.default
-          ref={ref}
-          className="flex bg-transparent"
-          flagComponent={FlagComponent}
-          countrySelectComponent={CountrySelect}
-          inputComponent={InputComponent}
-          smartCaret={false}
-          value={value?.toString()}
-          onChange={handlePhoneChange}
-          international
-          {...props}
-        />
-      </div>
-    );
-  }
-);
+    onChange(syntheticEvent);
+  };
+
+  return (
+    <div className={cn("relative w-full", className)}>
+      <RPNInput.default
+        ref={ref}
+        className="flex bg-transparent"
+        flagComponent={FlagComponent}
+        countrySelectComponent={CountrySelect}
+        inputComponent={InputComponent}
+        smartCaret={false}
+        value={value?.toString()}
+        onChange={handlePhoneChange}
+        international
+        {...props}
+      />
+    </div>
+  );
+});
 
 PhoneInputLanding.displayName = "PhoneInput";
 
-export { PhoneInputLanding }
+export { PhoneInputLanding };

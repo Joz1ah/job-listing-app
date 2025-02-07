@@ -1,8 +1,6 @@
-import { useRef, useEffect } from "react";
+import { useCallback } from "react";
 import Video from "./Video";
 import { useLanding } from "../useLanding";
-import styles from "./../landing.module.scss";
-
 import video1 from "assets/mp4/Landing-Page-hero-1.mp4";
 import { HERO_STATES } from "store/hero/hero.types";
 import { UserType } from "store/user/user.types";
@@ -10,57 +8,52 @@ import { UserType } from "store/user/user.types";
 const HeroPerfectMatchAlgo = () => {
   const { handleSetHeroState, handleSetCredentials, heroState, dataStates } =
     useLanding();
-  const heroEmployerButton = useRef<HTMLDivElement>(null);
-  const heroJobHunterButton = useRef<HTMLDivElement>(null);
-  const heroScreenActions = () => {
-    if (heroEmployerButton.current) {
-      heroEmployerButton.current.onclick = () => {
-        handleSetHeroState(HERO_STATES.JOB_TITLE_EMPLOYER);
-        handleSetCredentials({
-          ...dataStates,
-          selectedUserType: UserType.EMPLOYER,
-        });
-      };
-    }
-    if (heroJobHunterButton.current) {
-      heroJobHunterButton.current.onclick = () => {
-        handleSetHeroState(HERO_STATES.SKILLSETS_JOBHUNTER);
-        handleSetCredentials({
-          ...dataStates,
-          selectedUserType: UserType.JOB_HUNTER,
-        });
-      };
-    }
-  };
 
-  useEffect(heroScreenActions, []);
+  const handleClick = useCallback(
+    (type: UserType) => {
+      const state =
+        type === UserType.EMPLOYER
+          ? HERO_STATES.JOB_TITLE_EMPLOYER
+          : HERO_STATES.SKILLSETS_JOBHUNTER;
+
+      handleSetHeroState(state);
+      handleSetCredentials({
+        ...dataStates,
+        selectedUserType: type,
+      });
+    },
+    [dataStates],
+  );
+
   return (
     <div
       id="step1"
-      className={`${styles["hero-content"]}`}
-      hidden={heroState !== HERO_STATES.PERFECT_MATCH_ALGO}
+      className={`relative w-full h-screen overflow-hidden ${heroState !== HERO_STATES.PERFECT_MATCH_ALGO ? "hidden" : ""}`}
     >
-      <Video src={video1} className={styles["hero-video"]} />
-      <div className={`${styles["hero-container-overlay"]} ${styles["sepia"]}`}>
-        <div className={`${styles["title"]} ${styles["text-center"]}`}>
+      <Video
+        src={video1}
+        className="absolute top-1/2 left-1/2 w-full h-auto min-h-full min-w-full transform -translate-x-1/2 -translate-y-1/2 scale-125 object-cover"
+      />
+      <div className="absolute top-0 left-0 w-full h-full p-4 bg-[rgba(220,138,96,0.49)]">
+        <div className="text-center text-4xl font-semibold text-white mt-36">
           Let our Perfect Match Algo do the work
         </div>
-        <div className={`${styles.desc}`}>What best describes you?</div>
-        <div
-          className={`${styles["hero-button-container"]} ${styles["center"]}`}
-        >
-          <div
-            ref={heroJobHunterButton}
-            className={`${styles["button-custom"]} ${styles["noselect"]}`}
+        <div className="text-center text-xl text-gray-700 mt-8">
+          What best describes you?
+        </div>
+        <div className="flex justify-center mt-14 gap-8">
+          <button
+            onClick={() => handleClick(UserType.JOB_HUNTER)}
+            className="border-4 border-orange-500 bg-white text-orange-500 font-semibold text-lg p-4 rounded-md cursor-pointer hover:bg-orange-500 hover:text-white"
           >
             Job Hunter
-          </div>
-          <div
-            ref={heroEmployerButton}
-            className={`${styles["button-custom"]} ${styles["noselect"]}`}
+          </button>
+          <button
+            onClick={() => handleClick(UserType.EMPLOYER)}
+            className="border-4 border-orange-500 bg-white text-orange-500 font-semibold text-lg p-4 rounded-md cursor-pointer hover:bg-orange-500 hover:text-white"
           >
             Employer
-          </div>
+          </button>
         </div>
       </div>
     </div>

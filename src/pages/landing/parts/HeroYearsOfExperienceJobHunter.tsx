@@ -64,7 +64,10 @@ const HeroYearsOfExperienceJobHunter = () => {
       className={`${styles["hero-content"]}`}
       hidden={heroState !== HERO_STATES.YEARS_OF_EXPERIENCE_JOBHUNTER}
     >
-      <img src={girl_with_dog_smiling_at_laptop} />
+      <img
+        src={girl_with_dog_smiling_at_laptop}
+        className="w-full h-full object-cover"
+      />
       <div
         className={`${styles["hero-container-overlay"]} ${styles["gradient-left-dark"]}`}
       >
