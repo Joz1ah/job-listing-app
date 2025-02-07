@@ -272,9 +272,9 @@ const ApplicationCardForm: FC = () => {
       {isSubmitting && <LoadingOverlay />}
 
       <div className="flex flex-col xl:flex-row gap-8 pt-6">
-        <div className="w-full md:w-[800px] min-h-[960px] bg-[#242625] md:bg-[#2D3A41] text-white">
-          <div className="flex items-center relative w-full mb-6 md:mb-10">
-            <h1 className="flex-1 text-center text-xl md:text-[32px] pt-6 font-normal text-[#F5722E]">
+        <div className="w-full md:w-[800px] min-h-[960px] bg-[#2D3A41] text-white">
+          <div className="flex items-center relative w-full md:mb-10">
+            <h1 className="flex-1 text-center text-xl md:text-[32px] md:pt-6 font-normal text-[#F5722E]">
               <span className="inline-flex items-center gap-2 justify-center">
                 Complete Your Application Card
               </span>
@@ -294,6 +294,7 @@ const ApplicationCardForm: FC = () => {
                   className="bg-transparent"
                   error={errors.firstName}
                   touched={touched.firstName}
+                  variant="primary"
                 >
                   <Input
                     name="firstName"
@@ -311,6 +312,7 @@ const ApplicationCardForm: FC = () => {
                   className="bg-transparent"
                   error={errors.lastName}
                   touched={touched.lastName}
+                  variant="primary"
                 >
                   <Input
                     name="lastName"
@@ -330,6 +332,7 @@ const ApplicationCardForm: FC = () => {
                   className="bg-transparent"
                   error={errors.location}
                   touched={touched.location}
+                  variant="primary"
                 >
                   <Input
                     name="location"
@@ -348,6 +351,7 @@ const ApplicationCardForm: FC = () => {
                   touched={touched.languages}
                   showIcon={true}
                   tooltipContent="Feel free to enter up to 4 languages in which you are fluent, both in speaking and writing."
+                  variant="primary"
                 >
                   <LanguageTagInput
                     value={values.languages || []}
@@ -365,6 +369,7 @@ const ApplicationCardForm: FC = () => {
                   label="Birthday"
                   error={errors.birthday}
                   touched={touched.birthday}
+                  variant="primary"
                 >
                   <BirthdayInput
                     name="birthday"
@@ -379,6 +384,7 @@ const ApplicationCardForm: FC = () => {
                   label="Country of Residence"
                   error={errors.country}
                   touched={touched.country}
+                  variant="primary"
                 >
                   <CountrySelect
                     value={values.country || ""}
@@ -395,6 +401,7 @@ const ApplicationCardForm: FC = () => {
                   label="Mobile Number"
                   error={errors.mobileNumber}
                   touched={touched.mobileNumber}
+                  variant="primary"
                 >
                   <PhoneInput
                     name="mobileNumber"
@@ -412,6 +419,7 @@ const ApplicationCardForm: FC = () => {
                   className="bg-transparent"
                   error={errors.emailAddress}
                   touched={touched.emailAddress}
+                  variant="primary"
                 >
                   <Input
                     name="emailAddress"
@@ -430,6 +438,7 @@ const ApplicationCardForm: FC = () => {
                   label="Education"
                   error={errors.education}
                   touched={touched.education}
+                  variant="primary"
                 >
                   <Select
                     name="education"
@@ -463,6 +472,7 @@ const ApplicationCardForm: FC = () => {
                   touched={touched.employmentType}
                   showIcon={true}
                   tooltipContent="You may select one up to three employment types that you are looking for"
+                  variant="primary"
                 >
                   <MultiSelect
                     value={values.employmentType}
@@ -479,6 +489,7 @@ const ApplicationCardForm: FC = () => {
                   label="Salary Expectation"
                   error={errors.salaryRange}
                   touched={touched.salaryRange}
+                  variant="primary"
                 >
                   <Select
                     name="salaryRange"
@@ -512,6 +523,7 @@ const ApplicationCardForm: FC = () => {
                   label="Years of Experience"
                   error={errors.yearsOfExperience}
                   touched={touched.yearsOfExperience}
+                  variant="primary"
                 >
                   <Select
                     name="yearsOfExperience"
@@ -552,6 +564,7 @@ const ApplicationCardForm: FC = () => {
                   touched={touched.coreSkills}
                   showIcon={true}
                   tooltipContent="Job-specific, measurable abilities like software proficiency, coding, or design tools."
+                  variant="primary"
                 >
                   <CoreSkillsTagInput
                     value={values.coreSkills || []}
@@ -573,6 +586,7 @@ const ApplicationCardForm: FC = () => {
                   touched={touched.interpersonalSkills}
                   showIcon={true}
                   tooltipContent="Personal qualities like communication, teamwork, and problem-solving."
+                  variant="primary"
                 >
                   <InterpersonalSkillsTagInput
                     value={values.interpersonalSkills || []}
@@ -597,6 +611,7 @@ const ApplicationCardForm: FC = () => {
                   touched={touched.certifications}
                   showIcon={true}
                   tooltipContent="Job-specific, measurable abilities like software proficiency, coding, or design tools."
+                  variant="primary"
                   className="mb-14"
                 >
                   <CertificationTagInput

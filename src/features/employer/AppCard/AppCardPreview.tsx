@@ -116,7 +116,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
 
   return (
     <div className="flex flex-col items-center md:items-start md:w-[436px] pb-6">
-      <div className="flex justify-center md:justify-start items-center flex-wrap text-white text-base mb-6 md:mb-2 px-6 md:px-0">
+      <div className="flex justify-start md:justify-start items-center flex-wrap text-white text-base mb-6 md:mb-2 px-6 md:px-0">
         <span>This is how your</span>
         <div className="flex items-center gap-1 mx-1">
           <img src={sparkle_icon} alt="sparkle" className="inline-block" />
@@ -287,7 +287,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
       </div>
 
       {/* Mobile View */}
-      <Card className="bg-[#F5F5F7] w-[308px] h-[395px] p-4 md:hidden flex flex-col">
+      <Card className="bg-[#F5F5F7] w-[308px] h-[395px] p-2 md:hidden flex flex-col">
         <CardHeader className="flex-1 overflow-y-auto p-0">
           <div className="w-full relative">
             <div className="flex flex-col items-end justify-end">
@@ -316,12 +316,12 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
                 {hasCountry ? getLabel("country", values.country) : "(Country)"}
               </p>
 
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-1 ">
                 <div className="h-[60px]">
                   <p className="text-[13px] font-light text-[#263238]">
                     Core Skills:
                   </p>
-                  <div className="flex flex-wrap gap-1 mt-1">
+                  <div className="flex flex-wrap gap-1 mx-1">
                     {[0, 1, 2, 3, 4].map((i) => {
                       const skill = hasSkills ? formattedSkills[i] : null;
                       return (
@@ -338,7 +338,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
                   </div>
                 </div>
             
-                <div className="flex gap-2 mt-3">
+                <div className="flex gap-1 mt-8">
                   <span className="text-[13px] font-light">Experience:</span>
                   <span className="text-[#F5722E] rounded-[4px] text-[12px] px-1 h-[18px] flex justify-center items-center outline outline-1 outline-[#F5722E]">
                     {hasExperience
@@ -347,7 +347,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
                   </span>
                 </div>
 
-                <div className="flex gap-2 flex-wrap">
+                <div className="flex gap-1 flex-wrap">
                   <span className="text-[13px] font-light">Looking for:</span>
                   {hasEmploymentType ? (
                     values.employmentType?.map((type, index) => (
@@ -365,7 +365,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
                   )}
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex gap-1">
                   <span className="text-[13px] font-light">
                     Salary Expectation:
                   </span>
@@ -376,7 +376,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
                   </span>
                 </div>
 
-                <div className="flex gap-2 flex-wrap">
+                <div className="flex gap-1 flex-wrap">
                   <span className="text-[13px] font-light">Language:</span>
                   {hasLanguages ? (
                     values.languages?.map((lang, index) => (
