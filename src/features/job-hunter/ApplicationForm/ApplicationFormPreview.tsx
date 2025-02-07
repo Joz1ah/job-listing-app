@@ -53,7 +53,7 @@ const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
         >
           <X size={20} />
         </button>
-        <div className="p-4 md:p-8 space-y-3">
+        <div className="p-4 md:p-8 md:pb-4 space-y-[19px]">
           {/* Personal Information */}
           <div>
             <h2 className="text-3xl md:text-3xl font-semibold text-[#263238]">
@@ -89,7 +89,7 @@ const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
                 <span
                   key={skill}
                   className={`${
-                    index % 2 === 0 ? "bg-[#168AAD]" : "bg-[#184E77]"
+                    index % 2 === 0 ? "bg-[#184E77]" : "bg-[#168AAD]"
                   } text-white text-xs md:text-[17px] font-semibold px-2 md:px-3 py-1 rounded`}
                 >
                   {toTitleCase(skill)}
@@ -106,14 +106,16 @@ const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
             </span>
           </div>
 
-          {/* Looking For Row */}
+          {/* Employment Preference */}
           <div className="flex flex-wrap items-center gap-2 text-sm md:text-[17px]">
-            <span className="text-[#263238]">Looking for:</span>
+            <span className="text-[#263238]">Employment Preference:</span>
             <div className="flex flex-wrap gap-2">
               {getLabels(formData.employmentType, "employmentType").map((emp) => (
                 <span
                   key={emp}
-                  className="bg-[#F5722E] text-white rounded px-2 md:px-3 py-0.5"
+                  className={`${
+                    emp === "Part Time" ? "bg-[#BF532C]" : "bg-[#F5722E]"
+                  } text-white rounded px-2 md:px-3 py-0.5`}
                 >
                   {emp}
                 </span>
@@ -123,10 +125,25 @@ const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
 
           {/* Expected Salary Row */}
           <div className="flex items-center gap-2 text-sm md:text-[17px]">
-            <span className="text-[#263238]">Expected Salary:</span>
-            <span className="bg-[#F5722E] text-white rounded px-2 md:px-3 py-0.5">
+            <span className="text-[#263238]">Salary Expectation:</span>
+            <span className="bg-[#8C4227] text-white rounded px-2 md:px-3 py-0.5">
               {getLabel(formData.salaryRange, "salaryRange")}
             </span>
+          </div>
+
+          {/* Language Row */}
+          <div className="flex flex-wrap items-center gap-2 text-sm md:text-[17px]">
+            <span className="text-[#263238]">Language:</span>
+            <div className="flex flex-wrap gap-2">
+              {getLabels(formData.languages, "languages").map((lang) => (
+                <span
+                  key={lang}
+                  className="text-[#F5722E] border border-[#F5722E] rounded px-2 md:px-3 py-0.5"
+                >
+                  {lang}
+                </span>
+              ))}
+            </div>
           </div>
 
           {/* Education Row */}
@@ -137,39 +154,22 @@ const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
             </span>
           </div>
 
-          {/* Language Row */}
-          <div className="flex flex-wrap items-center gap-2 text-sm md:text-[17px]">
-            <span className="text-[#263238]">Languages:</span>
-            <div className="flex flex-wrap gap-2">
-              {getLabels(formData.languages, "languages").map((lang) => (
-                <span
-                  key={lang}
-                  className="bg-[#F5722E] text-white rounded px-2 md:px-3 py-0.5"
-                >
-                  {lang}
-                </span>
-              ))}
-            </div>
-          </div>
-
           {/* Certifications */}
-          <div className="space-y-2">
-            <span className="text-sm md:text-[17px] text-[#263238]">Certifications:</span>
+          <div className="flex flex-wrap items-center gap-2 text-sm md:text-[17px]">
+            <span className="text-sm md:text-[17px] text-[#263238]">Certificate:</span>
             {formData.certifications.length > 0 ? (
               <div className="flex flex-wrap gap-2">
-                {formData.certifications.map((cert, index) => (
+                {formData.certifications.map((cert) => (
                   <span
                     key={cert}
-                    className={`${
-                      index % 2 === 0 ? "bg-[#168AAD]" : "bg-[#184E77]"
-                    } text-white text-xs md:text-[17px] font-semibold px-2 md:px-3 py-0.5 max-w-[150px] md:max-w-none inline-block md:inline truncate md:truncate-none`}
+                    className="bg-[#F5722E] text-white text-xs md:text-[17px] rounded px-2 md:px-3 py-1 max-w-[150px] md:max-w-none inline-block md:inline truncate md:truncate-none"
                   >
                     {toTitleCase(cert)}
                   </span>
                 ))}
               </div>
             ) : (
-              <span className="bg-[#168AAD] text-white text-xs md:text-[17px] font-semibold px-2 md:px-3 py-1 rounded">
+              <span className="bg-[#F5722E] text-white text-xs md:text-[17px] font-semibold px-2 md:px-3 py-1 rounded">
                 None
               </span>
             )}
@@ -183,7 +183,7 @@ const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
                 <span
                   key={skill}
                   className={`${
-                    index % 2 === 0 ? "bg-[#168AAD]" : "bg-[#184E77]"
+                    index % 2 === 0 ? "bg-[#184E77]" : "bg-[#168AAD]"
                   } text-white text-xs md:text-[17px] font-semibold px-2 md:px-3 py-1 rounded`}
                 >
                   {toTitleCase(skill)}
@@ -195,7 +195,7 @@ const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
           <CardFooter className="flex justify-start px-0 pb-0 pt-8 bg-transparent">
             <Button
               onClick={onConfirm}
-              className="bg-[#F5722E] text-white hover:bg-orange-600 py-2"
+              className="bg-[#F5722E] text-white text-xs hover:bg-[#F5722E]/90 py-2 h-[27px]"
             >
               Go To Job Feed
             </Button>

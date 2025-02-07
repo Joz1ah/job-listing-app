@@ -412,6 +412,8 @@ const CompleteEmployerProfile: FC = () => {
                 />
               </InputField>
 
+              <div className="hidden md:block"></div> {/* Empty placeholder for grid alignment */}
+              
               <InputField
                 label="Country"
                 error={errors.country}

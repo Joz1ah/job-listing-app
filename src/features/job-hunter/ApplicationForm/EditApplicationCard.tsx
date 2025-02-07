@@ -378,7 +378,7 @@ const EditApplicationCard: FC = () => {
 
               <div>
                 <InputField
-                  label="Languages"
+                  label="Language"
                   error={errors.languages}
                   touched={touched.languages}
                   showIcon={true}
@@ -389,7 +389,7 @@ const EditApplicationCard: FC = () => {
                     onChange={(value) => setFieldValue("languages", value)}
                     className="min-h-[56px] pt-1 px-1"
                     tagClassName="bg-[#F5722E]"
-                    placeholder="Type and enter to add language"
+                    placeholder="Select Language"
                   />
                 </InputField>
               </div>
@@ -511,7 +511,7 @@ const EditApplicationCard: FC = () => {
 
               <div>
                 <InputField
-                  label="Salary Range"
+                  label="Salary Expectation"
                   error={errors.salaryRange}
                   touched={touched.salaryRange}
                 >
@@ -593,8 +593,8 @@ const EditApplicationCard: FC = () => {
                     onChange={(value) => setFieldValue("coreSkills", value)}
                     className="h-[99px] pt-1 px-1"
                     alternateColors={{
-                      firstColor: "#168AAD",
-                      secondColor: "#184E77",
+                      firstColor: "#184E77",
+                      secondColor: "#168AAD",
                     }}
                     placeholder="Type and enter to add core skill"
                   />
@@ -616,8 +616,8 @@ const EditApplicationCard: FC = () => {
                     }
                     className="h-[99px] pt-1 px-1"
                     alternateColors={{
-                      firstColor: "#168AAD",
-                      secondColor: "#184E77",
+                      firstColor: "#184E77",
+                      secondColor: "#168AAD",
                     }}
                     placeholder="Type and enter to add interpersonal skill"
                   />
@@ -640,6 +640,10 @@ const EditApplicationCard: FC = () => {
                     className="h-[56px] pt-1 px-1"
                     tagClassName="bg-[#168AAD]"
                     placeholder="Type and enter to add certificate"
+                    alternateColors={{
+                      firstColor: "#184E77",
+                      secondColor: "#168AAD",
+                    }}
                   />
                 </InputField>
               </div>

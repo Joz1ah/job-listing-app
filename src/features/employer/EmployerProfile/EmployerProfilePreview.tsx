@@ -127,7 +127,7 @@ const EmployerProfilePreview: React.FC<EmployerProfilePreviewProps> = ({
               onClick={onConfirm}
               className="bg-[#F5722E] text-white hover:bg-orange-600 py-2"
             >
-              {completeProfile? "Create Job" : "Go to Feed"}
+              {completeProfile? "Save and Create Job" : "Go to Feed"}
             </Button>
           </CardFooter>
         </div>

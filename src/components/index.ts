@@ -169,3 +169,4 @@ export { TimezoneSelector } from "components/ui/custom/timezone-selector";
 export { ExpiredSubModalEmployer } from "components/expired-subscription/ExpiredSubModalEmployer";
 export { ExpiredSubModalJobHunter } from "components/expired-subscription/ExpiredSubModalJobHunter";
 export { CountrySelect };
+export  { IndustryDropdown } from 'components/ui/custom/industry-dropdown'
