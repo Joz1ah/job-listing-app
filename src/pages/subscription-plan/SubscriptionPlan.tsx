@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import sparkle_icon from "assets/images/sparkle-icon.png";
 import { DefaultLayout } from "layouts";
 import { useAuth } from "contexts/AuthContext/AuthContext";
+import styles from './subscriptionPlan.module.scss';
 
 interface PlanFeature {
   icon: React.ReactNode;
@@ -55,7 +56,8 @@ const PlanCard: FC<PlanProps> = ({
 
   return (
     <div
-      className={`w-full ${bestValue ? "bg-[#2D3A41]" : "bg-[#F5F5F7BF]"} rounded-lg px-6 py-4 transform transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_2px_rgba(245,114,46,0.6)] mb-8`}
+      className={`w-full ${bestValue ? "bg-[#F5F5F7BF]" : "bg-[#F5F5F7BF]"} shadow-[0_4px_8px_rgba(0,_0,_0,_0.2),_0_-4px_8px_rgba(0,_0,_0,_0.05)] rounded-lg px-6 py-4 transform transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_2px_rgba(245,114,46,0.6)] mb-8`}
+
     >
       {/* Single row with two columns */}
       <div className="flex justify-between h-full">
@@ -92,13 +94,13 @@ const PlanCard: FC<PlanProps> = ({
           )}
           {price !== "0" && (
             <h3
-              className={`${bestValue ? "text-[#F5F5F7]" : "text-[#263238]"} text-xl font-semibold mb-2`}
+              className={`text-[#263238] text-xl font-semibold mb-2`}
             >
               {title}
             </h3>
           )}
           <p
-            className={`${bestValue ? "text-[#F5F5F7]" : "text-[#263238]"} text-[15px] mb-2`}
+            className={`text-[#263238] text-[15px] mb-2`}
           >
             Maximize your reach, save more,
             <br />
@@ -119,7 +121,7 @@ const PlanCard: FC<PlanProps> = ({
               <div key={index} className="flex items-center gap-2">
                 <span className="text-[#F5722E]">{feature.icon}</span>
                 <span
-                  className={`${bestValue ? "text-[#F5F5F7]" : "text-[#263238]"} text-sm`}
+                  className={`text-[#263238] text-sm`}
                 >
                   {feature.text}
                 </span>
@@ -145,8 +147,8 @@ const SubscriptionPlan: FC = () => {
   ];
 
   return (
-    <DefaultLayout backgroundColor="#242625">
-      <div className="bg-[#242625] min-h-screen md:pt-20">
+    <DefaultLayout>
+      <div className={`${styles['subscription-plan-container']} pb-10 md:pt-10`}>
         <div className="max-w-2xl mx-auto px-4">
           <div className="space-y-6 pt-4">
             <PlanCard

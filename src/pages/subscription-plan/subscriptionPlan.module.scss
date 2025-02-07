@@ -1,0 +1,26 @@
+.subscription-plan-container{
+    display: flex;
+    background-image: url("assets/akaza-bg-multi-mobile.png");
+    background-repeat: repeat;
+    background-size: 100%;
+    @media (min-width: 640px){
+        background-image: url("assets/akaza-bg-multi.png");
+        background-size: 75%;
+    }
+    @media (min-width: 768px){
+        background-image: url("assets/akaza-bg-multi.png");
+        background-size: 65%;
+    }
+    @media (min-width: 1024px){
+        background-image: url("assets/akaza-bg-multi.png");
+        background-size: 55%;
+    }
+    @media (min-width: 1280px){
+        background-image: url("assets/akaza-bg-multi.png");
+        background-size: 50%;
+    }
+    @media (min-width: 1536px){
+        background-image: url("assets/akaza-bg-multi.png");
+        background-size: 45%;
+    }
+}
