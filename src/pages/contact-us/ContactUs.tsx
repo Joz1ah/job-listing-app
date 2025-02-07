@@ -11,7 +11,7 @@ import {useSendContactUsEmailMutation} from 'api/akaza/akazaAPI';
 import bgLogoInverted from 'assets/contact-us/bg-logo-inverted.svg?url';
 import contactUsPerson from 'assets/contact-us/contact-us-person.png';
 */
-import envelopecheck from 'assets/contact-us/envelope-check.svg?url';
+import envelopecheck from 'assets/contact-us/envelope-circle-check.svg?url';
 import phonecall from 'assets/contact-us/phonecall.svg?url';
 
 import paperPlane from 'assets/contact-us/paper-plane.svg?url';
@@ -354,15 +354,24 @@ const ContactUs: FC = () => {
                         </div>
                         }
                     </div>
-                    <div className={style['contact-us-details-body']}>
-                        <div className={style['contact-us-details-item']}>
-                            <div><img src={envelopecheck}/></div>
-                            <div>support@akaza.io</div>
+                    <div className={`${style['contact-us-details-body']} flex flex-col gap-4 sm:flex-row md:flex-col lg:flex-row w-full`}>
+                    <div className={`${style['column-a']} flex-1 flex flex-col gap-4`}>
+                        <div className={`${style['contact-us-details-item']} flex w-full`}>
+                            <div className=''><img src={envelopecheck}/></div>
+                            <div className='flex-1'>support@akaza.io</div>
                         </div>
-                        <div className={style['contact-us-details-item']}>
-                            <div><img src={phonecall}/></div>
-                            <div>+1 (365) 340-3326</div>
+                        <div className={`${style['contact-us-details-item']} flex w-full`}>
+                            <div className=''><img src={phonecall}/></div>
+                            <div className='flex-1'>+1 (365) 340-3326</div>
                         </div>
+                        </div>
+                        <div className={`${style['column-b']} flex-1`}>
+                            <div className={`${style['contact-us-details-item']} flex w-full`}>
+                                <div className=''><img src={envelopecheck}/></div>
+                                <div className='flex-1'>PO Box 12302 Woodbridge RPO Rutherford, ON, L4H 2T3</div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
