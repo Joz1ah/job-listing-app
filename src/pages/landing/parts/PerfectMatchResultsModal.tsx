@@ -41,8 +41,8 @@ const PerfectMatchResultsModal = () => {
       className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
       hidden={modalState !== MODAL_STATES.PERFECT_MATCH_RESULTS}
     >
-      <div className="relative bg-[#F5F5F7] rounded-lg w-[800px] h-[550px] max-w-[90vw] px-4 py-8">
-        <div className="flex flex-col items-center gap-12 pt-4">
+      <div className="relative bg-[#F5F5F7] rounded-lg w-[800px] h-auto md:h-[550px] max-w-[90vw] px-4 py-8">
+        <div className="flex flex-col items-center gap-12">
         {hasMatches ? (
           <h2 className="text-[#F5722E] text-2xl font-medium flex flex-row">
             Here's Your

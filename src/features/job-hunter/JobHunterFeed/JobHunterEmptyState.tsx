@@ -30,7 +30,7 @@ const PerfectMatchEmptyState: React.FC<EmptyStateProps> = ({ /* onExploreClick  
 
       <div className="space-y-4">
         <NavLink to="/dashboard/edit-application">
-          <Button className="bg-[#F5722E] hover:bg-[#F5722E]/90 rounded-sm items-center p-0 w-[200px]">
+          <Button className="bg-[#F5722E] hover:bg-[#F5722E]/90 text-lg font-semibold rounded-sm items-center p-0 w-[250px] h-[50px]">
             Update Application Card
           </Button>
         </NavLink>
@@ -64,7 +64,7 @@ const OtherOpportunitiesEmptyState: React.FC = () => (
 
       <div className="space-y-4">
         <NavLink to="/dashboard/edit-application">
-          <Button className="bg-[#F5722E] hover:bg-[#F5722E]/90 rounded-sm items-center p-0 w-[200px]">
+          <Button className="bg-[#F5722E] hover:bg-[#F5722E]/90 text-lg font-semibold rounded-sm items-center p-0 w-[250px] h-[50px]">
             Update Application Card
           </Button>
         </NavLink>

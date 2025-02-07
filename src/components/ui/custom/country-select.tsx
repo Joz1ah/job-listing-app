@@ -17,6 +17,7 @@ interface CountrySelectProps {
   error?: string;
   className?: string;
   popoverClassName?: string;
+  placeholder?: string;
 }
 
 const countries = [
@@ -258,6 +259,9 @@ const CountrySelect = ({
             popoverClassName
           )}
           align="start"
+          side="bottom"
+          avoidCollisions={false}
+          collisionPadding={0}
         >
           <Command>
             <CommandInput placeholder="Search country..." className="h-9" />
