@@ -14,7 +14,6 @@ import subscription_shield_person_icon from "assets/subscription-plan-icons/shie
 import subscription_linegraph_icon from "assets/subscription-plan-icons/linegraph.svg?url";
 import subscription_lock_icon from "assets/subscription-plan-icons/lock.svg?url";
 import subscription_chat_icon from "assets/subscription-plan-icons/chat.svg?url";
-import subscription_gift_icon from "assets/subscription-plan-icons/gift.svg?url";
 import subscription_bolt_icon from "assets/subscription-plan-icons/bolt.svg?url";
 import { MODAL_HEADER_TYPE, MODAL_STATES } from "store/modal/modal.types";
 import { PLAN_SELECTION_ITEMS } from "store/user/user.types";
@@ -107,7 +106,7 @@ const SubscriptionPlanSelection = () => {
     {
       icon: subscription_thumbsup_icon,
       iconAlt: "Thumbs Up",
-      text: "Ratings & Feedback",
+      text: "Insights and Feedback",
     },
     {
       icon: subscription_shield_person_icon,
@@ -211,13 +210,6 @@ const SubscriptionPlanSelection = () => {
                 key={index}
               />
             ))}
-            {currentSelectedPlan === PLAN_SELECTION_ITEMS.ANNUAL && (
-              <PlanBenefit
-                icon={subscription_gift_icon}
-                iconAlt="Gift"
-                text="PLUS ONE MONTH FREE"
-              />
-            )}
             {currentSelectedPlan === PLAN_SELECTION_ITEMS.FREE && (
               <PlanBenefit
                 icon={subscription_bolt_icon}

@@ -70,45 +70,51 @@ const HeroJobTitleEmployer = () => {
       <div
         className={`${styles["hero-container-overlay"]} ${styles["gradient-left-dark"]}`}
       >
-        <div className={`${styles["hero-container-content-wrapper"]}`}>
-          <div
-            className={`${styles["title"]} ${styles["orange"]} ${styles["text-left"]}`}
-          >
-            <div>Ready to create your first</div>
-            <div>job listing? Let's begin!</div>
-          </div>
-          <div className={`${styles["search-wrapper"]}`}>
-            <input
-              className={`${styles["search-input"]}`}
-              placeholder="Please type a Job Title"
-              type="text"
-              value={jobTitle}
-              onChange={handleInputChange}
-            />
-          </div>
-          {error && (
-            <div
-              className={`${styles["validation-message"]} ${styles["variant-1"]}`}
-            >
-              {error}
+        <div
+          className={`mt-12 flex flex-col gap-8 ${styles["hero-container-content-wrapper"]}`}
+        >
+          <div>
+            <div className="font-[600] text-[36px] text-[#F5722E]">
+              Ready to create your first
             </div>
-          )}
-          <div className={`${styles["hero-button-container2"]}`}>
-            <div
-              ref={heroNextButton}
-              className={`${styles["button-custom-orange"]} ${styles["noselect"]}`}
-            >
-              Next
+            <div className="font-[600] text-[36px] text-[#F5722E]">
+              job listing? Let's begin!
             </div>
-            <div
-              ref={heroPreviousButton}
-              className={`${styles["button-custom-transparent"]} ${styles["noselect"]}`}
-            >
-              <img
-                className={`${styles["caret-left"]}`}
-                src={arrow_left_icon}
-              ></img>
-              <div>Previous</div>
+          </div>
+          <div>
+            <div className={`${styles["search-wrapper"]}`}>
+              <input
+                className={`${styles["search-input"]}`}
+                placeholder="Please type a Job Title"
+                type="text"
+                value={jobTitle}
+                onChange={handleInputChange}
+              />
+            </div>
+            {error && (
+              <div
+                className={`${styles["validation-message"]} ${styles["variant-1"]}`}
+              >
+                {error}
+              </div>
+            )}
+            <div className={`${styles["hero-button-container2"]}`}>
+              <div
+                ref={heroNextButton}
+                className={`${styles["button-custom-orange"]} ${styles["noselect"]}`}
+              >
+                Next
+              </div>
+              <div
+                ref={heroPreviousButton}
+                className={`${styles["button-custom-transparent"]} ${styles["noselect"]}`}
+              >
+                <img
+                  className={`${styles["caret-left"]}`}
+                  src={arrow_left_icon}
+                ></img>
+                <div>Previous</div>
+              </div>
             </div>
           </div>
         </div>
