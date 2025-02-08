@@ -6,6 +6,7 @@ import { useModal } from "components/modal/useModal";
 import { useLanding } from "../useLanding";
 import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
 import { MODAL_HEADER_TYPE, MODAL_STATES } from "store/modal/modal.types";
+import { isValidPhoneNumber } from "react-phone-number-input";
 
 interface FormValues {
   phoneNumber: string;
@@ -24,16 +25,23 @@ const MobileCountrySignUp = () => {
 
   const validationSchema = Yup.object({
     phoneNumber: Yup.string()
-      .required("This field is required")
-      .test(
-        "phone",
-        "Phone number must be between 8 and 15 digits",
-        (value) => {
-          if (!value) return false;
-          const cleanPhone = value.replace(/\D/g, "");
-          return cleanPhone.length >= 8 && cleanPhone.length <= 15;
-        },
-      ),
+        .required("This field is required")
+        .test(
+          "phone",
+          "Phone number must be in international format and contain 11-12 digits",
+          function (value) {
+            if (!value) return false;
+    
+            // Check if it's a valid phone number first
+            if (!isValidPhoneNumber(value)) return false;
+    
+            // Remove all non-digit characters to check length
+            const digitsOnly = value.replace(/\D/g, "");
+    
+            // Check if the number of digits is between 11 and 12
+            return digitsOnly.length >= 11 && digitsOnly.length <= 12;
+          },
+        ),
     country: Yup.string().required("This field is required"),
   });
 

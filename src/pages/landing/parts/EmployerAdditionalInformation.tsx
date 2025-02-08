@@ -28,21 +28,21 @@ const employerInfoSchema = Yup.object().shape({
     .trim()
     .required("This field is required")
     .max(250, "Address must not exceed 250 characters"),
-  website: Yup.string()
+    website: Yup.string()
     .trim()
     .required("This field is required")
     .matches(
       /^(?:https?:\/\/)(.+)/i,
       {
         message: 'Website URL must start with "http://" or "https://" and include a domain',
-        excludeEmptyString: true  // Skip this validation if string is empty
+        excludeEmptyString: true
       }
     )
     .test({
       name: 'protocol-check',
       message: 'Website URL must be valid with content after protocol',
       test: (value) => {
-        if (!value) return true;  // Skip this validation if string is empty
+        if (!value?.trim()) return true;  // Skip validation for empty or whitespace-only strings
         const lowerValue = value.toLowerCase();
         return (lowerValue.startsWith('http://') && lowerValue.length > 7) || 
                (lowerValue.startsWith('https://') && lowerValue.length > 8);
@@ -251,7 +251,7 @@ const EmployerAdditionalInformation = () => {
                 className="w-full border-b-2 border-gray-300 focus:border-orange-500 outline-none py-2"
               />
               {errors.firstName && (
-                <div className="absolute text-red-500 text-xs mt-1">
+                <div className="absolute right-0 text-red-500 text-xs mt-1">
                   {errors.firstName}
                 </div>
               )}
@@ -266,7 +266,7 @@ const EmployerAdditionalInformation = () => {
                 className="w-full border-b-2 border-gray-300 focus:border-orange-500 outline-none py-2"
               />
               {errors.lastName && (
-                <div className="absolute text-red-500 text-xs mt-1">
+                <div className="absolute right-0 text-red-500 text-xs mt-1">
                   {errors.lastName}
                 </div>
               )}
@@ -282,7 +282,7 @@ const EmployerAdditionalInformation = () => {
               className="w-full border-b-2 border-gray-300 focus:border-orange-500 outline-none py-2"
             />
             {errors.position && (
-              <div className="absolute text-red-500 text-xs mt-1">
+              <div className="absolute right-0 text-red-500 text-xs mt-1">
                 {errors.position}
               </div>
             )}
@@ -297,7 +297,7 @@ const EmployerAdditionalInformation = () => {
               className="w-full border-b-2 border-gray-300 focus:border-orange-500 outline-none py-2"
             />
             {errors.businessName && (
-              <div className="absolute text-red-500 text-xs mt-1">
+              <div className="absolute right-0 text-red-500 text-xs mt-1">
                 {errors.businessName}
               </div>
             )}
@@ -312,7 +312,7 @@ const EmployerAdditionalInformation = () => {
               className="w-full border-b-2 border-gray-300 focus:border-orange-500 outline-none py-2"
             />
             {errors.address && (
-              <div className="absolute text-red-500 text-xs mt-1">
+              <div className="absolute right-0 text-red-500 text-xs mt-1">
                 {errors.address}
               </div>
             )}
@@ -327,7 +327,7 @@ const EmployerAdditionalInformation = () => {
               className="w-full border-b-2 border-gray-300 focus:border-orange-500 outline-none py-2"
             />
             {errors.website && (
-              <div className="absolute text-red-500 text-xs mt-1">
+              <div className="absolute right-0 text-red-500 text-xs mt-1">
                 {errors.website}
               </div>
             )}

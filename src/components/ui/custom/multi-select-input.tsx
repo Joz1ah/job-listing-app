@@ -35,7 +35,7 @@ interface EmploymentTypeSelectProps {
   options,
   error,
   className,
-  placeholder = "Select Highest Education Level"
+  placeholder = "Select Employment Type"
 }) => {
   const [open, setOpen] = useState(false);
 
