@@ -39,7 +39,7 @@ const UserNamePasswordSignup = () => {
       .required("Email is required"),
 
     password: Yup.string()
-      .min(6, "Password must be at least 6 characters long")
+      .min(8, "Password must be at least 8 characters long")
       .required("Password is required"),
 
     passwordConfirm: Yup.string()
