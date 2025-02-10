@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from "react";
-import { NavLink, Link, useLocation } from "react-router-dom";
+import { NavLink, Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "components/ui/shadcn/buttons";
 import { ChevronDown, Plus, ChevronUp } from "lucide-react";
 import { NotificationFeed } from "components";
@@ -43,6 +43,7 @@ const BaseMenu: FC<MenuProps> = ({
   ButtonLoginNav,
   ButtonSignUpNav,
 }) => {
+  const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 1024);
   const location = useLocation();
@@ -103,9 +104,22 @@ const BaseMenu: FC<MenuProps> = ({
     ? (isAuthenticated ? mobileMenuItems : defaultNavItems)
     : (isAuthenticated ? desktopMenuItems : defaultNavItems);
 
-  const handleNavLinkClick = () => {
+
+  const handleNavLinkClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, target: string) => {
     if (isMenuOpen) {
       onToggleMenu();
+    }else{
+      if (target.startsWith('http')) {  
+        return;
+      }
+      event.preventDefault();
+
+      window.scrollTo({
+          top: 0,
+          behavior: 'smooth',
+      });
+  
+      navigate(target);
     }
   };
 
@@ -183,17 +197,17 @@ const BaseMenu: FC<MenuProps> = ({
             <nav className="flex-shrink">
               <ul className="flex gap-4 lg:gap-8 text-white text-[14px] lg:text-[16px] font-light whitespace-nowrap items-center">
                 <li className="transition-colors duration-200 ease-in-out hover:text-[#F5722E]">
-                  <NavLink to='/about-us' onClick={handleNavLinkClick}>
+                  <NavLink to='/about-us' onClick={(e) => handleNavLinkClick(e, '/about-us')}>
                     About us
                   </NavLink>
                 </li>
                 <li className="transition-colors duration-200 ease-in-out hover:text-[#F5722E]">
-                  <NavLink to='/contact-us' onClick={handleNavLinkClick}>
+                  <NavLink to='/contact-us' onClick={(e) => handleNavLinkClick(e, '/contact-us')}>
                     Contact us
                   </NavLink>
                 </li>
                 <li className="transition-colors duration-200 ease-in-out hover:text-[#F5722E]">
-                  <NavLink to='/subscription-plan' onClick={handleNavLinkClick}>
+                  <NavLink to='/subscription-plan' onClick={(e) => handleNavLinkClick(e, '/subscription-plan')}>
                     Subscription plans
                   </NavLink>
                 </li>
@@ -202,7 +216,7 @@ const BaseMenu: FC<MenuProps> = ({
                   to='https://support.akaza.io/' 
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={handleNavLinkClick}
+                  onClick={(e) => handleNavLinkClick(e, 'https://support.akaza.io/')}
                 >
                   FAQ
                 </Link>
@@ -211,7 +225,7 @@ const BaseMenu: FC<MenuProps> = ({
                   <li>
                     <NavLink
                       to="/dashboard/job-listing"
-                      onClick={handleNavLinkClick}
+                  onClick={(e) => handleNavLinkClick(e, '/')}
                       className="flex-shrink-0"
                     >
                       <Button

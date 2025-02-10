@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink, useNavigate, Link } from 'react-router-dom';
 
 import authnet_logo from 'assets/authnet-logo-light.svg?url';
 import akazalogo from 'assets/akazalogo.png';
@@ -8,7 +8,21 @@ import facebook_icon from 'assets/facebook.svg?url';
 import tiktok_icon from 'assets/tiktok.svg?url';
 
 import styles from './footer.module.scss'
+
 const Footer: FC = () => {
+    const navigate = useNavigate();
+
+    const handleNavLinkClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, target: string) => {
+        event.preventDefault();
+
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+        });
+
+        navigate(target);
+    };
+
   const handleLogoClick = () => {
     window.location.href = '/';
   };
@@ -30,15 +44,15 @@ const Footer: FC = () => {
                 </div>
                 <nav>
                     <div>Company</div>
-                    <div><NavLink to="about-us">About us</NavLink></div>
-                    <div><NavLink to="contact-us">Contact us</NavLink></div>
-                    <div><NavLink to="subscription-plan">Subscription</NavLink></div>
-                    <div><NavLink to="faq">FAQ</NavLink></div>
+                    <div><NavLink to="/about-us" onClick={(e) => handleNavLinkClick(e, '/about-us')}>About us</NavLink></div>
+                    <div><NavLink to="/contact-us" onClick={(e) => handleNavLinkClick(e, '/contact-us')}>Contact us</NavLink></div>
+                    <div><NavLink to="/subscription-plan" onClick={(e) => handleNavLinkClick(e, '/subscription-plan')}>Subscription</NavLink></div>
+                    <div><NavLink to="https://support.akaza.io" target="_blank" rel="noopener noreferre">FAQ</NavLink></div>
                 </nav>
                 <nav>
                     <div>Support</div>
-                    <div><NavLink to="https://app.websitepolicies.com/policies/view/azn4i7fg" target="_blank" rel="noopener noreferre">Terms of service</NavLink></div>
-                    <div><NavLink to="https://app.websitepolicies.com/policies/view/2albjkzj" target="_blank" rel="noopener noreferre">Privacy policy</NavLink></div>
+                    <div><NavLink to="https://app.websitepolicies.com/policies/view/azn4i7fg" target="_blank" rel="noopener noreferrer">Terms of service</NavLink></div>
+                    <div><NavLink to="https://app.websitepolicies.com/policies/view/2albjkzj" target="_blank" rel="noopener noreferrer">Privacy policy</NavLink></div>
                 </nav>
                 <nav>
                     <div>Connect with us</div>
