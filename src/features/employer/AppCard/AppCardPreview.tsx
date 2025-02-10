@@ -202,7 +202,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
             )}
 
             <div className="flex flex-col gap-1">
-              <div className="flex gap-2">
+              <div className="flex gap-1">
                 <span className="text-[13px] font-light text-[#263238]">
                   Experience:
                 </span>
@@ -215,7 +215,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
                 </span>
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex gap-1">
                 <span className="text-sm font-light text-gray-800">
                   Looking for:
                 </span>
@@ -237,7 +237,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
                 )}
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex gap-1">
                 <span className="text-[13px] font-light text-[#263238]">
                   Salary Expectation:
                 </span>
@@ -252,7 +252,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
                 )}
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex gap-1">
                 <span className="text-[13px] font-light text-[#263238]">
                   Language:
                 </span>

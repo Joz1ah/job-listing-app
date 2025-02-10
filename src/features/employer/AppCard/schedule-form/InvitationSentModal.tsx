@@ -53,7 +53,7 @@ const InvitationSentModal: React.FC<InvitationSentModalProps> = ({
                   variant="link" 
                   className="text-orange-500 hover:text-orange-600"
                 >
-                  Go Back To Job Feed
+                  Back To Job Feed
                 </Button>
               </NavLink>
             </div>

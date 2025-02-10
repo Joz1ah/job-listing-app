@@ -34,7 +34,6 @@ import { cn } from "lib/utils";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-import { isValidPhoneNumber } from "react-phone-number-input";
 import { useJobHunterProfileMutation } from "api/akaza/akazaAPI";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
@@ -73,20 +72,34 @@ const validationSchema = Yup.object().shape({
     .required("This field is required")
     .test(
       "phone",
-      "Phone number must be in international format and contain 11-12 digits",
+      "Please enter a valid international phone number",
       function (value) {
         if (!value) return false;
 
-        // Check if it's a valid phone number first
-        if (!isValidPhoneNumber(value)) return false;
+        // Remove all non-digit characters except plus sign at start
+        const cleaned = value.replace(/(?!^\+)\D/g, "");
 
-        // Remove all non-digit characters to check length
-        const digitsOnly = value.replace(/\D/g, "");
+        // Check if it starts with a plus sign
+        const hasPlus = value.startsWith("+");
 
-        // Check if the number of digits is between 11 and 12
-        return digitsOnly.length >= 11 && digitsOnly.length <= 12;
-      },
-    ),
+        // Get only digits
+        const digitsOnly = cleaned.replace(/\+/g, "");
+
+        if (!hasPlus) return false;
+        if (digitsOnly.length < 10 || digitsOnly.length > 15) return false;
+
+        // Basic country code validation (1-4 digits after +)
+        const countryCode = digitsOnly.slice(0, 4);
+        if (!/^\d{1,4}$/.test(countryCode)) return false;
+
+        return true;
+      }
+    )
+    .transform((value) => {
+      if (!value) return value;
+      // Standardize format: remove all spaces and non-digit chars except leading +
+      return value.replace(/\s+/g, "").replace(/(?!^\+)\D/g, "");
+    }),
   country: Yup.string().required("This field is required"),
   employmentType: Yup.array().min(
     1,
@@ -389,8 +402,8 @@ const ApplicationCardForm: FC = () => {
                   <CountrySelect
                     value={values.country || ""}
                     onChange={(value) => setFieldValue("country", value)}
-                    className="bg-transparent border-[#AEADAD] h-[56px] hover:text-white border-2 focus:border-[#F5722E] w-full md:w-[335px] rounded-[8px] text-white placeholder:text-[#AEADAD] px-3 py-2"
-                    popoverClassName="w-[335px]"
+                    className="w-full bg-transparent border-[#AEADAD] h-[56px] hover:text-white border-2 focus:border-[#F5722E] rounded-[8px] text-white placeholder:text-[#AEADAD] px-3 py-2"
+                    popoverClassName="md:w-[335px]"
                   />
                 </InputField>
               </div>

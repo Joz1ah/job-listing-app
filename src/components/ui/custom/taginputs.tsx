@@ -254,7 +254,7 @@ const TagInputs: React.FC<TagInputProps> = ({
               </div>
             );
           })}
-          <div className="flex-1 min-w-[120px] flex items-center">
+          <div className="flex-1 min-w-[40px] flex items-center">
             <Input
               ref={inputRef}
               type="text"
