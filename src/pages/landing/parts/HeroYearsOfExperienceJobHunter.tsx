@@ -71,51 +71,55 @@ const HeroYearsOfExperienceJobHunter = () => {
       <div
         className={`${styles["hero-container-overlay"]} ${styles["gradient-left-dark"]}`}
       >
-        <div className={`${styles["hero-container-content-wrapper"]}`}>
-          <div
-            className={`${styles["title"]} ${styles["orange"]} ${styles["text-left"]}`}
-          >
-            <div>How many years of experience</div>
-            <div>do you have?</div>
-          </div>
-          <div className={`${styles["button-selection-wrapper"]}`}>
-            {experienceOptions.map((experience) => (
-              <button
-                key={experience}
-                className={`${styles["button-custom-orange-flex"]} ${
-                  selectedExperience === experience ? styles["selected"] : ""
-                }`}
-                onClick={() => handleExperienceSelect(experience)}
-                type="button"
-              >
-                {experience}
-              </button>
-            ))}
-          </div>
-          {error && (
-            <div
-              className={`${styles["validation-message"]} ${styles["variant-3"]}`}
-            >
-              {error}
+        <div
+          className={`mt-12 flex flex-col gap-8 ${styles["hero-container-content-wrapper"]}`}
+        >
+          <div>
+            <div className="text-[#F5722E] font-[600] text-[26px] text-left">
+              How many years of experience
             </div>
-          )}
-          <div className={`${styles["hero-button-container2"]}`}>
-            <button
-              onClick={handleClickNext}
-              className={`${styles["button-custom-orange"]} ${styles["noselect"]} z-50`}
-            >
-              Next
-            </button>
-            <button
-              onClick={handleClickPrevious}
-              className={`${styles["button-custom-transparent"]} ${styles["noselect"]} z-50`}
-            >
-              <img
-                className={`${styles["caret-left"]}`}
-                src={arrow_left_icon}
-              ></img>
-              <div>Previous</div>
-            </button>
+            <div className="text-[#F5722E] font-[600] text-[26px] text-left">
+              do you have?
+            </div>
+          </div>
+          <div>
+            <div className="grid grid-cols-2 gap-2 max-w-[345px]" id="btns">
+              {experienceOptions.map((experience: string) => (
+                <button
+                  key={experience}
+                  className={`w-full px-4 py-2 rounded-[4px] ${selectedExperience === experience ? "bg-[#F5722E] text-white" : "bg-white text-[#F5722E]"}`}
+                  onClick={() => handleExperienceSelect(experience)}
+                  type="button"
+                >
+                  {experience}
+                </button>
+              ))}
+            </div>
+            {error && (
+              <div
+                className={`${styles["validation-message"]} ${styles["variant-3"]}`}
+              >
+                {error}
+              </div>
+            )}
+            <div className="flex flex-col justify-center items-center gap-[3px] mt-[20px] w-full max-w-[345px]">
+              <button
+                onClick={handleClickNext}
+                className={`h-[35px] rounded-[4px] bg-[#F5722E] text-[#F5F5F7] text-[16px] font-[500] ${styles["noselect"]} z-50 w-full`}
+              >
+                Next
+              </button>
+              <button
+                onClick={handleClickPrevious}
+                className={`${styles["button-custom-transparent"]} ${styles["noselect"]} z-50`}
+              >
+                <img
+                  className={`${styles["caret-left"]}`}
+                  src={arrow_left_icon}
+                ></img>
+                <div>Previous</div>
+              </button>
+            </div>
           </div>
         </div>
       </div>

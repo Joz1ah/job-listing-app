@@ -51,9 +51,13 @@ const HeroLoading = () => {
           <div
             className={`${styles["title"]} ${styles["orange"]} ${styles["text-left"]}`}
           >
-            <div>You're a few seconds away from</div>
+            <div className="font-[600] text-[36px] text-[#F5722E]">
+              You're a few seconds away from
+            </div>
             <div className={`${styles["sparkle-desc"]}`}>
-              <div>seeing your perfect match</div>
+              <div className="font-[600] text-[36px] text-[#F5722E]">
+                seeing your perfect match
+              </div>
               <div className={`${styles["perfect-match-wrapper"]}`}>
                 <img src={sparkle_icon} alt="sparkle"></img>
               </div>

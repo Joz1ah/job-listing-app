@@ -149,11 +149,19 @@ const MobileCountrySignUp = () => {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex justify-center mt-6">
+            <div className="flex justify-center gap-2 mt-6 w-full">
+              <button
+                onClick={() => handleSetModalState(MODAL_STATES.SIGNUP_STEP3)}
+                className="text-[#F5722E] rounded-[5px] border-[2px] bg-white border-[#F5722E] px-4 py-2"
+              >
+                Previous
+              </button>
               <button
                 type="submit"
-                className="flex justify-between items-center px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600"
-                disabled={isSubmitting}
+                className={`flex justify-between items-center px-4 py-1 ${values.country && values.phoneNumber ? "bg-[#F5722E] text-white" : "bg-[#AEADAD] text-[#F5F5F7]"} rounded-md`}
+                disabled={
+                  isSubmitting || !values.country || !values.phoneNumber
+                }
               >
                 {isSubmitting ? (
                   <>

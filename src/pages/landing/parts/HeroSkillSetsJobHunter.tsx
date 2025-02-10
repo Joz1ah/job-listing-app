@@ -81,48 +81,50 @@ const HeroSkillSetsJobHunter = () => {
       <div
         className={`${styles["hero-container-overlay"]} ${styles["gradient-left-dark"]}`}
       >
-        <div className={`${styles["hero-container-content-wrapper"]}`}>
-          <div
-            className={`${styles["title"]} ${styles["orange"]} ${styles["text-left"]}`}
-          >
-            <div>Select up to 5 skill sets</div>
+        <div
+          className={`mt-12 flex flex-col gap-8 ${styles["hero-container-content-wrapper"]}`}
+        >
+          <div className="text-[#F5722E] font-[600] text-[26px] text-left">
+            Select up to 5 skill sets
           </div>
-          <div className={`${styles["search-wrapper"]}`}>
-            <CoreSkillsTagInput
-              value={selectedSkills ?? []}
-              onChange={handleSkillsChange}
-              placeholder="Type and select your skill set"
-              className={`bg-transparent border-none text-white min-h-[36px] ${error ? styles["input-error"] : ""}`}
-              alternateColors={{
-                firstColor: "#168AAD",
-                secondColor: "#184E77",
-              }}
-            />
-            {/* <img src={icon_search}></img> */}
-          </div>
-          {error && (
-            <div
-              className={`${styles["validation-message"]} ${styles["variant-2"]}`}
-            >
-              {error}
+          <div>
+            <div className={`${styles["search-wrapper"]}`}>
+              <CoreSkillsTagInput
+                value={selectedSkills ?? []}
+                onChange={handleSkillsChange}
+                placeholder="Type and select your skill set"
+                className={`bg-transparent border-none text-white min-h-[36px] ${error ? styles["input-error"] : ""}`}
+                alternateColors={{
+                  firstColor: "#168AAD",
+                  secondColor: "#184E77",
+                }}
+              />
+              {/* <img src={icon_search}></img> */}
             </div>
-          )}
-          <div className={`${styles["hero-button-container2"]}`}>
-            <div
-              ref={heroNextButton}
-              className={`${styles["button-custom-orange"]} ${styles["noselect"]}`}
-            >
-              Next
-            </div>
-            <div
-              ref={heroPreviousButton}
-              className={`${styles["button-custom-transparent"]} ${styles["noselect"]}`}
-            >
-              <img
-                className={`${styles["caret-left"]}`}
-                src={arrow_left_icon}
-              ></img>
-              <div>Previous</div>
+            {error && (
+              <div
+                className={`${styles["validation-message"]} ${styles["variant-2"]}`}
+              >
+                {error}
+              </div>
+            )}
+            <div className={`${styles["hero-button-container2"]}`}>
+              <div
+                ref={heroNextButton}
+                className={`${styles["button-custom-orange"]} ${styles["noselect"]}`}
+              >
+                Next
+              </div>
+              <div
+                ref={heroPreviousButton}
+                className={`${styles["button-custom-transparent"]} ${styles["noselect"]}`}
+              >
+                <img
+                  className={`${styles["caret-left"]}`}
+                  src={arrow_left_icon}
+                ></img>
+                <div>Previous</div>
+              </div>
             </div>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useState } from "react";
 import styles from "./../landing.module.scss";
 import * as Yup from "yup";
 import { useLanding } from "../useLanding";
@@ -9,8 +9,6 @@ import { HERO_STATES } from "store/hero/hero.types";
 
 const HeroYearsOfExperienceEmployer = () => {
   const { heroState, handleSetHeroState } = useLanding();
-  const heroNextButton = useRef<HTMLDivElement>(null);
-  const heroPreviousButton = useRef<HTMLDivElement>(null);
   const [selectedExperience, setSelectedExperience] = useState("");
   const [error, setError] = useState("");
 
@@ -47,25 +45,18 @@ const HeroYearsOfExperienceEmployer = () => {
     "10+ years",
   ];
 
-  const heroScreenActions = () => {
-    if (heroNextButton.current) {
-      heroNextButton.current.onclick = async () => {
-        const isValid = await validateExperience();
-        if (isValid) {
-          setError("");
-          handleSetHeroState(HERO_STATES.LOADING);
-        }
-      };
-    }
-    if (heroPreviousButton.current) {
-      heroPreviousButton.current.onclick = () => {
-        setError("");
-        handleSetHeroState(HERO_STATES.SKILLSETS_EMPLOYER);
-      };
+  const handleClickNext = async () => {
+    const isValid = await validateExperience();
+    if (isValid) {
+      setError("");
+      handleSetHeroState(HERO_STATES.LOADING);
     }
   };
 
-  useEffect(heroScreenActions, [selectedExperience]);
+  const handleClickPrevious = () => {
+    setError("");
+    handleSetHeroState(HERO_STATES.SKILLSETS_EMPLOYER);
+  };
 
   return (
     <div
@@ -77,19 +68,25 @@ const HeroYearsOfExperienceEmployer = () => {
       <div
         className={`${styles["hero-container-overlay"]} ${styles["gradient-left-dark"]}`}
       >
-        <div className={`${styles["hero-container-content-wrapper"]}`}>
-          <div
-            className={`${styles["title"]} ${styles["orange"]} ${styles["text-left"]}`}
-          >
-            <div>How many years of experience</div>
-            <div>required for your first job listing?</div>
+        <div
+          className={`mt-12 flex flex-col gap-8 ${styles["hero-container-content-wrapper"]}`}
+        >
+          <div>
+            <div className="text-[#F5722E] font-[600] text-[26px] text-left">
+              How many years of experience
+            </div>
+            <div className="text-[#F5722E] font-[600] text-[26px] text-left">
+              required for your first job listing?
+            </div>
           </div>
-          <div className={`${styles["button-selection-wrapper"]}`}>
+          <div className="grid grid-cols-2 gap-2 max-w-[345px]">
             {experienceOptions.map((experience) => (
               <button
                 key={experience}
-                className={`${styles["button-custom-orange-flex"]} ${
-                  selectedExperience === experience ? styles["selected"] : ""
+                className={`w-full px-4 py-2 rounded-[4px]  ${
+                  selectedExperience === experience
+                    ? "bg-[#F5722E] text-white"
+                    : "bg-white text-[#F5722E]"
                 }`}
                 onClick={() => handleExperienceSelect(experience)}
               >
@@ -104,15 +101,15 @@ const HeroYearsOfExperienceEmployer = () => {
               {error}
             </div>
           )}
-          <div className={`${styles["hero-button-container2"]}`}>
-            <div
-              ref={heroNextButton}
-              className={`${styles["button-custom-orange"]} ${styles["noselect"]}`}
+          <div className="flex flex-col justify-center items-center gap-[3px] mt-[20px] w-full max-w-[345px]">
+            <button
+              onClick={handleClickNext}
+              className={`h-[35px] rounded-[4px] bg-[#F5722E] text-[#F5F5F7] text-[16px] font-[500] ${styles["noselect"]} z-50 w-full`}
             >
               Next
-            </div>
-            <div
-              ref={heroPreviousButton}
+            </button>
+            <button
+              onClick={handleClickPrevious}
               className={`${styles["button-custom-transparent"]} ${styles["noselect"]}`}
             >
               <img
@@ -120,7 +117,7 @@ const HeroYearsOfExperienceEmployer = () => {
                 src={arrow_left_icon}
               ></img>
               <div>Previous</div>
-            </div>
+            </button>
           </div>
         </div>
       </div>
