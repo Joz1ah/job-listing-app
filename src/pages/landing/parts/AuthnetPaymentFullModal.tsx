@@ -177,28 +177,35 @@ const AuthnetPaymentFullModal = () => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="relative bg-white shadow-lg w-full md:w-[642px] h-[554px] overflow-x-hidden overflow-y-auto">
-        <div className="w-full">
-          <div className="flex items-center justify-between p-4 border-b border-gray-200">
-            <img src={authnet_logo} alt="Akaza Logo" />
-            <div className="flex items-center gap-3">
-              <img src={visa_icon} alt="Visa" />
-              <img src={amex_icon} alt="American Express" />
-              <img src={mastercard_icon} alt="Mastercard" />
-              <img src={discover_icon} alt="Discover" />
+      <div className="relative bg-white shadow-lg w-full md:w-[642px] h-[554px] flex flex-col">
+        {/* Fixed Header */}
+        <div className="sticky top-0 z-10 bg-white border-b border-gray-200">
+          <div className="flex flex-row items-center justify-between p-2 md:p-4 md:gap-4">
+            {/* Logo - Full width on mobile, normal on desktop */}
+            <div className="w-auto flex">
+              <img src={authnet_logo} alt="Akaza Logo" className="h-8 sm:h-10" />
+            </div>
+            
+            {/* Payment Icons & Close Button - Centered on mobile, right-aligned on desktop */}
+            <div className="flex items-center justify-center sm:justify-end gap-2 sm:gap-3">
+              <div className="flex items-center gap-1 md:gap-2">
+                <img src={visa_icon} alt="Visa" className="h-6 sm:h-8" />
+                <img src={amex_icon} alt="American Express" className="h-6 sm:h-8" />
+                <img src={mastercard_icon} alt="Mastercard" className="h-6 sm:h-8" />
+                <img src={discover_icon} alt="Discover" className="h-6 sm:h-8" />
+              </div>
 
               <img
                 ref={closeModalRef}
-                className="cursor-pointer"
+                className="cursor-pointer w-4 h-4 md:w-6 md:h-6"
                 src={close_icon}
                 alt="Close"
-                style={{ width: "24px", height: "24px" }}
                 onClick={handleCloseModal}
               />
             </div>
           </div>
         </div>
-
+      <div className="flex-1 overflow-y-auto">
         <div className="w-full p-4">
           <div className={`${styles["authnet-paymentfull-container"]}`}>
             <Formik
@@ -785,6 +792,7 @@ const AuthnetPaymentFullModal = () => {
               )}
             </Formik>
           </div>
+        </div>
         </div>
       </div>
     </div>
