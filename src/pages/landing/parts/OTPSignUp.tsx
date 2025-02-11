@@ -203,7 +203,7 @@ const OTPSignUp = () => {
     }
   };
 
-  const [countdown, setCountdown] = useState(180);
+  const [countdown, setCountdown] = useState(90);
 
   useEffect(() => {
     if (modalState === MODAL_STATES.SIGNUP_STEP3) {
@@ -224,7 +224,7 @@ const OTPSignUp = () => {
   const handleResendClick = async () => {
     try {
       await resendOTP();
-      setCountdown(180);
+      setCountdown(90);
     } catch (error) {
       console.error("Failed to resend OTP:", error);
     }

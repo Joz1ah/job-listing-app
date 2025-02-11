@@ -170,3 +170,4 @@ export { ExpiredSubModalEmployer } from "components/expired-subscription/Expired
 export { ExpiredSubModalJobHunter } from "components/expired-subscription/ExpiredSubModalJobHunter";
 export { CountrySelect };
 export  { IndustryDropdown } from 'components/ui/custom/industry-dropdown'
+export { PaymentStep } from 'components/payment-form/PaymentStep'
