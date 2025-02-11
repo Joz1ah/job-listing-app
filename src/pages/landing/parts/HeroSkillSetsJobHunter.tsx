@@ -74,7 +74,7 @@ const HeroSkillSetsJobHunter = () => {
       <div
         className={`${styles["hero-container-overlay"]} ${styles["gradient-left-dark"]}`}
       >
-        <div className={`w-full max-w-[380px] mt-12 flex flex-col gap-8`}>
+        <div className="w-full max-w-[380px] mt-12 flex flex-col gap-8">
           <div className="text-[#F5722E] font-[600] text-[26px] text-left">
             Select up to 5 skill sets
           </div>

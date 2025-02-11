@@ -71,9 +71,7 @@ const HeroYearsOfExperienceJobHunter = () => {
       <div
         className={`${styles["hero-container-overlay"]} ${styles["gradient-left-dark"]}`}
       >
-        <div
-          className={`mt-12 flex flex-col gap-8 ${styles["hero-container-content-wrapper"]}`}
-        >
+        <div className="w-full max-w-[380px] mt-12 flex flex-col gap-8">
           <div>
             <div className="text-[#F5722E] font-[600] text-[26px] text-left">
               How many years of experience
@@ -83,7 +81,7 @@ const HeroYearsOfExperienceJobHunter = () => {
             </div>
           </div>
           <div>
-            <div className="grid grid-cols-2 gap-2 max-w-[345px]" id="btns">
+            <div className="grid grid-cols-2 gap-2 w-full" id="btns">
               {experienceOptions.map((experience: string) => (
                 <button
                   key={experience}
@@ -96,28 +94,26 @@ const HeroYearsOfExperienceJobHunter = () => {
               ))}
             </div>
             {error && (
-              <div
-                className={`${styles["validation-message"]} ${styles["variant-3"]}`}
-              >
-                {error}
-              </div>
+              <div className="text-[#e53835] italic text-[14px]">{error}</div>
             )}
-            <div className="flex flex-col justify-center items-center gap-[3px] mt-[20px] w-full max-w-[345px]">
+            <div className="flex flex-col justify-center items-center gap-[3px] mt-[20px] w-full">
               <button
                 onClick={handleClickNext}
-                className={`h-[35px] rounded-[4px] bg-[#F5722E] text-[#F5F5F7] text-[16px] font-[500] ${styles["noselect"]} z-50 w-full`}
+                className="w-full h-[35px] border border-transparent rounded-[4px] bg-[#F5722E] text-[16px] font-[500] text-[#F5F5F7] text-center"
               >
                 Next
               </button>
               <button
                 onClick={handleClickPrevious}
-                className={`${styles["button-custom-transparent"]} ${styles["noselect"]} z-50`}
+                className="w-full h-[25px] flex items-center justify-center gap-4"
               >
                 <img
-                  className={`${styles["caret-left"]}`}
+                  className="absolute mr-[100px]"
                   src={arrow_left_icon}
                 ></img>
-                <div>Previous</div>
+                <span className="font-medium text-[10px] text-[#AEADAD]">
+                  Previous
+                </span>
               </button>
             </div>
           </div>
