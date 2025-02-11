@@ -1,7 +1,7 @@
 import { FC, ReactElement } from "react";
 import { PageMeta } from "components";
 import { LandingContext } from "components";
-import { DefaultLayout } from 'layouts';
+import { DefaultLayout } from "layouts";
 
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import { Outlet, useMatch } from "react-router-dom";
@@ -26,17 +26,17 @@ const Landing: FC = (): ReactElement => {
   return (
     <LandingContext.Provider value={{ isFreeTrial }}>
       <PageMeta title="Akaza" />
-      <DefaultLayout className={styles['landing-container']}>
-      <div className={styles.main}>
-        {isIndexRoute && (
-          <>
-            <HeroContainer />
-            <PricingContainer />
-            <InfoGraphics />
-          </>
-        )}
-        <Outlet />
-      </div>
+      <DefaultLayout className={styles["landing-container"]}>
+        <div className={`${styles.main} flex flex-col gap-0`}>
+          {isIndexRoute && (
+            <>
+              <HeroContainer />
+              <PricingContainer />
+              <InfoGraphics />
+            </>
+          )}
+          <Outlet />
+        </div>
       </DefaultLayout>
     </LandingContext.Provider>
   );
