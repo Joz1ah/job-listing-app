@@ -4,8 +4,10 @@ import { Input } from "components";
 import { cn } from "lib/utils";
 
 interface IndustrySearchProps {
-  onValueChange: (value: string) => void;
+  onValueChange: (industryId: string, industryName: string) => void;
   className?: string;
+  initialIndustryName?: string;
+  initialIndustryId?: string;
 }
 
 interface Industry {
@@ -16,19 +18,33 @@ interface Industry {
 }
 
 const capitalizeFirstLetter = (str: string) => {
-  return str.trim().split(' ').map(word => 
+  return str?.trim().split(' ').map(word => 
     word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
   ).join(' ');
 };
 
 const IndustrySearch: FC<IndustrySearchProps> = ({ 
   onValueChange, 
-  className
+  className,
+  initialIndustryName = '',
+  initialIndustryId = ''
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedName, setSelectedName] = useState('');
   const containerRef = useRef<HTMLDivElement>(null);
+  const isInitialMount = useRef(true);
+
+  // Set initial values only once on mount
+  useEffect(() => {
+    if (isInitialMount.current && initialIndustryName) {
+      setSelectedName(capitalizeFirstLetter(initialIndustryName));
+      if (initialIndustryId) {
+        onValueChange(initialIndustryId, initialIndustryName);
+      }
+      isInitialMount.current = false;
+    }
+  }, [initialIndustryName, initialIndustryId, onValueChange]);
 
   // Fetch industry options based on search query
   const { data: response } = useSearchIndustryQuery({
@@ -59,13 +75,14 @@ const IndustrySearch: FC<IndustrySearchProps> = ({
     setShowSuggestions(true);
     
     if (!query) {
-      onValueChange('');
+      onValueChange('', '');
     }
   };
 
   const handleSelectIndustry = (industry: Industry) => {
-    onValueChange(industry.id);
-    setSelectedName(capitalizeFirstLetter(industry.name));
+    const capitalizedName = capitalizeFirstLetter(industry.name);
+    onValueChange(industry.id, capitalizedName);
+    setSelectedName(capitalizedName);
     setShowSuggestions(false);
     setSearchQuery('');
   };

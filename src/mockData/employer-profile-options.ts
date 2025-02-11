@@ -13,7 +13,7 @@ interface SelectOption {
     firstName: string;
     lastName: string;
     position: string;
-    industry: string;
+    industryName: string;
     emailAddress: string;
     mobileNumber: string;
     companyWebsite: string;

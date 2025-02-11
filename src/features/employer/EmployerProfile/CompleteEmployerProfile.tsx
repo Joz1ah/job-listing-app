@@ -13,7 +13,6 @@ import { useNavigate } from "react-router-dom";
 
 import { PhoneInput } from "components";
 
-import { FormData } from "mockData/employer-profile-options";
 import { EmployerProfilePreview } from "./EmployerProfilePreview";
 
 import { CountrySelect } from "components";
@@ -27,18 +26,53 @@ import { useEmployerProfileMutation } from "api/akaza/akazaAPI";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 
+export interface FormData {
+  businessName: string;
+  firstName: string;
+  lastName: string;
+  position: string;
+  industryId: string;
+  industryName: string;
+  emailAddress: string;
+  mobileNumber: string;
+  companyWebsite: string;
+  yearFounded: string;
+  unitAndBldg: string;
+  streetAddress: string;
+  city: string;
+  state: string;
+  postalCode?: string;
+  country: string;
+  companyOverview: string;
+  employmentType: string[];
+}
+
 const validationSchema = Yup.object().shape({
   businessName: Yup.string().required("This field is required"),
   firstName: Yup.string().required("This field is required"),
   lastName: Yup.string().required("This field is required"),
   position: Yup.string().required("This field is required"),
-  industry: Yup.string().required("This field is required"),
+  industryId: Yup.string().required("This field is required"),
   companyWebsite: Yup.string()
+    .trim()
     .required("This field is required")
-    .matches(
-      /^https?:\/\/.+/,
-      'Website URL must start with "http://" or "https://"',
-    ),
+    .matches(/^(?:https?:\/\/)(.+)/i, {
+      message:
+        'Website URL must start with "http://" or "https://" and include a domain',
+      excludeEmptyString: true,
+    })
+    .test({
+      name: "protocol-check",
+      message: "Website URL must be valid with content after protocol",
+      test: (value) => {
+        if (!value?.trim()) return true; // Skip validation for empty or whitespace-only strings
+        const lowerValue = value.toLowerCase();
+        return (
+          (lowerValue.startsWith("http://") && lowerValue.length > 7) ||
+          (lowerValue.startsWith("https://") && lowerValue.length > 8)
+        );
+      },
+    }),
   yearFounded: Yup.number()
     .required("This field is required")
     .typeError("Please enter a valid number")
@@ -111,7 +145,8 @@ const CompleteEmployerProfile: FC = () => {
       firstName: user?.data?.user?.relatedDetails?.firstName || "",
       lastName: user?.data?.user?.relatedDetails?.lastName || "",
       position: user?.data?.user?.relatedDetails?.position || "",
-      industry: "",
+      industryId: "",
+      industryName: "",
       emailAddress: user?.data?.user?.email || "",
       yearFounded: "",
       mobileNumber: "",
@@ -158,7 +193,7 @@ const CompleteEmployerProfile: FC = () => {
         phoneNumber: formattedPhoneNumber,
         position: values.position,
         website: values.companyWebsite,
-        industryId: parseInt(values.industry, 10),
+        industryId: parseInt(values.industryId, 10),
         yearFounded: values.yearFounded,
         unit: values.unitAndBldg,
         address: values.streetAddress,
@@ -333,12 +368,15 @@ const CompleteEmployerProfile: FC = () => {
               <InputField
                 label="Industry"
                 className="bg-transparent"
-                error={errors.industry}
-                touched={touched.industry}
+                error={errors.industryId}
+                touched={touched.industryId}
                 variant="primary"
               >
                 <IndustrySearch
-                  onValueChange={(value) => setFieldValue("industry", value)}
+                  onValueChange={(id, name) => {
+                    setFieldValue("industryId", id);
+                    setFieldValue("industryName", name);
+                  }}
                 />
               </InputField>
 
@@ -379,7 +417,6 @@ const CompleteEmployerProfile: FC = () => {
                   className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
                 />
               </InputField>
-
               <InputField
                 label="Street Address"
                 error={errors.streetAddress}
@@ -394,7 +431,6 @@ const CompleteEmployerProfile: FC = () => {
                   className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
                 />
               </InputField>
-
               <InputField
                 label="City"
                 error={errors.city}
@@ -409,7 +445,6 @@ const CompleteEmployerProfile: FC = () => {
                   className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
                 />
               </InputField>
-
               <InputField
                 label="State/Province/Region"
                 error={errors.state}
@@ -424,9 +459,8 @@ const CompleteEmployerProfile: FC = () => {
                   className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
                 />
               </InputField>
-
-              <div className="hidden md:block"></div> {/* Empty placeholder for grid alignment */}
-              
+              <div className="hidden md:block"></div>{" "}
+              {/* Empty placeholder for grid alignment */}
               <InputField
                 label="Country"
                 error={errors.country}
