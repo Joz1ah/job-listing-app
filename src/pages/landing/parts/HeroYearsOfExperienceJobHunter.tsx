@@ -72,13 +72,8 @@ const HeroYearsOfExperienceJobHunter = () => {
         className={`${styles["hero-container-overlay"]} ${styles["gradient-left-dark"]}`}
       >
         <div className="w-full max-w-[380px] mt-12 flex flex-col gap-8">
-          <div>
-            <div className="text-[#F5722E] font-[600] text-[26px] text-left">
-              How many years of experience
-            </div>
-            <div className="text-[#F5722E] font-[600] text-[26px] text-left">
-              do you have?
-            </div>
+          <div className="w-full font-[600] text-[26px] sm:text-[36px] text-[#F5722E]">
+            How many years of experience do you have?
           </div>
           <div>
             <div className="grid grid-cols-2 gap-2 w-full" id="btns">
@@ -99,13 +94,13 @@ const HeroYearsOfExperienceJobHunter = () => {
             <div className="flex flex-col justify-center items-center gap-[3px] mt-[20px] w-full">
               <button
                 onClick={handleClickNext}
-                className="w-full h-[35px] border border-transparent rounded-[4px] bg-[#F5722E] text-[16px] font-[500] text-[#F5F5F7] text-center"
+                className="w-full h-[35px] border border-transparent rounded-[4px] bg-[#F5722E] text-[16px] font-[500] text-[#F5F5F7] text-center z-50"
               >
                 Next
               </button>
               <button
                 onClick={handleClickPrevious}
-                className="w-full h-[25px] flex items-center justify-center gap-4"
+                className="w-full h-[25px] flex items-center justify-center gap-4 z-50"
               >
                 <img
                   className="absolute mr-[100px]"

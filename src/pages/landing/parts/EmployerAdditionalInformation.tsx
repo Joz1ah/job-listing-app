@@ -28,25 +28,25 @@ const employerInfoSchema = Yup.object().shape({
     .trim()
     .required("This field is required")
     .max(250, "Address must not exceed 250 characters"),
-    website: Yup.string()
+  website: Yup.string()
     .trim()
     .required("This field is required")
-    .matches(
-      /^(?:https?:\/\/)(.+)/i,
-      {
-        message: 'Website URL must start with "http://" or "https://" and include a domain',
-        excludeEmptyString: true
-      }
-    )
+    .matches(/^(?:https?:\/\/)(.+)/i, {
+      message:
+        'Website URL must start with "http://" or "https://" and include a domain',
+      excludeEmptyString: true,
+    })
     .test({
-      name: 'protocol-check',
-      message: 'Website URL must be valid with content after protocol',
+      name: "protocol-check",
+      message: "Website URL must be valid with content after protocol",
       test: (value) => {
-        if (!value?.trim()) return true;  // Skip validation for empty or whitespace-only strings
+        if (!value?.trim()) return true; // Skip validation for empty or whitespace-only strings
         const lowerValue = value.toLowerCase();
-        return (lowerValue.startsWith('http://') && lowerValue.length > 7) || 
-               (lowerValue.startsWith('https://') && lowerValue.length > 8);
-      }
+        return (
+          (lowerValue.startsWith("http://") && lowerValue.length > 7) ||
+          (lowerValue.startsWith("https://") && lowerValue.length > 8)
+        );
+      },
     }),
 });
 
@@ -184,7 +184,7 @@ const EmployerAdditionalInformation = () => {
         }
 
         // Continue to next step
-        handleSetSelectedModalHeader(MODAL_HEADER_TYPE.WITH_CLOSE);
+        handleSetSelectedModalHeader(MODAL_HEADER_TYPE.WITH_LOGO_AND_CLOSE);
         handleSetModalState(MODAL_STATES.SIGNUP_STEP5);
       } catch (err: any) {
         console.error("Error submitting employer contact:", err);
