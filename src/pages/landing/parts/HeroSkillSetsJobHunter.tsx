@@ -1,19 +1,19 @@
 import { CoreSkillsTagInput } from "components";
-import { useRef, useState, useEffect } from "react";
+import { useState } from "react";
 import styles from "./../landing.module.scss";
 import Video from "./Video";
 import { useLanding } from "../useLanding";
 import * as Yup from "yup";
 
 import video3 from "assets/mp4/glasses-girl-in-meeting.mp4";
+import icon_search from "assets/search.svg?url";
 import arrow_left_icon from "assets/Keyboard-arrow-left.svg?url";
 import { HERO_STATES } from "store/hero/hero.types";
 
 const HeroSkillSetsJobHunter = () => {
   const { selectedSkills, handleSetSkills, handleSetHeroState, heroState } =
     useLanding();
-  const heroNextButton = useRef<HTMLDivElement>(null);
-  const heroPreviousButton = useRef<HTMLDivElement>(null);
+
   const [error, setError] = useState("");
 
   const validationSchema = Yup.object().shape({
@@ -45,26 +45,19 @@ const HeroSkillSetsJobHunter = () => {
     }
   };
 
-  const heroScreenActions = () => {
-    if (heroNextButton.current) {
-      heroNextButton.current.onclick = async () => {
-        const isValid = await validateSkills();
-        if (isValid) {
-          setError("");
-          handleSetHeroState(HERO_STATES.YEARS_OF_EXPERIENCE_JOBHUNTER);
-        }
-      };
-    }
-    if (heroPreviousButton.current) {
-      heroPreviousButton.current.onclick = () => {
-        handleSetSkills([]);
-        setError("");
-        handleSetHeroState(HERO_STATES.PERFECT_MATCH_ALGO);
-      };
+  const handleClickNext = async () => {
+    const isValid = await validateSkills();
+    if (isValid) {
+      setError("");
+      handleSetHeroState(HERO_STATES.YEARS_OF_EXPERIENCE_JOBHUNTER);
     }
   };
 
-  useEffect(heroScreenActions, [selectedSkills]);
+  const handleClickPrevious = () => {
+    handleSetSkills([]);
+    setError("");
+    handleSetHeroState(HERO_STATES.PERFECT_MATCH_ALGO);
+  };
 
   return (
     <div
@@ -81,14 +74,12 @@ const HeroSkillSetsJobHunter = () => {
       <div
         className={`${styles["hero-container-overlay"]} ${styles["gradient-left-dark"]}`}
       >
-        <div
-          className={`mt-12 flex flex-col gap-8 ${styles["hero-container-content-wrapper"]}`}
-        >
+        <div className={`w-full max-w-[380px] mt-12 flex flex-col gap-8`}>
           <div className="text-[#F5722E] font-[600] text-[26px] text-left">
             Select up to 5 skill sets
           </div>
-          <div>
-            <div className={`${styles["search-wrapper"]}`}>
+          <div className="w-full flex flex-col gap-4">
+            <div className="flex justify-between rounded-[4px] border-[2px] border-[#AEADAD] pr-2">
               <CoreSkillsTagInput
                 value={selectedSkills ?? []}
                 onChange={handleSkillsChange}
@@ -99,32 +90,30 @@ const HeroSkillSetsJobHunter = () => {
                   secondColor: "#184E77",
                 }}
               />
-              {/* <img src={icon_search}></img> */}
+              <img src={icon_search}></img>
             </div>
             {error && (
-              <div
-                className={`${styles["validation-message"]} ${styles["variant-2"]}`}
-              >
-                {error}
-              </div>
+              <div className="text-[#e53835] italic text-[14px]">{error}</div>
             )}
-            <div className={`${styles["hero-button-container2"]}`}>
-              <div
-                ref={heroNextButton}
-                className={`${styles["button-custom-orange"]} ${styles["noselect"]}`}
+            <div className="w-full flex flex-col items-center justify-center gap-2">
+              <button
+                onClick={handleClickNext}
+                className="w-full h-[35px] border border-transparent rounded-[4px] bg-[#F5722E] text-[16px] font-[500] text-[#F5F5F7] text-center"
               >
                 Next
-              </div>
-              <div
-                ref={heroPreviousButton}
-                className={`${styles["button-custom-transparent"]} ${styles["noselect"]}`}
+              </button>
+              <button
+                onClick={handleClickPrevious}
+                className="w-full h-[25px] flex items-center justify-center gap-4"
               >
                 <img
-                  className={`${styles["caret-left"]}`}
+                  className="absolute mr-[100px]"
                   src={arrow_left_icon}
                 ></img>
-                <div>Previous</div>
-              </div>
+                <span className="font-medium text-[10px] text-[#AEADAD]">
+                  Previous
+                </span>
+              </button>
             </div>
           </div>
         </div>
