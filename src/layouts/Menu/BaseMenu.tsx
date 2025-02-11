@@ -225,7 +225,6 @@ const BaseMenu: FC<MenuProps> = ({
                   <li>
                     <NavLink
                       to="/dashboard/job-listing"
-                  onClick={(e) => handleNavLinkClick(e, '/')}
                       className="flex-shrink-0"
                     >
                       <Button

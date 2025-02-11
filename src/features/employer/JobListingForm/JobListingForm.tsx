@@ -1,5 +1,4 @@
 import React, { FC, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
 import { Input, Button, Textarea } from "components";
 import { NavLink } from "react-router-dom";
@@ -91,7 +90,6 @@ const LoadingOverlay = () => (
 );
 
 const JobListingForm: FC = () => {
-  const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPreview, setShowPreview] = useState<boolean>(false);
   const { user, refreshUser } = useAuth();
@@ -143,7 +141,7 @@ const JobListingForm: FC = () => {
       // Refresh user data in auth context
       await refreshUser();
 
-      navigate("/dashboard");
+      window.location.href = "/dashboard";
     } catch (error: any) {
       if (error?.data?.errors === "Job listing already exists.") {
         showError(
