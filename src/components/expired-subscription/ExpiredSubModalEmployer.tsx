@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  Gift,
   CalendarCheck,
   ThumbsUp,
   ChartNoAxesCombined,
@@ -50,7 +49,6 @@ const ExpiredSubModalEmployer: React.FC<ExpiredSubModalEmployerProps> = ({
 
   const features: PlanFeatures = {
     yearly: [
-      { icon: <Gift />, text: "PLUS ONE MONTH FREE" },
       { icon: <Infinity />, text: "Unlimited interview Invites" },
       { icon: <CalendarCheck />, text: "Up to 5 Job Listings" },
       { icon: <ThumbsUp />, text: "Perfect Match automation" },
