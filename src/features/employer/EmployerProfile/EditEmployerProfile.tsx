@@ -24,7 +24,6 @@ import { cn } from "lib/utils";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-import { isValidPhoneNumber } from "react-phone-number-input";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 
 interface FormData {
@@ -85,9 +84,31 @@ const validationSchema = Yup.object().shape({
     .email("Invalid email address"),
   mobileNumber: Yup.string()
     .required("This field is required")
-    .test("phone", "Please enter a valid phone number", function (value) {
-      return value ? isValidPhoneNumber(value) : false;
-    }),
+    .test(
+      "phone",
+      "Please enter a valid international phone number",
+      function (value) {
+        if (!value) return false;
+
+        // Remove all non-digit characters except plus sign at start
+        const cleaned = value.replace(/(?!^\+)\D/g, "");
+
+        // Check if it starts with a plus sign
+        const hasPlus = value.startsWith("+");
+
+        // Get only digits
+        const digitsOnly = cleaned.replace(/\+/g, "");
+
+        if (!hasPlus) return false;
+        if (digitsOnly.length < 10 || digitsOnly.length > 15) return false;
+
+        // Basic country code validation (1-4 digits after +)
+        const countryCode = digitsOnly.slice(0, 4);
+        if (!/^\d{1,4}$/.test(countryCode)) return false;
+
+        return true;
+      },
+    ),
   unitAndBldg: Yup.string().required("This field is required"),
   streetAddress: Yup.string().required("This field is required"),
   city: Yup.string().required("This field is required"),

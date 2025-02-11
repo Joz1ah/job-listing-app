@@ -424,6 +424,12 @@ export const akazaApiJobFeed = createApiFunction({
     },
   }), 
   endpoints: (builder) => ({
+    getJobList: builder.query({
+      query: ({ page = 1, limit = 10 }) => ({
+        url: `/job/list?page=${page}&limit=${limit}`,
+        method: 'GET',
+      })
+    }),
     jobListCreate: builder.mutation({
       query: (payLoad) => ({
         url: '/job',  // Updated to match the correct endpoint
@@ -628,7 +634,8 @@ export const {
 } = akazaApiPayment
 
 export const {
-  useJobListCreateMutation
+  useJobListCreateMutation,
+  useGetJobListQuery
 } = akazaApiJobFeed
 
 export const {
