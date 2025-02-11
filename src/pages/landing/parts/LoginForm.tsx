@@ -83,9 +83,7 @@ const LoginForm = () => {
       {({ errors, touched, isSubmitting, values: { email, password } }) => (
         <Form className="flex flex-col gap-[10px] w-full py-8">
           <div className="text-left">
-            <h1 className="text-[14px] font-bold text-[#F5722E]">
-              Job Hunter Login
-            </h1>
+            <h1 className="text-[14px] font-bold text-[#F5722E]">Login</h1>
           </div>
           <div className="flex flex-col gap-2">
             <div>
