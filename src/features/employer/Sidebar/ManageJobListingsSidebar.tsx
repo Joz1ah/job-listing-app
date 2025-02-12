@@ -47,7 +47,7 @@ const ManageJobListingsSidebar: FC<ManageJobsSidebarProps> = ({
     <div className="mb-8">
       <div className="flex items-start">
         <div className="flex-1">
-          <span className="text-[30px] font-normal text-white line-clamp-2"
+          <span className="text-[30px] font-normal text-white break-all md:break-words line-clamp-2 max-w-full"
           title={userName}
           >
             {userName}

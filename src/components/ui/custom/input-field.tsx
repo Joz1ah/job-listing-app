@@ -91,6 +91,20 @@ const tooltipIconVariants = cva("relative -top-1 cursor-pointer", {
   },
 });
 
+const errorMessageVariants = cva("absolute right-1 italic text-[#E63946] mt-1", {
+  variants: {
+    size: {
+      tiny: "text-[10px]",
+      xs: "text-xs",
+      sm: "text-sm",
+      base: "text-base",
+    },
+  },
+  defaultVariants: {
+    size: "xs",
+  },
+});
+
 interface InputFieldProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof inputWrapperVariants> {
@@ -101,6 +115,7 @@ interface InputFieldProps
   showAlertIcon?: boolean;
   tooltipContent?: string | React.ReactNode;
   size?: "sm" | "md" | "lg";
+  errorMessageSize?: "tiny" | "xs" | "sm" | "base";
   children: React.ReactNode;
 }
 
@@ -117,6 +132,7 @@ const InputField = React.forwardRef<HTMLDivElement, InputFieldProps>(
       showIcon,
       showAlertIcon = true,
       tooltipContent,
+      errorMessageSize = "xs",
       ...props
     },
     ref,
@@ -169,7 +185,7 @@ const InputField = React.forwardRef<HTMLDivElement, InputFieldProps>(
         </div>
 
         {showError && (
-          <div className="absolute right-1 text-xs italic text-[#E63946] mt-1">
+          <div className={errorMessageVariants({ size: errorMessageSize })}>
             {errorMessage}
           </div>
         )}

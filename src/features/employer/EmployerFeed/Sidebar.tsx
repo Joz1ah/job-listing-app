@@ -52,7 +52,7 @@ const Sidebar: FC = () => {
   const hideOnPagesDesktop = ["/dashboard/employer-profile"];
   const { subscriptionPlan } = useEmployerContext();
   
-  const { data, error, isLoading } = useGetJobListQuery({ 
+  const { data, isLoading } = useGetJobListQuery({ 
     page: 1, 
     limit: 10
   });
@@ -120,11 +120,6 @@ const Sidebar: FC = () => {
                   {jobs.length === 0 && !isLoading && (
                     <div className="p-4 text-center text-gray-500">
                       No job listings found
-                    </div>
-                  )}
-                  {error && (
-                    <div className="p-4 text-center text-red-500">
-                      Error loading job listings
                     </div>
                   )}
                 </SelectGroup>
