@@ -255,23 +255,84 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
             <Formik
               initialValues={paymentFormData}
               validationSchema={Yup.object({
-                firstName: Yup.string().required("First name is required"),
-                lastName: Yup.string().required("Last name is required"),
+                firstName: Yup.string()
+                  .required("This field is required")
+                  .matches(/^[a-zA-ZÀ-ÿ\s'-]+$/, "Please enter a valid name")
+                  .max(50, "Name is too long"),
+                lastName: Yup.string()
+                  .required("This field is required")
+                  .matches(/^[a-zA-ZÀ-ÿ\s'-]+$/, "Please enter a valid name")
+                  .max(50, "Name is too long"),
                 email: Yup.string()
-                  .email("Invalid email")
-                  .required("Email is required"),
-                cardNumber: Yup.string()
-                  .required("Card number is required")
+                  .trim()
+                  .email("Please enter a valid email address")
                   .matches(
-                    /^\d{13,19}$/,
-                    "Card number must be between 13 and 19 digits",
-                  ),
+                    /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                    "Please enter a valid email address",
+                  )
+                  .max(254, "Email must be less than 254 characters")
+                  .required("This field is required"),
+                cardNumber: Yup.string()
+                  .required("This field is required")
+                  .matches(/^\d{13,19}$/, "Please enter valid card number")
+                  .test("luhn", "Invalid card number", (value) => {
+                    if (!value) return false;
+                    // Luhn algorithm implementation
+                    const digits = value.split("").map(Number);
+                    let sum = 0;
+                    let isEven = false;
+
+                    for (let i = digits.length - 1; i >= 0; i--) {
+                      let digit = digits[i];
+
+                      if (isEven) {
+                        digit *= 2;
+                        if (digit > 9) {
+                          digit -= 9;
+                        }
+                      }
+
+                      sum += digit;
+                      isEven = !isEven;
+                    }
+
+                    return sum % 10 === 0;
+                  }),
                 expiryDate: Yup.string()
-                  .required("Expiry date is required")
+                  .required("This field is required")
                   .matches(
                     /^(0[1-9]|1[0-2])\/([0-9]{2})$/,
                     "Must be in MM/YY format",
-                  ),
+                  )
+                  .test("expiry", "Invalid date", function (value) {
+                    if (!value) return false;
+
+                    const [month, year] = value.split("/");
+                    const expiry = new Date(
+                      2000 + parseInt(year),
+                      parseInt(month),
+                    );
+                    const today = new Date();
+
+                    // Set both dates to first of month for accurate comparison
+                    today.setDate(1);
+                    today.setHours(0, 0, 0, 0);
+
+                    if (expiry < today) {
+                      return false;
+                    }
+
+                    // Check if date is more than 10 years in future
+                    const maxDate = new Date();
+                    maxDate.setDate(1);
+                    maxDate.setFullYear(maxDate.getFullYear() + 10);
+
+                    if (expiry > maxDate) {
+                      return false;
+                    }
+
+                    return true;
+                  }),
                 cvv: Yup.string()
                   .required("CVV is required")
                   .matches(/^\d{3,4}$/, "CVV must be 3 or 4 digits"),
@@ -431,11 +492,15 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
       <Formik
         initialValues={addressFormData}
         validationSchema={Yup.object({
-          address: Yup.string().required("Address is required"),
-          city: Yup.string().required("City is required"),
+          address: Yup.string().required("Address is required").max(100, "Address is too long"),
+          city: Yup.string().required("City is required").max(50, "City name is too long"),
           state: Yup.string().required("State is required"),
           country: Yup.string().required("Country is required"),
-          zipCode: Yup.string().required("Zip/Postal code is required"),
+          zipCode: Yup.string().matches(
+            /^[a-zA-Z0-9]{1,6}$/,
+            "Must be alphanumeric and up to 6 characters",
+          )
+          .required("This field is required"),
           termsAccepted: Yup.boolean()
             .oneOf([true], "You must accept the Terms and Privacy Policy")
             .required("You must accept the Terms and Privacy Policy"),
@@ -681,7 +746,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                     onClick={() => {
                       setAddressFormData({
                         ...values,
-                        termsAccepted: false
+                        termsAccepted: false,
                       });
                       setCurrentStep(1);
                     }}
@@ -713,4 +778,4 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
   );
 };
 
-export { PaymentStep }
+export { PaymentStep };

@@ -485,7 +485,7 @@ const FreeTrial: React.FC<FreeTrialProps> = ({onBack}) => {
               className="text-[#F5722E] text-md mt-4"
               onClick={handleStartFreeTrial}
             >
-              Continue to the Free Trial
+              Continue to Free Trial
             </Button>
 
             <FreeTrialConfirmationModal
