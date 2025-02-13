@@ -630,7 +630,7 @@ const EditApplicationCard: FC = () => {
                   <CoreSkillsTagInput
                     value={values.coreSkills || []}
                     onChange={(value) => setFieldValue("coreSkills", value)}
-                    className="h-[99px] pt-1 px-1"
+                    className="h-[120px] md:h-[99px] pt-1 px-1"
                     alternateColors={{
                       firstColor: "#184E77",
                       secondColor: "#168AAD",
@@ -654,7 +654,7 @@ const EditApplicationCard: FC = () => {
                     onChange={(value) =>
                       setFieldValue("interpersonalSkills", value)
                     }
-                    className="h-[99px] pt-1 px-1"
+                    className="h-[120px] md:h-[99px] pt-1 px-1"
                     alternateColors={{
                       firstColor: "#184E77",
                       secondColor: "#168AAD",
@@ -678,7 +678,7 @@ const EditApplicationCard: FC = () => {
                   <CertificationTagInput
                     value={values.certifications || []}
                     onChange={(value) => setFieldValue("certifications", value)}
-                    className="h-[56px] pt-1 px-1"
+                    className="h-[90px] md:h-[56px] pt-1 px-1"
                     tagClassName="bg-[#168AAD]"
                     placeholder="Type and enter to add certificate"
                     alternateColors={{

@@ -6,12 +6,13 @@ import { InputField } from "components";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 import { Formik, Field, FieldProps } from "formik";
 import * as Yup from "yup";
-import { LockKeyhole } from "lucide-react";
+import { LockKeyhole, ChevronLeft } from "lucide-react";
 import visa_icon from "assets/credit-card-icons/cc_visa.svg?url";
 import amex_icon from "assets/credit-card-icons/cc_american-express.svg?url";
 import mastercard_icon from "assets/credit-card-icons/cc_mastercard.svg?url";
 import discover_icon from "assets/credit-card-icons/cc_discover.svg?url";
 import companyLogoLight from "images/company-logo-light.svg?url";
+import companyLogoDark from "images/company-logo-dark.svg?url";
 import { useLanding } from "pages/landing/useLanding";
 import { CountrySelect } from "components";
 
@@ -68,6 +69,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
   planType,
   features,
   onSuccess,
+  onBack
 }) => {
   const [paymentSubmit] = usePaymentCreateMutation();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -164,35 +166,63 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
     );
   };
 
+  const handleBackToPaymentForm = () => {
+    setCurrentStep(1);
+  };
+
+  const handleBackToPlans = () => {
+    onBack();
+  };
+
   const handleFirstStep = (values: PaymentFormValues) => {
     setPaymentFormData(values);
     setCurrentStep(2);
   };
 
   const renderCompanyLogo = () => (
-    <div className="mx-8 mt-8">
+    <div className="md:mx-8">
       <img
-        src={companyLogoLight}
+        src={planType === "monthly" ? companyLogoDark : companyLogoLight}
         className="w-[80px] h-[25px] -ml-1 mb-1"
-        alt="Company Logo"
       />
       <div className="flex items-center gap-2 mb-2">
         <span className="text-[#F5722E] font-semibold text-[22px]">
           {planType === "yearly" ? "Yearly Plan" : "Monthly Plan"}
         </span>
       </div>
-      <p className="text-[13px] font-light text-[#F5F5F7] mb-2">
+      <p
+        className={`text-[13px] font-light mb-2 ${
+          planType === "yearly" ? "text-[#F5F5F7]" : "text-[#263238]"
+        }`}
+      >
         Maximize your reach, save more, and hire the best talent faster
       </p>
     </div>
   );
 
   if (currentStep === 1) {
+    const getInputClassName = () => {
+      return `bg-transparent h-[46px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD] ${
+        planType === "yearly"
+          ? "text-[#F5F5F7] border-[#F5F5F7]"
+          : "text-[#263238] border-[#263238]"
+      }`;
+    };
+
     return (
       <div className="w-full">
+         <div>
+        <button
+          onClick={handleBackToPlans}
+          className={`flex items-center text-${planType === "yearly" ? "[#F5F5F7]" : "[#F5722E]"} text-xs bg-transparent px-2 py-1 rounded-md border border-${planType === "yearly" ? "[#F5F5F7]" : "[#F5722E]"} mb-4 hover:bg-${planType === "yearly" ? "[#F5F5F7]/10" : "[#F5722E]/10"}`}
+        >
+          <ChevronLeft className="w-4 h-4" />
+          <span className="ml-1">Back to Plans</span>
+        </button>
+      </div>
         {renderCompanyLogo()}
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 max-w-5xl mx-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 max-w-5xl md:mx-8">
           <div className="mb-8 md:mb-0">
             <div className="flex flex-col pb-6">
               <div className="flex justify-start mt-4">
@@ -204,19 +234,23 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                 </div>
               </div>
               <div className="flex items-baseline gap-1">
-                <span className="text-[32px] font-extrabold text-[#F5722E]">
+                <span className="text-[24px] md:text-[32px] font-extrabold text-[#F5722E]">
                   ${planType === "yearly" ? "55" : "5"}
                 </span>
                 <span className="text-xl font-bold text-[#F5722E]">
                   /{planType === "yearly" ? "year" : "month"}
                 </span>
                 {planType === "yearly" && (
-                  <span className="text-[32px] text-[#AEADAD] ml-2 relative after:absolute after:w-full after:h-[1px] after:bg-[#AEADAD] after:left-0 after:top-1/2">
+                  <span className="text-[24px] md:text-[32px] text-[#AEADAD] ml-2 relative after:absolute after:w-full after:h-[1px] after:bg-[#AEADAD] after:left-0 after:top-1/2">
                     $60/year
                   </span>
                 )}
               </div>
-              <span className="text-[13px] text-[#F5F5F7] -mt-2 font-extralight">
+              <span
+                className={`text-[13px] -mt-2 font-extralight ${
+                  planType === "yearly" ? "text-[#F5F5F7]" : "text-[#263238]"
+                }`}
+              >
                 + transaction fee
               </span>
             </div>
@@ -230,7 +264,11 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                       className: "stroke-current",
                     })}
                   </span>
-                  <span className="text-[#F5F5F7] text-sm">{feature.text}</span>
+                  <span
+                    className={`text-sm ${planType === "yearly" ? "text-[#F5F5F7]" : "text-[#263238]"}`}
+                  >
+                    {feature.text}
+                  </span>
                 </div>
               ))}
             </div>
@@ -327,52 +365,67 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
             >
               {({ errors, touched, isValid, handleSubmit }) => (
                 <form onSubmit={handleSubmit}>
-                  <div className="space-y-6">
-                    <InputField label="First Name" variant="primary">
+                  <div className="space-y-4">
+                    <InputField
+                      label="First Name"
+                      variant={planType === "yearly" ? "primary" : "payment"}
+                      size="sm"
+                    >
                       <Field name="firstName">
                         {({ field }: FieldProps) => (
                           <Input
                             {...field}
-                            className="bg-transparent text-[#F5F5F7] border-[#F5F5F7] h-[46px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                            className={getInputClassName()}
                             placeholder="First name"
                           />
                         )}
                       </Field>
                       {errors.firstName && touched.firstName && (
-                        <div className="absolute text-red-500 right-0 italic text-xs mt-1">
+                        <div className="absolute text-red-500 right-0 italic text-[10px] md:text-xs mt-1">
                           {errors.firstName}
                         </div>
                       )}
                     </InputField>
-                    <InputField label="Last Name" variant="primary">
+
+                    <InputField
+                      label="Last Name"
+                      variant={planType === "yearly" ? "primary" : "payment"}
+                      size='sm'
+    
+                    >
                       <Field name="lastName">
                         {({ field }: FieldProps) => (
                           <Input
                             {...field}
-                            className="bg-transparent text-[#F5F5F7] border-[#F5F5F7] h-[46px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                            className={getInputClassName()}
                             placeholder="Last name"
                           />
                         )}
                       </Field>
                       {errors.lastName && touched.lastName && (
-                        <div className="absolute text-red-500 right-0 italic text-xs mt-1">
+                        <div className="absolute text-red-500 right-0 italic text-[10px] md:text-xs mt-1">
                           {errors.lastName}
                         </div>
                       )}
                     </InputField>
 
-                    <InputField label="Card Number" variant="primary">
+                    <InputField
+                      label="Card Number"
+                      variant={planType === "yearly" ? "primary" : "payment"}
+                      size='sm'
+    
+                    >
                       <Field name="cardNumber">
                         {({ field }: FieldProps) => (
                           <Input
                             {...field}
-                            className="bg-transparent text-[#F5F5F7] border-[#F5F5F7] h-[46px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                            className={getInputClassName()}
                             placeholder="Enter card number"
                           />
                         )}
                       </Field>
                       {errors.cardNumber && touched.cardNumber && (
-                        <div className="absolute text-red-500 right-0 italic text-xs mt-1">
+                        <div className="absolute text-red-500 right-0 italic text-[10px] md:text-xs mt-1">
                           {errors.cardNumber}
                         </div>
                       )}
@@ -380,12 +433,19 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
 
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <InputField label="Expiry Date" variant="primary">
+                        <InputField
+                          label="Expiry Date"
+                          variant={
+                            planType === "yearly" ? "primary" : "payment"
+                          }
+                          size="sm"
+        
+                        >
                           <Field name="expiryDate">
                             {({ field, form }: FieldProps) => (
                               <Input
                                 {...field}
-                                className="bg-transparent text-[#F5F5F7] border-[#F5F5F7] h-[46px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                                className={getInputClassName()}
                                 placeholder="MM/YY"
                                 onChange={(
                                   e: React.ChangeEvent<HTMLInputElement>,
@@ -402,25 +462,32 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                             )}
                           </Field>
                           {errors.expiryDate && touched.expiryDate && (
-                            <div className="absolute text-red-500 right-0 italic text-xs mt-1">
+                            <div className="absolute text-red-500 right-0 italic text-[10px] md:text-xs mt-1">
                               {errors.expiryDate}
                             </div>
                           )}
                         </InputField>
                       </div>
                       <div>
-                        <InputField label="CVV" variant="primary">
+                        <InputField
+                          label="CVV"
+                          variant={
+                            planType === "yearly" ? "primary" : "payment"
+                          }
+                          size="sm"
+        
+                        >
                           <Field name="cvv">
                             {({ field }: FieldProps) => (
                               <Input
                                 {...field}
-                                className="bg-transparent text-[#F5F5F7] border-[#F5F5F7] h-[46px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                                className={getInputClassName()}
                                 placeholder="XXX"
                               />
                             )}
                           </Field>
                           {errors.cvv && touched.cvv && (
-                            <div className="absolute text-red-500 right-0 italic text-xs mt-1">
+                            <div className="absolute text-red-500 right-0 italic text-[10px] md:text-xs mt-1">
                               {errors.cvv}
                             </div>
                           )}
@@ -428,26 +495,31 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                       </div>
                     </div>
 
-                    <InputField label="Email Address" variant="primary">
+                    <InputField
+                      label="Email Address"
+                      variant={planType === "yearly" ? "primary" : "payment"}
+                      size='sm'
+    
+                    >
                       <Field name="email">
                         {({ field }: FieldProps) => (
                           <Input
                             {...field}
                             type="email"
-                            className="bg-transparent text-[#F5F5F7] border-[#F5F5F7] h-[46px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                            className={getInputClassName()}
                             placeholder="Email address"
                           />
                         )}
                       </Field>
                       {errors.email && touched.email && (
-                        <div className="absolute text-red-500 right-0 italic text-xs mt-1">
+                        <div className="absolute text-red-500 right-0 italic text-[10px] md:text-xs mt-1">
                           {errors.email}
                         </div>
                       )}
                     </InputField>
                   </div>
 
-                  <div className="space-y-3 mt-6">
+                  <div className="space-y-3 mt-5">
                     <Button
                       type="submit"
                       disabled={!isValid}
@@ -469,22 +541,45 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
     );
   }
 
+  const getInputClassName = () => {
+    return `bg-transparent h-[46px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD] ${
+      planType === "yearly"
+        ? "text-[#F5F5F7] border-[#F5F5F7]"
+        : "text-[#263238] border-[#263238]"
+    }`;
+  };
+
   return (
     <div className="w-full">
+      <div>
+        <button
+          onClick={handleBackToPaymentForm}
+          className={`flex items-center text-${planType === "yearly" ? "[#F5F5F7]" : "[#F5722E]"} text-xs bg-transparent px-2 py-1 rounded-md border border-${planType === "yearly" ? "[#F5F5F7]" : "[#F5722E]"} mb-4 hover:bg-${planType === "yearly" ? "[#F5F5F7]/10" : "[#F5722E]/10"}`}
+        >
+          <ChevronLeft className="w-4 h-4" />
+          <span className="ml-1">Back</span>
+        </button>
+      </div>
+
       {renderCompanyLogo()}
 
       <Formik
         initialValues={addressFormData}
         validationSchema={Yup.object({
-          address: Yup.string().required("Address is required").max(100, "Address is too long"),
-          city: Yup.string().required("City is required").max(50, "City name is too long"),
+          address: Yup.string()
+            .required("Address is required")
+            .max(100, "Address is too long"),
+          city: Yup.string()
+            .required("City is required")
+            .max(50, "City name is too long"),
           state: Yup.string().required("State is required"),
           country: Yup.string().required("Country is required"),
-          zipCode: Yup.string().matches(
-            /^[a-zA-Z0-9]{1,6}$/,
-            "Must be alphanumeric and up to 6 characters",
-          )
-          .required("This field is required"),
+          zipCode: Yup.string()
+            .matches(
+              /^[a-zA-Z0-9]{1,6}$/,
+              "Must be alphanumeric and up to 6 characters",
+            )
+            .required("This field is required"),
           termsAccepted: Yup.boolean()
             .oneOf([true], "You must accept the Terms and Privacy Policy")
             .required("You must accept the Terms and Privacy Policy"),
@@ -494,61 +589,81 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
       >
         {({ errors, touched, isValid, handleSubmit, values }) => (
           <form onSubmit={handleSubmit}>
-            <div className="grid grid-cols-1 lg:grid-cols-2 max-w-5xl mx-8 gap-8 pt-2">
+            <div className="grid grid-cols-1 lg:grid-cols-2 max-w-5xl md:mx-8 gap-8 pt-2">
               {/* Left Column - Address Form */}
-              <div className="space-y-6">
-                <InputField label="Billing Address" variant="primary">
+              <div className="space-y-4">
+                <InputField
+                  label="Billing Address"
+                  variant={planType === "yearly" ? "primary" : "payment"}
+                  size='sm'
+
+                >
                   <Field name="address">
                     {({ field }: FieldProps) => (
                       <Input
                         {...field}
-                        className="bg-transparent text-[#F5F5F7] border-[#F5F5F7] h-[46px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                        className={getInputClassName()}
                         placeholder="House No./Bldg./Street"
                       />
                     )}
                   </Field>
                   {errors.address && touched.address && (
-                    <div className="absolute text-red-500 right-0 italic text-xs mt-1">
+                    <div className="absolute text-red-500 right-0 italic text-[10px] md:text-xs mt-1">
                       {errors.address}
                     </div>
                   )}
                 </InputField>
 
-                <InputField label="State" variant="primary">
+                <InputField
+                  label="State"
+                  variant={planType === "yearly" ? "primary" : "payment"}
+                  size='sm'
+
+                >
                   <Field name="state">
                     {({ field }: FieldProps) => (
                       <Input
                         {...field}
-                        className="bg-transparent text-[#F5F5F7] border-[#F5F5F7] h-[46px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                        className={getInputClassName()}
                         placeholder="State"
                       />
                     )}
                   </Field>
                   {errors.state && touched.state && (
-                    <div className="absolute text-red-500 right-0 italic text-xs mt-1">
+                    <div className="absolute text-red-500 right-0 italic text-[10px] md:text-xs mt-1">
                       {errors.state}
                     </div>
                   )}
                 </InputField>
 
-                <InputField label="City" variant="primary">
+                <InputField
+                  label="City"
+                  variant={planType === "yearly" ? "primary" : "payment"}
+                  size='sm'
+
+                >
                   <Field name="city">
                     {({ field }: FieldProps) => (
                       <Input
                         {...field}
-                        className="bg-transparent text-[#F5F5F7] border-[#F5F5F7] h-[46px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                        className={getInputClassName()}
                         placeholder="City"
                       />
                     )}
                   </Field>
                   {errors.city && touched.city && (
-                    <div className="absolute text-red-500 right-0 italic text-xs mt-1">
+                    <div className="absolute text-red-500 right-0 italic text-[10px] md:text-xs mt-1">
                       {errors.city}
                     </div>
                   )}
                 </InputField>
 
-                <InputField label="Country" variant="primary">
+                <InputField
+                  label="Country"
+                  variant={planType === "yearly" ? "primary" : "payment"}
+                  size='sm'
+
+                >
                   <Field name="country">
                     {({ field, form }: FieldProps) => (
                       <div className="relative">
@@ -557,31 +672,36 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                           onChange={(value) => {
                             form.setFieldValue(field.name, value);
                           }}
-                          className="bg-transparent text-[#F5F5F7] border-[#F5F5F7] h-[46px] border-2 focus:border-[#F5722E] rounded-md px-3 w-full hover:text-[#F5F5F7] "
+                          className={`${getInputClassName()} rounded-md px-3 w-full hover:text-[#F5F5F7]`}
                           popoverClassName="z-50"
                         />
                       </div>
                     )}
                   </Field>
                   {errors.country && touched.country && (
-                    <div className="absolute text-red-500 right-0 italic text-xs mt-1">
+                    <div className="absolute text-red-500 right-0 italic text-[10px] md:text-xs mt-1">
                       {errors.country}
                     </div>
                   )}
                 </InputField>
 
-                <InputField label="Zip/Postal Code" variant="primary">
+                <InputField
+                  label="Zip/Postal Code"
+                  variant={planType === "yearly" ? "primary" : "payment"}
+                  size='sm'
+
+                >
                   <Field name="zipCode">
                     {({ field }: FieldProps) => (
                       <Input
                         {...field}
-                        className="bg-transparent text-[#F5F5F7] border-[#F5F5F7] h-[46px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                        className={getInputClassName()}
                         placeholder="Zip/Postal Code"
                       />
                     )}
                   </Field>
                   {errors.zipCode && touched.zipCode && (
-                    <div className="absolute text-red-500 right-0 italic text-xs mt-1">
+                    <div className="absolute text-red-500 right-0 italic text-[10px] md:text-xs mt-1">
                       {errors.zipCode}
                     </div>
                   )}
@@ -598,7 +718,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                           <input
                             type="checkbox"
                             {...field}
-                            className={`mt-1 w-5 h-5 cursor-pointer items-center${
+                            className={`mt-1 w-5 h-5 cursor-pointer items-center ${
                               errors.termsAccepted && touched.termsAccepted
                                 ? "border-red-500"
                                 : "border-[#F5F5F7]"
@@ -619,7 +739,13 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                           )}
                         </div>
                         <div className="ml-2 text-[14px]">
-                          <label className="text-[#F5F5F7]">
+                          <label
+                            className={`${
+                              planType === "yearly"
+                                ? "text-[#F5F5F7]"
+                                : "text-[#263238]"
+                            }`}
+                          >
                             I have read, understood and agree to the{" "}
                             <a
                               href="https://app.websitepolicies.com/policies/view/azn4i7fg"
@@ -646,17 +772,35 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                 </div>
 
                 <div className="space-y-2 text-sm pt-4">
-                  <div className="flex justify-between text-[#F5F5F7]">
+                  <div
+                    className={`flex justify-between ${
+                      planType === "yearly"
+                        ? "text-[#F5F5F7]"
+                        : "text-[#263238]"
+                    }`}
+                  >
                     <span>Subscription Fee</span>
                     <span>${planType === "yearly" ? "55.00" : "5.00"}</span>
                   </div>
-                  <div className="flex justify-between text-[#F5F5F7]">
+                  <div
+                    className={`flex justify-between ${
+                      planType === "yearly"
+                        ? "text-[#F5F5F7]"
+                        : "text-[#263238]"
+                    }`}
+                  >
                     <span>Transaction Fee (9.6%)</span>
                     <span>
                       ${(planType === "yearly" ? 5.28 : 0.48).toFixed(2)}
                     </span>
                   </div>
-                  <div className="flex justify-between text-[#F5F5F7]">
+                  <div
+                    className={`flex justify-between ${
+                      planType === "yearly"
+                        ? "text-[#F5F5F7]"
+                        : "text-[#263238]"
+                    }`}
+                  >
                     <span>
                       {values.country?.toLowerCase() === "canada"
                         ? "13% Tax"
@@ -692,8 +836,14 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                   </div>
                 </div>
 
-                <div className="space-y-3 pt-4">
-                  <div className="text-[14px] text-[#F5F5F7] pt-2">
+                <div className="space-y-3 pt-6">
+                  <div
+                    className={`text-[14px] pt-2 ${
+                      planType === "yearly"
+                        ? "text-[#F5F5F7]"
+                        : "text-[#263238]"
+                    }`}
+                  >
                     By clicking "Complete Payment" you will be charged the total
                     price of{" "}
                     <span className="text-[#F5722E]">
@@ -725,28 +875,20 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                     {isSubmitting ? "Processing..." : "Complete Payment"}
                   </Button>
 
-                  <Button
-                    type="button"
-                    onClick={() => {
-                      setAddressFormData({
-                        ...values,
-                        termsAccepted: false,
-                      });
-                      setCurrentStep(1);
-                    }}
-                    className="w-full border border-[#F5722E] bg-transparent text-[#F5722E] hover:bg-[#F5722E] hover:text-white h-[34px] rounded"
-                  >
-                    Back
-                  </Button>
-
-                  <div className="flex flex-col items-start">
+                  <div className="flex flex-col items-start pb-3.5">
                     <div className="flex items-center">
                       <LockKeyhole className="text-[#4BAF66]" size={11} />
                       <a className="text-[#4BAF66] text-[9px] underline ml-2">
                         Security & Policy
                       </a>
                     </div>
-                    <p className="text-[10px] text-[#F5F5F7]">
+                    <p
+                      className={`text-[10px] ${
+                        planType === "yearly"
+                          ? "text-[#F5F5F7]"
+                          : "text-[#263238]"
+                      }`}
+                    >
                       We maintain industry-standard physical, technical, and
                       administrative measures to safeguard your personal
                       information

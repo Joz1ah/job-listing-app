@@ -15,6 +15,8 @@ import sparkle_icon from "assets/images/sparkle-icon.png";
 import star_icon from "assets/images/star-subscription-icon.svg?url";
 import { PaymentStep } from "components";
 
+import { ExpiredSubModal } from "components";
+
 interface Feature {
   icon: React.ReactNode;
   text: string;
@@ -76,6 +78,8 @@ const SubscriptionSettings: React.FC = () => {
     null,
   );
 
+  const [isModalOpen] = useState(false);
+
   const features: PlanFeatures = {
     yearly: [
       { icon: <Infinity />, text: "Unlimited interview Invites" },
@@ -118,12 +122,25 @@ const SubscriptionSettings: React.FC = () => {
 
   if (currentStep === "payment" && selectedPlan) {
     return (
-      <PaymentStep
-        planType={selectedPlan}
-        features={features[selectedPlan]}
-        onSuccess={handlePaymentSuccess}
-        onBack={handleBackToPlans}
-      />
+      <div className="w-full">
+        <div className="mb-2">
+          <h2 className="text-[#F5F5F7] text-2xl font-normal mb-3">
+            ✦ Your Subscription
+          </h2>
+          <p className="text-[#F8F8FF] text-sm">
+            Select the perfect plan for your needs: get started with our $5
+            monthly plan for easy access to all essential features, or save more
+            with our $55 yearly plan, offering full access to premium content
+            and exclusive benefits throughout the year
+          </p>
+        </div>
+        <PaymentStep
+          planType={selectedPlan}
+          features={features[selectedPlan]}
+          onSuccess={handlePaymentSuccess}
+          onBack={handleBackToPlans}
+        />
+      </div>
     );
   }
 
@@ -156,6 +173,7 @@ const SubscriptionSettings: React.FC = () => {
 
   return (
     <div className="w-full">
+      <ExpiredSubModal open={isModalOpen} userType="employer" />
       <div className="mb-2">
         <h2 className="text-[#F5F5F7] text-2xl font-normal mb-3">
           ✦ Subscription Plans
