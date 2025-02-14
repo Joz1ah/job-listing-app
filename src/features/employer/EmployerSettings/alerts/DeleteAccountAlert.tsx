@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,18 +10,23 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "components";
+import { useNavigate } from 'react-router-dom';
 
 interface DeleteAccountAlertProps {
-  onDelete: () => void;
   isOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
 }
 
 const DeleteAccountAlert: React.FC<DeleteAccountAlertProps> = ({
-  onDelete,
   isOpen,
   onOpenChange,
 }) => {
+  const navigate = useNavigate();
+
+  const handleDelete = () => {
+    navigate('/contact-us');
+  };
+
   return (
     <AlertDialog open={isOpen} onOpenChange={onOpenChange}>
       <AlertDialogTrigger asChild>
@@ -34,7 +39,9 @@ const DeleteAccountAlert: React.FC<DeleteAccountAlertProps> = ({
       </AlertDialogTrigger>
       <AlertDialogContent className="bg-[#263238] border-[#E53835] border-2 md:min-w-[680px] md:h-[190px]">
         <AlertDialogHeader>
-          <AlertDialogTitle className="text-[#E53835] text-[20px]">Delete Your Account</AlertDialogTitle>
+          <AlertDialogTitle className="text-[#E53835] text-[20px]">
+            Delete Your Account
+          </AlertDialogTitle>
           <AlertDialogDescription className="text-white text-[15px]">
             Deleting your account is permanent and cannot be undone. Do you wish
             to continue?
@@ -46,7 +53,7 @@ const DeleteAccountAlert: React.FC<DeleteAccountAlertProps> = ({
           </AlertDialogCancel>
           <AlertDialogAction
             className="w-full md:w-[140px] h-8 text-[#E53835] bg-[#263238] hover:text-white hover:bg-[#E53835] border border-[#E53835] rounded p-0 text-[10px] font-normal transition-colors duration-200"
-            onClick={onDelete}
+            onClick={handleDelete}
           >
             Yes, Delete My Account
           </AlertDialogAction>

@@ -35,12 +35,6 @@ const PrivacyAndSecuritySettings: FC = () => {
   const [isDeleteOpen, setIsDeleteOpen] = React.useState(false);
   const [isSuccess, setIsSuccess] = React.useState(false);
 
-  const handleDeleteAccount = () => {
-    console.log("Account deleted");
-    setIsDeleteAlertOpen(false);
-    setIsDeleteOpen(false);
-  };
-
   const validationSchema = Yup.object().shape({
     originalPassword: Yup.string().required("Original password is required"),
     newPassword: Yup.string()
@@ -132,9 +126,9 @@ const PrivacyAndSecuritySettings: FC = () => {
         </h3>
 
         <div className="flex justify-center">
-          <div className="w-[355px] max-w-md">
-            <form onSubmit={handleSubmit} className="flex flex-col w-[355px]">
-              <div className="space-y-8 mb-8 w-[355px]">
+        <div className="w-full max-w-md flex justify-center">
+            <form onSubmit={handleSubmit} className="flex flex-col w-full md:w-[355px]">
+              <div className="w-full space-y-8 mb-8">
                 <InputField
                   label="Original Password"
                   error={errors.originalPassword}
@@ -276,7 +270,6 @@ const PrivacyAndSecuritySettings: FC = () => {
               </p>
               <div className="flex justify-end">
                 <DeleteAccountAlert 
-                  onDelete={handleDeleteAccount}
                   isOpen={isDeleteAlertOpen}
                   onOpenChange={setIsDeleteAlertOpen}
                 />
