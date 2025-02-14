@@ -7,6 +7,8 @@ import { useLanding } from "../useLanding";
 import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
 import { MODAL_HEADER_TYPE, MODAL_STATES } from "store/modal/modal.types";
 import { isValidPhoneNumber } from "react-phone-number-input";
+import { getCountryByNumber } from 'utils/phoneUtils';
+import countries from "constants/countries";
 
 interface FormValues {
   phoneNumber: string;
@@ -108,14 +110,15 @@ const MobileCountrySignUp = () => {
                       name="phoneNumber"
                       value={values.phoneNumber}
                       onChange={(e) => {
-                        handleChange(e);
+                        handleChange(e)
                         setFieldValue("phoneNumber", e.target.value);
+                        const countryCode = getCountryByNumber(e.target.value);
+                        const country = countries.find((c) => c.code === countryCode)?.name || '';
+                        console.log(country)
+                        setFieldValue("country", country);
                       }}
                       defaultCountry="PH"
                       className="w-full"
-                      onCountryChange={(country) => {
-                        setFieldValue("country", country || "");
-                      }}
                     />
                   </div>
                 </div>
