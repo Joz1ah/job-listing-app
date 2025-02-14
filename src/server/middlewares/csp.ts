@@ -7,7 +7,7 @@ const nonce = (_req: Request, res: Response, next: NextFunction): void => {
   res.locals.cspNonce = Buffer.from(randomUUID()).toString('base64')
   next()
 }
-
+/*
 const stagingSrc = [
   '*.akaza.xyz',
   'akaza-sit-api-gateway---rev-2-2tninhtd.uk.gateway.dev',
@@ -19,6 +19,7 @@ const prodSrc = [
   'js.authorize.net',
   'js.stripe.com',
 ]
+  */
 const defaultSrc = [
   "'self'",
   '*.akaza.xyz',
@@ -28,7 +29,7 @@ const defaultSrc = [
   '*.akaza.io',
   'js.authorize.net',
   'js.stripe.com',
-  ...(IS_DEV ? stagingSrc : prodSrc),
+  //...(IS_DEV ? stagingSrc : prodSrc),
   'api2.authorize.net',
   'localhost:*',
   'js.intercomcdn.com',
@@ -40,7 +41,11 @@ const csp = (req: Request, res: Response, next: NextFunction): void => {
     contentSecurityPolicy: {
       useDefaults: true,
       directives: {
-        defaultSrc,        
+        defaultSrc,   
+        styleSrc: [
+          "'self'",
+          `'nonce-${String(res.locals.cspNonce)}'`,
+        ],     
         imgSrc: [
           "'self'",
           'raw.githubusercontent.com',
