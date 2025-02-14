@@ -166,8 +166,7 @@ export { RescheduleCard } from "components/Interview/interview-cards/RescheduleC
 export { SignOutModal } from "components/sign-out/SignOutModal";
 export { IndustrySearch } from "components/ui/custom/industry-search";
 export { TimezoneSelector } from "components/ui/custom/timezone-selector";
-export { ExpiredSubModalEmployer } from "components/expired-subscription/ExpiredSubModalEmployer";
-export { ExpiredSubModalJobHunter } from "components/expired-subscription/ExpiredSubModalJobHunter";
+export { ExpiredSubModal } from "components/expired-subscription/ExpiredSubModal";
 export { CountrySelect };
 export  { IndustryDropdown } from 'components/ui/custom/industry-dropdown'
 export { PaymentStep } from 'components/payment-form/PaymentStep'

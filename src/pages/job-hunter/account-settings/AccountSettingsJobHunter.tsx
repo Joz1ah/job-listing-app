@@ -20,7 +20,7 @@ const AccountSettingsJobHunter: FC = () => {
           userType="job-hunter"
           className="w-[395px]"
         />
-        <div className="w-auto lg:w-full max-w-[855px] min-h-[750px] bg-[#2D3A41] rounded-lg px-5 py-8 m-4">
+        <div className="w-auto lg:w-full max-w-[855px] min-h-[750px] bg-[#2D3A41] rounded-lg px-4 py-8 m-4">
           <Outlet />
         </div>
       </div>

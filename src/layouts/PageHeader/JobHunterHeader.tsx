@@ -1,10 +1,5 @@
 import { FC } from "react";
-import {
-  BriefcaseBusiness,
-  DollarSign,
-  Info,
-  MapPin,
-} from "lucide-react";
+import { BriefcaseBusiness, DollarSign, Info, MapPin } from "lucide-react";
 import { Tooltip } from "components";
 import { useJobHunterContext } from "components";
 import { useAuth } from "contexts/AuthContext/AuthContext";
@@ -33,18 +28,18 @@ const JobHunterHeader: FC = () => {
   const formatEmploymentTypes = (types: string) => {
     return types
       .split(",")
-      .map(type => 
+      .map((type) =>
         type
           .split("-")
-          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
           .join(" ")
-          .trim()
+          .trim(),
       )
-      .filter(type => type === "Full Time" || type === "Part Time");
+      .filter((type) => type === "Full Time" || type === "Part Time");
   };
 
   return (
-    <div className="w-full px-6 md:px-16 py-8 md:mt-16">
+    <div className="w-full md:px-16 py-8 md:mt-16">
       <div className="flex flex-col space-y-3">
         <div className="flex flex-col space-y-2 md:space-y-4">
           <h1 className="text-3xl text-white font-normal">
@@ -54,7 +49,9 @@ const JobHunterHeader: FC = () => {
           <div className="flex items-center justify-between md:justify-start md:gap-8">
             <div className="flex items-center space-x-2 text-white font-light">
               <MapPin className="text-[#F5722E]" size={20} />
-              <span className="text-[13px] md:text-[17px]">{relatedDetails?.country}</span>
+              <span className="text-[13px] md:text-[17px]">
+                {relatedDetails?.country}
+              </span>
             </div>
           </div>
 
@@ -78,27 +75,34 @@ const JobHunterHeader: FC = () => {
             <span className="text-[13px] md:text-[15px]">
               Expected Salary:{" "}
             </span>
-            <span className="outline outline-1 outline-[#F5722E] text-[#F5722E] px-1 font-semibold text-[13px] md:text-[15px] rounded-[2px]">
+            <span className="outline outline-1 outline-[#F5722E] text-[#F5722E] px-1 font-semibold text-[10px] md:text-[15px] rounded-[2px]">
               {relatedDetails.salaryRange}
             </span>
           </div>
 
-          <div className="flex items-center space-x-2 text-white">
-            <BriefcaseBusiness
-              className="fill-[#F5722E] text-[#263238]"
-              size={20}
-            />
-            <span className="text-[13px] md:text-[15px]">
-              Employment Preference:{" "}
-            </span>
-            {formatEmploymentTypes(relatedDetails?.employmentType || "").map((type: string) => (
-              <span 
-                key={type}
-                className="outline outline-1 outline-[#F5722E] text-[#F5722E] px-1 text-[13px] md:text-[15px] rounded-[2px]"
-              >
-                {type}
+          <div className="flex items-center flex-wrap text-white">
+            <div className="flex items-center mr-2">
+              <BriefcaseBusiness
+                className="fill-[#F5722E] text-[#263238]"
+                size={20}
+              />
+              <span className="text-[13px] md:text-[15px] ml-2">
+                Employment Preference:{" "}
               </span>
-            ))}
+            </div>
+
+            <div className="flex gap-2">
+              {formatEmploymentTypes(relatedDetails?.employmentType || "").map(
+                (type: string) => (
+                  <span
+                    key={type}
+                    className="whitespace-nowrap outline outline-1 outline-[#F5722E] text-[#F5722E] px-1 text-[10px] md:text-[15px] rounded-[2px]"
+                  >
+                    {type}
+                  </span>
+                ),
+              )}
+            </div>
           </div>
         </div>
       </div>
