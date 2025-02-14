@@ -1,4 +1,9 @@
-const countries = [
+interface Country {
+    code: string;
+    name: string;
+  }
+
+const countries: Country[] = [
     { code: "AF", name: "Afghanistan" },
     { code: "AL", name: "Albania" },
     { code: "DZ", name: "Algeria" },

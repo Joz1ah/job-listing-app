@@ -5,7 +5,8 @@ import { HelmetProvider } from 'react-helmet-async'
 import { loadableReady } from '@loadable/component'
 import { AuthProvider } from 'contexts/AuthContext/AuthContext';
 import { ErrorModalProvider } from 'contexts/ErrorModalContext/ErrorModalContext';
-
+import { CookieProvider } from 'contexts/cookieContext';
+import CookieConsentBanner from "components/cookies/cookieConsentBanner";
 import { App } from './App'
 
 import { initStore } from 'store/store'
@@ -68,17 +69,20 @@ if (
 
 const indexJSX = (
   <StrictMode>
-    <ErrorModalProvider>
-      <Provider store={store}>
-        <HelmetProvider>
-          <AuthProvider>
-              <BrowserRouter>
-                  <App />
-              </BrowserRouter>
-            </AuthProvider>
-        </HelmetProvider>
-      </Provider>
-    </ErrorModalProvider>
+    <CookieProvider>
+      <ErrorModalProvider>
+        <Provider store={store}>
+          <HelmetProvider>
+            <AuthProvider>
+                <BrowserRouter>
+                    <App />
+                    <CookieConsentBanner/>
+                </BrowserRouter>
+              </AuthProvider>
+          </HelmetProvider>
+        </Provider>
+      </ErrorModalProvider>
+    </CookieProvider>
   </StrictMode>
 )
 

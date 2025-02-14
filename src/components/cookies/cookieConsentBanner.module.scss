@@ -1,0 +1,78 @@
+.noScroll {
+    overflow: hidden !important;
+}
+
+.modalBackdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal {
+    min-height: 384px;
+    width: 275px;
+    padding:40px;
+    background-color: #fff;
+    border-radius: 63px;
+    width: 400px;
+    text-align: center;
+    color: #262C31;
+    .modal-icon{
+        display: flex;
+        justify-content: center;
+    }
+    .modal-title{
+        margin-top: 20px;
+        font-family: Poppins;
+        font-style: normal;
+        font-size: 3em;
+        font-weight: 700;
+    }
+    .modal-content{
+        margin-top: 20px;
+        .highlight{
+            display: inline-block;
+            color: #F5722E;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    }
+}
+
+.buttonContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+
+    .acceptButton, .declineButton {
+        border: none;
+        padding: 10px 32px;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+    .acceptButton{
+        color: #fff;
+        background-color: #F5722E;
+        font-size: 16px;
+        width: 122px;
+        font-style: normal;
+        font-weight: 600;
+    }
+
+    .declineButton {
+        margin-top: 10px;
+        color: #6F6C90;
+        text-decoration: underline;
+    }
+
+}
+
