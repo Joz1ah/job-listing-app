@@ -44,7 +44,11 @@ const csp = (req: Request, res: Response, next: NextFunction): void => {
         defaultSrc,   
         styleSrc: [
           "'self'",
-          `'nonce-${String(res.locals.cspNonce)}'`,
+          //prioritize to remove unsafe-inline after testing
+          "'unsafe-inline'",
+          //`'nonce-${String(res.locals.cspNonce)}'`,
+          'https://fonts.googleapis.com',
+          'https://fonts.gstatic.com',
         ],     
         imgSrc: [
           "'self'",
