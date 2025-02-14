@@ -1,11 +1,15 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useCallback } from "react";
 import Cookies from "js-cookie";
 
 interface CookieContextType {
-  consentGiven: boolean;
-  setConsent: (consent: boolean) => void;
-  getConsent: () => boolean;
-  clearConsent: () => void;
+    consentGiven: boolean;
+    setConsent: (consent: boolean) => void;
+    getConsent: () => boolean;
+    clearConsent: () => void;
+    isVisible: boolean;
+    setIsVisible: (visible: boolean) => void; 
+    isSnackBarVisible: boolean;
+    setIsSnackBarVisible: (visible: boolean) => void; 
 }
 
 interface CookieProviderProps {
@@ -15,29 +19,23 @@ interface CookieProviderProps {
 const CookieContext = createContext<CookieContextType | undefined>(undefined);
 
 export const CookieProvider: React.FC<CookieProviderProps> = ({ children }) => {
-  const [consentGiven, setConsentGiven] = useState<boolean>(false);
+  const [consentGiven, setConsentGiven] = useState<boolean>(() => Cookies.get("cookie-consent") === "true");
+  const [isVisible, setIsVisible] = useState<boolean>(false)//useState(!consentGiven && !(Cookies.get("cookie-consent") === "false") ); 
+  const [isSnackBarVisible, setIsSnackBarVisible] = useState(!consentGiven && !(Cookies.get("cookie-consent") === "false") ); 
 
-  useEffect(() => {
-    const storedConsent = Cookies.get("cookie-consent");
-    if (storedConsent === "true") {
-      setConsentGiven(true);
-    } else {
-      setConsentGiven(false);
-    }
+  const setConsent = useCallback((consent: boolean) => {
+    setConsentGiven(consent);
+    Cookies.set("cookie-consent", consent.toString(), { expires: 365, secure: true, sameSite: "strict" });
   }, []);
 
-  const setConsent = (consent: boolean) => {
-    setConsentGiven(consent);
-    Cookies.set("cookie-consent", consent.toString(), { expires: 365 });
-  };
-
-  const clearConsent = () => {
+  const clearConsent = useCallback(() => {
     setConsentGiven(false);
-    //Cookies.remove("cookie-consent");
-  };
+    Cookies.remove("cookie-consent");
+  }, []);
 
   return (
-    <CookieContext.Provider value={{ consentGiven, setConsent, getConsent: () => consentGiven, clearConsent }}>
+    <CookieContext.Provider 
+      value={{ consentGiven, setConsent, getConsent: () => consentGiven, clearConsent, isVisible, setIsVisible, isSnackBarVisible, setIsSnackBarVisible }}>
       {children}
     </CookieContext.Provider>
   );

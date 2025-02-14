@@ -1,55 +1,55 @@
-import React, { useEffect, useState  } from "react";
+import React, {useState} from "react";
 import { useCookieContext } from "contexts/cookieContext";
-import Cookies from "js-cookie";
 import styles from "./cookieConsentBanner.module.scss";
 import cookiesIcon from "assets/cookies.svg?url";
 
 const CookieConsentBanner: React.FC = () => {
-  const { consentGiven, setConsent, clearConsent } = useCookieContext();
-  const [, forceUpdate] = useState(0);
+  const { setConsent, isVisible, setIsVisible } = useCookieContext();
+    const [isFadingOut, setIsFadingOut] = useState(false);
 
-  const handleClick = () => {
-    forceUpdate(prev => prev + 1);
-  };
-  
-  useEffect(() => {
-    if ( !!Cookies.get('cookie-consent') || !consentGiven ) {
-      document.body.classList.add(styles.noScroll);
-    } else {
-      document.body.classList.remove(styles.noScroll);
-    }
-  }, [consentGiven,setConsent]);
-
-  if (!!Cookies.get('cookie-consent') || consentGiven) {
+  if (!isVisible) {
     return null;
   }
 
+  const handleClose = () => {
+    setIsFadingOut(true);
+    setTimeout(() => {
+      setIsVisible(false);
+      setIsFadingOut(false);
+    }, 200); 
+  };
+
   return (
-    <div className={styles.modalBackdrop}>
-      <div className={styles.modal}>
+    <div className={`${styles.contentWrapper} ${isFadingOut ? styles["fade-out"] : ""}`}>
+      <div className={`${styles.modal}`}>
         <div className={styles["modal-icon"]}>
           <img src={cookiesIcon} alt="Cookies" />
         </div>
-        <div className={styles["modal-title"]}>Cookies</div>
+        <h2 id="cookie-banner-title" className={styles["modal-title"]}>
+          Cookies
+        </h2>
         <div className={styles["modal-content"]}>
           <p>
             We use cookies to enhance your experience. By continuing, you agree to our{" "}
-            <div className={styles.highlight}>cookie policy.</div>
+            <a href="/cookie-policy" className={styles.highlight}>cookie policy</a>.
           </p>
         </div>
 
         <div className={styles.buttonContainer}>
           <button
-            onClick={() => setConsent(true)}  
+            onClick={() => {
+              setConsent(true);
+              handleClose();
+            }}  
             className={styles.acceptButton}
+            autoFocus
           >
             Accept
           </button>
           <button
             onClick={() => {
-              setConsent(false);  
-              clearConsent();
-              handleClick();     
+              setConsent(false);
+              handleClose();
             }}
             className={styles.declineButton}
           >

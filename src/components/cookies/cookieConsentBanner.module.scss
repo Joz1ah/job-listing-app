@@ -1,29 +1,65 @@
-.noScroll {
-    overflow: hidden !important;
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.modalBackdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+}
+
+.contentWrapper{
+    display: flex;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    opacity: 0;
+    animation: fadeIn 0.2s ease-out forwards;
+    animation-delay: .5s;
     z-index: 1000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    &.fade-out {
+        animation: fadeOut 0.2s ease-out forwards;
+    }
+    @media (max-width: 768px) {
+        justify-content: center;
+        width: 100%;
+        right:unset;
+    }
 }
 
 .modal {
+    right: 0;
+    bottom: 0;
     min-height: 384px;
-    width: 275px;
     padding:40px;
     background-color: #fff;
     border-radius: 63px;
-    width: 400px;
+    width: 350px;
     text-align: center;
     color: #262C31;
+    margin-right: 7%;
+    margin-bottom: 1em;
+    opacity: 0;
+    animation: fadeIn 0.3s ease-out forwards;
+    @media (max-width: 768px) {
+        margin-right: 0;
+        right:unset;
+    }
+    &.fade-out {
+        animation: fadeOut 0.2s ease-out forwards;
+    }
     .modal-icon{
         display: flex;
         justify-content: center;
@@ -43,6 +79,43 @@
             text-decoration: underline;
             cursor: pointer;
         }
+    }
+}
+
+.snackBar {
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px;
+    padding-top:18px;
+    padding-bottom:18px;
+    padding-left:4px;
+    padding-right:4px;
+    background-color: #fff;
+    border-radius: 63px;
+    min-width: 355px;
+    color: #262C31;
+    margin-right: 7%;
+    margin-bottom: 1em;
+    @media (max-width: 768px) {
+        margin-right: 0;
+        right:unset;
+    }
+    .icon{
+        margin-right: 8px;
+        img{
+            width: 32px;
+            height: 32px;
+        }
+    }
+    .highlight{
+        display: inline-block;
+        color: #F5722E;
+        text-decoration: underline;
+        margin-left:.5em;
+        cursor: pointer;
     }
 }
 
