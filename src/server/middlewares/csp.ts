@@ -21,6 +21,13 @@ const prodSrc = [
 ]
 const defaultSrc = [
   "'self'",
+  '*.akaza.xyz',
+  'akaza-sit-api-gateway---rev-2-2tninhtd.uk.gateway.dev',
+  'jstest.authorize.net',
+  'https://bdf2b90d-e282-4058-a4d5-820c10cf0d68.mock.pstmn.io',
+  '*.akaza.io',
+  'js.authorize.net',
+  'js.stripe.com',
   ...(IS_DEV ? stagingSrc : prodSrc),
   'api2.authorize.net',
   'localhost:*',
