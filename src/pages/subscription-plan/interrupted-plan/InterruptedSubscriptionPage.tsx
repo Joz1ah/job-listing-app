@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Gift,
   CalendarCheck,
@@ -11,20 +11,18 @@ import {
   Infinity,
 } from "lucide-react";
 import { DefaultLayout } from "layouts";
-import { InputField } from "components";
-import { Input } from "components";
 import { Button } from "components";
 import sparkle_icon_green from "assets/images/sparkle-icon-green.svg?url";
 import sparkle_icon from "assets/images/sparkle-icon.png";
-import visa_icon from "assets/credit-card-icons/cc_visa.svg?url";
-import amex_icon from "assets/credit-card-icons/cc_american-express.svg?url";
-import mastercard_icon from "assets/credit-card-icons/cc_mastercard.svg?url";
-import discover_icon from "assets/credit-card-icons/cc_discover.svg?url";
 import { useUpdateFreeTrialStatusMutation } from "api/akaza/akazaAPI";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import SubscriptionSuccessModal from "./SubscriptionSuccessModal";
 import { FreeTrialConfirmationModal } from "./FreeTrialConfirmationModal";
 import { FreeTrialSuccessModal } from "./FreeTrialSuccessModal";
+import { useLanding } from "pages/landing/useLanding";
+import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
+import { usePaymentCreateMutation } from "api/akaza/akazaAPI";
+import { InterruptedPaymentForm } from "./InterruptedPaymentForm";
 
 type PlanProps = {
   type: string;
@@ -113,9 +111,40 @@ const PricingCard: React.FC<PlanProps & { onSelect?: () => void; hideButton?: bo
 );
 
 interface PaymentStepProps {
-  plan: PlanProps;
+  plan: {
+    type: string;
+    price: number;
+    features: Array<{
+      icon: React.ReactNode;
+      text: string;
+    }>;
+    isHighlighted?: boolean;
+    subtext: string;
+    buttonText: string;
+  };
   onBack: () => void;
   onSuccess: () => void;
+}
+
+interface AcceptJsResponse {
+  messages: {
+    resultCode: string;
+    message: Array<{ text: string }>;
+  };
+  opaqueData: {
+    dataValue: string;
+  };
+}
+
+declare global {
+  interface Window {
+    Accept: {
+      dispatchData: (
+        data: any,
+        callback: (response: AcceptJsResponse) => void,
+      ) => void;
+    };
+  }
 }
 
 const PaymentStep: React.FC<PaymentStepProps> = ({
@@ -123,20 +152,67 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
   onBack,
   onSuccess,
 }) => {
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [paymentSubmit] = usePaymentCreateMutation();
+  const [isLoading, setIsLoading] = useState(false);
+  const { showError } = useErrorModal();
+  const { createAuthNetTokenizer } = useLanding();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsProcessing(true);
-    try {
-      // Simulating payment processing
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      onSuccess();
-    } catch (error) {
-      console.error('Payment processing failed:', error);
-    } finally {
-      setIsProcessing(false);
-    }
+  useEffect(() => {
+    createAuthNetTokenizer();
+  }, []);
+
+  const handleCombinedFormSubmit = async (values: any) => {
+    setIsLoading(true);
+
+    const baseAmount = plan.type === 'Monthly' ? 5 : 55;
+    const transactionFee = baseAmount * 0.096;
+    const subtotal = baseAmount + transactionFee;
+    const tax = values.country?.toLowerCase() === 'canada' ? subtotal * 0.13 : 0;
+    const totalAmount = Number((subtotal + tax).toFixed(2));
+
+    const secureData = {
+      authData: {
+        clientKey: '7wuXYQ768E3G3Seuy6aTf28PfU3mJWu7Bbj564KfTPqRa7RXUPZvTsnKz9Jf7daJ',
+        apiLoginID: '83M29Sdd8',
+      },
+      cardData: {
+        cardNumber: values.cardNumber,
+        month: values.expiryDate.split('/')[0],
+        year: values.expiryDate.split('/')[1],
+        cardCode: values.cvv,
+      },
+    };
+
+    window.Accept.dispatchData(secureData, async (response: AcceptJsResponse) => {
+      if (response.messages.resultCode === 'Ok') {
+        try {
+          await paymentSubmit({
+            provider: 'authnet',
+            plan: plan.type,
+            amount: totalAmount,
+            paymentMethodId: response.opaqueData.dataValue,
+            daysTrial: 0,
+            firstName: values.firstName,
+            lastName: values.lastName,
+            email: values.email,
+            address: values.address,
+            city: values.city,
+            state: values.state,
+            zip: values.zipCode,
+            country: values.country,
+          }).unwrap();
+
+          setIsLoading(false);
+          onSuccess();
+        } catch (err: any) {
+          showError(err?.data?.errors, err?.data?.message);
+          setIsLoading(false);
+        }
+      } else {
+        setIsLoading(false);
+        showError('Payment Error', response.messages.message[0].text);
+      }
+    });
   };
 
   return (
@@ -169,84 +245,12 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
         <div className="flex flex-col lg:flex-row items-center lg:items-start gap-6">
           <PricingCard {...plan} hideButton={true}/>
 
-          <div className="w-full md:w-[743px] h-[514px] bg-[#2D3A41] p-6 rounded flex justify-center">
-            <form
-              onSubmit={handleSubmit}
-              className="space-y-6 w-full md:w-[350px]"
-            >
-              <div className="flex justify-center mb-6">
-                <div className="flex gap-2">
-                  <img src={visa_icon} alt="Visa" />
-                  <img src={amex_icon} alt="American Express" />
-                  <img src={mastercard_icon} alt="Mastercard" />
-                  <img src={discover_icon} alt="Discover" />
-                </div>
-              </div>
-
-              <div>
-                <InputField label="Card Holder Name" variant="primary">
-                  <Input
-                    id="cardName"
-                    className="bg-transparent border-[#F5F5F7] text-[#F5F5F7] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
-                    placeholder="Enter card holder name"
-                  />
-                </InputField>
-              </div>
-
-              <div>
-                <InputField label="Card Number" variant="primary">
-                  <Input
-                    id="cardNumber"
-                    className="bg-transparent border-[#F5F5F7] text-[#F5F5F7] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
-                    placeholder="Enter card number"
-                  />
-                </InputField>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <InputField label="Expiry Date" variant="primary">
-                    <Input
-                      id="expiryDate"
-                      className="bg-transparent border-[#F5F5F7] text-[#F5F5F7] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
-                      placeholder="XX/XX"
-                    />
-                  </InputField>
-                </div>
-                <div>
-                  <InputField label="CVV" variant="primary">
-                    <Input
-                      id="cvv"
-                      className="bg-transparent border-[#F5F5F7] text-[#F5F5F7] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
-                      placeholder="XXX"
-                    />
-                  </InputField>
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <Button
-                  type="submit"
-                  className="w-full bg-[#F5722E] hover:bg-[#F5722E]/90 text-white h-10 rounded"
-                  disabled={isProcessing}
-                >
-                  {isProcessing ? "Payment Procesing" : "Pay & Upgrade"}
-                </Button>
-
-                <div className="flex flex-col items-start">
-                  <div className="flex items-center">
-                    <LockKeyhole className="text-[#4BAF66]" size={11} />
-                    <a className="text-[#4BAF66] text-[9px] underline ml-2">
-                      Security & Policy
-                    </a>
-                  </div>
-                  <p className="text-[10px] text-[#F5F5F7]">
-                    We maintain industry-standard physical, technical, and
-                    administrative measures to safeguard your personal information
-                  </p>
-                </div>
-              </div>
-            </form>
+          <div className="w-full md:w-[743px] h-auto md:h-[580px] bg-[#2D3A41] px-6 pt-1 pb-4 rounded flex justify-center">
+            <InterruptedPaymentForm
+              planType={plan.type.toLowerCase() as 'monthly' | 'yearly'}
+              onSubmit={handleCombinedFormSubmit}
+              isSubmitting={isLoading}
+            />
           </div>
         </div>
       </div>
@@ -344,9 +348,10 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
 
 interface FreeTrialProps {
   onBack: () => void;
+  onSelectPlan: (plan: any) => void; // This will trigger navigation to PaymentStep
 }
 
-const FreeTrial: React.FC<FreeTrialProps> = ({onBack}) => {
+const FreeTrial: React.FC<FreeTrialProps> = ({ onBack, onSelectPlan }) => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [updateFreeTrialStatus] = useUpdateFreeTrialStatusMutation();
@@ -421,16 +426,29 @@ const FreeTrial: React.FC<FreeTrialProps> = ({onBack}) => {
     }
   };
 
+  const handleSubscriptionCardSelect = (type: 'Yearly' | 'Monthly') => {
+    const selectedPlan = {
+      type,
+      price: type === 'Yearly' ? 55 : 5,
+      features: type === 'Yearly' ? yearlyFeatures : monthlyFeatures,
+      isHighlighted: type === 'Yearly',
+      subtext: type === 'Yearly' ? '+ transaction fees' : 'flexible monthly access',
+      buttonText: 'Choose Plan',
+    };
+    onSelectPlan(selectedPlan);
+  };
+
   return (
     <div className="min-h-screen bg-[#242625] p-4 md:p-8">
       <div className="max-w-6xl mx-auto">
-      <button
+        <button
           onClick={onBack}
           className="flex items-center text-[#F5722E] mb-6"
         >
           <ArrowLeft size={20} />
-          <span className="ml-2">Back to Plans</span>
+          <span className="ml-2">Back</span>
         </button>
+
         <div className="text-left max-w-3xl mx-auto mb-8">
           <h1 className="text-3xl text-[#F5722E] mb-1">
             Get Started with a Free Subscription – No Cost, Just Benefits!
@@ -468,7 +486,7 @@ const FreeTrial: React.FC<FreeTrialProps> = ({onBack}) => {
                 features={yearlyFeatures}
                 isHighlighted={true}
                 buttonText="Choose Plan"
-                onSelect={() => {}}
+                onSelect={() => handleSubscriptionCardSelect('Yearly')}
               />
               <SubscriptionCard
                 title="Monthly Plan"
@@ -476,7 +494,7 @@ const FreeTrial: React.FC<FreeTrialProps> = ({onBack}) => {
                 features={monthlyFeatures}
                 isHighlighted={false}
                 buttonText="Choose Plan"
-                onSelect={() => {}}
+                onSelect={() => handleSubscriptionCardSelect('Monthly')}
               />
             </div>
 
@@ -487,23 +505,23 @@ const FreeTrial: React.FC<FreeTrialProps> = ({onBack}) => {
             >
               Continue to Free Trial
             </Button>
-
-            <FreeTrialConfirmationModal
-              isOpen={showConfirmationModal}
-              onClose={() => setShowConfirmationModal(false)}
-              onConfirm={handleConfirmFreeTrial}
-              isLoading={isLoading}
-            />
-
-            <FreeTrialSuccessModal
-              isOpen={showSuccessModal}
-              onClose={() => {
-                setShowSuccessModal(false);
-                window.location.href = '/dashboard';
-              }}
-            />
           </div>
         </div>
+
+        <FreeTrialConfirmationModal
+          isOpen={showConfirmationModal}
+          onClose={() => setShowConfirmationModal(false)}
+          onConfirm={handleConfirmFreeTrial}
+          isLoading={isLoading}
+        />
+
+        <FreeTrialSuccessModal
+          isOpen={showSuccessModal}
+          onClose={() => {
+            setShowSuccessModal(false);
+            window.location.href = '/dashboard';
+          }}
+        />
       </div>
     </div>
   );
@@ -616,7 +634,7 @@ const InterruptedSubscriptionPage: React.FC = () => {
           )
         );
       case "free-trial":
-        return <FreeTrial onBack={handleBack}/>;
+        return <FreeTrial onBack={handleBack} onSelectPlan={handlePlanSelect}/>;
       default:
         return (
           <>
