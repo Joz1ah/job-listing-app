@@ -16,6 +16,16 @@ interface FormData {
   confirmPassword: string;
 }
 
+interface ErrorResponse {
+  status: number;
+  data: {
+    errors: string;
+    message: string;
+    statusCode: number;
+    success: false;
+  }
+}
+
 const PrivacyAndSecuritySettings: FC = () => {
   const [updatePassword, { isLoading }] = useUpdatePasswordMutation();
   const [showOriginalPassword, setShowOriginalPassword] = React.useState(false);
@@ -24,12 +34,6 @@ const PrivacyAndSecuritySettings: FC = () => {
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = React.useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = React.useState(false);
   const [isSuccess, setIsSuccess] = React.useState(false);
-
-  const handleDeleteAccount = () => {
-    console.log("Account deleted");
-    setIsDeleteAlertOpen(false);
-    setIsDeleteOpen(false);
-  };
 
   const validationSchema = Yup.object().shape({
     originalPassword: Yup.string().required("Original password is required"),
@@ -69,11 +73,15 @@ const PrivacyAndSecuritySettings: FC = () => {
         
         resetForm();
         setIsSuccess(true);
-      } catch (error: any) {
-        if (error.status === 400 || error.error === 'TypeError: Failed to fetch') {
-          setFieldError('originalPassword', 'Original password is incorrect');
+      } catch (error) {
+        if (error && 
+            typeof error === 'object' && 
+            'data' in error &&
+            typeof (error as ErrorResponse).data?.message === 'string' &&
+            (error as ErrorResponse).data.message === "Old password is incorrect") {
+          setFieldError('originalPassword', "Original password is incorrect");
         } else {
-          console.error('Failed to update password:', error);
+          setFieldError('originalPassword', 'An unexpected error occurred');
         }
         setIsSuccess(false);
       }
@@ -118,9 +126,9 @@ const PrivacyAndSecuritySettings: FC = () => {
         </h3>
 
         <div className="flex justify-center">
-          <div className="w-[355px] max-w-md">
-            <form onSubmit={handleSubmit} className="flex flex-col w-[355px]">
-              <div className="space-y-8 mb-8 w-[355px]">
+        <div className="w-full max-w-md flex justify-center">
+            <form onSubmit={handleSubmit} className="flex flex-col w-full md:w-[355px]">
+              <div className="w-full space-y-8 mb-8">
                 <InputField
                   label="Original Password"
                   error={errors.originalPassword}
@@ -262,7 +270,6 @@ const PrivacyAndSecuritySettings: FC = () => {
               </p>
               <div className="flex justify-end">
                 <DeleteAccountAlert 
-                  onDelete={handleDeleteAccount}
                   isOpen={isDeleteAlertOpen}
                   onOpenChange={setIsDeleteAlertOpen}
                 />

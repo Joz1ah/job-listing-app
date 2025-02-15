@@ -54,7 +54,7 @@ const SettingsSidebar: FC<SettingsSidebarProps> = ({
     <div className="mb-8">
       <div className="flex items-start">
         <div className="flex-1">
-          <span className="text-[30px] font-normal text-white line-clamp-2"
+          <span className="text-[30px] font-normal text-white break-all md:break-words line-clamp-2 max-w-full"
           title={userName}
           >
             {userName}
@@ -103,8 +103,8 @@ const SettingsSidebar: FC<SettingsSidebarProps> = ({
         <div className="px-4 md:px-6 py-4 md:mt-6 space-y-4">
           {userInfo}
         </div>
-        <div className="w-full px-4 overflow-x-auto">
-        <div className="flex space-x-8 md:gap-x-4 w-full items-center justify-center">
+        <div className="w-full px-4">
+          <div className="flex justify-center gap-10 items-center">
             {settingsMenu.map((item) => (
               <Link
                 key={item.path}

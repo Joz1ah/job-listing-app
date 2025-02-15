@@ -64,8 +64,8 @@ interface EmploymentTypeSelectProps {
                     className={cn(
                       "font-normal text-[13px] rounded-sm whitespace-nowrap overflow-hidden text-ellipsis max-w-[120px]",
                       {
-                        "bg-[#BF532C] text-white": val === "part-time",
-                        "bg-[#F5722E] text-white": val !== "part-time",
+                        "bg-[#BF532C] text-white": val === "Part Time",
+                        "bg-[#F5722E] text-white": val !== "Part Time",
                       }
                     )}
                   >

@@ -1,10 +1,5 @@
 import { FC } from "react";
-import {
-  BriefcaseBusiness,
-  DollarSign,
-  Info,
-  MapPin,
-} from "lucide-react";
+import { BriefcaseBusiness, DollarSign, Info, MapPin } from "lucide-react";
 import { Tooltip } from "components";
 import { useJobHunterContext } from "components";
 import { useAuth } from "contexts/AuthContext/AuthContext";
@@ -29,27 +24,22 @@ const JobHunterHeader: FC = () => {
     </>
   );
 
-  // Format salary range from "71-100" to "$71,000 - $100,000"
-  const formatSalaryRange = (range: string) => {
-    if (range === "nego") return "Negotiable";
-    if (range === "121+") return "$121,000 or more";
-    
-    const [min, max] = range.split("-");
-    return `$${min},000 - $${max},000`;
-  };
-
-  // Format employment type (e.g., "full-time" to "Full Time", "contract" to "Contract Only")
-  const formatEmploymentType = (type: string) => {
-    const formattedType = type
-      .split("-")
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-    
-    return formattedType === "Contract" ? "Contract Only" : formattedType;
+  // Format employment type and filter to only show Full Time and Part Time
+  const formatEmploymentTypes = (types: string) => {
+    return types
+      .split(",")
+      .map((type) =>
+        type
+          .split("-")
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" ")
+          .trim(),
+      )
+      .filter((type) => type === "Full Time" || type === "Part Time");
   };
 
   return (
-    <div className="w-full px-6 md:px-16 py-8 md:mt-16">
+    <div className="w-full md:px-16 py-8 md:mt-16">
       <div className="flex flex-col space-y-3">
         <div className="flex flex-col space-y-2 md:space-y-4">
           <h1 className="text-3xl text-white font-normal">
@@ -59,7 +49,9 @@ const JobHunterHeader: FC = () => {
           <div className="flex items-center justify-between md:justify-start md:gap-8">
             <div className="flex items-center space-x-2 text-white font-light">
               <MapPin className="text-[#F5722E]" size={20} />
-              <span className="text-[13px] md:text-[17px]">{relatedDetails?.country}</span>
+              <span className="text-[13px] md:text-[17px]">
+                {relatedDetails?.country}
+              </span>
             </div>
           </div>
 
@@ -83,27 +75,34 @@ const JobHunterHeader: FC = () => {
             <span className="text-[13px] md:text-[15px]">
               Expected Salary:{" "}
             </span>
-            <span className="outline outline-1 outline-[#F5722E] text-[#F5722E] px-1 font-semibold text-[13px] md:text-[15px] rounded-[2px]">
-              {formatSalaryRange(relatedDetails?.salaryRange || "0-0")}
+            <span className="outline outline-1 outline-[#F5722E] text-[#F5722E] px-1 font-semibold text-[10px] md:text-[15px] rounded-[2px]">
+              {relatedDetails.salaryRange}
             </span>
           </div>
 
-          <div className="flex items-center space-x-2 text-white">
-            <BriefcaseBusiness
-              className="fill-[#F5722E] text-[#263238]"
-              size={20}
-            />
-            <span className="text-[13px] md:text-[15px]">
-              Employment Preference:{" "}
-            </span>
-                          {relatedDetails?.employmentType?.split(",").map((type: string) => (
-              <span 
-                key={type}
-                className="outline outline-1 outline-[#F5722E] text-[#F5722E] px-1 text-[13px] md:text-[15px] rounded-[2px]"
-              >
-                {formatEmploymentType(type.trim())}
+          <div className="flex items-center flex-wrap text-white">
+            <div className="flex items-center mr-2">
+              <BriefcaseBusiness
+                className="fill-[#F5722E] text-[#263238]"
+                size={20}
+              />
+              <span className="text-[13px] md:text-[15px] ml-2">
+                Employment Preference:{" "}
               </span>
-            ))}
+            </div>
+
+            <div className="flex gap-2">
+              {formatEmploymentTypes(relatedDetails?.employmentType || "").map(
+                (type: string) => (
+                  <span
+                    key={type}
+                    className="whitespace-nowrap outline outline-1 outline-[#F5722E] text-[#F5722E] px-1 text-[10px] md:text-[15px] rounded-[2px]"
+                  >
+                    {type}
+                  </span>
+                ),
+              )}
+            </div>
           </div>
         </div>
       </div>

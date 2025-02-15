@@ -34,7 +34,6 @@ import { cn } from "lib/utils";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-import { isValidPhoneNumber } from "react-phone-number-input";
 import { useJobHunterProfileMutation } from "api/akaza/akazaAPI";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
@@ -43,6 +42,7 @@ interface FormData {
   firstName: string;
   lastName: string;
   birthday: string;
+  location: string;
   emailAddress: string;
   mobileNumber: string;
   employmentType: string[];
@@ -61,33 +61,52 @@ const validationSchema = Yup.object().shape({
   lastName: Yup.string().required("This field is required"),
   birthday: Yup.string()
     .matches(
-        /^(January|February|March|April|May|June|July|August|September|October|November|December)\s(3[01]|[12][0-9]|[1-9])$/,
-        "Day is required"
+      /^(January|February|March|April|May|June|July|August|September|October|November|December)\s(3[01]|[12][0-9]|[1-9])$/,
+      "Day is required",
     )
     .required("Birthday is required"),
   emailAddress: Yup.string()
     .required("This field is required")
     .email("Invalid email address"),
- mobileNumber: Yup.string()
-     .required("This field is required")
-     .test("phone", "Phone number must be in international format and contain 11-12 digits", function(value) {
-       if (!value) return false;
-       
-       // Check if it's a valid phone number first
-       if (!isValidPhoneNumber(value)) return false;
-       
-       // Remove all non-digit characters to check length
-       const digitsOnly = value.replace(/\D/g, '');
-       
-       // Check if the number of digits is between 11 and 12
-       return digitsOnly.length >= 11 && digitsOnly.length <= 12;
-     }),
+  mobileNumber: Yup.string()
+    .required("This field is required")
+    .test(
+      "phone",
+      "Please enter a valid international phone number",
+      function (value) {
+        if (!value) return false;
+
+        // Remove all non-digit characters except plus sign at start
+        const cleaned = value.replace(/(?!^\+)\D/g, "");
+
+        // Check if it starts with a plus sign
+        const hasPlus = value.startsWith("+");
+
+        // Get only digits
+        const digitsOnly = cleaned.replace(/\+/g, "");
+
+        if (!hasPlus) return false;
+        if (digitsOnly.length < 10 || digitsOnly.length > 15) return false;
+
+        // Basic country code validation (1-4 digits after +)
+        const countryCode = digitsOnly.slice(0, 4);
+        if (!/^\d{1,4}$/.test(countryCode)) return false;
+
+        return true;
+      }
+    )
+    .transform((value) => {
+      if (!value) return value;
+      // Standardize format: remove all spaces and non-digit chars except leading +
+      return value.replace(/\s+/g, "").replace(/(?!^\+)\D/g, "");
+    }),
   country: Yup.string().required("This field is required"),
   employmentType: Yup.array().min(
     1,
     "Please select at least one employment type",
   ),
   salaryRange: Yup.string().required("This field is required"),
+  location: Yup.string().required("This field is required"),
   yearsOfExperience: Yup.string().required("This field is required"),
   coreSkills: Yup.array()
     .min(3, "Please add at least 3 core skills")
@@ -115,7 +134,7 @@ const ApplicationCardForm: FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPreview, setShowPreview] = useState<boolean>(false);
   const { keywordToIdMap } = useContext(KeywordMappingContext);
-  const [submitJobHunterProfile ] = useJobHunterProfileMutation();
+  const [submitJobHunterProfile] = useJobHunterProfileMutation();
   const { refreshUser, user } = useAuth();
   const { showError } = useErrorModal();
 
@@ -132,10 +151,11 @@ const ApplicationCardForm: FC = () => {
       firstName: "",
       lastName: "",
       birthday: "",
+      location: "",
       emailAddress: user?.data?.user?.email || "",
-      mobileNumber: user?.data?.user?.relatedDetails?.phoneNumber 
-        ? user.data.user.relatedDetails.phoneNumber.startsWith('+') 
-          ? user.data.user.relatedDetails.phoneNumber 
+      mobileNumber: user?.data?.user?.relatedDetails?.phoneNumber
+        ? user.data.user.relatedDetails.phoneNumber.startsWith("+")
+          ? user.data.user.relatedDetails.phoneNumber
           : `+${user.data.user.relatedDetails.phoneNumber}`
         : "",
       employmentType: [],
@@ -160,8 +180,8 @@ const ApplicationCardForm: FC = () => {
     setIsSubmitting(true);
 
     try {
-      const formattedPhoneNumber = values.mobileNumber.replace(/[^\d]/g, '');
-      
+      const formattedPhoneNumber = values.mobileNumber.replace(/[^\d]/g, "");
+
       // Define language options
       const languages = [
         { label: "Arabic", value: "ar" },
@@ -186,33 +206,36 @@ const ApplicationCardForm: FC = () => {
         { label: "Tagalog", value: "tl" },
         { label: "Thai", value: "th" },
         { label: "Turkish", value: "tr" },
-        { label: "Vietnamese", value: "vi" }
+        { label: "Vietnamese", value: "vi" },
       ];
 
       // Format language array to comma-separated string
       // Transform keywords to IDs during submission
-      const coreSkillIds = values.coreSkills
-        .map(keyword => keywordToIdMap[keyword] || keyword);
+      const coreSkillIds = values.coreSkills.map(
+        (keyword) => keywordToIdMap[keyword] || keyword,
+      );
 
-      const interpersonalSkillIds = values.interpersonalSkills
-        .map(keyword => keywordToIdMap[keyword] || keyword);
+      const interpersonalSkillIds = values.interpersonalSkills.map(
+        (keyword) => keywordToIdMap[keyword] || keyword,
+      );
 
-      const certificationIds = values.certifications
-        .map(keyword => keywordToIdMap[keyword] || keyword);
+      const certificationIds = values.certifications.map(
+        (keyword) => keywordToIdMap[keyword] || keyword,
+      );
 
-        const formattedLanguages = values.languages
-        .map(lang => {
-          const languageOption = languages.find(opt => opt.value === lang);
+      const formattedLanguages = values.languages
+        .map((lang) => {
+          const languageOption = languages.find((opt) => opt.value === lang);
           return languageOption?.label || lang;
         })
-        .join(',');
-      
-      const formattedEmploymentTypes = values.employmentType.join(',');
-      
+        .join(",");
+
+      const formattedEmploymentTypes = values.employmentType.join(",");
+
       const payload = {
         firstName: values.firstName,
         lastName: values.lastName,
-        location: values.country,
+        location: values.location,
         language: formattedLanguages,
         birthday: values.birthday,
         email: values.emailAddress,
@@ -220,20 +243,20 @@ const ApplicationCardForm: FC = () => {
         employmentType: formattedEmploymentTypes,
         education: values.education,
         yearsOfExperience: values.yearsOfExperience || "less-than-1",
-        core: coreSkillIds,           // Now using IDs
+        core: coreSkillIds, // Now using IDs
         interpersonal: interpersonalSkillIds, // Now using IDs
-        certification: certificationIds,    // Now using IDs
+        certification: certificationIds, // Now using IDs
         salaryRange: values.salaryRange,
-        country: values.country
+        country: values.country,
       };
-  
+
       await submitJobHunterProfile(payload).unwrap();
       await refreshUser();
       navigate("/dashboard/feed");
     } catch (error) {
       showError(
-        'Profile Update Failed',
-        'Unable to update your application card. Please try again or contact support if the issue persists.'
+        "Profile Update Failed",
+        "Unable to update your application card. Please try again or contact support if the issue persists.",
       );
       console.error("Error submitting profile:", error);
     } finally {
@@ -252,341 +275,394 @@ const ApplicationCardForm: FC = () => {
   };
 
   return (
-      <>
-        <ApplicationFormPreview
-          isOpen={showPreview}
-          onClose={() => setShowPreview(false)}
-          formData={values}
-          onConfirm={handleFormSubmit}
-        />
-        {isSubmitting && <LoadingOverlay />}
-        
-        <div className="flex flex-col xl:flex-row gap-8 pt-6">
-          <div className="w-full md:w-[800px] min-h-[960px] bg-[#242625] md:bg-[#2D3A41] text-white">
-            <div className="flex items-center relative w-full mb-6 md:mb-10">
-              <h1 className="flex-1 text-center text-xl md:text-[32px] pt-6 font-normal text-[#F5722E]">
-                <span className="inline-flex items-center gap-2 justify-center">
-                  Create Your Application Card
-                </span>
-              </h1>
-            </div>
-    
-            <form
-              onSubmit={handleSubmit}
-              onKeyDown={handleKeyDown}
-              className="p-4 md:p-8"
-            >
-              <div className="grid grid-cols-1 md:grid-cols-2 md:gap-x-[65px] gap-y-6">
-                {/* First Name / Last Name */}
-                <div>
-                  <InputField
-                    label="First Name"
-                    className="bg-transparent"
-                    error={errors.firstName}
-                    touched={touched.firstName}
-                  >
-                    <Input
-                      name="firstName"
-                      value={values.firstName}
-                      onChange={handleChange}
-                      placeholder="First Name"
-                      className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
-                    />
-                  </InputField>
-                </div>
-    
-                <div>
-                  <InputField
-                    label="Last Name"
-                    className="bg-transparent"
-                    error={errors.lastName}
-                    touched={touched.lastName}
-                  >
-                    <Input
-                      name="lastName"
-                      value={values.lastName}
-                      onChange={handleChange}
-                      placeholder="Last Name"
-                      className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
-                    />
-                  </InputField>
-                </div>
-    
-                {/* Birthday / Languages */}
-                <div>
-                  <InputField
-                    label="Birthday"
-                    error={errors.birthday}
-                    touched={touched.birthday}
-                  >
-                    <BirthdayInput
-                      name="birthday"
-                      value={values.birthday}
-                      onChange={(name, value) => setFieldValue(name, value)}
-                    />
-                  </InputField>
-                </div>
-    
-                <div>
-                  <InputField
-                    label="Languages"
-                    error={errors.languages}
-                    touched={touched.languages}
-                    showIcon={true}
-                    tooltipContent="Feel free to enter up to 4 languages in which you are fluent, both in speaking and writing."
-                  >
-                    <LanguageTagInput
-                      value={values.languages || []}
-                      onChange={(value) => setFieldValue("languages", value)}
-                      className="min-h-[56px] pt-1 px-1"
-                      tagClassName="bg-[#F5722E]"
-                      placeholder="Type and enter to add language"
-                    />
-                  </InputField>
-                </div>
-    
-                {/* Email / Mobile */}
-                <div>
-                  <InputField
-                    label="Email Address"
-                    className="bg-transparent"
-                    error={errors.emailAddress}
-                    touched={touched.emailAddress}
-                  >
-                    <Input
-                      name="emailAddress"
-                      value={values.emailAddress}
-                      onChange={handleChange}
-                      placeholder="Email Address"
-                      disabled={!!user?.data?.user?.email}
-                      className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD] disabled:opacity-50 disabled:cursor-not-allowed"
-                    />
-                  </InputField>
-                </div>
-    
-                <div>
-                  <InputField
-                    label="Mobile Number"
-                    error={errors.mobileNumber}
-                    touched={touched.mobileNumber}
-                  >
-                    <PhoneInput
-                      name="mobileNumber"
-                      value={values.mobileNumber}
-                      onChange={handleChange}
-                      className="bg-transparent border-2 rounded-md border-[#AEADAD] h-[56px] focus-within:border-[#F5722E] transition-colors flex justify-between"
-                      defaultCountry="CA"
-                    />
-                  </InputField>
-                </div>
-    
-                {/* Country / Employment */}
-                <div>
+    <>
+      <ApplicationFormPreview
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        formData={values}
+        onConfirm={handleFormSubmit}
+      />
+      {isSubmitting && <LoadingOverlay />}
+
+      <div className="flex flex-col xl:flex-row gap-8 pt-6">
+        <div className="w-full md:w-[800px] min-h-[960px] bg-[#2D3A41] text-white">
+          <div className="flex items-center relative w-full md:mb-10">
+            <h1 className="flex-1 text-center text-xl md:text-[32px] md:pt-6 font-normal text-[#F5722E]">
+              <span className="inline-flex items-center gap-2 justify-center">
+                Complete Your Application Card
+              </span>
+            </h1>
+          </div>
+
+          <form
+            onSubmit={handleSubmit}
+            onKeyDown={handleKeyDown}
+            className="p-8"
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 md:gap-x-[65px] gap-y-6">
+              {/* First Name / Last Name */}
+              <div>
+                <InputField
+                  label="First Name"
+                  className="bg-transparent"
+                  error={errors.firstName}
+                  touched={touched.firstName}
+                  variant="primary"
+                >
+                  <Input
+                    name="firstName"
+                    value={values.firstName}
+                    onChange={handleChange}
+                    placeholder="First Name"
+                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                  />
+                </InputField>
+              </div>
+
+              <div>
+                <InputField
+                  label="Last Name"
+                  className="bg-transparent"
+                  error={errors.lastName}
+                  touched={touched.lastName}
+                  variant="primary"
+                >
+                  <Input
+                    name="lastName"
+                    value={values.lastName}
+                    onChange={handleChange}
+                    placeholder="Last Name"
+                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                  />
+                </InputField>
+              </div>
+
+              {/* Location / Languages */}
+
+              <div>
+                <InputField
+                  label="Location"
+                  className="bg-transparent"
+                  error={errors.location}
+                  touched={touched.location}
+                  variant="primary"
+                >
+                  <Input
+                    name="location"
+                    value={values.location}
+                    onChange={handleChange}
+                    placeholder="Add location"
+                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                  />
+                </InputField>
+              </div>
+
+              <div>
+                <InputField
+                  label="Language"
+                  error={errors.languages}
+                  touched={touched.languages}
+                  showIcon={true}
+                  tooltipContent="Feel free to enter up to 4 languages in which you are fluent, both in speaking and writing."
+                  variant="primary"
+                >
+                  <LanguageTagInput
+                    value={values.languages || []}
+                    onChange={(value) => setFieldValue("languages", value)}
+                    className="min-h-[56px] pt-1 px-1"
+                    tagClassName="bg-[#F5722E]"
+                    placeholder="Select Language"
+                  />
+                </InputField>
+              </div>
+
+              {/* Birthday / Country */}
+              <div>
+                <InputField
+                  label="Birthday"
+                  error={errors.birthday}
+                  touched={touched.birthday}
+                  variant="primary"
+                >
+                  <BirthdayInput
+                    name="birthday"
+                    value={values.birthday}
+                    onChange={(name, value) => setFieldValue(name, value)}
+                  />
+                </InputField>
+              </div>
+
+              <div>
                 <InputField
                   label="Country of Residence"
                   error={errors.country}
                   touched={touched.country}
+                  variant="primary"
                 >
                   <CountrySelect
                     value={values.country || ""}
                     onChange={(value) => setFieldValue("country", value)}
-                    className="bg-transparent border-[#AEADAD] h-[56px] hover:text-white border-2 focus:border-[#F5722E] w-[335px] rounded-[8px] text-white placeholder:text-[#AEADAD] px-3 py-2"
-                    popoverClassName="w-[335px]"
+                    className="w-full bg-transparent border-[#AEADAD] h-[56px] hover:text-white border-2 focus:border-[#F5722E] rounded-[8px] text-white placeholder:text-[#AEADAD] px-3 py-2"
+                    popoverClassName="md:w-[335px]"
                   />
                 </InputField>
               </div>
-    
-                <div>
-                  <InputField
-                    label="Employment Type"
-                    error={errors.employmentType}
-                    touched={touched.employmentType}
-                    showIcon={true}
-                    tooltipContent="You may select one up to three employment types that you are looking for"
-                  >
-                    <MultiSelect
-                      value={values.employmentType}
-                      onChange={(value) => setFieldValue("employmentType", value)}
-                      options={selectOptions.employmentType}
-                    />
-                  </InputField>
-                </div>
-    
-                {/* Education / Years */}
-                <div>
-                  <InputField
-                    label="Education"
-                    error={errors.education}
-                    touched={touched.education}
-                  >
-                    <Select
-                      name="education"
-                      value={values.education}
-                      onValueChange={(value) => setFieldValue("education", value)}
-                    >
-                      <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
-                        <SelectValue placeholder="Select your Education Level" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-[#F5F5F7] items-center p-0 [&>*]:p-0 border-none rounded-none">
-                        {selectOptions.education.map(({ value, label }) => (
-                          <SelectItem
-                            key={value}
-                            className={cn("rounded-none justify-start pl-3 h-[55px]")}
-                            value={value}
-                          >
-                            <div className="py-3 w-full text-center">{label}</div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </InputField>
-                </div>
-    
-                <div>
-                  <InputField
-                    label="Years of Experience"
-                    error={errors.yearsOfExperience}
-                    touched={touched.yearsOfExperience}
-                  >
-                    <Select
-                      name="yearsOfExperience"
-                      value={values.yearsOfExperience}
-                      onValueChange={(value) => setFieldValue("yearsOfExperience", value)}
-                    >
-                      <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
-                        <SelectValue placeholder="Select Years of Experience" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none">
-                        {selectOptions.yearsOfExperience.map(({ value, label }) => (
-                          <SelectItem
-                            key={value}
-                            className={cn("rounded-none justify-start pl-3 h-[55px]")}
-                            value={value}
-                          >
-                            <div className="py-3 w-full text-center">{label}</div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </InputField>
-                </div>
-    
-                {/* Core Skills / Salary */}
-                <div>
-                  <InputField
-                    label="Core Skills"
-                    error={errors.coreSkills}
-                    touched={touched.coreSkills}
-                    showIcon={true}
-                    tooltipContent="Job-specific, measurable abilities like software proficiency, coding, or design tools."
-                  >
-                    <CoreSkillsTagInput
-                      value={values.coreSkills || []}
-                      onChange={(value) => setFieldValue("coreSkills", value)}
-                      className="h-[99px] pt-1 px-1"
-                      alternateColors={{
-                        firstColor: "#168AAD",
-                        secondColor: "#184E77",
-                      }}
-                      placeholder="Type and enter to add core skill"
-                    />
-                  </InputField>
-                </div>
-    
-                <div>
-                  <InputField
-                    label="Salary Range"
-                    error={errors.salaryRange}
-                    touched={touched.salaryRange}
-                  >
-                    <Select
-                      name="salaryRange"
-                      value={values.salaryRange}
-                      onValueChange={(value) => setFieldValue("salaryRange", value)}
-                    >
-                      <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
-                        <SelectValue placeholder="Select Salary Range" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none">
-                        {selectOptions.salaryRange.map(({ value, label }) => (
-                          <SelectItem
-                            key={value}
-                            className={cn("rounded-none justify-start pl-3 h-[55px]")}
-                            value={value}
-                          >
-                            <div className="py-3 w-full text-center">{label}</div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </InputField>
-                </div>
-    
-                {/* Interpersonal / Certificates */}
-                <div>
-                  <InputField
-                    label="Interpersonal Skills"
-                    error={errors.interpersonalSkills}
-                    touched={touched.interpersonalSkills}
-                    showIcon={true}
-                    tooltipContent="Personal qualities like communication, teamwork, and problem-solving."
-                    className="mb-8 md:mb-14"
-                  >
-                    <InterpersonalSkillsTagInput
-                      value={values.interpersonalSkills || []}
-                      onChange={(value) => setFieldValue("interpersonalSkills", value)}
-                      className="h-[99px] pt-1 px-1"
-                      alternateColors={{
-                        firstColor: "#168AAD",
-                        secondColor: "#184E77",
-                      }}
-                      placeholder="Type and enter to add interpersonal skill"
-                    />
-                  </InputField>
-                </div>
-    
-                <div>
-                  <InputField
-                    label="Certificates"
-                    error={errors.certifications}
-                    touched={touched.certifications}
-                    showIcon={true}
-                    tooltipContent="Job-specific, measurable abilities like software proficiency, coding, or design tools."
-                    className="mb-14"
-                  >
-                    <CertificationTagInput
-                      value={values.certifications || []}
-                      onChange={(value) => setFieldValue("certifications", value)}
-                      className="h-[56px] pt-1 px-1"
-                      tagClassName="bg-[#168AAD]"
-                      placeholder="Type and enter to add certificate"
-                    />
-                  </InputField>
-                </div>
-              </div>
-    
-              {/* Footer Button */}
-              <div className="flex justify-center md:justify-end md:mt-[60px] mb-0">
-                <Button
-                  type="submit"
-                  className={cn(
-                    "block md:w-auto text-white text-[16px] h-8 py-0 rounded-sm font-normal px-8",
-                    isValid
-                      ? "bg-[#F5722E] hover:bg-orange-600"
-                      : "bg-[#AEADAD] hover:bg-[#AEADAD]",
-                  )}
+
+              {/* Mobile / Email */}
+              <div>
+                <InputField
+                  label="Mobile Number"
+                  error={errors.mobileNumber}
+                  touched={touched.mobileNumber}
+                  variant="primary"
                 >
-                  Save and Preview
-                </Button>
+                  <PhoneInput
+                    name="mobileNumber"
+                    value={values.mobileNumber}
+                    onChange={handleChange}
+                    className="bg-transparent border-2 rounded-md border-[#AEADAD] h-[56px] focus-within:border-[#F5722E] transition-colors flex justify-between"
+                    defaultCountry="CA"
+                  />
+                </InputField>
               </div>
-            </form>
-          </div>
-          <div className="w-auto flex justify-center">
-            <AppCardPreview values={values} selectOptions={selectOptions} />
-          </div>
+
+              <div>
+                <InputField
+                  label="Email Address"
+                  className="bg-transparent"
+                  error={errors.emailAddress}
+                  touched={touched.emailAddress}
+                  variant="primary"
+                >
+                  <Input
+                    name="emailAddress"
+                    value={values.emailAddress}
+                    onChange={handleChange}
+                    placeholder="Email Address"
+                    disabled={!!user?.data?.user?.email}
+                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD] disabled:opacity-50 disabled:cursor-not-allowed"
+                  />
+                </InputField>
+              </div>
+
+              {/* Education / Employment */}
+              <div>
+                <InputField
+                  label="Education"
+                  error={errors.education}
+                  touched={touched.education}
+                  variant="primary"
+                >
+                  <Select
+                    name="education"
+                    value={values.education}
+                    onValueChange={(value) => setFieldValue("education", value)}
+                  >
+                    <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
+                      <SelectValue placeholder="Select highest education level" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-[#F5F5F7] items-center p-0 [&>*]:p-0 border-none rounded-none">
+                      {selectOptions.education.map(({ value, label }) => (
+                        <SelectItem
+                          key={value}
+                          className={cn(
+                            "rounded-none justify-start pl-3 h-[55px]",
+                          )}
+                          value={value}
+                        >
+                          <div className="py-3 w-full text-center">{label}</div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </InputField>
+              </div>
+
+              <div>
+                <InputField
+                  label="Employment Type"
+                  error={errors.employmentType}
+                  touched={touched.employmentType}
+                  showIcon={true}
+                  tooltipContent="You may select one up to three employment types that you are looking for"
+                  variant="primary"
+                >
+                  <MultiSelect
+                    value={values.employmentType}
+                    onChange={(value) => setFieldValue("employmentType", value)}
+                    options={selectOptions.employmentType}
+                  />
+                </InputField>
+              </div>
+
+              {/* Salary / Years */}
+
+              <div>
+                <InputField
+                  label="Salary Expectation"
+                  error={errors.salaryRange}
+                  touched={touched.salaryRange}
+                  variant="primary"
+                >
+                  <Select
+                    name="salaryRange"
+                    value={values.salaryRange}
+                    onValueChange={(value) =>
+                      setFieldValue("salaryRange", value)
+                    }
+                  >
+                    <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
+                      <SelectValue placeholder="Select Salary Range" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none">
+                      {selectOptions.salaryRange.map(({ value, label }) => (
+                        <SelectItem
+                          key={value}
+                          className={cn(
+                            "rounded-none justify-start pl-3 h-[55px]",
+                          )}
+                          value={value}
+                        >
+                          <div className="py-3 w-full text-center">{label}</div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </InputField>
+              </div>
+              
+              <div>
+                <InputField
+                  label="Years of Experience"
+                  error={errors.yearsOfExperience}
+                  touched={touched.yearsOfExperience}
+                  variant="primary"
+                >
+                  <Select
+                    name="yearsOfExperience"
+                    value={values.yearsOfExperience}
+                    onValueChange={(value) =>
+                      setFieldValue("yearsOfExperience", value)
+                    }
+                  >
+                    <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
+                      <SelectValue placeholder="Select Years of Experience" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none">
+                      {selectOptions.yearsOfExperience.map(
+                        ({ value, label }) => (
+                          <SelectItem
+                            key={value}
+                            className={cn(
+                              "rounded-none justify-start pl-3 h-[55px]",
+                            )}
+                            value={value}
+                          >
+                            <div className="py-3 w-full text-center">
+                              {label}
+                            </div>
+                          </SelectItem>
+                        ),
+                      )}
+                    </SelectContent>
+                  </Select>
+                </InputField>
+              </div>
+
+              {/* Core Skills / Interpersonal Skills */}
+              <div>
+                <InputField
+                  label="Core Skills"
+                  error={errors.coreSkills}
+                  touched={touched.coreSkills}
+                  showIcon={true}
+                  tooltipContent="Job-specific, measurable abilities like software proficiency, coding, or design tools."
+                  variant="primary"
+                >
+                  <CoreSkillsTagInput
+                    value={values.coreSkills || []}
+                    onChange={(value) => setFieldValue("coreSkills", value)}
+                    className="h-[120px] md:h-[99px] pt-1 px-1"
+                    alternateColors={{
+                      firstColor: "#184E77",
+                      secondColor: "#168AAD",
+                    }}
+                    placeholder="Type and enter to add core skill"
+                  />
+                </InputField>
+              </div>
+
+              <div>
+                <InputField
+                  label="Interpersonal Skills"
+                  error={errors.interpersonalSkills}
+                  touched={touched.interpersonalSkills}
+                  showIcon={true}
+                  tooltipContent="Personal qualities like communication, teamwork, and problem-solving."
+                  variant="primary"
+                >
+                  <InterpersonalSkillsTagInput
+                    value={values.interpersonalSkills || []}
+                    onChange={(value) =>
+                      setFieldValue("interpersonalSkills", value)
+                    }
+                    className="h-[120px] md:h-[99px] pt-1 px-1"
+                    alternateColors={{
+                      firstColor: "#184E77",
+                      secondColor: "#168AAD",
+                    }}
+                    placeholder="Type and enter to add interpersonal skill"
+                  />
+                </InputField>
+              </div>
+
+              {/* Certificates */}
+              <div>
+                <InputField
+                  label="Certificates"
+                  error={errors.certifications}
+                  touched={touched.certifications}
+                  showIcon={true}
+                  tooltipContent="Job-specific, measurable abilities like software proficiency, coding, or design tools."
+                  variant="primary"
+                  className="mb-14"
+                >
+                  <CertificationTagInput
+                    value={values.certifications || []}
+                    onChange={(value) => setFieldValue("certifications", value)}
+                    className="h-[90px] md:h-[56px] pt-1 px-1"
+                    alternateColors={{
+                      firstColor: "#184E77",
+                      secondColor: "#168AAD",
+                    }}
+                    placeholder="Type and enter to add certificate"
+                  />
+                </InputField>
+              </div>
+            </div>
+
+            {/* Footer Button */}
+            <div className="flex justify-center md:justify-end md:mt-[60px] mb-0">
+              <Button
+                type="submit"
+                className={cn(
+                  "block md:w-auto text-white text-[16px] h-8 py-0 rounded-sm font-normal px-8",
+                  isValid
+                    ? "bg-[#F5722E] hover:bg-orange-600"
+                    : "bg-[#AEADAD] hover:bg-[#AEADAD]",
+                )}
+              >
+                Save and Preview
+              </Button>
+            </div>
+          </form>
         </div>
-      </>
-    );
+        <div className="w-auto flex justify-center">
+          <AppCardPreview values={values} selectOptions={selectOptions} />
+        </div>
+      </div>
+    </>
+  );
 };
 
 export { ApplicationCardForm };

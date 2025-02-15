@@ -26,10 +26,10 @@ const EmployerHeader: FC = () => {
   const { subscriptionPlan } = useEmployerContext();
   const location = useLocation();
   const hideOnPagesMobile = [
-    "/employer/job-listing",
-    "/employer/employer-profile",
+    "/dashboard/job-listing",
+    "/dashboard/employer-profile",
   ];
-  const hideOnPagesDesktop = ["/employer/employer-profile"];
+  const hideOnPagesDesktop = ["/dashboard/employer-profile"];
 
   const hideOnMobile = hideOnPagesMobile.includes(location.pathname);
   const hideOnDesktop = hideOnPagesDesktop.includes(location.pathname);
@@ -43,11 +43,12 @@ const EmployerHeader: FC = () => {
       } ${hideOnDesktop ? "md:hidden" : ""}`}
     >
       <div className="flex flex-col items-center md:flex-row md:justify-between md:items-start">
-        <div className="flex flex-col space-y-2 md:space-y-4">
+        <div className="flex flex-col space-y-2 md:space-y-4 px-4 md:px-0">
           <div className="flex items-start">
             <div className="flex-1">
-              <h1 className="text-3xl text-white font-normal line-clamp-2"
-              title={businessName}
+              <h1 
+                className="text-3xl text-white font-normal break-all md:break-words line-clamp-2 max-w-full"
+                title={businessName}
               >
                 {businessName}
               </h1>

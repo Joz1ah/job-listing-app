@@ -1,9 +1,9 @@
-import { combineReducers, UnknownAction } from '@reduxjs/toolkit'
+import { combineReducers, UnknownAction } from "@reduxjs/toolkit";
 
-import { counterReducer } from './counter/counterSlice'
-import { themeReducer } from './theme/themeSlice'
-import { i18nReducer } from 'i18n/i18nSlice'
-import { 
+import { counterReducer } from "./counter/counterSlice";
+import { themeReducer } from "./theme/themeSlice";
+import { i18nReducer } from "i18n/i18nSlice";
+import {
   pokemonApi,
   akazaApiSignUp,
   akazaApiAuth,
@@ -12,14 +12,21 @@ import {
   akazaApiPerfectMatch,
   akazaApiSearch,
   akazaApiAccount,
-  localApi  } from 'api'
+  localApi,
+} from "api";
 
-import { reduxHydrationAction } from 'constants/commonConstants'
+import { reduxHydrationAction } from "constants/commonConstants";
+import { modalReducer } from "./modal/modal.slice";
+import { heroReducer } from "./hero/hero.slice";
+import { userReducer } from "./user/user.slice";
 
 export const rootReducer = {
   theme: themeReducer,
   counter: counterReducer,
+  modal: modalReducer,
+  hero: heroReducer,
   i18n: i18nReducer,
+  user: userReducer,
   [pokemonApi.reducerPath]: pokemonApi.reducer,
   [akazaApiSignUp.reducerPath]: akazaApiSignUp.reducer,
   [akazaApiAuth.reducerPath]: akazaApiAuth.reducer,
@@ -29,13 +36,13 @@ export const rootReducer = {
   [akazaApiSearch.reducerPath]: akazaApiSearch.reducer,
   [akazaApiAccount.reducerPath]: akazaApiAccount.reducer,
   [localApi.reducerPath]: akazaApiAccount.reducer,
-}
+};
 
-export const appReducer = combineReducers(rootReducer)
+export const appReducer = combineReducers(rootReducer);
 
 export const mainReducer: any = (
   state: ReturnType<typeof appReducer>,
-  action: UnknownAction
+  action: UnknownAction,
 ) => {
   /*
     Global action for whole state hydration.
@@ -43,10 +50,10 @@ export const mainReducer: any = (
   if (action?.type === reduxHydrationAction) {
     const nextState = {
       ...state,
-      ...(action.payload as object)
-    }
-    return nextState
+      ...(action.payload as object),
+    };
+    return nextState;
   }
 
-  return appReducer(state, action)
-}
+  return appReducer(state, action);
+};

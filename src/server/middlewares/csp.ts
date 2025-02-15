@@ -7,19 +7,33 @@ const nonce = (_req: Request, res: Response, next: NextFunction): void => {
   res.locals.cspNonce = Buffer.from(randomUUID()).toString('base64')
   next()
 }
+/*
+const stagingSrc = [
+  '*.akaza.xyz',
+  'akaza-sit-api-gateway---rev-2-2tninhtd.uk.gateway.dev',
+  'jstest.authorize.net',
+  'https://bdf2b90d-e282-4058-a4d5-820c10cf0d68.mock.pstmn.io',
+];
+const prodSrc = [
+  '*.akaza.io',
+  'js.authorize.net',
+  'js.stripe.com',
+]
+  */
 const defaultSrc = [
   "'self'",
   '*.akaza.xyz',
   'akaza-sit-api-gateway---rev-2-2tninhtd.uk.gateway.dev',
-  'js.stripe.com',
-  'js.authorize.net',
   'jstest.authorize.net',
+  'https://bdf2b90d-e282-4058-a4d5-820c10cf0d68.mock.pstmn.io',
+  '*.akaza.io',
+  'js.authorize.net',
+  'js.stripe.com',
+  //...(IS_DEV ? stagingSrc : prodSrc),
   'api2.authorize.net',
   'localhost:*',
   'js.intercomcdn.com',
   'nexus-websocket-a.intercom.io',
-  'https://bdf2b90d-e282-4058-a4d5-820c10cf0d68.mock.pstmn.io'
-  //'pokeapi.co',
 ];
 
 const csp = (req: Request, res: Response, next: NextFunction): void => {
@@ -27,7 +41,15 @@ const csp = (req: Request, res: Response, next: NextFunction): void => {
     contentSecurityPolicy: {
       useDefaults: true,
       directives: {
-        defaultSrc,        
+        defaultSrc,   
+        styleSrc: [
+          "'self'",
+          //prioritize to remove unsafe-inline after testing
+          "'unsafe-inline'",
+          //`'nonce-${String(res.locals.cspNonce)}'`,
+          'https://fonts.googleapis.com',
+          'https://fonts.gstatic.com',
+        ],     
         imgSrc: [
           "'self'",
           'raw.githubusercontent.com',

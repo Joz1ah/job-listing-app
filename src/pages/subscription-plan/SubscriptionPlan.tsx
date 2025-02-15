@@ -6,12 +6,13 @@ import {
   LockKeyhole,
   MessageCircleMore,
   Trophy,
-  Gift,
+  //Gift,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import sparkle_icon from "assets/images/sparkle-icon.png";
 import { DefaultLayout } from "layouts";
 import { useAuth } from "contexts/AuthContext/AuthContext";
+import styles from './subscriptionPlan.module.scss';
 
 interface PlanFeature {
   icon: React.ReactNode;
@@ -40,7 +41,7 @@ const PlanCard: FC<PlanProps> = ({
     if (isAuthenticated) {
       navigate("/dashboard/account-settings/subscription");
     } else {
-      navigate("/", {
+      navigate("#", {
         state: {
           openModal: true,
           modalType: "SIGNUP_SELECT_USER_TYPE",
@@ -49,13 +50,12 @@ const PlanCard: FC<PlanProps> = ({
     }
   };
 
-  const allFeatures = bestValue
-    ? [{ icon: <Gift size={16} />, text: "PLUS ONE MONTH FREE" }, ...features]
-    : features;
+  const allFeatures =  features;
 
   return (
     <div
-      className={`w-full ${bestValue ? "bg-[#2D3A41]" : "bg-[#F5F5F7BF]"} rounded-lg px-6 py-4 transform transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_2px_rgba(245,114,46,0.6)] mb-8`}
+      className={`w-full ${bestValue ? "bg-[#F5F5F7BF]" : "bg-[#F5F5F7BF]"} shadow-[0_4px_8px_rgba(0,_0,_0,_0.2),_0_-4px_8px_rgba(0,_0,_0,_0.05)] rounded-lg px-6 py-4 transform transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_2px_rgba(245,114,46,0.6)] mb-8`}
+
     >
       {/* Single row with two columns */}
       <div className="flex justify-between h-full">
@@ -92,13 +92,13 @@ const PlanCard: FC<PlanProps> = ({
           )}
           {price !== "0" && (
             <h3
-              className={`${bestValue ? "text-[#F5F5F7]" : "text-[#263238]"} text-xl font-semibold mb-2`}
+              className={`text-[#263238] text-xl font-semibold mb-2`}
             >
               {title}
             </h3>
           )}
           <p
-            className={`${bestValue ? "text-[#F5F5F7]" : "text-[#263238]"} text-[15px] mb-2`}
+            className={`text-[#263238] text-[15px] mb-2`}
           >
             Maximize your reach, save more,
             <br />
@@ -113,13 +113,13 @@ const PlanCard: FC<PlanProps> = ({
         </div>
 
         {/* Right column */}
-        <div className="flex flex-col justify-end">
+        <div className="flex flex-col justify-center">
           <div className="flex flex-col gap-2">
             {allFeatures.map((feature, index) => (
               <div key={index} className="flex items-center gap-2">
                 <span className="text-[#F5722E]">{feature.icon}</span>
                 <span
-                  className={`${bestValue ? "text-[#F5F5F7]" : "text-[#263238]"} text-sm`}
+                  className={`text-[#263238] text-sm`}
                 >
                   {feature.text}
                 </span>
@@ -143,11 +143,19 @@ const SubscriptionPlan: FC = () => {
     { icon: <LockKeyhole size={16} />, text: "Exclusive Employer Resources" },
     { icon: <MessageCircleMore size={16} />, text: "Live chat support" },
   ];
+  const featuresFreeTrial = [
+    {
+      icon: <img src={sparkle_icon} className="w-4 h-4" />,
+      text: "Perfect Match automation",
+    },
+    { icon: <MessageCircleMore size={16} />, text: "Live chat support" },
+    { icon: <MessageCircleMore size={16} />, text: "No credit or debit card required" },
+  ];
 
   return (
-    <DefaultLayout backgroundColor="#242625">
-      <div className="bg-[#242625] min-h-screen md:pt-20">
-        <div className="max-w-2xl mx-auto px-4">
+    <DefaultLayout>
+      <div className={`${styles['subscription-plan-container']} pb-10 md:pt-10`}>
+        <div className=" mx-auto px-4">
           <div className="space-y-6 pt-4">
             <PlanCard
               title="Yearly Plan"
@@ -166,7 +174,7 @@ const SubscriptionPlan: FC = () => {
               title="Free Trial"
               price="0"
               period="for 3 days only"
-              features={features}
+              features={featuresFreeTrial}
             />
           </div>
         </div>

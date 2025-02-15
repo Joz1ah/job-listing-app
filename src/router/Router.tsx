@@ -11,6 +11,7 @@ const BaseLayout = lazy(() => import('pages').then(module => ({ default: module.
 const NotFound = lazy(() => import('pages').then(module => ({ default: module.NotFoundPage })))
 const Landing = lazy(() => import('pages').then(module => ({ default: module.Landing })))
 const SubscriptionPlan = lazy(() => import('pages').then(module => ({ default: module.SubscriptionPlan })))
+const InterruptedSubscriptionPage = lazy(() => import('pages').then(module => ({ default: module.InterruptedSubscriptionPage })))
 const AboutUs = lazy(() => import('pages').then(module => ({ default: module.AboutUs })))
 const ContactUs = lazy(() => import('pages').then(module => ({ default: module.ContactUs })))
 const Faq = lazy(() => import('pages').then(module => ({ default: module.Faq })))
@@ -142,6 +143,17 @@ const ProtectedRoute = ({
   const userType = user?.data?.user?.type;
   const userDetails = user?.data?.user?.relatedDetails;
   const jobCount = user?.data?.user?.jobCounts?.count;
+  const freeTrial = user?.data?.user?.freeTrial;
+  const isOnboarded = user?.data?.user?.isOnboarded;
+
+  // Check for interrupted subscription condition
+  const isInterruptedSubscription = freeTrial === true && isOnboarded === false;
+  const isOnSubscriptionPage = location.pathname === ROUTE_CONSTANTS.INTERRUPTED_SUBSCRIPTION;
+
+  // Redirect to interrupted subscription page if conditions are met
+  if (isInterruptedSubscription && !isOnSubscriptionPage) {
+    return <Navigate to={ROUTE_CONSTANTS.INTERRUPTED_SUBSCRIPTION} replace />;
+  }
 
   // Different profile completion checks based on user type
   const isEmployerProfileIncomplete = userType === 'employer' && (
@@ -167,14 +179,15 @@ const ProtectedRoute = ({
   // Check if current route is a protected route
   const isProfileRoute = location.pathname === profileCompletionRoute;
   const isJobListingRoute = location.pathname.includes(ROUTE_CONSTANTS.JOB_LISTING);
+  const isAccountSettingsRoute = location.pathname.includes(ROUTE_CONSTANTS.ACCOUNT_SETTINGS_EMPLOYER);
 
   // First priority: Check if profile is incomplete
-  if (isProfileIncomplete && !isProfileRoute) {
+  if (isProfileIncomplete && !isProfileRoute && !isAccountSettingsRoute) {
     return <Navigate to={profileCompletionRoute} replace />;
   }
 
   // Second priority: Check for job listing only if profile is complete
-  if (!isProfileIncomplete && userType === 'employer' && jobCount === 0 && !isJobListingRoute) {
+  if (!isProfileIncomplete && userType === 'employer' && jobCount === 0 && !isJobListingRoute && !isAccountSettingsRoute) {
     return <Navigate to={ROUTE_CONSTANTS.JOB_LISTING} replace />;
   }
 
@@ -199,6 +212,23 @@ const DashboardRedirectRoute = ({ children }: { children: React.ReactNode }) => 
     return <Navigate to={ROUTE_CONSTANTS.DASHBOARD} replace />;
   }
 
+  return <>{children}</>;
+};
+
+const InterruptedSubscriptionRoute = ({ children }: { children: React.ReactNode }) => {
+  if (isServer) return null;
+  const { isAuthenticated, user, isLoading } = useAuth();
+  
+  if (isLoading) {
+    return <LoadingFallback />;
+  }
+
+  // If user is authenticated, check if they are already onboarded
+  if (isAuthenticated && user?.data?.user?.isOnboarded) {
+    return <Navigate to={ROUTE_CONSTANTS.DASHBOARD} replace />;
+  }
+
+  // Allow access to unauthenticated users or non-onboarded users
   return <>{children}</>;
 };
 
@@ -280,6 +310,14 @@ const routes: RouteObject[] = [
   },
   */
   // ... rest of your routes remain the same
+  {
+    path: ROUTE_CONSTANTS.INTERRUPTED_SUBSCRIPTION,
+    element: (
+      <InterruptedSubscriptionRoute>
+        <LazyComponent component={InterruptedSubscriptionPage} />
+      </InterruptedSubscriptionRoute>
+    )
+  },
   {
     path: '*',
     element: <LazyComponent component={NotFound} />

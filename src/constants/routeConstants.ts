@@ -11,6 +11,7 @@
     CONTACT_US: '/contact-us',
     SUBSCRIPTION_PLAN: '/subscription-plan',
     FAQ: '/faq',
+    INTERRUPTED_SUBSCRIPTION: '/select-plan',
 
     // Test Route
     TEST: '/test',
