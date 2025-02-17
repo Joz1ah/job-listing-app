@@ -3,7 +3,10 @@ import { PendingCard } from "components";
 import { InterviewCardSkeleton } from "components";
 import { NavLink } from "react-router-dom";
 import emptyInterview from "images/calendar-empty.svg?url";
-import { pendingInterviewsData, Interview } from "mockData/employer-interviews-data";
+import {
+  pendingInterviewsData,
+  Interview,
+} from "mockData/employer-interviews-data";
 import { useEmployerContext } from "components";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 
@@ -41,8 +44,8 @@ const PendingInterviews: FC = () => {
       setDisplayedItems((prev) => prev.filter((item) => item !== interview));
     } catch (error) {
       showError(
-        'Accept Interview Failed',
-        'Unable to accept the interview. Please try again or contact support.'
+        "Accept Interview Failed",
+        "Unable to accept the interview. Please try again or contact support.",
       );
       console.error("Error accepting interview:", error);
     }
@@ -55,22 +58,25 @@ const PendingInterviews: FC = () => {
       setDisplayedItems((prev) => prev.filter((item) => item !== interview));
     } catch (error) {
       showError(
-        'Decline Interview Failed',
-        'Unable to decline the interview. Please try again or contact support.'
+        "Decline Interview Failed",
+        "Unable to decline the interview. Please try again or contact support.",
       );
       console.error("Error declining interview:", error);
     }
   };
 
-  const handleReschedule = async (interview: Interview, data: RescheduleData) => {
+  const handleReschedule = async (
+    interview: Interview,
+    data: RescheduleData,
+  ) => {
     try {
       console.log("Reschedule:", interview, data);
       await new Promise((resolve) => setTimeout(resolve, 3000));
       setDisplayedItems((prev) => prev.filter((item) => item !== interview));
     } catch (error) {
       showError(
-        'Reschedule Interview Failed',
-        'Unable to reschedule the interview. Please try again or contact support.'
+        "Reschedule Interview Failed",
+        "Unable to reschedule the interview. Please try again or contact support.",
       );
       console.error("Error rescheduling interview:", error);
     }
@@ -155,8 +161,34 @@ const PendingInterviews: FC = () => {
   const showLoadingCards = loading;
   const loadingCardsCount = Math.min(6, pendingInterviewsData.length);
 
+  if (loading) {
+    return (
+      <div className="h-full w-full flex items-center justify-center">
+        <div className="flex flex-col items-center justify-center p-4 sm:p-8 text-center">
+          {/* Skeleton for calendar image */}
+          <div className="mb-6 w-[180px] h-[180px] sm:w-[220px] sm:h-[220px] bg-gray-700 rounded animate-pulse" />
+
+          {/* Skeleton for "No Pending Interviews" title */}
+          <div className="h-8 w-44 sm:w-56 bg-gray-700 rounded mb-4 animate-pulse" />
+
+          {/* Skeleton for description - using container to control max width */}
+          <div className="mb-6 w-full max-w-[455px] px-4 sm:px-0">
+            <div className="h-5 w-full sm:w-[460px] bg-gray-700 rounded mb-2 animate-pulse" />
+            <div className="h-5 w-full sm:w-[460px] bg-gray-700 rounded animate-pulse" />
+          </div>
+
+          {/* Skeleton for "Go to Feed" button */}
+          <div className="h-10 w-24 bg-gray-700 rounded animate-pulse" />
+        </div>
+      </div>
+    );
+  }
+
   // Show empty state if there are no pending interviews and we're not loading
-  if (!loading && displayedItems.length === 0 || subscriptionPlan === 'freeTrial') {
+  if (
+    (!loading && displayedItems.length === 0) ||
+    subscriptionPlan === "freeTrial"
+  ) {
     return (
       <div className="h-full w-full flex items-center justify-center">
         <div className="flex flex-col items-center justify-center p-8 text-center">

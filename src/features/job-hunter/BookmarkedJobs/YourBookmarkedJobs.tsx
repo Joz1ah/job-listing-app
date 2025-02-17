@@ -140,8 +140,31 @@ const BookmarkedJobsContent: FC = () => {
   const showLoadingCards = loading;
   const loadingCardsCount = Math.min(6, mockBookmarks.length);
 
+  if (loading) {
+    return (
+      <div className="h-full w-full flex items-center justify-center p-4 sm:p-8">
+        <div className="flex flex-col items-center justify-center text-center max-w-full">
+          {/* Skeleton for image - responsive width */}
+          <div className="mb-6 w-48 h-48 sm:w-[249px] sm:h-[249px] bg-gray-700 rounded animate-pulse" />
+
+          {/* Skeleton for title - responsive width */}
+          <div className="h-8 w-44 sm:w-56 bg-gray-700 rounded mb-4 animate-pulse" />
+
+          {/* Skeleton for description - responsive width */}
+          <div className="h-5 w-64 sm:w-80 bg-gray-700 rounded mb-6 animate-pulse" />
+
+          {/* Skeleton for button - responsive width */}
+          <div className="h-10 w-32 sm:w-36 bg-gray-700 rounded animate-pulse" />
+        </div>
+      </div>
+    );
+  }
+
   // Show empty state if there are no bookmarked jobs and we're not loading
-  if (!loading && displayedItems.length === 0 || subscriptionPlan === 'freeTrial') {
+  if (
+    (!loading && displayedItems.length === 0) ||
+    subscriptionPlan === "freeTrial"
+  ) {
     return (
       <div className="h-full w-full flex items-center justify-center">
         <div className="flex flex-col items-center justify-center p-8 text-center">
@@ -159,7 +182,7 @@ const BookmarkedJobsContent: FC = () => {
 
           <NavLink
             to="/dashboard/feed"
-             className="bg-[#F5722E] text-white px-6 py-2 rounded-md hover:bg-orange-600 transition-colors"
+            className="bg-[#F5722E] text-white px-6 py-2 rounded-md hover:bg-orange-600 transition-colors"
           >
             Go To Job Feed
           </NavLink>
