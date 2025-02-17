@@ -50,7 +50,15 @@ interface DeclineReason {
   label: string;
 }
 
-const declineReasons: DeclineReason[] = [
+const employerDeclineReasons: DeclineReason[] = [
+  { value: "position_filled", label: "Position Filled by Another Candidate" },
+  { value: "found_candidate", label: "Found a Candidate Through Another Source" },
+  { value: "changed_job", label: "Changed Job Requirements or Hiring Priorities" },
+  { value: "role_misalignment", label: "Role Misalignment with Applicant's Qualifications" },
+  { value: "scheduling_constraints", label: "Unable to Proceed Due to Scheduling Constraints" },
+];
+
+const jobHunterDeclineReasons: DeclineReason[] = [
   { value: "role_misalignment", label: "Role Misalignment" },
   { value: "salary_expectations", label: "Salary Expectations" },
   { value: "not_actively_seeking", label: "Not Actively Seeking" },
@@ -216,7 +224,7 @@ const PendingCard: FC<PendingCardProps> = ({
       >
         <X size={18} />
       </button>
-      <span className="w-full flex justify-center text-[15px] text-[#F5722E] absolute left-1/2 -translate-x-1/2 top-0">
+      <span className="w-full flex justify-center text-xs md:text-[15px] text-[#F5722E] absolute left-1/2 -translate-x-1/2 top-0">
         You are accepting the interview invitation.
       </span>
       <div className="w-full mt-2">
@@ -249,7 +257,7 @@ const PendingCard: FC<PendingCardProps> = ({
       >
         <X size={18} />
       </button>
-      <h3 className="w-full flex justify-center text-[15px] text-[#E53835] absolute left-1/2 -translate-x-1/2 top-0">
+      <h3 className="w-full flex justify-center text-xs md:text-[15px] text-[#E53835] absolute left-1/2 -translate-x-1/2 top-0">
         You are declining the interview below:
       </h3>
       <div className="w-full mt-2">
@@ -326,9 +334,9 @@ const PendingCard: FC<PendingCardProps> = ({
             <SelectTrigger className="w-full border-2 rounded-[10px] bg-transparent h-[40px] border-[#263238]">
               <SelectValue placeholder="Select A Reason" />
             </SelectTrigger>
-            <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none max-h-[200px]">
+            <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none max-h-[200px] truncate">
               <SelectGroup>
-                {declineReasons.map((reason) => (
+                {(variant === "employer" ? employerDeclineReasons : jobHunterDeclineReasons).map((reason) => (
                   <SelectItem
                     key={reason.value}
                     value={reason.value}
@@ -346,7 +354,7 @@ const PendingCard: FC<PendingCardProps> = ({
   );
 
   const StandardFooter = () => (
-    <CardFooter className="flex flex-row justify-center pt-2 space-x-6">
+    <CardFooter className="flex flex-row justify-center pt-2 space-x-4 md:space-x-6">
       <Button
         onClick={() => setModalView("accept")}
         className="text-[13px] font-semibold w-[100px] h-[32px] bg-[#F5722E] hover:bg-[#F5722E]/90 text-white"
