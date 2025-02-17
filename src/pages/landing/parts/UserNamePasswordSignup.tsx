@@ -146,7 +146,7 @@ const UserNamePasswordSignup = () => {
               className="w-full py-2 border-b-2 border-gray-300 focus:border-orange-500 focus:outline-none"
             />
             {organizedErrors.email && (
-              <div className="text-[#4BAF66] text-[10px] mt-1">
+              <div className="text-red-500  text-[10px] mt-1">
                 {organizedErrors.email}
               </div>
             )}
@@ -173,7 +173,7 @@ const UserNamePasswordSignup = () => {
               {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
             </button>
             {organizedErrors.password && (
-              <div className="text-[#4BAF66] text-[10px] mt-1">
+              <div className="text-red-500  text-[10px] mt-1">
                 {organizedErrors.password}
               </div>
             )}
@@ -200,7 +200,7 @@ const UserNamePasswordSignup = () => {
               {showConfirmPassword ? <Eye size={20} /> : <EyeOff size={20} />}
             </button>
             {organizedErrors.passwordConfirm && (
-              <div className="text-[#4BAF66] text-[10px] mt-1">
+              <div className="text-red-500  text-[10px] mt-1">
                 {organizedErrors.passwordConfirm}
               </div>
             )}
