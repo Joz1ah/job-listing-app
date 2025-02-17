@@ -39,10 +39,11 @@ const Tooltip = ({
         <div 
           className="
             absolute z-50 px-4 py-3 
-            text-xs text-[#263238] bg-white
+            text-[9px] text-[#263238] bg-white
             border border-gray-200 shadow-md
-            w-52 min-h-[2rem]
-            -top-10 -right-56
+            w-52 min-h-8
+            -translate-y-full -translate-x-[50%] md:-translate-x-[1%]
+            left-1/2 -top-2
             break-words whitespace-normal
           "
           role="tooltip"

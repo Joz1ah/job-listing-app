@@ -61,7 +61,7 @@ const TagInputs: React.FC<TagInputProps> = ({
   suggestionTitle = "Select Option",
   disabled,
   alternateColors,
-  maxTagLength = 12,
+  //maxTagLength = 12,
   onInputChange,
 }) => {
   const [inputValue, setInputValue] = useState("");
@@ -71,9 +71,73 @@ const TagInputs: React.FC<TagInputProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const tagsContainerRef = useRef<HTMLDivElement>(null);
   const tooltipTimeoutRef = useRef<NodeJS.Timeout>();
+  const measurementDivRef = useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = useState<number>(0);
+  const resizeObserverRef = useRef<ResizeObserver | null>(null);
 
   const remainingTags = maxTags - value.length;
+
+  const measureTextWidth = useCallback((text: string): number => {
+    if (!measurementDivRef.current) return 0;
+    measurementDivRef.current.textContent = text;
+    return measurementDivRef.current.getBoundingClientRect().width;
+  }, []);
+
+  // Set up resize observer to track container width changes
+  useEffect(() => {
+    if (!tagsContainerRef.current) return;
+
+    resizeObserverRef.current = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        setContainerWidth(entry.contentRect.width);
+      }
+    });
+
+    resizeObserverRef.current.observe(tagsContainerRef.current);
+
+    return () => {
+      if (resizeObserverRef.current) {
+        resizeObserverRef.current.disconnect();
+      }
+    };
+  }, []);
+
+  // Update getAvailableWidth to use the state
+  const getAvailableWidth = useCallback(() => {
+    return containerWidth;
+  }, [containerWidth]);
+
+  const shouldTruncateTag = useCallback(
+    (tagWidth: number): boolean => {
+      const availableWidth = getAvailableWidth();
+      return tagWidth > availableWidth;
+    },
+    [getAvailableWidth],
+  );
+
+  const truncateText = useCallback(
+    (text: string): string => {
+      const tagWidth = measureTextWidth(text) + 48; // Add padding and margins
+      if (!shouldTruncateTag(tagWidth)) return text;
+
+      let truncatedText = text;
+      while (
+        truncatedText.length > 3 &&
+        shouldTruncateTag(measureTextWidth(truncatedText + "...") + 48)
+      ) {
+        truncatedText = truncatedText.slice(0, -1);
+      }
+      return truncatedText.length < text.length ? truncatedText + "..." : text;
+    },
+    [measureTextWidth, shouldTruncateTag],
+  );
+
+  // Helper function to get label from ID
+  const getLabel = (keyword: string): string => {
+    return capitalizeFirstLetter(keyword);
+  };
 
   const filteredOptions = options.filter((option) => {
     // Don't show already selected values
@@ -94,9 +158,9 @@ const TagInputs: React.FC<TagInputProps> = ({
   });
 
   // Helper function to get label from ID
-  const getLabel = (keyword: string): string => {
+  /*   const getLabel = (keyword: string): string => {
     return capitalizeFirstLetter(keyword);
-  };
+  }; */
 
   useEffect(() => {
     if (showSuggestions && filteredOptions.length > 0) {
@@ -212,13 +276,19 @@ const TagInputs: React.FC<TagInputProps> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const truncateText = (text: string, maxLength: number) => {
+  /*   const truncateText = (text: string, maxLength: number) => {
     if (text.length <= maxLength) return text;
     return `${text.substring(0, maxLength)}...`;
-  };
+  }; */
 
   return (
     <div ref={containerRef} className="relative w-full">
+      <div
+        ref={measurementDivRef}
+        className="absolute invisible whitespace-nowrap text-[12px] font-semibold"
+        aria-hidden="true"
+      />
+
       <div
         className={cn(
           "bg-transparent border-2 border-[#AEADAD] rounded-[10px] min-h-[36px] overflow-hidden group",
@@ -228,10 +298,14 @@ const TagInputs: React.FC<TagInputProps> = ({
           className,
         )}
       >
-        <div className="flex flex-wrap items-center mt-0.5 mb-2">
+        <div
+          ref={tagsContainerRef}
+          className="flex flex-wrap items-center mt-0.5 mb-2"
+        >
           {value.map((id, index) => {
             const displayLabel = getLabel(id);
-            const truncatedLabel = truncateText(displayLabel, maxTagLength);
+            // Truncation will be recalculated whenever containerWidth changes
+            const truncatedLabel = truncateText(displayLabel);
 
             return (
               <div
@@ -254,18 +328,26 @@ const TagInputs: React.FC<TagInputProps> = ({
               </div>
             );
           })}
-          <div className="flex-1 min-w-[40px] flex items-center">
-            <Input
-              ref={inputRef}
-              type="text"
-              value={inputValue}
-              onChange={handleInputChange}
-              onKeyDown={handleKeyDown}
-              onFocus={handleInputFocus}
-              disabled={disabled || remainingTags === 0}
-              placeholder={value.length === 0 ? placeholder : ""}
-              className="w-full h-7 py-0 mt-1.5 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent placeholder:text-[#AEADAD] disabled:cursor-not-allowed disabled:opacity-50"
-            />
+          <div className={cn(
+    "inline-flex items-center",
+    // Force new line in these cases:
+    // 1. When showing suggestions (for dropdown) OR
+    // 2. When we have tags AND not enough space
+    (showSuggestions && inputValue) || (value.length > 0 && getAvailableWidth() < 120)
+      ? "basis-auto" 
+      : "flex-1"
+  )}>
+    <Input
+      ref={inputRef}
+      type="text"
+      value={inputValue}
+      onChange={handleInputChange}
+      onKeyDown={handleKeyDown}
+      onFocus={handleInputFocus}
+      disabled={disabled || remainingTags === 0}
+      placeholder={value.length === 0 ? placeholder : ""}
+      className="w-full h-7 py-0 mt-1.5 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent placeholder:text-[#AEADAD] disabled:cursor-not-allowed disabled:opacity-50"
+    />
 
             {showTooltip && (
               <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-white text-[#2D3A41] text-xs rounded shadow-lg whitespace-nowrap z-50">
@@ -509,7 +591,6 @@ const CertificationTagInput: React.FC<Omit<TagInputProps, "options">> = (
       suggestionTitle="Select Certifications"
       placeholder={props.placeholder || "Type to search certifications"}
       onInputChange={handleSearch}
-      maxTagLength={10}
     />
   );
 };

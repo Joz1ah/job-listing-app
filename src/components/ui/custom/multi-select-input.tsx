@@ -29,7 +29,7 @@ interface EmploymentTypeSelectProps {
   placeholder?: string;
 }
 
- const MultiSelect: React.FC<EmploymentTypeSelectProps> = ({
+const MultiSelect: React.FC<EmploymentTypeSelectProps> = ({
   value,
   onChange,
   options,
@@ -56,22 +56,28 @@ interface EmploymentTypeSelectProps {
             {value.length === 0 ? (
               <span className="text-white">{placeholder}</span>
             ) : (
-              <div className="flex flex-nowrap overflow-hidden gap-1">
-                {value.map((val) => (
-                  <Badge
-                    key={val}
-                    variant="secondary"
-                    className={cn(
-                      "font-normal text-[13px] rounded-sm whitespace-nowrap overflow-hidden text-ellipsis max-w-[120px]",
-                      {
-                        "bg-[#BF532C] text-white": val === "Part Time",
-                        "bg-[#F5722E] text-white": val !== "Part Time",
-                      }
-                    )}
-                  >
-                    {options.find((type) => type.value === val)?.label}
-                  </Badge>
-                ))}
+              <div className="flex flex-nowrap gap-1 overflow-hidden">
+                {value.map((val) => {
+                  const option = options.find((type) => type.value === val);
+                  return (
+                    <Badge
+                      key={val}
+                      variant="secondary"
+                      className={cn(
+                        "font-normal text-xs md:text-sm px-2 py-1 rounded",
+                        "inline-block max-w-[120px] truncate",
+                        "transition-colors duration-200",
+                        {
+                          "bg-[#BF532C] text-white": val === "Part Time",
+                          "bg-[#F5722E] text-white": val !== "Part Time",
+                        }
+                      )}
+                      title={option?.label} // Shows full text on hover
+                    >
+                      <span className="truncate block">{option?.label}</span>
+                    </Badge>
+                  );
+                })}
               </div>
             )}
           </div>
@@ -103,7 +109,7 @@ interface EmploymentTypeSelectProps {
                     onChange(newValue);
                   }}
                   className={cn(
-                    "rounded-none justify-start px-2 h-[55px]",
+                    "rounded-none justify-start px-2 h-14",
                     "transition-all duration-500 ease-in-out",
                     "data-[selected=true]:bg-[#F5722E] data-[selected=true]:text-white"
                   )}

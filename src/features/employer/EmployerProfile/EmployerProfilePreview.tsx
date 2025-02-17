@@ -28,7 +28,7 @@ const EmployerProfilePreview: React.FC<EmployerProfilePreviewProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 flex items-center justify-center p-4">
-      <div className="bg-white w-full max-w-2xl rounded-lg relative">
+      <div className="bg-white w-full max-w-2xl rounded-lg relative max-h-[90vh] overflow-y-auto">
         <button
           onClick={onClose}
           className="absolute right-4 top-4 text-gray-500 hover:text-gray-700"
@@ -39,36 +39,36 @@ const EmployerProfilePreview: React.FC<EmployerProfilePreviewProps> = ({
 
         <div className="p-6 pt-10 space-y-6">
           <div className="space-y-4">
-            <h2 className="text-[17px] font-bold text-[#263238]">
+            <h2 className="text-[17px] font-bold text-[#263238] break-words">
               {formData.businessName}
             </h2>
 
-            <div className="flex items-center gap-2">
-              <MapPin className="text-[#F5722E]" size={26} />
-              <span className="text-[#263238] text-[17px]">
+            <div className="flex items-start gap-2">
+              <MapPin className="text-[#F5722E] flex-shrink-0 mt-1" size={26} />
+              <span className="text-[#263238] text-[17px] break-words">
                 Based in {formData.country}
               </span>
             </div>
 
             <div className="space-y-2">
-              <p className="text-[#263238] text-[17px]">
+              <p className="text-[#263238] text-[17px] break-words">
                 {formData.yearFounded}
               </p>
             </div>
 
             <div className="space-y-2">
-              <p className="text-[#263238] text-[17px]">
+              <p className="text-[#263238] text-[17px] break-words">
                 {formData.industryName}
               </p>
             </div>
 
-            <div className="flex items-center gap-2">
-              <Globe className="text-[#F5722E]" size={26} />
+            <div className="flex items-start gap-2">
+              <Globe className="text-[#F5722E] flex-shrink-0 mt-1" size={26} />
               <a
                 href={formData.companyWebsite}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-orange-500 underline text-lg"
+                className="text-[#F5722E] underline text-[17px] break-all hover:text-orange-600"
               >
                 {formData.companyWebsite}
               </a>
@@ -76,18 +76,22 @@ const EmployerProfilePreview: React.FC<EmployerProfilePreviewProps> = ({
 
             <div className="space-y-2">
               <p className="text-[#263238] text-[17px]">Company overview</p>
-              <div className="w-full p-4 text-[#263238] text-[10px] border border-[#AEADAD] rounded-lg min-h-[125px]">
-                {formData.companyOverview}
+              <div className="w-full p-4 text-[#263238] text-[14px] border border-[#AEADAD] rounded-lg max-h-48 overflow-y-auto">
+                <p className="whitespace-pre-wrap break-words leading-relaxed">
+                  {formData.companyOverview}
+                </p>
               </div>
             </div>
           </div>
 
-          <Button
-            onClick={onConfirm}
-            className="w-full text-xs md:w-auto h-[27px] px-6 py-2 bg-[#F5722E] text-white rounded-md hover:bg-orange-600 transition-colors"
-          >
-            Go To Job Feed
-          </Button>
+          <div className="pt-4">
+            <Button
+              onClick={onConfirm}
+              className="w-full md:w-auto h-[27px] px-6 py-2 bg-[#F5722E] text-white rounded-md hover:bg-orange-600 transition-colors"
+            >
+              Go To Job Feed
+            </Button>
+          </div>
         </div>
       </div>
     </div>
