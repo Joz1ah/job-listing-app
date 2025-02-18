@@ -3,7 +3,6 @@ import {
   useUpdateFreeTrialStatusMutation,
 } from "api/akaza/akazaAPI";
 import { useAuth } from "contexts/AuthContext/AuthContext";
-import { useNavigate } from "react-router-dom";
 import { useModal } from "components/modal/useModal";
 import { useLanding } from "../useLanding";
 import unchecked_green from "assets/toggles/unchecked-green.svg?url";
@@ -34,7 +33,6 @@ const SubscriptionPlanSelection = () => {
     modalState,
     handleSetSelectedPlan,
   } = useLanding();
-  const navigate = useNavigate();
   const { login } = useAuth();
   const [loginSubmit] = useLoginMutation();
   const [updateFreeTrialStatus] = useUpdateFreeTrialStatusMutation();
@@ -64,11 +62,11 @@ const SubscriptionPlanSelection = () => {
 
           handleSetModalState(MODAL_STATES.LOADING);
           setTimeout(() => {
-            navigate(
-              userType === "employer"
-                ? ROUTE_CONSTANTS.COMPLETE_PROFILE
-                : ROUTE_CONSTANTS.CREATE_APPLICATION,
-            );
+            const redirectUrl = userType === "employer"
+              ? ROUTE_CONSTANTS.COMPLETE_PROFILE
+              : ROUTE_CONSTANTS.CREATE_APPLICATION;
+              
+            window.location.href = redirectUrl;
           }, 1000);
         }
       } catch (error) {
