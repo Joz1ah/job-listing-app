@@ -236,7 +236,7 @@ const EmployerAdditionalInformation = () => {
       className="flex flex-col items-center justify-center w-full h-full p-4"
     >
       <div className="flex flex-col gap-6 w-full max-w-md">
-        <div className="text-center text-[#263238] mb-4 text-[18px]">
+        <div className="text-center text-[#263238] font-bold mb-4 text-[17px]">
           Additional Information
         </div>
         <div className="flex flex-col gap-4">
@@ -248,10 +248,10 @@ const EmployerAdditionalInformation = () => {
                 placeholder="First Name *"
                 value={formData.firstName}
                 onChange={handleChange}
-                className="w-full border-b-2 border-gray-300 focus:border-orange-500 outline-none py-2"
+                className="w-full text-sm border-b-2 border-gray-300 focus:border-orange-500 outline-none py-2"
               />
               {errors.firstName && (
-                <div className="absolute right-0 text-red-500 text-xs mt-1">
+                <div className="absolute right-0 text-red-500 text-xs">
                   {errors.firstName}
                 </div>
               )}
@@ -263,10 +263,10 @@ const EmployerAdditionalInformation = () => {
                 placeholder="Last Name *"
                 value={formData.lastName}
                 onChange={handleChange}
-                className="w-full border-b-2 border-gray-300 focus:border-orange-500 outline-none py-2"
+                className="w-full text-sm border-b-2 border-gray-300 focus:border-orange-500 outline-none py-2"
               />
               {errors.lastName && (
-                <div className="absolute right-0 text-red-500 text-xs mt-1">
+                <div className="absolute right-0 text-red-500 text-xs">
                   {errors.lastName}
                 </div>
               )}
@@ -279,10 +279,10 @@ const EmployerAdditionalInformation = () => {
               placeholder="Position of the Representative *"
               value={formData.position}
               onChange={handleChange}
-              className="w-full border-b-2 border-gray-300 focus:border-orange-500 outline-none py-2"
+              className="w-full text-sm border-b-2 border-gray-300 focus:border-orange-500 outline-none py-2"
             />
             {errors.position && (
-              <div className="absolute right-0 text-red-500 text-xs mt-1">
+              <div className="absolute right-0 text-red-500 text-xs">
                 {errors.position}
               </div>
             )}
@@ -294,10 +294,10 @@ const EmployerAdditionalInformation = () => {
               placeholder="Legal Business Name *"
               value={formData.businessName}
               onChange={handleChange}
-              className="w-full border-b-2 border-gray-300 focus:border-orange-500 outline-none py-2"
+              className="w-full text-sm border-b-2 border-gray-300 focus:border-orange-500 outline-none py-2"
             />
             {errors.businessName && (
-              <div className="absolute right-0 text-red-500 text-xs mt-1">
+              <div className="absolute right-0 text-red-500 text-xs">
                 {errors.businessName}
               </div>
             )}
@@ -309,10 +309,10 @@ const EmployerAdditionalInformation = () => {
               placeholder="Company Address *"
               value={formData.address}
               onChange={handleChange}
-              className="w-full border-b-2 border-gray-300 focus:border-orange-500 outline-none py-2"
+              className="w-full text-sm border-b-2 border-gray-300 focus:border-orange-500 outline-none py-2"
             />
             {errors.address && (
-              <div className="absolute right-0 text-red-500 text-xs mt-1">
+              <div className="absolute right-0 text-red-500 text-xs">
                 {errors.address}
               </div>
             )}
@@ -324,10 +324,10 @@ const EmployerAdditionalInformation = () => {
               placeholder="Company Website *"
               value={formData.website}
               onChange={handleChange}
-              className="w-full border-b-2 border-gray-300 focus:border-orange-500 outline-none py-2"
+              className="w-full text-sm border-b-2 border-gray-300 focus:border-orange-500 outline-none py-2"
             />
             {errors.website && (
-              <div className="absolute right-0 text-red-500 text-xs mt-1">
+              <div className="absolute right-0 text-red-500 text-xs">
                 {errors.website}
               </div>
             )}

@@ -81,24 +81,24 @@ const LoginForm = () => {
       onSubmit={handleSubmit}
     >
       {({ errors, touched, isSubmitting, values: { email, password } }) => (
-        <Form className="flex flex-col gap-[10px] w-full py-8">
-          <div className="text-left">
-            <h1 className="text-[14px] font-bold text-[#F5722E]">Login</h1>
+        <Form className="flex flex-col w-full py-5 md:py-2 md:px-[50px]">
+          <div className="text-left mb-5">
+            <h1 className="text-sm md:text-xl font-bold text-[#F5722E]">Login</h1>
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col space-y-2">
             <div>
               <div className="relative">
                 <Field
                   name="email"
                   type="text"
                   placeholder="Email"
-                  className={`w-full py-2 border-b-2 focus:border-orange-500 focus:outline-none ${touched.email && errors.email ? "border-red-500" : "border-gray-300"}`}
+                  className={`w-full text-sm py-2 border-b-2 focus:border-orange-500 focus:outline-none ${touched.email && errors.email ? "border-red-500" : "border-gray-300"}`}
                 />
               </div>
               <ErrorMessage
                 name="email"
                 component="div"
-                className="text-red-500 text-sm mt-1"
+                className="text-red-500 text-[10px] mt-1"
               />
             </div>
             <div>
@@ -107,7 +107,7 @@ const LoginForm = () => {
                   name="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Password"
-                  className={`w-full py-2 border-b-2 focus:border-orange-500 focus:outline-none ${touched.password && errors.password ? "border-red-500" : "border-gray-300"}`}
+                  className={`w-full text-sm py-2 border-b-2 focus:border-orange-500 focus:outline-none ${touched.password && errors.password ? "border-red-500" : "border-gray-300"}`}
                 />
                 <button
                   type="button"
@@ -122,17 +122,17 @@ const LoginForm = () => {
               <ErrorMessage
                 name="password"
                 component="div"
-                className="text-red-500 text-sm mt-1"
+                className="text-red-500 text-[10px] mt-1"
               />
             </div>
-            <div className="text-red-500 text-sm mt-1">
+            <div className="text-red-500 text-[10px] mt-1">
               {apiLoginErrorMessage ? apiLoginErrorMessage : ""}
             </div>
           </div>
 
-          <div className="flex justify-between items-center">
-            <div className="flex items-center">
-              <Field type="checkbox" name="rememberMe" className="mr-2" />
+          <div className="flex justify-between items-center pb-4">
+            <div className="flex items-center ml-1">
+              <Field type="checkbox" name="rememberMe" className="mr-2 w-5 h-5" />
               <label className="text-[10px]">Remember me</label>
             </div>
             <div className="text-[10px] text-[#F5722E] cursor-pointer">

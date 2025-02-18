@@ -18,12 +18,12 @@ const JobHunterEmployerSelection = () => {
     <div
       className={`p-4 sm:p-2 flex flex-col items-center justify-center ${modalState !== MODAL_STATES.SIGNUP_SELECT_USER_TYPE ? "hidden" : ""}`}
     >
-      <div className="text-center text-lg sm:text-xl flex justify-center items-center mt-4">
+      <div className="text-center text-lg flex justify-center items-center font-light">
         What best describes you?
       </div>
       <div
         id="imgs-btns-wrapper"
-        className="flex justify-around items-center mt-4 h-full sm:h-auto gap-2 sm:gap-2"
+        className="flex justify-around items-center pt-14 h-full sm:h-auto gap-[50px]"
       >
         <Selection
           icon={jobhunter_icon}

@@ -5,7 +5,6 @@ import { useModal } from "components/modal/useModal";
 import { useLanding } from "../useLanding";
 
 import video4 from "assets/mp4/girl-laughing-at-monitor.mp4";
-
 import akaza_icon from "assets/akaza-icon.png";
 import akaza_loading from "assets/akaza-loading.png";
 import sparkle_icon from "assets/sparkle-icon.svg?url";
@@ -30,7 +29,6 @@ const HeroLoading = () => {
     }
   }, [heroState, isModalOpen, hasShownModal]);
 
-  // Reset modal shown state when leaving loading state
   useEffect(() => {
     if (heroState !== HERO_STATES.LOADING) {
       setHasShownModal(false);
@@ -51,16 +49,10 @@ const HeroLoading = () => {
           <div
             className={`${styles["title"]} ${styles["orange"]} ${styles["text-left"]}`}
           >
-            <div className="font-[600] text-[36px] text-[#F5722E]">
-              You're a few seconds away from
-            </div>
-            <div className={`${styles["sparkle-desc"]}`}>
-              <div className="font-[600] text-[36px] text-[#F5722E]">
-                seeing your perfect match
-              </div>
-              <div className={`${styles["perfect-match-wrapper"]}`}>
-                <img src={sparkle_icon} alt="sparkle"></img>
-              </div>
+            <div className="font-[600] text-[26px] md:text-[36px] text-[#F5722E]">
+              You're a few seconds away from seeing your
+              <img src={sparkle_icon} alt="sparkle" className="w-6 h-6 md:w-8 md:h-8 inline-block mx-2" />
+              perfect match
             </div>
           </div>
           <div className={`${styles["loading-wrapper"]}`}>
@@ -70,10 +62,10 @@ const HeroLoading = () => {
                   className={`${styles.loader}`}
                   src={akaza_loading}
                   alt="loading"
-                ></img>
+                />
               </div>
               <div>
-                <img src={akaza_icon} alt="akaza"></img>
+                <img src={akaza_icon} alt="akaza" />
               </div>
             </div>
           </div>

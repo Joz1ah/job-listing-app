@@ -133,7 +133,10 @@ const UserNamePasswordSignup = () => {
 
   return modalState && modalState == MODAL_STATES.SIGNUP_STEP2 ? (
     <div className="flex flex-col h-full w-full justify-center items-center">
-      <form onSubmit={handleSubmit} className="w-full h-full">
+      <form onSubmit={handleSubmit} className="w-full h-full md:px-[50px]">
+        <div className="text-left mb-5">
+          <h1 className="text-sm md:text-xl font-bold text-[#F5722E]">Sign Up</h1>
+        </div>
         <div className="flex flex-col gap-4">
           <div className="relative">
             <input
@@ -143,7 +146,7 @@ const UserNamePasswordSignup = () => {
                 setCredentials({ ...credentials, email: e.target.value })
               }
               required
-              className="w-full py-2 border-b-2 border-gray-300 focus:border-orange-500 focus:outline-none"
+              className="w-full text-sm py-2 border-b-2 border-gray-300 focus:border-orange-500 focus:outline-none"
             />
             {organizedErrors.email && (
               <div className="text-[#4BAF66] text-[10px] mt-1">
@@ -162,7 +165,7 @@ const UserNamePasswordSignup = () => {
                 })
               }
               required
-              className="w-full py-2 border-b-2 border-gray-300 focus:border-orange-500 focus:outline-none"
+              className="w-full text-sm py-2 border-b-2 border-gray-300 focus:border-orange-500 focus:outline-none"
             />
             <button
               type="button"
@@ -189,7 +192,7 @@ const UserNamePasswordSignup = () => {
                 })
               }
               required
-              className="w-full py-2 border-b-2 border-gray-300 focus:border-orange-500 focus:outline-none"
+              className="w-full text-sm py-2 border-b-2 border-gray-300 focus:border-orange-500 focus:outline-none"
             />
             <button
               type="button"
@@ -207,9 +210,9 @@ const UserNamePasswordSignup = () => {
           </div>
         </div>
 
-        <div className="mt-0 sm:mt-16">
+        <div className="mt-[50px] md:mt-[100px]">
           <div className="mt-6 text-center text-sm text-gray-600">
-            <span className="text-[#525254] text-[12px] font-[400]">
+            <span className="text-[#263238] text-[12px] font-[400]">
               By clicking "Next," you agree to our
             </span>
             <div>
@@ -221,7 +224,7 @@ const UserNamePasswordSignup = () => {
               >
                 Terms & Conditions
               </a>
-              <span className="text-[#525254] text-[12px] font-[400]">
+              <span className="text-[#263238] text-[12px] font-[400]">
                 &nbsp;and&nbsp;
               </span>
               <a
@@ -238,13 +241,13 @@ const UserNamePasswordSignup = () => {
             <button
               onClick={handlePrevious}
               type="button"
-              className="w-24 h-10 border-2 border-orange-500 text-orange-500 rounded-md"
+              className="w-[108px] h-10 border-2 border-orange-500 text-orange-500 rounded-md"
             >
               Previous
             </button>
             <button
               type="submit"
-              className="w-24 h-10 bg-orange-500 text-white rounded-md flex items-center justify-center"
+              className="w-[108px] h-10 bg-orange-500 text-white rounded-md flex items-center justify-center"
               disabled={isSubmitting}
             >
               {isSubmitting ? (
