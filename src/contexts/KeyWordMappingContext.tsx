@@ -2,8 +2,8 @@ import React, { createContext, useState, useCallback } from 'react';
 
 interface KeywordMappingContextType {
   keywordToIdMap: Record<string, string>;
-  addMapping: (keyword: string, id: string) => void;
-  addMappings: (mappings: Array<{ keyword: string; id: string }>) => void;
+  addMapping: (keyword: string, id: string | number) => void;
+  addMappings: (mappings: Array<{ keyword: string; id: string | number }>) => void;
 }
 
 const KeywordMappingContext = createContext<KeywordMappingContextType>({
@@ -15,21 +15,23 @@ const KeywordMappingContext = createContext<KeywordMappingContextType>({
 export const KeywordMappingProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [keywordToIdMap, setKeywordToIdMap] = useState<Record<string, string>>({});
 
-  const addMapping = useCallback((keyword: string, id: string) => {
+  const addMapping = useCallback((keyword: string, id: string | number) => {
     setKeywordToIdMap(prev => {
-      if (prev[keyword] === id) return prev; // Prevent unnecessary updates
-      return { ...prev, [keyword]: id };
+      const stringId = String(id);
+      if (prev[keyword] === stringId) return prev; // Prevent unnecessary updates
+      return { ...prev, [keyword]: stringId };
     });
   }, []);
 
-  const addMappings = useCallback((mappings: Array<{ keyword: string; id: string }>) => {
+  const addMappings = useCallback((mappings: Array<{ keyword: string; id: string | number }>) => {
     setKeywordToIdMap(prev => {
       const updates: Record<string, string> = {};
       let hasChanges = false;
 
       mappings.forEach(({ keyword, id }) => {
-        if (prev[keyword] !== id) {
-          updates[keyword] = id;
+        const stringId = String(id);
+        if (prev[keyword] !== stringId) {
+          updates[keyword] = stringId;
           hasChanges = true;
         }
       });

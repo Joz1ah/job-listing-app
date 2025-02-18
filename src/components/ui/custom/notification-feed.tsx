@@ -3,7 +3,10 @@ import { Bell, Ellipsis, ChevronDown } from "lucide-react";
 import { ScrollArea } from "components";
 import { Badge } from "components";
 import { Popover, PopoverContent, PopoverTrigger } from "components";
-import freeTrialNotif from "images/free-trial-bell.svg?url";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
+import jobHunterPopAds from "images/popup-hunter.svg?url";
+import employerPopAds from "images/popup-employer.svg?url";
+import { NavLink } from "react-router-dom";
 
 type NotificationItem = {
   id: string;
@@ -16,9 +19,13 @@ type NotificationItem = {
 
 interface NotificationFeedProps {
   subscriptionPlan?: "freeTrial" | "monthlyPlan" | "yearlyPlan";
+  userType?: "employer" | "job_hunter";
 }
 
-const NotificationFeed: FC<NotificationFeedProps> = ({ subscriptionPlan }) => {
+const NotificationFeed: FC<NotificationFeedProps> = ({
+  subscriptionPlan,
+  userType = "job_hunter",
+}) => {
   const [expandedNew, setExpandedNew] = useState(false);
   const [newNotifications, setNewNotifications] = useState<NotificationItem[]>(
     [],
@@ -136,28 +143,28 @@ const NotificationFeed: FC<NotificationFeedProps> = ({ subscriptionPlan }) => {
             <Bell className="w-[22px] h-[25px] text-[#F5722E] [transform:rotate(35deg)] cursor-pointer" />
           </button>
 
-          <div
-            className={`
-            fixed md:absolute left-0 md:left-auto right-0 md:right-0 top-[4rem] md:top-full
-            w-full md:w-[400px] overflow-hidden
-            transition-transform duration-1000 ease-out
-            z-50 pointer-events-none
-            ${open ? "translate-y-0" : "-translate-y-full"}
-          `}
-          >
-            <div
-              className={`
-                transform transition-transform duration-900 ease-out
-                ${open ? "translate-y-5" : "-translate-y-full"}
-              `}
-            >
-              <img
-                src={freeTrialNotif}
-                alt="Free Trial Notification"
-                className="w-full h-auto"
-              />
-            </div>
-          </div>
+          <Dialog open={open} onOpenChange={handleOpenChange}>
+            <DialogContent className="bg-transparent border-none shadow-none max-w-lg p-0 [&>button]:hidden">
+              <DialogHeader>
+                <DialogTitle className="sr-only">
+                  Free Trial Notification
+                </DialogTitle>
+              </DialogHeader>
+              <NavLink
+                to="/dashboard/account-settings/subscription"
+                onClick={() => setOpen(false)}
+                className="block"
+              >
+                <img
+                  src={
+                    userType === "employer" ? employerPopAds : jobHunterPopAds
+                  }
+                  alt="Free Trial Notification"
+                  className="w-full h-auto cursor-pointer"
+                />
+              </NavLink>
+            </DialogContent>
+          </Dialog>
         </div>
       ) : (
         <Popover open={open} onOpenChange={handleOpenChange}>
@@ -194,7 +201,9 @@ const NotificationFeed: FC<NotificationFeedProps> = ({ subscriptionPlan }) => {
                   >
                     {expandedNew ? "Show Less" : "Show More"}
                     <ChevronDown
-                      className={`h-4 w-4 transition-transform ${expandedNew ? "rotate-180" : ""}`}
+                      className={`h-4 w-4 transition-transform ${
+                        expandedNew ? "rotate-180" : ""
+                      }`}
                     />
                   </button>
                 )}

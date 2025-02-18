@@ -54,7 +54,11 @@ const rescheduleReasons: RescheduleReason[] = [
   },
   {
     id: "preparation",
-    label: "Unforseen Circumstances (e.g.outage/weather/travelling)",
+    label: "Unforseen Circumstances (e.g.outage/weather/traveling)",
+  },
+  {
+    id: "other",
+    label: "Other",
   },
 ];
 

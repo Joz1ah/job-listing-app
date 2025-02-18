@@ -29,7 +29,7 @@ const labelVariants = cva("font-normal", {
       tulleGray: "text-[#263238]",
     },
     size: {
-      sm: "text-sm",
+      sm: "text-[13px]",
       md: "text-base",
       lg: "text-lg",
     },

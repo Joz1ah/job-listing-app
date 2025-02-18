@@ -75,7 +75,7 @@ const JobListingsContent: FC = () => {
     const jobsToLoad = Math.min(2, remainingJobs);
     const newJobs = mockJobListings.slice(
       currentCount,
-      currentCount + jobsToLoad
+      currentCount + jobsToLoad,
     );
     setDisplayedJobs((prev) => [...prev, ...newJobs]);
 
@@ -112,7 +112,7 @@ const JobListingsContent: FC = () => {
       {
         threshold: 0.1,
         rootMargin: "20px",
-      }
+      },
     );
 
     if (loaderRef.current) {
@@ -130,7 +130,28 @@ const JobListingsContent: FC = () => {
   const loadingCardsCount = Math.min(6, mockJobListings.length);
 
   // Show empty state if there are no jobs and we're not loading
-  if (!loading && displayedJobs.length === 0 || subscriptionPlan === 'freeTrial') {
+  if (loading) {
+    return (
+      <div className="h-full w-full flex items-center justify-center p-4 sm:p-8">
+        <div className="flex flex-col items-center justify-center text-center max-w-full">
+          {/* Skeleton for image - responsive width */}
+          <div className="mb-6 w-48 h-48 sm:w-[249px] sm:h-[249px] bg-gray-700 rounded animate-pulse" />
+
+          {/* Skeleton for title - responsive width */}
+          <div className="h-8 w-44 sm:w-56 bg-gray-700 rounded mb-4 animate-pulse" />
+
+          {/* Skeleton for description - responsive width */}
+          <div className="h-5 w-64 sm:w-80 bg-gray-700 rounded mb-6 animate-pulse" />
+
+          {/* Skeleton for button - responsive width */}
+          <div className="h-10 w-32 sm:w-36 bg-gray-700 rounded animate-pulse" />
+        </div>
+      </div>
+    );
+  }
+
+  // Show empty state if there are no jobs or on free trial
+  if (displayedJobs.length === 0 || subscriptionPlan === "freeTrial") {
     return (
       <div className="h-full w-full flex items-center justify-center">
         <div className="flex flex-col items-center justify-center p-8 text-center">
@@ -148,7 +169,7 @@ const JobListingsContent: FC = () => {
 
           <NavLink
             to="/employer/job-listing"
-             className="bg-[#F5722E] text-white px-6 py-2 rounded-md hover:bg-orange-600 transition-colors"
+            className="bg-[#F5722E] text-white px-6 py-2 rounded-md hover:bg-orange-600 transition-colors"
           >
             Create Job Listings
           </NavLink>
@@ -165,8 +186,8 @@ const JobListingsContent: FC = () => {
             <JobListingCard
               key={job.id}
               job={job}
-              onBookmark={(jobId) => console.log('Bookmarked:', jobId)}
-              onApply={(jobId) => console.log('Applied:', jobId)}
+              onBookmark={(jobId) => console.log("Bookmarked:", jobId)}
+              onApply={(jobId) => console.log("Applied:", jobId)}
               subscriptionPlan={subscriptionPlan}
             />
           ))}
@@ -188,9 +209,7 @@ const JobListingsContent: FC = () => {
 const JobListings: FC = () => {
   //const { subscriptionPlan } = useEmployerContext();
 
-  return (
-    <JobListingsContent />
-  );
+  return <JobListingsContent />;
 };
 
 export { JobListings };

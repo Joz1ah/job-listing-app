@@ -175,12 +175,23 @@ const AuthnetPaymentFullModal = () => {
     toggleModal(false);
   };
 
+  const PaymentIcons = ({ className = "" }) => {
+    return (
+      <div className={`flex items-center gap-1 md:gap-2 ${className}`}>
+        <img src={visa_icon} alt="Visa" className="h-7 sm:h-8" />
+        <img src={amex_icon} alt="American Express" className="h-7 sm:h-8" />
+        <img src={mastercard_icon} alt="Mastercard" className="h-7 sm:h-8" />
+        <img src={discover_icon} alt="Discover" className="h-7 sm:h-8" />
+      </div>
+    );
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="relative bg-white shadow-lg w-full md:w-[642px] h-[554px] flex flex-col">
+      <div className="relative bg-white shadow-lg w-full md:w-[642px] h-[554px] flex flex-col mx-4">
         {/* Fixed Header */}
         <div className="sticky top-0 z-10 bg-white border-b border-gray-200">
-          <div className="flex flex-row items-center justify-between p-2 md:p-4 md:gap-4">
+          <div className="flex flex-row items-center justify-center md:justify-between p-2 md:p-4 md:gap-4">
             {/* Logo - Full width on mobile, normal on desktop */}
             <div className="w-auto flex">
               <img
@@ -192,24 +203,7 @@ const AuthnetPaymentFullModal = () => {
 
             {/* Payment Icons & Close Button - Centered on mobile, right-aligned on desktop */}
             <div className="flex items-center justify-center sm:justify-end gap-2 sm:gap-3">
-              <div className="flex items-center gap-1 md:gap-2">
-                <img src={visa_icon} alt="Visa" className="h-6 sm:h-8" />
-                <img
-                  src={amex_icon}
-                  alt="American Express"
-                  className="h-6 sm:h-8"
-                />
-                <img
-                  src={mastercard_icon}
-                  alt="Mastercard"
-                  className="h-6 sm:h-8"
-                />
-                <img
-                  src={discover_icon}
-                  alt="Discover"
-                  className="h-6 sm:h-8"
-                />
-              </div>
+              <PaymentIcons className="hidden sm:flex" />
 
               <img
                 ref={closeModalRef}
@@ -222,7 +216,7 @@ const AuthnetPaymentFullModal = () => {
           </div>
         </div>
         <div className="flex-1 overflow-y-auto">
-          <div className="w-full p-4">
+          <div className="w-full p-6 md:p-4">
             <div className={`${styles["authnet-paymentfull-container"]}`}>
               <Formik
                 initialValues={{
@@ -276,10 +270,7 @@ const AuthnetPaymentFullModal = () => {
                     .max(50, "Name is too long"),
                   expiryDate: Yup.string()
                     .required("This field is required")
-                    .matches(
-                      /^(0[1-9]|1[0-2])\/([0-9]{2})$/,
-                      "Must be in MM/YY format",
-                    )
+                    .matches(/^(0[1-9]|1[0-2])\/([0-9]{2})$/, "MM/YY format")
                     .test("expiry", "Invalid date", function (value) {
                       if (!value) return false;
 
@@ -313,13 +304,7 @@ const AuthnetPaymentFullModal = () => {
                     .matches(/^\d{3,4}$/, "CVV must be 3 or 4 digits")
                     .required("This field is required"),
                   email: Yup.string()
-                    .trim()
                     .email("Please enter a valid email address")
-                    .matches(
-                      /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                      "Please enter a valid email address",
-                    )
-                    .max(254, "Email must be less than 254 characters")
                     .required("This field is required"),
                   billingAddress: Yup.string()
                     .required("This field is required")
@@ -351,7 +336,8 @@ const AuthnetPaymentFullModal = () => {
                     <div className={`${styles["authnet-paymentfull-form"]}`}>
                       <div className={`${styles["form-left"]}`}>
                         <div className={styles["input-form"]}>
-                          <div className="space-y-4">
+                          <PaymentIcons className="justify-center flex sm:hidden mt-2 gap-4" />
+                          <div className="space-y-5 md:space-y-4">
                             <InputField
                               variant={"secondary"}
                               label="Card Number"
@@ -792,7 +778,7 @@ const AuthnetPaymentFullModal = () => {
                         >
                           <Field name="termsAccepted">
                             {({ field }: FieldProps) => (
-                              <div className="flex items-start">
+                              <div className="flex items-center">
                                 <div className="relative">
                                   <input
                                     type="checkbox"
@@ -802,7 +788,7 @@ const AuthnetPaymentFullModal = () => {
                                   {errors.termsAccepted &&
                                     touched.termsAccepted && (
                                       <div
-                                        className="absolute left-0 -top-4 bg-red-500 text-white text-xs py-1 px-2 rounded shadow-md"
+                                        className="absolute left-0 -top-4 bg-red-500 text-white text-[10px] py-1 px-2 rounded shadow-md"
                                         style={{
                                           whiteSpace: "nowrap",
                                           zIndex: 10,

@@ -21,8 +21,8 @@ interface MenuProps {
   onToggleMenu?: () => void;
   desktopMenuItems?: NavItem[];
   mobileMenuItems?: NavItem[];
-  subscriptionPlan?: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
-  userType?: 'employer' | 'job_hunter';
+  subscriptionPlan?: "freeTrial" | "monthlyPlan" | "yearlyPlan";
+  userType?: "employer" | "job_hunter";
   userName?: string;
   onSignOut?: () => void;
   isAuthenticated?: boolean;
@@ -35,7 +35,7 @@ const BaseMenu: FC<MenuProps> = ({
   onToggleMenu = () => {},
   desktopMenuItems = [],
   mobileMenuItems = [],
-  subscriptionPlan = 'freeTrial',
+  subscriptionPlan = "freeTrial",
   userType,
   userName,
   onSignOut,
@@ -47,18 +47,18 @@ const BaseMenu: FC<MenuProps> = ({
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 1024);
   const location = useLocation();
-  const isEmployer = userType === 'employer';
+  const isEmployer = userType === "employer";
 
   // Default navigation items for unauthenticated state
   const defaultNavItems = [
     { name: "About us", path: "/about-us" },
     { name: "Contact us", path: "/contact-us" },
     { name: "Subscription plans", path: "/subscription-plan" },
-    { name: "FAQ", path: "/https://support.akaza.io/", isExternal: true  }
+    { name: "FAQ", path: "/https://support.akaza.io/", isExternal: true },
   ];
 
   const handleItemClick = (item: NavItem) => {
-    if (item.isAction && item.name === 'SIGN OUT') {
+    if (item.isAction && item.name === "SIGN OUT") {
       onSignOut?.();
     } else if (item.isAction && item.action) {
       item.action();
@@ -100,25 +100,31 @@ const BaseMenu: FC<MenuProps> = ({
     };
   }, [isMenuOpen]);
 
-  const currentMenuItems = isMobile 
-    ? (isAuthenticated ? mobileMenuItems : defaultNavItems)
-    : (isAuthenticated ? desktopMenuItems : defaultNavItems);
+  const currentMenuItems = isMobile
+    ? isAuthenticated
+      ? mobileMenuItems
+      : defaultNavItems
+    : isAuthenticated
+      ? desktopMenuItems
+      : defaultNavItems;
 
-
-  const handleNavLinkClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, target: string) => {
+  const handleNavLinkClick = (
+    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+    target: string,
+  ) => {
     if (isMenuOpen) {
       onToggleMenu();
-    }else{
-      if (target.startsWith('http')) {  
+    } else {
+      if (target.startsWith("http")) {
         return;
       }
       event.preventDefault();
 
       window.scrollTo({
-          top: 0,
-          behavior: 'smooth',
+        top: 0,
+        behavior: "smooth",
       });
-  
+
       navigate(target);
     }
   };
@@ -127,7 +133,7 @@ const BaseMenu: FC<MenuProps> = ({
     if (isMenuOpen) {
       onToggleMenu();
     }
-    window.location.href = '/';
+    window.location.href = "/";
   };
 
   const handleNotificationClick = () => {
@@ -172,7 +178,10 @@ const BaseMenu: FC<MenuProps> = ({
     if (!subscriptionPlan) return null;
     return (
       <div onClick={handleNotificationClick}>
-        <NotificationFeed subscriptionPlan={subscriptionPlan} />
+        <NotificationFeed
+          subscriptionPlan={subscriptionPlan}
+          userType={userType}
+        />
       </div>
     );
   };
@@ -182,11 +191,7 @@ const BaseMenu: FC<MenuProps> = ({
       {/* Desktop Header */}
       <header className="hidden md:flex fixed top-0 left-0 right-0 bg-[#2D3A41] h-[72px] px-4 justify-between items-center z-50 shadow-md">
         <div className="flex items-center gap-4">
-          <NavLink
-            to={'/'}
-            onClick={handleLogoClick}
-            className="flex-shrink-0"
-          >
+          <NavLink to={"/"} onClick={handleLogoClick} className="flex-shrink-0">
             <img
               src={companyLogo}
               alt="Company Logo"
@@ -197,29 +202,40 @@ const BaseMenu: FC<MenuProps> = ({
             <nav className="flex-shrink">
               <ul className="flex gap-4 lg:gap-8 text-white text-[14px] lg:text-[16px] font-light whitespace-nowrap items-center">
                 <li className="transition-colors duration-200 ease-in-out hover:text-[#F5722E]">
-                  <NavLink to='/about-us' onClick={(e) => handleNavLinkClick(e, '/about-us')}>
+                  <NavLink
+                    to="/about-us"
+                    onClick={(e) => handleNavLinkClick(e, "/about-us")}
+                  >
                     About us
                   </NavLink>
                 </li>
                 <li className="transition-colors duration-200 ease-in-out hover:text-[#F5722E]">
-                  <NavLink to='/contact-us' onClick={(e) => handleNavLinkClick(e, '/contact-us')}>
+                  <NavLink
+                    to="/contact-us"
+                    onClick={(e) => handleNavLinkClick(e, "/contact-us")}
+                  >
                     Contact us
                   </NavLink>
                 </li>
                 <li className="transition-colors duration-200 ease-in-out hover:text-[#F5722E]">
-                  <NavLink to='/subscription-plan' onClick={(e) => handleNavLinkClick(e, '/subscription-plan')}>
+                  <NavLink
+                    to="/subscription-plan"
+                    onClick={(e) => handleNavLinkClick(e, "/subscription-plan")}
+                  >
                     Subscription plans
                   </NavLink>
                 </li>
                 <li className="transition-colors duration-200 ease-in-out hover:text-[#F5722E]">
-                <Link 
-                  to='https://support.akaza.io/' 
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={(e) => handleNavLinkClick(e, 'https://support.akaza.io/')}
-                >
-                  FAQ
-                </Link>
+                  <Link
+                    to="https://support.akaza.io/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) =>
+                      handleNavLinkClick(e, "https://support.akaza.io/")
+                    }
+                  >
+                    FAQ
+                  </Link>
                 </li>
                 {isAuthenticated && isEmployer && (
                   <li>
@@ -253,7 +269,7 @@ const BaseMenu: FC<MenuProps> = ({
             <>
               {renderNotificationFeed()}
               <div className="flex items-center gap-2 flex-shrink-0 min-w-0">
-                <span 
+                <span
                   className="text-white font-medium text-[14px] lg:text-[18px] truncate block max-w-[100px] lg:max-w-[200px]"
                   title={userName}
                 >
@@ -298,12 +314,8 @@ const BaseMenu: FC<MenuProps> = ({
 
       {/* Mobile Header */}
       <header className="md:hidden bg-[#080808] py-4 px-2 flex justify-between items-center z-50 shadow-md">
-      <NavLink
-            to={'/'}
-            onClick={handleLogoClick}
-            className="flex-shrink-0"
-          >
-        <img src={akazaLogoWhite} alt="Akaza Logo" className="h-8" />
+        <NavLink to={"/"} onClick={handleLogoClick} className="flex-shrink-0">
+          <img src={akazaLogoWhite} alt="Akaza Logo" className="h-8" />
         </NavLink>
         <div className="flex items-center space-x-4">
           {isAuthenticated && renderNotificationFeed()}
@@ -353,7 +365,10 @@ const BaseMenu: FC<MenuProps> = ({
               {currentMenuItems.map((item, index) => (
                 <div key={`${item.path}-${index}`}>
                   <div className="w-full text-end px-2 sm:pr-4 sm:pl-0">
-                    {index === 0 && isMobile && isEmployer && isAuthenticated ? (
+                    {index === 0 &&
+                    isMobile &&
+                    isEmployer &&
+                    isAuthenticated ? (
                       <NavLink to="/dashboard/job-listing">
                         <Button
                           onClick={() => handleItemClick(item)}
@@ -373,8 +388,6 @@ const BaseMenu: FC<MenuProps> = ({
                   )}
                 </div>
               ))}
-              
-
             </nav>
           </div>
         </div>

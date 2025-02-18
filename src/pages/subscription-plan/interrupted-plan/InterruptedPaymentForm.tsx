@@ -111,13 +111,7 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
           .matches(/^\d{3,4}$/, "CVV must be 3 or 4 digits")
           .required("This field is required"),
         email: Yup.string()
-          .trim()
           .email("Please enter a valid email address")
-          .matches(
-            /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-            "Please enter a valid email address",
-          )
-          .max(254, "Email must be less than 254 characters")
           .required("This field is required"),
         address: Yup.string()
           .required("This field is required")

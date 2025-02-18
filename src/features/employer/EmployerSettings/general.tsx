@@ -5,14 +5,17 @@ import { Label } from "components";
 import { Input } from "components";
 import { Tooltip } from "components";
 import { Switch } from "components";
-import googleLogo from 'images/google-logo-icon.svg?url';
+import googleLogo from "images/google-logo-icon.svg?url";
 import { useEmployerContext } from "components";
 import { AdDialogWrapper } from "components";
-import jobHunterPopAds from "images/popup-employer.svg?url";
+import employerPopAds from "images/popup-employer.svg?url";
 import { TimezoneSelector } from "components";
 import { useAuth } from "contexts/AuthContext/AuthContext";
-import spinner_loading_fallback from 'assets/images/spinner-loading-akaza.svg?url';
-import { useGetAccountSettingsQuery, useUpdateAccountSettingsMutation } from 'api/akaza/akazaAPI';
+import spinner_loading_fallback from "assets/images/spinner-loading-akaza.svg?url";
+import {
+  useGetAccountSettingsQuery,
+  useUpdateAccountSettingsMutation,
+} from "api/akaza/akazaAPI";
 
 interface FormFieldProps {
   label: string;
@@ -31,10 +34,10 @@ const THEME_OPTIONS = [
 
 const DEFAULT_SETTINGS = {
   pushNotification: false,
-  theme: 'dark' as const,
+  theme: "dark" as const,
   timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
   emailNotification: false,
-  smsNotification: false
+  smsNotification: false,
 };
 
 const FormField: FC<FormFieldProps> = ({ label, children, className }) => {
@@ -55,16 +58,14 @@ const GeneralSettings: FC = () => {
   const { user } = useAuth();
   const adTriggerRef = useRef<HTMLDivElement>(null);
 
-  const [email, setEmail] = useState(user?.data?.user?.email || '');
+  const [email, setEmail] = useState(user?.data?.user?.email || "");
   const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [tempEmail, setTempEmail] = useState(email);
 
-  const { data: settingsData, isLoading: isLoadingSettings } = useGetAccountSettingsQuery(
-    undefined,
-    {
+  const { data: settingsData, isLoading: isLoadingSettings } =
+    useGetAccountSettingsQuery(undefined, {
       skip: !user?.data?.user,
-    }
-  );
+    });
 
   const [updateSettings] = useUpdateAccountSettingsMutation();
 
@@ -79,12 +80,12 @@ const GeneralSettings: FC = () => {
         timeZone: newTimeZone,
       });
     } catch (error) {
-      console.error('Error updating timezone:', error);
+      console.error("Error updating timezone:", error);
     }
   };
 
   const handleNotificationToggle = async () => {
-    if (subscriptionPlan === 'freeTrial') {
+    if (subscriptionPlan === "freeTrial") {
       adTriggerRef.current?.click();
       return;
     }
@@ -97,7 +98,7 @@ const GeneralSettings: FC = () => {
         pushNotification: !settings.pushNotification,
       });
     } catch (error) {
-      console.error('Error updating notifications:', error);
+      console.error("Error updating notifications:", error);
     }
   };
 
@@ -118,8 +119,8 @@ const GeneralSettings: FC = () => {
       disabled={isLoadingSettings}
       className={cn(
         "data-[state=checked]:bg-[#F5722E] data-[state=unchecked]:bg-gray-600/70 h-5 w-9 [&>span]:h-4 [&>span]:w-4 [&>span[data-state=checked]]:translate-x-4",
-        subscriptionPlan === 'freeTrial' && "cursor-pointer",
-        isLoadingSettings && "opacity-50"
+        subscriptionPlan === "freeTrial" && "cursor-pointer",
+        isLoadingSettings && "opacity-50",
       )}
     />
   );
@@ -137,7 +138,11 @@ const GeneralSettings: FC = () => {
   if (isLoadingSettings) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <img src={spinner_loading_fallback} alt="spinners" className="w-20 h-20"/>
+        <img
+          src={spinner_loading_fallback}
+          alt="spinners"
+          className="w-20 h-20"
+        />
       </div>
     );
   }
@@ -171,13 +176,16 @@ const GeneralSettings: FC = () => {
             </div>
             <div className="space-y-3">
               {NOTIFICATION_OPTIONS.map(({ key, label }) => (
-                <div key={key} className="flex items-center justify-between mr-4">
+                <div
+                  key={key}
+                  className="flex items-center justify-between mr-4"
+                >
                   <span className="text-white text-[15px]">{label}</span>
                   <div className="flex items-center">
                     {renderNotificationSwitch()}
                     <div className="hidden">
                       <AdDialogWrapper
-                        popupImage={jobHunterPopAds}
+                        popupImage={employerPopAds}
                         ref={adTriggerRef}
                       />
                     </div>
@@ -189,9 +197,7 @@ const GeneralSettings: FC = () => {
         </div>
 
         {/* Time Zone */}
-        <div className="w-full md:w-[330px]">
-          {renderTimezoneSelector()}
-        </div>
+        <div className="w-full md:w-[330px]">{renderTimezoneSelector()}</div>
       </div>
 
       {/* Full Width Sections */}
@@ -203,11 +209,7 @@ const GeneralSettings: FC = () => {
               <div className="flex items-center gap-1">
                 <h3 className="text-white text-2xl font-normal flex items-center">
                   <div className="flex items-center">
-                    <img 
-                      src={googleLogo}
-                      alt="G"
-                      className="w-5 h-5"
-                    />
+                    <img src={googleLogo} alt="G" className="w-5 h-5" />
                     <span>oogle Account</span>
                   </div>
                 </h3>
@@ -244,12 +246,16 @@ const GeneralSettings: FC = () => {
                     <span className="relative flex items-center justify-center w-4 h-4">
                       <span
                         className={`absolute w-4 h-4 rounded-full border-2 ${
-                          value === settings.theme ? "border-[#F5722E]" : "border-white"
+                          value === settings.theme
+                            ? "border-[#F5722E]"
+                            : "border-white"
                         }`}
                       />
                       <span
                         className={`w-2 h-2 rounded-full ${
-                          value === settings.theme ? "bg-[#F5722E]" : "bg-transparent"
+                          value === settings.theme
+                            ? "bg-[#F5722E]"
+                            : "bg-transparent"
                         }`}
                       />
                     </span>
@@ -272,17 +278,19 @@ const GeneralSettings: FC = () => {
                 <Input
                   type="email"
                   value={isEditingEmail ? tempEmail : email}
-                  onChange={(e) => isEditingEmail && setTempEmail(e.target.value)}
+                  onChange={(e) =>
+                    isEditingEmail && setTempEmail(e.target.value)
+                  }
                   disabled={!isEditingEmail}
                   className={cn(
                     "w-full bg-transparent border-[#AEADAD] h-[45px] border-2 focus:border-[#F5722E] text-white",
-                    !isEditingEmail && "opacity-70"
+                    !isEditingEmail && "opacity-70",
                   )}
                   placeholder="Enter email address"
                 />
               </FormField>
             </div>
-            <button 
+            <button
               onClick={handleEmailEdit}
               className="w-full sm:w-[80px] mt-[18px] px-3 py-2 bg-transparent border border-[#F5722E] text-[#F5722E] text-sm rounded hover:bg-[#F5722E] hover:text-white transition-colors duration-200"
             >

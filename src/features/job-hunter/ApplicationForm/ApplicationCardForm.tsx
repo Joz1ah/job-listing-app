@@ -243,9 +243,9 @@ const ApplicationCardForm: FC = () => {
         employmentType: formattedEmploymentTypes,
         education: values.education,
         yearsOfExperience: values.yearsOfExperience || "less-than-1",
-        core: coreSkillIds, // Now using IDs
-        interpersonal: interpersonalSkillIds, // Now using IDs
-        certification: certificationIds, // Now using IDs
+        core: coreSkillIds,
+        interpersonal: interpersonalSkillIds,
+        certification: certificationIds,
         salaryRange: values.salaryRange,
         country: values.country,
       };

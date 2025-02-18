@@ -69,7 +69,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
   planType,
   features,
   onSuccess,
-  onBack
+  onBack,
 }) => {
   const [paymentSubmit] = usePaymentCreateMutation();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -211,15 +211,15 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
 
     return (
       <div className="w-full">
-         <div>
-        <button
-          onClick={handleBackToPlans}
-          className={`flex items-center text-${planType === "yearly" ? "[#F5F5F7]" : "[#F5722E]"} text-xs bg-transparent px-2 py-1 rounded-md border border-${planType === "yearly" ? "[#F5F5F7]" : "[#F5722E]"} mb-4 hover:bg-${planType === "yearly" ? "[#F5F5F7]/10" : "[#F5722E]/10"}`}
-        >
-          <ChevronLeft className="w-4 h-4" />
-          <span className="ml-1">Back to Plans</span>
-        </button>
-      </div>
+        <div>
+          <button
+            onClick={handleBackToPlans}
+            className={`flex items-center text-${planType === "yearly" ? "[#F5F5F7]" : "[#F5722E]"} text-xs bg-transparent px-2 py-1 rounded-md border border-${planType === "yearly" ? "[#F5F5F7]" : "[#F5722E]"} mb-4 hover:bg-${planType === "yearly" ? "[#F5F5F7]/10" : "[#F5722E]/10"}`}
+          >
+            <ChevronLeft className="w-4 h-4" />
+            <span className="ml-1">Back to Plans</span>
+          </button>
+        </div>
         {renderCompanyLogo()}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 max-w-5xl md:mx-8">
@@ -287,13 +287,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                   .matches(/^[a-zA-ZÀ-ÿ\s'-]+$/, "Please enter a valid name")
                   .max(50, "Name is too long"),
                 email: Yup.string()
-                  .trim()
                   .email("Please enter a valid email address")
-                  .matches(
-                    /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                    "Please enter a valid email address",
-                  )
-                  .max(254, "Email must be less than 254 characters")
                   .required("This field is required"),
                 cardNumber: Yup.string()
                   .required("This field is required")
@@ -390,8 +384,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                     <InputField
                       label="Last Name"
                       variant={planType === "yearly" ? "primary" : "payment"}
-                      size='sm'
-    
+                      size="sm"
                     >
                       <Field name="lastName">
                         {({ field }: FieldProps) => (
@@ -412,8 +405,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                     <InputField
                       label="Card Number"
                       variant={planType === "yearly" ? "primary" : "payment"}
-                      size='sm'
-    
+                      size="sm"
                     >
                       <Field name="cardNumber">
                         {({ field }: FieldProps) => (
@@ -439,7 +431,6 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                             planType === "yearly" ? "primary" : "payment"
                           }
                           size="sm"
-        
                         >
                           <Field name="expiryDate">
                             {({ field, form }: FieldProps) => (
@@ -475,7 +466,6 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                             planType === "yearly" ? "primary" : "payment"
                           }
                           size="sm"
-        
                         >
                           <Field name="cvv">
                             {({ field }: FieldProps) => (
@@ -498,8 +488,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                     <InputField
                       label="Email Address"
                       variant={planType === "yearly" ? "primary" : "payment"}
-                      size='sm'
-    
+                      size="sm"
                     >
                       <Field name="email">
                         {({ field }: FieldProps) => (
@@ -595,8 +584,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                 <InputField
                   label="Billing Address"
                   variant={planType === "yearly" ? "primary" : "payment"}
-                  size='sm'
-
+                  size="sm"
                 >
                   <Field name="address">
                     {({ field }: FieldProps) => (
@@ -617,8 +605,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                 <InputField
                   label="State"
                   variant={planType === "yearly" ? "primary" : "payment"}
-                  size='sm'
-
+                  size="sm"
                 >
                   <Field name="state">
                     {({ field }: FieldProps) => (
@@ -639,8 +626,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                 <InputField
                   label="City"
                   variant={planType === "yearly" ? "primary" : "payment"}
-                  size='sm'
-
+                  size="sm"
                 >
                   <Field name="city">
                     {({ field }: FieldProps) => (
@@ -661,8 +647,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                 <InputField
                   label="Country"
                   variant={planType === "yearly" ? "primary" : "payment"}
-                  size='sm'
-
+                  size="sm"
                 >
                   <Field name="country">
                     {({ field, form }: FieldProps) => (
@@ -688,8 +673,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                 <InputField
                   label="Zip/Postal Code"
                   variant={planType === "yearly" ? "primary" : "payment"}
-                  size='sm'
-
+                  size="sm"
                 >
                   <Field name="zipCode">
                     {({ field }: FieldProps) => (

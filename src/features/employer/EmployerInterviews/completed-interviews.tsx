@@ -3,7 +3,10 @@ import { CompletedCard } from "components";
 import { InterviewCardSkeleton } from "components";
 import { NavLink } from "react-router-dom";
 import emptyInterview from "images/calendar-empty.svg?url";
-import { completedInterviewsData, Interview } from "mockData/employer-interviews-data";
+import {
+  completedInterviewsData,
+  Interview,
+} from "mockData/employer-interviews-data";
 import { useEmployerContext } from "components";
 
 const CompletedInterviews: FC = () => {
@@ -86,8 +89,34 @@ const CompletedInterviews: FC = () => {
   const showLoadingCards = loading;
   const loadingCardsCount = Math.min(6, completedInterviewsData.length);
 
+  if (loading) {
+    return (
+      <div className="h-full w-full flex items-center justify-center">
+        <div className="flex flex-col items-center justify-center p-4 sm:p-8 text-center">
+          {/* Skeleton for calendar image */}
+          <div className="mb-6 w-[180px] h-[180px] sm:w-[220px] sm:h-[220px] bg-gray-700 rounded animate-pulse" />
+
+          {/* Skeleton for "No Pending Interviews" title */}
+          <div className="h-8 w-44 sm:w-56 bg-gray-700 rounded mb-4 animate-pulse" />
+
+          {/* Skeleton for description - using container to control max width */}
+          <div className="mb-6 w-full max-w-[455px] px-4 sm:px-0">
+            <div className="h-5 w-full sm:w-[460px] bg-gray-700 rounded mb-2 animate-pulse" />
+            <div className="h-5 w-full sm:w-[460px] bg-gray-700 rounded animate-pulse" />
+          </div>
+
+          {/* Skeleton for "Go to Feed" button */}
+          <div className="h-10 w-24 bg-gray-700 rounded animate-pulse" />
+        </div>
+      </div>
+    );
+  }
+
   // Show empty state if there are no completed interviews and we're not loading
-  if (!loading && displayedItems.length === 0 || subscriptionPlan === 'freeTrial') {
+  if (
+    (!loading && displayedItems.length === 0) ||
+    subscriptionPlan === "freeTrial"
+  ) {
     return (
       <div className="h-full w-full flex items-center justify-center">
         <div className="flex flex-col items-center justify-center p-8 text-center">
@@ -125,7 +154,11 @@ const CompletedInterviews: FC = () => {
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-y-6 gap-x-14 justify-items-center w-full">
         {!initialLoad &&
           displayedItems.map((interview, index) => (
-            <CompletedCard key={index} interview={interview} variant="employer"/>
+            <CompletedCard
+              key={index}
+              interview={interview}
+              variant="employer"
+            />
           ))}
 
         {showLoadingCards && (

@@ -249,13 +249,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                   .matches(/^[a-zA-ZÀ-ÿ\s'-]+$/, "Please enter a valid name")
                   .max(50, "Name is too long"),
                 email: Yup.string()
-                  .trim()
                   .email("Please enter a valid email address")
-                  .matches(
-                    /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                    "Please enter a valid email address",
-                  )
-                  .max(254, "Email must be less than 254 characters")
                   .required("This field is required"),
                 cardNumber: Yup.string()
                   .required("This field is required")
@@ -476,15 +470,20 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
       <Formik
         initialValues={addressFormData}
         validationSchema={Yup.object({
-          address: Yup.string().required("Address is required").max(100, "Address is too long"),
-          city: Yup.string().required("City is required").max(50, "City name is too long"),
+          address: Yup.string()
+            .required("Address is required")
+            .max(100, "Address is too long"),
+          city: Yup.string()
+            .required("City is required")
+            .max(50, "City name is too long"),
           state: Yup.string().required("State is required"),
           country: Yup.string().required("Country is required"),
-          zipCode: Yup.string().matches(
-            /^[a-zA-Z0-9]{1,6}$/,
-            "Must be alphanumeric and up to 6 characters",
-          )
-          .required("This field is required"),
+          zipCode: Yup.string()
+            .matches(
+              /^[a-zA-Z0-9]{1,6}$/,
+              "Must be alphanumeric and up to 6 characters",
+            )
+            .required("This field is required"),
           termsAccepted: Yup.boolean()
             .oneOf([true], "You must accept the Terms and Privacy Policy")
             .required("You must accept the Terms and Privacy Policy"),
