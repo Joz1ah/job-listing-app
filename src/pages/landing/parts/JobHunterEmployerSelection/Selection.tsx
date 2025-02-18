@@ -17,7 +17,7 @@ const Selection = ({ clickHandler, icon, label }: Props) => {
         />
         <button
           onClick={clickHandler}
-          className="mt-6 border border-3 border-[#F5722E] rounded-[2px] flex w-36 h-10 sm:w-44 sm:h-16 p-2 justify-center items-center bg-[#D9D9D900] text-[#F5722E] font-semibold text-[20px]"
+          className="mt-6 border-2 border-[#F5722E] rounded flex w-[136px] h-9 md:w-[258px] md:h-[70px] p-2 justify-center items-center bg-[#D9D9D900] text-[#F5722E] font-semibold text-[15px] md:text-[20px]"
         >
           {label}
         </button>

@@ -93,7 +93,7 @@ const MobileCountrySignUp = () => {
           isSubmitting,
         }) => (
           <Form className="flex flex-col gap-4 w-full max-w-md">
-            <div className="text-center text-gray-700 mb-4">
+            <div className="text-center text-gray-700 my-7 md:my-9">
               The information you provide will only be used for internal and
               verification purposes.
             </div>
@@ -105,7 +105,7 @@ const MobileCountrySignUp = () => {
                   <label className="text-gray-700 w-1/4 text-sm  mb-2 sm:mb-0 sm:w-1/3 flex-shrink-0">
                     Mobile Number <span className="text-red-500">*</span>
                   </label>
-                  <div className="relative sm:w-3/4 w-full">
+                  <div className="relative w-full">
                     <PhoneInputLanding
                       name="phoneNumber"
                       value={values.phoneNumber}

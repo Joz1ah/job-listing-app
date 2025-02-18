@@ -6,6 +6,7 @@ import {
 } from "api/akaza/akazaAPI";
 import { useLanding } from "../useLanding";
 import { MODAL_STATES } from "store/modal/modal.types";
+import { ChevronLeft } from "lucide-react";
 
 interface AutoLoginFormValues {
   email: string;
@@ -39,6 +40,14 @@ const OTPSignUp = () => {
 
   const otpTimerRef = useRef<NodeJS.Timeout>();
 
+  const checkFieldsPopulated = useCallback(() => {
+    const allFieldsFilled = [ib1, ib2, ib3, ib4, ib5, ib6].every(
+      (ref) => ref.current?.value && ref.current.value.length === 1,
+    );
+    setAreFieldsPopulated(allFieldsFilled);
+    return allFieldsFilled;
+  }, []);
+
   const handleLogin = async (values: AutoLoginFormValues) => {
     try {
       await loginSubmit(values)
@@ -62,14 +71,7 @@ const OTPSignUp = () => {
     if (currentInput.value.length >= currentInput.maxLength)
       nextRef.current.focus();
 
-    setAreFieldsPopulated(
-      !!ib1.current?.value &&
-        !!ib2.current?.value &&
-        !!ib3.current?.value &&
-        !!ib4.current?.value &&
-        !!ib5.current?.value &&
-        !!ib6.current?.value,
-    );
+    checkFieldsPopulated();
   };
 
   const handleOnKeyDown = (e: any, ref: any, refFocus: any) => {
@@ -77,15 +79,7 @@ const OTPSignUp = () => {
       ref.current.value = "";
       refFocus.current.focus();
     }
-
-    setAreFieldsPopulated(
-      !!ib1.current?.value &&
-        !!ib2.current?.value &&
-        !!ib3.current?.value &&
-        !!ib4.current?.value &&
-        !!ib5.current?.value &&
-        !!ib6.current?.value,
-    );
+    checkFieldsPopulated();
   };
 
   const handleOnPaste = (e: React.ClipboardEvent, refArray: any[]) => {
@@ -98,27 +92,30 @@ const OTPSignUp = () => {
       });
       setErrorMessage("");
       setHasError(false);
-      //setIsComplete(true);
+      checkFieldsPopulated();
     } else {
       setErrorMessage("Please paste a valid 6-digit OTP");
       setHasError(true);
-      //setIsComplete(false);
       refArray.forEach((ref) => {
         if (ref.current) {
           ref.current.value = "";
         }
       });
+      setAreFieldsPopulated(false);
     }
     e.preventDefault();
+  };
 
-    setAreFieldsPopulated(
-      !!ib1.current?.value &&
-        !!ib2.current?.value &&
-        !!ib3.current?.value &&
-        !!ib4.current?.value &&
-        !!ib5.current?.value &&
-        !!ib6.current?.value,
-    );
+  const clearOTPFields = () => {
+    [ib1, ib2, ib3, ib4, ib5, ib6].forEach((ref) => {
+      if (ref.current) {
+        ref.current.value = "";
+      }
+    });
+    if (ib1.current) {
+      ib1.current.focus();
+    }
+    setAreFieldsPopulated(false);
   };
 
   const handleContinue = useCallback(async () => {
@@ -166,15 +163,7 @@ const OTPSignUp = () => {
         setErrorMessage("Please provide the valid OTP");
       }
       setHasError(true);
-
-      [ib1, ib2, ib3, ib4, ib5, ib6].forEach((ref) => {
-        if (ref.current) {
-          ref.current.value = "";
-        }
-      });
-      if (ib1.current) {
-        ib1.current.focus();
-      }
+      clearOTPFields();
     } finally {
       setIsLoading(false);
     }
@@ -240,17 +229,17 @@ const OTPSignUp = () => {
       id="step3_signup"
       className="flex flex-col w-full h-full  justify-center items-center"
     >
-      <div id="verify-container" className="space-y-4 w-full">
+      <div id="verify-container" className="space-y-4 w-full pt-[30px]">
         <div className="text-[28px] text-[#F5722E] font-[500] text-center">
           Verify with One Time Password
         </div>
-        <div className="text-[10px] text-[#525254] font-[400] text-center">
+        <div className="text-[10px] md:text-sm text-[#525254] font-[400] text-center">
           To ensure your security, please enter the One-Time Password (OTP) sent
           to your registered email below.
         </div>
 
         <div
-          className={`flex flex-wrap justify-center gap-2 ${hasError ? "animate-shake" : ""}`}
+          className={`flex flex-wrap justify-center gap-2 pt-2 md:pt-12 ${hasError ? "animate-shake" : ""}`}
         >
           <div>
             <input
@@ -261,7 +250,7 @@ const OTPSignUp = () => {
               pattern="[0-9]*"
               maxLength={1}
               onPaste={(e) => handleOnPaste(e, [ib1, ib2, ib3, ib4, ib5, ib6])}
-              className="w-10 h-10 sm:w-12 sm:h-12 text-center border-2 border-gray-300 rounded focus:border-orange-500 focus:outline-none appearance-none"
+              className="w-[47px] h-[55px] text-center border-2 border-[#AEADAD] rounded focus:border-orange-500 focus:outline-none appearance-none"
               style={{ MozAppearance: "textfield" }}
             />
           </div>
@@ -274,7 +263,7 @@ const OTPSignUp = () => {
               pattern="[0-9]*"
               maxLength={1}
               onPaste={(e) => handleOnPaste(e, [ib1, ib2, ib3, ib4, ib5, ib6])}
-              className="w-10 h-10 sm:w-12 sm:h-12 text-center border-2 border-gray-300 rounded focus:border-orange-500 focus:outline-none appearance-none"
+              className="w-[47px] h-[55px] text-center border-2 border-[#AEADAD] rounded focus:border-orange-500 focus:outline-none appearance-none"
               style={{ MozAppearance: "textfield" }}
             />
           </div>
@@ -287,7 +276,7 @@ const OTPSignUp = () => {
               pattern="[0-9]*"
               maxLength={1}
               onPaste={(e) => handleOnPaste(e, [ib1, ib2, ib3, ib4, ib5, ib6])}
-              className="w-10 h-10 sm:w-12 sm:h-12 text-center border-2 border-gray-300 rounded focus:border-orange-500 focus:outline-none appearance-none"
+              className="w-[47px] h-[55px] text-center border-2 border-[#AEADAD] rounded focus:border-orange-500 focus:outline-none appearance-none"
               style={{ MozAppearance: "textfield" }}
             />
           </div>
@@ -300,7 +289,7 @@ const OTPSignUp = () => {
               pattern="[0-9]*"
               maxLength={1}
               onPaste={(e) => handleOnPaste(e, [ib1, ib2, ib3, ib4, ib5, ib6])}
-              className="w-10 h-10 sm:w-12 sm:h-12 text-center border-2 border-gray-300 rounded focus:border-orange-500 focus:outline-none appearance-none"
+              className="w-[47px] h-[55px] text-center border-2 border-[#AEADAD] rounded focus:border-orange-500 focus:outline-none appearance-none"
               style={{ MozAppearance: "textfield" }}
             />
           </div>
@@ -313,7 +302,7 @@ const OTPSignUp = () => {
               pattern="[0-9]*"
               maxLength={1}
               onPaste={(e) => handleOnPaste(e, [ib1, ib2, ib3, ib4, ib5, ib6])}
-              className="w-10 h-10 sm:w-12 sm:h-12 text-center border-2 border-gray-300 rounded focus:border-orange-500 focus:outline-none appearance-none"
+              className="w-[47px] h-[55px] text-center border-2 border-[#AEADAD] rounded focus:border-orange-500 focus:outline-none appearance-none"
               style={{ MozAppearance: "textfield" }}
             />
           </div>
@@ -326,7 +315,7 @@ const OTPSignUp = () => {
               pattern="[0-9]*"
               maxLength={1}
               onPaste={(e) => handleOnPaste(e, [ib1, ib2, ib3, ib4, ib5, ib6])}
-              className="w-10 h-10 sm:w-12 sm:h-12 text-center border-2 border-gray-300 rounded focus:border-orange-500 focus:outline-none appearance-none"
+              className="w-[47px] h-[55px] text-center border-2 border-[#AEADAD] rounded focus:border-orange-500 focus:outline-none appearance-none"
               style={{ MozAppearance: "textfield" }}
             />
           </div>
@@ -341,8 +330,10 @@ const OTPSignUp = () => {
         <div className="mt-4 w-full flex justify-center">
           <button
             onClick={handleContinue}
-            className={`w-full max-w-[calc(6*3rem+5*0.5rem)] px-4 py-2 ${areFieldsPopulated ? "bg-orange-500" : "bg-[#aeadad]"} text-white rounded-md ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
-            disabled={isLoading || !areFieldsPopulated}
+            className={`w-full max-w-[calc(6*3rem+5*0.5rem)] px-4 py-2 ${
+              areFieldsPopulated && !hasError ? "bg-orange-500" : "bg-[#aeadad]"
+            } text-white rounded-md ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+            disabled={isLoading || !areFieldsPopulated || hasError}
           >
             {isLoading ? "Verifying..." : "Continue"}
           </button>
@@ -384,11 +375,9 @@ const OTPSignUp = () => {
             handleSetModalState(MODAL_STATES.SIGNUP_STEP2);
           }}
         >
-          <div className="inline-block mr-2 text-[10px] text-[#AEADAD]">
-            &larr;
-          </div>
+          <ChevronLeft className="inline h-4 w-4 text-[#AEADAD]" />
           <div className="inline-block text-[10px] text-[#AEADAD]">
-            Back to login
+            Previous
           </div>
         </div>
       </div>
