@@ -3,6 +3,7 @@ import { NavLink, Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "components/ui/shadcn/buttons";
 import { ChevronDown, Plus, ChevronUp } from "lucide-react";
 import { NotificationFeed } from "components";
+import { useIntercomContext } from 'contexts/Intercom/IntercomContext';
 import companyLogo from "images/company-logo.png";
 import akazaLogoWhite from "images/akaza-logo-white.png";
 import menuButton from "images/menu-button.png";
@@ -44,6 +45,14 @@ const BaseMenu: FC<MenuProps> = ({
   ButtonSignUpNav,
 }) => {
   const navigate = useNavigate();
+  //Check if intercom Context is at the parent level
+  let intercomContext = null;
+  try {
+    intercomContext = useIntercomContext();
+  } catch (error) {
+    intercomContext = {setVisible: (e:boolean)=> e} //default the values being set so as to not break code
+  }
+  const {setVisible: setIntercomVisible} = intercomContext;
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 1024);
   const location = useLocation();
@@ -75,6 +84,7 @@ const BaseMenu: FC<MenuProps> = ({
   }, [location.pathname]);
 
   useEffect(() => {
+    setIntercomVisible(isMenuOpen ? false : true);
     const handleResize = () => {
       const mobile = window.innerWidth < 768;
       const smallScreen = window.innerWidth <= 1100;
