@@ -45,13 +45,13 @@ const HeroPerfectMatchAlgo = () => {
         <div className="flex justify-center mt-14 gap-8">
           <button
             onClick={() => handleClick(UserType.JOB_HUNTER)}
-            className="bg-[#F5F5F7] w-[258px] h-[70px] border-[3px] rounded-[4px] px-[6px] py-[8px] border-[#F5722E] text-[#F5722E] text-[20px] font-[600] z-50"
+            className="bg-[#F5F5F7] w-[258px] h-[70px] border-[3px] rounded-[4px] px-[6px] py-[8px] border-[#F5722E] text-[#F5722E] text-[20px] font-[600] z-10"
           >
             Job Hunter
           </button>
           <button
             onClick={() => handleClick(UserType.EMPLOYER)}
-            className="bg-[#F5F5F7] w-[258px] h-[70px]  border-[3px] rounded-[4px] px-[6px] py-[8px] border-[#F5722E] text-[#F5722E] text-[20px] font-[600] z-50"
+            className="bg-[#F5F5F7] w-[258px] h-[70px]  border-[3px] rounded-[4px] px-[6px] py-[8px] border-[#F5722E] text-[#F5722E] text-[20px] font-[600] z-10"
           >
             Employer
           </button>

@@ -68,8 +68,8 @@ const MultiSelect: React.FC<EmploymentTypeSelectProps> = ({
                         "inline-block max-w-[120px] truncate",
                         "transition-colors duration-200",
                         {
-                          "bg-[#BF532C] text-white": val === "Part Time",
-                          "bg-[#F5722E] text-white": val !== "Part Time",
+                          "bg-[#BF532C] text-white": val === "part-time",
+                          "bg-[#F5722E] text-white": val !== "part-time",
                         }
                       )}
                       title={option?.label} // Shows full text on hover

@@ -32,9 +32,9 @@ interface SelectOptions {
 
 export const selectOptions: SelectOptions = {
   employmentType: [
-    { value: "Full Time", label: "Full Time" },
-    { value: "Part Time", label: "Part Time" },
-    { value: "Contract only", label: "Contract only" },
+    { value: "full-time", label: "Full Time" },
+    { value: "part-time", label: "Part Time" },
+    { value: "contract", label: "Contract only" },
   ],
   salaryRange: [
     { value: "Negotiable", label: "Negotiable" },

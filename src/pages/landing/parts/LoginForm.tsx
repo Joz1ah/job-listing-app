@@ -92,7 +92,7 @@ const LoginForm = () => {
                   name="email"
                   type="text"
                   placeholder="Email"
-                  className={`w-full text-sm py-2 border-b-2 focus:border-orange-500 focus:outline-none ${touched.email && errors.email ? "border-red-500" : "border-gray-300"}`}
+                  className={`w-full bg-[#F5F5F7] text-sm py-2 border-b-2 focus:border-orange-500 focus:outline-none ${touched.email && errors.email ? "border-red-500" : "border-gray-300"}`}
                 />
               </div>
               <ErrorMessage
@@ -107,7 +107,7 @@ const LoginForm = () => {
                   name="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Password"
-                  className={`w-full text-sm py-2 border-b-2 focus:border-orange-500 focus:outline-none ${touched.password && errors.password ? "border-red-500" : "border-gray-300"}`}
+                  className={`w-full bg-[#F5F5F7] text-sm py-2 border-b-2 focus:border-orange-500 focus:outline-none ${touched.password && errors.password ? "border-red-500" : "border-gray-300"}`}
                 />
                 <button
                   type="button"

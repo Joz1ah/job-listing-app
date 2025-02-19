@@ -191,23 +191,36 @@ const AuthnetPaymentFullModal = () => {
       <div className="relative bg-white shadow-lg w-full md:w-[642px] h-[554px] flex flex-col mx-4">
         {/* Fixed Header */}
         <div className="sticky top-0 z-10 bg-white border-b border-gray-200">
-          <div className="flex flex-row items-center justify-center md:justify-between p-2 md:p-4 md:gap-4">
-            {/* Logo - Full width on mobile, normal on desktop */}
-            <div className="w-auto flex">
-              <img
-                src={authnet_logo}
-                alt="Akaza Logo"
-                className="h-8 sm:h-10"
-              />
+          <div className="flex flex-row items-center p-2 md:p-4 md:gap-4">
+            {/* Container with relative positioning for mobile */}
+            <div className="relative w-full flex justify-center md:justify-between">
+              {/* Logo - Centered on mobile, left on desktop */}
+              <div className="w-auto flex">
+                <img
+                  src={authnet_logo}
+                  alt="Akaza Logo"
+                  className="h-8 sm:h-10"
+                />
+              </div>
+
+              {/* Payment Icons & Close Button - Right-aligned on desktop */}
+              <div className="hidden md:flex items-center justify-end gap-3">
+                <PaymentIcons />
+                <img
+                  ref={closeModalRef}
+                  className="cursor-pointer w-6 h-6"
+                  src={close_icon}
+                  alt="Close"
+                  onClick={handleCloseModal}
+                />
+              </div>
             </div>
 
-            {/* Payment Icons & Close Button - Centered on mobile, right-aligned on desktop */}
-            <div className="flex items-center justify-center sm:justify-end gap-2 sm:gap-3">
-              <PaymentIcons className="hidden sm:flex" />
-
+            {/* Mobile-only close button - Absolutely positioned and vertically centered */}
+            <div className="absolute right-2 top-1/2 -translate-y-1/2 md:hidden">
               <img
                 ref={closeModalRef}
-                className="cursor-pointer w-4 h-4 md:w-6 md:h-6"
+                className="cursor-pointer w-4 h-4"
                 src={close_icon}
                 alt="Close"
                 onClick={handleCloseModal}

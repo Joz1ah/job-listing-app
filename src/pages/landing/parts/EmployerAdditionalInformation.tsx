@@ -248,7 +248,7 @@ const EmployerAdditionalInformation = () => {
                 placeholder="First Name *"
                 value={formData.firstName}
                 onChange={handleChange}
-                className="w-full text-sm border-b-2 border-gray-300 focus:border-orange-500 outline-none py-2"
+                className="w-full bg-[#F5F5F7] text-sm border-b-2 border-gray-300 focus:border-orange-500 outline-none py-2"
               />
               {errors.firstName && (
                 <div className="absolute right-0 text-red-500 text-xs">
@@ -263,7 +263,7 @@ const EmployerAdditionalInformation = () => {
                 placeholder="Last Name *"
                 value={formData.lastName}
                 onChange={handleChange}
-                className="w-full text-sm border-b-2 border-gray-300 focus:border-orange-500 outline-none py-2"
+                className="w-full bg-[#F5F5F7] text-sm border-b-2 border-gray-300 focus:border-orange-500 outline-none py-2"
               />
               {errors.lastName && (
                 <div className="absolute right-0 text-red-500 text-xs">
@@ -279,7 +279,7 @@ const EmployerAdditionalInformation = () => {
               placeholder="Position of the Representative *"
               value={formData.position}
               onChange={handleChange}
-              className="w-full text-sm border-b-2 border-gray-300 focus:border-orange-500 outline-none py-2"
+              className="w-full bg-[#F5F5F7] text-sm border-b-2 border-gray-300 focus:border-orange-500 outline-none py-2"
             />
             {errors.position && (
               <div className="absolute right-0 text-red-500 text-xs">
@@ -294,7 +294,7 @@ const EmployerAdditionalInformation = () => {
               placeholder="Legal Business Name *"
               value={formData.businessName}
               onChange={handleChange}
-              className="w-full text-sm border-b-2 border-gray-300 focus:border-orange-500 outline-none py-2"
+              className="w-full bg-[#F5F5F7] text-sm border-b-2 border-gray-300 focus:border-orange-500 outline-none py-2"
             />
             {errors.businessName && (
               <div className="absolute right-0 text-red-500 text-xs">
@@ -309,7 +309,7 @@ const EmployerAdditionalInformation = () => {
               placeholder="Company Address *"
               value={formData.address}
               onChange={handleChange}
-              className="w-full text-sm border-b-2 border-gray-300 focus:border-orange-500 outline-none py-2"
+              className="w-full bg-[#F5F5F7] text-sm border-b-2 border-gray-300 focus:border-orange-500 outline-none py-2"
             />
             {errors.address && (
               <div className="absolute right-0 text-red-500 text-xs">
@@ -324,7 +324,7 @@ const EmployerAdditionalInformation = () => {
               placeholder="Company Website *"
               value={formData.website}
               onChange={handleChange}
-              className="w-full text-sm border-b-2 border-gray-300 focus:border-orange-500 outline-none py-2"
+              className="w-full bg-[#F5F5F7] text-sm border-b-2 border-gray-300 focus:border-orange-500 outline-none py-2"
             />
             {errors.website && (
               <div className="absolute right-0 text-red-500 text-xs">
