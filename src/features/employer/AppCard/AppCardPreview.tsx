@@ -224,7 +224,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
                     <span
                       key={index}
                       className={`text-white rounded px-1 h-5 flex justify-center items-center text-xs ${
-                        type === 'Part Time' ? 'bg-[#BF532C]' : 'bg-[#F5722E]'
+                        type === 'part-time' ? 'bg-[#BF532C]' : 'bg-[#F5722E]'
                       }`}
                     >
                       {getLabel("employmentType", type) as string}

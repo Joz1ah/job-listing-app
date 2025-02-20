@@ -250,7 +250,7 @@ const OTPSignUp = () => {
               pattern="[0-9]*"
               maxLength={1}
               onPaste={(e) => handleOnPaste(e, [ib1, ib2, ib3, ib4, ib5, ib6])}
-              className="w-[47px] h-[55px] text-center border-2 border-[#AEADAD] rounded focus:border-orange-500 focus:outline-none appearance-none"
+              className="w-[35px] h-[40px] md:w-[47px] md:h-[55px] text-center border-2 border-[#AEADAD] rounded focus:border-orange-500 focus:outline-none appearance-none"
               style={{ MozAppearance: "textfield" }}
             />
           </div>
@@ -263,7 +263,7 @@ const OTPSignUp = () => {
               pattern="[0-9]*"
               maxLength={1}
               onPaste={(e) => handleOnPaste(e, [ib1, ib2, ib3, ib4, ib5, ib6])}
-              className="w-[47px] h-[55px] text-center border-2 border-[#AEADAD] rounded focus:border-orange-500 focus:outline-none appearance-none"
+              className="w-[35px] h-[40px] md:w-[47px] md:h-[55px] text-center border-2 border-[#AEADAD] rounded focus:border-orange-500 focus:outline-none appearance-none"
               style={{ MozAppearance: "textfield" }}
             />
           </div>
@@ -276,7 +276,7 @@ const OTPSignUp = () => {
               pattern="[0-9]*"
               maxLength={1}
               onPaste={(e) => handleOnPaste(e, [ib1, ib2, ib3, ib4, ib5, ib6])}
-              className="w-[47px] h-[55px] text-center border-2 border-[#AEADAD] rounded focus:border-orange-500 focus:outline-none appearance-none"
+              className="w-[35px] h-[40px] md:w-[47px] md:h-[55px] text-center border-2 border-[#AEADAD] rounded focus:border-orange-500 focus:outline-none appearance-none"
               style={{ MozAppearance: "textfield" }}
             />
           </div>
@@ -289,7 +289,7 @@ const OTPSignUp = () => {
               pattern="[0-9]*"
               maxLength={1}
               onPaste={(e) => handleOnPaste(e, [ib1, ib2, ib3, ib4, ib5, ib6])}
-              className="w-[47px] h-[55px] text-center border-2 border-[#AEADAD] rounded focus:border-orange-500 focus:outline-none appearance-none"
+              className="w-[35px] h-[40px] md:w-[47px] md:h-[55px] text-center border-2 border-[#AEADAD] rounded focus:border-orange-500 focus:outline-none appearance-none"
               style={{ MozAppearance: "textfield" }}
             />
           </div>
@@ -302,7 +302,7 @@ const OTPSignUp = () => {
               pattern="[0-9]*"
               maxLength={1}
               onPaste={(e) => handleOnPaste(e, [ib1, ib2, ib3, ib4, ib5, ib6])}
-              className="w-[47px] h-[55px] text-center border-2 border-[#AEADAD] rounded focus:border-orange-500 focus:outline-none appearance-none"
+              className="w-[35px] h-[40px] md:w-[47px] md:h-[55px] text-center border-2 border-[#AEADAD] rounded focus:border-orange-500 focus:outline-none appearance-none"
               style={{ MozAppearance: "textfield" }}
             />
           </div>
@@ -315,7 +315,7 @@ const OTPSignUp = () => {
               pattern="[0-9]*"
               maxLength={1}
               onPaste={(e) => handleOnPaste(e, [ib1, ib2, ib3, ib4, ib5, ib6])}
-              className="w-[47px] h-[55px] text-center border-2 border-[#AEADAD] rounded focus:border-orange-500 focus:outline-none appearance-none"
+              className="w-[35px] h-[40px] md:w-[47px] md:h-[55px] text-center border-2 border-[#AEADAD] rounded focus:border-orange-500 focus:outline-none appearance-none"
               style={{ MozAppearance: "textfield" }}
             />
           </div>

@@ -334,7 +334,7 @@ const PendingCard: FC<PendingCardProps> = ({
             <SelectTrigger className="w-full border-2 rounded-[10px] bg-transparent h-[40px] border-[#263238]">
               <SelectValue placeholder="Select A Reason" />
             </SelectTrigger>
-            <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none max-h-[200px] truncate">
+            <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:px-0 border-none rounded-none max-h-[200px] truncate">
               <SelectGroup>
                 {(variant === "employer" ? employerDeclineReasons : jobHunterDeclineReasons).map((reason) => (
                   <SelectItem

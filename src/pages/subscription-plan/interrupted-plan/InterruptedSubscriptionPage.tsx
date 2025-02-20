@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-  Gift,
   CalendarCheck,
   ThumbsUp,
   ChartNoAxesCombined,
@@ -369,7 +368,6 @@ const FreeTrial: React.FC<FreeTrialProps> = ({ onBack, onSelectPlan }) => {
   ];
 
   const yearlyFeatures = [
-    { icon: <Gift />, text: "PLUS ONE MONTH FREE" },
     ...(isEmployer 
       ? [
           { icon: <Infinity />, text: "Unlimited Interview Invites" },
@@ -541,7 +539,6 @@ const InterruptedSubscriptionPage: React.FC = () => {
       subtext: "+ transaction fees",
       buttonText: "Choose Plan",
       features: [
-        { icon: <Gift />, text: "PLUS ONE MONTH FREE" },
         ...(isEmployer 
           ? [
               { icon: <Infinity />, text: "Unlimited Interview Invites" },

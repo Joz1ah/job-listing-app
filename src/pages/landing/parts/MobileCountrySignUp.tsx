@@ -15,6 +15,10 @@ interface FormValues {
   country: string;
 }
 
+const RequiredAsterisk = () => (
+  <span className="text-red-500 ml-1 inline-block align-top">*</span>
+);
+
 const MobileCountrySignUp = () => {
   const { handleSetSelectedModalHeader } = useModal();
   const { handleSetModalState, modalState } = useLanding();
@@ -101,9 +105,10 @@ const MobileCountrySignUp = () => {
             <div className="flex flex-col gap-4">
               {/* Phone Number Input */}
               <div className="flex flex-col sm:flex-row items-center">
-                <div className="flex items-center border-b-[1px] border-[#aeadad]">
-                  <label className="text-gray-700 w-1/4 text-sm  mb-2 sm:mb-0 sm:w-1/3 flex-shrink-0">
-                    Mobile Number <span className="text-red-500">*</span>
+                <div className="flex items-center border-b-[1px] border-[#aeadad] w-full">
+                <label className="text-gray-700 w-1/3 text-sm mb-2 sm:mb-0 flex-shrink-0 flex items-start">
+                    <span>Mobile Number</span>
+                    <RequiredAsterisk />
                   </label>
                   <div className="relative w-full">
                     <PhoneInputLanding
@@ -132,8 +137,9 @@ const MobileCountrySignUp = () => {
               {/* Country Input */}
               <div className="flex flex-col">
                 <div className="flex items-center border-b-[1px] border-[#aeadad]">
-                  <label className="text-gray-700 w-1/3 text-sm">
-                    Country <span className="text-red-500">*</span>
+                <label className="text-gray-700 w-1/3 text-sm flex items-start">
+                    <span>Country</span>
+                    <RequiredAsterisk />
                   </label>
                   <div className="relative w-2/3">
                     <CountrySelect
@@ -155,13 +161,13 @@ const MobileCountrySignUp = () => {
             <div className="flex justify-center gap-2 mt-6 w-full">
               <button
                 onClick={() => handleSetModalState(MODAL_STATES.SIGNUP_STEP3)}
-                className="text-[#F5722E] rounded-[5px] border-[2px] bg-white border-[#F5722E] px-4 py-2"
+                className="hidden sm:block text-[#F5722E] rounded-[5px] text-lg border-[2px] bg-white border-[#F5722E] px-4 py-2"
               >
                 Previous
               </button>
               <button
                 type="submit"
-                className={`flex justify-between items-center px-4 py-1 ${values.country && values.phoneNumber ? "bg-[#F5722E] text-white" : "bg-[#AEADAD] text-[#F5F5F7]"} rounded-md`}
+                className={`flex justify-between items-center text-lg px-6 py-2 ${values.country && values.phoneNumber ? "bg-[#F5722E] text-white" : "bg-[#AEADAD] text-[#F5F5F7]"} rounded-md`}
                 disabled={
                   isSubmitting || !values.country || !values.phoneNumber
                 }

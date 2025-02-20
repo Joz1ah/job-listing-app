@@ -4,16 +4,17 @@ import { Input, Button, Textarea } from "components";
 import { NavLink } from "react-router-dom";
 import sparkeIcon from "images/sparkle-icon.png";
 import saveChanges from "images/save-changes.svg?url";
+import employerPopAds from "images/popup-employer.svg?url";
 import { selectOptions } from "mockData/job-listing-form-options";
 import { useJobListCreateMutation } from "api/akaza/akazaAPI";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import { useContext } from "react";
 import { KeywordMappingContext } from "contexts/KeyWordMappingContext";
-
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
 import { MultiSelect } from "components";
-
 import { JobListingPreview } from "./JobListingPreview";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
+import { JobListingLimitModal } from "./JobListingLimitModal";
 
 import {
   CoreSkillsTagInput,
@@ -92,11 +93,37 @@ const LoadingOverlay = () => (
 const JobListingForm: FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPreview, setShowPreview] = useState<boolean>(false);
+  const [isLimitModalOpen, setIsLimitModalOpen] = useState(false);
+  const [isAdsDialogOpen, setIsAdsDialogOpen] = useState(false);
   const { user, refreshUser } = useAuth();
   const { keywordToIdMap } = useContext(KeywordMappingContext);
   const { showError } = useErrorModal();
 
   const [createJobList] = useJobListCreateMutation();
+
+  const handleAdsDialogOpenChange = (newOpen: boolean) => {
+    setIsAdsDialogOpen(newOpen);
+  };
+
+  const handleAddJob = () => {
+    if (!isValid) {
+      handleSubmit(); // This will trigger validation errors to show
+      return;
+    }
+
+    // If form is valid, first check limits
+    if (user?.data?.user?.jobCounts?.exceedsMaximum) {
+      if (user?.data?.user?.freeTrial) {
+        setIsAdsDialogOpen(true);
+      } else {
+        setIsLimitModalOpen(true);
+      }
+      return;
+    }
+
+    // If within limits, proceed with preview
+    setShowPreview(true);
+  };
 
   const handlePreviewConfirm = async () => {
     setShowPreview(false);
@@ -185,7 +212,7 @@ const JobListingForm: FC = () => {
     validationSchema,
     validateOnMount: true,
     onSubmit: (): void => {
-      setShowPreview(true);
+      handleAddJob;
     },
   });
 
@@ -209,6 +236,33 @@ const JobListingForm: FC = () => {
         formData={values}
         onConfirm={handlePreviewConfirm}
       />
+
+      <JobListingLimitModal
+        isOpen={isLimitModalOpen}
+        onClose={() => setIsLimitModalOpen(false)}
+      />
+
+      <Dialog open={isAdsDialogOpen} onOpenChange={handleAdsDialogOpenChange}>
+        <DialogContent className="bg-transparent border-none shadow-none max-w-lg p-0 [&>button]:hidden">
+          <DialogHeader>
+            <DialogTitle className="sr-only">
+              Free Trial Notification
+            </DialogTitle>
+          </DialogHeader>
+          <NavLink
+            to="/dashboard/account-settings/subscription"
+            onClick={() => setIsAdsDialogOpen(false)}
+            className="block"
+          >
+            <img
+              src={employerPopAds}
+              alt="Free Trial Notification"
+              className="w-full h-auto cursor-pointer"
+            />
+          </NavLink>
+        </DialogContent>
+      </Dialog>
+
       {isSubmitting && <LoadingOverlay />}
       <div className="w-full max-w-[927px] min-h-[825px] bg-[#2D3A41] text-white mx-2 px-4 py-8 md:py-12">
         <div className="flex items-center relative w-full mb-6 md:mb-14">
@@ -295,7 +349,7 @@ const JobListingForm: FC = () => {
                     }
                   />
                 </SelectTrigger>
-                <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none">
+                <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:px-0 border-none rounded-none">
                   {selectOptions.priorityIndicator.map(({ value, label }) => (
                     <SelectItem
                       key={value}
@@ -353,7 +407,7 @@ const JobListingForm: FC = () => {
                 <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
                   <SelectValue placeholder="Select Salary Range" />
                 </SelectTrigger>
-                <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none">
+                <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:px-0 border-none rounded-none">
                   {selectOptions.salaryRange.map(({ value, label }) => (
                     <SelectItem
                       key={value}
@@ -444,7 +498,7 @@ const JobListingForm: FC = () => {
                   <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
                     <SelectValue placeholder="Select Years of Experience" />
                   </SelectTrigger>
-                  <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none">
+                  <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:px-0 border-none rounded-none">
                     {selectOptions.yearsOfExperience.map(({ value, label }) => (
                       <SelectItem
                         key={value}
@@ -477,7 +531,7 @@ const JobListingForm: FC = () => {
                   <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
                     <SelectValue placeholder="Select your Education Level" />
                   </SelectTrigger>
-                  <SelectContent className="bg-[#F5F5F7] items-center p-0 [&>*]:p-0 border-none rounded-none">
+                  <SelectContent className="bg-[#F5F5F7] items-center p-0 [&>*]:px-0 border-none rounded-none">
                     {selectOptions.education.map(({ value, label }) => (
                       <SelectItem
                         key={value}
@@ -540,7 +594,7 @@ const JobListingForm: FC = () => {
           {/* Footer Buttons */}
           <div className="flex justify-end gap-4 mt-8">
             <Button
-              type="submit"
+              onClick={handleAddJob}
               className={cn(
                 "bg-[#F5722E] text-white hover:bg-orange-600",
                 !isValid && "bg-[#AEADAD] hover:bg-[#AEADAD]",

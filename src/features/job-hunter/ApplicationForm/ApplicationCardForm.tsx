@@ -461,7 +461,7 @@ const ApplicationCardForm: FC = () => {
                     <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
                       <SelectValue placeholder="Select highest education level" />
                     </SelectTrigger>
-                    <SelectContent className="bg-[#F5F5F7] items-center p-0 [&>*]:p-0 border-none rounded-none">
+                    <SelectContent className="bg-[#F5F5F7] items-center p-0 [&>*]:px-0 border-none rounded-none">
                       {selectOptions.education.map(({ value, label }) => (
                         <SelectItem
                           key={value}
@@ -514,7 +514,7 @@ const ApplicationCardForm: FC = () => {
                     <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
                       <SelectValue placeholder="Select Salary Range" />
                     </SelectTrigger>
-                    <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none">
+                    <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:px-0 border-none rounded-none">
                       {selectOptions.salaryRange.map(({ value, label }) => (
                         <SelectItem
                           key={value}
@@ -548,7 +548,7 @@ const ApplicationCardForm: FC = () => {
                     <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
                       <SelectValue placeholder="Select Years of Experience" />
                     </SelectTrigger>
-                    <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none">
+                    <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:px-0 border-none rounded-none">
                       {selectOptions.yearsOfExperience.map(
                         ({ value, label }) => (
                           <SelectItem
@@ -582,7 +582,7 @@ const ApplicationCardForm: FC = () => {
                   <CoreSkillsTagInput
                     value={values.coreSkills || []}
                     onChange={(value) => setFieldValue("coreSkills", value)}
-                    className="h-[120px] md:h-[99px] pt-1 px-1"
+                    className="min-h-[99px] pt-1 px-1"
                     alternateColors={{
                       firstColor: "#184E77",
                       secondColor: "#168AAD",
@@ -606,7 +606,7 @@ const ApplicationCardForm: FC = () => {
                     onChange={(value) =>
                       setFieldValue("interpersonalSkills", value)
                     }
-                    className="h-[120px] md:h-[99px] pt-1 px-1"
+                    className="min-h-[99px] pt-1 px-1"
                     alternateColors={{
                       firstColor: "#184E77",
                       secondColor: "#168AAD",
@@ -630,7 +630,7 @@ const ApplicationCardForm: FC = () => {
                   <CertificationTagInput
                     value={values.certifications || []}
                     onChange={(value) => setFieldValue("certifications", value)}
-                    className="h-[90px] md:h-[56px] pt-1 px-1"
+                    className="min-h-[56px] pt-1 px-1"
                     alternateColors={{
                       firstColor: "#184E77",
                       secondColor: "#168AAD",

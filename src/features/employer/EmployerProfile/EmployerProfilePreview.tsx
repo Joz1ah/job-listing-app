@@ -1,6 +1,7 @@
 import React from "react";
 import { MapPin, Globe, X } from "lucide-react";
 import { Button } from "components";
+import { useAuth } from "contexts/AuthContext/AuthContext";
 
 interface FormData {
   businessName: string;
@@ -24,6 +25,9 @@ const EmployerProfilePreview: React.FC<EmployerProfilePreviewProps> = ({
   onClose,
   onConfirm,
 }) => {
+  const { user } = useAuth();
+  const isFirstJobListing = user?.data?.user?.jobCounts?.count === 0;
+
   if (!isOpen) return null;
 
   return (
@@ -89,7 +93,7 @@ const EmployerProfilePreview: React.FC<EmployerProfilePreviewProps> = ({
               onClick={onConfirm}
               className="w-full md:w-auto h-[27px] px-6 py-2 bg-[#F5722E] text-white rounded-md hover:bg-orange-600 transition-colors"
             >
-              Go To Job Feed
+              {isFirstJobListing ? "Save and Create Job" : "Go To Job Feed"}
             </Button>
           </div>
         </div>

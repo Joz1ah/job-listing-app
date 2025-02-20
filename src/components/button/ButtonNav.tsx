@@ -32,7 +32,7 @@ const ButtonNav = ({ btnFor, handleSetState, onClick }: ButtonNavProps) => {
 
   const className =
     btnFor === "login"
-      ? styles.button
+      ? `${styles.button} ${styles["button-login"]}` 
       : `${styles.button} ${styles["button-signup"]}`;
 
   const id = btnFor === "login" ? "btn_login_nav" : "btn_signup_nav";

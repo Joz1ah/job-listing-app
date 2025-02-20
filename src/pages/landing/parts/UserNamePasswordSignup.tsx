@@ -146,7 +146,7 @@ const UserNamePasswordSignup = () => {
                 setCredentials({ ...credentials, email: e.target.value })
               }
               required
-              className="w-full text-sm py-2 border-b-2 border-gray-300 focus:border-orange-500 focus:outline-none"
+              className="w-full bg-[#F5F5F7] text-sm py-2 border-b-2 border-gray-300 focus:border-orange-500 focus:outline-none"
             />
             {organizedErrors.email && (
               <div className="text-red-500  text-[10px] mt-1">
@@ -165,7 +165,7 @@ const UserNamePasswordSignup = () => {
                 })
               }
               required
-              className="w-full text-sm py-2 border-b-2 border-gray-300 focus:border-orange-500 focus:outline-none"
+              className="w-full bg-[#F5F5F7] text-sm py-2 border-b-2 border-gray-300 focus:border-orange-500 focus:outline-none"
             />
             <button
               type="button"
@@ -192,7 +192,7 @@ const UserNamePasswordSignup = () => {
                 })
               }
               required
-              className="w-full text-sm py-2 border-b-2 border-gray-300 focus:border-orange-500 focus:outline-none"
+              className="w-full bg-[#F5F5F7] text-sm py-2 border-b-2 border-gray-300 focus:border-orange-500 focus:outline-none"
             />
             <button
               type="button"

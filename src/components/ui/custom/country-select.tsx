@@ -52,7 +52,7 @@ const CountrySelect = ({
               : "Select country..."}
           </span>
 
-            <ChevronDown className="h-4 w-4 opacity-50 flex-shrink-0 ml-2" />
+            <ChevronDown className="h-4 w-4 opacity-50 flex-shrink-0 mr-2.5" />
           </Button>
         </PopoverTrigger>
         <PopoverContent

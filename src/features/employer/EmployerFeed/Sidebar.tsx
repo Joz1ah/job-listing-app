@@ -10,7 +10,6 @@ import {
 } from "components";
 import { cn } from "lib/utils";
 import { useAuth } from "contexts/AuthContext/AuthContext";
-import { useEmployerContext } from "components";
 import { useGetJobListQuery } from "api/akaza/akazaAPI";
 
 interface Keyword {
@@ -47,18 +46,20 @@ interface Job {
 const Sidebar: FC = () => {
   const location = useLocation();
   const [selectedJob, setSelectedJob] = useState<string>("");
-  
-  const hideOnPagesMobile = ["/dashboard/job-listing", "/dashboard/employer-profile"];
+
+  const hideOnPagesMobile = [
+    "/dashboard/job-listing",
+    "/dashboard/employer-profile",
+  ];
   const hideOnPagesDesktop = ["/dashboard/employer-profile"];
-  const { subscriptionPlan } = useEmployerContext();
-  
-  const { data, isLoading } = useGetJobListQuery({ 
-    page: 1, 
-    limit: 10
+
+  const { data, isLoading } = useGetJobListQuery({
+    page: 1,
+    limit: 10,
   });
 
   const jobs = data?.data?.jobs || [];
-  
+
   const shouldShowMobileView = !hideOnPagesMobile.includes(location.pathname);
   const shouldShowDesktopView = !hideOnPagesDesktop.includes(location.pathname);
 
@@ -80,30 +81,26 @@ const Sidebar: FC = () => {
   const SelectComponent = () => {
     const { user } = useAuth();
     const isFirstJobListing = user?.data?.user?.jobCounts?.count === 0;
-    const isFreeTrial = subscriptionPlan === 'freeTrial';
-    
+
     return (
       <div className="relative pt-4 w-full">
         <div className="relative">
           {!isFirstJobListing && (
-            <Select 
-              disabled={isFreeTrial} 
-              value={selectedJob}
-              onValueChange={handleJobSelect}
-            >
-              <SelectTrigger 
+            <Select value={selectedJob} onValueChange={handleJobSelect}>
+              <SelectTrigger
                 className={cn(
                   "bg-transparent border-[#AEADAD] text-[#F5F5F7] h-[56px] border-2 focus:border-[#F5722E]",
-                  isFreeTrial && "opacity-50 cursor-not-allowed"
                 )}
               >
                 <SelectValue
-                  placeholder={isLoading ? "Loading..." : "Select a job listing"}
+                  placeholder={
+                    isLoading ? "Loading..." : "Select a job listing"
+                  }
                   className="text-left pl-4"
                 />
               </SelectTrigger>
               <SelectContent
-                className="bg-[#F5F5F7] items-center p-0 [&>*]:p-0 border-none rounded-none"
+                className="bg-[#F5F5F7] items-center p-0 [&>*]:px-0 border-none rounded-none"
                 position="popper"
                 sideOffset={4}
               >
@@ -153,4 +150,4 @@ const Sidebar: FC = () => {
   );
 };
 
-export { Sidebar }
+export { Sidebar };

@@ -333,12 +333,15 @@ const EditApplicationCard: FC = () => {
 
       <div className="flex flex-col xl:flex-row gap-8 pt-6">
         <div className="w-full md:w-[800px] min-h-[960px] bg-[#2D3A41] text-white">
-          <div className="flex items-center relative w-full md:mb-10">
-            <NavLink to="/dashboard/feed" className="absolute left-4 top-6">
-              <ChevronLeft strokeWidth={4} className="h-6 w-6 ml-4" />
+          <div className="flex items-center w-full px-0 py-4 md:px-4 md:py-6 relative">
+            <NavLink 
+              to="/dashboard/feed" 
+              className="absolute left-1 md:left-4 top-1/2 -translate-y-1/2 md:top-6 md:translate-y-0"
+            >
+              <ChevronLeft strokeWidth={4} className="h-6 w-6 mr-2" />
             </NavLink>
-
-            <h1 className="flex-1 text-center text-xl md:text-[32px] md:pt-6 font-normal text-[#F5722E]">
+            
+            <h1 className="flex-1 text-center text-xl md:text-[32px] font-normal text-[#F5722E]">
               <span className="inline-flex items-center gap-2 justify-center">
                 Edit Your Application Card
               </span>
@@ -529,7 +532,7 @@ const EditApplicationCard: FC = () => {
                     <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
                       <SelectValue placeholder="Select highest education level" />
                     </SelectTrigger>
-                    <SelectContent className="bg-[#F5F5F7] items-center p-0 [&>*]:p-0 border-none rounded-none">
+                    <SelectContent className="bg-[#F5F5F7] items-center p-0 [&>*]:px-0 border-none rounded-none">
                       {selectOptions.education.map(({ value, label }) => (
                         <SelectItem
                           key={value}
@@ -565,7 +568,7 @@ const EditApplicationCard: FC = () => {
                     <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
                       <SelectValue placeholder="Select Salary Range" />
                     </SelectTrigger>
-                    <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none">
+                    <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:px-0 border-none rounded-none">
                       {selectOptions.salaryRange.map(({ value, label }) => (
                         <SelectItem
                           key={value}
@@ -599,7 +602,7 @@ const EditApplicationCard: FC = () => {
                     <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
                       <SelectValue placeholder="Select Years of Experience" />
                     </SelectTrigger>
-                    <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none">
+                    <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:px-0 border-none rounded-none">
                       {selectOptions.yearsOfExperience.map(
                         ({ value, label }) => (
                           <SelectItem
