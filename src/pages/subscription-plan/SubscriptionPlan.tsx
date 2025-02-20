@@ -13,6 +13,7 @@ import sparkle_icon from "assets/images/sparkle-icon.png";
 import { DefaultLayout } from "layouts";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import styles from './subscriptionPlan.module.scss';
+import subscription_card from "assets/card-orange.svg?url";
 
 interface PlanFeature {
   icon: React.ReactNode;
@@ -54,7 +55,7 @@ const PlanCard: FC<PlanProps> = ({
 
   return (
     <div
-      className={`w-full ${bestValue ? "bg-[#F5F5F7BF]" : "bg-[#F5F5F7BF]"} shadow-[0_4px_8px_rgba(0,_0,_0,_0.2),_0_-4px_8px_rgba(0,_0,_0,_0.05)] rounded-lg px-6 py-4 transform transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_2px_rgba(245,114,46,0.6)] mb-8`}
+      className={`w-full md:w-[640px] md:h-[220px] ${bestValue ? "bg-[#F5F5F7BF]" : "bg-[#F5F5F7BF]"} shadow-[0_4px_8px_rgba(0,_0,_0,_0.2),_0_-4px_8px_rgba(0,_0,_0,_0.05)] px-6 py-4 transform transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_2px_rgba(245,114,46,0.6)] mb-8 rounded-none`}
 
     >
       {/* Single row with two columns */}
@@ -135,21 +136,21 @@ const PlanCard: FC<PlanProps> = ({
 const SubscriptionPlan: FC = () => {
   const features = [
     {
-      icon: <img src={sparkle_icon} className="w-4 h-4" />,
+      icon: <img src={sparkle_icon} className="w-[22px] h-[22px]" />,
       text: "Perfect Match automation",
     },
-    { icon: <ThumbsUp size={16} />, text: "Insights and Feedback" },
-    { icon: <ChartNoAxesCombined size={16} />, text: "Analytics Dashboard" },
-    { icon: <LockKeyhole size={16} />, text: "Exclusive Employer Resources" },
-    { icon: <MessageCircleMore size={16} />, text: "Live chat support" },
+    { icon: <ThumbsUp size={22} />, text: "Insights and Feedback" },
+    { icon: <ChartNoAxesCombined size={22} />, text: "Analytics Dashboard" },
+    { icon: <LockKeyhole size={22} />, text: "Exclusive Employer Resources" },
+    { icon: <MessageCircleMore size={22} />, text: "Live chat support" },
   ];
   const featuresFreeTrial = [
     {
-      icon: <img src={sparkle_icon} className="w-4 h-4" />,
+      icon: <img src={sparkle_icon} className="w-[22px] h-[22px]" />,
       text: "Perfect Match automation",
     },
-    { icon: <MessageCircleMore size={16} />, text: "Live chat support" },
-    { icon: <MessageCircleMore size={16} />, text: "No credit or debit card required" },
+    { icon: <MessageCircleMore size={22} />, text: "Live chat support" },
+    { icon: <img src={subscription_card} />, text: "No credit or debit card required" },
   ];
 
   return (

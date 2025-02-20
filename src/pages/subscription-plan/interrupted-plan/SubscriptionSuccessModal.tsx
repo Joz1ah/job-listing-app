@@ -5,6 +5,7 @@ import {
   DialogTitle,
 } from "components"
 import { Button } from "components"
+import success_sub from 'assets/success.gif'
 
 interface SubscriptionSuccessModalProps {
   isOpen: boolean
@@ -28,6 +29,13 @@ const SubscriptionSuccessModal = ({
         </DialogHeader>
 
         <div className="flex flex-col justify-end items-center space-y-4 pt-32">
+          <div className="absolute top-0 left-0 right-0">
+            <img 
+              src={success_sub}
+              alt="Success celebration"
+              className="w-full h-full"
+            />
+          </div>
           <div className="text-center space-y-2">
             <h2 className="text-orange-500 text-2xl">
               We're thrilled to have you as a subscriber!

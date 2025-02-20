@@ -110,8 +110,6 @@ body {
   margin-left: 14px;
 }
 
-.landing-container {
-}
 .hero-button-container {
   display: flex;
   margin-top: 44px;
@@ -336,6 +334,14 @@ body {
   background-color: #f5722e;
   color: #fff;
 }
+
+.button-login {
+  background-color: transparent;
+  color: #f5722e;
+  border: 1px solid #f5722e;
+  border-radius: 8px;
+}
+
 .button-try-it-now {
   font-family: Poppins-SB;
   font-size: 18px;

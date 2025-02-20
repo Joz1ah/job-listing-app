@@ -493,7 +493,7 @@ const SubscriptionPlanSelection: React.FC = () => {
               }
               selectedPlan={currentSelectedPlan}
               text1="+ $5.28 transaction fee"
-              text2="plus one month free"
+              text2=""
               planRef={PLAN_SELECTION_ITEMS.ANNUAL}
             />
 

@@ -65,7 +65,7 @@ const HeroSkillSetsEmployer = () => {
       >
         <div className="w-full max-w-[380px] mt-12 flex flex-col gap-8">
           <div className="w-full font-[600] text-[26px] sm:text-[36px] text-[#F5722E]">
-            What skills are you looking for?
+            What skills are you looking for? Select up to 5 skill set
           </div>
           <div className="w-full flex flex-col gap-4">
             <div className="flex justify-between rounded-[4px] border-[2px] border-[#AEADAD] pr-2">

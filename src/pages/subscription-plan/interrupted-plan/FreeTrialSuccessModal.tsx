@@ -5,6 +5,7 @@ import {
     DialogTitle
   } from "components"
   import { Button } from "components"
+  import confetti_success from 'assets/confetti.gif'
   
   interface FreeTrialSuccessModalProps {
     isOpen: boolean;
@@ -17,16 +18,20 @@ import {
   }: FreeTrialSuccessModalProps) => {
     return (
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="bg-[#263238] border-none w-full md:min-w-[550px] h-auto md:min-h-[550px] p-10 [&_button>svg]:text-white">
+        <DialogContent className="bg-[#263238] border-none w-[90%] md:min-w-[550px] h-auto md:min-h-[550px] p-10 [&_button>svg]:text-white">
           <DialogHeader className="sr-only">
             <DialogTitle>Free Trial Success</DialogTitle>
           </DialogHeader>
   
           <div className="flex flex-col justify-end items-center space-y-4 pt-32">
+            <div className="absolute top-0 left-0 right-0">
+              <img 
+                src={confetti_success}
+                alt="Celebration confetti"
+                className="w-full h-full"
+              />
+            </div>
             <div className="text-center">
-              <p className="text-[#F5F5F7] text-[15px] font-normal mb-2">
-                We're thrilled to have you as a subscriber!
-              </p>
               <p className="text-[#F5722E] font-semibold text-[26px]">
                 Congratulations!
               </p>
