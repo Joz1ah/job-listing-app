@@ -349,7 +349,7 @@ const JobListingForm: FC = () => {
                     }
                   />
                 </SelectTrigger>
-                <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none">
+                <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:px-0 border-none rounded-none">
                   {selectOptions.priorityIndicator.map(({ value, label }) => (
                     <SelectItem
                       key={value}
@@ -407,7 +407,7 @@ const JobListingForm: FC = () => {
                 <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
                   <SelectValue placeholder="Select Salary Range" />
                 </SelectTrigger>
-                <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none">
+                <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:px-0 border-none rounded-none">
                   {selectOptions.salaryRange.map(({ value, label }) => (
                     <SelectItem
                       key={value}
@@ -498,7 +498,7 @@ const JobListingForm: FC = () => {
                   <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
                     <SelectValue placeholder="Select Years of Experience" />
                   </SelectTrigger>
-                  <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none">
+                  <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:px-0 border-none rounded-none">
                     {selectOptions.yearsOfExperience.map(({ value, label }) => (
                       <SelectItem
                         key={value}
@@ -531,7 +531,7 @@ const JobListingForm: FC = () => {
                   <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
                     <SelectValue placeholder="Select your Education Level" />
                   </SelectTrigger>
-                  <SelectContent className="bg-[#F5F5F7] items-center p-0 [&>*]:p-0 border-none rounded-none">
+                  <SelectContent className="bg-[#F5F5F7] items-center p-0 [&>*]:px-0 border-none rounded-none">
                     {selectOptions.education.map(({ value, label }) => (
                       <SelectItem
                         key={value}

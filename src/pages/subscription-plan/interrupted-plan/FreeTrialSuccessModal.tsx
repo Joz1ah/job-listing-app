@@ -24,7 +24,7 @@ import {
           </DialogHeader>
   
           <div className="flex flex-col justify-end items-center space-y-4 pt-32">
-            <div className="absolute top-0 left-0 right-0">
+            <div className="absolute top-0 left-0 right-0 pointer-events-none z-0">
               <img 
                 src={confetti_success}
                 alt="Celebration confetti"

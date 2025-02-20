@@ -100,7 +100,7 @@ const Sidebar: FC = () => {
                 />
               </SelectTrigger>
               <SelectContent
-                className="bg-[#F5F5F7] items-center p-0 [&>*]:p-0 border-none rounded-none"
+                className="bg-[#F5F5F7] items-center p-0 [&>*]:px-0 border-none rounded-none"
                 position="popper"
                 sideOffset={4}
               >

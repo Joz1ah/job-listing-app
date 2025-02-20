@@ -266,7 +266,7 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
                         <SelectTrigger className="w-full border-2 rounded-[10px] bg-transparent h-[56px] border-[#263238]">
                           <SelectValue placeholder="Select A Reason" />
                         </SelectTrigger>
-                        <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none max-h-[200px]">
+                        <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:px-0 border-none rounded-none max-h-[200px]">
                           {rescheduleReasons.map((reason) => (
                             <SelectItem
                               key={reason.id}
@@ -328,7 +328,7 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
                         <SelectTrigger className="w-full border-2 rounded-[10px] bg-transparent h-[56px] border-[#263238]">
                           <SelectValue placeholder="Select a Time" />
                         </SelectTrigger>
-                        <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:p-0 border-none rounded-none max-h-[200px]">
+                        <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:px-0 border-none rounded-none max-h-[200px]">
                           {timeSlots.map((time) => (
                             <SelectItem
                               key={time}

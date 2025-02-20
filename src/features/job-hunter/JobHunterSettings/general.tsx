@@ -57,6 +57,8 @@ const GeneralSettings: FC = () => {
   const { subscriptionPlan } = useJobHunterContext();
   const { user } = useAuth();
   const adTriggerRef = useRef<HTMLDivElement>(null);
+  const emailAdTriggerRef = useRef<HTMLDivElement>(null);
+  const timezoneAdTriggerRef = useRef<HTMLDivElement>(null);
 
   const [email, setEmail] = useState(user?.data?.user?.email || "");
   const [isEditingEmail, setIsEditingEmail] = useState(false);
@@ -84,6 +86,14 @@ const GeneralSettings: FC = () => {
     }
   };
 
+  const handleBeforeOpenTimezone = () => {
+    if (subscriptionPlan === "freeTrial") {
+      timezoneAdTriggerRef.current?.click();
+      return false;
+    }
+    return true;
+  };
+
   const handleNotificationToggle = async () => {
     if (subscriptionPlan === "freeTrial") {
       adTriggerRef.current?.click();
@@ -103,6 +113,11 @@ const GeneralSettings: FC = () => {
   };
 
   const handleEmailEdit = () => {
+    if (subscriptionPlan === "freeTrial" && !isEditingEmail) {
+      emailAdTriggerRef.current?.click();
+      return;
+    }
+
     if (!isEditingEmail) {
       setIsEditingEmail(true);
       setTempEmail(email);
@@ -129,9 +144,10 @@ const GeneralSettings: FC = () => {
     <TimezoneSelector
       className={cn("w-full", isLoadingSettings && "opacity-50")}
       onTimezoneChange={handleTimezoneChange}
+      onBeforeOpen={handleBeforeOpenTimezone}
       defaultTimezone={settings.timeZone}
       disabled={isLoadingSettings}
-      key={settings.timeZone} // Force re-render when timezone changes
+      key={settings.timeZone}
     />
   );
 
@@ -197,7 +213,15 @@ const GeneralSettings: FC = () => {
         </div>
 
         {/* Time Zone */}
-        <div className="w-full md:w-[330px]">{renderTimezoneSelector()}</div>
+        <div className="w-full md:w-[330px]">
+          {renderTimezoneSelector()}
+          <div className="hidden">
+            <AdDialogWrapper
+              popupImage={jobHunterPopAds}
+              ref={timezoneAdTriggerRef}
+            />
+          </div>
+        </div>
       </div>
 
       {/* Full Width Sections */}
@@ -296,6 +320,12 @@ const GeneralSettings: FC = () => {
             >
               {isEditingEmail ? "Update" : "Change"}
             </button>
+            <div className="hidden">
+              <AdDialogWrapper
+                popupImage={jobHunterPopAds}
+                ref={emailAdTriggerRef}
+              />
+            </div>
           </div>
         </div>
       </div>

@@ -83,7 +83,7 @@ const CountrySelect = ({
         >
           <div className="flex items-center gap-1">
             <FlagComponent country={value} countryName={value} />
-            <ChevronDown className="h-4 w-4 opacity-50 text-white" />
+            <ChevronDown className="h-4 w-4 opacity-50" />
           </div>
         </Button>
       </PopoverTrigger>
