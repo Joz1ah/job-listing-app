@@ -47,8 +47,9 @@ interface Job {
 const Sidebar: FC = () => {
   const location = useLocation();
   const [selectedJob, setSelectedJob] = useState<string>("");
-  const { updateMatchState, setJobList } = usePerfectMatchContext();
-
+  const isDashboard = location.pathname === "/dashboard";
+  const perfectMatchContext = isDashboard ? usePerfectMatchContext() : null;
+  const { updateMatchState, setJobList } = perfectMatchContext || {};
   const hideOnPagesMobile = [
     "/dashboard/job-listing",
     "/dashboard/employer-profile",
@@ -65,13 +66,14 @@ const Sidebar: FC = () => {
   const shouldShowDesktopView = !hideOnPagesDesktop.includes(location.pathname);
 
   useEffect(() => {
-    if(data){
+    if(isDashboard && data){
       if(data.data.jobs.length > 0){
         //updateMatchState({selectedJobId:data.data.jobs[0].id});
-        setJobList(data.data.jobs)
+        setJobList?.(data.data.jobs)
       }
     }
   },[data])
+  
   useEffect(() => {
     const jobIdMatch = location.pathname.match(/\/dashboard\/job\/(\d+)/);
     if (jobIdMatch) {
@@ -86,7 +88,7 @@ const Sidebar: FC = () => {
   const handleJobSelect = (jobId: string) => {
     const _jobId = Number(jobId);
     setSelectedJob(jobId)
-    updateMatchState({selectedJobId:_jobId});
+    updateMatchState?.({selectedJobId:_jobId});
   };
 
   const SelectComponent = () => {

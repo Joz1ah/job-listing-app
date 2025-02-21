@@ -1,12 +1,10 @@
 import { FC } from "react";
 import { EmployerHeader } from "layouts";
 import { EmployerFeed, Sidebar } from "features/employer";
-import { PerfectMatchProvider } from 'contexts/PerfectMatch/PerfectMatchContext';
 
 const EmployerFeedLayout: FC = () => {
 
   return (
-  <PerfectMatchProvider>
       <div className="px-4 xl:px-12 md:pt-20">
         {/* Main content area with two columns */}
         <div className="flex flex-col md:flex-row md:space-x-6">
@@ -22,7 +20,6 @@ const EmployerFeedLayout: FC = () => {
           </div>
         </div>
       </div>
-    </PerfectMatchProvider>
   );
 };
 
