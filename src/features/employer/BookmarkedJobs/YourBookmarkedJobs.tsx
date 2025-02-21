@@ -3,7 +3,8 @@ import { BookmarkCard } from "features/employer";
 import { InterviewCardSkeleton } from "components";
 import { NavLink } from "react-router-dom";
 import emptyBookmark from "images/bookmark-empty.svg?url";
-import { Match } from "mockData/job-hunter-data";
+//import { Match } from "mockData/job-hunter-data";
+import { Match } from "contexts/PerfectMatch/types";
 import { BookmarkProvider } from "contexts/BookmarkContext";
 import { useEmployerContext } from "components";
 
