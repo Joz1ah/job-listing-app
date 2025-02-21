@@ -132,7 +132,7 @@ const UserNamePasswordSignup = () => {
   };
 
   return modalState && modalState == MODAL_STATES.SIGNUP_STEP2 ? (
-    <div className="flex flex-col h-full w-full justify-center items-center">
+    <div className="flex flex-col h-full w-full justify-center items-cente p-4">
       <form onSubmit={handleSubmit} className="w-full h-full md:px-[50px]">
         <div className="text-left mb-5">
           <h1 className="text-sm md:text-xl font-bold text-[#F5722E]">Sign Up</h1>

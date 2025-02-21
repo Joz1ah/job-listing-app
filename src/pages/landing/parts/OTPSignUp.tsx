@@ -227,7 +227,7 @@ const OTPSignUp = () => {
   return modalState && modalState == MODAL_STATES.SIGNUP_STEP3 ? (
     <div
       id="step3_signup"
-      className="flex flex-col w-full h-full  justify-center items-center"
+      className="flex flex-col w-full h-full  justify-center items-center p-4"
     >
       <div id="verify-container" className="space-y-4 w-full pt-[30px]">
         <div className="text-[28px] text-[#F5722E] font-[500] text-center">

@@ -5,7 +5,7 @@ import {
   useLoginMutation,
   useUpdateFreeTrialStatusMutation,
 } from "api/akaza/akazaAPI";
-import { Trophy } from 'lucide-react';
+import { Trophy } from "lucide-react";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import { useModal } from "components/modal/useModal";
 import { useLanding } from "../useLanding";
@@ -29,6 +29,7 @@ import subscription_calendar from "assets/subscription-plan-icons/calendar.svg?u
 interface PlanFeature {
   icon: string;
   text: string;
+  disabled?: boolean;
 }
 
 interface PriceTagProps {
@@ -41,7 +42,90 @@ interface PriceTagProps {
   planRef: PLAN_SELECTION_ITEMS;
 }
 
-// Desktop Price Tag Component
+interface MobilePlanCardProps {
+  plan: PLAN_SELECTION_ITEMS;
+  features: PlanFeature[];
+  price: string;
+  transactionFee?: string;
+  subtitle?: string;
+  isSelected?: boolean;
+  onSelect: (plan: PLAN_SELECTION_ITEMS) => void;
+}
+
+const getPlanFeatures = (
+  plan: PLAN_SELECTION_ITEMS,
+  userType: "employer" | "job_hunter",
+): PlanFeature[] => {
+  // Common features for both user types
+  const commonFeatures = {
+    [PLAN_SELECTION_ITEMS.FREE]: [
+      { icon: subscription_sparkle_icon, text: "Perfect Match Automation" },
+      { icon: subscription_chat_icon, text: "Live chat support" },
+      { icon: subscription_bolt_icon, text: "FREE FOR THREE DAYS" },
+      { icon: subscription_card, text: "No credit or debit card required" },
+    ],
+  };
+
+  // User type specific features
+  const employerSpecificFeatures = {
+    [PLAN_SELECTION_ITEMS.FREE]: [],
+    [PLAN_SELECTION_ITEMS.MONTHLY]: [
+      { icon: subscription_unlimited, text: "Unlimited Interview Invites" },
+      { icon: subscription_calendar, text: "Up to 5 Job Listings" },
+      { icon: subscription_sparkle_icon, text: "Perfect Match Automation" },
+      { icon: subscription_thumbsup_icon, text: "Insights and Feedback" },
+      { icon: subscription_linegraph_icon, text: "Labour Market Insights" },
+      {
+        icon: subscription_shield_person_icon,
+        text: "Exclusive Employer Resources",
+      },
+      { icon: subscription_chat_icon, text: "Live chat support" },
+    ],
+    [PLAN_SELECTION_ITEMS.ANNUAL]: [
+      { icon: subscription_unlimited, text: "Unlimited Interview Invites" },
+      { icon: subscription_calendar, text: "Up to 5 Job Listings" },
+      { icon: subscription_sparkle_icon, text: "Perfect Match Automation" },
+      { icon: subscription_thumbsup_icon, text: "Insights and Feedback" },
+      { icon: subscription_linegraph_icon, text: "Labour Market Insights" },
+      {
+        icon: subscription_shield_person_icon,
+        text: "Exclusive Employer Resources",
+      },
+      { icon: subscription_chat_icon, text: "Live chat support" },
+    ],
+  };
+
+  const jobHunterSpecificFeatures = {
+    [PLAN_SELECTION_ITEMS.FREE]: [],
+    [PLAN_SELECTION_ITEMS.MONTHLY]: [
+      { icon: subscription_calendar, text: "Send up to 3 Interview Invites" },
+      { icon: subscription_sparkle_icon, text: "Perfect Match Automation" },
+      { icon: subscription_thumbsup_icon, text: "Insights and Feedback" },
+      { icon: subscription_linegraph_icon, text: "Labour Market Insights" },
+      { icon: subscription_shield_person_icon, text: "Exclusive Resources" },
+      { icon: subscription_chat_icon, text: "Live chat support" },
+    ],
+    [PLAN_SELECTION_ITEMS.ANNUAL]: [
+      { icon: subscription_calendar, text: "Send up to 3 Interview Invites" },
+      { icon: subscription_sparkle_icon, text: "Perfect Match Automation" },
+      { icon: subscription_thumbsup_icon, text: "Insights and Feedback" },
+      { icon: subscription_linegraph_icon, text: "Labour Market Insights" },
+      { icon: subscription_shield_person_icon, text: "Exclusive Resources" },
+      { icon: subscription_chat_icon, text: "Live chat support" },
+    ],
+  };
+
+  // Return appropriate feature set based on plan type
+  if (plan === PLAN_SELECTION_ITEMS.FREE) {
+    return commonFeatures[plan];
+  }
+
+  // For paid plans, return user-specific features (which now include all features in correct order)
+  return userType === "employer"
+    ? employerSpecificFeatures[plan]
+    : jobHunterSpecificFeatures[plan];
+};
+
 const PriceTag: React.FC<PriceTagProps> = ({
   handler,
   icon,
@@ -75,17 +159,6 @@ const PriceTag: React.FC<PriceTagProps> = ({
   );
 };
 
-interface MobilePlanCardProps {
-  plan: PLAN_SELECTION_ITEMS;
-  features: PlanFeature[];
-  price: string;
-  transactionFee?: string;
-  subtitle?: string;
-  isSelected?: boolean;
-  onSelect: (plan: PLAN_SELECTION_ITEMS) => void;
-}
-
-// Mobile Plan Card Component
 const MobilePlanCard: React.FC<MobilePlanCardProps> = ({
   plan,
   features,
@@ -105,9 +178,7 @@ const MobilePlanCard: React.FC<MobilePlanCardProps> = ({
         </div>
       )}
       <div
-        className={`w-[246px] h-[400px] rounded-lg overflow-hidden ${
-          isAnnual ? "shadow-xl shadow-orange-400/30" : "shadow-lg"
-        }`}
+        className={`w-[246px] h-[400px] rounded-lg overflow-hidden ${isAnnual ? "shadow-xl shadow-orange-400/30" : "shadow-lg"}`}
       >
         <div className="h-[400px] w-full rounded-lg bg-white flex flex-col">
           <div className="p-2 flex-grow">
@@ -128,7 +199,9 @@ const MobilePlanCard: React.FC<MobilePlanCardProps> = ({
               {features.map((feature, index) => (
                 <div key={index} className="flex items-center gap-2">
                   <img src={feature.icon} alt="" className="w-5 h-5" />
-                  <span className="text-[15px] text-orange-500">
+                  <span
+                    className={`text-[15px] ${feature.disabled ? "text-gray-400 line-through" : "text-orange-500"}`}
+                  >
                     {feature.text}
                   </span>
                 </div>
@@ -140,14 +213,106 @@ const MobilePlanCard: React.FC<MobilePlanCardProps> = ({
             <button
               onClick={() => onSelect(plan)}
               className={`py-1 rounded-md font-semibold text-[16px] w-[161px] h-[34px] transition-colors ${
-                isAnnual
-                  ? "bg-green-500 text-white"
-                  : "bg-white text-orange-500 border border-orange-500 hover:bg-orange-50"
+                isFree
+                  ? "bg-white text-orange-500 border border-orange-500 hover:bg-orange-50"
+                  : isAnnual
+                    ? "bg-green-500 text-white"
+                    : "bg-white text-green-500 border border-green-500 hover:bg-green-50"
               }`}
             >
               {isFree ? "Start Free Trial" : "Subscribe Today"}
             </button>
           </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const FeaturesList: React.FC<{
+  selectedPlan: PLAN_SELECTION_ITEMS | undefined;
+  userType: "employer" | "job_hunter";
+  onSubscribe: () => void;
+}> = ({ selectedPlan, userType, onSubscribe }) => {
+  if (!selectedPlan) return null;
+
+  const features = getPlanFeatures(selectedPlan, userType);
+
+  if (selectedPlan === PLAN_SELECTION_ITEMS.FREE) {
+    return (
+      <div className="p-[4px] bg-orange-500 rounded-md h-[452px]">
+        <div className="flex flex-col h-full w-full bg-[#F5F5F7] rounded-none">
+          <div className="flex-1 p-2">
+            <h3 className="flex justify-center font-semibold mb-8 text-gray-800">
+              Your Free Trial Includes:
+            </h3>
+            <div className="flex flex-col gap-5">
+              {features.map((feature, index) => (
+                <div key={index} className="flex items-center gap-3">
+                  <img src={feature.icon} alt="" className="w-5 h-5" />
+                  <span className="text-[13px] text-[#263238]">
+                    {feature.text}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="flex flex-col items-center p-4 pt-0">
+            <img
+              src={gift_selection}
+              alt="gift"
+              className="w-[100px] h-[100px]"
+            />
+            <p className="text-center text-[13px] text-orange-500 mb-4">
+              Go beyond free and experience it all
+            </p>
+            <button
+              onClick={onSubscribe}
+              className="w-full px-4 py-1 text-[15px] h-[32px] bg-orange-500 text-white rounded-md hover:bg-orange-600 transition-colors"
+            >
+              Start Free Trial
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const isAnnual = selectedPlan === PLAN_SELECTION_ITEMS.ANNUAL;
+  const bgGradient = isAnnual
+    ? "bg-gradient-to-t from-[#d34300] to-[#eba979]"
+    : "bg-gradient-to-t from-[#D35D00] to-[#f7781e]";
+  const bgColor = isAnnual ? "bg-[#FF6B00]" : "bg-white";
+  const textColor = isAnnual ? "text-white" : "text-[#263238]";
+  const headerColor = isAnnual ? "text-white" : "text-gray-800";
+
+  return (
+    <div className={`p-[4px] ${bgGradient} rounded-md h-[452px]`}>
+      <div className={`flex flex-col h-full w-full ${bgColor} rounded-none`}>
+        <div className="flex-1 p-2">
+          <h3
+            className={`flex justify-center font-semibold mb-8 ${headerColor}`}
+          >
+            Your {isAnnual ? "Yearly" : "Monthly"} Plan Includes:
+          </h3>
+          <div className="flex flex-col gap-5">
+            {features.map((feature, index) => (
+              <div key={index} className="flex items-center gap-3">
+                <img src={feature.icon} alt="" className="w-5 h-5" />
+                <span className={`text-[13px] ${textColor}`}>
+                  {feature.text}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="p-4 pt-0">
+          <button
+            onClick={onSubscribe}
+            className="w-full px-4 py-1 text-[15px] h-[32px] bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors"
+          >
+            Subscribe Today
+          </button>
         </div>
       </div>
     </div>
@@ -190,13 +355,9 @@ const SubscriptionPlanSelection: React.FC = () => {
             console.error("Failed to update free trial status:", trialError);
           }
 
-          // Set loading state first
           handleSetModalState(MODAL_STATES.LOADING);
-
-          // Wait for loading state to be set and modal to appear
           await new Promise((resolve) => setTimeout(resolve, 100));
 
-          // Now handle the navigation
           const redirectUrl =
             userType === "employer"
               ? ROUTE_CONSTANTS.COMPLETE_PROFILE
@@ -213,17 +374,12 @@ const SubscriptionPlanSelection: React.FC = () => {
     }
   };
 
-  // Update the handleMobileSubscription function similarly
   const handleMobileSubscription = async (
     selectedPlan: PLAN_SELECTION_ITEMS,
   ) => {
-    // First set the selected plan
     handleSetSelectedPlan(selectedPlan);
-
-    // Add a small delay to ensure state is updated
     await new Promise((resolve) => setTimeout(resolve, 100));
 
-    // For free trial, handle directly
     if (selectedPlan === PLAN_SELECTION_ITEMS.FREE) {
       try {
         const response = await loginSubmit({
@@ -240,7 +396,6 @@ const SubscriptionPlanSelection: React.FC = () => {
             console.error("Failed to update free trial status:", trialError);
           }
 
-          // Set loading state first
           handleSetModalState(MODAL_STATES.LOADING);
 
           // Wait for loading state to be set and modal to appear
@@ -270,167 +425,10 @@ const SubscriptionPlanSelection: React.FC = () => {
     [currentSelectedPlan],
   );
 
-  const getPlanFeatures = (plan = currentSelectedPlan): PlanFeature[] => {
-    if (plan === undefined) return [];
-
-    switch (plan) {
-      case PLAN_SELECTION_ITEMS.FREE:
-        return [
-          { icon: subscription_sparkle_icon, text: "Perfect Match Automation" },
-          { icon: subscription_chat_icon, text: "Live chat support" },
-          { icon: subscription_bolt_icon, text: "FREE FOR THREE DAYS" },
-          {
-            icon: subscription_card,
-            text: "No credit or debit card required",
-          },
-        ];
-      case PLAN_SELECTION_ITEMS.MONTHLY:
-        return [
-          { icon: subscription_calendar, text: "Up to 5 Job Listings" },
-          {
-            icon: subscription_unlimited,
-            text: "Unlimited Interview Invites",
-          },
-          { icon: subscription_sparkle_icon, text: "Perfect Match Automation" },
-          { icon: subscription_thumbsup_icon, text: "Insights and Feedback" },
-          { icon: subscription_linegraph_icon, text: "Labour Market Insights" },
-          {
-            icon: subscription_shield_person_icon,
-            text: "Exclusive resources",
-          },
-          { icon: subscription_chat_icon, text: "Live chat support" },
-        ];
-      case PLAN_SELECTION_ITEMS.ANNUAL:
-        return [
-          {
-            icon: subscription_unlimited,
-            text: "Unlimited Interview Invites",
-          },
-          { icon: subscription_calendar, text: "Up to 5 Job Listings" },
-          { icon: subscription_sparkle_icon, text: "Perfect Match Automation" },
-          { icon: subscription_thumbsup_icon, text: "Insights and Feedback" },
-          { icon: subscription_linegraph_icon, text: "Labour Market Insights" },
-          {
-            icon: subscription_shield_person_icon,
-            text: "Exclusive Employer Resources",
-          },
-          { icon: subscription_chat_icon, text: "Live chat support" },
-        ];
-      default:
-        return [];
-    }
-  };
-
-  const getFeaturesList = (): React.ReactNode => {
-    if (currentSelectedPlan === undefined) return null;
-
-    const features = getPlanFeatures();
-
-    if (currentSelectedPlan === PLAN_SELECTION_ITEMS.FREE) {
-      return (
-        <div className="p-[4px] bg-orange-500 rounded-md h-[452px]">
-          <div className="flex flex-col h-full w-full bg-[#F5F5F7] rounded-none">
-            <div className="flex-1 p-2">
-              <h3 className="flex justify-center font-semibold mb-8 text-gray-800">
-                Your Free Trial Includes:
-              </h3>
-              <div className="flex flex-col gap-5">
-                {features.map((feature, index) => (
-                  <div key={index} className="flex items-center gap-3">
-                    <img src={feature.icon} alt="" className="w-5 h-5" />
-                    <span className="text-[13px] text-[#263238]">
-                      {feature.text}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="flex flex-col items-center p-4 pt-0">
-              <img
-                src={gift_selection}
-                alt="gift"
-                className="w-[100px] h-[100px]"
-              />
-              <p className="text-center text-[13px] text-orange-500 mb-4">
-                Go beyond free and experience it all
-              </p>
-              <button
-                onClick={handleSubscription}
-                className="w-full px-4 py-1 text-[15px] h-[32px] bg-orange-500 text-white rounded-md hover:bg-orange-600 transition-colors"
-              >
-                Start Free Trial
-              </button>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    if (currentSelectedPlan === PLAN_SELECTION_ITEMS.MONTHLY) {
-      return (
-        <div className="p-[4px] bg-gradient-to-t from-[#D35D00] to-[#f7781e] rounded-md h-[452px]">
-          <div className="flex flex-col h-full w-full bg-white rounded-none">
-            <div className="flex-1 p-2">
-              <h3 className="flex justify-center font-semibold mb-8 text-gray-800">
-                Your Monthly Plan Includes:
-              </h3>
-              <div className="flex flex-col gap-5">
-                {features.map((feature, index) => (
-                  <div key={index} className="flex items-center gap-3">
-                    <img src={feature.icon} alt="" className="w-5 h-5" />
-                    <span className="text-[13px] text-[#263238]">
-                      {feature.text}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="p-4 pt-0">
-              <button
-                onClick={handleSubscription}
-                className="w-full px-4 py-1 text-[15px] h-[32px] bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors"
-              >
-                Subscribe Today
-              </button>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    return (
-      <div className="p-[6px] bg-gradient-to-t from-[#d34300] to-[#eba979] rounded-md h-[452px]">
-        <div className="flex flex-col h-full w-full bg-[#FF6B00] rounded-none">
-          <div className="flex-1 p-2">
-            <h3 className="flex justify-center font-semibold mb-8 text-white">
-              Your Yearly Plan Includes:
-            </h3>
-            <div className="flex flex-col gap-5">
-              {features.map((feature, index) => (
-                <div key={index} className="flex items-center gap-3">
-                  <img src={feature.icon} alt="" className="w-5 h-5" />
-                  <span className="text-[13px] text-white">{feature.text}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="p-4 pt-0">
-            <button
-              onClick={handleSubscription}
-              className="w-full px-4 py-1 text-[15px] h-[32px] bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors"
-            >
-              Subscribe Today
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  return modalState && modalState == MODAL_STATES.SIGNUP_STEP5 ? (
+  return modalState === MODAL_STATES.SIGNUP_STEP5 ? (
     <>
       {/* Mobile View */}
-      <div className="md:hidden w-full">
+      <div className="md:hidden w-full p-4">
         <Carousel
           className="w-full relative"
           opts={{
@@ -442,7 +440,10 @@ const SubscriptionPlanSelection: React.FC = () => {
             <CarouselItem className="mx-2 basis-[246px] min-w-[246px] relative">
               <MobilePlanCard
                 plan={PLAN_SELECTION_ITEMS.ANNUAL}
-                features={getPlanFeatures(PLAN_SELECTION_ITEMS.ANNUAL)}
+                features={getPlanFeatures(
+                  PLAN_SELECTION_ITEMS.ANNUAL,
+                  dataStates.selectedUserType as "employer" | "job_hunter",
+                )}
                 price="$55/year"
                 transactionFee="+ $5.28 transaction fee"
                 onSelect={handleMobileSubscription}
@@ -452,7 +453,10 @@ const SubscriptionPlanSelection: React.FC = () => {
             <CarouselItem className="mx-2 basis-[246px] min-w-[246px] relative">
               <MobilePlanCard
                 plan={PLAN_SELECTION_ITEMS.MONTHLY}
-                features={getPlanFeatures(PLAN_SELECTION_ITEMS.MONTHLY)}
+                features={getPlanFeatures(
+                  PLAN_SELECTION_ITEMS.MONTHLY,
+                  dataStates.selectedUserType as "employer" | "job_hunter",
+                )}
                 price="$5/month"
                 transactionFee="+ $0.48 transaction fee"
                 onSelect={handleMobileSubscription}
@@ -462,9 +466,12 @@ const SubscriptionPlanSelection: React.FC = () => {
             <CarouselItem className="mx-2 basis-[246px] min-w-[246px] relative">
               <MobilePlanCard
                 plan={PLAN_SELECTION_ITEMS.FREE}
-                features={getPlanFeatures(PLAN_SELECTION_ITEMS.FREE)}
+                features={getPlanFeatures(
+                  PLAN_SELECTION_ITEMS.FREE,
+                  dataStates.selectedUserType as "employer" | "job_hunter",
+                )}
                 price="Free"
-                transactionFee="enjoy with zero fees"
+                transactionFee="for 3  days only"
                 onSelect={handleMobileSubscription}
               />
             </CarouselItem>
@@ -473,7 +480,7 @@ const SubscriptionPlanSelection: React.FC = () => {
       </div>
 
       {/* Desktop View */}
-      <div className="hidden md:flex items-center justify-center w-full h-full max-h-full sm:max-w-screen-sm">
+      <div className="hidden md:flex items-center justify-center w-full h-full max-h-full sm:max-w-screen-sm p-4">
         <div className="flex w-full h-full justify-between">
           <div className="flex flex-col w-[55%] gap-4">
             <PriceTag
@@ -486,9 +493,14 @@ const SubscriptionPlanSelection: React.FC = () => {
               }
               label={
                 <>
-                  <span>$</span>
-                  <span className="text-2xl">55</span>
-                  <span>/year</span>
+                  <div className="flex items-center gap-2">
+                    <span>$</span>
+                    <span className="text-[38px] font-black">55</span>
+                    <span className="text-xl">/year</span>
+                    <span className="text-xl text-[#AEADAD] line-through">
+                      $60/year
+                    </span>
+                  </div>
                 </>
               }
               selectedPlan={currentSelectedPlan}
@@ -510,13 +522,13 @@ const SubscriptionPlanSelection: React.FC = () => {
               label={
                 <>
                   <span>$</span>
-                  <span className="text-2xl">5</span>
+                  <span className="text-[38px] font-black">5</span>
                   <span>/month</span>
                 </>
               }
               selectedPlan={currentSelectedPlan}
               text1="+ $0.48 transaction fee"
-              text2="flexible monthly access"
+              text2=""
               planRef={PLAN_SELECTION_ITEMS.MONTHLY}
             />
 
@@ -531,13 +543,20 @@ const SubscriptionPlanSelection: React.FC = () => {
               label="Free"
               selectedPlan={currentSelectedPlan}
               text1="enjoy with zero fees"
-              text2="3-days Free Trial"
+              text2=""
               planRef={PLAN_SELECTION_ITEMS.FREE}
             />
           </div>
 
-          {/* Second column - Features list (thinner) */}
-          <div className="w-2/5">{getFeaturesList()}</div>
+          <div className="w-2/5">
+            <FeaturesList
+              selectedPlan={currentSelectedPlan}
+              userType={
+                dataStates.selectedUserType as "employer" | "job_hunter"
+              }
+              onSubscribe={handleSubscription}
+            />
+          </div>
         </div>
       </div>
     </>

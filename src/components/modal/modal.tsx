@@ -14,7 +14,7 @@ const Modal = ({ children }: ModalProps) => {
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
         <div className="relative bg-[#F5F5F7] shadow-lg mx-4 w-[397px] md:w-[642px] h-[490px] md:h-[554px] overflow-x-hidden overflow-y-auto custom-scrollbar">
           <ModalHeader />
-          <div className="w-full p-4">{children}</div>
+          <div className="w-full">{children}</div>
         </div>
       </div>
     )

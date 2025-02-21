@@ -16,14 +16,14 @@ const JobHunterEmployerSelection = () => {
 
   return (
     <div
-      className={`p-4 sm:p-2 flex flex-col items-center justify-center ${modalState !== MODAL_STATES.SIGNUP_SELECT_USER_TYPE ? "hidden" : ""}`}
+      className={`p-4 flex flex-col items-center justify-center ${modalState !== MODAL_STATES.SIGNUP_SELECT_USER_TYPE ? "hidden" : ""}`}
     >
       <div className="text-center text-lg flex justify-center items-center font-light">
         What best describes you?
       </div>
       <div
         id="imgs-btns-wrapper"
-        className="flex justify-around items-center pt-14 h-full sm:h-auto gap-[50px]"
+        className="flex justify-around items-center pt-14 h-full sm:h-auto gap-[30px] md:gap-[50px]"
       >
         <Selection
           icon={jobhunter_icon}
