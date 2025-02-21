@@ -3,7 +3,8 @@ import { MapPin } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
 import { Button } from "components";
 import { ScheduleInterviewModal } from "features/employer";
-import { Match } from "mockData/job-hunter-data";
+//import { Match } from "mockData/job-hunter-data";
+import { Match } from "contexts/PerfectMatch/types";
 
 interface AppPreviewModalProps {
   isOpen: boolean;

@@ -5,7 +5,6 @@ import spinner_loading_fallback from 'assets/images/spinner-loading-akaza.svg?ur
 import { useAuth } from 'contexts/AuthContext/AuthContext';
 import { isServer } from 'utils';
 import { IntercomProvider } from 'contexts/Intercom/IntercomContext';
-
 const BaseLayout = lazy(() => import('pages').then(module => ({ default: module.BaseLayout })))
 
 const NotFound = lazy(() => import('pages').then(module => ({ default: module.NotFoundPage })))
@@ -326,7 +325,7 @@ const routes: RouteObject[] = [
     path: ROUTE_CONSTANTS.DASHBOARD,
   element: (
     <ProtectedRoute>
-    <LazyComponent component={BaseLayout}/>
+        <LazyComponent component={BaseLayout}/>
   </ProtectedRoute>
   ),
     children: [
@@ -352,10 +351,10 @@ const routes: RouteObject[] = [
           {
             path: ROUTE_CONSTANTS.FEED,
             element: <ProtectedRoute>
-              <UserTypeComponent 
-                employerComponent={EmployerFeed} 
-                jobHunterComponent={JobHunterFeed} 
-              />
+                <UserTypeComponent 
+                  employerComponent={EmployerFeed} 
+                  jobHunterComponent={JobHunterFeed} 
+                />
             </ProtectedRoute>
           }
         ]

@@ -460,6 +460,12 @@ export const akazaApiPerfectMatch = createApiFunction({
     //baseUrl: process.env.REACT_APP_PERFECTMATCH_API_URL ,
     credentials: "include", 
     prepareHeaders: (headers) => {
+      // Retrieve the token from cookies
+      const token = Cookies.get('authToken');
+
+      if (token) {
+        headers.set('Authorization', `Bearer ${token}`); // Add token to the Authorization header
+      }
       return headers;
     },
   }), 
@@ -471,8 +477,8 @@ export const akazaApiPerfectMatch = createApiFunction({
       }),
     }),
     employerPaid: builder.query({
-      query: ({ page, pageSize, matchesByScore }) => ({
-        url: `perfect-match/employer/${matchesByScore ? 'matches-by-score' : ''}?page=${page}&pageSize=${pageSize}`,
+      query: ({ page, pageSize, matchesByScore, scoreFilter='above60', jobId=1 }) => ({
+        url: `perfect-match/employer/${matchesByScore ? 'matches-by-score' : ''}?page=${page}&pageSize=${pageSize}&scoreFilter=${scoreFilter}&jobId=${jobId}`,
         method: 'GET',
       }),
     }),

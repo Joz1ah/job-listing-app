@@ -11,6 +11,7 @@ import {
 import { cn } from "lib/utils";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import { useGetJobListQuery } from "api/akaza/akazaAPI";
+import { usePerfectMatchContext } from "contexts/PerfectMatch/PerfectMatchContext";
 
 interface Keyword {
   keyword: string;
@@ -46,6 +47,7 @@ interface Job {
 const Sidebar: FC = () => {
   const location = useLocation();
   const [selectedJob, setSelectedJob] = useState<string>("");
+  const { updateMatchState, setJobList } = usePerfectMatchContext();
 
   const hideOnPagesMobile = [
     "/dashboard/job-listing",
@@ -57,12 +59,19 @@ const Sidebar: FC = () => {
     page: 1,
     limit: 10,
   });
-
   const jobs = data?.data?.jobs || [];
 
   const shouldShowMobileView = !hideOnPagesMobile.includes(location.pathname);
   const shouldShowDesktopView = !hideOnPagesDesktop.includes(location.pathname);
 
+  useEffect(() => {
+    if(data){
+      if(data.data.jobs.length > 0){
+        //updateMatchState({selectedJobId:data.data.jobs[0].id});
+        setJobList(data.data.jobs)
+      }
+    }
+  },[data])
   useEffect(() => {
     const jobIdMatch = location.pathname.match(/\/dashboard\/job\/(\d+)/);
     if (jobIdMatch) {
@@ -75,7 +84,9 @@ const Sidebar: FC = () => {
   }, [location.pathname, jobs]);
 
   const handleJobSelect = (jobId: string) => {
-    setSelectedJob(jobId);
+    const _jobId = Number(jobId);
+    setSelectedJob(jobId)
+    updateMatchState({selectedJobId:_jobId});
   };
 
   const SelectComponent = () => {
