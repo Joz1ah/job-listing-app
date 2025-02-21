@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
 import { Bell, Ellipsis, ChevronDown } from "lucide-react";
-import { ScrollArea } from "components";
+//import { ScrollArea } from "components";
 import { Badge } from "components";
 import { Popover, PopoverContent, PopoverTrigger } from "components";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
@@ -209,8 +209,8 @@ const NotificationFeed: FC<NotificationFeedProps> = ({
                 )}
               </div>
 
+              {/* 
               <div className="h-[2px] bg-white w-full" />
-
               <ScrollArea className="h-[400px]">
                 {olderNotifications.map((notification) => (
                   <NotificationItem
@@ -218,7 +218,7 @@ const NotificationFeed: FC<NotificationFeedProps> = ({
                     notification={notification}
                   />
                 ))}
-              </ScrollArea>
+              </ScrollArea> */}
 
               <button
                 onClick={handleClearNotifications}

@@ -10,7 +10,10 @@ class BaseSSEClient {
   protected eventSource: EventSource;
 
   constructor(url: string) {
-    this.eventSource = new EventSource(url);
+    const eventSourceOptions = {
+      withCredentials: true,
+    };
+    this.eventSource = new EventSource(url, eventSourceOptions);
   }
 
   onMessage(callback: (data: string) => void): void {
