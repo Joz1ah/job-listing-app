@@ -168,7 +168,7 @@ const SubscriptionPlan: FC = () => {
             <PlanCard
               title="Monthly Plan"
               price="5"
-              period="/per month"
+              period="/ month"
               features={features}
             />
             <PlanCard
