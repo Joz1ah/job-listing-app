@@ -66,9 +66,11 @@ const BillingSettings: FC = () => {
               Consider subscribing to make the most of your experience!
             </p>
 
-            <button className="w-full sm:w-auto px-6 py-2 bg-[#F5722E] text-white rounded text-sm hover:bg-orange-600 transition-colors">
-              Subscribe Now
-            </button>
+            <Link to="/dashboard/account-settings/subscription">
+              <button className="w-full sm:w-auto px-6 py-2 bg-[#F5722E] text-white rounded text-sm hover:bg-orange-600 transition-colors">
+                Subscribe Now
+              </button>
+            </Link>
           </div>
         </div>
       </div>

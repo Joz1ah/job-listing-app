@@ -9,7 +9,7 @@ import {
   CardTitle,
   Button,
 } from "components";
-import { useSearchCoreQuery } from 'api/akaza/akazaAPI';
+import { useSearchCoreQuery } from "api/akaza/akazaAPI";
 
 interface SelectOption {
   value: string;
@@ -54,16 +54,19 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
 }) => {
   const [skillsMap, setSkillsMap] = useState<Record<string, string>>({});
   const { data: searchResults } = useSearchCoreQuery({
-    query: '', // Empty query to get all skills
-    limit: 100 // Increase limit to get more skills
+    query: "", // Empty query to get all skills
+    limit: 100, // Increase limit to get more skills
   });
 
   useEffect(() => {
     if (searchResults?.data) {
-      const newMap = searchResults.data.reduce((acc: Record<string, string>, skill: any) => {
-        acc[skill.id] = skill.keyword;
-        return acc;
-      }, {});
+      const newMap = searchResults.data.reduce(
+        (acc: Record<string, string>, skill: any) => {
+          acc[skill.id] = skill.keyword;
+          return acc;
+        },
+        {},
+      );
       setSkillsMap(newMap);
     }
   }, [searchResults]);
@@ -76,7 +79,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
 
     if (Array.isArray(value)) {
       return value.map((v) => {
-        if (type === 'coreSkills') {
+        if (type === "coreSkills") {
           return skillsMap[v] || v;
         }
         const option = selectOptions[type]?.find((opt) => opt.value === v);
@@ -84,7 +87,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
       });
     }
 
-    if (type === 'coreSkills') {
+    if (type === "coreSkills") {
       return skillsMap[value] || value;
     }
     const option = selectOptions[type]?.find((opt) => opt.value === value);
@@ -92,12 +95,16 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
   };
 
   // Format skills using the skillsMap
-  const formattedSkills = values.coreSkills?.map(skillId => {
-    const skill = skillsMap[skillId] || skillId;
-    return skill.split(' ')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join(' ');
-  }) || [];
+  const formattedSkills =
+    values.coreSkills?.map((skillId) => {
+      const skill = skillsMap[skillId] || skillId;
+      return skill
+        .split(" ")
+        .map(
+          (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
+        )
+        .join(" ");
+    }) || [];
 
   const truncateLanguage = (language: string) => {
     if (language.length > 16) {
@@ -140,7 +147,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
             </div>
             <div className="w-full relative">
               <CardTitle
-                className={`text-sm ${hasName ? "font-semibold text-[#263238]" : "font-semibold text-[#263238]"}`}
+                className={`text-sm max-w-[340px] truncate ${hasName ? "font-semibold text-[#263238]" : "font-semibold text-[#263238]"}`}
               >
                 {hasName
                   ? `${values.firstName} ${values.lastName}`
@@ -168,15 +175,17 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
                 <p className="text-[13px] font-light text-[#263238]">
                   Core Skills:
                 </p>
-                <div className="flex flex-wrap gap-1">
+                <div className="flex gap-1 overflow-hidden whitespace-nowrap">
                   {formattedSkills.slice(0, 5).map((skill, i) => (
                     <span
                       key={i}
-                      className={`text-white text-xs font-semibold px-1.5 py-0 rounded-[2px] inline-block ${
+                      title={skill}
+                      className={`text-white text-xs font-semibold px-1.5 py-0 rounded-[2px] inline-block max-w-[125px] truncate ${
                         i % 2 === 0 ? "bg-[#168AAD]" : "bg-[#184E77]"
                       }`}
                     >
                       {skill}
+                      <span className="sr-only">{skill}</span>
                     </span>
                   ))}
                 </div>
@@ -186,11 +195,11 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
                 <p className="text-[13px] font-light text-[#263238]">
                   Core Skills:
                 </p>
-                <div className="flex flex-wrap gap-1">
+                <div className="flex gap-1 overflow-hidden whitespace-nowrap">
                   {[0, 1, 2, 3, 4].map((i) => (
                     <span
                       key={i}
-                      className={`text-white text-xs font-semibold px-1.5 py-0 rounded-[2px] inline-block ${
+                      className={`text-white text-xs font-semibold px-1.5 py-0 rounded-[2px] inline-block max-w-[125px] truncate ${
                         i % 2 === 0 ? "bg-[#168AAD]" : "bg-[#184E77]"
                       }`}
                     >
@@ -206,9 +215,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
                 <span className="text-[13px] font-light text-[#263238]">
                   Experience:
                 </span>
-                <span
-                  className="text-[13px] font-light text-[#F5722E] rounded px-1 py-0.5 h-[18px] flex justify-center items-center border border-[#F5722E]"
-                >
+                <span className="text-[13px] font-light text-[#F5722E] rounded px-1 py-0.5 h-[18px] flex justify-center items-center border border-[#F5722E]">
                   {hasExperience
                     ? getLabel("yearsOfExperience", values.yearsOfExperience)
                     : "years of experience"}
@@ -224,7 +231,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
                     <span
                       key={index}
                       className={`text-white rounded px-1 h-5 flex justify-center items-center text-xs ${
-                        type === 'part-time' ? 'bg-[#BF532C]' : 'bg-[#F5722E]'
+                        type === "part-time" ? "bg-[#BF532C]" : "bg-[#F5722E]"
                       }`}
                     >
                       {getLabel("employmentType", type) as string}
@@ -260,9 +267,10 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
                   values.languages?.map((lang, index) => (
                     <span
                       key={index}
+                      title={lang}
                       className="text-[13px] font-light text-[#F5722E] rounded px-1 h-[18px] flex justify-center items-center border border-[#F5722E]"
                     >
-                       {truncateLanguage(getLabel("languages", lang) as string)}
+                      {truncateLanguage(getLabel("languages", lang) as string)}
                     </span>
                   ))
                 ) : (
@@ -305,7 +313,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
             </div>
 
             <div className="pt-2 pl-2">
-              <CardTitle className="text-sm font-semibold">
+              <CardTitle className="text-sm font-semibold max-w-[250px] truncate">
                 {hasName
                   ? `${values.firstName} ${values.lastName}`
                   : "Your First and Last Name"}
@@ -321,23 +329,24 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
                   <p className="text-[13px] font-light text-[#263238]">
                     Core Skills:
                   </p>
-                  <div className="flex flex-wrap gap-1 mx-1">
+                  <div className="flex gap-1 mx-1 overflow-hidden whitespace-nowrap">
                     {[0, 1, 2, 3, 4].map((i) => {
                       const skill = hasSkills ? formattedSkills[i] : null;
                       return (
                         <span
                           key={i}
-                          className={`text-white text-[12px] font-semibold px-1.5 py-0.5 rounded-[2px] inline-block ${
+                          title={skill || "Skills"}
+                          className={`text-white text-[12px] font-semibold px-1.5 py-0.5 rounded-[2px] inline-block max-w-[125px] truncate ${
                             i % 2 === 0 ? "bg-[#168AAD]" : "bg-[#184E77]"
                           }`}
                         >
-                          {skill || "Skills"}
+                          {skill}
                         </span>
                       );
                     })}
                   </div>
                 </div>
-            
+
                 <div className="flex gap-1 mt-8">
                   <span className="text-[13px] font-light">Experience:</span>
                   <span className="text-[#F5722E] rounded-[4px] text-[12px] px-1 h-[18px] flex justify-center items-center outline outline-1 outline-[#F5722E]">
@@ -348,12 +357,14 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
                 </div>
 
                 <div className="flex gap-1 flex-wrap">
-                  <span className="text-[13px] font-light">Looking for:</span>
+                  <span className="text-[13px] font-light">Available for:</span>
                   {hasEmploymentType ? (
                     values.employmentType?.map((type, index) => (
                       <span
                         key={index}
-                        className="bg-[#F5722E] text-white rounded-[4px] text-[12px] px-1 h-[18px] flex justify-center items-center"
+                        className={`text-white rounded-[4px] text-[12px] px-1 h-[18px] flex justify-center items-center ${
+                          type === "part-time" ? "bg-[#BF532C]" : "bg-[#F5722E]"
+                        }`}
                       >
                         {getLabel("employmentType", type) as string}
                       </span>
@@ -369,7 +380,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
                   <span className="text-[13px] font-light">
                     Salary Expectation:
                   </span>
-                  <span className="bg-[#F5722E] text-white rounded-[4px] text-[12px] px-1 h-[18px] flex justify-center items-center">
+                  <span className="bg-[#8C4227] text-white rounded-[4px] text-[12px] px-1 h-[18px] flex justify-center items-center">
                     {hasSalary
                       ? getLabel("salaryRange", values.salaryRange)
                       : "Amount in USD"}
@@ -382,9 +393,12 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
                     values.languages?.map((lang, index) => (
                       <span
                         key={index}
+                        title={lang}
                         className="text-[#F5722E] rounded-[4px] text-[12px] px-1 h-[18px] flex justify-center items-center outline outline-1 outline-[#F5722E]"
                       >
-                        {truncateLanguage(getLabel("languages", lang) as string)}
+                        {truncateLanguage(
+                          getLabel("languages", lang) as string,
+                        )}
                       </span>
                     ))
                   ) : (

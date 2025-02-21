@@ -580,7 +580,7 @@ const JobListingForm: FC = () => {
                   onChange={(value) =>
                     setFieldValue("interpersonalSkills", value)
                   }
-                  className="h-[120px] md:h-[99px] pt-1 px-1"
+                  className="min-h-[99px] pt-1 px-1"
                   alternateColors={{
                     firstColor: "#168AAD",
                     secondColor: "#184E77",

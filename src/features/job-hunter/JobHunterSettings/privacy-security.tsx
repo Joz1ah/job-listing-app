@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useRef } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Input } from "components";
@@ -8,6 +8,9 @@ import { cn } from "lib/utils";
 import { InputField } from "components";
 import { DeleteAccountAlert } from "./alerts/DeleteAccountAlert";
 import { useUpdatePasswordMutation } from "api/akaza/akazaAPI";
+import { useJobHunterContext } from "components";
+import { AdDialogWrapper } from "components";
+import jobHunterPopAds from "images/popup-hunter.svg?url";
 import button_loading_spinner from 'assets/loading-spinner-orange.svg?url';
 
 interface FormData {
@@ -27,6 +30,8 @@ interface ErrorResponse {
 }
 
 const PrivacyAndSecuritySettings: FC = () => {
+  const { subscriptionPlan } = useJobHunterContext();
+  const adTriggerRef = useRef<HTMLDivElement>(null);
   const [updatePassword, { isLoading }] = useUpdatePasswordMutation();
   const [showOriginalPassword, setShowOriginalPassword] = React.useState(false);
   const [showNewPassword, setShowNewPassword] = React.useState(false);
@@ -61,6 +66,11 @@ const PrivacyAndSecuritySettings: FC = () => {
     validationSchema,
     validateOnMount: true,
     onSubmit: async (values, { resetForm, setFieldError }) => {
+      if (subscriptionPlan === "freeTrial") {
+        adTriggerRef.current?.click();
+        return;
+      }
+
       setIsSuccess(false);
       try {
         await Promise.all([
@@ -126,7 +136,7 @@ const PrivacyAndSecuritySettings: FC = () => {
         </h3>
 
         <div className="flex justify-center">
-        <div className="w-full max-w-md flex justify-center">
+          <div className="w-full max-w-md flex justify-center">
             <form onSubmit={handleSubmit} className="flex flex-col w-full md:w-[355px]">
               <div className="w-full space-y-8 mb-8">
                 <InputField
@@ -277,6 +287,14 @@ const PrivacyAndSecuritySettings: FC = () => {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Ad Dialog for Free Trial Users */}
+      <div className="hidden">
+        <AdDialogWrapper
+          popupImage={jobHunterPopAds}
+          ref={adTriggerRef}
+        />
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useRef } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Input } from "components";
@@ -8,6 +8,9 @@ import { cn } from "lib/utils";
 import { InputField } from "components";
 import { DeleteAccountAlert } from "./alerts/DeleteAccountAlert";
 import { useUpdatePasswordMutation } from "api/akaza/akazaAPI";
+import { useEmployerContext } from "components";
+import { AdDialogWrapper } from "components";
+import employerPopAds from "images/popup-employer.svg?url";
 import button_loading_spinner from 'assets/loading-spinner-orange.svg?url';
 
 interface FormData {
@@ -27,6 +30,8 @@ interface ErrorResponse {
 }
 
 const PrivacyAndSecuritySettings: FC = () => {
+  const { subscriptionPlan } = useEmployerContext();
+  const adTriggerRef = useRef<HTMLDivElement>(null);
   const [updatePassword, { isLoading }] = useUpdatePasswordMutation();
   const [showOriginalPassword, setShowOriginalPassword] = React.useState(false);
   const [showNewPassword, setShowNewPassword] = React.useState(false);
@@ -61,6 +66,11 @@ const PrivacyAndSecuritySettings: FC = () => {
     validationSchema,
     validateOnMount: true,
     onSubmit: async (values, { resetForm, setFieldError }) => {
+      if (subscriptionPlan === "freeTrial") {
+        adTriggerRef.current?.click();
+        return;
+      }
+
       setIsSuccess(false);
       try {
         await Promise.all([
@@ -277,6 +287,14 @@ const PrivacyAndSecuritySettings: FC = () => {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Ad Dialog for Free Trial Users */}
+      <div className="hidden">
+        <AdDialogWrapper
+          popupImage={employerPopAds}
+          ref={adTriggerRef}
+        />
       </div>
     </div>
   );

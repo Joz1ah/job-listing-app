@@ -1,5 +1,5 @@
 import React, { FC, useState, useRef } from "react";
-import { Info } from "lucide-react";
+import { Info, X } from "lucide-react";
 import { cn } from "lib/utils";
 import { Label } from "components";
 import { Input } from "components";
@@ -296,30 +296,45 @@ const GeneralSettings: FC = () => {
           <h3 className="text-white text-[24px] font-normal">
             Registered Email Address
           </h3>
-          <div className="flex flex-col sm:flex-row items-start gap-2">
-            <div className="w-full sm:flex-1">
-              <FormField label="Email address">
-                <Input
-                  type="email"
-                  value={isEditingEmail ? tempEmail : email}
-                  onChange={(e) =>
-                    isEditingEmail && setTempEmail(e.target.value)
-                  }
-                  disabled={!isEditingEmail}
-                  className={cn(
-                    "w-full bg-transparent border-[#AEADAD] h-[45px] border-2 focus:border-[#F5722E] text-white",
-                    !isEditingEmail && "opacity-70",
+          <div>
+            <FormField label="Email address">
+              <div className="flex items-center gap-2">
+                <div className="flex-1">
+                  <Input
+                    type="email"
+                    value={isEditingEmail ? tempEmail : email}
+                    onChange={(e) =>
+                      isEditingEmail && setTempEmail(e.target.value)
+                    }
+                    disabled={!isEditingEmail}
+                    className={cn(
+                      "w-full bg-transparent border-[#AEADAD] h-[45px] border-2 focus:border-[#F5722E] text-white",
+                      !isEditingEmail && "opacity-70",
+                    )}
+                    placeholder="Enter email address"
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={handleEmailEdit}
+                    className="w-[80px] h-[45px] bg-transparent border border-[#F5722E] text-[#F5722E] text-sm rounded hover:bg-[#F5722E] hover:text-white transition-colors duration-200"
+                  >
+                    {isEditingEmail ? "Update" : "Change"}
+                  </button>
+                  {isEditingEmail && (
+                    <button
+                      onClick={() => {
+                        setIsEditingEmail(false);
+                        setTempEmail(email);
+                      }}
+                      className="absolute -right-10 flex items-center justify-center h-[50px] w-[50px] text-gray-400 hover:text-white transition-colors"
+                    >
+                      <X size={20} />
+                    </button>
                   )}
-                  placeholder="Enter email address"
-                />
-              </FormField>
-            </div>
-            <button
-              onClick={handleEmailEdit}
-              className="w-full sm:w-[80px] mt-[18px] px-3 py-2 bg-transparent border border-[#F5722E] text-[#F5722E] text-sm rounded hover:bg-[#F5722E] hover:text-white transition-colors duration-200"
-            >
-              {isEditingEmail ? "Update" : "Change"}
-            </button>
+                </div>
+              </div>
+            </FormField>
             <div className="hidden">
               <AdDialogWrapper
                 popupImage={jobHunterPopAds}
