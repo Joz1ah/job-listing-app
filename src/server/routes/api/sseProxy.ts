@@ -2,14 +2,16 @@ import { Request, Response } from "express";
 import https from 'https';
 
 export const sseNotifications = async (req: Request, res: Response): Promise<void> => {
-  console.log(`Proxying SSE to client... ${process.env.NOTIFICATIONS_API_URL}`);
   
   try {
+    const authHeader = req.headers.authorization;
     const token = req.cookies['authToken'];
-    const page = parseInt(req.query.page as string, 10) || 1;
-    const limit = parseInt(req.query.limit as string, 10) || 5; 
-    const endpoint = `/api/notifications/stream?page=${page}&limit=${limit}`;
+    const cookieAuth = `Bearer ${token}`;
+    //const page = parseInt(req.query.page as string, 10) || 1;
+    //const limit = parseInt(req.query.limit as string, 10) || 5; 
+    const endpoint = `notifications/stream`;
     const sseUrl = `${process.env.NOTIFICATIONS_API_URL}${endpoint}` || '';
+    console.log(`Proxying SSE to client... ${sseUrl}`);
 
     if (!sseUrl) {
       throw new Error('SSE URL is not defined');
@@ -17,21 +19,33 @@ export const sseNotifications = async (req: Request, res: Response): Promise<voi
 
     const options = {
       headers: {
-        'Authorization': `Bearer ${token}`,
+        'Authorization': !authHeader ? cookieAuth : authHeader,
       }
     };
 
     const proxyRequest = https.get(sseUrl, options, (proxyResponse) => {
-      res.setHeader('Content-Type', 'text/event-stream');
-      res.setHeader('Cache-Control', 'no-cache');
-      res.setHeader('Connection', 'keep-alive');
-      res.setHeader('Retry-After', '10');
+      res.writeHead(200, {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',          
+        'Content-Encoding': 'none',
+        'Connection': 'keep-alive',
+        'Access-Control-Allow-Origin': '*'
+      });
 
       proxyResponse.pipe(res);
-
+      /*
+      proxyResponse.on('data', (chunk) => {
+        const eventData = `${chunk.toString()}`;
+        //res.write(eventData);
+        console.log('Sent data to client:');
+        console.log(eventData)
+        res.write('event: message\n');
+        res.write('id: 1\n');
+        res.write('data: {"message": "test"}\n\n');
+      });
+*/
       proxyResponse.on('end', () => {
         console.log('SSE stream ended');
-        console.log(res)
         if (!res.headersSent) {
           res.status(200).end();
         }

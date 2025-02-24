@@ -75,7 +75,7 @@ const AuthWrapper = () =>{
     <BrowserRouter>
       {
       isAuthenticated ? 
-      <SSEProvider url={`${process.env.BASE_URL}/api/notifications/stream?page=1&limit=5`}>
+      <SSEProvider url={`${process.env.BASE_URL}/api/notifications/stream`}>
         <App />
       </SSEProvider> :
         <App />
@@ -91,14 +91,12 @@ const indexJSX = (
         <Provider store={store}>
           <HelmetProvider>
             <AuthProvider>
-                <BrowserRouter>
-                </BrowserRouter>
-              </AuthProvider>
+              <AuthWrapper/>
+            </AuthProvider>
           </HelmetProvider>
         </Provider>
       </ErrorModalProvider>
     </CookieProvider>
-                    <App />
   </StrictMode>
 )
 

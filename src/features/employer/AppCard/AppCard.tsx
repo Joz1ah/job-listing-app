@@ -212,7 +212,7 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage }) => {
             className="text-[12px] font-semibold px-0 w-[133px] h-[27px] bg-[#F5722E] hover:bg-[#F5722E]/90"
             onClick={handleScheduleInterview}
           >
-            Schedule Interview
+            Schedule Interview2
           </Button>
           <MoreVertical
             size={12}
