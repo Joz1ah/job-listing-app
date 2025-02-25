@@ -5,7 +5,7 @@ import {
   DialogTitle,
 } from "components"
 import { Button } from "components"
-import success_sub from 'assets/success.gif'
+import confetti_success from 'assets/confetti.gif'
 
 interface SubscriptionSuccessModalProps {
   isOpen: boolean
@@ -31,7 +31,7 @@ const SubscriptionSuccessModal = ({
         <div className="flex flex-col justify-end items-center space-y-4 pt-32">
           <div className="absolute top-0 left-0 right-0 pointer-events-none z-0">
             <img 
-              src={success_sub}
+              src={confetti_success}
               alt="Success celebration"
               className="w-full h-full"
             />

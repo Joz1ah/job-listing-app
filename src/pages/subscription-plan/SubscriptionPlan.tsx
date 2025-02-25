@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import sparkle_icon from "assets/images/sparkle-icon.png";
 import { DefaultLayout } from "layouts";
 import { useAuth } from "contexts/AuthContext/AuthContext";
-import styles from './subscriptionPlan.module.scss';
+import styles from "./subscriptionPlan.module.scss";
 import subscription_card from "assets/card-orange.svg?url";
 
 interface PlanFeature {
@@ -51,12 +51,11 @@ const PlanCard: FC<PlanProps> = ({
     }
   };
 
-  const allFeatures =  features;
+  const allFeatures = features;
 
   return (
     <div
       className={`w-full md:w-[640px] md:h-[220px] ${bestValue ? "bg-[#F5F5F7BF]" : "bg-[#F5F5F7BF]"} shadow-[0_4px_8px_rgba(0,_0,_0,_0.2),_0_-4px_8px_rgba(0,_0,_0,_0.05)] px-6 py-4 transform transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_2px_rgba(245,114,46,0.6)] mb-8 rounded-none`}
-
     >
       {/* Single row with two columns */}
       <div className="flex justify-between h-full">
@@ -89,18 +88,19 @@ const PlanCard: FC<PlanProps> = ({
               <span className={`text-[#F5722E] text-2xl font-bold`}>
                 {period}
               </span>
+              {bestValue && (
+                <span className="text-gray-400 text-2xl ml-2 line-through">
+                  $60
+                </span>
+              )}
             </div>
           )}
           {price !== "0" && (
-            <h3
-              className={`text-[#263238] text-xl font-semibold mb-2`}
-            >
+            <h3 className={`text-[#263238] text-xl font-semibold mb-2`}>
               {title}
             </h3>
           )}
-          <p
-            className={`text-[#263238] text-[15px] mb-2`}
-          >
+          <p className={`text-[#263238] text-[15px] mb-2`}>
             Maximize your reach, save more,
             <br />
             and hire the best talent faster
@@ -119,11 +119,7 @@ const PlanCard: FC<PlanProps> = ({
             {allFeatures.map((feature, index) => (
               <div key={index} className="flex items-center gap-2">
                 <span className="text-[#F5722E]">{feature.icon}</span>
-                <span
-                  className={`text-[#263238] text-sm`}
-                >
-                  {feature.text}
-                </span>
+                <span className={`text-[#263238] text-sm`}>{feature.text}</span>
               </div>
             ))}
           </div>
@@ -150,12 +146,17 @@ const SubscriptionPlan: FC = () => {
       text: "Perfect Match automation",
     },
     { icon: <MessageCircleMore size={22} />, text: "Live chat support" },
-    { icon: <img src={subscription_card} />, text: "No credit or debit card required" },
+    {
+      icon: <img src={subscription_card} />,
+      text: "No credit or debit card required",
+    },
   ];
 
   return (
     <DefaultLayout>
-      <div className={`${styles['subscription-plan-container']} pb-10 md:pt-10`}>
+      <div
+        className={`${styles["subscription-plan-container"]} pb-10 md:pt-10`}
+      >
         <div className=" mx-auto px-4">
           <div className="space-y-6 pt-4">
             <PlanCard

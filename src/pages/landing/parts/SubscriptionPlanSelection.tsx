@@ -187,6 +187,11 @@ const MobilePlanCard: React.FC<MobilePlanCardProps> = ({
                 <div className="mt-4">
                   <div className="text-3xl font-bold text-orange-500">
                     {price}
+                    {isAnnual && (
+                      <span className="text-lg text-gray-400 line-through ml-2">
+                        $60
+                      </span>
+                    )}
                   </div>
                   <div className="text-[15px] text-[#263238]">
                     {transactionFee}

@@ -23,7 +23,7 @@ const JobHunterEmployerSelection = () => {
       </div>
       <div
         id="imgs-btns-wrapper"
-        className="flex justify-around items-center pt-14 h-full sm:h-auto gap-[30px] md:gap-[50px]"
+        className="flex justify-around items-center pt-14 h-full sm:h-auto gap-[10px] md:gap-[50px]"
       >
         <Selection
           icon={jobhunter_icon}
