@@ -7,6 +7,7 @@ import { useIntercomContext } from 'contexts/Intercom/IntercomContext';
 import companyLogo from "images/company-logo.png";
 import akazaLogoWhite from "images/akaza-logo-white.png";
 import menuButton from "images/menu-button.png";
+import { useSSE } from "contexts/SSEClient/SSEClient";
 
 interface NavItem {
   name: string;
@@ -17,19 +18,39 @@ interface NavItem {
   action?: () => void;
 }
 
-interface MenuProps {
+interface SubscriptionProps {
+  subscriptionPlan?: "freeTrial" | "monthlyPlan" | "yearlyPlan";
+  userType?: "employer" | "job_hunter";
+}
+
+interface MenuProps extends SubscriptionProps{
   isMenuOpen?: boolean;
   onToggleMenu?: () => void;
   desktopMenuItems?: NavItem[];
   mobileMenuItems?: NavItem[];
-  subscriptionPlan?: "freeTrial" | "monthlyPlan" | "yearlyPlan";
-  userType?: "employer" | "job_hunter";
   userName?: string;
   onSignOut?: () => void;
   isAuthenticated?: boolean;
   ButtonLoginNav?: FC;
   ButtonSignUpNav?: FC;
 }
+
+const NotificationFeedWrapper: FC<SubscriptionProps> = ({
+  subscriptionPlan,
+  userType,
+}) => {
+  const { messages } = useSSE();
+
+  //useEffect(() => {
+  //  console.log(messages);
+  //}, [messages]); // Logs messages when they change
+
+  if (!subscriptionPlan) return null;
+
+  return (
+    <NotificationFeed notifications={messages} subscriptionPlan={subscriptionPlan} userType={userType} />
+  );
+};
 
 const BaseMenu: FC<MenuProps> = ({
   isMenuOpen = false,
@@ -57,7 +78,6 @@ const BaseMenu: FC<MenuProps> = ({
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 1024);
   const location = useLocation();
   const isEmployer = userType === "employer";
-
   // Default navigation items for unauthenticated state
   const defaultNavItems = [
     { name: "About us", path: "/about-us" },
@@ -188,10 +208,7 @@ const BaseMenu: FC<MenuProps> = ({
     if (!subscriptionPlan) return null;
     return (
       <div onClick={handleNotificationClick}>
-        <NotificationFeed
-          subscriptionPlan={subscriptionPlan}
-          userType={userType}
-        />
+        <NotificationFeedWrapper subscriptionPlan={subscriptionPlan} userType={userType} />
       </div>
     );
   };

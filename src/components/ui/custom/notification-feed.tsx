@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState,useEffect } from "react";
 import { Bell, Ellipsis, ChevronDown } from "lucide-react";
 //import { ScrollArea } from "components";
 import { Badge } from "components";
@@ -7,29 +7,28 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
 import jobHunterPopAds from "images/popup-hunter.svg?url";
 import employerPopAds from "images/popup-employer.svg?url";
 import { NavLink } from "react-router-dom";
-
-type NotificationItem = {
-  id: string;
-  title: string;
-  message: string;
-  timestamp: Date;
-  hasMatch?: boolean;
-  unread: boolean;
-};
+import { NotificationItem } from "types/notification";
+import DOMPurify from "dompurify";
 
 interface NotificationFeedProps {
   subscriptionPlan?: "freeTrial" | "monthlyPlan" | "yearlyPlan";
   userType?: "employer" | "job_hunter";
+  notifications?: NotificationItem[]
 }
 
 const NotificationFeed: FC<NotificationFeedProps> = ({
   subscriptionPlan,
   userType = "job_hunter",
+  notifications
 }) => {
   const [expandedNew, setExpandedNew] = useState(false);
   const [newNotifications, setNewNotifications] = useState<NotificationItem[]>(
     [],
   );
+
+  useEffect(()=>{
+    setNewNotifications(notifications ?? [])
+  },[notifications])
   const [olderNotifications, setOlderNotifications] = useState<
     NotificationItem[]
   >([]);
@@ -61,7 +60,7 @@ const NotificationFeed: FC<NotificationFeedProps> = ({
     }
   };
 
-  const markAsRead = (notificationId: string) => {
+  const markAsRead = (notificationId: number) => {
     setNewNotifications((prev) =>
       prev.map((notification) =>
         notification.id === notificationId
@@ -91,7 +90,7 @@ const NotificationFeed: FC<NotificationFeedProps> = ({
   }: {
     notification: NotificationItem;
   }) => {
-    const { label, timeText } = getTimeLabel(notification.timestamp);
+    const { label, timeText } = getTimeLabel(notification.createdAt);
 
     return (
       <div
@@ -115,8 +114,10 @@ const NotificationFeed: FC<NotificationFeedProps> = ({
                 <span className="text-[#FF5E34]">🔥</span>
               )}
             </h4>
-            <p className="text-[10px] text-white mt-2 leading-[1.4]">
-              {notification.message}
+            <p 
+            className="text-[10px] text-white mt-2 leading-[1.4]"
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(notification.message) }}
+            >
             </p>
             <p className="text-[10px] text-white mt-2 flex justify-end">
               {timeText}
