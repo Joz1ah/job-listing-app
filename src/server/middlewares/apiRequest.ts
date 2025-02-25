@@ -7,6 +7,7 @@ import {
   akazaApiPayment,
   akazaApiPerfectMatch,
   akazaApiSearch,
+  akazaApiInterviewRequest,
   akazaApiAccount
 } from 'api'
 
@@ -59,6 +60,7 @@ const apiRequest = async (
       akazaApiJobFeed.util.getRunningQueriesThunk(),
       akazaApiPayment.util.getRunningQueriesThunk(),
       akazaApiPerfectMatch.util.getRunningQueriesThunk(),
+      akazaApiInterviewRequest.util.getRunningQueriesThunk(),
       akazaApiSearch.util.getRunningQueriesThunk(),
       akazaApiAccount.util.getRunningQueriesThunk()),
   )

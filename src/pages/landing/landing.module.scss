@@ -1809,15 +1809,20 @@ body {
     ),
     url("assets/woman-with-paper-discussing.png");
   background-size: cover;
-  background-position: calc(60%) center;
+  background-position: calc(40%) center;
   background-repeat: no-repeat;
   overflow: hidden;
-  height: 100%;
-  width: 100%;
+  height: 500px;
+  width: 642px;
   display: flex;
   flex-direction: column;
 }
-
+@media screen and (max-width: 768px) {
+  .modal-loading-container {
+    background-position: calc(100%) center;
+    height: 430px;
+  }
+}
 .modal-loading-container > .loading-description {
   margin-top: 127.5px;
   margin-left: 31.5px;
@@ -1829,6 +1834,11 @@ body {
   line-height: 24px; /* 120% */
 
   letter-spacing: 1px;
+}
+@media screen and (max-width: 768px) {
+  .modal-loading-container > .loading-description {
+    margin-top: 50px;
+  }
 }
 
 .loading-description > div:nth-child(3) {
@@ -1854,6 +1864,12 @@ body {
   height: 130px;
   transform: scale(0.4);
   transform-origin: bottom left;
+  bottom: 20px;
+}
+@media screen and (max-width: 768px) {
+  .modal-akaza-loading-container {
+    
+  }
 }
 .modal-akaza-loading-container > div {
   position: absolute;

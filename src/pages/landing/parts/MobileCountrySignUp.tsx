@@ -54,7 +54,7 @@ const MobileCountrySignUp = () => {
   return modalState && modalState === MODAL_STATES.SIGNUP_STEP4 ? (
     <div
       id="step4_signup"
-      className="flex flex-col items-center justify-center w-full h-full p-[2px]"
+      className="flex flex-col items-center justify-center w-full h-full p-4"
     >
       <Formik
         initialValues={initialValues}

@@ -81,7 +81,7 @@ const LoginForm = () => {
       onSubmit={handleSubmit}
     >
       {({ errors, touched, isSubmitting, values: { email, password } }) => (
-        <Form className="flex flex-col w-full py-5 md:py-2 md:px-[50px]">
+        <Form className="flex flex-col w-full py-5 px-4 md:py-4 md:px-[50px]">
           <div className="text-left mb-5">
             <h1 className="text-sm md:text-xl font-bold text-[#F5722E]">Login</h1>
           </div>
