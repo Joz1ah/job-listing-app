@@ -11,7 +11,7 @@ export const sseNotifications = async (req: Request, res: Response): Promise<voi
     //const limit = parseInt(req.query.limit as string, 10) || 5; 
     const endpoint = `notifications/stream`;
     const sseUrl = `${process.env.NOTIFICATIONS_API_URL}${endpoint}` || '';
-    console.log(`Proxying SSE to client... ${sseUrl}`);
+    //console.log(`Proxying SSE to client... ${sseUrl}`);
 
     if (!sseUrl) {
       throw new Error('SSE URL is not defined');
