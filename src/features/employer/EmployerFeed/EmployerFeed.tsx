@@ -1,6 +1,6 @@
 import { FC, useState, useEffect, useRef } from "react";
 import sparkeIcon from "images/sparkle-icon.png";
-import { perfectMatch, others, Match } from "mockData/job-hunter-data";
+//import { /*perfectMatch,*/ others } from "mockData/job-hunter-data";
 import { Button } from "components";
 import { AppCardSkeleton, BookmarkLimitHandler } from "components";
 import { AppCard } from "features/employer";
@@ -10,8 +10,9 @@ import {
   PerfectMatchEmptyState,
   OtherApplicationEmptyState,
 } from "features/employer";
+import { usePerfectMatchContext } from "contexts/PerfectMatch/PerfectMatchContext";
+import { Match } from "contexts/PerfectMatch/types";
 import { AdDialogWrapper } from "components";
-
 import { useEmployerContext } from "components";
 
 interface selectedProps {
@@ -27,8 +28,17 @@ interface AdItem {
 type CardItem = Match | AdItem;
 
 const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, subscriptionPlan }) => {
+  const { perfectMatch, updateMatchState } = usePerfectMatchContext();
+  
+  useEffect(()=>{
+    updateMatchState({
+        ...(perfectMatch.length > 0 && { selectedJobId: perfectMatch[0].id }),
+        scoreFilter: 'above60'
+    });
+  },[])
+  
   const [displayedItems, setDisplayedItems] = useState<CardItem[]>(() => {
-    if (perfectMatch.length === 0) {
+    if (!perfectMatch || perfectMatch.length === 0) {
       return [];
     }
 
@@ -244,6 +254,17 @@ const OtherApplications: FC<selectedProps> = ({
   setSelectedTab,
   subscriptionPlan,
 }) => {
+  const { perfectMatch: others, updateMatchState, matchState } = usePerfectMatchContext();
+  
+  useEffect(()=>{
+    updateMatchState({
+        ...(others.length > 0 && { selectedJobId: others[0].id }),
+        scoreFilter: 'below60'
+    });
+  },[])
+  useEffect(()=>{
+    console.log(others)
+  },[matchState])
   const [displayedItems, setDisplayedItems] = useState<CardItem[]>(() => {
     if (others.length === 0) {
       return [];
@@ -448,7 +469,11 @@ const EmployerFeed: FC = () => {
   const [selectedTab, setSelectedTab] = useState("perfectMatch");
   const [isLoading, setIsLoading] = useState(true);
   const { subscriptionPlan } = useEmployerContext();
-
+  const { perfectMatch, matchState } = usePerfectMatchContext();
+  const others = perfectMatch
+  useEffect(()=>{
+    //console.log(perfectMatch)
+  },[matchState])
   const handleUpgradeClick = () => {
     console.log("Upgrade clicked");
     // Implement your upgrade logic here

@@ -3,7 +3,8 @@ import { SkillsWithEllipsis } from "components";
 import { Bookmark, MoreVertical, MapPin } from "lucide-react";
 import { Card, CardHeader, CardContent, CardFooter } from "components";
 import { Button } from "components";
-import { Match } from "mockData/job-hunter-data";
+//import { Match } from "mockData/job-hunter-data";
+import { Match } from "contexts/PerfectMatch/types";
 import { AppPreviewModal } from "../AppCard/app-preview/AppPreviewModal";
 
 interface BookmarkCardProps {

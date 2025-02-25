@@ -5,6 +5,7 @@ import spinner_loading_fallback from 'assets/images/spinner-loading-akaza.svg?ur
 import { useAuth } from 'contexts/AuthContext/AuthContext';
 import { isServer } from 'utils';
 import { IntercomProvider } from 'contexts/Intercom/IntercomContext';
+import { withPerfectMatchProvider } from 'hocs';
 
 const BaseLayout = lazy(() => import('pages').then(module => ({ default: module.BaseLayout })))
 
@@ -19,7 +20,7 @@ const Test = lazy(() => import('pages').then(module => ({ default: module.Test }
 
 // Employer pages
 //const EmployerBaseLayout = lazy(() => import('pages').then(module => ({ default: module.EmployerBaseLayout })))
-const EmployerFeedLayout = lazy(() => import('pages').then(module => ({ default: module.EmployerFeedLayout })))
+const EmployerFeedLayout = lazy(() => import('pages').then(module => ({ default: withPerfectMatchProvider(module.EmployerFeedLayout)})))
 const JobListingFormLayout = lazy(() => import('pages').then(module => ({ default: module.JobListingFormLayout })))
 const CompleteProfile = lazy(() => import('pages').then(module => ({ default: module.CompleteProfile })))
 const EditProfile = lazy(() => import('pages').then(module => ({ default: module.EditProfile })))
@@ -326,7 +327,7 @@ const routes: RouteObject[] = [
     path: ROUTE_CONSTANTS.DASHBOARD,
   element: (
     <ProtectedRoute>
-    <LazyComponent component={BaseLayout}/>
+        <LazyComponent component={BaseLayout}/>
   </ProtectedRoute>
   ),
     children: [
@@ -352,10 +353,10 @@ const routes: RouteObject[] = [
           {
             path: ROUTE_CONSTANTS.FEED,
             element: <ProtectedRoute>
-              <UserTypeComponent 
-                employerComponent={EmployerFeed} 
-                jobHunterComponent={JobHunterFeed} 
-              />
+                <UserTypeComponent 
+                  employerComponent={EmployerFeed} 
+                  jobHunterComponent={JobHunterFeed} 
+                />
             </ProtectedRoute>
           }
         ]
