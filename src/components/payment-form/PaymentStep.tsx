@@ -659,7 +659,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                     <span>
                       {values.country?.toLowerCase() === "canada"
                         ? "13% Tax"
-                        : "Tax"}
+                        : "0% Tax"}
                     </span>
                     <span>
                       $

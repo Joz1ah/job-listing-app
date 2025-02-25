@@ -47,7 +47,7 @@ const EmployerHeader: FC = () => {
           <div className="flex items-start">
             <div className="flex-1">
               <h1 
-                className="text-3xl text-white font-normal break-all md:break-words line-clamp-2 max-w-full"
+                className="text-3xl text-white font-normal break-all md:break-words line-clamp-1 max-w-full"
                 title={businessName}
               >
                 {businessName}

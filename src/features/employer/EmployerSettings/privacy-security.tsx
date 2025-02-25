@@ -11,7 +11,7 @@ import { useUpdatePasswordMutation } from "api/akaza/akazaAPI";
 import { useEmployerContext } from "components";
 import { AdDialogWrapper } from "components";
 import employerPopAds from "images/popup-employer.svg?url";
-import button_loading_spinner from 'assets/loading-spinner-orange.svg?url';
+import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
 
 interface FormData {
   originalPassword: string;
@@ -26,7 +26,7 @@ interface ErrorResponse {
     message: string;
     statusCode: number;
     success: false;
-  }
+  };
 }
 
 const PrivacyAndSecuritySettings: FC = () => {
@@ -43,15 +43,19 @@ const PrivacyAndSecuritySettings: FC = () => {
   const validationSchema = Yup.object().shape({
     originalPassword: Yup.string().required("Original password is required"),
     newPassword: Yup.string()
-      .min(8, "Password must be at least 8 characters")
-      .matches(
-        /^(?=.*[a-z].*[A-Z]|.*[a-z].*[0-9]|.*[a-z].*[!@#$%^&*]|.*[A-Z].*[0-9]|.*[A-Z].*[!@#$%^&*]|.*[0-9].*[!@#$%^&*])/,
-        "Must contain at least 2 of: lowercase letters, uppercase letters, numbers, or special characters",
-      )
-      .required("New password is required")
-      .test("not-same", "New password must be different from original password", function(value) {
-        return value !== this.parent.originalPassword;
-      }),
+      .required("Password is required")
+      .test(
+        "password-requirements",
+        "Password must be at least 12 characters and include a lowercase letter, uppercase letter, and special character",
+        (value) =>
+          Boolean(
+            value &&
+              value.length >= 12 &&
+              /[a-z]/.test(value) &&
+              /[A-Z]/.test(value) &&
+              /[^a-zA-Z0-9]/.test(value),
+          ),
+      ),
     confirmPassword: Yup.string()
       .oneOf([Yup.ref("newPassword")], "Passwords must match")
       .required("Please confirm your password"),
@@ -77,41 +81,43 @@ const PrivacyAndSecuritySettings: FC = () => {
           updatePassword({
             oldPassword: values.originalPassword,
             newPassword: values.newPassword,
-            confirmPassword: values.confirmPassword
-          }).unwrap()
+            confirmPassword: values.confirmPassword,
+          }).unwrap(),
         ]);
-        
+
         resetForm();
         setIsSuccess(true);
       } catch (error) {
-        if (error && 
-            typeof error === 'object' && 
-            'data' in error &&
-            typeof (error as ErrorResponse).data?.message === 'string' &&
-            (error as ErrorResponse).data.message === "Old password is incorrect") {
-          setFieldError('originalPassword', "Original password is incorrect");
+        if (
+          error &&
+          typeof error === "object" &&
+          "data" in error &&
+          typeof (error as ErrorResponse).data?.message === "string" &&
+          (error as ErrorResponse).data.message === "Old password is incorrect"
+        ) {
+          setFieldError("originalPassword", "Original password is incorrect");
         } else {
-          setFieldError('originalPassword', 'An unexpected error occurred');
+          setFieldError("originalPassword", "An unexpected error occurred");
         }
         setIsSuccess(false);
       }
     },
   });
 
-  const { values, errors, touched, handleChange, handleSubmit, isValid } = formik;
+  const { values, errors, touched, handleChange, handleSubmit, isValid } =
+    formik;
 
   const inputClassName =
     "w-full bg-transparent border-[#AEADAD] border-2 rounded-[10px] px-3 pr-10 text-white h-[56px] focus:border-[#F5722E] focus:outline-none transition-colors duration-200 placeholder:text-white [&::-ms-reveal]:hidden [&::-ms-clear]:hidden";
 
   const passwordTooltipContent = (
     <div className="space-y-1">
-      <p>Password must be at least 8 characters.</p>
-      <p>With at least 2 of the following:</p>
+      <p>Password must be at least 12 characters long.</p>
+      <p>With the following:</p>
       <ul className="list-disc pl-5 space-y-1">
-        <li>Lower case letters (a-z)</li>
-        <li>Upper case letters (A-Z)</li>
-        <li>Numbers (0-9)</li>
-        <li>Special characters (e.g. !@#$%^&*)</li>
+        <li>Atleast one lower case letter (a-z)</li>
+        <li>Alteast one upper case letter (A-Z)</li>
+        <li>Atleast one special character (e.g. !@#$%^&*)</li>
       </ul>
     </div>
   );
@@ -137,7 +143,10 @@ const PrivacyAndSecuritySettings: FC = () => {
 
         <div className="flex justify-center">
           <div className="w-full max-w-md flex justify-center">
-            <form onSubmit={handleSubmit} className="flex flex-col w-full md:w-[355px]">
+            <form
+              onSubmit={handleSubmit}
+              className="flex flex-col w-full md:w-[355px]"
+            >
               <div className="w-full space-y-8 mb-8">
                 <InputField
                   label="Original Password"
@@ -155,11 +164,17 @@ const PrivacyAndSecuritySettings: FC = () => {
                     />
                     <button
                       type="button"
-                      onClick={() => setShowOriginalPassword(!showOriginalPassword)}
+                      onClick={() =>
+                        setShowOriginalPassword(!showOriginalPassword)
+                      }
                       tabIndex={-1}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors duration-200 bg-[#2D3A41] p-0.5"
                     >
-                      {showOriginalPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      {showOriginalPassword ? (
+                        <EyeOff size={18} />
+                      ) : (
+                        <Eye size={18} />
+                      )}
                     </button>
                   </div>
                 </InputField>
@@ -186,7 +201,11 @@ const PrivacyAndSecuritySettings: FC = () => {
                       tabIndex={-1}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors duration-200 bg-[#2D3A41] p-0.5"
                     >
-                      {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      {showNewPassword ? (
+                        <EyeOff size={18} />
+                      ) : (
+                        <Eye size={18} />
+                      )}
                     </button>
                   </div>
                 </InputField>
@@ -207,11 +226,17 @@ const PrivacyAndSecuritySettings: FC = () => {
                     />
                     <button
                       type="button"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
                       tabIndex={-1}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors duration-200 bg-[#2D3A41] p-0.5"
                     >
-                      {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      {showConfirmPassword ? (
+                        <EyeOff size={18} />
+                      ) : (
+                        <Eye size={18} />
+                      )}
                     </button>
                   </div>
                 </InputField>
@@ -227,13 +252,13 @@ const PrivacyAndSecuritySettings: FC = () => {
                       ? "bg-white text-[#F5722E]"
                       : !isValid
                         ? "bg-[#AEADAD] text-white hover:bg-[#AEADAD]"
-                        : "bg-[#F5722E] hover:bg-[#F5722E]/90 text-white"
+                        : "bg-[#F5722E] hover:bg-[#F5722E]/90 text-white",
                   )}
                 >
                   {isLoading && (
-                    <img 
-                      src={button_loading_spinner} 
-                      alt="loading" 
+                    <img
+                      src={button_loading_spinner}
+                      alt="loading"
                       className="w-6 h-6 animate-spin"
                     />
                   )}
@@ -241,7 +266,8 @@ const PrivacyAndSecuritySettings: FC = () => {
                 </Button>
                 {isSuccess && (
                   <p className="text-[#4CAF50] text-sm">
-                    <Check className="w-4 h-4 text-[#4BAF66] inline" />{" "} Password reset successful!
+                    <Check className="w-4 h-4 text-[#4BAF66] inline" /> Password
+                    reset successful!
                   </p>
                 )}
               </div>
@@ -279,7 +305,7 @@ const PrivacyAndSecuritySettings: FC = () => {
                 be undone.
               </p>
               <div className="flex justify-end">
-                <DeleteAccountAlert 
+                <DeleteAccountAlert
                   isOpen={isDeleteAlertOpen}
                   onOpenChange={setIsDeleteAlertOpen}
                 />
@@ -291,10 +317,7 @@ const PrivacyAndSecuritySettings: FC = () => {
 
       {/* Ad Dialog for Free Trial Users */}
       <div className="hidden">
-        <AdDialogWrapper
-          popupImage={employerPopAds}
-          ref={adTriggerRef}
-        />
+        <AdDialogWrapper popupImage={employerPopAds} ref={adTriggerRef} />
       </div>
     </div>
   );

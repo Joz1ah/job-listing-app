@@ -743,7 +743,7 @@ const AuthnetPaymentFullModal = () => {
                             <span className="text-[#263238]">
                               {values.country?.toLowerCase() === "canada"
                                 ? "13% Tax"
-                                : "Tax"}
+                                : "0% Tax"}
                             </span>
                             <span className="font-medium">
                               $

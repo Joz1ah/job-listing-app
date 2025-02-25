@@ -406,7 +406,11 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
                   <span>${transactionFee}</span>
                 </div>
                 <div className="flex justify-between text-[#F5F5F7]">
-                  <span>13% Tax</span>
+                  <span>
+                    {values.country?.toLowerCase() === "canada"
+                      ? "13% Tax"
+                      : "0% Tax"}
+                  </span>
                   <span>
                     $
                     {values.country?.toLowerCase() === "canada"
