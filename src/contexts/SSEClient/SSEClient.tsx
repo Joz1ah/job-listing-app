@@ -1,17 +1,16 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { NotificationItem } from 'types/notification';
 
 // Type definition for the received message
-interface Notification {
-  id: number;
-  title: string;
-  message: string;
+interface Notification extends NotificationItem {
   metadata: Record<string, string>;
-  createdAt: string;
+  //createdAt: string;
 }
 
 interface SSEContextValue {
   messages: Notification[];
   client: AdvancedSSEClient | null;
+  clearMessages: () => void;
 }
 
 // Context for providing SSE data
@@ -27,28 +26,31 @@ class BaseSSEClient {
     };
     this.eventSource = new EventSource(url, eventSourceOptions);
 
-    // Handle errors or connection issues
     this.eventSource.onerror = (error) => {
       console.error('SSE connection error:', error);
     };
 
-    // Optionally log when the connection is opened
     this.eventSource.onopen = () => {
       console.log('SSE connection established');
     };
   }
 
   // Method to handle incoming messages
-  onMessage(callback: (data: Notification[]) => void): void {
-    this.eventSource.addEventListener('message', (event: MessageEvent) => {
+  onMessage(callback: (data: Notification[]) => void): () => void {
+    const handler = (event: MessageEvent) => {
       try {
-        //console.log(event)
-        const parsedData = JSON.parse(event.data); // Assuming the data is a JSON string
-        callback(parsedData.notifications); // Pass the notifications array
+        //console.log(event.data);
+        const parsedData = JSON.parse(event.data);
+        callback(parsedData.notifications);
       } catch (error) {
         console.error('Error parsing SSE data:', error);
       }
-    });
+    };
+
+    this.eventSource.addEventListener('message', handler);
+
+    // Return a cleanup function to remove the listener
+    return () => this.eventSource.removeEventListener('message', handler);
   }
 
   // Close the connection when done
@@ -62,10 +64,10 @@ class BaseSSEClient {
 class AdvancedSSEClient extends BaseSSEClient {
   private messageHistory: Notification[] = [];
 
-  override onMessage(callback: (data: Notification[]) => void): void {
-    super.onMessage((notifications) => {
-      this.messageHistory = [...this.messageHistory, ...notifications]; // Append new notifications
-      callback(notifications); // Pass the notifications to the callback
+  override onMessage(callback: (data: Notification[]) => void): () => void {
+    return super.onMessage((notifications) => {
+      this.messageHistory = [...this.messageHistory, ...notifications];
+      callback(notifications);
     });
   }
 
@@ -77,7 +79,7 @@ class AdvancedSSEClient extends BaseSSEClient {
 // SSEProvider Component for context management
 interface SSEProviderProps {
   url: string;
-  children: ReactNode;  // Explicitly declare the children prop here
+  children: ReactNode;
 }
 
 export const SSEProvider: React.FC<SSEProviderProps> = ({ url, children }) => {
@@ -85,22 +87,44 @@ export const SSEProvider: React.FC<SSEProviderProps> = ({ url, children }) => {
   const [client, setClient] = useState<AdvancedSSEClient | null>(null);
 
   useEffect(() => {
-    // Initialize the SSE client
     const sseClient = new AdvancedSSEClient(url);
     setClient(sseClient);
 
-    // Listen for messages and update the state
-    sseClient.onMessage((data) => {
-      setMessages((prev) => [...prev, ...data]); // Append new messages to state
+    const unsubscribe = sseClient.onMessage((data) => {
+      setMessages((prev) => {
+        const combined = [...prev, ...data.map((msg) => ({
+          ...msg,
+          createdAt: new Date(msg.createdAt), // Convert timestamp to Date object
+          unread: true
+        }))];
+        const seen = new Set();
+        
+        // Remove duplicates using (title + message) as a key
+        const uniqueMessages = combined.filter((msg) => {
+          const key = `${msg.title}-${msg.message}`;
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        });
+
+        // Limit stored messages to prevent infinite growth
+        const MAX_MESSAGES = 50;
+        return uniqueMessages.slice(-MAX_MESSAGES);
+      });
     });
 
-    // Clean up on unmount
-    return () => sseClient.close();
+    return () => {
+      unsubscribe(); // Remove SSE listener
+      sseClient.close(); // Close SSE connection
+    };
   }, [url]);
 
+  // Function to manually clear messages
+  const clearMessages = () => setMessages([]);
+
   return (
-    <SSEContext.Provider value={{ messages, client }}>
-      {children} {/* Any component inside can access the context */}
+    <SSEContext.Provider value={{ messages, client, clearMessages }}>
+      {children}
     </SSEContext.Provider>
   );
 };
