@@ -18,6 +18,7 @@ import { Match } from "contexts/PerfectMatch/types";
 import { useEmployerContext } from "components";
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle } from "components";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "contexts/AuthContext/AuthContext";
 
 interface AppCardProps {
   match: Match;
@@ -100,10 +101,10 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [isAdDialogOpen, setIsAdDialogOpen] = useState(false);
+  const {user} = useAuth();
   const cardId = generateCardId(match);
   const { subscriptionPlan } = useEmployerContext();
   const navigate = useNavigate();
-
   const handleCardClick = () => {
     if (subscriptionPlan === 'freeTrial') return;
     if (!isScheduleModalOpen) {
@@ -212,7 +213,7 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage }) => {
             className="text-[12px] font-semibold px-0 w-[133px] h-[27px] bg-[#F5722E] hover:bg-[#F5722E]/90"
             onClick={handleScheduleInterview}
           >
-            Schedule Interview2
+            Schedule Interview
           </Button>
           <MoreVertical
             size={12}
@@ -255,6 +256,8 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage }) => {
           <ScheduleInterviewModal
             isOpen={isScheduleModalOpen}
             onClose={() => setIsScheduleModalOpen(false)}
+            jobHunterId={match.id}
+            employerId={user?.data.user.id}
             position={match.position}
             coreSkills={match.coreSkills}
             certificate={match.certificates}

@@ -8,5 +8,6 @@ export {
     akazaApiPerfectMatch,
     akazaApiSearch,
     akazaApiAccount,
+    akazaApiInterviewRequest,
     localApi
  } from 'api/akaza/akazaAPI';

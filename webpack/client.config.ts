@@ -49,6 +49,7 @@ const plugins: WebpackPluginInstance[] = [
     'process.env.PERFECTMATCH_API_URL': JSON.stringify(process.env.PERFECTMATCH_API_URL),
     'process.env.NOTIFICATIONS_API_URL': JSON.stringify(process.env.NOTIFICATIONS_API_URL),
     'process.env.ACCOUNT_API_URL': JSON.stringify(process.env.ACCOUNT_API_URL),
+    'process.env.INTERVIEWREQUEST_API_URL': JSON.stringify(process.env.INTERVIEWREQUEST_API_URL),
     'process.env.AUTHORIZE_NET_CLIENT_KEY': JSON.stringify(process.env.AUTHORIZE_NET_CLIENT_KEY),
     'process.env.AUTHORIZE_NET_API_LOGIN_ID': JSON.stringify(process.env.AUTHORIZE_NET_API_LOGIN_ID),
   }),

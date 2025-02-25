@@ -497,6 +497,39 @@ export const akazaApiPerfectMatch = createApiFunction({
   }),
 });
 
+export const akazaApiInterviewRequest = createApiFunction({
+  reducerPath: 'apiInterviewRequest',
+  baseQuery: fetchBaseQuery({ 
+    baseUrl: process.env.INTERVIEWREQUEST_API_URL ,
+    credentials: "include", 
+    prepareHeaders: (headers) => {
+      // Retrieve the token from cookies
+      const token = Cookies.get('authToken');
+
+      if (token) {
+        headers.set('Authorization', `Bearer ${token}`); // Add token to the Authorization header
+      }
+      return headers;
+    },
+  }), 
+  endpoints: (builder) => ({
+    createInterview: builder.mutation({
+      query: (payLoad) => ({
+        url: `interviews`,
+        method: 'POST',
+        body: {
+            "employeeId": payLoad.employeeId,
+            "employerId": payLoad.employerId,
+            "scheduledStart": payLoad.scheduledStart,
+            "scheduledEnd": payLoad.scheduledEnd,
+            "location": payLoad.location,
+            "meetingLink":payLoad.meetingLink,
+          }
+      }),
+    }),
+  }),
+});
+
 
 export const akazaApiAccount = createApiFunction({
   reducerPath: 'apiAccount',
@@ -658,6 +691,10 @@ export const {
   useEmployerFreeTrialQuery
 } = akazaApiPerfectMatch
 
+export const {
+  useCreateInterviewMutation
+}
+= akazaApiInterviewRequest
 
 export const {
   useGetUserInfoQuery,
