@@ -15,10 +15,14 @@ import { InvitationSentModal } from "features/employer";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
+import { useCreateInterviewMutation } from "api/akaza/akazaAPI";
+import { combineDateAndTime } from 'utils';
 
 interface ScheduleInterviewModalProps {
   isOpen: boolean;
   onClose: () => void;
+  jobHunterId?: number;
+  employerId?: number;
   position: string;
   coreSkills: string[];
   certificate?: string[];
@@ -29,6 +33,12 @@ interface ScheduleInterviewModalProps {
 interface FormValues {
   interviewDate: Date | undefined;
   interviewTime: string | undefined;
+  jobHunterId: number | undefined;
+  employerId: number | undefined;
+  //scheduledStart: Date | undefined;
+  //scheduledEnd: Date | undefined;
+  location: String | "Remote";
+  meetingLink: URL | string;
 }
 
 const validationSchema = Yup.object().shape({
@@ -48,6 +58,8 @@ const validationSchema = Yup.object().shape({
 const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
   isOpen,
   onClose,
+  jobHunterId,
+  employerId,
   position,
   coreSkills,
   certificate = [],
@@ -56,20 +68,37 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
 }) => {
   const [isDatePickerOpen, setIsDatePickerOpen] = useState<boolean>(false);
   const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
+  const [createInterview] = useCreateInterviewMutation();
   const { showError } = useErrorModal();
-
+  console.log(jobHunterId)
   const formik = useFormik<FormValues>({
     initialValues: {
       interviewDate: undefined,
       interviewTime: undefined,
+      jobHunterId: jobHunterId,
+      employerId: employerId,
+      location: "Remote",
+      meetingLink: "https://meet.google.com/xxx-xxxx-xxx"
     },
     validationSchema,
     validateOnMount: true,
     onSubmit: async (values, { setSubmitting }) => {
       try {
         // Add your invite sending logic here
-        console.log("Form submitted with values:", values);
-        setShowSuccessModal(true);
+        const scheduleStart = combineDateAndTime(values.interviewDate as Date,values.interviewTime as string);
+        const scheduledEnd = scheduleStart.add(1, "hour"); 
+        const payload = {
+            "employeeId": values.employerId,
+            "employerId": values.jobHunterId,
+            "scheduledStart": scheduleStart.toDate(),
+            "scheduledEnd": scheduledEnd.toDate(),
+            "location": "Remote",
+            "meetingLink": values.meetingLink
+        };
+        const response = await createInterview(payload).unwrap();
+        console.log(response)
+        console.log("Form submitted with values:", payload);
+        //setShowSuccessModal(true);
       } catch (error) {
         showError(
           'Interview Scheduling Failed',

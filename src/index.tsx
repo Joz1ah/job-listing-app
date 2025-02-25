@@ -3,9 +3,11 @@ import { createRoot, hydrateRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
 import { loadableReady } from '@loadable/component'
-import { AuthProvider } from 'contexts/AuthContext/AuthContext';
+import { AuthProvider, useAuth } from 'contexts/AuthContext/AuthContext';
 import { ErrorModalProvider } from 'contexts/ErrorModalContext/ErrorModalContext';
 import { CookieProvider } from 'contexts/cookieContext';
+import { SSEProvider } from "contexts/SSEClient/SSEClient";
+
 import { App } from './App'
 
 import { initStore } from 'store/store'
@@ -66,6 +68,22 @@ if (
     .catch((er) => console.log(er))
 }
 
+const AuthWrapper = () =>{
+  const {isAuthenticated} = useAuth();
+
+  return (
+    <BrowserRouter>
+      {
+      isAuthenticated ? 
+      <SSEProvider url={`${process.env.BASE_URL}/api/notifications/stream`}>
+        <App />
+      </SSEProvider> :
+        <App />
+      }
+    </BrowserRouter>
+  )
+
+}
 const indexJSX = (
   <StrictMode>
     <CookieProvider>
@@ -73,10 +91,8 @@ const indexJSX = (
         <Provider store={store}>
           <HelmetProvider>
             <AuthProvider>
-                <BrowserRouter>
-                    <App />
-                </BrowserRouter>
-              </AuthProvider>
+              <AuthWrapper/>
+            </AuthProvider>
           </HelmetProvider>
         </Provider>
       </ErrorModalProvider>

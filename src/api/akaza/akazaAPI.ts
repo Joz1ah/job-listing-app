@@ -460,6 +460,12 @@ export const akazaApiPerfectMatch = createApiFunction({
     //baseUrl: process.env.REACT_APP_PERFECTMATCH_API_URL ,
     credentials: "include", 
     prepareHeaders: (headers) => {
+      // Retrieve the token from cookies
+      const token = Cookies.get('authToken');
+
+      if (token) {
+        headers.set('Authorization', `Bearer ${token}`); // Add token to the Authorization header
+      }
       return headers;
     },
   }), 
@@ -471,8 +477,8 @@ export const akazaApiPerfectMatch = createApiFunction({
       }),
     }),
     employerPaid: builder.query({
-      query: ({ page, pageSize, matchesByScore }) => ({
-        url: `perfect-match/employer/${matchesByScore ? 'matches-by-score' : ''}?page=${page}&pageSize=${pageSize}`,
+      query: ({ page, pageSize, matchesByScore, scoreFilter='above60', jobId=1 }) => ({
+        url: `perfect-match/employer/${matchesByScore ? 'matches-by-score' : ''}?page=${page}&pageSize=${pageSize}&scoreFilter=${scoreFilter}&jobId=${jobId}`,
         method: 'GET',
       }),
     }),
@@ -486,6 +492,39 @@ export const akazaApiPerfectMatch = createApiFunction({
       query: ({ page, pageSize }) => ({
         url: `employer/freeTrial/?page=${page}&pageSize=${pageSize}`,
         method: 'GET',
+      }),
+    }),
+  }),
+});
+
+export const akazaApiInterviewRequest = createApiFunction({
+  reducerPath: 'apiInterviewRequest',
+  baseQuery: fetchBaseQuery({ 
+    baseUrl: process.env.INTERVIEWREQUEST_API_URL ,
+    credentials: "include", 
+    prepareHeaders: (headers) => {
+      // Retrieve the token from cookies
+      const token = Cookies.get('authToken');
+
+      if (token) {
+        headers.set('Authorization', `Bearer ${token}`); // Add token to the Authorization header
+      }
+      return headers;
+    },
+  }), 
+  endpoints: (builder) => ({
+    createInterview: builder.mutation({
+      query: (payLoad) => ({
+        url: `interviews`,
+        method: 'POST',
+        body: {
+            "employeeId": payLoad.employeeId,
+            "employerId": payLoad.employerId,
+            "scheduledStart": payLoad.scheduledStart,
+            "scheduledEnd": payLoad.scheduledEnd,
+            "location": payLoad.location,
+            "meetingLink":payLoad.meetingLink,
+          }
       }),
     }),
   }),
@@ -592,6 +631,13 @@ export const localApi = createApiFunction({
           }
       }),
     }),
+    sseNotifications: builder.query({
+      query: () => ({
+        url: `/api/notifications/stream`,
+        method: 'GET',
+      }),
+      keepUnusedDataFor: 0,
+    }),
   }),
 });
 
@@ -645,6 +691,10 @@ export const {
   useEmployerFreeTrialQuery
 } = akazaApiPerfectMatch
 
+export const {
+  useCreateInterviewMutation
+}
+= akazaApiInterviewRequest
 
 export const {
   useGetUserInfoQuery,
@@ -653,5 +703,6 @@ export const {
 } = akazaApiAccount
 
 export const {
-  useSendContactUsEmailMutation
+  useSendContactUsEmailMutation,
+  useSseNotificationsQuery
 } = localApi
