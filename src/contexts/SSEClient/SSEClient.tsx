@@ -42,7 +42,7 @@ class BaseSSEClient {
   onMessage(callback: (data: Notification[]) => void): void {
     this.eventSource.addEventListener('message', (event: MessageEvent) => {
       try {
-        console.log(event)
+        //console.log(event)
         const parsedData = JSON.parse(event.data); // Assuming the data is a JSON string
         callback(parsedData.notifications); // Pass the notifications array
       } catch (error) {
