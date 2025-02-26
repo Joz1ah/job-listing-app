@@ -125,7 +125,7 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage }) => {
   return (
     <>
       <Card
-        className={`bg-[#FFFFFF] border-none w-full max-w-[436px] h-[275px] relative transition-shadow duration-200 ${
+        className={`bg-[#FFFFFF] border-none w-full max-w-[436px] h-[340px] sm:h-[275px] relative transition-shadow duration-200 ${
           subscriptionPlan === 'freeTrial' ? "cursor-default" : "cursor-pointer hover:shadow-lg"
         }`}
         onClick={handleCardClick}
