@@ -82,6 +82,25 @@ export const useLanding = () => {
       };
     }
   };
+  const createExternalCookiePolicy = async () => {
+    const scriptSrc = 'https://cdnapp.websitepolicies.net/widgets/cookies/uz6lppct.js';
+
+    // Check if the script already exists
+    if (!document.querySelector(`script[src="${scriptSrc}"]`)) {
+      const script = document.createElement("script");
+      script.src = scriptSrc;
+      script.async = true;
+      script.defer = true;
+      document.body.appendChild(script);
+
+      return () => {
+        // Cleanup script on component unmount if it was added
+        if (script.parentNode) {
+          script.parentNode.removeChild(script);
+        }
+      };
+    }
+  };
 
   return {
     modalState,
@@ -91,6 +110,7 @@ export const useLanding = () => {
     tempLoginPassword,
     currentSelectedPlan,
     createAuthNetTokenizer,
+    createExternalCookiePolicy,
     heroState,
     handleSetHeroState,
     selectedSkills,

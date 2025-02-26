@@ -49,6 +49,7 @@ const csp = (req: Request, res: Response, next: NextFunction): void => {
           //`'nonce-${String(res.locals.cspNonce)}'`,
           'https://fonts.googleapis.com',
           'https://fonts.gstatic.com',
+          'https://cdnapp.websitepolicies.net'
         ],     
         imgSrc: [
           "'self'",
@@ -71,6 +72,8 @@ const csp = (req: Request, res: Response, next: NextFunction): void => {
           'https://verify.authorize.net',
           'https://widget.intercom.io/',
           'https://js.intercomcdn.com/',
+          'https://cdnapp.websitepolicies.net', //cookies
+          'https://cdn.jsdelivr.net', //cookies
           IS_DEV ? "'unsafe-eval'" : ''
         ].filter(Boolean),
         frameSrc: ["'self'", "https://js.stripe.com", "http://js.stripe.com","https://intercom-sheets.com"],
@@ -81,7 +84,9 @@ const csp = (req: Request, res: Response, next: NextFunction): void => {
           "http://api.stripe.com",
           'https://api2.authorize.net',
           'https://apitest.authorize.net',
-          'wss://nexus-websocket-a.intercom.io'
+          'wss://nexus-websocket-a.intercom.io',
+          'https://cdnapp.websitepolicies.net', //cookies
+          'https://consents.websitepolicies.com/' //cookies
         ],
         formAction: [
           "'self'", // Allow form submissions to the same origin
