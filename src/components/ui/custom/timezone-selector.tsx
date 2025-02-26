@@ -53,7 +53,7 @@ const POPULAR_TIMEZONES: TimezoneOption[] = [
 const TimezoneSelector: React.FC<TimezoneSelectorProps> = ({
   className,
   onTimezoneChange,
-  defaultTimezone = "UTC",
+  defaultTimezone = "America/Toronto",
   disabled = false,
   onBeforeOpen,
 }) => {

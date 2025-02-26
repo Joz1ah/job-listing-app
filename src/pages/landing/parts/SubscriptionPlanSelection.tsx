@@ -56,19 +56,68 @@ const getPlanFeatures = (
   plan: PLAN_SELECTION_ITEMS,
   userType: "employer" | "job_hunter",
 ): PlanFeature[] => {
-  // Common features for both user types
-  const commonFeatures = {
-    [PLAN_SELECTION_ITEMS.FREE]: [
-      { icon: subscription_sparkle_icon, text: "Perfect Match Automation" },
-      { icon: subscription_chat_icon, text: "Live chat support" },
-      { icon: subscription_bolt_icon, text: "FREE FOR THREE DAYS" },
-      { icon: subscription_card, text: "No credit or debit card required" },
-    ],
-  };
+  // Common features for both user types (always enabled)
+  const commonEnabledFeatures = [
+    { icon: subscription_sparkle_icon, text: "Perfect Match Automation" },
+    { icon: subscription_chat_icon, text: "Live chat support" },
+    { icon: subscription_bolt_icon, text: "FREE FOR THREE DAYS" },
+    { icon: subscription_card, text: "No credit or debit card required" },
+  ];
 
-  // User type specific features
+  // Disabled features for free plan based on user type
+  const employerDisabledFeatures = [
+    {
+      icon: subscription_unlimited,
+      text: "Unlimited Interview Invites",
+      disabled: true,
+    },
+    {
+      icon: subscription_calendar,
+      text: "Up to 5 Job Listings",
+      disabled: true,
+    },
+    {
+      icon: subscription_thumbsup_icon,
+      text: "Insights and Feedback",
+      disabled: true,
+    },
+    {
+      icon: subscription_linegraph_icon,
+      text: "Labour Market Insights",
+      disabled: true,
+    },
+    {
+      icon: subscription_shield_person_icon,
+      text: "Exclusive Employer Resources",
+      disabled: true,
+    },
+  ];
+
+  const jobHunterDisabledFeatures = [
+    {
+      icon: subscription_calendar,
+      text: "Send up to 3 Interview Invites",
+      disabled: true,
+    },
+    {
+      icon: subscription_thumbsup_icon,
+      text: "Insights and Feedback",
+      disabled: true,
+    },
+    {
+      icon: subscription_linegraph_icon,
+      text: "Labour Market Insights",
+      disabled: true,
+    },
+    {
+      icon: subscription_shield_person_icon,
+      text: "Exclusive Resources",
+      disabled: true,
+    },
+  ];
+
+  // User type specific features for paid plans
   const employerSpecificFeatures = {
-    [PLAN_SELECTION_ITEMS.FREE]: [],
     [PLAN_SELECTION_ITEMS.MONTHLY]: [
       { icon: subscription_unlimited, text: "Unlimited Interview Invites" },
       { icon: subscription_calendar, text: "Up to 5 Job Listings" },
@@ -96,7 +145,6 @@ const getPlanFeatures = (
   };
 
   const jobHunterSpecificFeatures = {
-    [PLAN_SELECTION_ITEMS.FREE]: [],
     [PLAN_SELECTION_ITEMS.MONTHLY]: [
       { icon: subscription_calendar, text: "Send up to 3 Interview Invites" },
       { icon: subscription_sparkle_icon, text: "Perfect Match Automation" },
@@ -117,10 +165,13 @@ const getPlanFeatures = (
 
   // Return appropriate feature set based on plan type
   if (plan === PLAN_SELECTION_ITEMS.FREE) {
-    return commonFeatures[plan];
+    // For free plan, return user-specific disabled features + common enabled features
+    return userType === "employer"
+      ? [...employerDisabledFeatures, ...commonEnabledFeatures]
+      : [...jobHunterDisabledFeatures, ...commonEnabledFeatures];
   }
 
-  // For paid plans, return user-specific features (which now include all features in correct order)
+  // For paid plans, return user-specific features
   return userType === "employer"
     ? employerSpecificFeatures[plan]
     : jobHunterSpecificFeatures[plan];
@@ -178,36 +229,99 @@ const MobilePlanCard: React.FC<MobilePlanCardProps> = ({
         </div>
       )}
       <div
-        className={`w-[246px] h-[400px] rounded-lg overflow-hidden ${isAnnual ? "shadow-xl shadow-orange-400/30" : "shadow-lg"}`}
+        className={`w-[246px] h-[424px] rounded-lg overflow-hidden ${isAnnual ? "shadow-xl shadow-orange-400/30" : "shadow-lg"}`}
       >
-        <div className="h-[400px] w-full rounded-lg bg-white flex flex-col">
-          <div className="p-2 flex-grow">
-            <div className="text-start pl-6 mb-2">
-              {price && (
-                <div className="mt-4">
-                  <div className="text-3xl font-bold text-orange-500">
-                    {price}
-                  </div>
-                  <div className="text-[15px] text-[#263238]">
-                    {transactionFee}
-                  </div>
+        <div className="h-[424px] w-full rounded-lg bg-white flex flex-col">
+          {isFree ? (
+            <>
+              <div className="p-2 flex-grow">
+                <div className="text-start pl-4 mb-2">
+                  {price && (
+                    <div>
+                      <div className="text-2xl font-bold text-orange-500 uppercase">
+                        {price}
+                      </div>
+                      <div className="text-[15px] text-[#263238]">
+                        {transactionFee}
+                      </div>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
 
-            <div className="space-y-2">
-              {features.map((feature, index) => (
-                <div key={index} className="flex items-center gap-2">
-                  <img src={feature.icon} alt="" className="w-5 h-5" />
-                  <span
-                    className={`text-[15px] ${feature.disabled ? "text-gray-400 line-through" : "text-orange-500"}`}
-                  >
-                    {feature.text}
-                  </span>
+                <div className="space-y-1.5 mt-1">
+                  {features.map((feature, index) => {
+                    // Use the disabled property from the feature itself
+                    const disabled = feature.disabled;
+
+                    return (
+                      <div key={index} className="flex items-center gap-2">
+                        <img
+                          src={feature.icon}
+                          alt=""
+                          className="w-5 h-5 min-w-5"
+                        />
+                        <span
+                          className={`text-[15px] ${
+                            disabled
+                              ? "text-gray-400 line-through"
+                              : "text-orange-500"
+                          }`}
+                        >
+                          {feature.text}
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
-              ))}
+              </div>
+            </>
+          ) : (
+            <div className="p-2 flex-grow">
+              <div className="text-start pl-6 mb-2">
+                {price && (
+                  <div className="mt-4">
+                    <div className="text-3xl font-bold text-orange-500">
+                      {price}
+                      {isAnnual && (
+                        <span className="text-lg text-gray-400 line-through ml-2">
+                          $60
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-[15px] text-[#263238]">
+                      {transactionFee}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                {features.map((feature, index) => {
+                  // Use the disabled property from the feature itself
+                  const disabled = feature.disabled;
+
+                  return (
+                    <div key={index} className="flex items-center gap-2">
+                      <img
+                        src={feature.icon}
+                        alt=""
+                        className="w-5 h-5 min-w-5"
+                      />
+                      <span
+                        className={`text-[15px] ${
+                          disabled
+                            ? "text-gray-400 line-through"
+                            : "text-orange-500"
+                        }`}
+                      >
+                        {feature.text}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          )}
 
           <div className="flex justify-center px-4 pb-4">
             <button
@@ -236,7 +350,14 @@ const FeaturesList: React.FC<{
 }> = ({ selectedPlan, userType, onSubscribe }) => {
   if (!selectedPlan) return null;
 
-  const features = getPlanFeatures(selectedPlan, userType);
+  // Get all features
+  const allFeatures = getPlanFeatures(selectedPlan, userType);
+
+  // For free plan in desktop view, filter out disabled features
+  const filteredFeatures =
+    selectedPlan === PLAN_SELECTION_ITEMS.FREE
+      ? allFeatures.filter((feature) => !feature.disabled)
+      : allFeatures;
 
   if (selectedPlan === PLAN_SELECTION_ITEMS.FREE) {
     return (
@@ -247,7 +368,7 @@ const FeaturesList: React.FC<{
               Your Free Trial Includes:
             </h3>
             <div className="flex flex-col gap-5">
-              {features.map((feature, index) => (
+              {filteredFeatures.map((feature, index) => (
                 <div key={index} className="flex items-center gap-3">
                   <img src={feature.icon} alt="" className="w-5 h-5" />
                   <span className="text-[13px] text-[#263238]">
@@ -296,7 +417,7 @@ const FeaturesList: React.FC<{
             Your {isAnnual ? "Yearly" : "Monthly"} Plan Includes:
           </h3>
           <div className="flex flex-col gap-5">
-            {features.map((feature, index) => (
+            {filteredFeatures.map((feature, index) => (
               <div key={index} className="flex items-center gap-3">
                 <img src={feature.icon} alt="" className="w-5 h-5" />
                 <span className={`text-[13px] ${textColor}`}>
@@ -428,7 +549,7 @@ const SubscriptionPlanSelection: React.FC = () => {
   return modalState === MODAL_STATES.SIGNUP_STEP5 ? (
     <>
       {/* Mobile View */}
-      <div className="md:hidden w-full p-4">
+      <div className="md:hidden w-full px-4 py-6">
         <Carousel
           className="w-full relative"
           opts={{

@@ -59,7 +59,7 @@ const InterviewSidebarJobHunter: FC<InterviewSidebarJobHunterProps> = ({
     <div className="mb-8">
       <div className="flex items-start">
         <div className="flex-1">
-          <h2 className="text-[30px] font-normal text-white break-all md:break-words line-clamp-2 max-w-full"
+          <h2 className="text-[30px] font-normal text-white break-all md:break-words line-clamp-1 max-w-full"
           title={userName}
           >
             {userName}

@@ -99,9 +99,9 @@ const BillingSettings: FC = () => {
           <Button className="px-3 py-1.5 rounded bg-[#979797] text-white text-sm hover:bg-[#979797]/70 transition-colors">
             Edit
           </Button>
-          {/* <Tooltip content={editTooltip}>
+          <Tooltip content={editTooltip} TranslateX="-translate-x-[50%]">
             <Info className="w-3 h-3 text-[#2D3A41] fill-white" />
-          </Tooltip> */}
+          </Tooltip>
         </div>
 
         {/* Card Section - Centered */}

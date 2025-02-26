@@ -12,6 +12,7 @@ import employerPopAds from "images/popup-employer.svg?url";
 import { TimezoneSelector } from "components";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import spinner_loading_fallback from "assets/images/spinner-loading-akaza.svg?url";
+import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
 import {
   useGetAccountSettingsQuery,
   useUpdateAccountSettingsMutation,
@@ -63,6 +64,7 @@ const GeneralSettings: FC = () => {
   const [email, setEmail] = useState(user?.data?.user?.email || "");
   const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [tempEmail, setTempEmail] = useState(email);
+  const [isUpdatingEmail, setIsUpdatingEmail] = useState(false);
 
   const { data: settingsData, isLoading: isLoadingSettings } =
     useGetAccountSettingsQuery(undefined, {
@@ -112,7 +114,7 @@ const GeneralSettings: FC = () => {
     }
   };
 
-  const handleEmailEdit = () => {
+  const handleEmailEdit = async () => {
     if (subscriptionPlan === "freeTrial" && !isEditingEmail) {
       emailAdTriggerRef.current?.click();
       return;
@@ -122,8 +124,18 @@ const GeneralSettings: FC = () => {
       setIsEditingEmail(true);
       setTempEmail(email);
     } else {
-      setEmail(tempEmail);
-      setIsEditingEmail(false);
+      setIsUpdatingEmail(true);
+      try {
+        // Add your email update API call here
+        // await updateEmail(tempEmail);
+        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulating API call
+        setEmail(tempEmail);
+        setIsEditingEmail(false);
+      } catch (error) {
+        console.error("Error updating email:", error);
+      } finally {
+        setIsUpdatingEmail(false);
+      }
     }
   };
 
@@ -306,10 +318,10 @@ const GeneralSettings: FC = () => {
                     onChange={(e) =>
                       isEditingEmail && setTempEmail(e.target.value)
                     }
-                    disabled={!isEditingEmail}
+                    disabled={!isEditingEmail || isUpdatingEmail}
                     className={cn(
                       "w-full bg-transparent border-[#AEADAD] h-[45px] border-2 focus:border-[#F5722E] text-white",
-                      !isEditingEmail && "opacity-70",
+                      (!isEditingEmail || isUpdatingEmail) && "opacity-70",
                     )}
                     placeholder="Enter email address"
                   />
@@ -317,11 +329,22 @@ const GeneralSettings: FC = () => {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={handleEmailEdit}
-                    className="w-[80px] h-[45px] bg-transparent border border-[#F5722E] text-[#F5722E] text-sm rounded hover:bg-[#F5722E] hover:text-white transition-colors duration-200"
+                    disabled={isUpdatingEmail}
+                    className="w-[80px] h-[45px] bg-transparent border border-[#F5722E] text-[#F5722E] text-sm rounded hover:bg-[#F5722E] hover:text-white transition-colors duration-200 flex items-center justify-center"
                   >
-                    {isEditingEmail ? "Update" : "Change"}
+                    {isUpdatingEmail ? (
+                      <img
+                        src={button_loading_spinner}
+                        alt="Loading"
+                        className="w-5 h-5 animate-spin"
+                      />
+                    ) : isEditingEmail ? (
+                      "Update"
+                    ) : (
+                      "Change"
+                    )}
                   </button>
-                  {isEditingEmail && (
+                  {isEditingEmail && !isUpdatingEmail && (
                     <button
                       onClick={() => {
                         setIsEditingEmail(false);

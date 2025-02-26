@@ -1,5 +1,5 @@
 import { useSignUpMutation, useOtpGenerateMutation } from "api/akaza/akazaAPI";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import * as Yup from "yup";
 import { useLanding } from "../useLanding";
@@ -32,6 +32,7 @@ const UserNamePasswordSignup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formSubmitted, setFormSubmitted] = useState(false);
 
   const schema = Yup.object().shape({
     email: Yup.string()
@@ -39,14 +40,54 @@ const UserNamePasswordSignup = () => {
       .required("Email is required"),
 
     password: Yup.string()
-      .min(8, "Password must be at least 8 characters long")
-      .required("Password is required"),
+      .required("Password is required")
+      .test(
+        "password-requirements",
+        "Password must be at least 12 characters and include a lowercase letter, uppercase letter, and special character",
+        (value) =>
+          Boolean(
+            value &&
+              value.length >= 12 &&
+              /[a-z]/.test(value) &&
+              /[A-Z]/.test(value) &&
+              /[^a-zA-Z0-9]/.test(value),
+          ),
+      ),
 
     passwordConfirm: Yup.string()
       .oneOf([Yup.ref("password"), undefined], "Passwords must match")
       .required("Please confirm your password")
       .nullable(),
   });
+
+  // Only validate on input change after form has been submitted once
+  useEffect(() => {
+    if (formSubmitted) {
+      validateForm();
+    }
+  }, [credentials, formSubmitted]);
+
+  const validateForm = async () => {
+    try {
+      await schema.validate(credentials, { abortEarly: false });
+      setOrganizedErrors({ email: "", password: "", passwordConfirm: "" });
+    } catch (err) {
+      if (err instanceof Yup.ValidationError) {
+        const _organizedErrors: ErrorState = {
+          email: "",
+          password: "",
+          passwordConfirm: "",
+        };
+
+        err.inner.forEach((error: Yup.ValidationError) => {
+          if (error.path && isErrorField(error.path)) {
+            _organizedErrors[error.path] = error.message;
+          }
+        });
+        setOrganizedErrors(_organizedErrors);
+      }
+    }
+  };
 
   const handlePrevious = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -55,7 +96,7 @@ const UserNamePasswordSignup = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setOrganizedErrors({ email: "", password: "", passwordConfirm: "" });
+    setFormSubmitted(true);
 
     try {
       // Validate the form data
@@ -98,7 +139,7 @@ const UserNamePasswordSignup = () => {
         ) {
           setOrganizedErrors((prev) => ({
             ...prev,
-            email: "This email is already registered",
+            email: "Email already exists",
           }));
         } else {
           setOrganizedErrors((prev) => ({
@@ -135,21 +176,22 @@ const UserNamePasswordSignup = () => {
     <div className="flex flex-col h-full w-full justify-center items-cente p-4">
       <form onSubmit={handleSubmit} className="w-full h-full md:px-[50px]">
         <div className="text-left mb-5">
-          <h1 className="text-sm md:text-xl font-bold text-[#F5722E]">Sign Up</h1>
+          <h1 className="text-sm md:text-xl font-bold text-[#F5722E]">
+            Sign Up
+          </h1>
         </div>
         <div className="flex flex-col gap-4">
           <div className="relative">
             <input
               type="text"
               placeholder="Email"
-              onChange={(e) =>
-                setCredentials({ ...credentials, email: e.target.value })
-              }
+              value={credentials.email}
+              onChange={(e) => setCredentials({ ...credentials, email: e.target.value })}
               required
               className="w-full bg-[#F5F5F7] text-sm py-2 border-b-2 border-gray-300 focus:border-orange-500 focus:outline-none"
             />
             {organizedErrors.email && (
-              <div className="text-red-500  text-[10px] mt-1">
+              <div className="text-[#E63946] text-[10px] mt-1">
                 {organizedErrors.email}
               </div>
             )}
@@ -158,12 +200,8 @@ const UserNamePasswordSignup = () => {
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Password"
-              onChange={(e) =>
-                setCredentials({
-                  ...credentials,
-                  password: e.target.value,
-                })
-              }
+              value={credentials.password}
+              onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
               required
               className="w-full bg-[#F5F5F7] text-sm py-2 border-b-2 border-gray-300 focus:border-orange-500 focus:outline-none"
             />
@@ -176,7 +214,7 @@ const UserNamePasswordSignup = () => {
               {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
             </button>
             {organizedErrors.password && (
-              <div className="text-red-500  text-[10px] mt-1">
+              <div className="text-[#E63946] text-[10px] mt-1">
                 {organizedErrors.password}
               </div>
             )}
@@ -185,12 +223,8 @@ const UserNamePasswordSignup = () => {
             <input
               type={showConfirmPassword ? "text" : "password"}
               placeholder="Confirm password"
-              onChange={(e) =>
-                setCredentials({
-                  ...credentials,
-                  passwordConfirm: e.target.value,
-                })
-              }
+              value={credentials.passwordConfirm}
+              onChange={(e) => setCredentials({ ...credentials, passwordConfirm: e.target.value })}
               required
               className="w-full bg-[#F5F5F7] text-sm py-2 border-b-2 border-gray-300 focus:border-orange-500 focus:outline-none"
             />
@@ -203,7 +237,7 @@ const UserNamePasswordSignup = () => {
               {showConfirmPassword ? <Eye size={20} /> : <EyeOff size={20} />}
             </button>
             {organizedErrors.passwordConfirm && (
-              <div className="text-red-500  text-[10px] mt-1">
+              <div className="text-[#E63946] text-[10px] mt-1">
                 {organizedErrors.passwordConfirm}
               </div>
             )}

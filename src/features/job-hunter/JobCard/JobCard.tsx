@@ -117,7 +117,7 @@ const JobCard: FC<JobCardProps> = ({ match, popupImage }) => {
   return (
     <>
       <Card
-        className={`bg-white border-none h-[275px] relative w-full max-w-[436px] transition-shadow duration-200 ${
+        className={`bg-white border-none h-[340px] relative w-full max-w-[436px] transition-shadow duration-200 ${
           subscriptionPlan === "freeTrial"
             ? "cursor-default"
             : "cursor-pointer hover:shadow-lg"
