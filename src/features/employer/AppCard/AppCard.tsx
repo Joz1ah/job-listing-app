@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
 import { SkillsWithEllipsis } from "components";
 import { Bookmark, MoreVertical, MapPin } from "lucide-react";
 import {
@@ -12,8 +12,6 @@ import { Button } from "components";
 import { useBookmarks } from "contexts/BookmarkContext";
 import { AppPreviewModal } from "features/employer";
 import { ScheduleInterviewModal } from "features/employer";
-//import { AdDialogWrapper } from "components";
-//import { Match } from "mockData/job-hunter-data";
 import { Match } from "contexts/PerfectMatch/types";
 import { useEmployerContext } from "components";
 import {
@@ -24,6 +22,36 @@ import {
 } from "components";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "contexts/AuthContext/AuthContext";
+
+// Function to format the date string for display
+const formatTimeAgo = (dateString: string): string => {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+
+  // Convert to minutes, hours, days
+  const diffMins = Math.floor(diffMs / (1000 * 60));
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffMins < 60) {
+    return "just now";
+  } else if (diffHours < 24) {
+    return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
+  } else {
+    return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
+  }
+};
+
+// Function to check if a post is new (less than 24 hours old)
+const isNewPost = (dateString: string): boolean => {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffHours = diffMs / (1000 * 60 * 60);
+
+  return diffHours < 24;
+};
 
 interface AppCardProps {
   match: Match;
@@ -113,10 +141,20 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [isAdDialogOpen, setIsAdDialogOpen] = useState(false);
+  const [formattedPostDate, setFormattedPostDate] = useState("N/A");
+  const [shouldShowNew, setShouldShowNew] = useState(false);
   const { user } = useAuth();
   const cardId = generateCardId(match);
   const { subscriptionPlan } = useEmployerContext();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (match.posted) {
+      setFormattedPostDate(formatTimeAgo(match.posted));
+      setShouldShowNew(isNewPost(match.posted));
+    }
+  }, [match.posted]);
+
   const handleCardClick = () => {
     if (subscriptionPlan === "freeTrial") return;
     if (!isScheduleModalOpen) {
@@ -147,7 +185,7 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage }) => {
         <CardHeader className="flex flex-col justify-between items-start pb-0">
           <div className="flex flex-row -mt-4 justify-between w-full relative">
             <div className="h-5">
-              {match.isNew && (
+              {shouldShowNew && (
                 <span className="text-[13px] text-[#F5722E] font-bold italic">
                   ☆ NEW
                 </span>
@@ -155,7 +193,7 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage }) => {
             </div>
             <div className="flex flex-col items-end">
               <span className="text-[11px] font-light text-[#717171] -mr-2">
-                Posted {match.posted} ago
+                Posted {formattedPostDate}
               </span>
             </div>
           </div>
