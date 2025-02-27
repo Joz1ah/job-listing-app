@@ -13,7 +13,6 @@ const LoadingModal = () => {
     modalState && modalState == MODAL_STATES.LOADING ?
     <div
       id="step6_signup"
-      className={`${styles["modal-content"]}`}
     >
       <div className={`${styles["modal-loading-container"]}`}>
         <div className={`${styles["loading-description"]}`}>
