@@ -250,6 +250,15 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
 }) => {
   const { subscriptionPlan } = useJobHunterContext();
 
+  // Determine if button should be disabled (when trying to downgrade from yearly to monthly)
+  const isDisabled =
+    subscriptionPlan === "yearlyPlan" && title === "Monthly Plan";
+    
+  // Determine if button should be hidden
+  const hideButton = 
+    (isCurrentPlan && subscriptionPlan === "monthlyPlan" && title === "Monthly Plan") || 
+    (isCurrentPlan && subscriptionPlan === "yearlyPlan" && title === "Yearly Plan");
+
   return (
     <div
       className={`md:w-[360px] h-[440px] p-4 rounded transition-all duration-300 ease-in-out flex flex-col ${
@@ -303,20 +312,25 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
       </div>
 
       <div className="mt-auto flex justify-center">
-        <Button
-          onClick={!isCurrentPlan ? onSelect : undefined}
-          className={`w-full md:w-[300px] h-8 py-2 px-4 rounded-[2px] ${
-            isHighlighted
-              ? "bg-[#F5722E] hover:bg-[#F5722E]/90 text-[#F5F5F7]"
-              : "border bg-transparent border-[#F5722E] text-[#F5722E] hover:bg-[#F5722E] hover:text-[#F5F5F7]"
-          }`}
-        >
-          {isCurrentPlan
-            ? subscriptionPlan === "yearlyPlan"
-              ? "Keep Your Yearly Savings"
-              : "Renew"
-            : buttonText}
-        </Button>
+        {!hideButton && (
+          <Button
+            onClick={!isCurrentPlan && !isDisabled ? onSelect : undefined}
+            disabled={isDisabled}
+            className={`w-full md:w-[300px] h-8 py-2 px-4 rounded-[2px] ${
+              isDisabled
+                ? "bg-gray-400 text-gray-600 cursor-not-allowed"
+                : isHighlighted
+                  ? "bg-[#F5722E] hover:bg-[#F5722E]/90 text-[#F5F5F7]"
+                  : "border bg-transparent border-[#F5722E] text-[#F5722E] hover:bg-[#F5722E] hover:text-[#F5F5F7]"
+            }`}
+          >
+            {isCurrentPlan
+              ? "Feature Unavailable"
+              : isDisabled
+                ? "Feature Unavailable"
+                : buttonText}
+          </Button>
+        )}
       </div>
     </div>
   );

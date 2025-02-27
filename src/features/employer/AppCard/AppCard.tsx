@@ -16,7 +16,12 @@ import { ScheduleInterviewModal } from "features/employer";
 //import { Match } from "mockData/job-hunter-data";
 import { Match } from "contexts/PerfectMatch/types";
 import { useEmployerContext } from "components";
-import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle } from "components";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "components";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 
@@ -31,14 +36,21 @@ interface SecureNameDisplayProps {
   realName: string;
 }
 
-const SecureNameDisplay: FC<SecureNameDisplayProps> = ({
-  realName,
-}) => {
+// Helper function to convert employment type values to labels
+const getEmploymentTypeLabel = (value: string): string => {
+  const employmentTypeMap: Record<string, string> = {
+    "full-time": "Full Time",
+    "part-time": "Part Time",
+    contract: "Contract only",
+  };
 
+  return employmentTypeMap[value] || value;
+};
+
+const SecureNameDisplay: FC<SecureNameDisplayProps> = ({ realName }) => {
   const { subscriptionPlan } = useEmployerContext();
 
-
-  if (subscriptionPlan === 'freeTrial') {
+  if (subscriptionPlan === "freeTrial") {
     return (
       <div className="relative">
         <div className="select-none pointer-events-none">
@@ -101,12 +113,12 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [isAdDialogOpen, setIsAdDialogOpen] = useState(false);
-  const {user} = useAuth();
+  const { user } = useAuth();
   const cardId = generateCardId(match);
   const { subscriptionPlan } = useEmployerContext();
   const navigate = useNavigate();
   const handleCardClick = () => {
-    if (subscriptionPlan === 'freeTrial') return;
+    if (subscriptionPlan === "freeTrial") return;
     if (!isScheduleModalOpen) {
       setIsModalOpen(true);
     }
@@ -114,7 +126,7 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage }) => {
 
   const handleScheduleInterview = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (subscriptionPlan === 'freeTrial') {
+    if (subscriptionPlan === "freeTrial") {
       setIsAdDialogOpen(true);
       return;
     }
@@ -126,7 +138,9 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage }) => {
     <>
       <Card
         className={`bg-[#FFFFFF] border-none w-full max-w-[436px] h-[340px] sm:h-[275px] relative transition-shadow duration-200 ${
-          subscriptionPlan === 'freeTrial' ? "cursor-default" : "cursor-pointer hover:shadow-lg"
+          subscriptionPlan === "freeTrial"
+            ? "cursor-default"
+            : "cursor-pointer hover:shadow-lg"
         }`}
         onClick={handleCardClick}
       >
@@ -156,14 +170,14 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage }) => {
             <div className="flex flex-row items-center">
               <MapPin size={14} className="text-[#F5722E]" />
               <p className="text-[13px] font-light mt-0 text-[#263238]">
-                Based in {match.location}
+                Based in {match.country}
               </p>
             </div>
           </div>
         </CardHeader>
 
         <CardContent>
-          <div className="h-[55px]">
+          <div className="h-auto md:h-[55px]">
             <SkillsWithEllipsis skills={match.coreSkills} />
           </div>
 
@@ -183,9 +197,9 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage }) => {
               {match.lookingFor.map((type, index) => (
                 <span
                   key={index}
-                  className={`${getAvailabilityStyle(type)} text-white rounded-[4px] text-[12px] px-1.5 h-[18px] flex justify-center items-center`}
+                  className={`${getAvailabilityStyle(getEmploymentTypeLabel(type))} text-white rounded-[4px] text-[12px] px-1.5 h-[18px] flex justify-center items-center`}
                 >
-                  {type}
+                  {getEmploymentTypeLabel(type)}
                 </span>
               ))}
             </div>
@@ -220,14 +234,14 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage }) => {
             className="text-gray-700 cursor-pointer"
             onClick={(e) => {
               e.stopPropagation();
-              if (subscriptionPlan === 'freeTrial') return;
+              if (subscriptionPlan === "freeTrial") return;
               // Handle more options
             }}
           />
         </CardFooter>
       </Card>
 
-      {subscriptionPlan === 'freeTrial' ? (
+      {subscriptionPlan === "freeTrial" ? (
         <AlertDialog open={isAdDialogOpen} onOpenChange={setIsAdDialogOpen}>
           <AlertDialogContent className="bg-white p-0 border-none">
             <AlertDialogHeader>
@@ -238,7 +252,7 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage }) => {
                   className="w-full h-auto object-contain rounded-lg cursor-pointer"
                   onClick={() => {
                     setIsAdDialogOpen(false);
-                    navigate('account-settings/subscription');
+                    navigate("account-settings/subscription");
                   }}
                 />
               </AlertDialogTitle>

@@ -12,6 +12,7 @@ const mapPerfectMatchData = (apiResponse: any): Match[] => {
     phoneNumber: null, // No phone number in API response
     birthday: item?.jobHunter?.birthday ?? "", // Default to empty string if undefined
     location: item?.jobHunter?.location ?? "Unknown", // Ensure location exists
+    country: item.jobHunter?.country?? "Unknown",
     position: null, // No position in API response
     education: item?.jobHunter?.education ?? "", // Default to empty string if undefined
     coreSkills: item?.jobHunter?.matchingKeywords
