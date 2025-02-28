@@ -52,6 +52,10 @@ export const DefaultLayout: React.FC<DefaultLayoutProps> = ({
     if (!location.state?.openModal) {
       dispatch(resetModal());
     }
+    if(location.state?.resetPasswordtoken){
+      handleSetModalState(MODAL_STATES.FORGOT_PASSWORD_NEW_PASSWORD)
+      toggleModal(true);
+    }
   }, [location.pathname]);
 
   useEffect(() => {

@@ -9,6 +9,7 @@ const initialState: ModalState = {
   isOpen: false,
   selectedModalHeader: MODAL_HEADER_TYPE.WITH_LOGO_AND_CLOSE,
   modalState: MODAL_STATES.AUTHNET_PAYMENT_FULL,
+  isResetPasswordSuccesful: false
 };
 
 export const modalSlice = createSlice({
@@ -23,7 +24,7 @@ export const modalSlice = createSlice({
         selectedModalHeader: !state.isOpen
           ? MODAL_HEADER_TYPE.WITH_LOGO_AND_CLOSE
           : state.selectedModalHeader,
-        isOpen: modalState,
+        isOpen: modalState
       };
     },
     setModalHeader: (state, action: PayloadAction<MODAL_HEADER_TYPE>) => {
@@ -38,6 +39,13 @@ export const modalSlice = createSlice({
         modalState: action.payload,
       };
     },
+    setIsResetPasswordSuccesful: (state, action: PayloadAction<boolean>) => {
+      return {
+        ...state,
+        isResetPasswordSuccesful: action.payload,
+      };
+    },
+
     resetModal: () => {
       return {
         ...initialState
@@ -46,6 +54,6 @@ export const modalSlice = createSlice({
   },
 });
 
-export const { toggle, setModalHeader, setModalState, resetModal } = modalSlice.actions;
+export const { toggle, setModalHeader, setModalState, resetModal, setIsResetPasswordSuccesful } = modalSlice.actions;
 
 export const modalReducer = modalSlice.reducer;

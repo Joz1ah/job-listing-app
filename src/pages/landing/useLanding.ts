@@ -1,9 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store/store";
-import { setModalState } from "store/modal/modal.slice";
+import { setIsResetPasswordSuccesful, setModalState } from "store/modal/modal.slice";
+import { setCurrentResetPasswordEmail } from 'store/user/user.slice';
 import { setHeroState } from "store/hero/hero.slice";
 import { MODAL_STATES } from "store/modal/modal.types";
 import { HERO_STATES } from "store/hero/hero.types";
+
 import {
   setTempCredentials,
   setSelectedPlan,
@@ -20,12 +22,14 @@ export const useLanding = () => {
   const dispatch = useDispatch();
 
   const modalState = useSelector((state: RootState) => state.modal.modalState);
+  const isResetPasswordSuccesful = useSelector((state: RootState) => state.modal.isResetPasswordSuccesful);
   const heroState = useSelector((state: RootState) => state.hero.heroState);
   const {
     tempLoginEmail,
     tempLoginPassword,
     currentSelectedPlan,
     selectedSkills,
+    currentResetPasswordEmail,
     ...dataStates
   } = useSelector((state: RootState) => state.user);
 
@@ -52,7 +56,15 @@ export const useLanding = () => {
   const handleSetHeroState = (state: HERO_STATES) => {
     dispatch(setHeroState(state));
   };
+  
+  const handleSetIsResetPasswordSuccesful = (state: boolean) => {
+    dispatch(setIsResetPasswordSuccesful(state));
+  };
 
+  const handleSetCurrentResetPasswordEmail = (state: string) => {
+    dispatch(setCurrentResetPasswordEmail(state));
+  };
+  
   const createAuthNetTokenizer = async () => {
     const isDevOrStaging =
       process.env.NODE_ENV === "development" ||
@@ -85,6 +97,8 @@ export const useLanding = () => {
 
   return {
     modalState,
+    isResetPasswordSuccesful,
+    currentResetPasswordEmail,
     handleSetModalState,
     dataStates,
     tempLoginEmail,
@@ -98,5 +112,7 @@ export const useLanding = () => {
     handleSetSelectedPlan,
     handleSetSkills,
     handleSetCredentials,
+    handleSetIsResetPasswordSuccesful,
+    handleSetCurrentResetPasswordEmail
   };
 };

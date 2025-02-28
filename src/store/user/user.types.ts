@@ -17,6 +17,7 @@ export type UserDataState = {
   tempLoginEmail?: string;
   tempLoginPassword?: string;
   currentSelectedPlan?: PLAN_SELECTION_ITEMS;
+  currentResetPasswordEmail?: string;
 };
 
 export type UserTempCredentials = Pick<

@@ -6,7 +6,7 @@ import { useAuth } from 'contexts/AuthContext/AuthContext';
 import { isServer } from 'utils';
 import { IntercomProvider } from 'contexts/Intercom/IntercomContext';
 import { withPerfectMatchProvider } from 'hocs';
-
+import { useNavigate, useSearchParams } from "react-router-dom";
 const BaseLayout = lazy(() => import('pages').then(module => ({ default: module.BaseLayout })))
 
 const NotFound = lazy(() => import('pages').then(module => ({ default: module.NotFoundPage })))
@@ -258,6 +258,21 @@ const UserTypeComponent = ({
   return <LazyComponent component={Component} {...props} />;
 };
 
+const ResetPasswordRedirect = () => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const resetPasswordtoken = searchParams.get("token");
+  useEffect(() => {
+    if (!resetPasswordtoken) {
+      navigate(ROUTE_CONSTANTS.LANDING, { replace: true });
+    } else {
+      navigate(ROUTE_CONSTANTS.LANDING, { state: { resetPasswordtoken }, replace: true });
+    }
+  }, [resetPasswordtoken, navigate]);
+
+  return <div>Please wait while we redirect you back to Akaza</div>;
+};
+
 const routes: RouteObject[] = [
   {
     path: '',
@@ -266,6 +281,10 @@ const routes: RouteObject[] = [
   {
     path: ROUTE_CONSTANTS.TEST,
     element: <LazyComponent component={Test} />,
+  },
+  {
+    path: ROUTE_CONSTANTS.RESET_PASSWORD_REDIRECT,
+    element: <ResetPasswordRedirect/>,
   },
   {
     path: ROUTE_CONSTANTS.LANDING,

@@ -25,4 +25,6 @@ export type ModalState = {
   isOpen: boolean;
   selectedModalHeader?: MODAL_HEADER_TYPE;
   modalState?: MODAL_STATES;
+  isResetPasswordSuccesful?: boolean;
 };
+

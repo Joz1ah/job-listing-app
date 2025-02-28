@@ -6,9 +6,7 @@ const LoginModal = () => {
   const { modalState } = useLanding();
 
   return modalState && modalState == MODAL_STATES.LOGIN ? (
-    <div id="step_login">
       <LoginForm />
-    </div>
   ) : (
     <></>
   );
