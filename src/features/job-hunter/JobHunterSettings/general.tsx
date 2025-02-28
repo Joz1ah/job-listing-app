@@ -1,4 +1,4 @@
-import React, { FC, useState, useRef } from "react";
+import React, { FC, useState, useRef, useEffect } from "react";
 import { Info, X } from "lucide-react";
 import { cn } from "lib/utils";
 import { Label } from "components";
@@ -12,9 +12,12 @@ import jobHunterPopAds from "images/popup-hunter.svg?url";
 import { TimezoneSelector } from "components";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import spinner_loading_fallback from "assets/images/spinner-loading-akaza.svg?url";
+import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
 import {
   useGetAccountSettingsQuery,
   useUpdateAccountSettingsMutation,
+  useUpdateEmailMutation,
+  useGetUserInfoQuery,
 } from "api/akaza/akazaAPI";
 
 interface FormFieldProps {
@@ -60,9 +63,26 @@ const GeneralSettings: FC = () => {
   const emailAdTriggerRef = useRef<HTMLDivElement>(null);
   const timezoneAdTriggerRef = useRef<HTMLDivElement>(null);
 
-  const [email, setEmail] = useState(user?.data?.user?.email || "");
+  // Get user info for most up-to-date email
+  const { data: userInfoData } = useGetUserInfoQuery(undefined, {
+    skip: !user?.data?.user,
+  });
+
+  const [email, setEmail] = useState("");
   const [isEditingEmail, setIsEditingEmail] = useState(false);
-  const [tempEmail, setTempEmail] = useState(email);
+  const [tempEmail, setTempEmail] = useState("");
+  const [emailUpdateError, setEmailUpdateError] = useState("");
+
+  // Update email state when userInfoData changes
+  useEffect(() => {
+    if (userInfoData?.data?.email) {
+      setEmail(userInfoData.data.email);
+      setTempEmail(userInfoData.data.email);
+    } else if (user?.data?.user?.email) {
+      setEmail(user.data.user.email);
+      setTempEmail(user.data.user.email);
+    }
+  }, [userInfoData, user]);
 
   const { data: settingsData, isLoading: isLoadingSettings } =
     useGetAccountSettingsQuery(undefined, {
@@ -70,6 +90,8 @@ const GeneralSettings: FC = () => {
     });
 
   const [updateSettings] = useUpdateAccountSettingsMutation();
+  const [updateEmail, { isLoading: isUpdatingEmail }] =
+    useUpdateEmailMutation();
 
   const settings = settingsData?.data || DEFAULT_SETTINGS;
 
@@ -112,19 +134,51 @@ const GeneralSettings: FC = () => {
     }
   };
 
-  const handleEmailEdit = () => {
+  const handleEmailEdit = async () => {
     if (subscriptionPlan === "freeTrial" && !isEditingEmail) {
       emailAdTriggerRef.current?.click();
       return;
     }
 
     if (!isEditingEmail) {
+      // Start editing
       setIsEditingEmail(true);
       setTempEmail(email);
+      setEmailUpdateError("");
     } else {
-      setEmail(tempEmail);
-      setIsEditingEmail(false);
+      // Submit email update
+      if (tempEmail === email) {
+        // No change, just cancel edit mode
+        setIsEditingEmail(false);
+        return;
+      }
+
+      try {
+        setEmailUpdateError("");
+        const result = await updateEmail({
+          oldEmail: email,
+          newEmail: tempEmail,
+        }).unwrap();
+
+        if (result.success) {
+          setEmail(tempEmail);
+          setIsEditingEmail(false);
+        } else {
+          setEmailUpdateError(result.message || "Failed to update email");
+        }
+      } catch (error: any) {
+        console.error("Error updating email:", error);
+        setEmailUpdateError(
+          error.data?.message || "Failed to update email. Please try again.",
+        );
+      }
     }
+  };
+
+  const cancelEmailEdit = () => {
+    setIsEditingEmail(false);
+    setTempEmail(email);
+    setEmailUpdateError("");
   };
 
   const renderNotificationSwitch = () => (
@@ -299,34 +353,52 @@ const GeneralSettings: FC = () => {
           <div>
             <FormField label="Email address">
               <div className="flex items-center gap-2">
-                <div className="flex-1">
+                <div className="flex-1 relative">
                   <Input
                     type="email"
                     value={isEditingEmail ? tempEmail : email}
                     onChange={(e) =>
                       isEditingEmail && setTempEmail(e.target.value)
                     }
-                    disabled={!isEditingEmail}
+                    disabled={!isEditingEmail || isUpdatingEmail}
                     className={cn(
                       "w-full bg-transparent border-[#AEADAD] h-[45px] border-2 focus:border-[#F5722E] text-white",
                       !isEditingEmail && "opacity-70",
+                      emailUpdateError && "border-red-500",
                     )}
                     placeholder="Enter email address"
                   />
+                  {emailUpdateError && (
+                    <p className="text-red-500 text-xs mt-1 absolute">
+                      {emailUpdateError}
+                    </p>
+                  )}
                 </div>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={handleEmailEdit}
-                    className="w-[80px] h-[45px] bg-transparent border border-[#F5722E] text-[#F5722E] text-sm rounded hover:bg-[#F5722E] hover:text-white transition-colors duration-200"
+                    disabled={isUpdatingEmail}
+                    className={cn(
+                      "w-[80px] h-[45px] bg-transparent border border-[#F5722E] text-[#F5722E] text-sm rounded hover:bg-[#F5722E] hover:text-white transition-colors duration-200 flex items-center justify-center",
+                      isUpdatingEmail && "opacity-70 cursor-not-allowed",
+                    )}
                   >
-                    {isEditingEmail ? "Update" : "Change"}
+                    {isUpdatingEmail ? (
+                      <img
+                        src={button_loading_spinner}
+                        alt="Loading"
+                        className="w-5 h-5 animate-spin"
+                      />
+                    ) : isEditingEmail ? (
+                      "Update"
+                    ) : (
+                      "Change"
+                    )}
                   </button>
                   {isEditingEmail && (
                     <button
-                      onClick={() => {
-                        setIsEditingEmail(false);
-                        setTempEmail(email);
-                      }}
+                      onClick={cancelEmailEdit}
+                      disabled={isUpdatingEmail}
                       className="absolute -right-10 flex items-center justify-center h-[50px] w-[50px] text-gray-400 hover:text-white transition-colors"
                     >
                       <X size={20} />

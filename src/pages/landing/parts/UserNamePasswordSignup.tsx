@@ -43,13 +43,14 @@ const UserNamePasswordSignup = () => {
       .required("Password is required")
       .test(
         "password-requirements",
-        "Password must be at least 12 characters and include a lowercase letter, uppercase letter, and special character",
+        "Password must be at least 12 characters and include a lowercase letter, uppercase letter, number, and special character",
         (value) =>
           Boolean(
             value &&
               value.length >= 12 &&
               /[a-z]/.test(value) &&
               /[A-Z]/.test(value) &&
+              /[0-9]/.test(value) &&
               /[^a-zA-Z0-9]/.test(value),
           ),
       ),
@@ -186,7 +187,9 @@ const UserNamePasswordSignup = () => {
               type="text"
               placeholder="Email"
               value={credentials.email}
-              onChange={(e) => setCredentials({ ...credentials, email: e.target.value })}
+              onChange={(e) =>
+                setCredentials({ ...credentials, email: e.target.value })
+              }
               required
               className="w-full bg-[#F5F5F7] text-sm py-2 border-b-2 border-gray-300 focus:border-orange-500 focus:outline-none"
             />
@@ -201,7 +204,9 @@ const UserNamePasswordSignup = () => {
               type={showPassword ? "text" : "password"}
               placeholder="Password"
               value={credentials.password}
-              onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
+              onChange={(e) =>
+                setCredentials({ ...credentials, password: e.target.value })
+              }
               required
               className="w-full bg-[#F5F5F7] text-sm py-2 border-b-2 border-gray-300 focus:border-orange-500 focus:outline-none"
             />
@@ -230,7 +235,12 @@ const UserNamePasswordSignup = () => {
               type={showConfirmPassword ? "text" : "password"}
               placeholder="Confirm password"
               value={credentials.passwordConfirm}
-              onChange={(e) => setCredentials({ ...credentials, passwordConfirm: e.target.value })}
+              onChange={(e) =>
+                setCredentials({
+                  ...credentials,
+                  passwordConfirm: e.target.value,
+                })
+              }
               required
               className="w-full bg-[#F5F5F7] text-sm py-2 border-b-2 border-gray-300 focus:border-orange-500 focus:outline-none"
             />

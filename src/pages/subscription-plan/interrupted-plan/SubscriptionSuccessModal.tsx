@@ -1,25 +1,25 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "components"
-import { Button } from "components"
-import confetti_success from 'assets/confetti.gif'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
+import { Button } from "components";
+import confetti_success from "assets/confetti.gif";
+import { useAuth } from "contexts/AuthContext/AuthContext";
 
 interface SubscriptionSuccessModalProps {
-  isOpen: boolean
-  onClose: () => void
-  type: string
+  isOpen: boolean;
+  onClose: () => void;
+  type: string;
 }
 
 const SubscriptionSuccessModal = ({
   isOpen,
   onClose,
-  type
+  type,
 }: SubscriptionSuccessModalProps) => {
   // Determine price based on plan type
-  const price = type === "Yearly" ? "55" : "5"
+  const price = type === "Yearly" ? "55" : "5";
+
+  // Get user information from auth context to check if user is employer
+  const { user } = useAuth();
+  const isEmployer = user?.data?.user?.type === "employer";
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -30,7 +30,7 @@ const SubscriptionSuccessModal = ({
 
         <div className="flex flex-col justify-end items-center space-y-4 pt-32">
           <div className="absolute top-0 left-0 right-0 pointer-events-none z-0">
-            <img 
+            <img
               src={confetti_success}
               alt="Success celebration"
               className="w-full h-full"
@@ -40,9 +40,12 @@ const SubscriptionSuccessModal = ({
             <h2 className="text-orange-500 text-2xl">
               We're thrilled to have you as a subscriber!
             </h2>
-            
+
             <p className="text-gray-200 text-sm">
-              Your ${price} {type.toLowerCase()} plan + 1 month free gives you access to our best features! Complete Your Application Card to start enjoying exclusive access.
+              Your ${price} {type.toLowerCase()} plan gives you access to our
+              best features!
+              {!isEmployer &&
+                " Complete Your Application Card to start enjoying exclusive access."}
             </p>
           </div>
 
@@ -58,7 +61,7 @@ const SubscriptionSuccessModal = ({
         </div>
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};
 
-export default SubscriptionSuccessModal
+export default SubscriptionSuccessModal;

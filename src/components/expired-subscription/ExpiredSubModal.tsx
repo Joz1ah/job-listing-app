@@ -8,7 +8,7 @@ import {
   Trophy,
   Infinity,
 } from "lucide-react";
-import { Dialog, DialogContent } from "components";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
 import { Button } from "components";
 import { NavLink } from "react-router-dom";
 import { PaymentStep } from "./PaymentStep";
@@ -272,6 +272,9 @@ const ExpiredSubModal: React.FC<ExpiredSubModalProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={() => {}} modal>
+      <DialogHeader className="sr-only">
+        <DialogTitle>Expired Modal</DialogTitle>
+      </DialogHeader>
       <DialogContent className="w-[calc(100%-2rem)] h-[calc(100%-2rem)] md:w-[770px] md:h-auto max-w-5xl bg-[#F5722ECC] border-none p-4 [&>button]:hidden mx-auto my-auto rounded overflow-y-auto">
         {currentStep === "plans" && renderPlansStep()}
         {currentStep === "payment" && renderPaymentStep()}

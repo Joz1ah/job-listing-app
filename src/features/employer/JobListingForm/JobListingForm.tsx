@@ -457,9 +457,11 @@ const JobListingForm: FC = () => {
                   className="bg-transparent border-[#AEADAD] min-h-[150px] pt-4 resize-none border-2 focus-within:border-[#F5722E] placeholder:text-[#AEADAD]"
                   placeholder="Please provide a job description"
                 />
-                <span className="flex left-0 italic text-[11px] absolute">
-                  Maximum of 500 words
-                </span>
+                {!(touched.jobDescription && errors.jobDescription) && (
+                  <span className="flex right-1 italic text-[11px] absolute">
+                    Maximum of 500 words
+                  </span>
+                )}
               </InputField>
 
               <InputField

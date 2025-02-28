@@ -542,14 +542,16 @@ export const akazaApiAccount = createApiFunction({
       return headers;
     },
   }),
-  tagTypes: ['AccountSettings'],
+  tagTypes: ['AccountSettings', 'UserInfo'],
   endpoints: (builder) => ({
+    // Existing endpoints...
     getUserInfo: builder.query({
       query: () => ({
         url: `account/info`,
         method: 'GET',
       }),
       keepUnusedDataFor: 0,
+      providesTags: ['UserInfo'],
     }),
     getAccountSettings: builder.query({
       query: () => ({
@@ -571,19 +573,29 @@ export const akazaApiAccount = createApiFunction({
         },
       }),
       invalidatesTags: ['AccountSettings'],
+      // Existing optimistic updates...
+    }),
+    
+    // New endpoint for updating email
+    updateEmail: builder.mutation({
+      query: (payload) => ({
+        url: 'settings/update-email',
+        method: 'POST',
+        body: {
+          oldEmail: payload.oldEmail,
+          newEmail: payload.newEmail
+        },
+      }),
+      invalidatesTags: ['UserInfo'],
       // Add optimistic updates
       async onQueryStarted(patch, { dispatch, queryFulfilled }) {
         // Get the current cache key
         const patchResult = dispatch(
-          akazaApiAccount.util.updateQueryData('getAccountSettings', undefined, (draft) => {
+          akazaApiAccount.util.updateQueryData('getUserInfo', undefined, (draft) => {
             // Update the cached data optimistically
             if (draft?.data) {
               Object.assign(draft.data, {
-                timeZone: patch.timeZone,
-                theme: patch.theme,
-                pushNotification: patch.pushNotification,
-                emailNotification: patch.emailNotification,
-                smsNotification: patch.smsNotification
+                email: patch.newEmail
               });
             }
           })
@@ -697,7 +709,8 @@ export const {
 export const {
   useGetUserInfoQuery,
   useGetAccountSettingsQuery,
-  useUpdateAccountSettingsMutation
+  useUpdateAccountSettingsMutation,
+  useUpdateEmailMutation
 } = akazaApiAccount
 
 export const {

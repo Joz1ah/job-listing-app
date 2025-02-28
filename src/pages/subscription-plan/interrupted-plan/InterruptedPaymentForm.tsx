@@ -286,12 +286,12 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
                       <div className="ml-2">
                         <label className="text-[#F5F5F7] text-sm">
                           I have read, understood and agree to the{" "}
-                          <a href="/terms" className="text-[#F5722E] underline">
+                          <a href="https://app.websitepolicies.com/policies/view/azn4i7fg" className="text-[#F5722E] underline">
                             Terms of Use
                           </a>{" "}
                           and{" "}
                           <a
-                            href="/privacy"
+                            href="https://app.websitepolicies.com/policies/view/2albjkzj"
                             className="text-[#F5722E] underline"
                           >
                             Privacy Policy

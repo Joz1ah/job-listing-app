@@ -229,9 +229,9 @@ const MobilePlanCard: React.FC<MobilePlanCardProps> = ({
         </div>
       )}
       <div
-        className={`w-[246px] h-[424px] rounded-lg overflow-hidden ${isAnnual ? "shadow-xl shadow-orange-400/30" : "shadow-lg"}`}
+        className={`w-[246px] h-[400px] rounded-lg overflow-hidden ${isAnnual ? "shadow-xl shadow-orange-400/30" : "shadow-lg"}`}
       >
-        <div className="h-[424px] w-full rounded-lg bg-white flex flex-col">
+        <div className="h-[400px] w-full rounded-lg bg-white flex flex-col">
           {isFree ? (
             <>
               <div className="p-2 flex-grow">
@@ -241,7 +241,7 @@ const MobilePlanCard: React.FC<MobilePlanCardProps> = ({
                       <div className="text-2xl font-bold text-orange-500 uppercase">
                         {price}
                       </div>
-                      <div className="text-[15px] text-[#263238]">
+                      <div className="text-[14px] text-[#263238]">
                         {transactionFee}
                       </div>
                     </div>
@@ -261,7 +261,7 @@ const MobilePlanCard: React.FC<MobilePlanCardProps> = ({
                           className="w-5 h-5 min-w-5"
                         />
                         <span
-                          className={`text-[15px] ${
+                          className={`text-[14px] ${
                             disabled
                               ? "text-gray-400 line-through"
                               : "text-orange-500"
@@ -288,7 +288,7 @@ const MobilePlanCard: React.FC<MobilePlanCardProps> = ({
                         </span>
                       )}
                     </div>
-                    <div className="text-[15px] text-[#263238]">
+                    <div className="text-[14px] text-[#263238]">
                       {transactionFee}
                     </div>
                   </div>
@@ -308,7 +308,7 @@ const MobilePlanCard: React.FC<MobilePlanCardProps> = ({
                         className="w-5 h-5 min-w-5"
                       />
                       <span
-                        className={`text-[15px] ${
+                        className={`text-[14px] ${
                           disabled
                             ? "text-gray-400 line-through"
                             : "text-orange-500"
@@ -549,7 +549,7 @@ const SubscriptionPlanSelection: React.FC = () => {
   return modalState === MODAL_STATES.SIGNUP_STEP5 ? (
     <>
       {/* Mobile View */}
-      <div className="md:hidden w-full px-4 py-6">
+      <div className="md:hidden w-full pt-2 px-4">
         <Carousel
           className="w-full relative"
           opts={{
