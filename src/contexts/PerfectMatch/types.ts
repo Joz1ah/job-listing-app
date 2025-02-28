@@ -4,7 +4,8 @@ export interface Match {
     lastName: string;
     phoneNumber?: number;
     birthday: string;
-    location: string;
+    location?: string;
+    country?: string;
     position: string;
     education: string;
     coreSkills: string[];

@@ -160,7 +160,7 @@ const JobCard: FC<JobCardProps> = ({ match, popupImage }) => {
         </CardHeader>
 
         <CardContent>
-          <div className="h-[60px]">
+          <div className="h-auto md:h-[60px]">
             <SkillsWithEllipsis skills={match.coreSkills} />
           </div>
 

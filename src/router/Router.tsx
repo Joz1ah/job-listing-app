@@ -6,6 +6,7 @@ import { useAuth } from 'contexts/AuthContext/AuthContext';
 import { isServer } from 'utils';
 import { IntercomProvider } from 'contexts/Intercom/IntercomContext';
 import { withPerfectMatchProvider } from 'hocs';
+import SubscriptionExpiryWrapper from 'components/expired-subscription/SubscriptionExpiryWrapper';
 
 const BaseLayout = lazy(() => import('pages').then(module => ({ default: module.BaseLayout })))
 
@@ -327,8 +328,10 @@ const routes: RouteObject[] = [
     path: ROUTE_CONSTANTS.DASHBOARD,
   element: (
     <ProtectedRoute>
+      <SubscriptionExpiryWrapper>
         <LazyComponent component={BaseLayout}/>
-  </ProtectedRoute>
+      </SubscriptionExpiryWrapper>
+    </ProtectedRoute>
   ),
     children: [
       // Feed

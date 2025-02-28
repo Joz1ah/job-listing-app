@@ -168,7 +168,7 @@ const JobListingsContent: FC = () => {
           </p>
 
           <NavLink
-            to="/employer/job-listing"
+            to="/dashboard/job-listing"
             className="bg-[#F5722E] text-white px-6 py-2 rounded-md hover:bg-orange-600 transition-colors"
           >
             Create Job Listings

@@ -10,7 +10,7 @@ const SkillsWithEllipsis: FC<SkillsWithEllipsisProps> = ({ skills }) => {
   return (
     <div className="w-full relative">
       <span className="text-[13px] font-light block text-[#263238]">Core Skills:</span>
-      <div className="flex gap-1 overflow-hidden whitespace-nowrap">
+      <div className="flex flex-wrap gap-1 md:overflow-hidden md:whitespace-nowrap">
         {skills.map((skill, skillIndex) => (
           <span
             key={skillIndex}

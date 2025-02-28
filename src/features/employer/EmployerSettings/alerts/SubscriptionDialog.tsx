@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -18,11 +18,20 @@ import {
 
 import sparkle_icon from "assets/images/sparkle-icon.png";
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from 'contexts/AuthContext/AuthContext';
 
 interface CustomAccordionProps {
   isOpen: boolean;
   onToggle: () => void;
   children: React.ReactNode;
+}
+
+interface Subscription {
+  id: number;
+  status: string;
+  plan: string;
+  startDate: string;
+  endDate: string | null;
 }
 
 interface Benefit {
@@ -58,7 +67,36 @@ const CustomAccordion: React.FC<CustomAccordionProps> = ({
 
 const SubscriptionDialog: React.FC = () => {
   const [isAccordionOpen, setIsAccordionOpen] = useState<boolean>(false);
-    const navigate = useNavigate();
+  const [renewalDate, setRenewalDate] = useState<string>("");
+  const navigate = useNavigate();
+  const { user } = useAuth(); // Get user data from auth context
+  
+  useEffect(() => {
+    if (user && user.data && user.data.user && user.data.user.subscriptions && user.data.user.subscriptions.length > 0) {
+      // Find active subscription
+      const activeSubscription = user.data.user.subscriptions.find((sub: Subscription) => sub.status === "active");
+      
+      if (activeSubscription && activeSubscription.startDate) {
+        // Parse the start date and calculate the renewal date
+        const startDate = new Date(activeSubscription.startDate);
+        const renewalDateObj = new Date(startDate);
+        
+        // Check subscription plan type and set appropriate renewal date
+        if (activeSubscription.plan === "Monthly") {
+          renewalDateObj.setMonth(renewalDateObj.getMonth() + 1);
+        } else if (activeSubscription.plan === "Yearly") {
+          renewalDateObj.setFullYear(renewalDateObj.getFullYear() + 1);
+        }
+        
+        // Format the date for display
+        setRenewalDate(renewalDateObj.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        }));
+      }
+    }
+  }, [user]);
   
   const benefits: Benefit[] = [
     { icon: <CalendarCheck className="w-5 h-5" />, text: 'Up to 5 Job Listings' },
@@ -97,13 +135,15 @@ const SubscriptionDialog: React.FC = () => {
           <DialogTitle asChild>
             <div className="mb-4">
               <p className="text-[#F5F5F7] text-[15px] font-normal mb-2">You're subscribed to the</p>
-              <p className="text-[#F5722E] font-semibold text-[26px]">Monthly Plan</p>
+              <p className="text-[#F5722E] font-semibold text-[26px]">
+                {user?.data?.user?.subscriptions?.[0]?.plan || "Subscription"} Plan
+              </p>
             </div>
           </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
-          <p className="text-[#F5F5F7] text-sm">Renewal Date: January 25, 2025</p>
+          <p className="text-[#F5F5F7] text-sm">Renewal Date: {renewalDate || "Loading..."}</p>
 
           <div>
             <p className="text-[#F5722E] text-sm mb-2">Your Benefits:</p>

@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
 import { SkillsWithEllipsis } from "components";
 import { Bookmark, MoreVertical, MapPin } from "lucide-react";
 import {
@@ -12,13 +12,46 @@ import { Button } from "components";
 import { useBookmarks } from "contexts/BookmarkContext";
 import { AppPreviewModal } from "features/employer";
 import { ScheduleInterviewModal } from "features/employer";
-//import { AdDialogWrapper } from "components";
-//import { Match } from "mockData/job-hunter-data";
 import { Match } from "contexts/PerfectMatch/types";
 import { useEmployerContext } from "components";
-import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle } from "components";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "components";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "contexts/AuthContext/AuthContext";
+
+// Function to format the date string for display
+const formatTimeAgo = (dateString: string): string => {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+
+  // Convert to minutes, hours, days
+  const diffMins = Math.floor(diffMs / (1000 * 60));
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffMins < 60) {
+    return "just now";
+  } else if (diffHours < 24) {
+    return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
+  } else {
+    return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
+  }
+};
+
+// Function to check if a post is new (less than 24 hours old)
+const isNewPost = (dateString: string): boolean => {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffHours = diffMs / (1000 * 60 * 60);
+
+  return diffHours < 24;
+};
 
 interface AppCardProps {
   match: Match;
@@ -31,14 +64,21 @@ interface SecureNameDisplayProps {
   realName: string;
 }
 
-const SecureNameDisplay: FC<SecureNameDisplayProps> = ({
-  realName,
-}) => {
+// Helper function to convert employment type values to labels
+const getEmploymentTypeLabel = (value: string): string => {
+  const employmentTypeMap: Record<string, string> = {
+    "full-time": "Full Time",
+    "part-time": "Part Time",
+    contract: "Contract only",
+  };
 
+  return employmentTypeMap[value] || value;
+};
+
+const SecureNameDisplay: FC<SecureNameDisplayProps> = ({ realName }) => {
   const { subscriptionPlan } = useEmployerContext();
 
-
-  if (subscriptionPlan === 'freeTrial') {
+  if (subscriptionPlan === "freeTrial") {
     return (
       <div className="relative">
         <div className="select-none pointer-events-none">
@@ -101,12 +141,22 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [isAdDialogOpen, setIsAdDialogOpen] = useState(false);
-  const {user} = useAuth();
+  const [formattedPostDate, setFormattedPostDate] = useState("N/A");
+  const [shouldShowNew, setShouldShowNew] = useState(false);
+  const { user } = useAuth();
   const cardId = generateCardId(match);
   const { subscriptionPlan } = useEmployerContext();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (match.posted) {
+      setFormattedPostDate(formatTimeAgo(match.posted));
+      setShouldShowNew(isNewPost(match.posted));
+    }
+  }, [match.posted]);
+
   const handleCardClick = () => {
-    if (subscriptionPlan === 'freeTrial') return;
+    if (subscriptionPlan === "freeTrial") return;
     if (!isScheduleModalOpen) {
       setIsModalOpen(true);
     }
@@ -114,7 +164,7 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage }) => {
 
   const handleScheduleInterview = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (subscriptionPlan === 'freeTrial') {
+    if (subscriptionPlan === "freeTrial") {
       setIsAdDialogOpen(true);
       return;
     }
@@ -126,14 +176,16 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage }) => {
     <>
       <Card
         className={`bg-[#FFFFFF] border-none w-full max-w-[436px] h-[340px] sm:h-[275px] relative transition-shadow duration-200 ${
-          subscriptionPlan === 'freeTrial' ? "cursor-default" : "cursor-pointer hover:shadow-lg"
+          subscriptionPlan === "freeTrial"
+            ? "cursor-default"
+            : "cursor-pointer hover:shadow-lg"
         }`}
         onClick={handleCardClick}
       >
         <CardHeader className="flex flex-col justify-between items-start pb-0">
           <div className="flex flex-row -mt-4 justify-between w-full relative">
             <div className="h-5">
-              {match.isNew && (
+              {shouldShowNew && (
                 <span className="text-[13px] text-[#F5722E] font-bold italic">
                   ☆ NEW
                 </span>
@@ -141,7 +193,7 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage }) => {
             </div>
             <div className="flex flex-col items-end">
               <span className="text-[11px] font-light text-[#717171] -mr-2">
-                Posted {match.posted} ago
+                Posted {formattedPostDate}
               </span>
             </div>
           </div>
@@ -156,14 +208,14 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage }) => {
             <div className="flex flex-row items-center">
               <MapPin size={14} className="text-[#F5722E]" />
               <p className="text-[13px] font-light mt-0 text-[#263238]">
-                Based in {match.location}
+                Based in {match.country}
               </p>
             </div>
           </div>
         </CardHeader>
 
         <CardContent>
-          <div className="h-[55px]">
+          <div className="h-auto md:h-[55px]">
             <SkillsWithEllipsis skills={match.coreSkills} />
           </div>
 
@@ -183,9 +235,9 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage }) => {
               {match.lookingFor.map((type, index) => (
                 <span
                   key={index}
-                  className={`${getAvailabilityStyle(type)} text-white rounded-[4px] text-[12px] px-1.5 h-[18px] flex justify-center items-center`}
+                  className={`${getAvailabilityStyle(getEmploymentTypeLabel(type))} text-white rounded-[4px] text-[12px] px-1.5 h-[18px] flex justify-center items-center`}
                 >
-                  {type}
+                  {getEmploymentTypeLabel(type)}
                 </span>
               ))}
             </div>
@@ -220,14 +272,14 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage }) => {
             className="text-gray-700 cursor-pointer"
             onClick={(e) => {
               e.stopPropagation();
-              if (subscriptionPlan === 'freeTrial') return;
+              if (subscriptionPlan === "freeTrial") return;
               // Handle more options
             }}
           />
         </CardFooter>
       </Card>
 
-      {subscriptionPlan === 'freeTrial' ? (
+      {subscriptionPlan === "freeTrial" ? (
         <AlertDialog open={isAdDialogOpen} onOpenChange={setIsAdDialogOpen}>
           <AlertDialogContent className="bg-white p-0 border-none">
             <AlertDialogHeader>
@@ -238,7 +290,7 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage }) => {
                   className="w-full h-auto object-contain rounded-lg cursor-pointer"
                   onClick={() => {
                     setIsAdDialogOpen(false);
-                    navigate('account-settings/subscription');
+                    navigate("account-settings/subscription");
                   }}
                 />
               </AlertDialogTitle>
