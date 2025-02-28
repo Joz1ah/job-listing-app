@@ -73,8 +73,7 @@ const BillingSettings: FC = () => {
                 Billing & Information
               </h2>
               <p className="text-white text-sm sm:text-[15px] font-light">
-                The card details below are the ones currently used for your
-                subscription.
+                Last 4 digits of the card currently used for your subscription.
               </p>
             </div>
           </div>

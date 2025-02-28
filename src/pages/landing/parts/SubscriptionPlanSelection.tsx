@@ -16,9 +16,9 @@ import { ROUTE_CONSTANTS } from "constants/routeConstants";
 
 import unchecked_green from "assets/toggles/unchecked-green.svg?url";
 import checked_green from "assets/toggles/checked-green.svg?url";
-import subscription_sparkle_icon from "assets/subscription-plan-icons/sparkle.svg?url";
+import subscription_sparkle_icon from "assets/images/sparkle-icon-green.svg?url";
 import subscription_thumbsup_icon from "assets/subscription-plan-icons/thumbsup.svg?url";
-import subscription_shield_person_icon from "assets/subscription-plan-icons/shield-person.svg?url";
+import subscription_lock_icon from "assets/subscription-plan-icons/lock.svg?url";
 import subscription_linegraph_icon from "assets/subscription-plan-icons/linegraph.svg?url";
 import subscription_chat_icon from "assets/subscription-plan-icons/chat.svg?url";
 import subscription_bolt_icon from "assets/subscription-plan-icons/bolt.svg?url";
@@ -87,7 +87,7 @@ const getPlanFeatures = (
       disabled: true,
     },
     {
-      icon: subscription_shield_person_icon,
+      icon: subscription_lock_icon,
       text: "Exclusive Employer Resources",
       disabled: true,
     },
@@ -110,7 +110,7 @@ const getPlanFeatures = (
       disabled: true,
     },
     {
-      icon: subscription_shield_person_icon,
+      icon: subscription_lock_icon,
       text: "Exclusive Resources",
       disabled: true,
     },
@@ -125,7 +125,7 @@ const getPlanFeatures = (
       { icon: subscription_thumbsup_icon, text: "Insights and Feedback" },
       { icon: subscription_linegraph_icon, text: "Labour Market Insights" },
       {
-        icon: subscription_shield_person_icon,
+        icon: subscription_lock_icon,
         text: "Exclusive Employer Resources",
       },
       { icon: subscription_chat_icon, text: "Live chat support" },
@@ -137,7 +137,7 @@ const getPlanFeatures = (
       { icon: subscription_thumbsup_icon, text: "Insights and Feedback" },
       { icon: subscription_linegraph_icon, text: "Labour Market Insights" },
       {
-        icon: subscription_shield_person_icon,
+        icon: subscription_lock_icon,
         text: "Exclusive Employer Resources",
       },
       { icon: subscription_chat_icon, text: "Live chat support" },
@@ -150,7 +150,7 @@ const getPlanFeatures = (
       { icon: subscription_sparkle_icon, text: "Perfect Match Automation" },
       { icon: subscription_thumbsup_icon, text: "Insights and Feedback" },
       { icon: subscription_linegraph_icon, text: "Labour Market Insights" },
-      { icon: subscription_shield_person_icon, text: "Exclusive Resources" },
+      { icon: subscription_lock_icon, text: "Exclusive Resources" },
       { icon: subscription_chat_icon, text: "Live chat support" },
     ],
     [PLAN_SELECTION_ITEMS.ANNUAL]: [
@@ -158,7 +158,7 @@ const getPlanFeatures = (
       { icon: subscription_sparkle_icon, text: "Perfect Match Automation" },
       { icon: subscription_thumbsup_icon, text: "Insights and Feedback" },
       { icon: subscription_linegraph_icon, text: "Labour Market Insights" },
-      { icon: subscription_shield_person_icon, text: "Exclusive Resources" },
+      { icon: subscription_lock_icon, text: "Exclusive Resources" },
       { icon: subscription_chat_icon, text: "Live chat support" },
     ],
   };

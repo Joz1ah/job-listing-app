@@ -1,13 +1,7 @@
 import React, { useState, useEffect } from "react";
 import {
-  CalendarCheck,
-  ThumbsUp,
-  ChartNoAxesCombined,
-  LockKeyhole,
-  MessageCircleMore,
-  Trophy,
+  //Trophy,
   ArrowLeft,
-  Infinity,
 } from "lucide-react";
 import { DefaultLayout } from "layouts";
 import { Button } from "components";
@@ -22,6 +16,13 @@ import { useLanding } from "pages/landing/useLanding";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 import { usePaymentCreateMutation } from "api/akaza/akazaAPI";
 import { InterruptedPaymentForm } from "./InterruptedPaymentForm";
+import card_icon from 'assets/subscription-plan-icons/card.svg?url'
+import calender_icon from "assets/subscription-plan-icons/calendar.svg?url";
+import line_graph_icon from "assets/subscription-plan-icons/linegraph.svg?url";
+import like_icon from "assets/subscription-plan-icons/thumbsup.svg?url";
+import infinity_icon from "assets/subscription-plan-icons/unli.svg?url";
+import lock_icon from "assets/subscription-plan-icons/lock.svg?url";
+import message_icon from "assets/subscription-plan-icons/chat.svg?url";
 
 type PlanProps = {
   type: string;
@@ -51,14 +52,14 @@ const PricingCard: React.FC<PlanProps & { onSelect?: () => void; hideButton?: bo
     }`}
   >
     <div className="text-center">
-      {isHighlighted && (
+      {/* {isHighlighted && (
         <div className="absolute -top-1 mt-4 left-3 flex items-center gap-1 ">
           <Trophy size={16} className="text-[#F5722E]" />
           <span className="text-[#F5722E] text-xs font-bold italic">
             Best Value
           </span>
         </div>
-      )}
+      )} */}
       <div className="inline-block px-4 py-1 rounded-full w-[124px] border border-[#F5722E] text-[#F5722E] mb-4 font-bold text-2xl">
         {type}
       </div>
@@ -289,12 +290,12 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
       }`}
     >
 
-        {isHighlighted && (
+        {/* {isHighlighted && (
           <div className="mb-2 flex gap-1">
             <Trophy size={20} className="text-[#F5722E]" />
             <span className="text-[#F5722E] text-sm">Best Value</span>
           </div>
-        )}
+        )} */}
 
         <h3 className="text-2xl flex justify-center text-[#F5722E] font-semibold mb-2">
           {title}
@@ -363,48 +364,48 @@ const FreeTrial: React.FC<FreeTrialProps> = ({ onBack, onSelectPlan }) => {
       icon: <img src={sparkle_icon_green} className="w-4 h-4" alt="sparkle" />,
       text: "Perfect Match automation",
     },
-    { icon: <ThumbsUp />, text: "Insights and Feedback" },
-    { icon: <LockKeyhole />, text: "Exclusive resources" },
+    { icon: <img src={like_icon} className="w-5 h-5" />, text: "Insights and Feedback" },
+    { icon: <img src={card_icon} className="w-5 h-5" />, text: "No credit or debit card required" },
   ];
 
   const yearlyFeatures = [
     ...(isEmployer 
       ? [
-          { icon: <Infinity />, text: "Unlimited Interview Invites" },
-          { icon: <CalendarCheck />, text: "Up to 5 Job Listings" },
+          { icon: <img src={infinity_icon} className="w-5 h-5" />, text: "Unlimited Interview Invites" },
+          { icon: <img src={calender_icon} className="w-5 h-5" />, text: "Up to 5 Job Listings" },
         ]
       : [
-          { icon: <CalendarCheck />, text: "Send up to 3 Interview Invites" },
+          { icon: <img src={calender_icon} className="w-5 h-5" />, text: "Send up to 3 Interview Invites" },
         ]
     ),
     {
       icon: <img src={sparkle_icon} className="w-4 h-4" alt="sparkle" />,
       text: "Perfect Match automation",
     },
-    { icon: <ThumbsUp />, text: "Insights and Feedback" },
-    { icon: <ChartNoAxesCombined />, text: "Labour Market Insights" },
-    { icon: <LockKeyhole />, text: "Exclusive resources" },
-    { icon: <MessageCircleMore />, text: "Live chat support" },
+    { icon: <img src={like_icon} className="w-5 h-5" />, text: "Insights and Feedback" },
+    { icon: <img src={line_graph_icon} />, text: "Labour Market Insights" },
+    { icon: <img src={lock_icon} />, text: isEmployer ? "Exclusive Employer Resources" : "Exclusive Resources" },
+    { icon: <img src={message_icon} />, text: "Live chat support" },
   ];
 
   const monthlyFeatures = [
     ...(isEmployer 
       ? [
-          { icon: <Infinity />, text: "Unlimited Interview Invites" },
-          { icon: <CalendarCheck />, text: "Up to 5 Job Listings" },
+          { icon: <img src={infinity_icon} className="w-5 h-5" />, text: "Unlimited Interview Invites" },
+          { icon: <img src={calender_icon} className="w-5 h-5" />, text: "Up to 5 Job Listings" },
         ]
       : [
-          { icon: <CalendarCheck />, text: "Send up to 3 Interview Invites" },
+          { icon: <img src={calender_icon} className="w-5 h-5" />, text: "Send up to 3 Interview Invites" },
         ]
     ),
     {
       icon: <img src={sparkle_icon} className="w-4 h-4" alt="sparkle" />,
       text: "Perfect Match automation",
     },
-    { icon: <ThumbsUp />, text: "Insights and Feedback" },
-    { icon: <ChartNoAxesCombined />, text: "Labour Market Insights" },
-    { icon: <LockKeyhole />, text: "Exclusive resources" },
-    { icon: <MessageCircleMore />, text: "Live chat support" },
+    { icon: <img src={like_icon} className="w-5 h-5" />, text: "Insights and Feedback" },
+    { icon: <img src={line_graph_icon} />, text: "Labour Market Insights" },
+    { icon: <img src={lock_icon} />, text: isEmployer ? "Exclusive Employer Resources" : "Exclusive Resources" },
+    { icon: <img src={message_icon} />, text: "Live chat support" },
   ];
 
   const handleStartFreeTrial = () => {
@@ -541,21 +542,21 @@ const InterruptedSubscriptionPage: React.FC = () => {
       features: [
         ...(isEmployer 
           ? [
-              { icon: <Infinity />, text: "Unlimited Interview Invites" },
-              { icon: <CalendarCheck />, text: "Up to 5 Job Listings" },
+              { icon: <img src={infinity_icon} className="w-5 h-5" />, text: "Unlimited Interview Invites" },
+              { icon: <img src={calender_icon} className="w-5 h-5" />, text: "Up to 5 Job Listings" },
             ]
           : [
-              { icon: <CalendarCheck />, text: "Send up to 3 Interview Invites" },
+              { icon: <img src={calender_icon} className="w-5 h-5" />, text: "Send up to 3 Interview Invites" },
             ]
         ),
         {
           icon: <img src={sparkle_icon_green} className="w-4 h-4" />,
           text: "Perfect Match automation",
         },
-        { icon: <ThumbsUp />, text: "Insights and Feedback" },
-        { icon: <ChartNoAxesCombined />, text: "Labour Market Insights" },
-        { icon: <LockKeyhole />, text: "Exclusive resources" },
-        { icon: <MessageCircleMore />, text: "Live chat support" },
+        { icon: <img src={like_icon} className="w-5 h-5" />, text: "Insights and Feedback" },
+        { icon: <img src={line_graph_icon} />, text: "Labour Market Insights" },
+        { icon: <img src={lock_icon} />, text: isEmployer ? "Exclusive Employer Resources" : "Exclusive resources" },
+        { icon: <img src={message_icon} />, text: "Live chat support" },
       ],
       isHighlighted: true,
     },
@@ -567,21 +568,21 @@ const InterruptedSubscriptionPage: React.FC = () => {
       features: [
         ...(isEmployer 
           ? [
-              { icon: <Infinity />, text: "Unlimited Interview Invites" },
-              { icon: <CalendarCheck />, text: "Up to 5 Job Listings" },
+              { icon: <img src={infinity_icon} className="w-5 h-5" />, text: "Unlimited Interview Invites" },
+              { icon: <img src={calender_icon} className="w-5 h-5" />, text: "Up to 5 Job Listings" },
             ]
           : [
-              { icon: <CalendarCheck />, text: "Send up to 3 Interview Invites" },
+              { icon: <img src={calender_icon} className="w-5 h-5" />, text: "Send up to 3 Interview Invites" },
             ]
         ),
         {
           icon: <img src={sparkle_icon_green} className="w-4 h-4" />,
           text: "Perfect Match automation",
         },
-        { icon: <ThumbsUp />, text: "Insights and Feedback" },
-        { icon: <ChartNoAxesCombined />, text: "Labour Market Insights" },
-        { icon: <LockKeyhole />, text: "Exclusive resources" },
-        { icon: <MessageCircleMore />, text: "Live chat support" },
+        { icon: <img src={like_icon} className="w-5 h-5" />, text: "Insights and Feedback" },
+        { icon: <img src={line_graph_icon} />, text: "Labour Market Insights" },
+        { icon: <img src={lock_icon} />, text: isEmployer ? "Exclusive Employer Resources" : "Exclusive resources" },
+        { icon: <img src={message_icon} />, text: "Live chat support" },
       ],
     },
     {
@@ -594,8 +595,8 @@ const InterruptedSubscriptionPage: React.FC = () => {
           icon: <img src={sparkle_icon_green} className="w-4 h-4" />,
           text: "Perfect Match automation",
         },
-        { icon: <ThumbsUp />, text: "Insights and Feedback" },
-        { icon: <LockKeyhole />, text: "Exclusive resources" },
+        { icon: <img src={like_icon} className="w-5 h-5" />, text: "Insights and Feedback" },
+        { icon: <img src={card_icon} className="w-5 h-5" />, text: "No credit or debit card required" },
       ],
     },
   ];

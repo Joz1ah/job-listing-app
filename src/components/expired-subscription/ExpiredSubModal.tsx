@@ -1,18 +1,16 @@
 import React, { useState } from "react";
-import {
-  CalendarCheck,
-  ThumbsUp,
-  ChartNoAxesCombined,
-  LockKeyhole,
-  MessageCircleMore,
-  Trophy,
-  Infinity,
-} from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
 import { Button } from "components";
 import { NavLink } from "react-router-dom";
 import { PaymentStep } from "./PaymentStep";
 import sparkle_icon from "assets/images/sparkle-icon.png";
+import trophy_icon from "assets/subscription-plan-icons/trophy-orange.svg?url";
+import calender_icon from "assets/subscription-plan-icons/calendar-orange.svg?url";
+import line_graph_icon from "assets/subscription-plan-icons/line-graph-orange.svg?url";
+import like_icon from "assets/subscription-plan-icons/like-orange.svg?url";
+import infinity_icon from "assets/subscription-plan-icons/infinity-orange.svg?url";
+import lock_icon from "assets/subscription-plan-icons/lock-orange.svg?url";
+import message_icon from "assets/subscription-plan-icons/message-orange.svg?url";
 
 type UserType = "employer" | "job-hunter";
 
@@ -36,42 +34,88 @@ type PlanType = "yearly" | "monthly";
 
 const getFeatures = (userType: UserType): PlanFeatures => ({
   yearly: [
-    ...(userType === "employer" 
+    ...(userType === "employer"
       ? [
-          { icon: <Infinity />, text: "Unlimited Interview Invites" },
-          { icon: <CalendarCheck />, text: "Up to 5 Job Listings" },
+          {
+            icon: <img src={infinity_icon} className="w-5 h-5" />,
+            text: "Unlimited Interview Invites",
+          },
+          {
+            icon: <img src={calender_icon} className="w-5 h-5" />,
+            text: "Up to 5 Job Listings",
+          },
         ]
       : [
-          { icon: <CalendarCheck />, text: "Send up to 3 Interview Invites" },
-        ]
-    ),
+          {
+            icon: <img src={calender_icon} className="w-5 h-5" />,
+            text: "Send up to 3 Interview Invites",
+          },
+        ]),
     {
       icon: <img src={sparkle_icon} className="w-5 h-5" />,
       text: "Perfect Match automation",
     },
-    { icon: <ThumbsUp />, text: "Insights and Feedback" },
-    { icon: <ChartNoAxesCombined />, text: "Labour Market Insights" },
-    { icon: <LockKeyhole />, text: "Exclusive Resources" },
-    { icon: <MessageCircleMore />, text: "Live chat support" },
+    {
+      icon: <img src={like_icon} className="w-5 h-5" />,
+      text: "Insights and Feedback",
+    },
+    {
+      icon: <img src={line_graph_icon} className="w-5 h-5" />,
+      text: "Labour Market Insights",
+    },
+    {
+      icon: <img src={lock_icon} className="w-5 h-5" />,
+      text:
+        userType === "employer"
+          ? "Exclusive Employer Resources"
+          : "Exclusive Resources",
+    },
+    {
+      icon: <img src={message_icon} className="w-5 h-5" />,
+      text: "Live chat support",
+    },
   ],
   monthly: [
     ...(userType === "employer"
       ? [
-          { icon: <Infinity />, text: "Unlimited Interview Invites" },
-          { icon: <CalendarCheck />, text: "Up to 5 Job Listings" },
+          {
+            icon: <img src={infinity_icon} className="w-5 h-5" />,
+            text: "Unlimited Interview Invites",
+          },
+          {
+            icon: <img src={calender_icon} className="w-5 h-5" />,
+            text: "Up to 5 Job Listings",
+          },
         ]
       : [
-          { icon: <CalendarCheck />, text: "Send up to 3 Interview Invites" },
-        ]
-    ),
+          {
+            icon: <img src={calender_icon} className="w-5 h-5" />,
+            text: "Send up to 3 Interview Invites",
+          },
+        ]),
     {
       icon: <img src={sparkle_icon} className="w-5 h-5" />,
       text: "Perfect Match automation",
     },
-    { icon: <ThumbsUp />, text: "Insights and Feedback" },
-    { icon: <ChartNoAxesCombined />, text: "Labour Market Insights" },
-    { icon: <LockKeyhole />, text: "Exclusive Resources" },
-    { icon: <MessageCircleMore />, text: "Live chat support" },
+    {
+      icon: <img src={like_icon} className="w-5 h-5" />,
+      text: "Insights and Feedback",
+    },
+    {
+      icon: <img src={line_graph_icon} className="w-5 h-5" />,
+      text: "Labour Market Insights",
+    },
+    {
+      icon: <img src={lock_icon} className="w-5 h-5" />,
+      text:
+        userType === "employer"
+          ? "Exclusive Employer Resources"
+          : "Exclusive Resources",
+    },
+    {
+      icon: <img src={message_icon} className="w-5 h-5" />,
+      text: "Live chat support",
+    },
   ],
 });
 
@@ -100,7 +144,9 @@ const ExpiredSubModal: React.FC<ExpiredSubModalProps> = ({
           Your Free Trial has expired
         </h3>
         <p className="text-[#263238] text-[15px]">
-          To continue enjoying access to {userType === "employer" ? "job listings" : "job opportunities"} and features,
+          To continue enjoying access to{" "}
+          {userType === "employer" ? "job listings" : "job opportunities"} and
+          features,
         </p>
         <p className="text-[#263238] text-[15px]">
           please choose a subscription
@@ -112,7 +158,7 @@ const ExpiredSubModal: React.FC<ExpiredSubModalProps> = ({
         <div className="w-full md:w-[325px] p-4 rounded bg-[#263238] shadow-[0_0_15px_rgba(249,115,22,0.4)] transition-all duration-300 ease-in-out hover:scale-105 flex flex-col">
           <div className="flex flex-col flex-grow">
             <div className="flex gap-1 mb-4">
-              <Trophy size={20} className="text-[#F5722E]" />
+              <img src={trophy_icon} className="w-5 h-5" />
               <span className="text-[#F5722E] text-sm italic font-bold">
                 Best Value
               </span>
@@ -123,10 +169,9 @@ const ExpiredSubModal: React.FC<ExpiredSubModalProps> = ({
             </h3>
 
             <p className="text-sm mb-6 text-[#F5F5F7] text-center">
-              {userType === "employer" 
+              {userType === "employer"
                 ? "Maximize your reach, save more, and hire the best talent faster"
-                : "Get access to more opportunities and boost your career growth"
-              }
+                : "Get access to more opportunities and boost your career growth"}
             </p>
 
             <div className="space-y-4 flex-grow">
@@ -162,7 +207,6 @@ const ExpiredSubModal: React.FC<ExpiredSubModalProps> = ({
         {/* Monthly Plan Card */}
         <div className="w-full md:w-[325px] p-6 rounded bg-[#F9E2CE] shadow-md transition-all duration-300 ease-in-out hover:scale-105 flex flex-col">
           <div className="flex flex-col flex-grow">
-
             <h3 className="text-xl text-center text-[#F5722E] font-semibold mb-4">
               Monthly Plan
             </h3>
@@ -170,8 +214,7 @@ const ExpiredSubModal: React.FC<ExpiredSubModalProps> = ({
             <p className="text-sm mb-6 text-[#263238] text-center">
               {userType === "employer"
                 ? "Maximize your reach, save more, and hire the best talent faster"
-                : "Get access to more opportunities and boost your career growth"
-              }
+                : "Get access to more opportunities and boost your career growth"}
             </p>
 
             <div className="space-y-4 flex-grow">
@@ -250,10 +293,14 @@ const ExpiredSubModal: React.FC<ExpiredSubModalProps> = ({
       </p>
 
       <div className="flex flex-col space-y-3 items-center w-full">
-        <NavLink to={userType === "employer" ? "/dashboard/job-listing" : "/dashboard/feed"}>
-          <Button
-            className="bg-[#F5722E] text-sm hover:bg-[#F5722E]/80 text-white rounded w-36 px-0"
-          >
+        <NavLink
+          to={
+            userType === "employer"
+              ? "/dashboard/job-listing"
+              : "/dashboard/feed"
+          }
+        >
+          <Button className="bg-[#F5722E] text-sm hover:bg-[#F5722E]/80 text-white rounded w-36 px-0">
             {userType === "employer" ? "Create Job Listing" : "Browse Jobs"}
           </Button>
         </NavLink>
