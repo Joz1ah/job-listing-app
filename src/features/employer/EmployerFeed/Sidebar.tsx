@@ -49,7 +49,8 @@ const Sidebar: FC = () => {
   const [selectedJob, setSelectedJob] = useState<string>("");
   const isDashboard = location.pathname === "/dashboard";
   const perfectMatchContext = isDashboard ? usePerfectMatchContext() : null;
-  const { updateMatchState, setJobList } = perfectMatchContext || {};
+  const { updateMatchState, setJobList, isLoadingMatches } =
+    perfectMatchContext || {};
   const hideOnPagesMobile = [
     "/dashboard/job-listing",
     "/dashboard/employer-profile",
@@ -66,14 +67,14 @@ const Sidebar: FC = () => {
   const shouldShowDesktopView = !hideOnPagesDesktop.includes(location.pathname);
 
   useEffect(() => {
-    if(isDashboard && data){
-      if(data.data.jobs.length > 0){
+    if (isDashboard && data) {
+      if (data.data.jobs.length > 0) {
         //updateMatchState({selectedJobId:data.data.jobs[0].id});
-        setJobList?.(data.data.jobs)
+        setJobList?.(data.data.jobs);
       }
     }
-  },[data])
-  
+  }, [data]);
+
   useEffect(() => {
     const jobIdMatch = location.pathname.match(/\/dashboard\/job\/(\d+)/);
     if (jobIdMatch) {
@@ -87,8 +88,11 @@ const Sidebar: FC = () => {
 
   const handleJobSelect = (jobId: string) => {
     const _jobId = Number(jobId);
-    setSelectedJob(jobId)
-    updateMatchState?.({selectedJobId:_jobId});
+    setSelectedJob(jobId);
+
+    // Call updateMatchState with the selected job ID
+    // The isLoadingMatches state will be managed by the PerfectMatchContext
+    updateMatchState?.({ selectedJobId: _jobId });
   };
 
   const SelectComponent = () => {
@@ -99,15 +103,25 @@ const Sidebar: FC = () => {
       <div className="relative pt-4 w-full">
         <div className="relative">
           {!isFirstJobListing && (
-            <Select value={selectedJob} onValueChange={handleJobSelect}>
+            <Select
+              value={selectedJob}
+              onValueChange={handleJobSelect}
+              disabled={isLoading || isLoadingMatches}
+            >
               <SelectTrigger
                 className={cn(
                   "bg-transparent border-[#AEADAD] text-[#F5F5F7] h-[56px] border-2 focus:border-[#F5722E]",
+                  (isLoading || isLoadingMatches) &&
+                    "opacity-60 cursor-not-allowed",
                 )}
               >
                 <SelectValue
                   placeholder={
-                    isLoading ? "Loading..." : "Select a job listing"
+                    isLoading
+                      ? "Loading..."
+                      : isLoadingMatches
+                        ? "Updating perfect match..."
+                        : "Select a job listing"
                   }
                   className="text-left pl-4"
                 />
