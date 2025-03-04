@@ -11,6 +11,7 @@ import green_lock_icon from "assets/green-lock.svg?url";
 import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
 import { MODAL_STATES } from "store/modal/modal.types";
 import { PLAN_SELECTION_ITEMS } from "store/user/user.types";
+import { createAuthNetTokenizer, createAuthnetPaymentSecureData } from "services/authnet/authnetService";
 
 interface FormValues {
   cardNumber: string;
@@ -22,7 +23,6 @@ interface FormValues {
 const CreditCardForm: React.FC = () => {
   const {
     handleSetModalState,
-    createAuthNetTokenizer,
     dataStates,
     currentSelectedPlan,
   } = useLanding();
@@ -83,18 +83,13 @@ const CreditCardForm: React.FC = () => {
 
   const handleSubmit = async (values: FormValues) => {
     setIsSubmitting(true);
-    const secureData = {
-      authData: {
-        clientKey: process.env.AUTHORIZE_NET_CLIENT_KEY, // Replace with your actual client key
-        apiLoginID: process.env.AUTHORIZE_NET_API_LOGIN_ID, // Replace with your actual API login ID
-      },
-      cardData: {
-        cardNumber: values.cardNumber,
-        month: values.expirationDate.split("/")[0],
-        year: values.expirationDate.split("/")[1],
-        cardCode: values.cvv,
-      },
-    };
+    
+    const secureData = createAuthnetPaymentSecureData({
+      cardNumber: values.cardNumber,
+      month: values.expirationDate.split("/")[0],
+      year: values.expirationDate.split("/")[1],
+      cardCode: values.cvv,
+   })
 
     Accept.dispatchData(secureData, async (acceptResponse: any) => {
       if (acceptResponse.messages.resultCode === "Ok") {

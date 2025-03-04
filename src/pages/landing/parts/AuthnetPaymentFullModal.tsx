@@ -19,6 +19,7 @@ import mastercard_icon from "assets/credit-card-icons/cc_mastercard.svg?url";
 import discover_icon from "assets/credit-card-icons/cc_discover.svg?url";
 import authnet_logo from "assets/authnet-logo2.svg?url";
 import { useModal } from "components/modal/useModal";
+import { createAuthNetTokenizer, createAuthnetPaymentSecureData } from "services/authnet/authnetService";
 
 interface PaymentFormValues {
   cardNumber: string;
@@ -39,7 +40,6 @@ const AuthnetPaymentFullModal = () => {
   const {
     currentSelectedPlan,
     handleSetModalState,
-    createAuthNetTokenizer,
     modalState,
     tempLoginEmail,
     tempLoginPassword,
@@ -84,20 +84,13 @@ const AuthnetPaymentFullModal = () => {
       values.country?.toLowerCase() === "canada" ? subtotal * 0.13 : 0;
     const totalAmount = Number((subtotal + tax).toFixed(2));
 
-    const secureData = {
-      authData: {
-        clientKey:
-          "7wuXYQ768E3G3Seuy6aTf28PfU3mJWu7Bbj564KfTPqRa7RXUPZvTsnKz9Jf7daJ",
-        apiLoginID: "83M29Sdd8",
-      },
-      cardData: {
+    const secureData = createAuthnetPaymentSecureData({
         cardNumber: values.cardNumber,
         month: values.expiryDate.split("/")[0],
         year: values.expiryDate.split("/")[1],
         cardCode: values.cvv,
-      },
-    };
-
+    })
+    console.log(secureData)
     Accept.dispatchData(secureData, async (acceptResponse: any) => {
       if (acceptResponse.messages.resultCode === "Ok") {
         const token = acceptResponse.opaqueData.dataValue;

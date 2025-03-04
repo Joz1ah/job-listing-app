@@ -27,6 +27,7 @@ const ALIAS: Record<string, string> = {
   i18n: `${SRC_DIR}/i18n`,
   server: `${SRC_DIR}/server`,
   src: `${SRC_DIR}`,
+  services: `${SRC_DIR}/services`,
   style: `${SRC_DIR}/style`,
   store: `${SRC_DIR}/store`,
   types: `${SRC_DIR}/types`,
