@@ -52,6 +52,12 @@ const plugins: WebpackPluginInstance[] = [
     'process.env.INTERVIEWREQUEST_API_URL': JSON.stringify(process.env.INTERVIEWREQUEST_API_URL),
     'process.env.AUTHORIZE_NET_CLIENT_KEY': JSON.stringify(process.env.AUTHORIZE_NET_CLIENT_KEY),
     'process.env.AUTHORIZE_NET_API_LOGIN_ID': JSON.stringify(process.env.AUTHORIZE_NET_API_LOGIN_ID),
+    //App Features
+    'process.env.EARLY_ACCESS_USER_ONLY': JSON.stringify(process.env.EARLY_ACCESS_USER_ONLY),
+    'process.env.EARLY_ACCESS_SECRET': JSON.stringify(process.env.EARLY_ACCESS_SECRET),
+    'process.env.AI_RESUME_REVIEW': JSON.stringify(process.env.AI_RESUME_REVIEW),
+    'process.env.INSTANT_MATCHING': JSON.stringify(process.env.INSTANT_MATCHING),
+    'process.env.PREMIUM_ANALYTICS': JSON.stringify(process.env.PREMIUM_ANALYTICS),
   }),
   ...(process.env.NO_SSR === 'true'
     ? [

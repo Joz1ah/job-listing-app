@@ -1,4 +1,5 @@
-import { RouteObject, Navigate, useLocation } from 'react-router-dom'
+import { RouteObject, Navigate, useLocation } from 'react-router-dom';
+import Cookies from 'js-cookie';
 import { lazy, Suspense, ComponentType, useEffect, useState  } from 'react'
 import { ROUTE_CONSTANTS } from 'constants/routeConstants'
 import spinner_loading_fallback from 'assets/images/spinner-loading-akaza.svg?url'
@@ -7,6 +8,7 @@ import { isServer } from 'utils';
 import { IntercomProvider } from 'contexts/Intercom/IntercomContext';
 import { withPerfectMatchProvider } from 'hocs';
 import SubscriptionExpiryWrapper from 'components/expired-subscription/SubscriptionExpiryWrapper';
+import { useFeatureController } from 'contexts/FeatureControllerContext/FeatureController';
 
 import { useNavigate, useSearchParams } from "react-router-dom";
 const BaseLayout = lazy(() => import('pages').then(module => ({ default: module.BaseLayout })))
@@ -19,6 +21,7 @@ const AboutUs = lazy(() => import('pages').then(module => ({ default: module.Abo
 const ContactUs = lazy(() => import('pages').then(module => ({ default: module.ContactUs })))
 const Faq = lazy(() => import('pages').then(module => ({ default: module.Faq })))
 const Test = lazy(() => import('pages').then(module => ({ default: module.Test })))
+const ComingSoon = lazy(() => import('pages').then(module => ({ default: module.ComingSoon })))
 
 // Employer pages
 //const EmployerBaseLayout = lazy(() => import('pages').then(module => ({ default: module.EmployerBaseLayout })))
@@ -279,19 +282,45 @@ const EarlyAccessControl = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const earlyAccessKey = searchParams.get("earlyAccessKey");
+  const [isCookieSet, setIsCookieSet] = useState(false);
+  if(earlyAccessKey){
+    Cookies.set('earlyAccessKey', earlyAccessKey, {
+      path: '/',
+      secure: true,
+      sameSite: 'strict',
+      expires: 1,
+    });
+  }
+  setIsCookieSet(true); 
+
   useEffect(() => {
-    if (earlyAccessKey) {
-      navigate(ROUTE_CONSTANTS.LANDING, { state: { earlyAccessKey }, replace: true });
+    if (isCookieSet) {
+      navigate(ROUTE_CONSTANTS.LANDING,{replace: true });
     }
-  }, [earlyAccessKey, navigate]);
+  }, [isCookieSet]);
 
   return <div>You must have an early access key to access the site</div>;
 };
 
+const PageGatekeeper =  ({ children }: { children: React.ReactNode }) => {
+  const {features} = useFeatureController();
+  if(features.earlyAccessUserOnly){
+    const earlyAccessKey = Cookies.get('earlyAccessKey') || null;
+    if(earlyAccessKey === process.env.EARLY_ACCESS_SECRET){
+      return children
+    }else{
+      return <LazyComponent component={ComingSoon} />//children
+    }
+  }else{
+    return children
+  }
+
+}
+
 const routes: RouteObject[] = [
   {
-    path: '*', // Matches all paths that are not explicitly defined
-    element: <EarlyAccessControl />, // Replace with your 404 or fallback component
+    path: '*',
+    element: <LazyComponent component={NotFound} />
   },
   {
     path: '',
@@ -306,11 +335,21 @@ const routes: RouteObject[] = [
     element: <ResetPasswordRedirect/>,
   },
   {
+    path: ROUTE_CONSTANTS.GET_EARLY_ACCESS_KEY,
+    element: <EarlyAccessControl/>,
+  },
+  {
+    path: ROUTE_CONSTANTS.COMING_SOON,
+    element: <LazyComponent component={ComingSoon} />,
+  },
+  {
     path: ROUTE_CONSTANTS.LANDING,
     element: 
-    <DashboardRedirectRoute>
-      <LazyComponent component={Landing} />
-    </DashboardRedirectRoute>,
+    <PageGatekeeper>
+      <DashboardRedirectRoute>
+        <LazyComponent component={Landing} />
+      </DashboardRedirectRoute>
+    </PageGatekeeper>,
     children: [
       {
         index: true,
@@ -320,55 +359,52 @@ const routes: RouteObject[] = [
   },
   {
     path: ROUTE_CONSTANTS.ABOUT_US,
-    element: <LazyComponent component={AboutUs} />
+    element: 
+    <PageGatekeeper>
+      <LazyComponent component={AboutUs} />
+    </PageGatekeeper>
   },
   {
     path: ROUTE_CONSTANTS.CONTACT_US,
-    element: <LazyComponent component={ContactUs} />
+    element: 
+    <PageGatekeeper>
+      <LazyComponent component={ContactUs} />
+    </PageGatekeeper>
   },
   {
     path: ROUTE_CONSTANTS.SUBSCRIPTION_PLAN,
-    element: <LazyComponent component={SubscriptionPlan} />
+    element: 
+    <PageGatekeeper>
+      <LazyComponent component={SubscriptionPlan} />
+    </PageGatekeeper>
   },
   {
     path: ROUTE_CONSTANTS.FAQ,
-    element: <LazyComponent component={Faq} />
+    element: 
+    <PageGatekeeper>
+      <LazyComponent component={Faq} />
+    </PageGatekeeper>
   },
-  /*
-  {
-    path: ROUTE_CONSTANTS.HOME,
-    element: <LazyComponent component={Home} />
-  },
-  {
-    path: ROUTE_CONSTANTS.FETCH,
-    element: <LazyComponent component={Fetch} />
-  },
-  {
-    path: ROUTE_CONSTANTS.ABOUT,
-    element: <LazyComponent component={About} />
-  },
-  */
-  // ... rest of your routes remain the same
   {
     path: ROUTE_CONSTANTS.INTERRUPTED_SUBSCRIPTION,
     element: (
+    <PageGatekeeper>
       <InterruptedSubscriptionRoute>
         <LazyComponent component={InterruptedSubscriptionPage} />
       </InterruptedSubscriptionRoute>
+    </PageGatekeeper>
     )
-  },
-  {
-    path: '*',
-    element: <LazyComponent component={NotFound} />
   },
   {
     path: ROUTE_CONSTANTS.DASHBOARD,
   element: (
-    <ProtectedRoute>
-      <SubscriptionExpiryWrapper>
-        <LazyComponent component={BaseLayout}/>
-      </SubscriptionExpiryWrapper>
-    </ProtectedRoute>
+    <PageGatekeeper>
+      <ProtectedRoute>
+        <SubscriptionExpiryWrapper>
+          <LazyComponent component={BaseLayout}/>
+        </SubscriptionExpiryWrapper>
+      </ProtectedRoute>
+    </PageGatekeeper>
   ),
     children: [
       // Feed
