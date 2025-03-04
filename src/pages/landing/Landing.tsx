@@ -7,7 +7,7 @@ import { useAuth } from "contexts/AuthContext/AuthContext";
 import { Outlet, useMatch } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 
-import {CookieConsentBanner, CookieConsentSnackBar} from "components/cookies";
+//import {CookieConsentBanner, CookieConsentSnackBar} from "components/cookies";
 import _5dollarspermonth from "assets/5dollarspermonth.svg?url";
 
 import styles from "./landing.module.scss";
@@ -39,8 +39,8 @@ const Landing: FC = (): ReactElement => {
           <Outlet />
         </div>
       </DefaultLayout>
-      <CookieConsentBanner/>
-      <CookieConsentSnackBar/>
+      {/* <CookieConsentBanner/>
+      <CookieConsentSnackBar/> */}
     </LandingContext.Provider>
   );
 };

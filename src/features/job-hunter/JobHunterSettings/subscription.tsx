@@ -1,18 +1,17 @@
 import React, { useState } from "react";
-import {
-  CalendarCheck,
-  ThumbsUp,
-  ChartNoAxesCombined,
-  LockKeyhole,
-  MessageCircleMore,
-  Trophy,
-} from "lucide-react";
 import { Button } from "components";
 import { useJobHunterContext } from "components";
 import { SubscriptionDialog } from "./alerts/SubscriptionDialog";
 import sparkle_icon from "assets/images/sparkle-icon.png";
 import star_icon from "assets/images/star-subscription-icon.svg?url";
 import { PaymentStep } from "components";
+import trophy_icon from "assets/subscription-plan-icons/trophy-orange.svg?url";
+import calender_icon from "assets/subscription-plan-icons/calendar-orange.svg?url";
+import line_graph_icon from "assets/subscription-plan-icons/line-graph-orange.svg?url";
+import like_icon from "assets/subscription-plan-icons/like-orange.svg?url";
+import infinity_icon from "assets/subscription-plan-icons/infinity-orange.svg?url";
+import lock_icon from "assets/subscription-plan-icons/lock-orange.svg?url";
+import message_icon from "assets/subscription-plan-icons/message-orange.svg?url";
 
 import { ExpiredSubModal } from "components";
 
@@ -80,26 +79,61 @@ const SubscriptionSettings: React.FC = () => {
 
   const features: PlanFeatures = {
     yearly: [
-      { icon: <CalendarCheck />, text: "Send up to 3 interview invites" },
+      {
+        icon: <img src={infinity_icon} className="w-5 h-5" />,
+        text: "Unlimited interview Invites",
+      },
+      {
+        icon: <img src={calender_icon} className=" w-5 h-5" />,
+        text: "Up to 5 Job Listings",
+      },
       {
         icon: <img src={sparkle_icon} className="w-5 h-5" />,
         text: "Perfect Match automation",
       },
-      { icon: <ThumbsUp />, text: "Insights and Feedback" },
-      { icon: <ChartNoAxesCombined />, text: "Labour Market Insights" },
-      { icon: <LockKeyhole />, text: "Exclusive Resources" },
-      { icon: <MessageCircleMore />, text: "Live chat support" },
+      {
+        icon: <img src={like_icon} className="w-5 h-5" />,
+        text: "Insights and Feedback",
+      },
+      {
+        icon: <img src={line_graph_icon} className="w-5 h-5" />,
+        text: "Labour Market Insights",
+      },
+      {
+        icon: <img src={lock_icon} className="w-5 h-5" />,
+        text: "Exclusive Employer Resources",
+      },
+      { icon: <img src={message_icon} />, text: "Live chat support" },
     ],
     monthly: [
-      { icon: <CalendarCheck />, text: "Send up to 3 interview invites" },
+      {
+        icon: <img src={calender_icon} className=" w-5 h-5" />,
+        text: "Up to 5 Job Listings",
+      },
+      {
+        icon: <img src={infinity_icon} className="w-5 h-5" />,
+        text: "Unlimited interviews",
+      },
       {
         icon: <img src={sparkle_icon} className="w-5 h-5" />,
         text: "Perfect Match automation",
       },
-      { icon: <ThumbsUp />, text: "Insights and Feedback" },
-      { icon: <ChartNoAxesCombined />, text: "Labour Market Insights" },
-      { icon: <LockKeyhole />, text: "Exclusive Resources" },
-      { icon: <MessageCircleMore />, text: "Live chat support" },
+      {
+        icon: <img src={like_icon} className="w-5 h-5" />,
+        text: "Ratings and Feedback",
+      },
+      {
+        icon: <img src={line_graph_icon} className="w-5 h-5" />,
+        text: "Labour Market Insights",
+      },
+      {
+        icon: <img src={lock_icon} className="w-5 h-5" />,
+        text: "Exclusive Employer Resources",
+      },
+      {
+        icon: <img src={message_icon} className="w-5 h-5" />,
+        text: "Live chat support",
+      },
     ],
   };
 
@@ -121,10 +155,10 @@ const SubscriptionSettings: React.FC = () => {
     return (
       <div className="w-full">
         <div className="mb-2">
-          <h2 className="text-[#F5F5F7] text-2xl font-normal mb-3">
-            ✦ Your Subscription
+          <h2 className="flex text-[#F5F5F7] text-2xl font-normal mb-3 items-center">
+            <span className="text-3xl mr-2">✦</span> Your Subscription
           </h2>
-          <p className="text-[#F8F8FF] text-sm">
+          <p className="text-[#F8F8FF] text-[13px]">
             Select the perfect plan for your needs: get started with our $5
             monthly plan for easy access to all essential features, or save more
             with our $55 yearly plan, offering full access to premium content
@@ -172,10 +206,10 @@ const SubscriptionSettings: React.FC = () => {
     <div className="w-full">
       <ExpiredSubModal open={isModalOpen} userType="job-hunter" />
       <div className="mb-2">
-        <h2 className="text-[#F5F5F7] text-2xl font-normal mb-3">
-          ✦ Subscription Plans
+        <h2 className="flex text-[#F5F5F7] text-2xl font-normal mb-3 items-center">
+          <span className="text-3xl mr-2">✦</span> Your Subscription
         </h2>
-        <p className="text-[#F8F8FF] text-sm">
+        <p className="text-[#F8F8FF] text-[13px]">
           Select the perfect plan for your needs: get started with our $5
           monthly plan for easy access to all essential features, or save more
           with our $55 yearly plan, offering full access to premium content and
@@ -253,11 +287,15 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   // Determine if button should be disabled (when trying to downgrade from yearly to monthly)
   const isDisabled =
     subscriptionPlan === "yearlyPlan" && title === "Monthly Plan";
-    
+
   // Determine if button should be hidden
-  const hideButton = 
-    (isCurrentPlan && subscriptionPlan === "monthlyPlan" && title === "Monthly Plan") || 
-    (isCurrentPlan && subscriptionPlan === "yearlyPlan" && title === "Yearly Plan");
+  const hideButton =
+    (isCurrentPlan &&
+      subscriptionPlan === "monthlyPlan" &&
+      title === "Monthly Plan") ||
+    (isCurrentPlan &&
+      subscriptionPlan === "yearlyPlan" &&
+      title === "Yearly Plan");
 
   return (
     <div
@@ -273,8 +311,10 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
     >
       {isHighlighted && (
         <div className="mb-2 flex gap-1">
-          <Trophy size={20} className="text-[#F5722E]" />
-          <span className="text-[#F5722E] text-sm">Best Value</span>
+          <img src={trophy_icon} className="w-5 h-5" />
+          <span className="text-[#F5722E] text-sm font-semibold italic">
+            Best Value
+          </span>
         </div>
       )}
 

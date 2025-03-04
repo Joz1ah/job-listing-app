@@ -151,40 +151,24 @@ export const akazaApiAuth = createApiFunction({
       }),
       async onQueryStarted(args,{ queryFulfilled }) {
         args = args
+        console.log(args)
+        console.log(queryFulfilled)
 
         try {
-          // Wait for the API response
           const { data } = await queryFulfilled;
-
-          // Set the token as a cookie if the response is successful
           if (data?.data?.token) {
-            console.log('setting cookies')
-            if(process.env.NODE_ENV == 'development'){
-              Cookies.set('authToken', data.data.token, {
-                path: '/', // Cookie is available site-wide
-                secure: true, // Ensures cookie is sent over HTTPS
-                sameSite: 'strict', // Prevents CSRF attacks
-                domain: 'localhost'
-                //expires: 7, // Expires in 7 days
-              });
-
-            }else if(process.env.NODE_ENV == 'production'){
-              Cookies.set('authToken', data.data.token, {
-                path: '/', // Cookie is available site-wide
-                secure: true, // Ensures cookie is sent over HTTPS
-                sameSite: 'strict', // Prevents CSRF attacks
-                domain: 'akaza.xyz'
-                //expires: 7, // Expires in 7 days
-              });
-            }
-            console.log('cookies is set')
+            Cookies.set('authToken', data.data.token, {
+              path: '/', // Cookie is available site-wide
+              secure: true, // Ensures cookie is sent over HTTPS
+              sameSite: 'strict', // Prevents CSRF attacks
+              //expires: 7, // Expires in 7 days
+            });
           } else {
             console.warn('No token found in the response.');
           }
         } catch (error) {
-          // Log the error if the API call fails
-          error = error
-          /*console.error('Error in login mutation:', error);*/
+          console.error(error)
+          //throw(error)
         }
       },
     }),

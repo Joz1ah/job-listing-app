@@ -36,6 +36,81 @@ const defaultSrc = [
   'nexus-websocket-a.intercom.io',
 ];
 
+const intercomSrc = {
+  'connect-src': [
+  'https://via.intercom.io',
+  'https://api.intercom.io',
+  'https://api.au.intercom.io',
+  'https://api.eu.intercom.io',
+  'https://api-iam.intercom.io',
+  'https://api-iam.eu.intercom.io',
+  'https://api-iam.au.intercom.io',
+  'https://api-ping.intercom.io',
+  'https://nexus-websocket-a.intercom.io',
+  'wss://nexus-websocket-a.intercom.io',
+  'https://nexus-websocket-b.intercom.io',
+  'wss://nexus-websocket-b.intercom.io',
+  'https://nexus-europe-websocket.intercom.io',
+  'wss://nexus-europe-websocket.intercom.io',
+  'https://nexus-australia-websocket.intercom.io',
+  'wss://nexus-australia-websocket.intercom.io',
+  'https://uploads.intercomcdn.com',
+  'https://uploads.intercomcdn.eu',
+  'https://uploads.au.intercomcdn.com',
+  'https://uploads.eu.intercomcdn.com',
+  'https://uploads.intercomusercontent.com'],
+'child-src': [
+  'https://intercom-sheets.com',
+  'https://www.intercom-reporting.com',
+  'https://www.youtube.com',
+  'https://player.vimeo.com',
+  'https://fast.wistia.net',],
+'font-src': [
+  'https://js.intercomcdn.com',
+  'https://fonts.intercomcdn.com'],
+
+'form-action': [
+  'https://intercom.help',
+  'https://api-iam.intercom.io',
+  'https://api-iam.eu.intercom.io',
+  'https://api-iam.au.intercom.io'],
+
+'media-src': [
+  'https://js.intercomcdn.com',
+  'https://downloads.intercomcdn.com',
+  'https://downloads.intercomcdn.eu',
+  'https://downloads.au.intercomcdn.com'],
+
+'img-src': [
+  'https://js.intercomcdn.com',
+  'https://static.intercomassets.com',
+  'https://downloads.intercomcdn.com',
+  'https://downloads.intercomcdn.eu',
+  'https://downloads.au.intercomcdn.com',
+  'https://uploads.intercomusercontent.com',
+  'https://gifs.intercomcdn.com',
+  'https://video-messages.intercomcdn.com',
+  'https://messenger-apps.intercom.io',
+  'https://messenger-apps.eu.intercom.io',
+  'https://messenger-apps.au.intercom.io',
+  'https://*.intercom-attachments-1.com',
+  'https://*.intercom-attachments.eu',
+  'https://*.au.intercom-attachments.com',
+  'https://*.intercom-attachments-2.com',
+  'https://*.intercom-attachments-3.com',
+  'https://*.intercom-attachments-4.com',
+  'https://*.intercom-attachments-5.com',
+  'https://*.intercom-attachments-6.com',
+  'https://*.intercom-attachments-7.com',
+  'https://*.intercom-attachments-8.com',
+  'https://*.intercom-attachments-9.com',
+  'https://static.intercomassets.eu',
+  'https://static.au.intercomassets.com'],
+'style-src': [
+  'unsafe-inline']
+}
+intercomSrc
+
 const csp = (req: Request, res: Response, next: NextFunction): void => {
   const middleware = helmet({
     contentSecurityPolicy: {
@@ -49,6 +124,7 @@ const csp = (req: Request, res: Response, next: NextFunction): void => {
           //`'nonce-${String(res.locals.cspNonce)}'`,
           'https://fonts.googleapis.com',
           'https://fonts.gstatic.com',
+          'https://cdnapp.websitepolicies.net'
         ],     
         imgSrc: [
           "'self'",
@@ -71,6 +147,8 @@ const csp = (req: Request, res: Response, next: NextFunction): void => {
           'https://verify.authorize.net',
           'https://widget.intercom.io/',
           'https://js.intercomcdn.com/',
+          'https://cdnapp.websitepolicies.net', //cookies
+          'https://cdn.jsdelivr.net', //cookies
           IS_DEV ? "'unsafe-eval'" : ''
         ].filter(Boolean),
         frameSrc: ["'self'", "https://js.stripe.com", "http://js.stripe.com","https://intercom-sheets.com"],
@@ -81,7 +159,9 @@ const csp = (req: Request, res: Response, next: NextFunction): void => {
           "http://api.stripe.com",
           'https://api2.authorize.net',
           'https://apitest.authorize.net',
-          'wss://nexus-websocket-a.intercom.io'
+          'wss://nexus-websocket-a.intercom.io',
+          'https://cdnapp.websitepolicies.net', //cookies
+          'https://consents.websitepolicies.com/' //cookies
         ],
         formAction: [
           "'self'", // Allow form submissions to the same origin

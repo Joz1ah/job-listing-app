@@ -61,29 +61,15 @@ export const useLanding = () => {
     dispatch(setIsResetPasswordSuccesful(state));
   };
 
-  const handleSetCurrentResetPasswordEmail = (state: string) => {
-    dispatch(setCurrentResetPasswordEmail(state));
-  };
-  
-  const createAuthNetTokenizer = async () => {
-    const isDevOrStaging =
-      process.env.NODE_ENV === "development" ||
-      window.location.origin === "https://app-sit.akaza.xyz";
-
-    const scriptSources = {
-      acceptJs: isDevOrStaging
-        ? "https://jstest.authorize.net/v1/Accept.js"
-        : "https://js.authorize.net/v1/Accept.js",
-      acceptCore: isDevOrStaging
-        ? "https://jstest.authorize.net/v1/AcceptCore.js"
-        : "https://js.authorize.net/v1/AcceptCore.js",
-    };
+  const createExternalCookiePolicy = async () => {
+    const scriptSrc = 'https://cdnapp.websitepolicies.net/widgets/cookies/uz6lppct.js';
 
     // Check if the script already exists
-    if (!document.querySelector(`script[src="${scriptSources.acceptCore}"]`)) {
+    if (!document.querySelector(`script[src="${scriptSrc}"]`)) {
       const script = document.createElement("script");
-      script.src = scriptSources.acceptJs;
+      script.src = scriptSrc;
       script.async = true;
+      script.defer = true;
       document.body.appendChild(script);
 
       return () => {
@@ -104,7 +90,7 @@ export const useLanding = () => {
     tempLoginEmail,
     tempLoginPassword,
     currentSelectedPlan,
-    createAuthNetTokenizer,
+    createExternalCookiePolicy,
     heroState,
     handleSetHeroState,
     selectedSkills,

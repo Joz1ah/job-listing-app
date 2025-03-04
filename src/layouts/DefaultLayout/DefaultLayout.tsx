@@ -34,7 +34,7 @@ export const DefaultLayout: React.FC<DefaultLayoutProps> = ({
   className
 }) => {
   
-  const { handleSetModalState } = useLanding();
+  const { handleSetModalState, createExternalCookiePolicy } = useLanding();
   const location = useLocation();
   const { menuOpen, toggleMenu } = useMenu();
   const { user, isAuthenticated } = useAuth();
@@ -47,6 +47,10 @@ export const DefaultLayout: React.FC<DefaultLayoutProps> = ({
 
   const { toggleModal, handleSetSelectedModalHeader } = useModal();
 
+  useEffect(()=>{
+    createExternalCookiePolicy()
+  },[])
+  
   useEffect(() => {
     // Close modal on location change unless we specifically want it open
     if (!location.state?.openModal) {

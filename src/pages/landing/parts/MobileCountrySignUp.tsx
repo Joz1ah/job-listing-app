@@ -7,7 +7,7 @@ import { useLanding } from "../useLanding";
 import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
 import { MODAL_HEADER_TYPE, MODAL_STATES } from "store/modal/modal.types";
 import { isValidPhoneNumber } from "react-phone-number-input";
-import { getCountryByNumber } from 'utils/phoneUtils';
+import { getCountryByNumber } from "utils/phoneUtils";
 import countries from "constants/countries";
 
 interface FormValues {
@@ -31,23 +31,23 @@ const MobileCountrySignUp = () => {
 
   const validationSchema = Yup.object({
     phoneNumber: Yup.string()
-        .required("This field is required")
-        .test(
-          "phone",
-          "Phone number must be in international format and contain 11-12 digits",
-          function (value) {
-            if (!value) return false;
-    
-            // Check if it's a valid phone number first
-            if (!isValidPhoneNumber(value)) return false;
-    
-            // Remove all non-digit characters to check length
-            const digitsOnly = value.replace(/\D/g, "");
-    
-            // Check if the number of digits is between 11 and 12
-            return digitsOnly.length >= 11 && digitsOnly.length <= 12;
-          },
-        ),
+      .required("This field is required")
+      .test(
+        "phone",
+        "Phone number must be in international format and contain 11-12 digits",
+        function (value) {
+          if (!value) return false;
+
+          // Check if it's a valid phone number first
+          if (!isValidPhoneNumber(value)) return false;
+
+          // Remove all non-digit characters to check length
+          const digitsOnly = value.replace(/\D/g, "");
+
+          // Check if the number of digits is between 11 and 12
+          return digitsOnly.length >= 11 && digitsOnly.length <= 12;
+        },
+      ),
     country: Yup.string().required("This field is required"),
   });
 
@@ -104,9 +104,9 @@ const MobileCountrySignUp = () => {
 
             <div className="flex flex-col gap-4">
               {/* Phone Number Input */}
-              <div className="flex flex-col sm:flex-row items-center">
+              <div className="flex flex-col">
                 <div className="flex items-center border-b-[1px] border-[#aeadad] w-full">
-                <label className="text-gray-700 w-1/3 text-sm mb-2 sm:mb-0 flex-shrink-0 flex items-start">
+                  <label className="text-gray-700 w-1/3 text-sm mb-2 sm:mb-0 flex-shrink-0 flex items-start">
                     <span>Mobile Number</span>
                     <RequiredAsterisk />
                   </label>
@@ -115,11 +115,13 @@ const MobileCountrySignUp = () => {
                       name="phoneNumber"
                       value={values.phoneNumber}
                       onChange={(e) => {
-                        handleChange(e)
+                        handleChange(e);
                         setFieldValue("phoneNumber", e.target.value);
                         const countryCode = getCountryByNumber(e.target.value);
-                        const country = countries.find((c) => c.code === countryCode)?.name || '';
-                        console.log(country)
+                        const country =
+                          countries.find((c) => c.code === countryCode)?.name ||
+                          "";
+                        console.log(country);
                         setFieldValue("country", country);
                       }}
                       defaultCountry="PH"
@@ -128,7 +130,7 @@ const MobileCountrySignUp = () => {
                   </div>
                 </div>
                 {touched.phoneNumber && errors.phoneNumber && (
-                  <div className="text-red-500 text-xs mt-1">
+                  <div className="text-red-500 text-xs mt-1 w-full">
                     {errors.phoneNumber}
                   </div>
                 )}
@@ -137,7 +139,7 @@ const MobileCountrySignUp = () => {
               {/* Country Input */}
               <div className="flex flex-col">
                 <div className="flex items-center border-b-[1px] border-[#aeadad]">
-                <label className="text-gray-700 w-1/3 text-sm flex items-start">
+                  <label className="text-gray-700 w-1/3 text-sm flex items-start">
                     <span>Country</span>
                     <RequiredAsterisk />
                   </label>
@@ -148,7 +150,6 @@ const MobileCountrySignUp = () => {
                     />
                   </div>
                 </div>
-
                 {touched.country && errors.country && (
                   <div className="text-red-500 text-xs mt-1">
                     {errors.country}
