@@ -1,21 +1,14 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import {
   useOtpVerifyMutation,
-  useLoginMutation,
   useOtpGenerateMutation,
 } from "api/akaza/akazaAPI";
 import { useLanding } from "../useLanding";
 import { MODAL_STATES } from "store/modal/modal.types";
 import { ChevronLeft } from "lucide-react";
 
-interface AutoLoginFormValues {
-  email: string;
-  password: string;
-}
-
 const ForgotPasswordOTP = () => {
   const {
-    handleSetCredentials,
     dataStates,
     tempLoginEmail,
     tempLoginPassword,
@@ -25,8 +18,8 @@ const ForgotPasswordOTP = () => {
     handleSetIsResetPasswordSuccesful
   } = useLanding();
 
+  const [generateOTP] = useOtpGenerateMutation();
   const [submitOTP] = useOtpVerifyMutation();
-  const [loginSubmit] = useLoginMutation();
   const buttonPrevious = useRef<HTMLDivElement>(null);
   const ib1 = useRef<HTMLInputElement>(null);
   const ib2 = useRef<HTMLInputElement>(null);
@@ -49,18 +42,6 @@ const ForgotPasswordOTP = () => {
     setAreFieldsPopulated(allFieldsFilled);
     return allFieldsFilled;
   }, []);
-
-  const handleLogin = async (values: AutoLoginFormValues) => {
-    try {
-      await loginSubmit(values)
-        .unwrap()
-        .then((res) => {
-          handleSetCredentials({ ...dataStates, userId: res.data.user.id });
-        });
-    } catch (err: any) {
-      console.log(err);
-    }
-  };
 
   const handleOnInput = (ref: any, nextRef: any) => {
     setErrorMessage("");
@@ -121,7 +102,6 @@ const ForgotPasswordOTP = () => {
   };
 
   const handleContinue = useCallback(async () => {
-    console.log(currentResetPasswordEmail)
     handleSetIsResetPasswordSuccesful(true)
     handleSetModalState(MODAL_STATES.LOGIN)
     const otp =
@@ -146,18 +126,13 @@ const ForgotPasswordOTP = () => {
         
       },1000)
       await submitOTP({
-        email: "cto@akaza.io",//dataStates.email,
+        email: currentResetPasswordEmail,//dataStates.email,
         otp: otp,
       })
         .unwrap()
         .then(() => {
-          handleLogin({
-            email: String(tempLoginEmail),
-            password: String(tempLoginPassword),
-          }).then(() => {
-            handleSetIsResetPasswordSuccesful(true)
-            handleSetModalState(MODAL_STATES.LOGIN)
-          });
+          handleSetIsResetPasswordSuccesful(true)
+          handleSetModalState(MODAL_STATES.LOGIN)
         });
     } catch (err: any) {
       console.log("OTP Error details:", err);
@@ -173,13 +148,13 @@ const ForgotPasswordOTP = () => {
     }
   }, [dataStates.email, tempLoginEmail, tempLoginPassword]);
 
-  const [generateOTP] = useOtpGenerateMutation();
 
   const resendOTP = async () => {
     try {
       setErrorMessage("");
       setHasError(false);
-      await generateOTP({ email: 'cto@akaza.io' }) //dataStates.email
+      
+      await generateOTP({ email: currentResetPasswordEmail }) //dataStates.email
         .unwrap()
         .then(() => {
           console.log("OTP resent successfully");
@@ -238,7 +213,7 @@ const ForgotPasswordOTP = () => {
           Validate password reset
         </div>
         <div className="text-[10px] md:text-sm text-[#525254] font-[400] text-center">
-        We sent a code to &lt;registered@email&gt;
+        We sent a code to &lt;{currentResetPasswordEmail}&gt;
         </div>
 
         <div

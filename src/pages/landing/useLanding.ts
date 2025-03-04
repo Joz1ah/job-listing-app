@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store/store";
 import { setIsResetPasswordSuccesful, setModalState } from "store/modal/modal.slice";
-import { setCurrentResetPasswordEmail } from 'store/user/user.slice';
+import { setCurrentResetPasswordEmail } from 'store/user/userResetPassword.slice';
 import { setHeroState } from "store/hero/hero.slice";
 import { MODAL_STATES } from "store/modal/modal.types";
 import { HERO_STATES } from "store/hero/hero.types";
@@ -29,9 +29,11 @@ export const useLanding = () => {
     tempLoginPassword,
     currentSelectedPlan,
     selectedSkills,
-    currentResetPasswordEmail,
     ...dataStates
-  } = useSelector((state: RootState) => state.user);
+  } = useSelector((state: RootState) => state.user);  
+  const {
+    currentResetPasswordEmail,
+  } = useSelector((state: RootState) => state.userResetPassword);
 
   const handleSetCredentials = (creds: UserCredentials) => {
     dispatch(setCredentials({ ...creds }));
@@ -59,6 +61,10 @@ export const useLanding = () => {
   
   const handleSetIsResetPasswordSuccesful = (state: boolean) => {
     dispatch(setIsResetPasswordSuccesful(state));
+  };
+  
+  const handleSetCurrentResetPasswordEmail = (state: string) => {
+    dispatch(setCurrentResetPasswordEmail(state));
   };
 
   const createExternalCookiePolicy = async () => {

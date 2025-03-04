@@ -4,6 +4,7 @@ import { Form, Formik, Field, ErrorMessage } from "formik";
 import { Eye, EyeOff } from "lucide-react";
 import { useState,useEffect } from "react";
 import { useResetPasswordMutation } from "api/akaza/akazaAPI";
+import { useOtpGenerateMutation } from "api/akaza/akazaAPI";
 import arrow_left_icon from "assets/Keyboard-arrow-left.svg?url";
 import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
 import { useLocation } from "react-router-dom";
@@ -15,11 +16,12 @@ interface resetPasswordNewPasswordValues {
 }
 
 const ForgotPasswordNewPasswordModal = () => {
-  const { modalState, handleSetModalState } = useLanding();
+  const { modalState, handleSetModalState, currentResetPasswordEmail } = useLanding();
   const [resetPasswordErrorMessage, setResetPasswordErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const location = useLocation();
+  const [generateOTP] = useOtpGenerateMutation();
   const [resetPasswordSubmit] = useResetPasswordMutation();
   const resetPasswordtoken = location.state?.resetPasswordtoken || null;
   useEffect(()=>{
@@ -34,8 +36,12 @@ const ForgotPasswordNewPasswordModal = () => {
         password: values.newPassword,
         token: resetPasswordtoken
       }
-      await resetPasswordSubmit(payload).unwrap().then(()=>{
-        handleSetModalState(MODAL_STATES.FORGOT_PASSWORD_OTP)
+      await resetPasswordSubmit(payload).unwrap().then(async ()=>{
+        await generateOTP({ email: currentResetPasswordEmail }) //dataStates.email
+        .unwrap()
+        .then(() => {
+          handleSetModalState(MODAL_STATES.FORGOT_PASSWORD_OTP)
+        })
       });
       //handleSetModalState(MODAL_STATES.FORGOT_PASSWORD_OTP)
     } catch (err: any) {

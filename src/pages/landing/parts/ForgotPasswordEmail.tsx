@@ -96,7 +96,7 @@ const ForgotPasswordModal = () => {
           }
 
           <div className="text-red-500 text-[10px] mt-1">
-              {resetPasswordErrorMessage ? resetPasswordErrorMessage : ""}
+              {resetPasswordErrorMessage && !confirmationLinkSent ? resetPasswordErrorMessage : ""}
           </div>
           <button
             className="mt-8 w-full h-[25px] flex items-center justify-center gap-4"

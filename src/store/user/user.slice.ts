@@ -58,12 +58,6 @@ export const userSlice = createSlice({
         selectedSkills,
       };
     },
-    setCurrentResetPasswordEmail: (state, action: PayloadAction<string>) => {
-      return {
-        ...state,
-        isResetPasswordSuccesful: action.payload,
-      };
-    },
   },
 });
 
@@ -71,8 +65,7 @@ export const {
   setTempCredentials,
   setCredentials,
   setSelectedPlan,
-  setSkills,
-  setCurrentResetPasswordEmail
+  setSkills
 } = userSlice.actions;
 
 export const userReducer = userSlice.reducer;
