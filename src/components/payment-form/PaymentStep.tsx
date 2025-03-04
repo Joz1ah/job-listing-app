@@ -12,8 +12,8 @@ import amex_icon from "assets/credit-card-icons/cc_american-express.svg?url";
 import mastercard_icon from "assets/credit-card-icons/cc_mastercard.svg?url";
 import discover_icon from "assets/credit-card-icons/cc_discover.svg?url";
 import companyLogoLight from "images/company-logo-light.svg?url";
-import { useLanding } from "pages/landing/useLanding";
 import { CountrySelect } from "components";
+import { createAuthNetTokenizer, createAuthnetPaymentSecureData } from "services/authnet/authnetService";
 
 interface PaymentStepProps {
   planType: "yearly" | "monthly";
@@ -72,7 +72,6 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
   const [paymentSubmit] = usePaymentCreateMutation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { showError } = useErrorModal();
-  const { createAuthNetTokenizer } = useLanding();
   const [currentStep, setCurrentStep] = useState<1 | 2>(1);
   const [paymentFormData, setPaymentFormData] = useState<PaymentFormValues>({
     firstName: "",
@@ -115,19 +114,12 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
       values.country?.toLowerCase() === "canada" ? subtotal * 0.13 : 0;
     const totalAmount = Number((subtotal + tax).toFixed(2));
 
-    const secureData = {
-      authData: {
-        clientKey:
-          "7wuXYQ768E3G3Seuy6aTf28PfU3mJWu7Bbj564KfTPqRa7RXUPZvTsnKz9Jf7daJ",
-        apiLoginID: "83M29Sdd8",
-      },
-      cardData: {
+    const secureData = createAuthnetPaymentSecureData({
         cardNumber: paymentFormData.cardNumber,
         month: paymentFormData.expiryDate.split("/")[0],
         year: paymentFormData.expiryDate.split("/")[1],
         cardCode: paymentFormData.cvv,
-      },
-    };
+    })
 
     window.Accept.dispatchData(
       secureData,

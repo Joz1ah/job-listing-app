@@ -12,7 +12,6 @@ import { useAuth } from "contexts/AuthContext/AuthContext";
 import SubscriptionSuccessModal from "./SubscriptionSuccessModal";
 import { FreeTrialConfirmationModal } from "./FreeTrialConfirmationModal";
 import { FreeTrialSuccessModal } from "./FreeTrialSuccessModal";
-import { useLanding } from "pages/landing/useLanding";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 import { usePaymentCreateMutation } from "api/akaza/akazaAPI";
 import { InterruptedPaymentForm } from "./InterruptedPaymentForm";
@@ -23,6 +22,7 @@ import like_icon from "assets/subscription-plan-icons/thumbsup.svg?url";
 import infinity_icon from "assets/subscription-plan-icons/unli.svg?url";
 import lock_icon from "assets/subscription-plan-icons/lock.svg?url";
 import message_icon from "assets/subscription-plan-icons/chat.svg?url";
+import { createAuthNetTokenizer, createAuthnetPaymentSecureData } from "services/authnet/authnetService";
 
 type PlanProps = {
   type: string;
@@ -155,7 +155,6 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
   const [paymentSubmit] = usePaymentCreateMutation();
   const [isLoading, setIsLoading] = useState(false);
   const { showError } = useErrorModal();
-  const { createAuthNetTokenizer } = useLanding();
 
   useEffect(() => {
     createAuthNetTokenizer();
@@ -170,18 +169,12 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
     const tax = values.country?.toLowerCase() === 'canada' ? subtotal * 0.13 : 0;
     const totalAmount = Number((subtotal + tax).toFixed(2));
 
-    const secureData = {
-      authData: {
-        clientKey: '7wuXYQ768E3G3Seuy6aTf28PfU3mJWu7Bbj564KfTPqRa7RXUPZvTsnKz9Jf7daJ',
-        apiLoginID: '83M29Sdd8',
-      },
-      cardData: {
-        cardNumber: values.cardNumber,
-        month: values.expiryDate.split('/')[0],
-        year: values.expiryDate.split('/')[1],
-        cardCode: values.cvv,
-      },
-    };
+    const secureData = createAuthnetPaymentSecureData({
+      cardNumber: values.cardNumber,
+      month: values.expiryDate.split("/")[0],
+      year: values.expiryDate.split("/")[1],
+      cardCode: values.cvv,
+   })
 
     window.Accept.dispatchData(secureData, async (response: AcceptJsResponse) => {
       if (response.messages.resultCode === 'Ok') {

@@ -151,10 +151,11 @@ export const akazaApiAuth = createApiFunction({
       }),
       async onQueryStarted(args,{ queryFulfilled }) {
         args = args
+        console.log(args)
+        console.log(queryFulfilled)
 
         try {
           const { data } = await queryFulfilled;
-
           if (data?.data?.token) {
             Cookies.set('authToken', data.data.token, {
               path: '/', // Cookie is available site-wide
@@ -166,7 +167,8 @@ export const akazaApiAuth = createApiFunction({
             console.warn('No token found in the response.');
           }
         } catch (error) {
-          throw(error)
+          console.error(error)
+          //throw(error)
         }
       },
     }),
