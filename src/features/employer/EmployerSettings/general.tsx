@@ -8,7 +8,7 @@ import { Switch } from "components";
 import googleLogo from "images/google-logo-icon.svg?url";
 import { useEmployerContext } from "components";
 import { AdDialogWrapper } from "components";
-import jobHunterPopAds from "images/popup-hunter.svg?url";
+import employerPopAds from "images/popup-employer.svg?url";
 import { TimezoneSelector } from "components";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import spinner_loading_fallback from "assets/images/spinner-loading-akaza.svg?url";
@@ -255,7 +255,7 @@ const GeneralSettings: FC = () => {
                     {renderNotificationSwitch()}
                     <div className="hidden">
                       <AdDialogWrapper
-                        popupImage={jobHunterPopAds}
+                        popupImage={employerPopAds}
                         ref={adTriggerRef}
                       />
                     </div>
@@ -271,7 +271,7 @@ const GeneralSettings: FC = () => {
           {renderTimezoneSelector()}
           <div className="hidden">
             <AdDialogWrapper
-              popupImage={jobHunterPopAds}
+              popupImage={employerPopAds}
               ref={timezoneAdTriggerRef}
             />
           </div>
@@ -409,7 +409,7 @@ const GeneralSettings: FC = () => {
             </FormField>
             <div className="hidden">
               <AdDialogWrapper
-                popupImage={jobHunterPopAds}
+                popupImage={employerPopAds}
                 ref={emailAdTriggerRef}
               />
             </div>
