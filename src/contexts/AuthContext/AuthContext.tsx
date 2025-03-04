@@ -29,7 +29,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = () => {
     setToken(null);
     setIsAuthenticated(false);
-    const domains = ['localhost', '.akaza.xyz', '.akaza.io', 'akaza.xyz', 'akaza.io'];
+    const domains = ['localhost', '.akaza.xyz', '.akaza.io', 'akaza.xyz', 'akaza.io', window.location.hostname];
       domains.forEach(domain => {
         Cookies.remove('authToken', {
           path: '/',
