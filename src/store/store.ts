@@ -54,7 +54,12 @@ const initStore = (preloadedState?: Partial<RootState>): EnhancedStore =>
       return mainReducer(state, action);
     },
     middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat(middlewares),
+      getDefaultMiddleware({
+        serializableCheck: {
+          ignoredActions: ['persist/PERSIST'], // Ignore serializability check for 'persist/PERSIST'
+          //ignoredPaths: ['register', 'rehydrate'], // Optionally ignore certain paths
+        },
+      }).concat(middlewares),
     preloadedState,
     devTools: String(process.env.NODE_ENV).trim() !== "production",
   });

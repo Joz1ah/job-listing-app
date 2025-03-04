@@ -50,7 +50,8 @@ const App: FC = (): ReactElement => {
 
   // 🔄 Show loading state until fonts are ready
   if (!fontsLoaded) {
-    return <div className="flex justify-center items-center h-screen">Loading fonts...</div>;
+    return <></>
+    // return <div className="flex justify-center items-center h-screen">Loading fonts...</div>;
   }
 
   return (
