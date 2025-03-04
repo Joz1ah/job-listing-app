@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useState, useRef } from "react";
 import { ChevronLeft } from "lucide-react";
 import { Input, Button, Textarea } from "components";
 import { NavLink } from "react-router-dom";
@@ -10,7 +10,7 @@ import { useJobListCreateMutation } from "api/akaza/akazaAPI";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import { useContext } from "react";
 import { KeywordMappingContext } from "contexts/KeyWordMappingContext";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
+import { AdDialogWrapper } from "components";
 import { MultiSelect } from "components";
 import { JobListingPreview } from "./JobListingPreview";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
@@ -94,16 +94,12 @@ const JobListingForm: FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPreview, setShowPreview] = useState<boolean>(false);
   const [isLimitModalOpen, setIsLimitModalOpen] = useState(false);
-  const [isAdsDialogOpen, setIsAdsDialogOpen] = useState(false);
   const { user, refreshUser } = useAuth();
   const { keywordToIdMap } = useContext(KeywordMappingContext);
   const { showError } = useErrorModal();
+  const adTriggerRef = useRef<HTMLDivElement>(null);
 
   const [createJobList] = useJobListCreateMutation();
-
-  const handleAdsDialogOpenChange = (newOpen: boolean) => {
-    setIsAdsDialogOpen(newOpen);
-  };
 
   const handleAddJob = () => {
     if (!isValid) {
@@ -111,12 +107,18 @@ const JobListingForm: FC = () => {
       return;
     }
 
+    const openAdDialog = () => {
+      if (adTriggerRef.current) {
+        adTriggerRef.current.click();
+      }
+    };
+
     // If form is valid, first check limits
     if (user?.data?.user?.jobCounts?.exceedsMaximum) {
       if (user?.data?.user?.freeTrial) {
-        setIsAdsDialogOpen(true);
+        openAdDialog(); // This triggers your timed ad dialog
       } else {
-        setIsLimitModalOpen(true);
+        setIsLimitModalOpen(true); // This shows the regular limit modal for paid users
       }
       return;
     }
@@ -241,27 +243,9 @@ const JobListingForm: FC = () => {
         isOpen={isLimitModalOpen}
         onClose={() => setIsLimitModalOpen(false)}
       />
-
-      <Dialog open={isAdsDialogOpen} onOpenChange={handleAdsDialogOpenChange}>
-        <DialogContent className="bg-transparent border-none shadow-none max-w-lg p-0 [&>button]:hidden">
-          <DialogHeader>
-            <DialogTitle className="sr-only">
-              Free Trial Notification
-            </DialogTitle>
-          </DialogHeader>
-          <NavLink
-            to="/dashboard/account-settings/subscription"
-            onClick={() => setIsAdsDialogOpen(false)}
-            className="block"
-          >
-            <img
-              src={employerPopAds}
-              alt="Free Trial Notification"
-              className="w-full h-auto cursor-pointer"
-            />
-          </NavLink>
-        </DialogContent>
-      </Dialog>
+      <div className="hidden">
+        <AdDialogWrapper popupImage={employerPopAds} ref={adTriggerRef} />
+      </div>
 
       {isSubmitting && <LoadingOverlay />}
       <div className="w-full max-w-[927px] min-h-[825px] bg-[#2D3A41] text-white mx-2 px-4 py-8 md:py-12">

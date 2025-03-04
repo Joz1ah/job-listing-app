@@ -1,15 +1,14 @@
-import { FC, useState, useEffect } from "react";
+import { FC, useState, useEffect, useRef } from "react";
 import { Bell, Ellipsis, ChevronDown } from "lucide-react";
 import { ScrollArea } from "components";
 import { Badge } from "components";
 import { Popover, PopoverContent, PopoverTrigger } from "components";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
 import jobHunterPopAds from "images/popup-hunter.svg?url";
 import employerPopAds from "images/popup-employer.svg?url";
-import { NavLink } from "react-router-dom";
 import { NotificationItem } from "types/notification";
 import DOMPurify from "dompurify";
 import sparkle_icon from "assets/sparkle-icon.svg?url";
+import { AdDialogWrapper } from "components";
 
 interface NotificationFeedProps {
   subscriptionPlan?: "freeTrial" | "monthlyPlan" | "yearlyPlan";
@@ -26,6 +25,7 @@ const NotificationFeed: FC<NotificationFeedProps> = ({
   const [newNotifications, setNewNotifications] = useState<NotificationItem[]>(
     [],
   );
+  const adTriggerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setNewNotifications(notifications ?? []);
@@ -146,39 +146,33 @@ const NotificationFeed: FC<NotificationFeedProps> = ({
     setOlderNotifications((prev) => prev.map((n) => ({ ...n, unread: false })));
   };
 
+  // Programmatically trigger the ad dialog
+  const openAdDialog = () => {
+    if (adTriggerRef.current) {
+      adTriggerRef.current.click();
+    }
+  };
+
   return (
     <div className="relative">
       {subscriptionPlan === "freeTrial" ? (
         <div className="relative">
           <button
             className="relative p-2 rounded-full z-50"
-            onClick={() => handleOpenChange(!open)}
+            onClick={openAdDialog} // Changed to open the ad dialog
           >
             <Bell className="w-[22px] h-[25px] text-[#F5722E] [transform:rotate(35deg)] cursor-pointer" />
           </button>
 
-          <Dialog open={open} onOpenChange={handleOpenChange}>
-            <DialogContent className="bg-transparent border-none shadow-none max-w-lg p-0 [&>button]:hidden">
-              <DialogHeader>
-                <DialogTitle className="sr-only">
-                  Free Trial Notification
-                </DialogTitle>
-              </DialogHeader>
-              <NavLink
-                to="/dashboard/account-settings/subscription"
-                onClick={() => setOpen(false)}
-                className="block"
-              >
-                <img
-                  src={
-                    userType === "employer" ? employerPopAds : jobHunterPopAds
-                  }
-                  alt="Free Trial Notification"
-                  className="w-full h-auto cursor-pointer"
-                />
-              </NavLink>
-            </DialogContent>
-          </Dialog>
+          {/* AdDialogWrapper component */}
+          <div className="hidden">
+            <AdDialogWrapper
+              popupImage={
+                userType === "employer" ? employerPopAds : jobHunterPopAds
+              }
+              ref={adTriggerRef}
+            />
+          </div>
         </div>
       ) : (
         <Popover open={open} onOpenChange={handleOpenChange}>
