@@ -64,7 +64,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, subscriptionPlan }) =
 
     setLoading(true);
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 300));
 
     const currentItemCount = subscriptionPlan === 'freeTrial'
       ? displayedItems.filter((item): item is Match => !("isAd" in item)).length
@@ -292,7 +292,7 @@ const OtherApplications: FC<selectedProps> = ({
 
     setLoading(true);
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 300));
 
     const currentItemCount = subscriptionPlan === 'freeTrial'
       ? displayedItems.filter((item): item is Match => !("isAd" in item)).length
