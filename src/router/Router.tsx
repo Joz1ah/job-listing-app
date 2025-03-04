@@ -275,7 +275,24 @@ const ResetPasswordRedirect = () => {
   return <div>Please wait while we redirect you back to Akaza</div>;
 };
 
+const EarlyAccessControl = () => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const earlyAccessKey = searchParams.get("earlyAccessKey");
+  useEffect(() => {
+    if (earlyAccessKey) {
+      navigate(ROUTE_CONSTANTS.LANDING, { state: { earlyAccessKey }, replace: true });
+    }
+  }, [earlyAccessKey, navigate]);
+
+  return <div>You must have an early access key to access the site</div>;
+};
+
 const routes: RouteObject[] = [
+  {
+    path: '*', // Matches all paths that are not explicitly defined
+    element: <EarlyAccessControl />, // Replace with your 404 or fallback component
+  },
   {
     path: '',
     element: <RedirectTo to={ROUTE_CONSTANTS.LANDING} />,
