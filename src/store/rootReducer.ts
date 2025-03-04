@@ -1,4 +1,6 @@
 import { combineReducers, UnknownAction } from "@reduxjs/toolkit";
+import { persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage'; 
 
 import { counterReducer } from "./counter/counterSlice";
 import { themeReducer } from "./theme/themeSlice";
@@ -20,6 +22,15 @@ import { reduxHydrationAction } from "constants/commonConstants";
 import { modalReducer } from "./modal/modal.slice";
 import { heroReducer } from "./hero/hero.slice";
 import { userReducer } from "./user/user.slice";
+import { userResetPasswordReducer } from "./user/userResetPassword.slice";
+
+const userResetPasswordPersistConfig = {
+  key: 'userResetPassword', // Unique key for the user slice in localStorage
+  storage, // We use localStorage as the storage mechanism
+  //whitelist: ['user', 'isAuthenticated'], // Persist specific keys (optional)
+};
+
+const persistedUserResetPasswordReducer = persistReducer(userResetPasswordPersistConfig, userResetPasswordReducer);
 
 export const rootReducer = {
   theme: themeReducer,
@@ -28,6 +39,7 @@ export const rootReducer = {
   hero: heroReducer,
   i18n: i18nReducer,
   user: userReducer,
+  userResetPassword: persistedUserResetPasswordReducer, //userResetPasswordReducer,
   [pokemonApi.reducerPath]: pokemonApi.reducer,
   [akazaApiSignUp.reducerPath]: akazaApiSignUp.reducer,
   [akazaApiAuth.reducerPath]: akazaApiAuth.reducer,
