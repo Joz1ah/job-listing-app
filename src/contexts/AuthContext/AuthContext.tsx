@@ -29,13 +29,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = () => {
     setToken(null);
     setIsAuthenticated(false);
-    console.log(window.location.hostname)
-    const domains = [window.location.hostname];
-      domains.forEach(domain => {
-        Cookies.remove('authToken', {
-          path: '/',
-          domain: domain, // Dynamically set the domain
-        });
+    const hostname = window.location.hostname;
+    const rootDomain = '.' + hostname.split('.').slice(-2).join('.');
+      
+      [hostname, rootDomain].forEach(domain => {
+        Cookies.remove('authToken', { path: '/', domain });
       });
     dispatch(akazaApiAccount.util.resetApiState());
   };

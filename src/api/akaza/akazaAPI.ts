@@ -150,7 +150,8 @@ export const akazaApiAuth = createApiFunction({
         },
       }),
       async onQueryStarted(args,{ queryFulfilled }) {
-        args = args
+        const rememberLogin = args?.rememberMe || false
+        console.log(rememberLogin)
         try {
           const { data } = await queryFulfilled;
           if (data?.data?.token) {
@@ -158,7 +159,7 @@ export const akazaApiAuth = createApiFunction({
               path: '/', // Cookie is available site-wide
               secure: true, // Ensures cookie is sent over HTTPS
               sameSite: 'strict', // Prevents CSRF attacks
-              //expires: 7, // Expires in 7 days
+              ...(rememberLogin && { expires: 365 }) // Only add expires if rememberLogin is true 365 = 1 year
             });
           } else {
             console.warn('No token found in the response.');
