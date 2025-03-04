@@ -12,6 +12,7 @@ import like_icon from "assets/subscription-plan-icons/like-orange.svg?url";
 import infinity_icon from "assets/subscription-plan-icons/infinity-orange.svg?url";
 import lock_icon from "assets/subscription-plan-icons/lock-orange.svg?url";
 import message_icon from "assets/subscription-plan-icons/message-orange.svg?url";
+import TooltipWrapper from "components/ui/custom/tooltip-wrapper";
 
 import { ExpiredSubModal } from "components";
 
@@ -353,23 +354,25 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
 
       <div className="mt-auto flex justify-center">
         {!hideButton && (
-          <Button
-            onClick={!isCurrentPlan && !isDisabled ? onSelect : undefined}
-            disabled={isDisabled}
-            className={`w-full md:w-[300px] h-8 py-2 px-4 rounded-[2px] ${
-              isDisabled
-                ? "bg-gray-400 text-gray-600 cursor-not-allowed"
-                : isHighlighted
-                  ? "bg-[#F5722E] hover:bg-[#F5722E]/90 text-[#F5F5F7]"
-                  : "border bg-transparent border-[#F5722E] text-[#F5722E] hover:bg-[#F5722E] hover:text-[#F5F5F7]"
-            }`}
-          >
-            {isCurrentPlan
-              ? "Feature Unavailable"
-              : isDisabled
+          <TooltipWrapper disabled={isDisabled}>
+            <Button
+              onClick={!isCurrentPlan && !isDisabled ? onSelect : undefined}
+              disabled={isDisabled}
+              className={`w-full md:w-[300px] h-8 py-2 px-4 rounded-[2px] ${
+                isDisabled
+                  ? "bg-gray-400 text-gray-600 cursor-not-allowed"
+                  : isHighlighted
+                    ? "bg-[#F5722E] hover:bg-[#F5722E]/90 text-[#F5F5F7]"
+                    : "border bg-transparent border-[#F5722E] text-[#F5722E] hover:bg-[#F5722E] hover:text-[#F5F5F7]"
+              }`}
+            >
+              {isCurrentPlan
                 ? "Feature Unavailable"
-                : buttonText}
-          </Button>
+                : isDisabled
+                  ? "Feature Unavailable"
+                  : buttonText}
+            </Button>
+          </TooltipWrapper>
         )}
       </div>
     </div>

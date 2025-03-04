@@ -83,7 +83,7 @@ const BaseMenu: FC<MenuProps> = ({
     { name: "About us", path: "/about-us" },
     { name: "Contact us", path: "/contact-us" },
     { name: "Subscription plans", path: "/subscription-plan" },
-    { name: "FAQ", path: "/https://support.akaza.io/", isExternal: true },
+    { name: "FAQ", path: "https://support.akaza.io/", isExternal: true },
   ];
 
   const handleItemClick = (item: NavItem) => {

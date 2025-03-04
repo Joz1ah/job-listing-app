@@ -69,7 +69,10 @@ const Sidebar: FC = () => {
   useEffect(() => {
     if (isDashboard && data) {
       if (data.data.jobs.length > 0) {
-        //updateMatchState({selectedJobId:data.data.jobs[0].id});
+        // Initialize the first job
+        const firstJob = data.data.jobs[0];
+        setSelectedJob(firstJob.id.toString());
+        updateMatchState?.({ selectedJobId: firstJob.id });
         setJobList?.(data.data.jobs);
       }
     }
