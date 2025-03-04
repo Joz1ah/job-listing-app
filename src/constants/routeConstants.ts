@@ -13,6 +13,8 @@
     FAQ: '/faq',
     INTERRUPTED_SUBSCRIPTION: '/select-plan',
     RESET_PASSWORD_REDIRECT: '/reset-password',
+    GET_EARLY_ACCESS_KEY: '/get-early-access-key',
+    COMING_SOON: '/coming-soon',
 
     // Test Route
     TEST: '/test',

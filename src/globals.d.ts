@@ -17,5 +17,11 @@ declare namespace NodeJS {
         //AUTHORIZE.NET VARS
         AUTHORIZE_NET_CLIENT_KEY?: string;
         AUTHORIZE_NET_API_LOGIN_ID?: string;
+        //APP FEATURES VARS
+        EARLY_ACCESS_USER_ONLY?: boolean;
+        EARLY_ACCESS_SECRET?: string;
+        AI_RESUME_REVIEW?: boolean;
+        INSTANT_MATCHING?: boolean;
+        PREMIUM_ANALYTICS?: boolean;
     }
   }

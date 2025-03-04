@@ -17,12 +17,12 @@ const FeatureControllerContext = createContext<FeatureControllerType | undefined
 
 export const FeatureControllerProvider = ({ children }: { children: ReactNode }) => {
   const [features, setFeaturesState] = useState<FeatureFlags>({
-    earlyAccessUserOnly: false,
-    aiResumeReview: false,
-    instantMatching: false,
-    premiumAnalytics: false,
+    earlyAccessUserOnly: process.env.EARLY_ACCESS_USER_ONLY || false,
+    aiResumeReview: process.env.AI_RESUME_REVIEW || false,
+    instantMatching: process.env.INSTANT_MATCHING || false,
+    premiumAnalytics: process.env.PREMIUM_ANALYTICS || false,
   });
-
+  
   const toggleFeature = (feature: keyof FeatureFlags) => {
     setFeaturesState((prev) => ({ ...prev, [feature]: !prev[feature] }));
   };

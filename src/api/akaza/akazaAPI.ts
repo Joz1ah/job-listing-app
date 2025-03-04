@@ -151,9 +151,6 @@ export const akazaApiAuth = createApiFunction({
       }),
       async onQueryStarted(args,{ queryFulfilled }) {
         args = args
-        console.log(args)
-        console.log(queryFulfilled)
-
         try {
           const { data } = await queryFulfilled;
           if (data?.data?.token) {
