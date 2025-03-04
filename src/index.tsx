@@ -7,10 +7,13 @@ import { AuthProvider, useAuth } from 'contexts/AuthContext/AuthContext';
 import { ErrorModalProvider } from 'contexts/ErrorModalContext/ErrorModalContext';
 import { CookieProvider } from 'contexts/cookieContext';
 import { SSEProvider } from "contexts/SSEClient/SSEClient";
+import { FeatureControllerProvider } from 'contexts/FeatureControllerContext/FeatureController'
+import { PersistGate } from 'redux-persist/integration/react';
 
 import { App } from './App'
 
 import { initStore } from 'store/store'
+import { persistStore } from 'redux-persist';
 import { Provider } from 'react-redux'
 import {
   USE_SERVICE_WORKER,
@@ -42,6 +45,7 @@ if (NO_SSR && localStorage.getItem(localStorageAppKey) != null) {
 }
 
 const store = initStore(preloadedState)
+const persistor = persistStore(store);
 
 if (module.hot != null) {
   module.hot.accept(['store/store', 'store/rootReducer'], () => {
@@ -86,17 +90,21 @@ const AuthWrapper = () =>{
 }
 const indexJSX = (
   <StrictMode>
-    <CookieProvider>
-      <ErrorModalProvider>
-        <Provider store={store}>
-          <HelmetProvider>
-            <AuthProvider>
-              <AuthWrapper/>
-            </AuthProvider>
-          </HelmetProvider>
-        </Provider>
-      </ErrorModalProvider>
-    </CookieProvider>
+    <FeatureControllerProvider>
+      <CookieProvider>
+        <ErrorModalProvider>
+          <Provider store={store}>
+            <PersistGate persistor={persistor}>
+              <HelmetProvider>
+                <AuthProvider>
+                  <AuthWrapper/>
+                </AuthProvider>
+              </HelmetProvider>
+            </PersistGate>
+          </Provider>
+        </ErrorModalProvider>
+      </CookieProvider>
+    </FeatureControllerProvider>
   </StrictMode>
 )
 

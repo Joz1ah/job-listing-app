@@ -16,6 +16,9 @@ import PerfectMatchResultsModal from "./PerfectMatchResultsModal";
 import StripePaymentModal from "./StripePaymentModal";
 import SubscriptionPlanSelection from "./SubscriptionPlanSelection";
 import UserNamePasswordSignup from "./UserNamePasswordSignup";
+import ForgotPasswordModal from "./ForgotPasswordEmail";
+import ForgotPasswordNewPasswordModal from "./ForgotPasswordNewPassword";
+import ForgotPasswordOTP from "./ForgotPasswordOTP";
 import { useLanding } from "../useLanding";
 import { MODAL_STATES } from "store/modal/modal.types";
 
@@ -33,6 +36,9 @@ const MainModalContent = () => (
         <LoadingModal />
         <CongratulationsModal />
         <StripePaymentModal />
+        <ForgotPasswordModal />
+        <ForgotPasswordNewPasswordModal />
+        <ForgotPasswordOTP/>
       </BookmarkProvider>
     </JobHunterProvider>
   </EmployerProvider>

@@ -5,7 +5,7 @@ import akazalogo_dark from "assets/akazalogo-dark.svg?url";
 import { MODAL_HEADER_TYPE } from "store/modal/modal.types";
 
 const ModalHeader = () => {
-  const { selectedModalHeader, toggleModal } = useModal();
+  const { selectedModalHeader, toggleModal, resetModalState } = useModal();
   const closeModalRef = useRef<HTMLImageElement>(null);
 
   return (
@@ -21,6 +21,7 @@ const ModalHeader = () => {
               alt="Close"
               style={{ width: "24px", height: "24px" }}
               onClick={() => {
+                resetModalState();
                 toggleModal();
               }}
             />
@@ -36,6 +37,7 @@ const ModalHeader = () => {
             alt="Close"
             style={{ width: "24px", height: "24px" }}
             onClick={() => {
+              resetModalState();
               toggleModal();
             }}
           />

@@ -1,9 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store/store";
-import { setModalState } from "store/modal/modal.slice";
+import { setIsResetPasswordSuccesful, setModalState } from "store/modal/modal.slice";
+import { setCurrentResetPasswordEmail } from 'store/user/userResetPassword.slice';
 import { setHeroState } from "store/hero/hero.slice";
 import { MODAL_STATES } from "store/modal/modal.types";
 import { HERO_STATES } from "store/hero/hero.types";
+
 import {
   setTempCredentials,
   setSelectedPlan,
@@ -20,6 +22,7 @@ export const useLanding = () => {
   const dispatch = useDispatch();
 
   const modalState = useSelector((state: RootState) => state.modal.modalState);
+  const isResetPasswordSuccesful = useSelector((state: RootState) => state.modal.isResetPasswordSuccesful);
   const heroState = useSelector((state: RootState) => state.hero.heroState);
   const {
     tempLoginEmail,
@@ -27,7 +30,10 @@ export const useLanding = () => {
     currentSelectedPlan,
     selectedSkills,
     ...dataStates
-  } = useSelector((state: RootState) => state.user);
+  } = useSelector((state: RootState) => state.user);  
+  const {
+    currentResetPasswordEmail,
+  } = useSelector((state: RootState) => state.userResetPassword);
 
   const handleSetCredentials = (creds: UserCredentials) => {
     dispatch(setCredentials({ ...creds }));
@@ -52,6 +58,14 @@ export const useLanding = () => {
   const handleSetHeroState = (state: HERO_STATES) => {
     dispatch(setHeroState(state));
   };
+  
+  const handleSetIsResetPasswordSuccesful = (state: boolean) => {
+    dispatch(setIsResetPasswordSuccesful(state));
+  };
+  
+  const handleSetCurrentResetPasswordEmail = (state: string) => {
+    dispatch(setCurrentResetPasswordEmail(state));
+  };
 
   const createExternalCookiePolicy = async () => {
     const scriptSrc = 'https://cdnapp.websitepolicies.net/widgets/cookies/uz6lppct.js';
@@ -75,6 +89,8 @@ export const useLanding = () => {
 
   return {
     modalState,
+    isResetPasswordSuccesful,
+    currentResetPasswordEmail,
     handleSetModalState,
     dataStates,
     tempLoginEmail,
@@ -88,5 +104,7 @@ export const useLanding = () => {
     handleSetSelectedPlan,
     handleSetSkills,
     handleSetCredentials,
+    handleSetIsResetPasswordSuccesful,
+    handleSetCurrentResetPasswordEmail
   };
 };

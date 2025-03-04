@@ -218,11 +218,17 @@ const UserNamePasswordSignup = () => {
             >
               {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
             </button>
-            {organizedErrors.password && (
+            {
+            !organizedErrors.password ?
+            <div className="text-[#4BAF66] text-[10px] mt-1">
+            Password must be at least 12 characters and include a lowercase letter, uppercase letter, and special character
+            </div>
+            :organizedErrors.password && (
               <div className="text-[#E63946] text-[10px] mt-1">
                 {organizedErrors.password}
               </div>
             )}
+
           </div>
           <div className="relative">
             <input

@@ -65,7 +65,7 @@ export const {
   setTempCredentials,
   setCredentials,
   setSelectedPlan,
-  setSkills,
+  setSkills
 } = userSlice.actions;
 
 export const userReducer = userSlice.reducer;

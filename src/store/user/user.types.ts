@@ -19,6 +19,11 @@ export type UserDataState = {
   currentSelectedPlan?: PLAN_SELECTION_ITEMS;
 };
 
+export type UserResetDataState = {
+  currentResetPasswordEmail?: string;
+  isResetPasswordSuccesful?: boolean;
+};
+
 export type UserTempCredentials = Pick<
   UserDataState,
   "tempLoginEmail" | "tempLoginPassword"

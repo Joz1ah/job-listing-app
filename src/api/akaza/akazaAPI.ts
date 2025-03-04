@@ -251,16 +251,14 @@ export const akazaApiAuth = createApiFunction({
         },
       }),
     }),
-    resetPassword: builder.query({
-      query: () => ({
+    resetPassword: builder.mutation({
+      query: (payLoad) => ({
         url: 'reset-password',
-        method: 'GET',
-        /*
+        method: 'POST',
         body: {
             "password": payLoad.password,
             "token": payLoad.token
         },
-        */
       }),
     }),
     updatePassword: builder.mutation({
@@ -655,7 +653,7 @@ export const {
   useEmployerContactMutation,
   useEmployerProfileMutation,
   useForgotPasswordMutation,
-  useResetPasswordQuery,
+  useResetPasswordMutation,
   useUpdatePasswordMutation
 } = akazaApiAuth
 
