@@ -1,8 +1,15 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useEmployerPaidQuery } from "api/akaza/akazaAPI";
-import { Match, PerfectMatchState, PerfectMatchContextType, PerfectMatchProviderProps } from "./types";
+import {
+  Match,
+  PerfectMatchState,
+  PerfectMatchContextType,
+  PerfectMatchProviderProps,
+} from "./types";
 
-const PerfectMatchContext = createContext<PerfectMatchContextType | undefined>(undefined);
+const PerfectMatchContext = createContext<PerfectMatchContextType | undefined>(
+  undefined,
+);
 
 const mapPerfectMatchData = (apiResponse: any): Match[] => {
   return apiResponse.data.map((item: any) => ({
@@ -12,7 +19,7 @@ const mapPerfectMatchData = (apiResponse: any): Match[] => {
     phoneNumber: null, // No phone number in API response
     birthday: item?.jobHunter?.birthday ?? "", // Default to empty string if undefined
     location: item?.jobHunter?.location ?? "Unknown", // Ensure location exists
-    country: item.jobHunter?.country?? "Unknown",
+    country: item.jobHunter?.country ?? "Unknown",
     position: null, // No position in API response
     education: item?.jobHunter?.education ?? "", // Default to empty string if undefined
     coreSkills: item?.jobHunter?.matchingKeywords
@@ -20,14 +27,14 @@ const mapPerfectMatchData = (apiResponse: any): Match[] => {
           .filter((keyword: any) => keyword.type === "core")
           .map((keyword: any) => keyword.keyword)
       : [], // Default to empty array if undefined
-      posted: item?.jobHunter?.createdAt ?? "N/A",
+    posted: item?.jobHunter?.createdAt ?? "N/A",
     experience: item?.jobHunter?.experience ?? "", // Default to empty string if undefined
-    lookingFor: item?.jobHunter?.employmentType 
-      ? item.jobHunter.employmentType.split(",") 
+    lookingFor: item?.jobHunter?.employmentType
+      ? item.jobHunter.employmentType.split(",")
       : [], // Default to empty array if undefined
     salaryExpectation: item?.jobHunter?.salaryRange ?? "", // Default to empty string if undefined
-    language: item?.jobHunter?.language 
-      ? item.jobHunter.language.split(",") 
+    language: item?.jobHunter?.language
+      ? item.jobHunter.language.split(",")
       : [], // Default to empty array if undefined
     interpersonalSkills: item?.jobHunter?.matchingKeywords
       ? item.jobHunter.matchingKeywords
@@ -39,8 +46,9 @@ const mapPerfectMatchData = (apiResponse: any): Match[] => {
   }));
 };
 
-
-const PerfectMatchProvider: React.FC<PerfectMatchProviderProps> = ({ children }) => {
+const PerfectMatchProvider: React.FC<PerfectMatchProviderProps> = ({
+  children,
+}) => {
   const [jobList, setJobList] = useState<any>({});
   const [matchState, setMatchState] = useState<PerfectMatchState>({
     selectedJobId: null,
@@ -50,8 +58,17 @@ const PerfectMatchProvider: React.FC<PerfectMatchProviderProps> = ({ children })
   });
 
   const [perfectMatch, setPerfectMatch] = useState<Match[]>([]);
+  // Added state to track when job selection is changing and we're waiting for matches
+  const [isLoadingMatches, setIsLoadingMatches] = useState<boolean>(false);
 
   const updateMatchState = (updates: Partial<PerfectMatchState>) => {
+    // If selectedJobId is changing, we're loading new matches
+    if (
+      "selectedJobId" in updates &&
+      updates.selectedJobId !== matchState.selectedJobId
+    ) {
+      setIsLoadingMatches(true);
+    }
     setMatchState((prev) => ({ ...prev, ...updates }));
   };
 
@@ -66,8 +83,10 @@ const PerfectMatchProvider: React.FC<PerfectMatchProviderProps> = ({ children })
   useEffect(() => {
     if (!isLoading && !error && data) {
       setPerfectMatch(mapPerfectMatchData(data));
+      // If we were loading matches due to job change, we can stop now
+      setIsLoadingMatches(false);
     }
-  }, [data]);
+  }, [data, isLoading, error]);
 
   useEffect(() => {
     updateMatchState({ hasMore: !!data && data.length > 0 });
@@ -86,7 +105,19 @@ const PerfectMatchProvider: React.FC<PerfectMatchProviderProps> = ({ children })
   };
 
   return (
-    <PerfectMatchContext.Provider value={{ jobList, setJobList, perfectMatch, data, matchState, updateMatchState, nextPage, prevPage }}>
+    <PerfectMatchContext.Provider
+      value={{
+        jobList,
+        setJobList,
+        perfectMatch,
+        data,
+        matchState,
+        updateMatchState,
+        nextPage,
+        prevPage,
+        isLoadingMatches: isLoading || isLoadingMatches,
+      }}
+    >
       {children}
     </PerfectMatchContext.Provider>
   );
@@ -95,7 +126,9 @@ const PerfectMatchProvider: React.FC<PerfectMatchProviderProps> = ({ children })
 const usePerfectMatchContext = () => {
   const context = useContext(PerfectMatchContext);
   if (!context) {
-    throw new Error("usePerfectMatchContext must be used within a PerfectMatchProvider");
+    throw new Error(
+      "usePerfectMatchContext must be used within a PerfectMatchProvider",
+    );
   }
   return context;
 };
