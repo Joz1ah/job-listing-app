@@ -1,6 +1,6 @@
-import { FC, useState,useEffect } from "react";
+import { FC, useState, useEffect } from "react";
 import { Bell, Ellipsis, ChevronDown } from "lucide-react";
-//import { ScrollArea } from "components";
+import { ScrollArea } from "components";
 import { Badge } from "components";
 import { Popover, PopoverContent, PopoverTrigger } from "components";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
@@ -9,26 +9,28 @@ import employerPopAds from "images/popup-employer.svg?url";
 import { NavLink } from "react-router-dom";
 import { NotificationItem } from "types/notification";
 import DOMPurify from "dompurify";
+import sparkle_icon from "assets/sparkle-icon.svg?url";
 
 interface NotificationFeedProps {
   subscriptionPlan?: "freeTrial" | "monthlyPlan" | "yearlyPlan";
   userType?: "employer" | "job_hunter";
-  notifications?: NotificationItem[]
+  notifications?: NotificationItem[];
 }
 
 const NotificationFeed: FC<NotificationFeedProps> = ({
   subscriptionPlan,
   userType = "job_hunter",
-  notifications
+  notifications,
 }) => {
   const [expandedNew, setExpandedNew] = useState(false);
   const [newNotifications, setNewNotifications] = useState<NotificationItem[]>(
     [],
   );
 
-  useEffect(()=>{
-    setNewNotifications(notifications ?? [])
-  },[notifications])
+  useEffect(() => {
+    setNewNotifications(notifications ?? []);
+  }, [notifications]);
+
   const [olderNotifications, setOlderNotifications] = useState<
     NotificationItem[]
   >([]);
@@ -82,6 +84,8 @@ const NotificationFeed: FC<NotificationFeedProps> = ({
     setOpen(openState);
     if (openState) {
       setHasBeenViewed(true);
+    } else {
+      setExpandedNew(false);
     }
   };
 
@@ -111,19 +115,28 @@ const NotificationFeed: FC<NotificationFeedProps> = ({
             <h4 className="text-white text-[13px] font-normal flex gap-2 items-center">
               {notification.title}
               {notification.hasMatch && (
-                <span className="text-[#FF5E34]">🔥</span>
+                <img src={sparkle_icon} alt="sparkle" className="w-4 h-4" />
               )}
             </h4>
-            <p 
-            className="text-[10px] text-white mt-2 leading-[1.4]"
-            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(notification.message) }}
-            >
-            </p>
+            <p
+              className="text-[10px] text-white mt-2 leading-[1.4]"
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(notification.message),
+              }}
+            ></p>
             <p className="text-[10px] text-white mt-2 flex justify-end">
               {timeText}
             </p>
           </div>
         </div>
+      </div>
+    );
+  };
+
+  const EmptyState = () => {
+    return (
+      <div className="py-8 px-4 text-center">
+        <p className="text-[#808080] text-[13px]">No notifications yet</p>
       </div>
     );
   };
@@ -188,45 +201,53 @@ const NotificationFeed: FC<NotificationFeedProps> = ({
             align="end"
           >
             <div className="flex flex-col max-h-[90vh]">
-              <div className="flex-none">
-                {displayedNewNotifications.map((notification) => (
-                  <NotificationItem
-                    key={notification.id}
-                    notification={notification}
-                  />
-                ))}
-                {newNotifications.length > 3 && (
+              {newNotifications.length === 0 ? (
+                <EmptyState />
+              ) : (
+                <div className="flex-none">
+                  {!expandedNew &&
+                    displayedNewNotifications.map((notification) => (
+                      <NotificationItem
+                        key={notification.id}
+                        notification={notification}
+                      />
+                    ))}
+
+                  {expandedNew && newNotifications.length > 3 && (
+                    <ScrollArea className="h-[480px]">
+                      <div>
+                        {newNotifications.map((notification) => (
+                          <NotificationItem
+                            key={notification.id}
+                            notification={notification}
+                          />
+                        ))}
+                      </div>
+                    </ScrollArea>
+                  )}
+
+                  {newNotifications.length > 3 && (
+                    <button
+                      onClick={() => setExpandedNew(!expandedNew)}
+                      className="w-full py-2 text-sm text-[#808080] hover:text-gray-400 hover:bg-[#1E1E1E] flex items-center justify-center gap-1 bg-black"
+                    >
+                      {expandedNew ? "Show Less" : "Show More"}
+                      <ChevronDown
+                        className={`h-4 w-4 transition-transform ${
+                          expandedNew ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
+                  )}
+
                   <button
-                    onClick={() => setExpandedNew(!expandedNew)}
-                    className="w-full py-2 text-sm text-[#808080] hover:text-gray-400 hover:bg-[#1E1E1E] flex items-center justify-center gap-1"
+                    onClick={handleClearNotifications}
+                    className="w-full py-3 text-center text-[13px] text-[#F5722E] hover:text-gray-400 hover:bg-[#1E1E1E] transition-colors"
                   >
-                    {expandedNew ? "Show Less" : "Show More"}
-                    <ChevronDown
-                      className={`h-4 w-4 transition-transform ${
-                        expandedNew ? "rotate-180" : ""
-                      }`}
-                    />
+                    Clear Notification
                   </button>
-                )}
-              </div>
-
-              {/* 
-              <div className="h-[2px] bg-white w-full" />
-              <ScrollArea className="h-[400px]">
-                {olderNotifications.map((notification) => (
-                  <NotificationItem
-                    key={notification.id}
-                    notification={notification}
-                  />
-                ))}
-              </ScrollArea> */}
-
-              <button
-                onClick={handleClearNotifications}
-                className="w-full py-3 text-center text-[13px] text-[#F5722E] hover:text-gray-400 hover:bg-[#1E1E1E] transition-colors"
-              >
-                Clear Notification
-              </button>
+                </div>
+              )}
             </div>
           </PopoverContent>
         </Popover>
