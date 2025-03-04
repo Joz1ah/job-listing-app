@@ -62,7 +62,7 @@ const AdDialogWrapper = forwardRef<HTMLDivElement, AdDialogWrapperProps>(
       };
     }, [isOpen, timeLeft, timerDuration]);
 
-    const handleImageClick = () => {
+    const handleSubscribeClick = () => {
       navigate("/dashboard/account-settings/subscription");
       setIsOpen(false);
     };
@@ -86,13 +86,12 @@ const AdDialogWrapper = forwardRef<HTMLDivElement, AdDialogWrapperProps>(
           className="p-0 border-none overflow-hidden bg-transparent w-full"
           style={{ maxWidth: "500px" }}
         >
-          {/* Popup with reduced size */}
-          <div className="relative cursor-pointer">
+          {/* Popup with only the Subscribe button being clickable */}
+          <div className="relative">
             <img
               src={popupImage}
               alt="Subscription Offer"
-              className="w-full h-auto object-cover"
-              onClick={handleImageClick}
+              className="w-full h-auto object-contain cursor-default"
               onError={(e) => {
                 // Fallback to a colored background if image fails to load
                 const target = e.target as HTMLImageElement;
@@ -112,6 +111,20 @@ const AdDialogWrapper = forwardRef<HTMLDivElement, AdDialogWrapperProps>(
             >
               <span className="text-white text-[14px]">{timeLeft}</span>
               <span className="text-white text-[12px]">s</span>
+            </div>
+
+            {/* Subscribe Today Button - Positioned at the bottom left as shown in image */}
+            <div className="absolute bottom-2 left-[10%]">
+              <button
+                onClick={handleSubscribeClick}
+                className="bg-[#4BAF66] text-white font-medium rounded-md cursor-pointer hover:bg-green-500 transition-colors w-[120px] sm:w-[173px] h-[24px] sm:h-[32px] text-xs sm:text-sm flex items-center justify-center"
+                style={{
+                  fontWeight: 500,
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.12)",
+                }}
+              >
+                Subscribe Today
+              </button>
             </div>
           </div>
         </AlertDialogContent>
