@@ -14,6 +14,7 @@ import discover_icon from "assets/credit-card-icons/cc_discover.svg?url";
 import companyLogoLight from "images/company-logo-light.svg?url";
 import { CountrySelect } from "components";
 import { createAuthNetTokenizer, createAuthnetPaymentSecureData } from "services/authnet/authnetService";
+import { NavLink } from "react-router-dom";
 
 interface PaymentStepProps {
   planType: "yearly" | "monthly";
@@ -612,23 +613,23 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                         <div className="ml-2 text-[14px]">
                           <label className="text-[#F5F5F7]">
                             I have read, understood and agree to the{" "}
-                            <a
-                              href="https://app.websitepolicies.com/policies/view/azn4i7fg"
+                            <NavLink
+                              to={"/terms-and-conditions"}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-[#F5722E] underline"
                             >
                               Terms of Use
-                            </a>{" "}
+                            </NavLink>{" "}
                             and{" "}
-                            <a
-                              href="https://app.websitepolicies.com/policies/view/2albjkzj"
+                            <NavLink
+                              to={"/privacy-policy"}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-[#F5722E] underline"
                             >
                               Privacy Policy
-                            </a>
+                            </NavLink>
                           </label>
                         </div>
                       </div>

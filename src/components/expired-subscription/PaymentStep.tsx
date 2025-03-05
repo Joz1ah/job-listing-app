@@ -14,7 +14,11 @@ import discover_icon from "assets/credit-card-icons/cc_discover.svg?url";
 import companyLogoLight from "images/company-logo-light.svg?url";
 import companyLogoDark from "images/company-logo-dark.svg?url";
 import { CountrySelect } from "components";
-import { createAuthNetTokenizer, createAuthnetPaymentSecureData } from "services/authnet/authnetService";
+import {
+  createAuthNetTokenizer,
+  createAuthnetPaymentSecureData,
+} from "services/authnet/authnetService";
+import { NavLink } from "react-router-dom";
 
 interface PaymentStepProps {
   planType: "yearly" | "monthly";
@@ -121,7 +125,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
       month: paymentFormData.expiryDate.split("/")[0],
       year: paymentFormData.expiryDate.split("/")[1],
       cardCode: paymentFormData.cvv,
-   })
+    });
 
     window.Accept.dispatchData(
       secureData,
@@ -723,23 +727,19 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                             }`}
                           >
                             I have read, understood and agree to the{" "}
-                            <a
-                              href="https://app.websitepolicies.com/policies/view/azn4i7fg"
-                              target="_blank"
-                              rel="noopener noreferrer"
+                            <NavLink
+                              to={"/terms-and-conditions"}
                               className="text-[#F5722E] underline"
                             >
                               Terms of Use
-                            </a>{" "}
+                            </NavLink>{" "}
                             and{" "}
-                            <a
-                              href="https://app.websitepolicies.com/policies/view/2albjkzj"
-                              target="_blank"
-                              rel="noopener noreferrer"
+                            <NavLink
+                              to={"/privacy-policy"}
                               className="text-[#F5722E] underline"
                             >
                               Privacy Policy
-                            </a>
+                            </NavLink>
                           </label>
                         </div>
                       </div>
