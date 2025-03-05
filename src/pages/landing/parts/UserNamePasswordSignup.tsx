@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import { useLanding } from "../useLanding";
 import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
 import { MODAL_STATES } from "store/modal/modal.types";
+import { NavLink } from "react-router-dom";
 
 type ErrorFields = "email" | "password" | "passwordConfirm";
 type ErrorState = Record<ErrorFields, string>;
@@ -217,17 +218,18 @@ const UserNamePasswordSignup = () => {
             >
               {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
             </button>
-            {
-            !organizedErrors.password ?
-            <div className="text-[#4BAF66] text-[10px] mt-1">
-            Password must be at least 12 characters and include a lowercase letter, uppercase letter, and special character
-            </div>
-            :organizedErrors.password && (
-              <div className="text-[#E63946] text-[10px] mt-1">
-                {organizedErrors.password}
+            {!organizedErrors.password ? (
+              <div className="text-[#4BAF66] text-[10px] mt-1">
+                Password must be at least 12 characters and include a lowercase
+                letter, uppercase letter, and special character
               </div>
+            ) : (
+              organizedErrors.password && (
+                <div className="text-[#E63946] text-[10px] mt-1">
+                  {organizedErrors.password}
+                </div>
+              )
             )}
-
           </div>
           <div className="relative">
             <input
@@ -265,25 +267,21 @@ const UserNamePasswordSignup = () => {
               By clicking "Next," you agree to our
             </span>
             <div>
-              <a
-                href="https://app.websitepolicies.com/policies/view/azn4i7fg"
-                target="_blank"
-                rel="noopener noreferrer"
+              <NavLink
+                to={"/terms-and-conditions"}
                 className="text-[#F5722E] text-[12px]"
               >
                 Terms & Conditions
-              </a>
+              </NavLink>
               <span className="text-[#263238] text-[12px] font-[400]">
                 &nbsp;and&nbsp;
               </span>
-              <a
-                href="https://app.websitepolicies.com/policies/view/2albjkzj"
-                target="_blank"
-                rel="noopener noreferrer"
+              <NavLink
+                to={"/privacy-policy"}
                 className="text-[#F5722E] text-[12px]"
               >
                 Privacy Policy.
-              </a>
+              </NavLink>
             </div>
           </div>
           <div className="mt-5 flex justify-center items-center gap-4">

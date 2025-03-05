@@ -51,8 +51,8 @@ const Footer: FC = () => {
                 </nav>
                 <nav>
                     <div>Support</div>
-                    <div><NavLink to="https://app.websitepolicies.com/policies/view/azn4i7fg" target="_blank" rel="noopener noreferrer">Terms of service</NavLink></div>
-                    <div><NavLink to="https://app.websitepolicies.com/policies/view/2albjkzj" target="_blank" rel="noopener noreferrer">Privacy policy</NavLink></div>
+                    <div><NavLink to="/terms-and-conditions" onClick={(e) => handleNavLinkClick(e, '/terms-and-conditions')}>Terms of service</NavLink></div>
+                    <div><NavLink to="/privacy-policy" onClick={(e) => handleNavLinkClick(e, '/privacy-policy')}>Privacy policy</NavLink></div>
                 </nav>
                 <nav>
                     <div>Connect with us</div>

@@ -431,7 +431,7 @@ const FreeTrial: React.FC<FreeTrialProps> = ({ onBack, onSelectPlan }) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#242625] p-4 md:p-8">
+    <div className="min-h-screen bg-[#242625] p-0 md:p-8">
       <div className="max-w-6xl mx-auto">
         <button
           onClick={onBack}
@@ -656,7 +656,7 @@ const InterruptedSubscriptionPage: React.FC = () => {
 
   return (
     <DefaultLayout backgroundColor="#242625">
-      <div className="min-h-screen bg-[#242625] p-8">
+      <div className="min-h-screen bg-[#242625] p-4 md:p-8">
         <div className="max-w-6xl mx-auto">{renderContent()}</div>
       </div>
       {selectedPlan && (

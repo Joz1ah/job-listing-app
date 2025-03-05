@@ -20,6 +20,7 @@ import discover_icon from "assets/credit-card-icons/cc_discover.svg?url";
 import authnet_logo from "assets/authnet-logo2.svg?url";
 import { useModal } from "components/modal/useModal";
 import { createAuthNetTokenizer, createAuthnetPaymentSecureData } from "services/authnet/authnetService";
+import { NavLink } from "react-router-dom";
 
 interface PaymentFormValues {
   cardNumber: string;
@@ -810,23 +811,23 @@ const AuthnetPaymentFullModal = () => {
                                   <label>
                                     I have read, understood and agree to the{" "}
                                   </label>
-                                  <a
-                                    href="https://app.websitepolicies.com/policies/view/azn4i7fg"
+                                  <NavLink
+                                    to={"/terms-and-conditions"}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className={styles["link"]}
                                   >
                                     <u>Terms of Use</u>
-                                  </a>
+                                  </NavLink>
                                   <label> and </label>
-                                  <a
-                                    href="https://app.websitepolicies.com/policies/view/2albjkzj"
+                                  <NavLink
+                                    to={"/privacy-policy"}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className={styles["link"]}
                                   >
                                     <u>Privacy Policy.</u>
-                                  </a>
+                                  </NavLink>
                                 </div>
                               </div>
                             )}

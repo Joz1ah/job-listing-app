@@ -9,6 +9,7 @@ import amex_icon from "assets/credit-card-icons/cc_american-express.svg?url";
 import mastercard_icon from "assets/credit-card-icons/cc_mastercard.svg?url";
 import discover_icon from "assets/credit-card-icons/cc_discover.svg?url";
 import { CountrySelect } from "components";
+import { NavLink } from "react-router-dom";
 
 interface InterruptedPaymentFormProps {
   planType: "monthly" | "yearly";
@@ -157,7 +158,7 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
                   )}
                 </Field>
                 {errors.firstName && touched.firstName && (
-                  <div className="absolute text-red-500 right-0 italic text-xs mt-1">
+                  <div className="absolute text-red-500 right-0 italic text-[10px] md:text-xs mt-1">
                     {errors.firstName}
                   </div>
                 )}
@@ -174,7 +175,7 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
                   )}
                 </Field>
                 {errors.lastName && touched.lastName && (
-                  <div className="absolute text-red-500 right-0 italic text-xs mt-1">
+                  <div className="absolute text-red-500 right-0 italic text-[10px] md:text-xs mt-1">
                     {errors.lastName}
                   </div>
                 )}
@@ -200,7 +201,7 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
                   )}
                 </Field>
                 {errors.cardNumber && touched.cardNumber && (
-                  <div className="absolute text-red-500 right-0 italic text-xs mt-1">
+                  <div className="absolute text-red-500 right-0 italic text-[10px] md:text-xs mt-1">
                     {errors.cardNumber}
                   </div>
                 )}
@@ -224,7 +225,7 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
                     )}
                   </Field>
                   {errors.expiryDate && touched.expiryDate && (
-                    <div className="absolute text-red-500 right-0 italic text-xs mt-1">
+                    <div className="absolute text-red-500 right-0 italic text-[10px] md:text-xs mt-1">
                       {errors.expiryDate}
                     </div>
                   )}
@@ -241,7 +242,7 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
                     )}
                   </Field>
                   {errors.cvv && touched.cvv && (
-                    <div className="absolute text-red-500 right-0 italic text-xs mt-1">
+                    <div className="absolute text-red-500 right-0 italic text-[10px] md:text-xs mt-1">
                       {errors.cvv}
                     </div>
                   )}
@@ -260,7 +261,7 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
                   )}
                 </Field>
                 {errors.email && touched.email && (
-                  <div className="absolute text-red-500 right-0 italic text-xs mt-1">
+                  <div className="absolute text-red-500 right-0 italic text-[10px] md:text-xs mt-1">
                     {errors.email}
                   </div>
                 )}
@@ -286,16 +287,16 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
                       <div className="ml-2">
                         <label className="text-[#F5F5F7] text-sm">
                           I have read, understood and agree to the{" "}
-                          <a href="https://app.websitepolicies.com/policies/view/azn4i7fg" className="text-[#F5722E] underline">
+                          <NavLink to={'/terms-and-conditions'} className="text-[#F5722E] underline">
                             Terms of Use
-                          </a>{" "}
+                          </NavLink>{" "}
                           and{" "}
-                          <a
-                            href="https://app.websitepolicies.com/policies/view/2albjkzj"
+                          <NavLink
+                            to={'/privacy-policy'}
                             className="text-[#F5722E] underline"
                           >
                             Privacy Policy
-                          </a>
+                          </NavLink>
                         </label>
                       </div>
                     </div>
@@ -317,7 +318,7 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
                   )}
                 </Field>
                 {errors.address && touched.address && (
-                  <div className="absolute text-red-500 right-0 italic text-xs mt-1">
+                  <div className="absolute text-red-500 right-0 italic text-[10px] md:text-xs mt-1">
                     {errors.address}
                   </div>
                 )}
@@ -334,7 +335,7 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
                   )}
                 </Field>
                 {errors.state && touched.state && (
-                  <div className="absolute text-red-500 right-0 italic text-xs mt-1">
+                  <div className="absolute text-red-500 right-0 italic text-[10px] md:text-xs mt-1">
                     {errors.state}
                   </div>
                 )}
@@ -351,7 +352,7 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
                   )}
                 </Field>
                 {errors.city && touched.city && (
-                  <div className="absolute text-red-500 right-0 italic text-xs mt-1">
+                  <div className="absolute text-red-500 right-0 italic text-[10px] md:text-xs mt-1">
                     {errors.city}
                   </div>
                 )}
@@ -373,7 +374,7 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
                   )}
                 </Field>
                 {errors.country && touched.country && (
-                  <div className="absolute text-red-500 right-0 italic text-xs mt-1">
+                  <div className="absolute text-red-500 right-0 italic text-[10px] md:text-xs mt-1">
                     {errors.country}
                   </div>
                 )}
@@ -390,7 +391,7 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
                   )}
                 </Field>
                 {errors.zipCode && touched.zipCode && (
-                  <div className="absolute text-red-500 right-0 italic text-xs mt-1">
+                  <div className="absolute text-red-500 right-0 italic text-[10px] md:text-xs mt-1">
                     {errors.zipCode}
                   </div>
                 )}

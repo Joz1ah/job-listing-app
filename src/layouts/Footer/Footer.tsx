@@ -7,15 +7,13 @@ const Footer: FC = () => {
       <nav className="space-y-2">
         <p className="space-x-3">
           <Link 
-            to="https://app.websitepolicies.com/policies/view/azn4i7fg"
-            target="_blank" rel="noopener noreferre"
+            to="/terms-and-conditions"
           >
             Terms & Conditions
           </Link>
           <span aria-hidden="true">•</span>
           <Link 
-            to="https://app.websitepolicies.com/policies/view/2albjkzj"
-            target="_blank" rel="noopener noreferre"
+            to="/privacy-policy"
           >
             Privacy Policy
           </Link>
