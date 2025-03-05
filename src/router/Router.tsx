@@ -22,6 +22,7 @@ const ContactUs = lazy(() => import('pages').then(module => ({ default: module.C
 const Faq = lazy(() => import('pages').then(module => ({ default: module.Faq })))
 const Test = lazy(() => import('pages').then(module => ({ default: module.Test })))
 const TermsAndConditions = lazy(() => import('pages').then(module => ({ default: module.TermsAndConditions })))
+const PrivacyPolicy = lazy(() => import('pages').then(module => ({ default: module.PrivacyPolicy })))
 const ComingSoon = lazy(() => import('pages').then(module => ({ default: module.ComingSoon })))
 
 // Employer pages
@@ -391,6 +392,13 @@ const routes: RouteObject[] = [
     element: 
     <PageGatekeeper>
       <LazyComponent component={TermsAndConditions} />
+    </PageGatekeeper>
+  },
+  {
+    path: ROUTE_CONSTANTS.PRIVACY_POLICY,
+    element: 
+    <PageGatekeeper>
+      <LazyComponent component={PrivacyPolicy} />
     </PageGatekeeper>
   },
   {

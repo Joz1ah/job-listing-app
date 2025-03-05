@@ -4,7 +4,10 @@ import https from 'https';
 
 export const webProxy = async (req: Request, res: Response): Promise<void> => {
     const url = req.query.url as string; // Get the URL from the query parameter and assert its type
-    const allowedDomains = ['https://app.websitepolicies.com/policies/view/azn4i7fg'];
+    const allowedDomains = [
+      'https://app.websitepolicies.com/policies/view/azn4i7fg',
+      'https://app.websitepolicies.com/policies/view/2albjkzj',
+      ];
     if (!allowedDomains.includes(url)) {
         res.status(403).send('Domain not allowed');
         return;
