@@ -151,6 +151,8 @@ export const akazaApiAuth = createApiFunction({
       }),
       async onQueryStarted(args,{ queryFulfilled }) {
         const rememberLogin = args?.rememberMe || false
+        const hostname = window.location.hostname;
+        const rootDomain = '.' + hostname.split('.').slice(-2).join('.');
         try {
           const { data } = await queryFulfilled;
           if (data?.data?.token) {
@@ -158,6 +160,7 @@ export const akazaApiAuth = createApiFunction({
               path: '/', // Cookie is available site-wide
               secure: true, // Ensures cookie is sent over HTTPS
               sameSite: 'strict', // Prevents CSRF attacks
+              domain: rootDomain,
               ...(rememberLogin && { expires: 365 }) // Only add expires if rememberLogin is true 365 = 1 year
             });
           } else {

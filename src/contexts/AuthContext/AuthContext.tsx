@@ -21,10 +21,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   });
   const dispatch = useDispatch();
 
-  const deleteCookie = (name: string, domain: string) => {
-    document.cookie = `${name}=; path=/; domain=${domain}; expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure; SameSite=Strict`;
-  };
-  
   const login = (newToken: string) => {
     setToken(newToken);
     //Cookies.set('authToken', newToken, { expires: 7, path: '' });
@@ -35,9 +31,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsAuthenticated(false);
     const hostname = window.location.hostname;
     const rootDomain = '.' + hostname.split('.').slice(-2).join('.');
-   
+      
       [hostname, rootDomain].forEach(domain => {
-        deleteCookie('authToken', domain);
+        Cookies.remove('authToken', { path: '/', domain });
       });
     dispatch(akazaApiAccount.util.resetApiState());
   };
