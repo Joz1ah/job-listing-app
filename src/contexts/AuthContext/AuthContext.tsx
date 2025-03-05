@@ -31,14 +31,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsAuthenticated(false);
     const hostname = window.location.hostname;
     const rootDomain = '.' + hostname.split('.').slice(-2).join('.');
-    //Force Cookie Removal
-    Cookies.set('authToken', '', { expires: new Date(0), path: '/', domain: rootDomain });
-
-      /*
+   
       [hostname, rootDomain].forEach(domain => {
         console.log(domain)
-        Cookies.remove('authToken', { path: '/', domain });
-      });*/
+        Cookies.remove('authToken', { path: '/', domain, secure: true, sameSite: 'Strict' });
+      });
     dispatch(akazaApiAccount.util.resetApiState());
   };
 
