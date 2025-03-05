@@ -33,6 +33,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const rootDomain = '.' + hostname.split('.').slice(-2).join('.');
       
       [hostname, rootDomain].forEach(domain => {
+        console.log(domain)
         Cookies.remove('authToken', { path: '/', domain });
       });
     dispatch(akazaApiAccount.util.resetApiState());
