@@ -43,7 +43,7 @@ const UserNamePasswordSignup = () => {
       .required("Password is required")
       .test(
         "password-requirements",
-        "Password must be at least 12 characters and include a lowercase letter, uppercase letter, number, and special character",
+        "Password must be at least 12 characters and include a lowercase letter, uppercase letter, and special character",
         (value) =>
           Boolean(
             value &&

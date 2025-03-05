@@ -1,7 +1,7 @@
 import { useLoginMutation } from "api/akaza/akazaAPI";
 import { Form, Formik, Field, ErrorMessage } from "formik";
 import { useAuth } from "contexts/AuthContext/AuthContext";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useLanding } from "../useLanding";
 import { Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -22,9 +22,9 @@ const LoginForm = () => {
   const { login } = useAuth();
   const { isResetPasswordSuccesful, handleSetModalState } = useLanding();
 
-  useEffect(()=>{
-    console.log(isResetPasswordSuccesful)
-  },[isResetPasswordSuccesful])
+  //useEffect(()=>{
+  //  console.log(isResetPasswordSuccesful)
+  //},[isResetPasswordSuccesful])
   // State to toggle password visibility
   const [showPassword, setShowPassword] = useState(false);
 
