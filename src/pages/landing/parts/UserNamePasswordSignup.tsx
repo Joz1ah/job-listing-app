@@ -50,7 +50,6 @@ const UserNamePasswordSignup = () => {
               value.length >= 12 &&
               /[a-z]/.test(value) &&
               /[A-Z]/.test(value) &&
-              /[0-9]/.test(value) &&
               /[^a-zA-Z0-9]/.test(value),
           ),
       ),

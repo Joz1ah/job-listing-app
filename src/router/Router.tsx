@@ -21,6 +21,7 @@ const AboutUs = lazy(() => import('pages').then(module => ({ default: module.Abo
 const ContactUs = lazy(() => import('pages').then(module => ({ default: module.ContactUs })))
 const Faq = lazy(() => import('pages').then(module => ({ default: module.Faq })))
 const Test = lazy(() => import('pages').then(module => ({ default: module.Test })))
+const TermsAndConditions = lazy(() => import('pages').then(module => ({ default: module.TermsAndConditions })))
 const ComingSoon = lazy(() => import('pages').then(module => ({ default: module.ComingSoon })))
 
 // Employer pages
@@ -383,6 +384,13 @@ const routes: RouteObject[] = [
     element: 
     <PageGatekeeper>
       <LazyComponent component={Faq} />
+    </PageGatekeeper>
+  },
+  {
+    path: ROUTE_CONSTANTS.TERMS_AND_CONDITIONS,
+    element: 
+    <PageGatekeeper>
+      <LazyComponent component={TermsAndConditions} />
     </PageGatekeeper>
   },
   {

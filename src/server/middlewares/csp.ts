@@ -134,7 +134,9 @@ const csp = (req: Request, res: Response, next: NextFunction): void => {
           'https://js.intercomcdn.com',
           'https://static.intercomassets.com',
           'https://static.intercomassets.com data:',
-          'https://gifs.intercomcdn.com'
+          'https://gifs.intercomcdn.com',
+          'https://app.websitepolicies.com',
+          'https://cdnapp.websitepolicies.com'
           ],
         scriptSrc: [
           "'self'",
@@ -151,7 +153,7 @@ const csp = (req: Request, res: Response, next: NextFunction): void => {
           'https://cdn.jsdelivr.net', //cookies
           IS_DEV ? "'unsafe-eval'" : ''
         ].filter(Boolean),
-        frameSrc: ["'self'", "https://js.stripe.com", "http://js.stripe.com","https://intercom-sheets.com"],
+        frameSrc: ["'self'", "https://js.stripe.com", "http://js.stripe.com","https://intercom-sheets.com","https://app.websitepolicies.com"],
         connectSrc: [
           ...defaultSrc,
           "https://api-iam.intercom.io", 

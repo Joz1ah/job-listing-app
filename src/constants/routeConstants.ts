@@ -15,6 +15,8 @@
     RESET_PASSWORD_REDIRECT: '/reset-password',
     GET_EARLY_ACCESS_KEY: '/get-early-access-key',
     COMING_SOON: '/coming-soon',
+    TERMS_AND_CONDITIONS: '/terms-and-conditions',
+    PRIVACY_POLICY: '/privacy-policy',
 
     // Test Route
     TEST: '/test',
@@ -72,7 +74,4 @@
     
     // Application status
     BOOKMARKED: 'bookmarked',
-
-    TERMS_CONDITIONS: 'terms-conditions',
-    PRIVACY_POLICY: 'privacy-policy',
   };

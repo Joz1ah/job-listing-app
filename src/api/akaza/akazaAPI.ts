@@ -151,7 +151,6 @@ export const akazaApiAuth = createApiFunction({
       }),
       async onQueryStarted(args,{ queryFulfilled }) {
         const rememberLogin = args?.rememberMe || false
-        console.log(rememberLogin)
         try {
           const { data } = await queryFulfilled;
           if (data?.data?.token) {
@@ -630,6 +629,13 @@ export const localApi = createApiFunction({
       }),
       keepUnusedDataFor: 0,
     }),
+    webProxy: builder.query({
+      query: (url) => ({
+        url: `/api/webProxy?url=${url}`,
+        method: 'GET',
+      }),
+      keepUnusedDataFor: 0,
+    }),
   }),
 });
 
@@ -697,5 +703,6 @@ export const {
 
 export const {
   useSendContactUsEmailMutation,
-  useSseNotificationsQuery
+  useSseNotificationsQuery,
+  useWebProxyQuery
 } = localApi
