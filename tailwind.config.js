@@ -83,6 +83,9 @@ module.exports = {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "maskTransitionOpen": 'fadeIn .2s ease-in-out',
+        "maskTransitionClose": 'fadeOut .2s ease-in-out forwards',
+        "modalTransition": 'fadeInScaleUp .2s ease-out',
       },
     },
   },
