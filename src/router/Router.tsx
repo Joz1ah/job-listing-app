@@ -150,7 +150,7 @@ const ProtectedRoute = ({
 
   const userType = user?.data?.user?.type;
   const userDetails = user?.data?.user?.relatedDetails;
-  const jobCount = user?.data?.user?.jobCounts?.count;
+  const jobCount = user?.data?.user?.jobCounts?.totalActiveJob;
   const freeTrial = user?.data?.user?.freeTrial;
   const isOnboarded = user?.data?.user?.isOnboarded;
 
