@@ -1,6 +1,5 @@
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { X } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { X, Loader } from "lucide-react";
 import companyLogo from "images/company-logo.png";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
@@ -13,10 +12,10 @@ interface SignOutModalProps {
 }
 
 const SignOutModal = ({ isOpen, onClose }: SignOutModalProps) => {
-  const navigate = useNavigate();
   const { logout } = useAuth();
   const { showError } = useErrorModal();
   const dispatch = useDispatch();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
@@ -40,20 +39,55 @@ const SignOutModal = ({ isOpen, onClose }: SignOutModalProps) => {
     e.stopPropagation();
   };
 
+  // Function to make a full page request to ensure all data is synced
+  const performFullPageRequest = async () => {
+    try {
+      // Create a full page request to the current URL to sync all data
+      const currentUrl = window.location.href;
+      const response = await fetch(currentUrl, {
+        method: "GET",
+        headers: {
+          "X-Requested-With": "XMLHttpRequest",
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+        },
+        credentials: "same-origin",
+      });
+
+      if (!response.ok) {
+        throw new Error(`Page sync failed with status: ${response.status}`);
+      }
+
+      return true;
+    } catch (error) {
+      console.warn("Full page request before logout failed:", error);
+      // Continue with logout even if sync fails
+      return true;
+    }
+  };
+
   const handleSignOut = async () => {
     try {
+      setIsLoggingOut(true);
+
+      // Perform full page request to sync data before logging out
+      await performFullPageRequest();
+
+      // Proceed with logout
       await logout();
       localStorage.clear();
       sessionStorage.clear();
       dispatch(resetAction());
       onClose();
-      navigate("/");
+      // Perform a full page refresh by setting window.location instead of using router navigation
+      window.location.href = "/";
     } catch (error) {
       showError(
         "Sign Out Failed",
         "Unable to sign out properly. Please try again or contact support if the issue persists.",
       );
       console.error("Sign out failed:", error);
+    } finally {
+      setIsLoggingOut(false);
     }
   };
 
@@ -71,6 +105,7 @@ const SignOutModal = ({ isOpen, onClose }: SignOutModalProps) => {
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors duration-200"
           aria-label="Close modal"
+          disabled={isLoggingOut}
         >
           <X size={24} />
         </button>
@@ -93,14 +128,27 @@ const SignOutModal = ({ isOpen, onClose }: SignOutModalProps) => {
             <button
               onClick={onClose}
               className="bg-[#F5722E] hover:bg-[#F5722E]/90 text-white w-[100px] h-10 transition-colors duration-200 rounded"
+              disabled={isLoggingOut}
             >
               Cancel
             </button>
             <button
               onClick={handleSignOut}
-              className="bg-transparent text-[#E53835] hover:text-white hover:bg-[#E53835] border border-[#E53835] w-[100px] h-10 transition-colors duration-200 rounded"
+              className={`${
+                isLoggingOut
+                  ? "bg-gray-700 text-gray-300 border-gray-500 cursor-not-allowed"
+                  : "bg-transparent text-[#E53835] hover:text-white hover:bg-[#E53835] border border-[#E53835]"
+              } w-[100px] h-10 transition-colors duration-200 rounded flex items-center justify-center`}
+              disabled={isLoggingOut}
             >
-              Sign out
+              {isLoggingOut ? (
+                <>
+                  <Loader size={16} className="animate-spin mr-2" />
+                  <span>Wait...</span>
+                </>
+              ) : (
+                "Sign out"
+              )}
             </button>
           </div>
         </div>

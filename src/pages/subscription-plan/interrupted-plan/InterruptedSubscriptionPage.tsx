@@ -209,7 +209,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-[#242625] p-4 md:p-8">
+    <div className="min-h-screen bg-[#242625] p-0 md:p-8">
       <div className="max-w-6xl mx-auto">
         <button
           onClick={onBack}
@@ -238,7 +238,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
         <div className="flex flex-col lg:flex-row items-center lg:items-start gap-6">
           <PricingCard {...plan} hideButton={true}/>
 
-          <div className="w-full md:w-[743px] h-auto md:h-[580px] bg-[#2D3A41] px-6 pt-1 pb-4 rounded flex justify-center">
+          <div className="w-full md:w-[743px] h-auto md:h-[580px] bg-[#2D3A41] px-4 pt-1 pb-4 rounded flex justify-center">
             <InterruptedPaymentForm
               planType={plan.type.toLowerCase() as 'monthly' | 'yearly'}
               onSubmit={handleCombinedFormSubmit}
