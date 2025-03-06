@@ -19,7 +19,10 @@ import mastercard_icon from "assets/credit-card-icons/cc_mastercard.svg?url";
 import discover_icon from "assets/credit-card-icons/cc_discover.svg?url";
 import authnet_logo from "assets/authnet-logo2.svg?url";
 import { useModal } from "components/modal/useModal";
-import { createAuthNetTokenizer, createAuthnetPaymentSecureData } from "services/authnet/authnetService";
+import {
+  createAuthNetTokenizer,
+  createAuthnetPaymentSecureData,
+} from "services/authnet/authnetService";
 import { NavLink } from "react-router-dom";
 
 interface PaymentFormValues {
@@ -86,12 +89,12 @@ const AuthnetPaymentFullModal = () => {
     const totalAmount = Number((subtotal + tax).toFixed(2));
 
     const secureData = createAuthnetPaymentSecureData({
-        cardNumber: values.cardNumber,
-        month: values.expiryDate.split("/")[0],
-        year: values.expiryDate.split("/")[1],
-        cardCode: values.cvv,
-    })
-    console.log(secureData)
+      cardNumber: values.cardNumber,
+      month: values.expiryDate.split("/")[0],
+      year: values.expiryDate.split("/")[1],
+      cardCode: values.cvv,
+    });
+    console.log(secureData);
     Accept.dispatchData(secureData, async (acceptResponse: any) => {
       if (acceptResponse.messages.resultCode === "Ok") {
         const token = acceptResponse.opaqueData.dataValue;
@@ -696,8 +699,23 @@ const AuthnetPaymentFullModal = () => {
                                   onChange={(
                                     event: React.ChangeEvent<HTMLInputElement>,
                                   ) => {
-                                    const value = event.target.value;
+                                    // Remove any spaces from the input value
+                                    const value = event.target.value.replace(
+                                      /\s/g,
+                                      "",
+                                    );
                                     form.setFieldValue(field.name, value);
+                                  }}
+                                  onKeyDown={(
+                                    event: React.KeyboardEvent<HTMLInputElement>,
+                                  ) => {
+                                    // Prevent space key from being entered
+                                    if (
+                                      event.key === " " ||
+                                      event.code === "Space"
+                                    ) {
+                                      event.preventDefault();
+                                    }
                                   }}
                                   onBlur={() => {
                                     form.validateField(field.name);
