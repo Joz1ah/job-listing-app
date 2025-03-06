@@ -215,7 +215,7 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage }) => {
         </CardHeader>
 
         <CardContent>
-          <div className="h-auto md:h-[55px]">
+          <div className="h-auto md:h-[60px]">
             <SkillsWithEllipsis skills={match.coreSkills} />
           </div>
 

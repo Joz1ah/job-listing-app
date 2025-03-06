@@ -17,7 +17,7 @@ import { useEmployerContext } from "components";
 
 interface selectedProps {
   setSelectedTab: (tab: string) => void;
-  subscriptionPlan: 'freeTrial' | 'monthlyPlan' | 'yearlyPlan';
+  subscriptionPlan: "freeTrial" | "monthlyPlan" | "yearlyPlan";
 }
 
 interface AdItem {
@@ -27,24 +27,36 @@ interface AdItem {
 
 type CardItem = Match | AdItem;
 
-const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, subscriptionPlan }) => {
-  const { perfectMatch, updateMatchState } = usePerfectMatchContext();
-  
-  useEffect(()=>{
-    updateMatchState({
-        ...(perfectMatch.length > 0 && { selectedJobId: perfectMatch[0].id }),
-        scoreFilter: 'above60'
-    });
-  },[])
-  
+const PerfectMatch: FC<selectedProps> = ({
+  setSelectedTab,
+  subscriptionPlan,
+}) => {
+  const {
+    perfectMatches, // Use perfectMatches instead of perfectMatch
+    updateMatchState,
+    matchState,
+  } = usePerfectMatchContext();
+
+  useEffect(() => {
+    // Only set these when component mounts or if match state changes substantially
+    if (matchState.scoreFilter !== "above60" || !matchState.selectedJobId) {
+      updateMatchState({
+        ...(perfectMatches.length > 0 && {
+          selectedJobId: perfectMatches[0]?.id || null,
+        }),
+        scoreFilter: "above60",
+      });
+    }
+  }, []);
+
   const [displayedItems, setDisplayedItems] = useState<CardItem[]>(() => {
-    if (!perfectMatch || perfectMatch.length === 0) {
+    if (!perfectMatches || perfectMatches.length === 0) {
       return [];
     }
 
     // Initial load of 5 items
-    const initialItems = perfectMatch.slice(0, 5);
-    if (subscriptionPlan === 'freeTrial' && initialItems.length >= 3) {
+    const initialItems = perfectMatches.slice(0, 5);
+    if (subscriptionPlan === "freeTrial" && initialItems.length >= 3) {
       // Only insert ad if we have at least 3 real items
       return [
         ...initialItems.slice(0, 3),
@@ -56,7 +68,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, subscriptionPlan }) =
   });
 
   const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(perfectMatch.length > 6);
+  const [hasMore, setHasMore] = useState(perfectMatches.length > 6);
   const loaderRef = useRef<HTMLDivElement>(null);
 
   const loadMore = async () => {
@@ -66,11 +78,13 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, subscriptionPlan }) =
 
     await new Promise((resolve) => setTimeout(resolve, 300));
 
-    const currentItemCount = subscriptionPlan === 'freeTrial'
-      ? displayedItems.filter((item): item is Match => !("isAd" in item)).length
-      : displayedItems.length;
+    const currentItemCount =
+      subscriptionPlan === "freeTrial"
+        ? displayedItems.filter((item): item is Match => !("isAd" in item))
+            .length
+        : displayedItems.length;
     const startIndex = currentItemCount;
-    const remainingItems = perfectMatch.length - startIndex;
+    const remainingItems = perfectMatches.length - startIndex;
 
     if (remainingItems <= 0) {
       setHasMore(false);
@@ -78,7 +92,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, subscriptionPlan }) =
       return;
     }
 
-    if (subscriptionPlan === 'freeTrial') {
+    if (subscriptionPlan === "freeTrial") {
       // Calculate if we need an ad in the next 2 positions
       const realItemsCount = displayedItems.filter(
         (item) => !("isAd" in item),
@@ -88,7 +102,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, subscriptionPlan }) =
 
       if (nextPositionNeedsAd) {
         // Load 1 real item + ad
-        const newItems = perfectMatch.slice(startIndex, startIndex + 1);
+        const newItems = perfectMatches.slice(startIndex, startIndex + 1);
         setDisplayedItems((prev) => [
           ...prev,
           ...newItems,
@@ -96,7 +110,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, subscriptionPlan }) =
         ]);
       } else if (secondPositionNeedsAd) {
         // Load 2 real items + ad
-        const newItems = perfectMatch.slice(startIndex, startIndex + 2);
+        const newItems = perfectMatches.slice(startIndex, startIndex + 2);
         setDisplayedItems((prev) => [
           ...prev,
           newItems[0],
@@ -105,7 +119,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, subscriptionPlan }) =
       } else {
         // Load 2 regular items
         const itemsToLoad = Math.min(2, remainingItems);
-        const newItems = perfectMatch.slice(
+        const newItems = perfectMatches.slice(
           startIndex,
           startIndex + itemsToLoad,
         );
@@ -114,27 +128,34 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, subscriptionPlan }) =
     } else {
       // Non-free trial users always get 2 regular items
       const itemsToLoad = Math.min(2, remainingItems);
-      const newItems = perfectMatch.slice(startIndex, startIndex + itemsToLoad);
+      const newItems = perfectMatches.slice(
+        startIndex,
+        startIndex + itemsToLoad,
+      );
       setDisplayedItems((prev) => [...prev, ...newItems]);
     }
 
-    if (startIndex + 2 >= perfectMatch.length) {
+    if (startIndex + 2 >= perfectMatches.length) {
       setHasMore(false);
     }
 
     setLoading(false);
   };
 
+  // Update displayed items when perfectMatches changes
   useEffect(() => {
-    if (perfectMatch.length === 0) {
+    if (perfectMatches.length === 0) {
       setDisplayedItems([]);
       setHasMore(false);
       setLoading(false);
       return;
     }
 
-    const initialItems = perfectMatch.slice(0, subscriptionPlan === 'freeTrial' ? 5 : 6);
-    if (subscriptionPlan === 'freeTrial' && initialItems.length >= 3) {
+    const initialItems = perfectMatches.slice(
+      0,
+      subscriptionPlan === "freeTrial" ? 5 : 6,
+    );
+    if (subscriptionPlan === "freeTrial" && initialItems.length >= 3) {
       setDisplayedItems([
         ...initialItems.slice(0, 3),
         { isAd: true, image: employerAds },
@@ -143,15 +164,16 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, subscriptionPlan }) =
     } else {
       setDisplayedItems(initialItems);
     }
-    setHasMore(perfectMatch.length > 6);
+    setHasMore(perfectMatches.length > 6);
     setLoading(false);
-  }, [setSelectedTab, subscriptionPlan, perfectMatch, employerAds]);
+  }, [subscriptionPlan, perfectMatches, employerAds]);
 
   // Calculate loading cards
-  const remainingItems = subscriptionPlan === 'freeTrial'
-    ? perfectMatch.length -
-      displayedItems.filter((item) => !("isAd" in item)).length
-    : perfectMatch.length - displayedItems.length;
+  const remainingItems =
+    subscriptionPlan === "freeTrial"
+      ? perfectMatches.length -
+        displayedItems.filter((item) => !("isAd" in item)).length
+      : perfectMatches.length - displayedItems.length;
 
   const showLoadingCards = loading && remainingItems > 0;
   const loadingCardsCount = Math.min(2, remainingItems);
@@ -214,7 +236,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab, subscriptionPlan }) =
             popupImage={employerPopAds}
           />
         ) : (
-          <AppCard key={index} match={item}  popupImage={employerPopAds} />
+          <AppCard key={index} match={item} popupImage={employerPopAds} />
         ),
       )}
 
@@ -254,25 +276,32 @@ const OtherApplications: FC<selectedProps> = ({
   setSelectedTab,
   subscriptionPlan,
 }) => {
-  const { perfectMatch: others, updateMatchState, matchState } = usePerfectMatchContext();
-  
-  useEffect(()=>{
-    updateMatchState({
-        ...(others.length > 0 && { selectedJobId: others[0].id }),
-        scoreFilter: 'below60'
-    });
-  },[])
-  useEffect(()=>{
-    console.log(others)
-  },[matchState])
+  const {
+    otherApplications, // Use otherApplications instead of perfectMatch/others
+    updateMatchState,
+    matchState,
+  } = usePerfectMatchContext();
+
+  useEffect(() => {
+    // Only set these when component mounts or if match state changes substantially
+    if (matchState.scoreFilter !== "below60" || !matchState.selectedJobId) {
+      updateMatchState({
+        ...(otherApplications.length > 0 && {
+          selectedJobId: otherApplications[0]?.id || null,
+        }),
+        scoreFilter: "below60",
+      });
+    }
+  }, []);
+
   const [displayedItems, setDisplayedItems] = useState<CardItem[]>(() => {
-    if (others.length === 0) {
+    if (otherApplications.length === 0) {
       return [];
     }
 
     // Initial load of 5 items
-    const initialItems = others.slice(0, 5);
-    if (subscriptionPlan === 'freeTrial' && initialItems.length >= 3) {
+    const initialItems = otherApplications.slice(0, 5);
+    if (subscriptionPlan === "freeTrial" && initialItems.length >= 3) {
       // Only insert ad if we have at least 3 real items
       return [
         ...initialItems.slice(0, 3),
@@ -284,7 +313,7 @@ const OtherApplications: FC<selectedProps> = ({
   });
 
   const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(others.length > 6);
+  const [hasMore, setHasMore] = useState(otherApplications.length > 6);
   const loaderRef = useRef<HTMLDivElement>(null);
 
   const loadMore = async () => {
@@ -294,11 +323,13 @@ const OtherApplications: FC<selectedProps> = ({
 
     await new Promise((resolve) => setTimeout(resolve, 300));
 
-    const currentItemCount = subscriptionPlan === 'freeTrial'
-      ? displayedItems.filter((item): item is Match => !("isAd" in item)).length
-      : displayedItems.length;
+    const currentItemCount =
+      subscriptionPlan === "freeTrial"
+        ? displayedItems.filter((item): item is Match => !("isAd" in item))
+            .length
+        : displayedItems.length;
     const startIndex = currentItemCount;
-    const remainingItems = others.length - startIndex;
+    const remainingItems = otherApplications.length - startIndex;
 
     if (remainingItems <= 0) {
       setHasMore(false);
@@ -306,7 +337,7 @@ const OtherApplications: FC<selectedProps> = ({
       return;
     }
 
-    if (subscriptionPlan === 'freeTrial') {
+    if (subscriptionPlan === "freeTrial") {
       // Calculate if we need an ad in the next 2 positions
       const realItemsCount = displayedItems.filter(
         (item) => !("isAd" in item),
@@ -316,7 +347,7 @@ const OtherApplications: FC<selectedProps> = ({
 
       if (nextPositionNeedsAd) {
         // Load 1 real item + ad
-        const newItems = others.slice(startIndex, startIndex + 1);
+        const newItems = otherApplications.slice(startIndex, startIndex + 1);
         setDisplayedItems((prev) => [
           ...prev,
           ...newItems,
@@ -324,7 +355,7 @@ const OtherApplications: FC<selectedProps> = ({
         ]);
       } else if (secondPositionNeedsAd) {
         // Load 2 real items + ad
-        const newItems = others.slice(startIndex, startIndex + 2);
+        const newItems = otherApplications.slice(startIndex, startIndex + 2);
         setDisplayedItems((prev) => [
           ...prev,
           newItems[0],
@@ -333,34 +364,43 @@ const OtherApplications: FC<selectedProps> = ({
       } else {
         // Load 2 regular items
         const itemsToLoad = Math.min(2, remainingItems);
-        const newItems = others.slice(startIndex, startIndex + itemsToLoad);
+        const newItems = otherApplications.slice(
+          startIndex,
+          startIndex + itemsToLoad,
+        );
         setDisplayedItems((prev) => [...prev, ...newItems]);
       }
     } else {
       // Non-free trial users always get 2 regular items
       const itemsToLoad = Math.min(2, remainingItems);
-      const newItems = others.slice(startIndex, startIndex + itemsToLoad);
+      const newItems = otherApplications.slice(
+        startIndex,
+        startIndex + itemsToLoad,
+      );
       setDisplayedItems((prev) => [...prev, ...newItems]);
     }
 
-    if (startIndex + 2 >= others.length) {
+    if (startIndex + 2 >= otherApplications.length) {
       setHasMore(false);
     }
 
     setLoading(false);
   };
 
-  // Reset when switching tabs
+  // Update displayed items when otherApplications changes
   useEffect(() => {
-    if (others.length === 0) {
+    if (otherApplications.length === 0) {
       setDisplayedItems([]);
       setHasMore(false);
       setLoading(false);
       return;
     }
 
-    const initialItems = others.slice(0, subscriptionPlan === 'freeTrial' ? 5 : 6);
-    if (subscriptionPlan === 'freeTrial' && initialItems.length >= 3) {
+    const initialItems = otherApplications.slice(
+      0,
+      subscriptionPlan === "freeTrial" ? 5 : 6,
+    );
+    if (subscriptionPlan === "freeTrial" && initialItems.length >= 3) {
       setDisplayedItems([
         ...initialItems.slice(0, 3),
         { isAd: true, image: employerAds },
@@ -369,14 +409,16 @@ const OtherApplications: FC<selectedProps> = ({
     } else {
       setDisplayedItems(initialItems);
     }
-    setHasMore(others.length > 6);
+    setHasMore(otherApplications.length > 6);
     setLoading(false);
-  }, [setSelectedTab, subscriptionPlan, others, employerAds]);
+  }, [subscriptionPlan, otherApplications, employerAds]);
 
   // Calculate loading cards
-  const remainingItems = subscriptionPlan === 'freeTrial'
-    ? others.length - displayedItems.filter((item) => !("isAd" in item)).length
-    : others.length - displayedItems.length;
+  const remainingItems =
+    subscriptionPlan === "freeTrial"
+      ? otherApplications.length -
+        displayedItems.filter((item) => !("isAd" in item)).length
+      : otherApplications.length - displayedItems.length;
 
   const showLoadingCards = loading && remainingItems > 0;
   const loadingCardsCount = Math.min(2, remainingItems);
@@ -429,7 +471,7 @@ const OtherApplications: FC<selectedProps> = ({
             popupImage={employerPopAds}
           />
         ) : (
-          <AppCard key={index} match={item}  popupImage={employerPopAds}/>
+          <AppCard key={index} match={item} popupImage={employerPopAds} />
         ),
       )}
       {/* Dynamic Loading Cards */}
@@ -469,16 +511,15 @@ const EmployerFeed: FC = () => {
   const [selectedTab, setSelectedTab] = useState("perfectMatch");
   const [isLoading, setIsLoading] = useState(true);
   const { subscriptionPlan } = useEmployerContext();
-  const { perfectMatch, matchState } = usePerfectMatchContext();
-  const others = perfectMatch
-  useEffect(()=>{
-    //console.log(perfectMatch)
-  },[matchState])
+  const { perfectMatches, otherApplications, updateMatchState } =
+    usePerfectMatchContext();
+
   const handleUpgradeClick = () => {
     console.log("Upgrade clicked");
     // Implement your upgrade logic here
   };
 
+  // Handle tab changes
   const handleTabChange = (tab: string) => {
     const scrollViewport = document.querySelector(
       "[data-radix-scroll-area-viewport]",
@@ -488,6 +529,14 @@ const EmployerFeed: FC = () => {
         top: 0,
         behavior: "smooth",
       });
+    }
+
+    // Set the scoreFilter based on the selected tab
+    // but don't reset the selectedJobId to prevent data loss
+    if (tab === "perfectMatch") {
+      updateMatchState({ scoreFilter: "above60" });
+    } else {
+      updateMatchState({ scoreFilter: "below60" });
     }
 
     setSelectedTab(tab);
@@ -507,8 +556,14 @@ const EmployerFeed: FC = () => {
     // Calculate number of skeleton cards based on actual data
     const dataLength =
       selectedTab === "perfectMatch"
-        ? Math.min(perfectMatch.length, subscriptionPlan === 'freeTrial' ? 5 : 6)
-        : Math.min(others.length, subscriptionPlan === 'freeTrial' ? 5 : 6);
+        ? Math.min(
+            perfectMatches.length,
+            subscriptionPlan === "freeTrial" ? 5 : 6,
+          )
+        : Math.min(
+            otherApplications.length,
+            subscriptionPlan === "freeTrial" ? 5 : 6,
+          );
 
     // If there's no data, don't show loading state
     if (dataLength === 0) {

@@ -14,8 +14,6 @@ import lock_icon from "assets/subscription-plan-icons/lock-orange.svg?url";
 import message_icon from "assets/subscription-plan-icons/message-orange.svg?url";
 import TooltipWrapper from "components/ui/custom/tooltip-wrapper";
 
-import { ExpiredSubModal } from "components";
-
 interface Feature {
   icon: React.ReactNode;
   text: string;
@@ -76,8 +74,6 @@ const SubscriptionSettings: React.FC = () => {
   const [selectedPlan, setSelectedPlan] = useState<"yearly" | "monthly" | null>(
     null,
   );
-
-  const [isModalOpen] = useState(false);
 
   const features: PlanFeatures = {
     yearly: [
@@ -205,7 +201,6 @@ const SubscriptionSettings: React.FC = () => {
 
   return (
     <div className="w-full">
-      <ExpiredSubModal open={isModalOpen} userType="employer" />
       <div className="mb-2">
         <h2 className="flex text-[#F5F5F7] text-2xl font-normal mb-3 items-center">
           <span className="text-3xl mr-2">✦</span> Your Subscription
