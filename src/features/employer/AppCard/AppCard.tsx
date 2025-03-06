@@ -54,6 +54,7 @@ const isNewPost = (dateString: string): boolean => {
 };
 
 interface AppCardProps {
+  jobId: number;
   match: Match;
   bookmarked?: boolean;
   onBookmark?: () => void;
@@ -308,6 +309,7 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage }) => {
           <ScheduleInterviewModal
             isOpen={isScheduleModalOpen}
             onClose={() => setIsScheduleModalOpen(false)}
+            jobId={match.jobId}
             jobHunterId={match.id}
             employerId={user?.data.user.id}
             position={match.position}

@@ -495,17 +495,17 @@ export const akazaApiInterviewRequest = createApiFunction({
     },
   }), 
   endpoints: (builder) => ({
-    createInterview: builder.mutation({
+    createEmployerInterview: builder.mutation({
       query: (payLoad) => ({
-        url: `interviews`,
+        url: `interviews/employer`,
         method: 'POST',
         body: {
-            "employeeId": payLoad.employeeId,
-            "employerId": payLoad.employerId,
+            "jobId": payLoad.jobId,
+            "jobHunterId": payLoad.jobHunterId,
             "scheduledStart": payLoad.scheduledStart,
             "scheduledEnd": payLoad.scheduledEnd,
-            "location": payLoad.location,
-            "meetingLink":payLoad.meetingLink,
+            //"location": payLoad.location,
+            //"meetingLink":payLoad.meetingLink,
           }
       }),
     }),
@@ -693,7 +693,7 @@ export const {
 } = akazaApiPerfectMatch
 
 export const {
-  useCreateInterviewMutation
+  useCreateEmployerInterviewMutation
 }
 = akazaApiInterviewRequest
 

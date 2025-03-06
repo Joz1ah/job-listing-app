@@ -1,5 +1,6 @@
 export interface Match {
   id: number;
+  jobId: number;
   firstName: string;
   lastName: string;
   phoneNumber?: number;

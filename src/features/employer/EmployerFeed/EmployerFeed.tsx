@@ -236,7 +236,7 @@ const PerfectMatch: FC<selectedProps> = ({
             popupImage={employerPopAds}
           />
         ) : (
-          <AppCard key={index} match={item} popupImage={employerPopAds} />
+          <AppCard jobId={123} key={index} match={item} popupImage={employerPopAds} />
         ),
       )}
 
@@ -471,7 +471,7 @@ const OtherApplications: FC<selectedProps> = ({
             popupImage={employerPopAds}
           />
         ) : (
-          <AppCard key={index} match={item} popupImage={employerPopAds} />
+          <AppCard jobId={123} key={index} match={item} popupImage={employerPopAds} />
         ),
       )}
       {/* Dynamic Loading Cards */}
