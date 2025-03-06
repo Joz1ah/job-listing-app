@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { X, Loader } from "lucide-react";
+import { X } from "lucide-react";
 import companyLogo from "images/company-logo.png";
+import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 import { resetAction } from "store/store";
@@ -143,8 +144,11 @@ const SignOutModal = ({ isOpen, onClose }: SignOutModalProps) => {
             >
               {isLoggingOut ? (
                 <>
-                  <Loader size={16} className="animate-spin mr-2" />
-                  <span>Wait...</span>
+                  <img
+                    src={button_loading_spinner}
+                    alt="Loading"
+                    className="w-4 h-4 mr-2"
+                  />
                 </>
               ) : (
                 "Sign out"

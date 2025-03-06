@@ -133,9 +133,18 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
           .required("You must accept the Terms and Privacy Policy"),
       })}
       validateOnMount
+      validateOnChange={true}
+      validateOnBlur={true}
       onSubmit={onSubmit}
     >
-      {({ handleSubmit, errors, isValid, touched, values }) => (
+      {({
+        handleSubmit,
+        errors,
+        isValid,
+        touched,
+        values,
+        setFieldTouched,
+      }) => (
         <form onSubmit={handleSubmit} className="w-full">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
             {/* Left Column */}
@@ -154,6 +163,10 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
                       {...field}
                       placeholder="First Name"
                       className="bg-transparent text-[#F5F5F7] border-[#F5F5F7] h-[46px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                      onChange={(e) => {
+                        field.onChange(e);
+                        setFieldTouched("firstName", true, false);
+                      }}
                     />
                   )}
                 </Field>
@@ -171,6 +184,10 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
                       {...field}
                       placeholder="Last Name"
                       className="bg-transparent text-[#F5F5F7] border-[#F5F5F7] h-[46px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                      onChange={(e) => {
+                        field.onChange(e);
+                        setFieldTouched("lastName", true, false);
+                      }}
                     />
                   )}
                 </Field>
@@ -193,9 +210,7 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
                       ) => {
                         const value = event.target.value;
                         form.setFieldValue(field.name, value);
-                      }}
-                      onBlur={() => {
-                        form.validateField(field.name);
+                        setFieldTouched("cardNumber", true, false);
                       }}
                     />
                   )}
@@ -220,6 +235,7 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
                             e.target.value,
                           );
                           form.setFieldValue(field.name, formatted);
+                          setFieldTouched("expiryDate", true, false);
                         }}
                       />
                     )}
@@ -238,6 +254,10 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
                         {...field}
                         placeholder="XXX"
                         className="bg-transparent text-[#F5F5F7] border-[#F5F5F7] h-[46px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                        onChange={(e) => {
+                          field.onChange(e);
+                          setFieldTouched("cvv", true, false);
+                        }}
                       />
                     )}
                   </Field>
@@ -257,6 +277,10 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
                       type="email"
                       placeholder="Email Address"
                       className="bg-transparent text-[#F5F5F7] border-[#F5F5F7] h-[46px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                      onChange={(e) => {
+                        field.onChange(e);
+                        setFieldTouched("email", true, false);
+                      }}
                     />
                   )}
                 </Field>
@@ -276,6 +300,10 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
                           type="checkbox"
                           {...field}
                           className={`mt-1 w-5 h-5 items-center ${errors.termsAccepted && touched.termsAccepted ? "border-red-500" : ""}`}
+                          onChange={(e) => {
+                            field.onChange(e);
+                            setFieldTouched("termsAccepted", true, false);
+                          }}
                         />
                         {errors.termsAccepted && touched.termsAccepted && (
                           <div className="absolute left-0 -top-4 bg-red-500 text-white text-[11px] py-1 px-2 rounded shadow-md whitespace-nowrap z-10">
@@ -317,6 +345,10 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
                       {...field}
                       placeholder="House No./Bldg./Street"
                       className="bg-transparent text-[#F5F5F7] border-[#F5F5F7] h-[46px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                      onChange={(e) => {
+                        field.onChange(e);
+                        setFieldTouched("address", true, false);
+                      }}
                     />
                   )}
                 </Field>
@@ -334,6 +366,10 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
                       {...field}
                       placeholder="State"
                       className="bg-transparent text-[#F5F5F7] border-[#F5F5F7] h-[46px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                      onChange={(e) => {
+                        field.onChange(e);
+                        setFieldTouched("state", true, false);
+                      }}
                     />
                   )}
                 </Field>
@@ -351,6 +387,10 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
                       {...field}
                       placeholder="City"
                       className="bg-transparent text-[#F5F5F7] border-[#F5F5F7] h-[46px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                      onChange={(e) => {
+                        field.onChange(e);
+                        setFieldTouched("city", true, false);
+                      }}
                     />
                   )}
                 </Field>
@@ -369,6 +409,7 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
                         value={field.value}
                         onChange={(value) => {
                           form.setFieldValue(field.name, value);
+                          setFieldTouched("country", true, false);
                         }}
                         className="bg-transparent text-[#F5F5F7] border-[#F5F5F7] h-[46px] border-2 focus:border-[#F5722E] rounded-md px-3 w-full hover:text-[#F5F5F7]"
                         popoverClassName="z-50"
@@ -396,6 +437,7 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
                         // Remove any spaces from the input value
                         const value = event.target.value.replace(/\s/g, "");
                         form.setFieldValue(field.name, value);
+                        setFieldTouched("zipCode", true, false);
                       }}
                       onKeyDown={(
                         event: React.KeyboardEvent<HTMLInputElement>,
@@ -460,6 +502,10 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
                             type="checkbox"
                             {...field}
                             className={`mt-1 w-5 h-5 items-center ${errors.termsAccepted && touched.termsAccepted ? "border-red-500" : ""}`}
+                            onChange={(e) => {
+                              field.onChange(e);
+                              setFieldTouched("termsAccepted", true, false);
+                            }}
                           />
                           {errors.termsAccepted && touched.termsAccepted && (
                             <div className="absolute left-0 -top-4 bg-red-500 text-white text-[11px] py-1 px-2 rounded shadow-md whitespace-nowrap z-10">
