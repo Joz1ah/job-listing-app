@@ -22,7 +22,6 @@ const TermsAndConditions: React.FC = () => {
     }
   };
   
-  // Example usage
   useEffect(() => {
     if (iframeLoaded) {
       reStyleIFrame();
@@ -154,7 +153,7 @@ const TermsAndConditions: React.FC = () => {
     <DefaultLayout>
       <div className="bg-[#263238] flex lg:justify-center lg:items-center w-full pt-5 select-none">
           <div className="flex w-[68rem] xl:w-[1100px] xl:pl-[2.5rem] xl:bg-[#2D3A41] xl:justify-center xl:items-center">
-            <div className="w-3/6 max-lg:pl-[1.5rem] text-[2rem] md:text-[3rem] font-bold text-[#F5F5F7] xl:text-center whitespace-nowrap">
+            <div className="w-3/6 max-lg:pl-[1.5rem] text-[1.5rem] md:text-[3rem] font-bold text-[#F5F5F7] xl:text-center whitespace-nowrap">
               Terms and Conditions
             </div>
             <div className="w-3/6 h-full justify-center hidden xl:flex">
