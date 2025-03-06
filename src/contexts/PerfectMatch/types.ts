@@ -17,6 +17,7 @@ export interface Match {
   interpersonalSkills: string[];
   certificates?: string[];
   isNew?: boolean;
+  score?: number;
 }
 
 export interface PerfectMatchState {
@@ -30,6 +31,9 @@ export interface PerfectMatchContextType {
   jobList: any;
   setJobList: React.Dispatch<React.SetStateAction<any>>;
   perfectMatch: Match[];
+  perfectMatches: Match[]; // Added to store high-score matches separately
+  otherApplications: Match[]; // Added to store low-score matches separately
+  activeTab: 'above60' | 'below60'; // Added to track active tab
   data: any;
   matchState: PerfectMatchState;
   updateMatchState: (updates: Partial<PerfectMatchState>) => void;

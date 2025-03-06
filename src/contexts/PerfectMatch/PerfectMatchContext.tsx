@@ -12,6 +12,8 @@ const PerfectMatchContext = createContext<PerfectMatchContextType | undefined>(
 );
 
 const mapPerfectMatchData = (apiResponse: any): Match[] => {
+  if (!apiResponse || !apiResponse.data) return [];
+
   return apiResponse.data.map((item: any) => ({
     id: item?.jobHunter?.jobHunterId ?? 0, // Fix itemId -> jobHunterId, default to 0 if undefined
     firstName: item?.jobHunter?.firstName ?? "Unknown", // Ensure first name exists
@@ -43,6 +45,8 @@ const mapPerfectMatchData = (apiResponse: any): Match[] => {
       : [], // Default to empty array if undefined
     certificates: [], // No certificates in API response
     isNew: true, // Assuming all are new
+    // Add score for debugging
+    score: item?.score || 0,
   }));
 };
 
@@ -57,9 +61,15 @@ const PerfectMatchProvider: React.FC<PerfectMatchProviderProps> = ({
     hasMore: true,
   });
 
-  const [perfectMatch, setPerfectMatch] = useState<Match[]>([]);
+  // Store perfect matches and other applications separately
+  const [perfectMatches, setPerfectMatches] = useState<Match[]>([]);
+  const [otherApplications, setOtherApplications] = useState<Match[]>([]);
+
   // Added state to track when job selection is changing and we're waiting for matches
   const [isLoadingMatches, setIsLoadingMatches] = useState<boolean>(false);
+
+  // Keep track of the active tab to fetch the correct data
+  const [activeTab, setActiveTab] = useState<"above60" | "below60">("above60");
 
   const updateMatchState = (updates: Partial<PerfectMatchState>) => {
     // If selectedJobId is changing, we're loading new matches
@@ -69,9 +79,16 @@ const PerfectMatchProvider: React.FC<PerfectMatchProviderProps> = ({
     ) {
       setIsLoadingMatches(true);
     }
+
+    // Update the active tab if scoreFilter changes
+    if (updates.scoreFilter) {
+      setActiveTab(updates.scoreFilter as "above60" | "below60");
+    }
+
     setMatchState((prev) => ({ ...prev, ...updates }));
   };
 
+  // Fetch data based on current matchState
   const { data, isLoading, error } = useEmployerPaidQuery({
     page: matchState.page,
     pageSize: 100,
@@ -80,16 +97,26 @@ const PerfectMatchProvider: React.FC<PerfectMatchProviderProps> = ({
     jobId: matchState.selectedJobId,
   });
 
+  // Process the data when it arrives
   useEffect(() => {
     if (!isLoading && !error && data) {
-      setPerfectMatch(mapPerfectMatchData(data));
+      const mappedData = mapPerfectMatchData(data);
+
+      // Store data in the appropriate state based on the active tab
+      if (matchState.scoreFilter === "above60") {
+        setPerfectMatches(mappedData);
+      } else if (matchState.scoreFilter === "below60") {
+        setOtherApplications(mappedData);
+      }
+
       // If we were loading matches due to job change, we can stop now
       setIsLoadingMatches(false);
     }
-  }, [data, isLoading, error]);
+  }, [data, isLoading, error, matchState.scoreFilter]);
 
+  // Update hasMore flag
   useEffect(() => {
-    updateMatchState({ hasMore: !!data && data.length > 0 });
+    updateMatchState({ hasMore: !!data && data.data && data.data.length > 0 });
   }, [data]);
 
   const nextPage = () => {
@@ -104,12 +131,19 @@ const PerfectMatchProvider: React.FC<PerfectMatchProviderProps> = ({
     }
   };
 
+  // Get the correct data based on the active tab
+  const perfectMatch =
+    matchState.scoreFilter === "above60" ? perfectMatches : otherApplications;
+
   return (
     <PerfectMatchContext.Provider
       value={{
         jobList,
         setJobList,
         perfectMatch,
+        perfectMatches,
+        otherApplications,
+        activeTab,
         data,
         matchState,
         updateMatchState,

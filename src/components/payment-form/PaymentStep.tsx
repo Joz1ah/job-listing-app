@@ -615,8 +615,6 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                             I have read, understood and agree to the{" "}
                             <NavLink
                               to={"/terms-and-conditions"}
-                              target="_blank"
-                              rel="noopener noreferrer"
                               className="text-[#F5722E] underline"
                             >
                               Terms of Use
@@ -624,8 +622,6 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                             and{" "}
                             <NavLink
                               to={"/privacy-policy"}
-                              target="_blank"
-                              rel="noopener noreferrer"
                               className="text-[#F5722E] underline"
                             >
                               Privacy Policy
