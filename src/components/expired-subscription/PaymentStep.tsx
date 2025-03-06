@@ -672,11 +672,26 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                   size="sm"
                 >
                   <Field name="zipCode">
-                    {({ field }: FieldProps) => (
+                    {({ field, form }: FieldProps) => (
                       <Input
                         {...field}
                         className={getInputClassName()}
                         placeholder="Zip/Postal Code"
+                        onChange={(
+                          event: React.ChangeEvent<HTMLInputElement>,
+                        ) => {
+                          // Remove any spaces from the input value
+                          const value = event.target.value.replace(/\s/g, "");
+                          form.setFieldValue(field.name, value);
+                        }}
+                        onKeyDown={(
+                          event: React.KeyboardEvent<HTMLInputElement>,
+                        ) => {
+                          // Prevent space key from being entered
+                          if (event.key === " " || event.code === "Space") {
+                            event.preventDefault();
+                          }
+                        }}
                       />
                     )}
                   </Field>
@@ -729,6 +744,8 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                             I have read, understood and agree to the{" "}
                             <NavLink
                               to={"/terms-and-conditions"}
+                              target="_blank"
+                              rel="noopener noreferrer"
                               className="text-[#F5722E] underline"
                             >
                               Terms of Use
@@ -736,6 +753,8 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                             and{" "}
                             <NavLink
                               to={"/privacy-policy"}
+                              target="_blank"
+                              rel="noopener noreferrer"
                               className="text-[#F5722E] underline"
                             >
                               Privacy Policy

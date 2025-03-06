@@ -40,8 +40,6 @@ interface FormValues {
   jobId: number | undefined;
   jobHunterId: number | undefined;
   employerId: number | undefined;
-  //scheduledStart: Date | undefined;
-  //scheduledEnd: Date | undefined;
   location: String | "Remote";
   meetingLink: URL | string;
 }
@@ -52,7 +50,7 @@ const validationSchema = Yup.object().shape({
     .min(new Date(), "Cannot select a past date")
     .max(
       new Date(new Date().setMonth(new Date().getMonth() + 2)),
-      "Cannot select a date more than 2 months"
+      "Cannot select a date more than 2 months",
     )
     .typeError("Please select a valid date"),
   interviewTime: Yup.string()
@@ -87,31 +85,32 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
       jobId: jobId,
       employerId: employerId,
       location: "Remote",
-      meetingLink: "https://meet.google.com/xxx-xxxx-xxx"
+      meetingLink: "https://meet.google.com/xxx-xxxx-xxx",
     },
     validationSchema,
     validateOnMount: true,
     onSubmit: async (values, { setSubmitting }) => {
       try {
         // Add your invite sending logic here
-        const scheduleStart = combineDateAndTime(values.interviewDate as Date,values.interviewTime as string);
-        const scheduledEnd = scheduleStart.add(1, "hour"); 
+        const scheduleStart = combineDateAndTime(
+          values.interviewDate as Date,
+          values.interviewTime as string,
+        );
+        const scheduledEnd = scheduleStart.add(1, "hour");
         const payload = {
             "jobId": values.jobId,
             "jobHunterId": values.jobHunterId,
             "scheduledStart": scheduleStart.toDate(),
             "scheduledEnd": scheduledEnd.toDate(),
         };
-        createInterview
-        console.log(payload)
-        //const response = await createInterview(payload).unwrap();
-        //console.log(response)
+        const response = await createInterview(payload).unwrap();
+        console.log(response);
         console.log("Form submitted with values:", payload);
-        //setShowSuccessModal(true);
+        setShowSuccessModal(true);
       } catch (error) {
         showError(
-          'Interview Scheduling Failed',
-          'Unable to schedule the interview. Please try again.'
+          "Interview Scheduling Failed",
+          "Unable to schedule the interview. Please try again.",
         );
         console.error("Error sending invite:", error);
       } finally {
@@ -163,15 +162,19 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
     setFieldValue("interviewTime", time);
   };
 
-    // Button class based on validation state
-    const sendInviteButtonClass = isValid
+  // Button class based on validation state
+  const sendInviteButtonClass = isValid
     ? "bg-[#F5722E] hover:bg-[#F5722E]/70 text-white text-[16px] font-normal"
     : "bg-[#AEADAD] hover:bg-[#AEADAD]/70 text-white text-[16px] font-normal";
 
   return (
     <>
+      {/* Updated to use closeOnOutsideClick={false} */}
       <Dialog open={isOpen} onOpenChange={handleModalClose}>
-        <DialogContent className="w-full max-w-3xl h-[530px] p-0 flex flex-col">
+        <DialogContent
+          className="w-full max-w-3xl h-[530px] p-0 flex flex-col"
+          closeOnOutsideClick={false}
+        >
           <div
             className="flex flex-col h-full"
             onClick={(e: React.MouseEvent<HTMLDivElement>) =>
@@ -222,7 +225,9 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                       </div>
 
                       <div>
-                        <span className="text-sm block mb-2">Certificates:</span>
+                        <span className="text-sm block mb-2">
+                          Certificates:
+                        </span>
                         <div className="flex flex-wrap gap-1.5">
                           {certificate.length > 0 ? (
                             certificate.map((cert, index) => (
@@ -332,10 +337,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                   {/* Fixed Button Area */}
                   <div className="p-4 md:p-6">
                     <div className="flex gap-2">
-                      <Button
-                        type="submit"
-                        className={sendInviteButtonClass}
-                      >
+                      <Button type="submit" className={sendInviteButtonClass}>
                         Send Invite
                       </Button>
                       <Button

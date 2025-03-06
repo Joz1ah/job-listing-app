@@ -13,7 +13,10 @@ import mastercard_icon from "assets/credit-card-icons/cc_mastercard.svg?url";
 import discover_icon from "assets/credit-card-icons/cc_discover.svg?url";
 import companyLogoLight from "images/company-logo-light.svg?url";
 import { CountrySelect } from "components";
-import { createAuthNetTokenizer, createAuthnetPaymentSecureData } from "services/authnet/authnetService";
+import {
+  createAuthNetTokenizer,
+  createAuthnetPaymentSecureData,
+} from "services/authnet/authnetService";
 import { NavLink } from "react-router-dom";
 
 interface PaymentStepProps {
@@ -116,11 +119,11 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
     const totalAmount = Number((subtotal + tax).toFixed(2));
 
     const secureData = createAuthnetPaymentSecureData({
-        cardNumber: paymentFormData.cardNumber,
-        month: paymentFormData.expiryDate.split("/")[0],
-        year: paymentFormData.expiryDate.split("/")[1],
-        cardCode: paymentFormData.cvv,
-    })
+      cardNumber: paymentFormData.cardNumber,
+      month: paymentFormData.expiryDate.split("/")[0],
+      year: paymentFormData.expiryDate.split("/")[1],
+      cardCode: paymentFormData.cvv,
+    });
 
     window.Accept.dispatchData(
       secureData,
@@ -564,11 +567,26 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
 
                 <InputField label="Zip/Postal Code" variant="primary">
                   <Field name="zipCode">
-                    {({ field }: FieldProps) => (
+                    {({ field, form }: FieldProps) => (
                       <Input
                         {...field}
                         className="bg-transparent text-[#F5F5F7] border-[#F5F5F7] h-[46px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
                         placeholder="Zip/Postal Code"
+                        onChange={(
+                          event: React.ChangeEvent<HTMLInputElement>,
+                        ) => {
+                          // Remove any spaces from the input value
+                          const value = event.target.value.replace(/\s/g, "");
+                          form.setFieldValue(field.name, value);
+                        }}
+                        onKeyDown={(
+                          event: React.KeyboardEvent<HTMLInputElement>,
+                        ) => {
+                          // Prevent space key from being entered
+                          if (event.key === " " || event.code === "Space") {
+                            event.preventDefault();
+                          }
+                        }}
                       />
                     )}
                   </Field>
@@ -615,6 +633,8 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                             I have read, understood and agree to the{" "}
                             <NavLink
                               to={"/terms-and-conditions"}
+                              target="_blank"
+                              rel="noopener noreferrer"
                               className="text-[#F5722E] underline"
                             >
                               Terms of Use
@@ -622,6 +642,8 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                             and{" "}
                             <NavLink
                               to={"/privacy-policy"}
+                              target="_blank"
+                              rel="noopener noreferrer"
                               className="text-[#F5722E] underline"
                             >
                               Privacy Policy

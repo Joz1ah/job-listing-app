@@ -6,8 +6,7 @@ import spinner_loading_fallback from 'assets/images/spinner-loading-akaza.svg?ur
 import { useAuth } from 'contexts/AuthContext/AuthContext';
 import { isServer } from 'utils';
 import { IntercomProvider } from 'contexts/Intercom/IntercomContext';
-import { withPerfectMatchProvider } from 'hocs';
-import SubscriptionExpiryWrapper from 'components/expired-subscription/SubscriptionExpiryWrapper';
+import { withPerfectMatchProvider, withSubscriptionExpiryWrapper } from 'hocs';
 import { useFeatureController } from 'contexts/FeatureControllerContext/FeatureController';
 
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -416,9 +415,7 @@ const routes: RouteObject[] = [
   element: (
     <PageGatekeeper>
       <ProtectedRoute>
-        <SubscriptionExpiryWrapper>
-          <LazyComponent component={BaseLayout}/>
-        </SubscriptionExpiryWrapper>
+        <LazyComponent component={withSubscriptionExpiryWrapper(BaseLayout)} />
       </ProtectedRoute>
     </PageGatekeeper>
   ),

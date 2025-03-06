@@ -287,12 +287,15 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
                       <div className="ml-2">
                         <label className="text-[#F5F5F7] text-sm">
                           I have read, understood and agree to the{" "}
-                          <NavLink to={'/terms-and-conditions'} className="text-[#F5722E] underline">
+                          <NavLink
+                            to={"/terms-and-conditions"}
+                            className="text-[#F5722E] underline"
+                          >
                             Terms of Use
                           </NavLink>{" "}
                           and{" "}
                           <NavLink
-                            to={'/privacy-policy'}
+                            to={"/privacy-policy"}
                             className="text-[#F5722E] underline"
                           >
                             Privacy Policy
@@ -382,11 +385,26 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
 
               <InputField label="Zip/Postal Code" variant="primary" size="sm">
                 <Field name="zipCode">
-                  {({ field }: FieldProps) => (
+                  {({ field, form }: FieldProps) => (
                     <Input
                       {...field}
                       placeholder="Zip/Postal Code"
                       className="bg-transparent text-[#F5F5F7] border-[#F5F5F7] h-[46px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                      onChange={(
+                        event: React.ChangeEvent<HTMLInputElement>,
+                      ) => {
+                        // Remove any spaces from the input value
+                        const value = event.target.value.replace(/\s/g, "");
+                        form.setFieldValue(field.name, value);
+                      }}
+                      onKeyDown={(
+                        event: React.KeyboardEvent<HTMLInputElement>,
+                      ) => {
+                        // Prevent space key from being entered
+                        if (event.key === " " || event.code === "Space") {
+                          event.preventDefault();
+                        }
+                      }}
                     />
                   )}
                 </Field>
@@ -453,19 +471,23 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
                         <div className="ml-2">
                           <label className="text-[#F5F5F7] text-sm">
                             I have read, understood and agree to the{" "}
-                            <a
-                              href="/terms"
+                            <NavLink
+                              to={"/terms-and-conditions"}
+                              target="_blank"
+                              rel="noopener noreferrer"
                               className="text-[#F5722E] underline"
                             >
                               Terms of Use
-                            </a>{" "}
+                            </NavLink>{" "}
                             and{" "}
-                            <a
-                              href="/privacy"
+                            <NavLink
+                              to={"/privacy-policy"}
+                              target="_blank"
+                              rel="noopener noreferrer"
                               className="text-[#F5722E] underline"
                             >
                               Privacy Policy
-                            </a>
+                            </NavLink>
                           </label>
                         </div>
                       </div>
