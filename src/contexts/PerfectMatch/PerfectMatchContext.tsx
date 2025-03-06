@@ -1,5 +1,3 @@
-// Modified PerfectMatchContext.tsx
-
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useEmployerPaidQuery } from "api/akaza/akazaAPI";
 import {
@@ -17,36 +15,36 @@ const mapPerfectMatchData = (apiResponse: any): Match[] => {
   if (!apiResponse || !apiResponse.data) return [];
 
   return apiResponse.data.map((item: any) => ({
-    id: item?.jobHunter?.jobHunterId ?? 0,
-    firstName: item?.jobHunter?.firstName ?? "Unknown",
-    lastName: item?.jobHunter?.lastName ?? "Unknown",
-    phoneNumber: null,
-    birthday: item?.jobHunter?.birthday ?? "",
-    location: item?.jobHunter?.location ?? "Unknown",
+    id: item?.jobHunter?.jobHunterId ?? 0, // Fix itemId -> jobHunterId, default to 0 if undefined
+    firstName: item?.jobHunter?.firstName ?? "Unknown", // Ensure first name exists
+    lastName: item?.jobHunter?.lastName ?? "Unknown", // Ensure last name exists
+    phoneNumber: null, // No phone number in API response
+    birthday: item?.jobHunter?.birthday ?? "", // Default to empty string if undefined
+    location: item?.jobHunter?.location ?? "Unknown", // Ensure location exists
     country: item.jobHunter?.country ?? "Unknown",
-    position: null,
-    education: item?.jobHunter?.education ?? "",
+    position: null, // No position in API response
+    education: item?.jobHunter?.education ?? "", // Default to empty string if undefined
     coreSkills: item?.jobHunter?.matchingKeywords
       ? item.jobHunter.matchingKeywords
           .filter((keyword: any) => keyword.type === "core")
           .map((keyword: any) => keyword.keyword)
-      : [],
+      : [], // Default to empty array if undefined
     posted: item?.jobHunter?.createdAt ?? "N/A",
-    experience: item?.jobHunter?.experience ?? "",
+    experience: item?.jobHunter?.experience ?? "", // Default to empty string if undefined
     lookingFor: item?.jobHunter?.employmentType
       ? item.jobHunter.employmentType.split(",")
-      : [],
-    salaryExpectation: item?.jobHunter?.salaryRange ?? "",
+      : [], // Default to empty array if undefined
+    salaryExpectation: item?.jobHunter?.salaryRange ?? "", // Default to empty string if undefined
     language: item?.jobHunter?.language
       ? item.jobHunter.language.split(",")
-      : [],
+      : [], // Default to empty array if undefined
     interpersonalSkills: item?.jobHunter?.matchingKeywords
       ? item.jobHunter.matchingKeywords
           .filter((keyword: any) => keyword.type === "interpersonal")
           .map((keyword: any) => keyword.keyword)
-      : [],
-    certificates: [],
-    isNew: true,
+      : [], // Default to empty array if undefined
+    certificates: [], // No certificates in API response
+    isNew: true, // Assuming all are new
     // Add score for debugging
     score: item?.score || 0,
   }));
@@ -66,12 +64,15 @@ const PerfectMatchProvider: React.FC<PerfectMatchProviderProps> = ({
   // Store perfect matches and other applications separately
   const [perfectMatches, setPerfectMatches] = useState<Match[]>([]);
   const [otherApplications, setOtherApplications] = useState<Match[]>([]);
+
+  // Added state to track when job selection is changing and we're waiting for matches
   const [isLoadingMatches, setIsLoadingMatches] = useState<boolean>(false);
 
   // Keep track of the active tab to fetch the correct data
   const [activeTab, setActiveTab] = useState<"above60" | "below60">("above60");
 
   const updateMatchState = (updates: Partial<PerfectMatchState>) => {
+    // If selectedJobId is changing, we're loading new matches
     if (
       "selectedJobId" in updates &&
       updates.selectedJobId !== matchState.selectedJobId
@@ -108,6 +109,7 @@ const PerfectMatchProvider: React.FC<PerfectMatchProviderProps> = ({
         setOtherApplications(mappedData);
       }
 
+      // If we were loading matches due to job change, we can stop now
       setIsLoadingMatches(false);
     }
   }, [data, isLoading, error, matchState.scoreFilter]);
