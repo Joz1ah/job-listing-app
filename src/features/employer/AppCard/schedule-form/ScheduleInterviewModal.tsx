@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useGetAccountSettingsQuery } from "api/akaza/akazaAPI";
+import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
 import {
   Select,
@@ -15,12 +17,14 @@ import { InvitationSentModal } from "features/employer";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
-import { useCreateInterviewMutation } from "api/akaza/akazaAPI";
+import { useCreateEmployerInterviewMutation } from "api/akaza/akazaAPI";
 import { combineDateAndTime } from 'utils';
+import { ChevronRight } from "lucide-react";
 
 interface ScheduleInterviewModalProps {
   isOpen: boolean;
   onClose: () => void;
+  jobId?: number,
   jobHunterId?: number;
   employerId?: number;
   position: string;
@@ -33,6 +37,7 @@ interface ScheduleInterviewModalProps {
 interface FormValues {
   interviewDate: Date | undefined;
   interviewTime: string | undefined;
+  jobId: number | undefined;
   jobHunterId: number | undefined;
   employerId: number | undefined;
   //scheduledStart: Date | undefined;
@@ -58,6 +63,7 @@ const validationSchema = Yup.object().shape({
 const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
   isOpen,
   onClose,
+  jobId,
   jobHunterId,
   employerId,
   position,
@@ -66,16 +72,19 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
   candidateName,
   location,
 }) => {
+  const { data: settingsData } = useGetAccountSettingsQuery(null);
+  const navigate = useNavigate();
   const [isDatePickerOpen, setIsDatePickerOpen] = useState<boolean>(false);
   const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
-  const [createInterview] = useCreateInterviewMutation();
+  const [createInterview] = useCreateEmployerInterviewMutation();
   const { showError } = useErrorModal();
-  console.log(jobHunterId)
+
   const formik = useFormik<FormValues>({
     initialValues: {
       interviewDate: undefined,
       interviewTime: undefined,
       jobHunterId: jobHunterId,
+      jobId: jobId,
       employerId: employerId,
       location: "Remote",
       meetingLink: "https://meet.google.com/xxx-xxxx-xxx"
@@ -88,15 +97,15 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
         const scheduleStart = combineDateAndTime(values.interviewDate as Date,values.interviewTime as string);
         const scheduledEnd = scheduleStart.add(1, "hour"); 
         const payload = {
-            "employeeId": values.employerId,
-            "employerId": values.jobHunterId,
+            "jobId": values.jobId,
+            "jobHunterId": values.jobHunterId,
             "scheduledStart": scheduleStart.toDate(),
             "scheduledEnd": scheduledEnd.toDate(),
-            "location": "Remote",
-            "meetingLink": values.meetingLink
         };
-        const response = await createInterview(payload).unwrap();
-        console.log(response)
+        createInterview
+        console.log(payload)
+        //const response = await createInterview(payload).unwrap();
+        //console.log(response)
         console.log("Form submitted with values:", payload);
         //setShowSuccessModal(true);
       } catch (error) {
@@ -298,11 +307,26 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                   </div>
 
                   {/* Meeting Link */}
-                  <div className="flex items-center gap-2">
-                    <img src={gmeet} alt="Meet icon" className="w-4 h-4" />
-                    <span className="text-sm text-gray-500">
-                      https://meet.google.com/xxx-xxxx-xxx
-                    </span>
+                  <div>
+
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-8">
+                    <div className="flex items-center gap-3">
+                      <img src={gmeet} alt="Meet icon" className="w-4 h-4" />
+                      <span className="text-sm text-[#F5722E]">
+                        via Google meet
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-5 justify-end select-none">
+                      <span className="text-sm text-[#263238] cursor-pointer"
+                      onClick={()=>{
+                        navigate('/dashboard/account-settings/general')
+                      }}>
+                        {settingsData?.data?.timeZone} Timezone | Click to Change
+                      </span>
+                      <ChevronRight className="w-4 h-4" />
+                    </div>
                   </div>
 
                   {/* Fixed Button Area */}

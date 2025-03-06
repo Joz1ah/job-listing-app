@@ -16,6 +16,7 @@ const mapPerfectMatchData = (apiResponse: any): Match[] => {
 
   return apiResponse.data.map((item: any) => ({
     id: item?.jobHunter?.jobHunterId ?? 0, // Fix itemId -> jobHunterId, default to 0 if undefined
+    jobId: item?.jobHunter?.jobId ?? 0, // Fix itemId -> jobHunterId, default to 0 if undefined
     firstName: item?.jobHunter?.firstName ?? "Unknown", // Ensure first name exists
     lastName: item?.jobHunter?.lastName ?? "Unknown", // Ensure last name exists
     phoneNumber: null, // No phone number in API response
