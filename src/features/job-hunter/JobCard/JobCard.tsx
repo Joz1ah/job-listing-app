@@ -87,7 +87,6 @@ const JobCard: FC<JobCardProps> = ({
   match,
   popupImage,
   adImage,
-  timerDuration = 60,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
@@ -233,7 +232,6 @@ const JobCard: FC<JobCardProps> = ({
             ref={adDialogRef}
             adImage={adImage}
             popupImage={popupImage}
-            timerDuration={timerDuration}
           />
         </div>
       )}

@@ -138,7 +138,6 @@ const AppCard: FC<AppCardProps> = ({
   match,
   popupImage,
   adImage,
-  timerDuration = 60,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
@@ -299,7 +298,6 @@ const AppCard: FC<AppCardProps> = ({
             ref={adDialogRef}
             adImage={adImage}
             popupImage={popupImage}
-            timerDuration={timerDuration}
           />
         </div>
       )}
