@@ -28,37 +28,17 @@ const getEmploymentTypeStyle = (type: string) => {
   return type.toLowerCase() === "part time" ? "bg-[#BF532C]" : "bg-[#F5722E]";
 };
 
-const JobListingCard: FC<JobListingCardProps> = ({ 
-  job,
-  onDelete,
-  onEdit
-}) => {
+const JobListingCard: FC<JobListingCardProps> = ({ job, onDelete, onEdit }) => {
   // Split language string into array if it's not already
-  const languages = Array.isArray(job.language) 
-    ? job.language 
-    : typeof job.language === 'string'
-      ? job.language.split(',').map((lang: string) => lang.trim())
+  const languages = Array.isArray(job.language)
+    ? job.language
+    : typeof job.language === "string"
+      ? job.language.split(",").map((lang: string) => lang.trim())
       : [];
 
   return (
-    <Card
-      className="bg-[#FFFFFF] border-none w-full md:w-[436px] h-[275px] relative cursor-pointer group"
-    >
-      {/* Hover overlay with blur and edit button */}
-      <div className="absolute inset-0 bg-white/80 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center p-4 z-10">
-        <button 
-          className="border border-[#F5722E] text-[#F5722E] hover:bg-[#F5722E] hover:text-white rounded-sm py-1.5 px-6 flex items-center gap-2 text-sm font-medium min-w-[100px] justify-center transition-colors duration-200"
-          onClick={(e) => {
-            e.stopPropagation();
-            onEdit?.(job.id);
-          }}
-        >
-          <Edit size={14} />
-          Edit
-        </button>
-      </div>
-      
-      <div className="flex flex-col h-full z-0">
+    <Card className="bg-[#FFFFFF] border-none w-full md:w-[436px] h-[320px] md:h-[275px] relative cursor-pointer">
+      <div className="flex flex-col h-full">
         <CardHeader className="flex flex-col justify-between items-start pb-0">
           <div className="flex flex-row -mt-4 justify-between w-full">
             <div className="h-[20px]">
@@ -73,7 +53,7 @@ const JobListingCard: FC<JobListingCardProps> = ({
                 Posted {job.posted} ago
               </span>
               <div className="absolute top-6 -right-2">
-                <Trash2 
+                <Trash2
                   className="w-5 h-5 text-red-500 hover:text-red-700 cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
@@ -85,13 +65,16 @@ const JobListingCard: FC<JobListingCardProps> = ({
           </div>
 
           <div className="w-full relative mt-2">
-            <h3 
+            <h3
               className="text-[14px] font-semibold text-[#263238] cursor-pointer hover:text-[#F5722E] truncate"
               title={job.title}
             >
               {job.title}
             </h3>
-            <p className="text-[13px] text-[#263238] underline truncate" title={job.company}>
+            <p
+              className="text-[13px] text-[#263238] underline truncate"
+              title={job.company}
+            >
               {job.company}
             </p>
             <div className="flex flex-row items-center">
@@ -104,11 +87,11 @@ const JobListingCard: FC<JobListingCardProps> = ({
         </CardHeader>
 
         <CardContent className="pt-1 flex-1">
-          <div className="h-[50px]">
+          <div className="h-[55px]">
             <SkillsWithEllipsis skills={job.requiredSkills} />
           </div>
 
-          <div className="flex flex-col gap-2 mt-4">
+          <div className="flex flex-col gap-1 mt-4">
             <div className="flex gap-2 items-center">
               <span className="text-[13px] font-light text-[#263238]">
                 Experience:
@@ -156,6 +139,18 @@ const JobListingCard: FC<JobListingCardProps> = ({
           </div>
         </CardContent>
       </div>
+
+      {/* Edit button positioned at the bottom right */}
+      <button
+        className="absolute bottom-3 right-3 border border-[#F5722E] text-[#F5722E] hover:bg-[#F5722E] hover:text-white rounded-sm py-1 px-3 text-xs font-medium transition-colors duration-200"
+        onClick={(e) => {
+          e.stopPropagation();
+          onEdit?.(job.id);
+        }}
+      >
+        <span className="hidden md:inline">Edit</span>
+        <Edit size={14} className="md:hidden" />
+      </button>
     </Card>
   );
 };

@@ -4,7 +4,7 @@ import styles from "./defaultLayout.module.scss";
 import { BaseMenu } from "layouts";
 import { useMenu } from "hooks";
 import { Footer } from "layouts/Footer/Engagement/Footer";
-import cn from 'classnames';
+import cn from "classnames";
 import ButtonNav from "../../components/button/ButtonNav";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import { useDispatch } from "react-redux";
@@ -27,13 +27,11 @@ interface DefaultLayoutProps {
   className?: string;
 }
 
-
 export const DefaultLayout: React.FC<DefaultLayoutProps> = ({
   children,
   backgroundColor,
-  className
+  className,
 }) => {
-  
   const { handleSetModalState, createExternalCookiePolicy } = useLanding();
   const location = useLocation();
   const { menuOpen, toggleMenu } = useMenu();
@@ -47,17 +45,59 @@ export const DefaultLayout: React.FC<DefaultLayoutProps> = ({
 
   const { toggleModal, handleSetSelectedModalHeader } = useModal();
 
-  useEffect(()=>{
-    createExternalCookiePolicy()
-  },[])
-  
+  // Get subscription plan from user info
+  const getSubscriptionPlan = () => {
+    // If no user data, return freeTrial
+    if (!user?.data?.user) return "freeTrial";
+
+    // Check the subscription array first (same as BaseLayout)
+    const activeSubscription = user.data.user.subscriptions?.[0];
+
+    // If there's an active subscription in the array, return its plan (Monthly or Yearly)
+    if (activeSubscription?.status === "active") {
+      if (activeSubscription.plan === "Monthly") return "monthlyPlan";
+      if (activeSubscription.plan === "Yearly") return "yearlyPlan";
+    }
+
+    // Fallback: check for a direct subscription property
+    const directSubscription = user.data.user.subscription;
+    if (directSubscription) {
+      const plan = directSubscription.plan || directSubscription.type;
+      if (plan === "Monthly" || plan === "monthly") return "monthlyPlan";
+      if (plan === "Yearly" || plan === "yearly") return "yearlyPlan";
+    }
+
+    // Default to freeTrial
+    return "freeTrial";
+  };
+
+  // Optional debugging
+  useEffect(() => {
+    console.log(
+      "DefaultLayout - User subscription data:",
+      user?.data?.user?.subscriptions,
+    );
+    console.log(
+      "DefaultLayout - Direct subscription property:",
+      user?.data?.user?.subscription,
+    );
+    console.log(
+      "DefaultLayout - Calculated subscription plan:",
+      getSubscriptionPlan(),
+    );
+  }, [user]);
+
+  useEffect(() => {
+    createExternalCookiePolicy();
+  }, []);
+
   useEffect(() => {
     // Close modal on location change unless we specifically want it open
     if (!location.state?.openModal) {
       dispatch(resetModal());
     }
-    if(location.state?.resetPasswordtoken){
-      handleSetModalState(MODAL_STATES.FORGOT_PASSWORD_NEW_PASSWORD)
+    if (location.state?.resetPasswordtoken) {
+      handleSetModalState(MODAL_STATES.FORGOT_PASSWORD_NEW_PASSWORD);
       toggleModal(true);
     }
   }, [location.pathname]);
@@ -117,25 +157,30 @@ export const DefaultLayout: React.FC<DefaultLayoutProps> = ({
         isAuthenticated={isAuthenticated}
         isMenuOpen={menuOpen}
         onToggleMenu={toggleMenu}
-        ButtonLoginNav={!isAuthenticated ? 
-          () => (
-              <ButtonNav
-                handleSetState={() => handleSetModalState(MODAL_STATES.LOGIN)}
-                onClick={() => menuOpen ? toggleMenu() : null}
-                btnFor="login"
-              />
-          ) : undefined}
-        ButtonSignUpNav={!isAuthenticated ? 
-          () => (
-                  <ButtonNav
-                    handleSetState={() =>
-                      handleSetModalState(MODAL_STATES.SIGNUP_SELECT_USER_TYPE)
-                    }
-                    onClick={() => menuOpen ? toggleMenu() : null}
-                    btnFor="signup"
-                  />
-                )
-          : undefined}
+        ButtonLoginNav={
+          !isAuthenticated
+            ? () => (
+                <ButtonNav
+                  handleSetState={() => handleSetModalState(MODAL_STATES.LOGIN)}
+                  onClick={() => (menuOpen ? toggleMenu() : null)}
+                  btnFor="login"
+                />
+              )
+            : undefined
+        }
+        ButtonSignUpNav={
+          !isAuthenticated
+            ? () => (
+                <ButtonNav
+                  handleSetState={() =>
+                    handleSetModalState(MODAL_STATES.SIGNUP_SELECT_USER_TYPE)
+                  }
+                  onClick={() => (menuOpen ? toggleMenu() : null)}
+                  btnFor="signup"
+                />
+              )
+            : undefined
+        }
         desktopMenuItems={isAuthenticated ? desktopMenuItems : undefined}
         mobileMenuItems={isAuthenticated ? mobileMenuItems : undefined}
         userType={userType}
@@ -143,6 +188,7 @@ export const DefaultLayout: React.FC<DefaultLayoutProps> = ({
         onSignOut={
           isAuthenticated ? () => setShowSignOutModal(true) : undefined
         }
+        subscriptionPlan={getSubscriptionPlan()}
       />
 
       {shouldRenderModal && (
@@ -154,7 +200,6 @@ export const DefaultLayout: React.FC<DefaultLayoutProps> = ({
 
       <main
         className={cn(styles["layout-main"], className)}
-        
         style={{ "--main-bg-color": backgroundColor } as React.CSSProperties}
       >
         {children}

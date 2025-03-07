@@ -28,12 +28,12 @@ const AdDialogWrapper = forwardRef<HTMLDivElement, AdDialogWrapperProps>(
         <AlertDialogTrigger asChild>
           <div
             ref={ref}
-            className="bg-white border-none h-[275px] w-full max-w-[436px] rounded-lg overflow-hidden"
+            className="bg-white border-none h-auto w-full max-w-[436px] rounded-lg overflow-hidden"
           >
             <img
               src={adImage}
               alt="Ad Trigger"
-              className="w-full h-full object-cover cursor-pointer"
+              className="w-full h-auto object-contain cursor-pointer"
             />
           </div>
         </AlertDialogTrigger>

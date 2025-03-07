@@ -18,13 +18,13 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 import { useCreateEmployerInterviewMutation } from "api/akaza/akazaAPI";
-import { combineDateAndTime } from 'utils';
+import { combineDateAndTime } from "utils";
 import { ChevronRight } from "lucide-react";
 
 interface ScheduleInterviewModalProps {
   isOpen: boolean;
   onClose: () => void;
-  jobId?: number,
+  jobId?: number;
   jobHunterId?: number;
   employerId?: number;
   position: string;
@@ -98,10 +98,10 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
         );
         const scheduledEnd = scheduleStart.add(1, "hour");
         const payload = {
-            "jobId": values.jobId,
-            "jobHunterId": values.jobHunterId,
-            "scheduledStart": scheduleStart.toDate(),
-            "scheduledEnd": scheduledEnd.toDate(),
+          jobId: values.jobId,
+          jobHunterId: values.jobHunterId,
+          scheduledStart: scheduleStart.toDate(),
+          scheduledEnd: scheduledEnd.toDate(),
         };
         const response = await createInterview(payload).unwrap();
         console.log(response);
@@ -182,10 +182,12 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
             }
           >
             <div className="flex-1 overflow-y-auto">
-              <DialogHeader className="p-4 md:p-6">
+              <DialogHeader className="py-4 px-6">
                 <DialogTitle className="text-center text-orange-500 mb-8 mt-6">
-                  Schedule an interview for the candidate below for the{" "}
-                  <span className="text-orange-500">{position}</span> position
+                  Schedule an interview for the candidate below for the
+                  <div className="mt-1">
+                    <span className="text-orange-500">{position}</span> position
+                  </div>
                 </DialogTitle>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -312,10 +314,8 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                   </div>
 
                   {/* Meeting Link */}
-                  <div>
+                  <div></div>
 
-                  </div>
-                  
                   <div className="grid grid-cols-2 gap-8">
                     <div className="flex items-center gap-3">
                       <img src={gmeet} alt="Meet icon" className="w-4 h-4" />
@@ -324,11 +324,14 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                       </span>
                     </div>
                     <div className="flex items-center gap-5 justify-end select-none">
-                      <span className="text-sm text-[#263238] cursor-pointer"
-                      onClick={()=>{
-                        navigate('/dashboard/account-settings/general')
-                      }}>
-                        {settingsData?.data?.timeZone} Timezone | Click to Change
+                      <span
+                        className="text-sm text-[#263238] cursor-pointer"
+                        onClick={() => {
+                          navigate("/dashboard/account-settings/general");
+                        }}
+                      >
+                        {settingsData?.data?.timeZone} Timezone | Click to
+                        Change
                       </span>
                       <ChevronRight className="w-4 h-4" />
                     </div>
