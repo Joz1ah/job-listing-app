@@ -46,7 +46,7 @@ const InvitationSentModal: React.FC<InvitationSentModalProps> = ({
               </NavLink>
 
               <NavLink 
-                to="/dashboard/feed"
+                to="/dashboard"
                 onClick={onClose}
               >
                 <Button 

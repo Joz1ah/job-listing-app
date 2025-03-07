@@ -309,7 +309,7 @@ const EditApplicationCard: FC = () => {
       // Refresh user data in auth context
       await refreshUser();
 
-      navigate("/dashboard/feed");
+      navigate("/dashboard");
     } catch (error) {
       showError(
         "Profile Update Failed",
@@ -335,7 +335,7 @@ const EditApplicationCard: FC = () => {
         <div className="w-full md:w-[800px] min-h-[960px] bg-[#2D3A41] text-white">
           <div className="flex items-center w-full px-0 py-4 md:px-4 md:py-6 relative">
             <NavLink 
-              to="/dashboard/feed" 
+              to="/dashboard" 
               className="absolute left-1 md:left-4 top-1/2 -translate-y-1/2 md:top-6 md:translate-y-0"
             >
               <ChevronLeft strokeWidth={4} className="h-6 w-6 mr-2" />

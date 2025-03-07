@@ -6,10 +6,11 @@ interface NavItem {
   isAction?: boolean;
   action?: () => void;
   isExternal?: boolean;
+  isFullRefresh?: boolean; 
 }
   
   export const employerDesktopMenu: NavItem[] = [
-    { name: 'MY JOB FEED', path: '/dashboard' },
+    { name: 'MY JOB FEED', path: '/dashboard', isFullRefresh: true },
     { name: 'MANAGE JOB LISTINGS', path: '/dashboard/manage-job-listings' },
     { name: 'EDIT COMPANY PROFILE', path: '/dashboard/edit-profile' },
     { name: 'BOOKMARKED JOBS', path: '/dashboard/bookmarked-jobs'},
@@ -26,7 +27,7 @@ interface NavItem {
   
   export const employerMobileMenu: NavItem[] = [
     { name: 'CREATE JOB LISTING', path: '/dashboard/job-listing' },
-    { name: 'MY JOB FEED', path: '/dashboard' },
+    { name: 'MY JOB FEED', path: '/dashboard', isFullRefresh: true  },
     { name: 'MANAGE JOB LISTINGS', path: '/dashboard/manage-job-listings' },
     { name: 'EDIT COMPANY PROFILE', path: '/dashboard/edit-profile' },
     { name: 'BOOKMARKED JOBS', path: '/dashboard/bookmarked-jobs'},
@@ -49,7 +50,7 @@ interface NavItem {
   ];
 
   export const jobHunterDesktopMenu: NavItem[] = [
-    { name: 'MY JOB FEED', path: '/dashboard' },
+    { name: 'MY JOB FEED', path: '/dashboard', isFullRefresh: true  },
     { name: 'EDIT APPLICATION CARD', path: '/dashboard/edit-application' },
     { name: 'BOOKMARKED JOBS', path: '/dashboard/bookmarked-jobs'},
     { name: 'INTERVIEWS', path: '/dashboard/interviews'},
@@ -63,7 +64,7 @@ interface NavItem {
   ];
 
   export const jobHunterMobileMenu: NavItem[] = [
-    { name: 'MY JOB FEED', path: '/dashboard' },
+    { name: 'MY JOB FEED', path: '/dashboard', isFullRefresh: true  },
     { name: 'EDIT APPLICATION CARD', path: '/dashboard/edit-application' },
     { name: 'BOOKMARKED JOBS', path: '/dashboard/bookmarked-jobs'},
     { name: 'INTERVIEWS', path: '/dashboard/interviews'},

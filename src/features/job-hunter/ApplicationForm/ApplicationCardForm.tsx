@@ -252,7 +252,7 @@ const ApplicationCardForm: FC = () => {
 
       await submitJobHunterProfile(payload).unwrap();
       await refreshUser();
-      navigate("/dashboard/feed");
+      navigate("/dashboard");
     } catch (error) {
       showError(
         "Profile Update Failed",

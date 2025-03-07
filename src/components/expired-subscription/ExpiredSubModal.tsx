@@ -328,7 +328,7 @@ const ExpiredSubModal: React.FC<ExpiredSubModalProps> = ({
           to={
             userType === "employer"
               ? "/dashboard/job-listing"
-              : "/dashboard/feed"
+              : "/dashboard"
           }
         >
           <Button className="bg-[#F5722E] text-sm hover:bg-[#F5722E]/80 text-white rounded w-36 px-0">
@@ -336,7 +336,7 @@ const ExpiredSubModal: React.FC<ExpiredSubModalProps> = ({
           </Button>
         </NavLink>
 
-        <NavLink to="/dashboard/feed">
+        <NavLink to="/dashboard">
           <Button
             variant="outline"
             className="border-[#F5722E] bg-transparent text-[#F5722E] hover:bg-[#F5722E] hover:text-white rounded w-36 px-0"
