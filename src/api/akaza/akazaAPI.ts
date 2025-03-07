@@ -29,10 +29,12 @@ if (isServer) {
 
 export const pokemonApi = createApiFunction({
   reducerPath: 'pokemonApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'https://pokeapi.co/api/v2/' }),
+  baseQuery: fetchBaseQuery({ 
+    baseUrl: 'https://pokeapi.co/api/v2' 
+  }),
   endpoints: (builder) => ({
     getPokemonSpriteById: builder.query<TPokemonData, number>({
-      query: (id) => `pokemon/${id}`,
+      query: (id) => `/pokemon/${id}`,
       transformResponse: (response: any) => ({
         name: response.species.name,
         sprite: response.sprites.other.dream_world.front_default
@@ -54,7 +56,7 @@ export const akazaApiSignUp = createApiFunction({
   endpoints: (builder) => ({
     signUp: builder.mutation({
       query: (payLoad) => ({
-        url: 'signup',
+        url: '/signup',
         method: 'POST',
         body: 
         {
@@ -66,14 +68,14 @@ export const akazaApiSignUp = createApiFunction({
     }),
     otpGenerate: builder.mutation({
       query: (email) => ({
-        url: 'otp/generate',
+        url: '/otp/generate',
         method: 'POST',
         body: email,
       }),
     }),
     otpVerify: builder.mutation({
       query: (payLoad) => ({
-        url: 'otp/verify',
+        url: '/otp/verify',
         method: 'POST',
         body: {
           "email": payLoad.email,
@@ -83,7 +85,7 @@ export const akazaApiSignUp = createApiFunction({
     }),
     activate: builder.mutation({
       query: (payLoad) => ({
-        url: 'activate',
+        url: '/activate',
         method: 'POST',
         body: {
           "email": payLoad.email,
@@ -93,7 +95,7 @@ export const akazaApiSignUp = createApiFunction({
     }),
     checkEmail: builder.mutation({
       query: (payLoad) => ({
-        url: 'email',
+        url: '/email',
         method: 'POST',
         body: {
           "email": payLoad.email
@@ -102,7 +104,7 @@ export const akazaApiSignUp = createApiFunction({
     }),
     googleSignUp: builder.query({
       query: () => ({
-        url: 'auth/google/signup',
+        url: '/auth/google/signup',
         method: 'GET',
         /*
         body: {
@@ -113,7 +115,7 @@ export const akazaApiSignUp = createApiFunction({
     }),
     googleRedirect: builder.query({
       query: () => ({
-        url: 'auth/google/redirect',
+        url: '/auth/google/redirect',
         method: 'GET',
         /*
         body: {
@@ -142,7 +144,7 @@ export const akazaApiAuth = createApiFunction({
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (payLoad) => ({
-        url: 'login',
+        url: '/login',
         method: 'POST',
         body: {
           email: payLoad.email,
@@ -174,7 +176,7 @@ export const akazaApiAuth = createApiFunction({
     }),
     jobHunterContact: builder.mutation({
       query: (payLoad) => ({
-        url: 'jobhunter-contact',
+        url: '/jobhunter-contact',
         method: 'POST',
         body: {
           "phoneNumber": payLoad.phoneNumber,
@@ -184,7 +186,7 @@ export const akazaApiAuth = createApiFunction({
     }),
     jobHunterProfile: builder.mutation({
       query: (payLoad) => ({
-        url: 'jobhunter-profile',
+        url: '/jobhunter-profile',
         method: 'POST',
         body: {
           "firstName": payLoad.firstName,
@@ -207,7 +209,7 @@ export const akazaApiAuth = createApiFunction({
     }),
     employerContact: builder.mutation({
       query: (payLoad) => ({
-        url: 'employer-contact',
+        url: '/employer-contact',
         method: 'POST',
         body: {
           "firstName": payLoad.firstName,
@@ -221,7 +223,7 @@ export const akazaApiAuth = createApiFunction({
     }),
     employerProfile: builder.mutation({
       query: (payLoad) => ({
-        url: 'employer-profile',
+        url: '/employer-profile',
         method: 'POST',
         body: {
           "businessName": payLoad.businessName,
@@ -244,7 +246,7 @@ export const akazaApiAuth = createApiFunction({
     }),
     forgotPassword: builder.mutation({
       query: (payLoad) => ({
-        url: 'forgot-password',
+        url: '/forgot-password',
         method: 'POST',
         body: {
           "email": payLoad.email
@@ -253,7 +255,7 @@ export const akazaApiAuth = createApiFunction({
     }),
     resetPassword: builder.mutation({
       query: (payLoad) => ({
-        url: 'reset-password',
+        url: '/reset-password',
         method: 'POST',
         body: {
             "password": payLoad.password,
@@ -263,7 +265,7 @@ export const akazaApiAuth = createApiFunction({
     }),
     updatePassword: builder.mutation({
       query: (payload) => ({
-        url: 'settings/update-password',
+        url: '/settings/update-password',
         method: 'POST',
         body: {
           "oldPassword": payload.oldPassword,
@@ -340,7 +342,7 @@ export const akazaApiPayment = createApiFunction({
   endpoints: (builder) => ({
     paymentCreate: builder.mutation({
       query: (payLoad) => ({
-        url: 'payments/create',
+        url: '/payments/create',
         method: 'POST',
         body: {
           "provider": payLoad.provider,
@@ -361,7 +363,7 @@ export const akazaApiPayment = createApiFunction({
     }),
     paymentCardDetails: builder.mutation({
       query: (payLoad) => ({
-        url: 'payments/cardDetails',
+        url: '/payments/cardDetails',
         method: 'POST',
         body: {
           "provider": payLoad.provider,
@@ -371,7 +373,7 @@ export const akazaApiPayment = createApiFunction({
     }),
     paymentCancel: builder.mutation({
       query: (payLoad) => ({
-        url: 'payments/cardDetails',
+        url: '/payments/cardDetails',
         method: 'POST',
         body: {
           "provider": payLoad.provider,
@@ -454,25 +456,25 @@ export const akazaApiPerfectMatch = createApiFunction({
   endpoints: (builder) => ({
     jobHunterPaid: builder.query({
       query: ({ page, pageSize, matchesByScore }) => ({
-        url: `perfect-match/jobHunter/${matchesByScore ? 'matches-by-score' : ''}?page=${page}&pageSize=${pageSize}`,
+        url: `/perfect-match/jobHunter/${matchesByScore ? 'matches-by-score' : ''}?page=${page}&pageSize=${pageSize}`,
         method: 'GET',
       }),
     }),
     employerPaid: builder.query({
       query: ({ page, pageSize, matchesByScore, scoreFilter='above60', jobId=1 }) => ({
-        url: `perfect-match/employer/${matchesByScore ? 'matches-by-score' : ''}?page=${page}&pageSize=${pageSize}&scoreFilter=${scoreFilter}&jobId=${jobId}`,
+        url: `/perfect-match/employer/${matchesByScore ? 'matches-by-score' : ''}?page=${page}&pageSize=${pageSize}&scoreFilter=${scoreFilter}&jobId=${jobId}`,
         method: 'GET',
       }),
     }),
     jobHunterFreeTrial: builder.query({
       query: ({ page, pageSize }) => ({
-        url: `jobHunter/freeTrial/?page=${page}&pageSize=${pageSize}`,
+        url: `/jobHunter/freeTrial/?page=${page}&pageSize=${pageSize}`,
         method: 'GET',
       }),
     }),
     employerFreeTrial: builder.query({
       query: ({ page, pageSize }) => ({
-        url: `employer/freeTrial/?page=${page}&pageSize=${pageSize}`,
+        url: `/employer/freeTrial/?page=${page}&pageSize=${pageSize}`,
         method: 'GET',
       }),
     }),
@@ -497,7 +499,7 @@ export const akazaApiInterviewRequest = createApiFunction({
   endpoints: (builder) => ({
     createEmployerInterview: builder.mutation({
       query: (payLoad) => ({
-        url: `interviews/employer`,
+        url: `/interviews/employer`,
         method: 'POST',
         body: {
             "jobId": payLoad.jobId,
@@ -531,7 +533,7 @@ export const akazaApiAccount = createApiFunction({
     // Existing endpoints...
     getUserInfo: builder.query({
       query: () => ({
-        url: `account/info`,
+        url: `/account/info`,
         method: 'GET',
       }),
       keepUnusedDataFor: 0,
@@ -539,14 +541,14 @@ export const akazaApiAccount = createApiFunction({
     }),
     getAccountSettings: builder.query({
       query: () => ({
-        url: 'settings/account-setting-info',
+        url: '/settings/account-setting-info',
         method: 'GET',
       }),
       providesTags: ['AccountSettings'],
     }),
     updateAccountSettings: builder.mutation({
       query: (payload) => ({
-        url: 'settings/account-settings',
+        url: '/settings/account-settings',
         method: 'POST',
         body: {
           timeZone: payload.timeZone,
@@ -563,7 +565,7 @@ export const akazaApiAccount = createApiFunction({
     // New endpoint for updating email
     updateEmail: builder.mutation({
       query: (payload) => ({
-        url: 'settings/update-email',
+        url: '/settings/update-email',
         method: 'POST',
         body: {
           oldEmail: payload.oldEmail,
