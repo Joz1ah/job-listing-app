@@ -9,7 +9,7 @@ export const sseNotifications = async (req: Request, res: Response): Promise<voi
     const cookieAuth = `Bearer ${token}`;
     //const page = parseInt(req.query.page as string, 10) || 1;
     //const limit = parseInt(req.query.limit as string, 10) || 5; 
-    const endpoint = `notifications/stream`;
+    const endpoint = `/notifications/stream`;
     const sseUrl = `${process.env.NOTIFICATIONS_API_URL}${endpoint}` || '';
     //console.log(`Proxying SSE to client... ${sseUrl}`);
 
