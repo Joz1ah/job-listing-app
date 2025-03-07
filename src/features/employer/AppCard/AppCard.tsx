@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from "react";
+import { FC, useState, useEffect, useRef } from "react";
 import { SkillsWithEllipsis } from "components";
 import { Bookmark, MoreVertical, MapPin } from "lucide-react";
 import {
@@ -14,14 +14,8 @@ import { AppPreviewModal } from "features/employer";
 import { ScheduleInterviewModal } from "features/employer";
 import { Match } from "contexts/PerfectMatch/types";
 import { useEmployerContext } from "components";
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "components";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "contexts/AuthContext/AuthContext";
+import { AdDialogWrapper } from "components";
 
 // Function to format the date string for display
 const formatTimeAgo = (dateString: string): string => {
@@ -59,6 +53,8 @@ interface AppCardProps {
   bookmarked?: boolean;
   onBookmark?: () => void;
   popupImage?: string;
+  adImage?: string; // Add adImage prop
+  timerDuration?: number; // Add timer duration prop
 }
 
 interface SecureNameDisplayProps {
@@ -138,16 +134,22 @@ const LanguageTag: FC<{ language: string }> = ({ language }) => (
   </span>
 );
 
-const AppCard: FC<AppCardProps> = ({ match, popupImage }) => {
+const AppCard: FC<AppCardProps> = ({
+  match,
+  popupImage,
+  adImage,
+  timerDuration = 60,
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
-  const [isAdDialogOpen, setIsAdDialogOpen] = useState(false);
   const [formattedPostDate, setFormattedPostDate] = useState("N/A");
   const [shouldShowNew, setShouldShowNew] = useState(false);
   const { user } = useAuth();
   const cardId = generateCardId(match);
   const { subscriptionPlan } = useEmployerContext();
-  const navigate = useNavigate();
+
+  // Ref for the AdDialogWrapper
+  const adDialogRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (match.posted) {
@@ -165,10 +167,20 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage }) => {
 
   const handleScheduleInterview = (e: React.MouseEvent) => {
     e.stopPropagation();
+
     if (subscriptionPlan === "freeTrial") {
-      setIsAdDialogOpen(true);
+      // Trigger the AdDialogWrapper click instead of opening a different dialog
+      if (adDialogRef.current) {
+        const clickEvent = new MouseEvent("click", {
+          bubbles: true,
+          cancelable: true,
+          view: window,
+        });
+        adDialogRef.current.dispatchEvent(clickEvent);
+      }
       return;
     }
+
     setIsScheduleModalOpen(true);
     setIsModalOpen(false);
   };
@@ -280,25 +292,20 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage }) => {
         </CardFooter>
       </Card>
 
-      {subscriptionPlan === "freeTrial" ? (
-        <AlertDialog open={isAdDialogOpen} onOpenChange={setIsAdDialogOpen}>
-          <AlertDialogContent className="bg-white p-0 border-none">
-            <AlertDialogHeader>
-              <AlertDialogTitle asChild>
-                <img
-                  src={popupImage}
-                  alt="Upgrade Subscription"
-                  className="w-full h-auto object-contain rounded-lg cursor-pointer"
-                  onClick={() => {
-                    setIsAdDialogOpen(false);
-                    navigate("account-settings/subscription");
-                  }}
-                />
-              </AlertDialogTitle>
-            </AlertDialogHeader>
-          </AlertDialogContent>
-        </AlertDialog>
-      ) : (
+      {/* Hidden AdDialogWrapper for free trial users */}
+      {subscriptionPlan === "freeTrial" && (
+        <div className="hidden">
+          <AdDialogWrapper
+            ref={adDialogRef}
+            adImage={adImage}
+            popupImage={popupImage}
+            timerDuration={timerDuration}
+          />
+        </div>
+      )}
+
+      {/* Only show these modals for paid users */}
+      {subscriptionPlan !== "freeTrial" && (
         <>
           <AppPreviewModal
             isOpen={isModalOpen}
