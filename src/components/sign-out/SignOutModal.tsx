@@ -40,54 +40,55 @@ const SignOutModal = ({ isOpen, onClose }: SignOutModalProps) => {
     e.stopPropagation();
   };
 
-  // Function to make a full page request to ensure all data is synced
-  const performFullPageRequest = async () => {
-    try {
-      // Create a full page request to the current URL to sync all data
-      const currentUrl = window.location.href;
-      const response = await fetch(currentUrl, {
-        method: "GET",
-        headers: {
-          "X-Requested-With": "XMLHttpRequest",
-          "Cache-Control": "no-cache, no-store, must-revalidate",
-        },
-        credentials: "same-origin",
-      });
-
-      if (!response.ok) {
-        throw new Error(`Page sync failed with status: ${response.status}`);
-      }
-
-      return true;
-    } catch (error) {
-      console.warn("Full page request before logout failed:", error);
-      // Continue with logout even if sync fails
-      return true;
-    }
+  // Immediate state cleanup function
+  const resetAppState = () => {
+    // Reset Redux state first
+    dispatch(resetAction());
+    
+    // Clear all local storage and session storage
+    localStorage.clear();
+    sessionStorage.clear();
+    
+    // Clear any other client-side state or cache if needed
+    // For example, if using Apollo Client:
+    // client.clearStore();
   };
 
-  const handleSignOut = async () => {
+  const handleSignOut = () => {
     try {
       setIsLoggingOut(true);
-
-      // Perform full page request to sync data before logging out
-      await performFullPageRequest();
-
-      // Proceed with logout
-      await logout();
-      localStorage.clear();
-      sessionStorage.clear();
-      dispatch(resetAction());
+      
+      // 1. Reset app state immediately
+      resetAppState();
+      
+      // 2. Prepare for redirect
+      const redirectToHome = () => {
+        window.location.href = "/";
+      };
+      
+      // 3. Call logout function - don't wait for it to complete
+      try {
+        // Execute logout function
+        logout();
+      } catch (error) {
+        console.error("Error during logout:", error);
+      }
+      
+      // 4. Close modal immediately
       onClose();
-      // Perform a full page refresh by setting window.location instead of using router navigation
-      window.location.href = "/";
+      
+      // 5. Redirect with a minimal delay to ensure UI state is updated
+      // This ensures the app state reset is reflected before redirect
+      setTimeout(() => {
+        redirectToHome();
+      }, 100); // Short delay for state updates to propagate
+      
     } catch (error) {
       showError(
         "Sign Out Failed",
-        "Unable to sign out properly. Please try again or contact support if the issue persists.",
+        "Unable to sign out properly. Please try again or contact support if the issue persists."
       );
       console.error("Sign out failed:", error);
-    } finally {
       setIsLoggingOut(false);
     }
   };

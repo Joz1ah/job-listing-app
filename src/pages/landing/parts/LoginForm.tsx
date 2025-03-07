@@ -4,7 +4,6 @@ import { useAuth } from "contexts/AuthContext/AuthContext";
 import { useState } from "react";
 import { useLanding } from "../useLanding";
 import { Eye, EyeOff } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
 import { MODAL_STATES } from "store/modal/modal.types";
 import * as Yup from "yup";
@@ -18,7 +17,6 @@ interface LoginFormValues {
 const LoginForm = () => {
   const [loginSubmit] = useLoginMutation();
   const [apiLoginErrorMessage, setApiLoginErrorMessage] = useState("");
-  const navigate = useNavigate();
   const { login } = useAuth();
   const { isResetPasswordSuccesful, handleSetModalState } = useLanding();
 
@@ -28,9 +26,9 @@ const LoginForm = () => {
   // State to toggle password visibility
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleForgotPassword = async ()=>{
+  const handleForgotPassword = async () => {
     handleSetModalState(MODAL_STATES.FORGOT_PASSWORD_EMAIL);
-  }
+  };
 
   const handleSubmit = async (
     values: LoginFormValues,
@@ -54,13 +52,9 @@ const LoginForm = () => {
           isFreeTrial ? "freeTrial" : "monthlyPlan",
         );
 
-        // Navigate after successful login
+        // Use window.location for a full page refresh instead of React Router navigation
         setTimeout(() => {
-          if (userType === "employer") {
-            navigate("/dashboard");
-          } else {
-            navigate("/dashboard");
-          }
+          window.location.href = "/dashboard";
         }, 1000);
       } else {
         throw new Error("No token received");
@@ -93,15 +87,21 @@ const LoginForm = () => {
       {({ errors, touched, isSubmitting, values: { email, password } }) => (
         <Form className="flex flex-col w-full py-5 px-4 md:py-4 md:px-[50px]">
           <div className="text-left mb-5">
-            { isResetPasswordSuccesful ? 
+            {isResetPasswordSuccesful ? (
               <>
-                <h1 className="text-sm md:text-xl font-bold text-[#F5722E]">Password Reset Successful!</h1>
-                <h1 className="text-sm md:text-xs font-medium text-[#F5722E]">Your password has been updated. You can now log in with your new credentials.</h1>
+                <h1 className="text-sm md:text-xl font-bold text-[#F5722E]">
+                  Password Reset Successful!
+                </h1>
+                <h1 className="text-sm md:text-xs font-medium text-[#F5722E]">
+                  Your password has been updated. You can now log in with your
+                  new credentials.
+                </h1>
               </>
-              :
-              <h1 className="text-sm md:text-xl font-bold text-[#F5722E]">Login</h1>
-            }
-
+            ) : (
+              <h1 className="text-sm md:text-xl font-bold text-[#F5722E]">
+                Login
+              </h1>
+            )}
           </div>
           <div className="flex flex-col space-y-2">
             <div>
@@ -150,13 +150,17 @@ const LoginForm = () => {
 
           <div className="flex justify-between items-center pb-4">
             <div className="flex items-center ml-1">
-              <Field type="checkbox" name="rememberMe" className="mr-2 w-5 h-5" />
+              <Field
+                type="checkbox"
+                name="rememberMe"
+                className="mr-2 w-5 h-5"
+              />
               <label className="text-[10px]">Remember me</label>
             </div>
-            <div 
+            <div
               className="text-[10px] text-[#F5722E] cursor-pointer"
               onClick={handleForgotPassword}
-              >
+            >
               Forgot password?
             </div>
           </div>
