@@ -140,8 +140,14 @@ const TagInputs: React.FC<TagInputProps> = ({
   };
 
   const filteredOptions = options.filter((option) => {
-    // Don't show already selected values
-    if (value.includes(option.value)) return false;
+    // Don't show already selected values - this was using option.value but should compare with the keyword value
+    if (
+      value.some(
+        (selectedValue) =>
+          selectedValue.toLowerCase() === option.value.toLowerCase(),
+      )
+    )
+      return false;
 
     // Only filter if there's input
     if (inputValue) {
@@ -328,26 +334,29 @@ const TagInputs: React.FC<TagInputProps> = ({
               </div>
             );
           })}
-          <div className={cn(
-    "inline-flex items-center",
-    // Force new line in these cases:
-    // 1. When showing suggestions (for dropdown) OR
-    // 2. When we have tags AND not enough space
-    (showSuggestions && inputValue) || (value.length > 0 && getAvailableWidth() < 120)
-      ? "basis-auto" 
-      : "flex-1"
-  )}>
-    <Input
-      ref={inputRef}
-      type="text"
-      value={inputValue}
-      onChange={handleInputChange}
-      onKeyDown={handleKeyDown}
-      onFocus={handleInputFocus}
-      disabled={disabled || remainingTags === 0}
-      placeholder={value.length === 0 ? placeholder : ""}
-      className="w-full h-7 py-0 mt-1.5 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent placeholder:text-[#AEADAD] disabled:cursor-not-allowed disabled:opacity-50"
-    />
+          <div
+            className={cn(
+              "inline-flex items-center",
+              // Force new line in these cases:
+              // 1. When showing suggestions (for dropdown) OR
+              // 2. When we have tags AND not enough space
+              (showSuggestions && inputValue) ||
+                (value.length > 0 && getAvailableWidth() < 120)
+                ? "basis-auto"
+                : "flex-1",
+            )}
+          >
+            <Input
+              ref={inputRef}
+              type="text"
+              value={inputValue}
+              onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
+              onFocus={handleInputFocus}
+              disabled={disabled || remainingTags === 0}
+              placeholder={value.length === 0 ? placeholder : ""}
+              className="w-full h-7 py-0 mt-1.5 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent placeholder:text-[#AEADAD] disabled:cursor-not-allowed disabled:opacity-50"
+            />
 
             {showTooltip && (
               <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-white text-[#2D3A41] text-xs rounded shadow-lg whitespace-nowrap z-50">

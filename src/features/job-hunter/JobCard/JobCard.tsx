@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState, useRef } from "react";
 import { MoreVertical, MapPin, Bookmark } from "lucide-react";
 import {
   Card,
@@ -6,10 +6,6 @@ import {
   CardContent,
   CardFooter,
   CardTitle,
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogTitle
 } from "components";
 import { Button } from "components";
 import { SkillsWithEllipsis } from "components";
@@ -18,20 +14,20 @@ import { useBookmarks } from "components";
 import { ScheduleInterviewModal } from "features/job-hunter";
 import { Match } from "mockData/jobs-data";
 import { useJobHunterContext } from "components";
-import { useNavigate } from "react-router-dom";
+import { AdDialogWrapper } from "components";
 
 interface JobCardProps {
   match: Match;
   popupImage?: string;
+  adImage?: string; // Add adImage prop
+  timerDuration?: number; // Add timer duration prop
 }
 
 interface SecureCompanyDisplayProps {
-  company: string
+  company: string;
 }
 
-const SecureCompanyDisplay: FC<SecureCompanyDisplayProps> = ({
-  company,
-}) => {
+const SecureCompanyDisplay: FC<SecureCompanyDisplayProps> = ({ company }) => {
   const { subscriptionPlan } = useJobHunterContext();
 
   if (subscriptionPlan === "freeTrial") {
@@ -87,13 +83,18 @@ const BookmarkButton: FC<{
   );
 };
 
-const JobCard: FC<JobCardProps> = ({ match, popupImage }) => {
+const JobCard: FC<JobCardProps> = ({
+  match,
+  popupImage,
+  adImage,
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
-  const [isUpgradeDialogOpen, setIsUpgradeDialogOpen] = useState(false);
   const cardId = generateCardId(match);
   const { subscriptionPlan } = useJobHunterContext();
-  const navigate = useNavigate();
+
+  // Ref for the AdDialogWrapper
+  const adDialogRef = useRef<HTMLDivElement>(null);
 
   const handleCardClick = () => {
     if (subscriptionPlan === "freeTrial") return;
@@ -106,10 +107,20 @@ const JobCard: FC<JobCardProps> = ({ match, popupImage }) => {
     if (e) {
       e.stopPropagation();
     }
+
     if (subscriptionPlan === "freeTrial") {
-      setIsUpgradeDialogOpen(true);
+      // Trigger the AdDialogWrapper click instead of opening a different dialog
+      if (adDialogRef.current) {
+        const clickEvent = new MouseEvent("click", {
+          bubbles: true,
+          cancelable: true,
+          view: window,
+        });
+        adDialogRef.current.dispatchEvent(clickEvent);
+      }
       return;
     }
+
     setIsScheduleModalOpen(true);
     setIsModalOpen(false);
   };
@@ -147,9 +158,7 @@ const JobCard: FC<JobCardProps> = ({ match, popupImage }) => {
               cardId={cardId}
               className="absolute top-0 right-[-8px]"
             />
-            <SecureCompanyDisplay
-              company={match.company}
-            />
+            <SecureCompanyDisplay company={match.company} />
             <div className="flex flex-row items-center gap-1">
               <MapPin size={14} className="text-[#F5722E]" />
               <p className="text-[13px] font-light mt-0 text-[#263238]">
@@ -216,25 +225,19 @@ const JobCard: FC<JobCardProps> = ({ match, popupImage }) => {
         </CardFooter>
       </Card>
 
-      {subscriptionPlan === "freeTrial" ? (
-        <AlertDialog open={isUpgradeDialogOpen} onOpenChange={setIsUpgradeDialogOpen}>
-          <AlertDialogContent className="bg-white p-0 border-none">
-            <AlertDialogHeader>
-              <AlertDialogTitle asChild>
-                <img
-                  src={popupImage}
-                  alt="Upgrade Subscription"
-                  className="w-full h-auto object-contain rounded-lg cursor-pointer"
-                  onClick={() => {
-                    setIsUpgradeDialogOpen(false);
-                    navigate('account-settings/subscription');
-                  }}
-                />
-              </AlertDialogTitle>
-            </AlertDialogHeader>
-          </AlertDialogContent>
-        </AlertDialog>
-      ) : (
+      {/* Hidden AdDialogWrapper for free trial users */}
+      {subscriptionPlan === "freeTrial" && (
+        <div className="hidden">
+          <AdDialogWrapper
+            ref={adDialogRef}
+            adImage={adImage}
+            popupImage={popupImage}
+          />
+        </div>
+      )}
+
+      {/* Only show these modals for paid users */}
+      {subscriptionPlan !== "freeTrial" && (
         <>
           <JobPreviewModal
             isOpen={isModalOpen}

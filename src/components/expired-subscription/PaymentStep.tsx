@@ -351,9 +351,17 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                   .matches(/^\d{3,4}$/, "CVV must be 3 or 4 digits"),
               })}
               validateOnMount
+              validateOnChange={true}
+              validateOnBlur={true}
               onSubmit={handleFirstStep}
             >
-              {({ errors, touched, isValid, handleSubmit }) => (
+              {({
+                errors,
+                touched,
+                isValid,
+                handleSubmit,
+                setFieldTouched,
+              }) => (
                 <form onSubmit={handleSubmit}>
                   <div className="space-y-4">
                     <InputField
@@ -367,6 +375,12 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                             {...field}
                             className={getInputClassName()}
                             placeholder="First name"
+                            onChange={(
+                              e: React.ChangeEvent<HTMLInputElement>,
+                            ) => {
+                              field.onChange(e);
+                              setFieldTouched("firstName", true, false);
+                            }}
                           />
                         )}
                       </Field>
@@ -388,6 +402,12 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                             {...field}
                             className={getInputClassName()}
                             placeholder="Last name"
+                            onChange={(
+                              e: React.ChangeEvent<HTMLInputElement>,
+                            ) => {
+                              field.onChange(e);
+                              setFieldTouched("lastName", true, false);
+                            }}
                           />
                         )}
                       </Field>
@@ -409,6 +429,12 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                             {...field}
                             className={getInputClassName()}
                             placeholder="Enter card number"
+                            onChange={(
+                              e: React.ChangeEvent<HTMLInputElement>,
+                            ) => {
+                              field.onChange(e);
+                              setFieldTouched("cardNumber", true, false);
+                            }}
                           />
                         )}
                       </Field>
@@ -444,6 +470,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                                     field.name,
                                     formattedValue,
                                   );
+                                  setFieldTouched("expiryDate", true, false);
                                 }}
                               />
                             )}
@@ -469,6 +496,12 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                                 {...field}
                                 className={getInputClassName()}
                                 placeholder="XXX"
+                                onChange={(
+                                  e: React.ChangeEvent<HTMLInputElement>,
+                                ) => {
+                                  field.onChange(e);
+                                  setFieldTouched("cvv", true, false);
+                                }}
                               />
                             )}
                           </Field>
@@ -493,6 +526,12 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                             type="email"
                             className={getInputClassName()}
                             placeholder="Email address"
+                            onChange={(
+                              e: React.ChangeEvent<HTMLInputElement>,
+                            ) => {
+                              field.onChange(e);
+                              setFieldTouched("email", true, false);
+                            }}
                           />
                         )}
                       </Field>
@@ -570,9 +609,18 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
             .required("You must accept the Terms and Privacy Policy"),
         })}
         validateOnMount
+        validateOnChange={true}
+        validateOnBlur={true}
         onSubmit={handleSubmit}
       >
-        {({ errors, touched, isValid, handleSubmit, values }) => (
+        {({
+          errors,
+          touched,
+          isValid,
+          handleSubmit,
+          values,
+          setFieldTouched,
+        }) => (
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 lg:grid-cols-2 max-w-5xl md:mx-8 gap-8 pt-2">
               {/* Left Column - Address Form */}
@@ -588,6 +636,10 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                         {...field}
                         className={getInputClassName()}
                         placeholder="House No./Bldg./Street"
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                          field.onChange(e);
+                          setFieldTouched("address", true, false);
+                        }}
                       />
                     )}
                   </Field>
@@ -609,6 +661,10 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                         {...field}
                         className={getInputClassName()}
                         placeholder="State"
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                          field.onChange(e);
+                          setFieldTouched("state", true, false);
+                        }}
                       />
                     )}
                   </Field>
@@ -630,6 +686,10 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                         {...field}
                         className={getInputClassName()}
                         placeholder="City"
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                          field.onChange(e);
+                          setFieldTouched("city", true, false);
+                        }}
                       />
                     )}
                   </Field>
@@ -652,6 +712,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                           value={field.value}
                           onChange={(value) => {
                             form.setFieldValue(field.name, value);
+                            setFieldTouched("country", true, false);
                           }}
                           className={`${getInputClassName()} rounded-md px-3 w-full hover:text-[#F5F5F7]`}
                           popoverClassName="z-50"
@@ -683,6 +744,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                           // Remove any spaces from the input value
                           const value = event.target.value.replace(/\s/g, "");
                           form.setFieldValue(field.name, value);
+                          setFieldTouched("zipCode", true, false);
                         }}
                         onKeyDown={(
                           event: React.KeyboardEvent<HTMLInputElement>,
@@ -718,6 +780,10 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                                 ? "border-red-500"
                                 : "border-[#F5F5F7]"
                             }`}
+                            onChange={(e) => {
+                              field.onChange(e);
+                              setFieldTouched("termsAccepted", true, false);
+                            }}
                           />
                           {errors.termsAccepted && touched.termsAccepted && (
                             <div

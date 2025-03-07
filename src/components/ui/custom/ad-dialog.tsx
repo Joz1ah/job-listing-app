@@ -1,4 +1,4 @@
-import { useState, useEffect, forwardRef } from "react";
+import { useState, forwardRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   AlertDialog,
@@ -6,61 +6,17 @@ import {
   AlertDialogTrigger,
   AlertDialogOverlay,
 } from "components";
+import { X } from "lucide-react";
 
 interface AdDialogWrapperProps {
   adImage?: string;
   popupImage?: string;
-  timerDuration?: number;
 }
 
 const AdDialogWrapper = forwardRef<HTMLDivElement, AdDialogWrapperProps>(
-  ({ adImage, popupImage, timerDuration = 60 }, ref) => {
+  ({ adImage, popupImage }, ref) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [timeLeft, setTimeLeft] = useState(timerDuration);
     const navigate = useNavigate();
-
-    // Timer logic
-    useEffect(() => {
-      // Add event listener to prevent ESC key from closing dialog
-      const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.key === "Escape" && isOpen && timeLeft > 0) {
-          e.preventDefault();
-          e.stopPropagation();
-        }
-      };
-
-      document.addEventListener("keydown", handleKeyDown, true);
-
-      return () => {
-        document.removeEventListener("keydown", handleKeyDown, true);
-      };
-    }, [isOpen, timeLeft]);
-
-    useEffect(() => {
-      let timerId: number | undefined;
-
-      if (isOpen && timeLeft > 0) {
-        timerId = window.setInterval(() => {
-          setTimeLeft((prevTime) => {
-            if (prevTime <= 1) {
-              setIsOpen(false);
-              return timerDuration;
-            }
-            return prevTime - 1;
-          });
-        }, 1000);
-      }
-
-      if (!isOpen) {
-        setTimeLeft(timerDuration);
-      }
-
-      return () => {
-        if (timerId) {
-          clearInterval(timerId);
-        }
-      };
-    }, [isOpen, timeLeft, timerDuration]);
 
     const handleSubscribeClick = () => {
       navigate("/dashboard/account-settings/subscription");
@@ -99,19 +55,14 @@ const AdDialogWrapper = forwardRef<HTMLDivElement, AdDialogWrapperProps>(
               }}
             />
 
-            {/* Timer */}
-            <div
-              className="absolute top-2 right-2 z-10 flex items-center justify-center rounded-full"
-              style={{
-                width: "35px",
-                height: "35px",
-                background: "transparent",
-                border: "0.5px solid white",
-              }}
+            {/* X Button - Positioned at the top right */}
+            <button
+              onClick={() => setIsOpen(false)}
+              className="absolute top-2 right-2 z-10 bg-transparent rounded-full p-1 transition-colors"
+              aria-label="Close"
             >
-              <span className="text-white text-[14px]">{timeLeft}</span>
-              <span className="text-white text-[12px]">s</span>
-            </div>
+              <X size={16} color="white" />
+            </button>
 
             {/* Subscribe Today Button - Positioned at the bottom left as shown in image */}
             <div className="absolute bottom-2 left-[10%]">
