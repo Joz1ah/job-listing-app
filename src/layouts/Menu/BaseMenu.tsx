@@ -16,6 +16,7 @@ interface NavItem {
   isAction?: boolean;
   isExternal?: boolean;
   action?: () => void;
+  isFullRefresh?: boolean; 
 }
 
 interface SubscriptionProps {
@@ -185,6 +186,18 @@ const BaseMenu: FC<MenuProps> = ({
           href={item.path}
           target="_blank"
           rel="noopener noreferrer"
+          className={baseClassName}
+          onClick={() => handleItemClick(item)}
+        >
+          {item.name}
+        </a>
+      );
+    }
+
+    if (item.isFullRefresh) {
+      return (
+        <a
+          href={item.path}
           className={baseClassName}
           onClick={() => handleItemClick(item)}
         >

@@ -49,7 +49,7 @@ const SuccessStep: React.FC<SuccessStepProps> = ({ planType }) => {
       <div className="flex flex-col space-y-3 items-center w-full">
         <Button
           className="bg-[#F5722E] text-[13px] hover:bg-[#F5722E]/90 text-white rounded p-0 w-[140px]"
-          onClick={() => (window.location.href = "/dashboard/feed")}
+          onClick={() => (window.location.href = "/dashboard")}
         >
           Go To Job Feed
         </Button>
