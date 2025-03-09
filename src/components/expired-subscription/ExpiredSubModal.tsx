@@ -324,26 +324,27 @@ const ExpiredSubModal: React.FC<ExpiredSubModalProps> = ({
       </p>
 
       <div className="flex flex-col space-y-3 items-center w-full">
-        <NavLink
-          to={
-            userType === "employer"
-              ? "/dashboard/job-listing"
-              : "/dashboard"
-          }
-        >
-          <Button className="bg-[#F5722E] text-sm hover:bg-[#F5722E]/80 text-white rounded w-36 px-0">
-            {userType === "employer" ? "Create Job Listing" : "Browse Jobs"}
-          </Button>
-        </NavLink>
+        {userType === "employer" && (
+          <NavLink to="/dashboard/job-listing">
+            <Button className="bg-[#F5722E] text-sm hover:bg-[#F5722E]/80 text-white rounded w-36 px-0">
+              Create Job Listing
+            </Button>
+          </NavLink>
+        )}
 
-        <NavLink to="/dashboard">
+        <a
+          href="/dashboard"
+          onClick={() => {
+            window.location.href = "/dashboard";
+          }}
+        >
           <Button
             variant="outline"
             className="border-[#F5722E] bg-transparent text-[#F5722E] hover:bg-[#F5722E] hover:text-white rounded w-36 px-0"
           >
             Go to Job Feed
           </Button>
-        </NavLink>
+        </a>
       </div>
     </div>
   );
