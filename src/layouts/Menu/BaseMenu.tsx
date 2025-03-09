@@ -8,6 +8,7 @@ import companyLogo from "images/company-logo.png";
 import akazaLogoWhite from "images/akaza-logo-white.png";
 import menuButton from "images/menu-button.png";
 import { useSSE } from "contexts/SSEClient/SSEClient";
+import { ROUTE_CONSTANTS } from "constants/routeConstants";
 
 interface NavItem {
   name: string;
@@ -280,7 +281,7 @@ const BaseMenu: FC<MenuProps> = ({
                 {isAuthenticated && isEmployer && (
                   <li>
                     <NavLink
-                      to="/dashboard/job-listing"
+                      to={ROUTE_CONSTANTS.JOB_LISTING}
                       className="flex-shrink-0"
                     >
                       <Button
@@ -409,7 +410,7 @@ const BaseMenu: FC<MenuProps> = ({
                     isMobile &&
                     isEmployer &&
                     isAuthenticated ? (
-                      <NavLink to="/dashboard/job-listing">
+                      <NavLink to={ROUTE_CONSTANTS.JOB_LISTING}>
                         <Button
                           onClick={() => handleItemClick(item)}
                           className="w-[160px] h-[36px] bg-[#F5722E] hover:bg-[#F5722E]/90 text-white p-0 text-xs font-normal mb-2"

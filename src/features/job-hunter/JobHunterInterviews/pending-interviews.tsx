@@ -9,6 +9,7 @@ import {
 } from "mockData/job-hunter-interviews-data";
 import { useJobHunterContext } from "components";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
+import { ROUTE_CONSTANTS } from "constants/routeConstants";
 
 interface AcceptData {
   confirmed: boolean;
@@ -211,7 +212,7 @@ const PendingInterviews: FC = () => {
           </p>
 
           <NavLink
-            to="/dashboard"
+            to={ROUTE_CONSTANTS.DASHBOARD}
             className="bg-[#F5722E] text-white px-6 py-2 rounded-md hover:bg-orange-600 transition-colors"
           >
             Go to Feed

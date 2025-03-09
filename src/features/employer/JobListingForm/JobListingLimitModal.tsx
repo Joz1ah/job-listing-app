@@ -6,6 +6,7 @@ import {
   } from "components"
   import { Button } from "components"
   import alert_listing from "assets/images/warning.gif"
+  import { ROUTE_CONSTANTS } from "constants/routeConstants"
   
   interface JobListingLimitModalProps {
     isOpen: boolean;
@@ -50,7 +51,7 @@ import {
                 <Button
                   onClick={() => {
                     onClose();
-                    window.location.href = "/dashboard";
+                    window.location.href = ROUTE_CONSTANTS.DASHBOARD;
                   }}
                   variant="outline"
                   className="w-[135px] text-[13px] bg-transparent border-[#F5722E] text-[#F5722E] hover:bg-[#F5722E] hover:text-[#F5F5F7] h-6 rounded-[2px] p-0"

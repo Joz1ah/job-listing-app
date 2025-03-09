@@ -11,6 +11,7 @@ import like_icon from "assets/subscription-plan-icons/like-orange.svg?url";
 import infinity_icon from "assets/subscription-plan-icons/infinity-orange.svg?url";
 import lock_icon from "assets/subscription-plan-icons/lock-orange.svg?url";
 import message_icon from "assets/subscription-plan-icons/message-orange.svg?url";
+import { ROUTE_CONSTANTS } from "constants/routeConstants";
 
 type UserType = "employer" | "job-hunter";
 
@@ -325,7 +326,7 @@ const ExpiredSubModal: React.FC<ExpiredSubModalProps> = ({
 
       <div className="flex flex-col space-y-3 items-center w-full">
         {userType === "employer" && (
-          <NavLink to="/dashboard/job-listing">
+          <NavLink to={ROUTE_CONSTANTS.JOB_LISTING}>
             <Button className="bg-[#F5722E] text-sm hover:bg-[#F5722E]/80 text-white rounded w-36 px-0">
               Create Job Listing
             </Button>
@@ -333,9 +334,9 @@ const ExpiredSubModal: React.FC<ExpiredSubModalProps> = ({
         )}
 
         <a
-          href="/dashboard"
+          href={ROUTE_CONSTANTS.DASHBOARD}
           onClick={() => {
-            window.location.href = "/dashboard";
+            window.location.href = ROUTE_CONSTANTS.DASHBOARD;
           }}
         >
           <Button

@@ -7,6 +7,7 @@ import { Eye, EyeOff } from "lucide-react";
 import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
 import { MODAL_STATES } from "store/modal/modal.types";
 import * as Yup from "yup";
+import { ROUTE_CONSTANTS } from "constants/routeConstants";
 
 interface LoginFormValues {
   email: string;
@@ -54,7 +55,7 @@ const LoginForm = () => {
 
         // Use window.location for a full page refresh instead of React Router navigation
         setTimeout(() => {
-          window.location.href = "/dashboard";
+          window.location.href = ROUTE_CONSTANTS.DASHBOARD;
         }, 1000);
       } else {
         throw new Error("No token received");
