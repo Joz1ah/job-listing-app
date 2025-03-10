@@ -28,6 +28,7 @@ interface PlanFeatures {
 interface ExpiredSubModalProps {
   open: boolean;
   userType: UserType;
+  isSubscriptionExpired?: boolean;
 }
 
 type Step = "plans" | "payment" | "success";
@@ -123,6 +124,7 @@ const getFeatures = (userType: UserType): PlanFeatures => ({
 const ExpiredSubModal: React.FC<ExpiredSubModalProps> = ({
   open,
   userType,
+  isSubscriptionExpired = false,
 }) => {
   const [currentStep, setCurrentStep] = useState<Step>("plans");
   const [selectedPlan, setSelectedPlan] = useState<PlanType | null>(null);
@@ -173,7 +175,9 @@ const ExpiredSubModal: React.FC<ExpiredSubModalProps> = ({
     <div className="w-full">
       <div className="text-center mb-4 bg-[#F9E2CE] p-2">
         <h3 className="text-[#F5722E] text-xl font-extrabold mb-2">
-          Your Free Trial has expired
+          {isSubscriptionExpired
+            ? "Your Subscription has expired"
+            : "Your Free Trial has expired"}
         </h3>
         <p className="text-[#263238] text-[13px] md:text-[15px]">
           To continue enjoying access to{" "}
