@@ -1,14 +1,18 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState, useRef } from "react";
 import { NavLink, Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "components/ui/shadcn/buttons";
 import { ChevronDown, Plus, ChevronUp } from "lucide-react";
 import { NotificationFeed } from "components";
-import { useIntercomContext } from 'contexts/Intercom/IntercomContext';
+import { useIntercomContext } from "contexts/Intercom/IntercomContext";
 import companyLogo from "images/company-logo.png";
 import akazaLogoWhite from "images/akaza-logo-white.png";
 import menuButton from "images/menu-button.png";
+import employerPopAds from "images/popup-employer.svg?url";
 import { useSSE } from "contexts/SSEClient/SSEClient";
 import { ROUTE_CONSTANTS } from "constants/routeConstants";
+import { AdDialogWrapper } from "components";
+import { JobListingLimitModal } from "features/employer/JobListingForm/JobListingLimitModal";
+import { useAuth } from "contexts/AuthContext/AuthContext";
 
 interface NavItem {
   name: string;
@@ -17,7 +21,7 @@ interface NavItem {
   isAction?: boolean;
   isExternal?: boolean;
   action?: () => void;
-  isFullRefresh?: boolean; 
+  isFullRefresh?: boolean;
 }
 
 interface SubscriptionProps {
@@ -25,7 +29,7 @@ interface SubscriptionProps {
   userType?: "employer" | "job_hunter";
 }
 
-interface MenuProps extends SubscriptionProps{
+interface MenuProps extends SubscriptionProps {
   isMenuOpen?: boolean;
   onToggleMenu?: () => void;
   desktopMenuItems?: NavItem[];
@@ -43,14 +47,14 @@ const NotificationFeedWrapper: FC<SubscriptionProps> = ({
 }) => {
   const { messages } = useSSE();
 
-  //useEffect(() => {
-  //  console.log(messages);
-  //}, [messages]); // Logs messages when they change
-
   if (!subscriptionPlan) return null;
 
   return (
-    <NotificationFeed notifications={messages} subscriptionPlan={subscriptionPlan} userType={userType} />
+    <NotificationFeed
+      notifications={messages}
+      subscriptionPlan={subscriptionPlan}
+      userType={userType}
+    />
   );
 };
 
@@ -68,18 +72,27 @@ const BaseMenu: FC<MenuProps> = ({
   ButtonSignUpNav,
 }) => {
   const navigate = useNavigate();
-  //Check if intercom Context is at the parent level
+  const { user } = useAuth();
+  const [isLimitModalOpen, setIsLimitModalOpen] = useState(false);
+
+  // Check job listing status
+  const exceedsMaximum = user?.data?.user?.jobCounts?.exceedsMaximum;
+  const isFreeTrial = user?.data?.user?.freeTrial;
+  const adTriggerRef = useRef<HTMLDivElement>(null);
+
+  // Check if intercom Context is at the parent level
   let intercomContext = null;
   try {
     intercomContext = useIntercomContext();
   } catch (error) {
-    intercomContext = {setVisible: (e:boolean)=> e} //default the values being set so as to not break code
+    intercomContext = { setVisible: (e: boolean) => e }; // default the values being set so as to not break code
   }
-  const {setVisible: setIntercomVisible} = intercomContext;
+  const { setVisible: setIntercomVisible } = intercomContext;
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 1024);
   const location = useLocation();
   const isEmployer = userType === "employer";
+
   // Default navigation items for unauthenticated state
   const defaultNavItems = [
     { name: "About us", path: "/about-us" },
@@ -87,6 +100,32 @@ const BaseMenu: FC<MenuProps> = ({
     { name: "Subscription plans", path: "/subscription-plan" },
     { name: "FAQ", path: "https://support.akaza.io/", isExternal: true },
   ];
+
+  const handleCreateJobClick = (
+    e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>,
+  ) => {
+    // Prevent default navigation if user has exceeded their maximum job listings
+    if (exceedsMaximum) {
+      e.preventDefault();
+
+      // For free trial users, show ad dialog
+      if (isFreeTrial) {
+        if (adTriggerRef.current) {
+          adTriggerRef.current.click();
+        }
+      }
+      // For paid users, show limit modal
+      else {
+        setIsLimitModalOpen(true);
+      }
+      return;
+    }
+
+    // Otherwise, standard behavior (navigation will happen through NavLink)
+    if (isMenuOpen) {
+      onToggleMenu();
+    }
+  };
 
   const handleItemClick = (item: NavItem) => {
     if (item.isAction && item.name === "SIGN OUT") {
@@ -222,13 +261,25 @@ const BaseMenu: FC<MenuProps> = ({
     if (!subscriptionPlan) return null;
     return (
       <div onClick={handleNotificationClick}>
-        <NotificationFeedWrapper subscriptionPlan={subscriptionPlan} userType={userType} />
+        <NotificationFeedWrapper
+          subscriptionPlan={subscriptionPlan}
+          userType={userType}
+        />
       </div>
     );
   };
 
   return (
     <>
+      {/* Ad Dialog for free trial users */}
+      <AdDialogWrapper popupImage={employerPopAds} ref={adTriggerRef} />
+
+      {/* Limit Modal for paid users */}
+      <JobListingLimitModal
+        isOpen={isLimitModalOpen}
+        onClose={() => setIsLimitModalOpen(false)}
+      />
+
       {/* Desktop Header */}
       <header className="hidden md:flex fixed top-0 left-0 right-0 bg-[#2D3A41] h-[72px] px-4 justify-between items-center z-50 shadow-md">
         <div className="flex items-center gap-4">
@@ -283,6 +334,7 @@ const BaseMenu: FC<MenuProps> = ({
                     <NavLink
                       to={ROUTE_CONSTANTS.JOB_LISTING}
                       className="flex-shrink-0"
+                      onClick={handleCreateJobClick}
                     >
                       <Button
                         className={`bg-[#F5722E] hover:bg-[#F5722E]/90 rounded-sm flex items-center justify-center p-0
@@ -410,11 +462,11 @@ const BaseMenu: FC<MenuProps> = ({
                     isMobile &&
                     isEmployer &&
                     isAuthenticated ? (
-                      <NavLink to={ROUTE_CONSTANTS.JOB_LISTING}>
-                        <Button
-                          onClick={() => handleItemClick(item)}
-                          className="w-[160px] h-[36px] bg-[#F5722E] hover:bg-[#F5722E]/90 text-white p-0 text-xs font-normal mb-2"
-                        >
+                      <NavLink
+                        to={ROUTE_CONSTANTS.JOB_LISTING}
+                        onClick={handleCreateJobClick}
+                      >
+                        <Button className="w-[160px] h-[36px] bg-[#F5722E] hover:bg-[#F5722E]/90 text-white p-0 text-xs font-normal mb-2">
                           {item.name}
                         </Button>
                       </NavLink>
