@@ -6,6 +6,7 @@ import {
   } from "components"
   import { Button } from "components"
   import confetti_success from 'assets/confetti.gif'
+  import { ROUTE_CONSTANTS } from "constants/routeConstants"
   
   interface FreeTrialSuccessModalProps {
     isOpen: boolean;
@@ -46,7 +47,7 @@ import {
                 <Button
                   onClick={() => {
                     onClose();
-                    window.location.href = "/dashboard";
+                    window.location.href = ROUTE_CONSTANTS.DASHBOARD;
                   }}
                   className="w-full bg-[#F5722E] hover:bg-[#F5722E]/90 text-[#F5F5F7] h-8 rounded-[2px]"
                 >

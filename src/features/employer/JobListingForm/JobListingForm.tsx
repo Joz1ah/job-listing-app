@@ -15,6 +15,7 @@ import { MultiSelect } from "components";
 import { JobListingPreview } from "./JobListingPreview";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 import { JobListingLimitModal } from "./JobListingLimitModal";
+import { ROUTE_CONSTANTS } from "constants/routeConstants";
 
 import {
   CoreSkillsTagInput,
@@ -170,7 +171,7 @@ const JobListingForm: FC = () => {
       // Refresh user data in auth context
       await refreshUser();
 
-      window.location.href = "/dashboard";
+      window.location.href = ROUTE_CONSTANTS.DASHBOARD;
     } catch (error: any) {
       if (error?.data?.errors === "Job listing already exists.") {
         showError(
@@ -251,7 +252,7 @@ const JobListingForm: FC = () => {
       <div className="w-full max-w-[927px] min-h-[825px] bg-[#2D3A41] text-white mx-2 px-4 py-8 md:py-12">
         <div className="flex items-center relative w-full mb-6 md:mb-14">
           {!isFirstJobListing && (
-            <NavLink to="/dashboard" className="absolute left-0 md:left-4">
+            <NavLink to={ROUTE_CONSTANTS.DASHBOARD} className="absolute left-0 md:left-4">
               <ChevronLeft strokeWidth={4} className="h-6 w-6" />
             </NavLink>
           )}

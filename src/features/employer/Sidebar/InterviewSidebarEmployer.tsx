@@ -5,6 +5,7 @@ import { Check, X, CheckCircle, RotateCcw, Clock } from "lucide-react";
 import verifiedIcon from "images/verified.svg?url"; */
 import userCheck from "images/user-check.svg?url";
 import { useEmployerContext } from "components";
+import { ROUTE_CONSTANTS } from "constants/routeConstants";
 
 interface MenuItem {
   icon: JSX.Element;
@@ -20,11 +21,10 @@ interface InterviewSidebarEmployerProps {
 
 const InterviewSidebarEmployer: FC<InterviewSidebarEmployerProps> = ({
   userName,
-  userType,
   className = "",
 }) => {
   const location = useLocation();
-  const baseRoute = userType === "employer" ? "/dashboard" : "/dashboard";
+  const baseRoute = ROUTE_CONSTANTS.DASHBOARD;
   const { subscriptionPlan } = useEmployerContext();
 
   const interviewMenu: MenuItem[] = [

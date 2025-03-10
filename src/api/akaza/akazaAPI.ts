@@ -406,23 +406,25 @@ export const akazaApiJobFeed = createApiFunction({
       }
       return headers;
     },
-  }), 
+  }),
+  tagTypes: ['Jobs'],
   endpoints: (builder) => ({
     getJobList: builder.query({
       query: ({ page = 1, limit = 10 }) => ({
         url: `/job/list?page=${page}&limit=${limit}`,
         method: 'GET',
-      })
+      }),
+      providesTags: ['Jobs']
     }),
     jobListCreate: builder.mutation({
       query: (payLoad) => ({
-        url: '/job',  // Updated to match the correct endpoint
+        url: '/job',
         method: 'POST',
         body: {
           "employerId": payLoad.employerId,
           "title": payLoad.title,
           "priorityIndicator": payLoad.priorityIndicator,
-          "description":payLoad.description,
+          "description": payLoad.description,
           "location": payLoad.location,
           "employmentType": payLoad.employmentType,
           "salaryRange": payLoad.salaryRange,
@@ -433,6 +435,28 @@ export const akazaApiJobFeed = createApiFunction({
           "keywords": payLoad.keywords,
         },
       }),
+      invalidatesTags: ['Jobs']
+    }),
+    jobListUpdate: builder.mutation({
+      query: (payLoad) => ({
+        url: `/job/update`,
+        method: 'POST',
+        body: {
+          "jobId": payLoad.jobId,
+          "title": payLoad.title,
+          "priorityIndicator": payLoad.priorityIndicator,
+          "description": payLoad.description,
+          "location": payLoad.location,
+          "employmentType": payLoad.employmentType,
+          "salaryRange": payLoad.salaryRange,
+          "yearsOfExperience": payLoad.yearsOfExperience,
+          "expiresAt": payLoad.expiresAt,
+          "education": payLoad.education,
+          "language": payLoad.language,
+          "keywords": payLoad.keywords,
+        },
+      }),
+      invalidatesTags: ['Jobs']
     }),
   }),
 });
@@ -684,7 +708,8 @@ export const {
 
 export const {
   useJobListCreateMutation,
-  useGetJobListQuery
+  useGetJobListQuery,
+  useJobListUpdateMutation
 } = akazaApiJobFeed
 
 export const {

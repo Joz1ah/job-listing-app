@@ -13,6 +13,7 @@ import { useJobHunterProfileMutation } from "api/akaza/akazaAPI";
 import { useContext } from "react";
 import { KeywordMappingContext } from "contexts/KeyWordMappingContext";
 import { CountrySelect } from "components";
+import { ROUTE_CONSTANTS } from "constants/routeConstants";
 
 import {
   LanguageTagInput,
@@ -309,7 +310,7 @@ const EditApplicationCard: FC = () => {
       // Refresh user data in auth context
       await refreshUser();
 
-      navigate("/dashboard");
+      navigate(ROUTE_CONSTANTS.DASHBOARD);
     } catch (error) {
       showError(
         "Profile Update Failed",
@@ -335,7 +336,7 @@ const EditApplicationCard: FC = () => {
         <div className="w-full md:w-[800px] min-h-[960px] bg-[#2D3A41] text-white">
           <div className="flex items-center w-full px-0 py-4 md:px-4 md:py-6 relative">
             <NavLink 
-              to="/dashboard" 
+              to={ROUTE_CONSTANTS.DASHBOARD}
               className="absolute left-1 md:left-4 top-1/2 -translate-y-1/2 md:top-6 md:translate-y-0"
             >
               <ChevronLeft strokeWidth={4} className="h-6 w-6 mr-2" />

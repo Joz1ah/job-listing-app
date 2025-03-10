@@ -7,6 +7,7 @@ import {
 } from 'components';
 import { Button } from 'components';
 import { NavLink } from 'react-router-dom';
+import { ROUTE_CONSTANTS } from 'constants/routeConstants';
 
 interface InvitationSentModalProps {
   isOpen: boolean;
@@ -46,7 +47,7 @@ const InvitationSentModal: React.FC<InvitationSentModalProps> = ({
               </NavLink>
 
               <NavLink 
-                to="/dashboard"
+                to={ROUTE_CONSTANTS.DASHBOARD}
                 onClick={onClose}
               >
                 <Button 

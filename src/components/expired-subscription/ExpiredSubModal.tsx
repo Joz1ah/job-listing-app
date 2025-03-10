@@ -11,6 +11,7 @@ import like_icon from "assets/subscription-plan-icons/like-orange.svg?url";
 import infinity_icon from "assets/subscription-plan-icons/infinity-orange.svg?url";
 import lock_icon from "assets/subscription-plan-icons/lock-orange.svg?url";
 import message_icon from "assets/subscription-plan-icons/message-orange.svg?url";
+import { ROUTE_CONSTANTS } from "constants/routeConstants";
 
 type UserType = "employer" | "job-hunter";
 
@@ -27,6 +28,7 @@ interface PlanFeatures {
 interface ExpiredSubModalProps {
   open: boolean;
   userType: UserType;
+  isSubscriptionExpired?: boolean;
 }
 
 type Step = "plans" | "payment" | "success";
@@ -122,6 +124,7 @@ const getFeatures = (userType: UserType): PlanFeatures => ({
 const ExpiredSubModal: React.FC<ExpiredSubModalProps> = ({
   open,
   userType,
+  isSubscriptionExpired = false,
 }) => {
   const [currentStep, setCurrentStep] = useState<Step>("plans");
   const [selectedPlan, setSelectedPlan] = useState<PlanType | null>(null);
@@ -172,7 +175,9 @@ const ExpiredSubModal: React.FC<ExpiredSubModalProps> = ({
     <div className="w-full">
       <div className="text-center mb-4 bg-[#F9E2CE] p-2">
         <h3 className="text-[#F5722E] text-xl font-extrabold mb-2">
-          Your Free Trial has expired
+          {isSubscriptionExpired
+            ? "Your Subscription has expired"
+            : "Your Free Trial has expired"}
         </h3>
         <p className="text-[#263238] text-[13px] md:text-[15px]">
           To continue enjoying access to{" "}
@@ -324,26 +329,27 @@ const ExpiredSubModal: React.FC<ExpiredSubModalProps> = ({
       </p>
 
       <div className="flex flex-col space-y-3 items-center w-full">
-        <NavLink
-          to={
-            userType === "employer"
-              ? "/dashboard/job-listing"
-              : "/dashboard"
-          }
-        >
-          <Button className="bg-[#F5722E] text-sm hover:bg-[#F5722E]/80 text-white rounded w-36 px-0">
-            {userType === "employer" ? "Create Job Listing" : "Browse Jobs"}
-          </Button>
-        </NavLink>
+        {userType === "employer" && (
+          <NavLink to={ROUTE_CONSTANTS.JOB_LISTING}>
+            <Button className="bg-[#F5722E] text-sm hover:bg-[#F5722E]/80 text-white rounded w-36 px-0">
+              Create Job Listing
+            </Button>
+          </NavLink>
+        )}
 
-        <NavLink to="/dashboard">
+        <a
+          href={ROUTE_CONSTANTS.DASHBOARD}
+          onClick={() => {
+            window.location.href = ROUTE_CONSTANTS.DASHBOARD;
+          }}
+        >
           <Button
             variant="outline"
             className="border-[#F5722E] bg-transparent text-[#F5722E] hover:bg-[#F5722E] hover:text-white rounded w-36 px-0"
           >
             Go to Job Feed
           </Button>
-        </NavLink>
+        </a>
       </div>
     </div>
   );

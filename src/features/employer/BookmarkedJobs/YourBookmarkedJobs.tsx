@@ -7,6 +7,7 @@ import emptyBookmark from "images/bookmark-empty.svg?url";
 import { Match } from "contexts/PerfectMatch/types";
 import { BookmarkProvider } from "contexts/BookmarkContext";
 import { useEmployerContext } from "components";
+import { ROUTE_CONSTANTS } from "constants/routeConstants";
 
 // You can replace this with your actual mock data
 const mockBookmarks: Match[] = [
@@ -198,7 +199,7 @@ const BookmarkedJobsContent: FC = () => {
           </p>
 
           <NavLink
-            to="/dashboard"
+            to={ROUTE_CONSTANTS.DASHBOARD}
             className="bg-[#F5722E] text-white px-6 py-2 rounded-md hover:bg-orange-600 transition-colors"
           >
             Go To Job Feed

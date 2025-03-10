@@ -2,6 +2,7 @@ import { FC } from "react";
 import { SkillsWithEllipsis } from "components";
 import { Trash2, MapPin, Edit } from "lucide-react";
 import { Card, CardHeader, CardContent } from "components";
+import { Tooltip } from "components";
 
 interface JobListing {
   id: string;
@@ -28,7 +29,7 @@ const getEmploymentTypeStyle = (type: string) => {
   return type.toLowerCase() === "part time" ? "bg-[#BF532C]" : "bg-[#F5722E]";
 };
 
-const JobListingCard: FC<JobListingCardProps> = ({ job, onDelete, onEdit }) => {
+const JobListingCard: FC<JobListingCardProps> = ({ job, onEdit }) => {
   // Split language string into array if it's not already
   const languages = Array.isArray(job.language)
     ? job.language
@@ -48,23 +49,25 @@ const JobListingCard: FC<JobListingCardProps> = ({ job, onDelete, onEdit }) => {
                 </span>
               )}
             </div>
-            <div className="flex flex-col items-end relative">
+            <div className="flex flex-col items-end">
               <span className="text-[12px] font-light text-[#717171] -mr-2">
                 Posted {job.posted} ago
               </span>
-              <div className="absolute top-6 -right-2">
-                <Trash2
-                  className="w-5 h-5 text-red-500 hover:text-red-700 cursor-pointer"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onDelete?.(job.id);
-                  }}
-                />
-              </div>
             </div>
           </div>
 
-          <div className="w-full relative mt-2">
+          {/* Positioned the trash icon outside the title area with higher z-index */}
+          <div className="absolute top-8 right-2 z-10">
+            <Tooltip content="Can't delete job listing for now" TranslateX="-translate-x-[30%]">
+              <div className="p-1"> {/* Added padding to increase hover area */}
+                <Trash2
+                  className="w-5 h-5 text-red-500 hover:text-red-700 cursor-not-allowed"
+                />
+              </div>
+            </Tooltip>
+          </div>
+
+          <div className="w-full relative mt-2 pr-8"> {/* Added right padding to avoid text overlap */}
             <h3
               className="text-[14px] font-semibold text-[#263238] cursor-pointer hover:text-[#F5722E] truncate"
               title={job.title}

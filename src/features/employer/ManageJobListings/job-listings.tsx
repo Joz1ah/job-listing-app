@@ -7,6 +7,7 @@ import emptyBookmark from "images/bookmark-empty.svg?url";
 
 import { useGetJobListQuery } from "api/akaza/akazaAPI";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
+import { ROUTE_CONSTANTS } from "constants/routeConstants";
 
 // Define interfaces for API response structure
 interface JobKeyword {
@@ -328,7 +329,7 @@ const JobListingsContent: FC = () => {
             You haven't created any job listings yet.
           </p>
           <NavLink
-            to="/dashboard/job-listing"
+            to={ROUTE_CONSTANTS.JOB_LISTING}
             className="bg-[#F5722E] text-white px-6 py-2 rounded-md hover:bg-orange-600 transition-colors"
           >
             Create Job Listings

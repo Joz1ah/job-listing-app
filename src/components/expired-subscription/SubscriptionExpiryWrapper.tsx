@@ -62,34 +62,53 @@ export const SubscriptionExpiryWrapper: React.FC<
       (subscription) => subscription.status === "active",
     );
 
+    // Case 1: User has active subscription - don't show modal
     if (hasActiveSubscription) {
-      // User has an active subscription, don't show modal
       setShowExpiredModal(false);
+      return;
+    }
+    
+    // Case 2: Subscription expired - user had subscriptions before but none are active now
+    const hadSubscriptionsBefore = allSubscriptions.length > 0;
+    if (hadSubscriptionsBefore) {
+      // User has subscriptions but none are active = subscription expired
+      setShowExpiredModal(true);
+      return;
+    }
+    
+    // Case 3: Free trial - user never had a subscription, check email verification date
+    const emailVerifiedAt = userData.emailVerifiedAt;
+    if (emailVerifiedAt) {
+      const emailVerifiedDate = new Date(emailVerifiedAt);
+      const currentDate = new Date();
+      
+      // Calculate difference in days
+      const diffTime = currentDate.getTime() - emailVerifiedDate.getTime();
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
+      // Show modal if trial period has passed (3 days)
+      setShowExpiredModal(diffDays > 3);
     } else {
-      // No active subscription, check email verification date
-      const emailVerifiedAt = userData.emailVerifiedAt;
-
-      if (emailVerifiedAt) {
-        const emailVerifiedDate = new Date(emailVerifiedAt);
-        const currentDate = new Date();
-
-        // Calculate difference in days
-        const diffTime = currentDate.getTime() - emailVerifiedDate.getTime();
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-        // Show modal if trial period has passed (3 days)
-        setShowExpiredModal(diffDays > 3);
-      }
+      // No email verification date and no subscriptions
+      // This is an edge case - we'll show the modal to be safe
+      setShowExpiredModal(true);
     }
   }, [user, forceShow]);
 
   // Determine user type for the modal
   const userType =
     user?.data?.user?.type === "job_hunter" ? "job-hunter" : "employer";
+    
+  // Determine if the user had a subscription before or is just from free trial
+  const hadSubscriptionsBefore = user?.data?.user?.subscriptions?.length > 0 || false;
 
   return (
     <>
-      <ExpiredSubModal open={showExpiredModal} userType={userType} />
+      <ExpiredSubModal 
+        open={showExpiredModal} 
+        userType={userType}
+        isSubscriptionExpired={hadSubscriptionsBefore} 
+      />
       {children}
     </>
   );

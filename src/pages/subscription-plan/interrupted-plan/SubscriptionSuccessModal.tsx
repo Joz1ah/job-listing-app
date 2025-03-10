@@ -2,6 +2,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
 import { Button } from "components";
 import confetti_success from "assets/confetti.gif";
 import { useAuth } from "contexts/AuthContext/AuthContext";
+import { ROUTE_CONSTANTS } from "constants/routeConstants";
 
 interface SubscriptionSuccessModalProps {
   isOpen: boolean;
@@ -52,7 +53,7 @@ const SubscriptionSuccessModal = ({
           <Button
             onClick={() => {
               onClose();
-              window.location.href = "/dashboard";
+              window.location.href = ROUTE_CONSTANTS.DASHBOARD;
             }}
             className="w-40 bg-orange-500 hover:bg-orange-600 text-white rounded"
           >

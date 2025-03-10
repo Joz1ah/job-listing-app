@@ -3,6 +3,7 @@ import { Button } from "components";
 import { NavLink } from "react-router-dom";
 import emptyStateFeed from "images/empty-state-feed.svg?url";
 import sparkleIcon from "images/sparkle-icon.png";
+import { ROUTE_CONSTANTS } from "constants/routeConstants";
 
 interface EmptyStateProps {
   onExploreClick?: () => void;
@@ -32,7 +33,7 @@ const PerfectMatchEmptyState: React.FC<EmptyStateProps> = ({
       </p>
 
       <div className="space-y-4">
-        <NavLink to="/dashboard/job-listing">
+        <NavLink to={ROUTE_CONSTANTS.JOB_LISTING}>
           <Button className="bg-[#F5722E] hover:bg-[#F5722E]/90 rounded-sm text-lg font-semibold items-center p-0 w-[250px] h-[50px]">
             Create Job Listing
           </Button>
@@ -67,7 +68,7 @@ const OtherApplicationEmptyState: React.FC = () => (
       </p>
 
       <div className="space-y-4">
-        <NavLink to="/dashboard/job-listing">
+        <NavLink to={ROUTE_CONSTANTS.JOB_LISTING}>
           <Button className="bg-[#F5722E] hover:bg-[#F5722E]/90 rounded-sm text-lg font-semibold items-center p-0 w-[250px] h-[50px]">
             Create Job Listing
           </Button>

@@ -25,6 +25,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
+import { ROUTE_CONSTANTS } from "constants/routeConstants";
 
 interface FormData {
   businessName: string;
@@ -227,7 +228,7 @@ const EditEmployerProfile: FC = () => {
       await refreshUser();
 
       // Navigate on success
-      navigate("/dashboard");
+      navigate(ROUTE_CONSTANTS.DASHBOARD);
     } catch (error) {
       showError(
         "Profile Update Failed",
@@ -253,7 +254,7 @@ const EditEmployerProfile: FC = () => {
         <div className="w-full md:w-[800px] min-h-[825px] bg-[#2D3A41] text-white">
           <div className="flex items-center w-full px-0 py-4 md:px-4 md:py-6 relative">
             <NavLink
-              to="/dashboard"
+              to={ROUTE_CONSTANTS.DASHBOARD}
               className="absolute left-1 md:left-4 top-1/2 -translate-y-1/2 md:top-6 md:translate-y-0"
             >
               <ChevronLeft strokeWidth={4} className="h-6 w-6 mr-2" />

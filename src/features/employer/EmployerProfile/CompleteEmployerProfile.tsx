@@ -24,6 +24,7 @@ import * as Yup from "yup";
 import { useEmployerProfileMutation } from "api/akaza/akazaAPI";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
+import { ROUTE_CONSTANTS } from "constants/routeConstants";
 
 export interface FormData {
   businessName: string;
@@ -219,7 +220,7 @@ const CompleteEmployerProfile: FC = () => {
       await refreshUser();
 
       // Navigate on success
-      navigate("/dashboard/job-listing");
+      navigate(ROUTE_CONSTANTS.JOB_LISTING);
     } catch (error) {
       showError(
         "Profile Update Failed",

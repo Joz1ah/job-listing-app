@@ -37,6 +37,7 @@ import * as Yup from "yup";
 import { useJobHunterProfileMutation } from "api/akaza/akazaAPI";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
+import { ROUTE_CONSTANTS } from "constants/routeConstants";
 
 interface FormData {
   firstName: string;
@@ -252,7 +253,7 @@ const ApplicationCardForm: FC = () => {
 
       await submitJobHunterProfile(payload).unwrap();
       await refreshUser();
-      navigate("/dashboard");
+      navigate(ROUTE_CONSTANTS.DASHBOARD);
     } catch (error) {
       showError(
         "Profile Update Failed",
