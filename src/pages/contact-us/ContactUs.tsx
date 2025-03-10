@@ -12,7 +12,7 @@ import bgLogoInverted from 'assets/contact-us/bg-logo-inverted.svg?url';
 import contactUsPerson from 'assets/contact-us/contact-us-person.png';
 */
 import envelopecheck from 'assets/contact-us/envelope-circle-check.svg?url';
-import phonecall from 'assets/contact-us/phonecall.svg?url';
+//import phonecall from 'assets/contact-us/phonecall.svg?url';
 
 import paperPlane from 'assets/contact-us/paper-plane.svg?url';
 import {Spinner} from 'components/spinner/default/Spinner'
@@ -360,10 +360,10 @@ const ContactUs: FC = () => {
                             <div className=''><img src={envelopecheck}/></div>
                             <div className='flex-1'>support@akaza.io</div>
                         </div>
-                        <div className={`${style['contact-us-details-item']} flex w-full`}>
+                        {/* <div className={`${style['contact-us-details-item']} flex w-full`}>
                             <div className=''><img src={phonecall}/></div>
                             <div className='flex-1'>+1 (365) 340-3326</div>
-                        </div>
+                        </div> */}
                         </div>
                         <div className={`${style['column-b']} flex-1`}>
                             <div className={`${style['contact-us-details-item']} flex w-full`}>
