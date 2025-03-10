@@ -24,7 +24,7 @@ const withPerfectMatchProvider = <P extends object>(Component: FC<P>) => {
 const withSubscriptionExpiryWrapper = <P extends object>(Component: FC<P>) => {
   const WrappedComponent: FC<P> = (props) => {
     return (
-      <SubscriptionExpiryWrapper forceShow={true}>
+      <SubscriptionExpiryWrapper>
         <Component {...props} />
       </SubscriptionExpiryWrapper>
     );
