@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
 import { Button } from "components";
-import { NavLink } from "react-router-dom";
 import { PaymentStep } from "./PaymentStep";
 import sparkle_icon from "assets/images/sparkle-icon.png";
 import trophy_icon from "assets/subscription-plan-icons/trophy-orange.svg?url";
@@ -330,11 +329,11 @@ const ExpiredSubModal: React.FC<ExpiredSubModalProps> = ({
 
       <div className="flex flex-col space-y-3 items-center w-full">
         {userType === "employer" && (
-          <NavLink to={ROUTE_CONSTANTS.JOB_LISTING}>
+          <a href={ROUTE_CONSTANTS.JOB_LISTING}>
             <Button className="bg-[#F5722E] text-sm hover:bg-[#F5722E]/80 text-white rounded w-36 px-0">
               Create Job Listing
             </Button>
-          </NavLink>
+          </a>
         )}
 
         <a
