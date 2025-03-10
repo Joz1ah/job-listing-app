@@ -182,7 +182,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
             }
           >
             <div className="flex-1 overflow-y-auto">
-              <DialogHeader className="py-4 px-6">
+              <DialogHeader className="py-2 px-6">
                 <DialogTitle className="text-center text-orange-500 mb-8 mt-6">
                   Schedule an interview for the candidate below for the
                   <div className="mt-1">
