@@ -104,7 +104,12 @@ const BaseMenu: FC<MenuProps> = ({
   const handleCreateJobClick = (
     e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>,
   ) => {
-    // Prevent default navigation if user has exceeded their maximum job listings
+    // Always close the menu first
+    if (isMenuOpen) {
+      onToggleMenu();
+    }
+
+    // Then handle the conditions for job creation
     if (exceedsMaximum) {
       e.preventDefault();
 
