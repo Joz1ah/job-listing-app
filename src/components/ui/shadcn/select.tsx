@@ -35,40 +35,73 @@ const SelectTrigger = React.forwardRef<
 ))
 SelectTrigger.displayName = SelectPrimitive.Trigger.displayName
 
+// Modified SelectScrollUpButton with custom scroll handling
 const SelectScrollUpButton = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.ScrollUpButton>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.ScrollUpButton>
->(({ className, ...props }, ref) => (
-  <SelectPrimitive.ScrollUpButton
-    ref={ref}
-    className={cn(
-      "flex cursor-default items-center justify-center py-1",
-      className
-    )}
-    {...props}
-  >
-    <ChevronUp className="h-4 w-4" />
-  </SelectPrimitive.ScrollUpButton>
-))
+>(({ className, ...props }, ref) => {
+  const handleScroll = (e: React.MouseEvent) => {
+    // Prevent default behavior
+    e.preventDefault();
+    
+    // Find the viewport element (the scrollable container)
+    const viewport = e.currentTarget.closest('[data-radix-select-viewport]');
+    if (viewport) {
+      // Custom scroll behavior - adjust the scrollAmount to control speed (smaller = slower)
+      const scrollAmount = 40; // Adjust this value to change scroll speed
+      viewport.scrollTop -= scrollAmount;
+    }
+  };
+
+  return (
+    <SelectPrimitive.ScrollUpButton
+      ref={ref}
+      className={cn(
+        "flex cursor-default items-center justify-center py-1",
+        className
+      )}
+      onClick={handleScroll}
+      {...props}
+    >
+      <ChevronUp className="h-4 w-4" />
+    </SelectPrimitive.ScrollUpButton>
+  );
+})
 SelectScrollUpButton.displayName = SelectPrimitive.ScrollUpButton.displayName
 
+// Modified SelectScrollDownButton with custom scroll handling
 const SelectScrollDownButton = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.ScrollDownButton>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.ScrollDownButton>
->(({ className, ...props }, ref) => (
-  <SelectPrimitive.ScrollDownButton
-    ref={ref}
-    className={cn(
-      "flex cursor-default items-center justify-center py-1",
-      className
-    )}
-    {...props}
-  >
-    <ChevronDown className="h-4 w-4" />
-  </SelectPrimitive.ScrollDownButton>
-))
-SelectScrollDownButton.displayName =
-  SelectPrimitive.ScrollDownButton.displayName
+>(({ className, ...props }, ref) => {
+  const handleScroll = (e: React.MouseEvent) => {
+    // Prevent default behavior
+    e.preventDefault();
+    
+    // Find the viewport element (the scrollable container)
+    const viewport = e.currentTarget.closest('[data-radix-select-viewport]');
+    if (viewport) {
+      // Custom scroll behavior - adjust the scrollAmount to control speed (smaller = slower)
+      const scrollAmount = 40; // Adjust this value to change scroll speed
+      viewport.scrollTop += scrollAmount;
+    }
+  };
+
+  return (
+    <SelectPrimitive.ScrollDownButton
+      ref={ref}
+      className={cn(
+        "flex cursor-default items-center justify-center py-1",
+        className
+      )}
+      onClick={handleScroll}
+      {...props}
+    >
+      <ChevronDown className="h-4 w-4" />
+    </SelectPrimitive.ScrollDownButton>
+  );
+})
+SelectScrollDownButton.displayName = SelectPrimitive.ScrollDownButton.displayName
 
 const SelectContent = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Content>,
@@ -90,6 +123,7 @@ const SelectContent = React.forwardRef<
       <SelectPrimitive.Viewport
         className={cn(
           "p-1",
+          "scroll-smooth", // Add smooth scrolling behavior
           position === "popper" &&
             "h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]"
         )}
