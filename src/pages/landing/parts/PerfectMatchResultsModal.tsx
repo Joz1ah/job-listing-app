@@ -4,8 +4,8 @@ import {
   employerMatches,
   jobMatches,
 } from "mockData/hero-carousel-perfectmatch-data";
-import { MockAppCard } from "features/employer";
-import { MockJobCard } from "features/job-hunter";
+import { HeroAppCard } from "features/employer";
+import { HeroJobCard } from "features/job-hunter";
 import { Carousel, CarouselContent, CarouselItem, Button } from "components";
 import type {
   EmployerMatch,
@@ -69,9 +69,9 @@ const PerfectMatchResultsModal = () => {
                     className="md:basis-[55%] basis-[100%] transition-opacity"
                   >
                     {selectedUserType === "employer" ? (
-                      <MockAppCard match={match as EmployerMatch} />
+                      <HeroAppCard match={match as EmployerMatch} />
                     ) : (
-                      <MockJobCard match={match as JobMatch} />
+                      <HeroJobCard match={match as JobMatch} />
                     )}
                   </CarouselItem>
                 ))}

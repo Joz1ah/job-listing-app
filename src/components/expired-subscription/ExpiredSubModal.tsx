@@ -209,7 +209,7 @@ const ExpiredSubModal: React.FC<ExpiredSubModalProps> = ({
                 : "Get access to more opportunities and boost your career growth"}
             </p>
 
-            <div className="space-y-2 sm:space-y-4 flex-grow">
+            <div className="space-y-2 flex-grow">
               {features.yearly.map((feature, index) => (
                 <div key={index} className="flex items-center gap-2 sm:gap-3">
                   <span className="text-[#F5722E] flex-shrink-0">
@@ -252,7 +252,7 @@ const ExpiredSubModal: React.FC<ExpiredSubModalProps> = ({
                 : "Get access to more opportunities and boost your career growth"}
             </p>
 
-            <div className="space-y-2 sm:space-y-4 flex-grow">
+            <div className="space-y-2 flex-grow">
               {features.monthly.map((feature, index) => (
                 <div key={index} className="flex items-center gap-2 sm:gap-3">
                   <span className="text-[#F5722E] flex-shrink-0">
@@ -287,7 +287,7 @@ const ExpiredSubModal: React.FC<ExpiredSubModalProps> = ({
 
   const renderPaymentStep = (): JSX.Element => (
     <div
-      className={`w-full ${
+      className={`w-full md:h-[585px] ${
         selectedPlan === "monthly" ? "bg-[#F9E2CE]" : "bg-[#2D3A41]"
       } px-2 md:px-4 py-2`}
     >
@@ -304,7 +304,7 @@ const ExpiredSubModal: React.FC<ExpiredSubModalProps> = ({
 
   const renderSuccessStep = (): JSX.Element => (
     <div
-      className={`w-full h-auto flex flex-col items-center justify-center ${
+      className={`w-full md:h-[585px] flex flex-col items-center justify-center ${
         selectedPlan === "monthly" ? "bg-[#F9E2CE]" : "bg-[#2D3A41]"
       } p-4`}
     >
@@ -328,10 +328,16 @@ const ExpiredSubModal: React.FC<ExpiredSubModalProps> = ({
       </p>
 
       <div className="flex flex-col space-y-3 items-center w-full">
-        {userType === "employer" && (
+        {userType === "employer" ? (
           <a href={ROUTE_CONSTANTS.JOB_LISTING}>
             <Button className="bg-[#F5722E] text-sm hover:bg-[#F5722E]/80 text-white rounded w-36 px-0">
               Create Job Listing
+            </Button>
+          </a>
+        ) : (
+          <a href={ROUTE_CONSTANTS.EDIT_APPLICATION}>
+            <Button className="bg-[#F5722E] text-sm hover:bg-[#F5722E]/80 text-white rounded w-36 px-0">
+              Update Application Card
             </Button>
           </a>
         )}
