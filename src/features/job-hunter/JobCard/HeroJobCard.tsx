@@ -12,7 +12,7 @@ import { SkillsWithEllipsis } from "components";
 import { JobMatch } from "mockData/hero-carousel-perfectmatch-data";
 import { useJobHunterContext } from "components";
 
-interface MockJobCardProps {
+interface HeroJobCardProps {
   match: JobMatch;
   popupImage?: string;
 }
@@ -52,7 +52,7 @@ const getAvailabilityStyle = (type: string) => {
   return type.toLowerCase() === "part time" ? "bg-[#BF532C]" : "bg-[#F5722E]";
 };
 
-const MockJobCard: FC<MockJobCardProps> = ({ match }) => {
+const HeroJobCard: FC<HeroJobCardProps> = ({ match }) => {
   const { subscriptionPlan } = useJobHunterContext();
 
   return (
@@ -152,4 +152,4 @@ const MockJobCard: FC<MockJobCardProps> = ({ match }) => {
   );
 };
 
-export { MockJobCard };
+export { HeroJobCard };

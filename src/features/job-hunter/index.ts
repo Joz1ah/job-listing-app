@@ -29,4 +29,4 @@ export { PerfectMatchEmptyState, OtherOpportunitiesEmptyState } from 'features/j
 export { ApplicationFormPreview } from 'features/job-hunter/ApplicationForm/ApplicationFormPreview'
 export { BookmarkCard } from 'features/job-hunter/BookmarkedJobs/BookmarkCard'
 export { DeleteAccountAlert } from 'features/job-hunter/JobHunterSettings/alerts/DeleteAccountAlert'
-export { MockJobCard } from 'features/job-hunter/JobCard/MockJobCard'
+export { HeroJobCard } from 'features/job-hunter/JobCard/HeroJobCard'

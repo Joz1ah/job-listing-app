@@ -134,19 +134,60 @@ const UserNamePasswordSignup = () => {
         }, 1000);
       } catch (err: any) {
         setIsSubmitting(false);
+
+        // Check for internet connection issues
+        if (
+          err.status === "FETCH_ERROR" ||
+          err.message === "Failed to fetch" ||
+          err.error === "Failed to fetch" ||
+          (err.data &&
+            err.data.message &&
+            (err.data.message.includes("ERR_INTERNET_DISCONNECTED") ||
+              err.data.message.includes("network") ||
+              err.data.message.includes("internet")))
+        ) {
+          setOrganizedErrors((prev) => ({
+            ...prev,
+            email:
+              "Internet connection error. Please check your connection and try again.",
+          }));
+          return;
+        }
+
+        // Handle email already exists error
         if (
           err.status === 409 ||
-          err?.data?.message?.toLowerCase().includes("email already exists")
+          (err?.data?.message &&
+            err.data.message.toLowerCase().includes("email already exists"))
         ) {
           setOrganizedErrors((prev) => ({
             ...prev,
             email: "Email already exists",
           }));
         } else {
-          setOrganizedErrors((prev) => ({
-            ...prev,
-            email: err?.data?.message || "Email already exists",
-          }));
+          // For other errors, display the actual error message
+          const errorMessage =
+            err?.data?.message ||
+            "An error occurred during sign up. Please try again.";
+
+          // Try to determine which field the error applies to
+          if (errorMessage.toLowerCase().includes("email")) {
+            setOrganizedErrors((prev) => ({
+              ...prev,
+              email: errorMessage,
+            }));
+          } else if (errorMessage.toLowerCase().includes("password")) {
+            setOrganizedErrors((prev) => ({
+              ...prev,
+              password: errorMessage,
+            }));
+          } else {
+            // Default to showing in email field if can't determine
+            setOrganizedErrors((prev) => ({
+              ...prev,
+              email: errorMessage,
+            }));
+          }
         }
       }
     } catch (err) {

@@ -13,7 +13,7 @@ import { EmployerMatch } from "mockData/hero-carousel-perfectmatch-data";
 import { useEmployerContext } from "components";
 
 
-interface MockAppCardProps {
+interface HeroAppCardProps {
   match: EmployerMatch;
   bookmarked?: boolean;
   onBookmark?: () => void;
@@ -64,7 +64,7 @@ const LanguageTag: FC<{ language: string }> = ({ language }) => (
   </span>
 );
 
-const MockAppCard: FC<MockAppCardProps> = ({ match }) => {
+const HeroAppCard: FC<HeroAppCardProps> = ({ match }) => {
   const { subscriptionPlan } = useEmployerContext();
 
   return (
@@ -167,4 +167,4 @@ const MockAppCard: FC<MockAppCardProps> = ({ match }) => {
   );
 };
 
-export { MockAppCard };
+export { HeroAppCard };
