@@ -539,7 +539,7 @@ const JobListingForm: FC = () => {
                 error={errors.coreSkills}
                 touched={touched.coreSkills}
                 showIcon={true}
-                tooltipContent="Job-specific, measurable abilities"
+                tooltipContent="Job-specific, measurable abilities like software proficiency, coding, or design tools."
                 variant="primary"
               >
                 <CoreSkillsTagInput
@@ -559,7 +559,7 @@ const JobListingForm: FC = () => {
                 error={errors.interpersonalSkills}
                 touched={touched.interpersonalSkills}
                 showIcon={true}
-                tooltipContent="Personal qualities and soft skills"
+                tooltipContent="Personal qualities like communication, teamwork, and problem-solving."
                 variant="primary"
               >
                 <InterpersonalSkillsTagInput
