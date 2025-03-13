@@ -11,6 +11,8 @@ const initialState: UserDataState = {
   userId: "",
   currentSelectedPlan: PLAN_SELECTION_ITEMS.ANNUAL,
   selectedSkills: [],
+  selectedSkillIds: [], // Add selectedSkillIds to store the IDs
+  selectedExperience: "",
 };
 
 export const userSlice = createSlice({
@@ -58,6 +60,26 @@ export const userSlice = createSlice({
         selectedSkills,
       };
     },
+    // Add new reducer for skill IDs
+    setSkillIds: (
+      state,
+      action: PayloadAction<{ skillIds: number[] }>,
+    ) => {
+      return {
+        ...state,
+        selectedSkillIds: action.payload.skillIds,
+      };
+    },
+    // Existing reducer for experience
+    setExperience: (
+      state,
+      action: PayloadAction<{ experience: string }>,
+    ) => {
+      return {
+        ...state,
+        selectedExperience: action.payload.experience,
+      };
+    },
   },
 });
 
@@ -65,7 +87,9 @@ export const {
   setTempCredentials,
   setCredentials,
   setSelectedPlan,
-  setSkills
+  setSkills,
+  setSkillIds, // Export the new action
+  setExperience,
 } = userSlice.actions;
 
 export const userReducer = userSlice.reducer;

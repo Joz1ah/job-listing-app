@@ -85,7 +85,7 @@ const SecureNameDisplay: FC<SecureNameDisplayProps> = ({ realName }) => {
             </div>
           </div>
         </div>
-        <div className="h-6" />
+        <div className="h-4" />
       </div>
     );
   }
@@ -134,11 +134,7 @@ const LanguageTag: FC<{ language: string }> = ({ language }) => (
   </span>
 );
 
-const AppCard: FC<AppCardProps> = ({
-  match,
-  popupImage,
-  adImage,
-}) => {
+const AppCard: FC<AppCardProps> = ({ match, popupImage, adImage }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [formattedPostDate, setFormattedPostDate] = useState("N/A");
@@ -187,7 +183,7 @@ const AppCard: FC<AppCardProps> = ({
   return (
     <>
       <Card
-        className={`bg-[#FFFFFF] border-none w-full max-w-[436px] h-[340px] sm:h-[275px] relative transition-shadow duration-200 ${
+        className={`bg-[#FFFFFF] border-none w-full max-w-[436px] h-[350px] sm:h-[275px] relative transition-shadow duration-200 ${
           subscriptionPlan === "freeTrial"
             ? "cursor-default"
             : "cursor-pointer hover:shadow-lg"

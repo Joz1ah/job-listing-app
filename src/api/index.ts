@@ -9,5 +9,6 @@ export {
     akazaApiSearch,
     akazaApiAccount,
     akazaApiInterviewRequest,
+    akazaApiPerfectMatchHero,
     localApi
  } from 'api/akaza/akazaAPI';

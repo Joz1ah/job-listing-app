@@ -40,7 +40,7 @@ const SecureCompanyDisplay: FC<SecureCompanyDisplayProps> = ({ company }) => {
             </div>
           </div>
         </div>
-        <div className="h-6" />
+        <div className="h-4" />
       </div>
     );
   }
@@ -83,11 +83,7 @@ const BookmarkButton: FC<{
   );
 };
 
-const JobCard: FC<JobCardProps> = ({
-  match,
-  popupImage,
-  adImage,
-}) => {
+const JobCard: FC<JobCardProps> = ({ match, popupImage, adImage }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const cardId = generateCardId(match);
@@ -128,7 +124,7 @@ const JobCard: FC<JobCardProps> = ({
   return (
     <>
       <Card
-        className={`bg-white border-none h-[340px] relative w-full max-w-[436px] transition-shadow duration-200 ${
+        className={`bg-[#FFFFFF] border-none w-full max-w-[436px] h-[350px] sm:h-[275px] relative transition-shadow duration-200 ${
           subscriptionPlan === "freeTrial"
             ? "cursor-default"
             : "cursor-pointer hover:shadow-lg"
