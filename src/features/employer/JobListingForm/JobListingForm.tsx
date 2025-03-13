@@ -454,7 +454,7 @@ const JobListingForm: FC = () => {
                 error={errors.certifications}
                 touched={touched.certifications}
                 showIcon={true}
-                tooltipContent="Job-specific, measurable abilities like software proficiency, coding, or design tools."
+                tooltipContent="Select relevant certifications that enhance your job qualifications. If not listed, You may leave it blank."
                 variant="primary"
               >
                 <CertificationTagInput

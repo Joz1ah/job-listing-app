@@ -9,6 +9,7 @@ import { NotificationItem } from "types/notification";
 import DOMPurify from "dompurify";
 import sparkle_icon from "assets/sparkle-icon.svg?url";
 import { AdDialogWrapper } from "components";
+import { useAuth } from "contexts/AuthContext/AuthContext";
 
 interface NotificationFeedProps {
   subscriptionPlan?: "freeTrial" | "monthlyPlan" | "yearlyPlan";
@@ -26,6 +27,35 @@ const NotificationFeed: FC<NotificationFeedProps> = ({
     [],
   );
   const adTriggerRef = useRef<HTMLDivElement>(null);
+  const { user } = useAuth();
+  const [displayPlan, setDisplayPlan] = useState(subscriptionPlan);
+
+  useEffect(() => {
+    // Get user data from context or wherever it's available
+    const userData = user?.data?.user || {};
+    // Access nested subscriptions array correctly
+    const subscriptions = userData.subscriptions || [];
+
+    // IMPORTANT: We want to show the plan type regardless of free trial status
+    // if there are any subscriptions in the history (even inactive ones)
+    if (subscriptions && subscriptions.length > 0) {
+      // Sort subscriptions by ID to find the most recent one (highest ID)
+      const sortedSubscriptions = [...subscriptions].sort(
+        (a, b) => b.id - a.id,
+      );
+      const latestSubscription = sortedSubscriptions[0];
+
+      // Convert plan value to displayPlan format - ignore subscription status
+      if (latestSubscription.plan === "Monthly") {
+        setDisplayPlan("monthlyPlan");
+      } else if (latestSubscription.plan === "Yearly") {
+        setDisplayPlan("yearlyPlan");
+      }
+    } else {
+      // Only fall back to the current subscription plan if no subscription history
+      setDisplayPlan(subscriptionPlan);
+    }
+  }, [subscriptionPlan, user]);
 
   useEffect(() => {
     setNewNotifications(notifications ?? []);
@@ -155,7 +185,7 @@ const NotificationFeed: FC<NotificationFeedProps> = ({
 
   return (
     <div className="relative">
-      {subscriptionPlan === "freeTrial" ? (
+      {displayPlan === "freeTrial" ? (
         <div className="relative">
           <button
             className="relative p-2 rounded-full z-50"

@@ -424,7 +424,7 @@ const FreeTrial: React.FC<FreeTrialProps> = ({ onBack, onSelectPlan }) => {
       price: type === 'Yearly' ? 55 : 5,
       features: type === 'Yearly' ? yearlyFeatures : monthlyFeatures,
       isHighlighted: type === 'Yearly',
-      subtext: type === 'Yearly' ? '+ transaction fees' : 'flexible monthly access',
+      subtext: type === 'Yearly' ? '+ $5.28 transaction fee' : '+ $0.48 transaction fee',
       buttonText: 'Choose Plan',
     };
     onSelectPlan(selectedPlan);
@@ -530,7 +530,7 @@ const InterruptedSubscriptionPage: React.FC = () => {
     {
       type: "Yearly",
       price: 55,
-      subtext: "+ transaction fees",
+      subtext: "+ $5.28 transaction fee",
       buttonText: "Choose Plan",
       features: [
         ...(isEmployer 
@@ -556,7 +556,7 @@ const InterruptedSubscriptionPage: React.FC = () => {
     {
       type: "Monthly",
       price: 5,
-      subtext: "flexible monthly access",
+      subtext: "+ $0.48 transaction fee",
       buttonText: "Choose Plan",
       features: [
         ...(isEmployer 
@@ -588,7 +588,7 @@ const InterruptedSubscriptionPage: React.FC = () => {
           icon: <img src={sparkle_icon_green} className="w-4 h-4" />,
           text: "Perfect Match automation",
         },
-        { icon: <img src={like_icon} className="w-5 h-5" />, text: "Insights and Feedback" },
+        { icon: <img src={message_icon} className="w-5 h-5" />, text: "Live chat support" },
         { icon: <img src={card_icon} className="w-5 h-5" />, text: "No credit or debit card required" },
       ],
     },
