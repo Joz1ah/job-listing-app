@@ -77,6 +77,7 @@ const BaseMenu: FC<MenuProps> = ({
 
   // Check job listing status
   const exceedsMaximum = user?.data?.user?.jobCounts?.exceedsMaximum;
+  const totalActiveJob = user?.data?.user?.jobCounts?.totalActiveJob || 0;
   const isFreeTrial = user?.data?.user?.freeTrial;
   const adTriggerRef = useRef<HTMLDivElement>(null);
 
@@ -110,7 +111,8 @@ const BaseMenu: FC<MenuProps> = ({
     }
 
     // Then handle the conditions for job creation
-    if (exceedsMaximum) {
+    if (exceedsMaximum && totalActiveJob === 5) {
+      // Modified condition
       e.preventDefault();
 
       // For free trial users, show ad dialog

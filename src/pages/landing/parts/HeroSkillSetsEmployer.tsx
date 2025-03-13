@@ -1,17 +1,138 @@
 import { CoreSkillsTagInput } from "components";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLanding } from "../useLanding";
 import * as Yup from "yup";
 import styles from "./../landing.module.scss";
+import { useSearchCoreQuery } from "api/akaza/akazaAPI";
 
 import group_people_laptop from "assets/group-people-laptop.jpg";
 import arrow_left_icon from "assets/Keyboard-arrow-left.svg?url";
 import { HERO_STATES } from "store/hero/hero.types";
 
+// Interface for the skill data returned from the API
+interface SkillData {
+  id: number | string;
+  keyword: string;
+  type: string;
+}
+
 const HeroSkillSetsEmployer = () => {
-  const { selectedSkills, handleSetSkills, handleSetHeroState, heroState } =
-    useLanding();
+  const {
+    selectedSkills,
+    handleSetSkills,
+    handleSetHeroState,
+    heroState,
+    handleSetSkillIds,
+  } = useLanding();
+
   const [error, setError] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Keep a direct map of skill names to IDs, completely separate from the context
+  const [directSkillIds, setDirectSkillIds] = useState<Record<string, number>>(
+    {},
+  );
+
+  // Prevent update loops with this ref
+  const searchQueryInProgressRef = useRef("");
+
+  // Keep track of previously selected skills to detect changes
+  const prevSelectedSkillsRef = useRef<string[]>([]);
+
+  // Make our own API call to search for core skills
+  const { data: searchResults } = useSearchCoreQuery(
+    {
+      query: searchQuery,
+      limit: 10,
+    },
+    {
+      skip: !searchQuery,
+    },
+  );
+
+  // When search results come back, update our direct map of skill IDs
+  useEffect(() => {
+    if (searchResults && searchResults.length > 0) {
+      // Create a new map with the results
+      const newSkillIds = { ...directSkillIds };
+
+      searchResults.forEach((skill: SkillData) => {
+        if (skill && skill.keyword && skill.id) {
+          const numId = Number(skill.id);
+          // Store both normal and lowercase versions
+          newSkillIds[skill.keyword] = numId;
+          newSkillIds[skill.keyword.toLowerCase()] = numId;
+        }
+      });
+
+      // Update our state
+      setDirectSkillIds(newSkillIds);
+
+      // Reset the search
+      searchQueryInProgressRef.current = "";
+      setSearchQuery("");
+
+      // Update the skill IDs in Redux
+      updateReduxSkillIds();
+    }
+  }, [searchResults]);
+
+  // Check for new skills that need IDs when selectedSkills changes
+  useEffect(() => {
+    const currentSkills = selectedSkills || [];
+    const prevSkills = prevSelectedSkillsRef.current;
+
+    // Skip if no change
+    if (JSON.stringify(prevSkills) === JSON.stringify(currentSkills)) return;
+
+    // Find newly added skills
+    const newSkills = currentSkills.filter(
+      (skill) => !prevSkills.includes(skill),
+    );
+
+    // Check if we need to fetch IDs for any of them
+    if (newSkills.length > 0) {
+      // Find skills we don't have IDs for yet
+      const unmappedSkills = newSkills.filter((skill) => {
+        return !directSkillIds[skill] && !directSkillIds[skill.toLowerCase()];
+      });
+
+      if (unmappedSkills.length > 0 && !searchQueryInProgressRef.current) {
+        // Search for the first unmapped skill
+        const skillToSearch = unmappedSkills[0];
+        searchQueryInProgressRef.current = skillToSearch;
+        setSearchQuery(skillToSearch);
+      } else {
+        // If all skills have IDs, update Redux
+        updateReduxSkillIds();
+      }
+    } else {
+      // If we haven't added any new skills, just update the IDs based on what we have
+      updateReduxSkillIds();
+    }
+
+    // Update our reference
+    prevSelectedSkillsRef.current = [...currentSkills];
+  }, [selectedSkills, directSkillIds]);
+
+  // Function to update skill IDs in Redux based on our direct mapping
+  const updateReduxSkillIds = () => {
+    if (selectedSkills && selectedSkills.length > 0) {
+      // Map each selected skill to its ID
+      const skillIds = selectedSkills
+        .map((skill) => {
+          const id =
+            directSkillIds[skill] || directSkillIds[skill.toLowerCase()];
+
+          return id;
+        })
+        .filter(Boolean);
+
+      if (skillIds.length > 0) {
+        handleSetSkillIds(skillIds);
+      }
+    }
+  };
 
   const validationSchema = Yup.object().shape({
     skills: Yup.array()
@@ -39,6 +160,7 @@ const HeroSkillSetsEmployer = () => {
     const isValid = await validateSkills();
     if (isValid) {
       setError("");
+      updateReduxSkillIds();
       handleSetHeroState(HERO_STATES.YEARS_OF_EXPERIENCE_EMPLOYER);
     }
   };
@@ -79,7 +201,6 @@ const HeroSkillSetsEmployer = () => {
                   secondColor: "#184E77",
                 }}
               />
-              {/* <img src={icon_search}></img> */}
             </div>
             {error && (
               <div className="text-[#e53835] italic text-[14px]">{error}</div>

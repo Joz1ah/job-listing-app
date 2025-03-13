@@ -10,6 +10,8 @@ import {
   setTempCredentials,
   setSelectedPlan,
   setSkills,
+  setSkillIds, // Import the new action
+  setExperience,
   setCredentials,
 } from "store/user/user.slice";
 import {
@@ -29,6 +31,8 @@ export const useLanding = () => {
     tempLoginPassword,
     currentSelectedPlan,
     selectedSkills,
+    selectedSkillIds, // Extract selectedSkillIds from state
+    selectedExperience,
     ...dataStates
   } = useSelector((state: RootState) => state.user);  
   const {
@@ -41,6 +45,16 @@ export const useLanding = () => {
 
   const handleSetSkills = (skills: string[]) => {
     dispatch(setSkills({ selectedSkills: skills }));
+  };
+
+  // Add new handler for skill IDs
+  const handleSetSkillIds = (skillIds: number[]) => {
+    dispatch(setSkillIds({ skillIds }));
+  };
+
+  // Existing handler for experience
+  const handleSetExperience = (experience: string) => {
+    dispatch(setExperience({ experience }));
   };
 
   const handleSetSelectedPlan = (plan: PLAN_SELECTION_ITEMS) => {
@@ -100,9 +114,13 @@ export const useLanding = () => {
     heroState,
     handleSetHeroState,
     selectedSkills,
+    selectedSkillIds, // Return selectedSkillIds
+    selectedExperience,
     handleSetTempCredentials,
     handleSetSelectedPlan,
     handleSetSkills,
+    handleSetSkillIds, // Return the new handler
+    handleSetExperience,
     handleSetCredentials,
     handleSetIsResetPasswordSuccesful,
     handleSetCurrentResetPasswordEmail

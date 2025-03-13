@@ -5,7 +5,7 @@ export interface EmployerMatch {
     id: number;
     firstName: string;
     lastName: string;
-    location: string;
+    country: string;
     posted: string;
     coreSkills: string[];
     experience: string;
@@ -20,7 +20,7 @@ export interface JobMatch {
     employerId: number;
     position: string;
     company: string;
-    location: string;
+    country: string;
     coreSkills: string[];
     posted: string;
     experience: string;

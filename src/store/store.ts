@@ -24,6 +24,7 @@ import {
   akazaApiInterviewRequest,
   akazaApiSearch,
   akazaApiAccount,
+  akazaApiPerfectMatchHero,
   localApi,
 } from "api";
 import { persistStateToLocalStorage } from "./middlewares";
@@ -42,6 +43,7 @@ const middlewares = [
   akazaApiInterviewRequest.middleware,
   akazaApiSearch.middleware,
   akazaApiAccount.middleware,
+  akazaApiPerfectMatchHero.middleware,
   localApi.middleware,
 ];
 

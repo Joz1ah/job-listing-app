@@ -17,6 +17,8 @@ export type UserDataState = {
   tempLoginEmail?: string;
   tempLoginPassword?: string;
   currentSelectedPlan?: PLAN_SELECTION_ITEMS;
+  selectedExperience?: string; // Added selectedExperience
+  selectedSkillIds: number[]; // Array of skill IDs/numbers
 };
 
 export type UserResetDataState = {

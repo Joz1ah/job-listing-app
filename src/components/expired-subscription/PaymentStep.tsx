@@ -187,7 +187,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
         </span>
       </div>
       <p
-        className={`text-[13px] font-light mb-2 ${
+        className={`text-[13px] font-light ${
           planType === "yearly" ? "text-[#F5F5F7]" : "text-[#263238]"
         }`}
       >
@@ -315,7 +315,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                   .required("This field is required")
                   .matches(
                     /^(0[1-9]|1[0-2])\/([0-9]{2})$/,
-                    "Must be in MM/YY format",
+                    "Must be MM/YY format",
                   )
                   .test("expiry", "Invalid date", function (value) {
                     if (!value) return false;
@@ -348,7 +348,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                   }),
                 cvv: Yup.string()
                   .required("CVV is required")
-                  .matches(/^\d{3,4}$/, "CVV must be 3 or 4 digits"),
+                  .matches(/^\d{3,4}$/, "Must be 3 or 4 digits"),
               })}
               validateOnMount
               validateOnChange={true}
@@ -385,7 +385,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                         )}
                       </Field>
                       {errors.firstName && touched.firstName && (
-                        <div className="absolute text-red-500 right-0 italic text-[10px] md:text-xs mt-1">
+                        <div className="absolute text-red-500 right-0 italic text-[9px] md:text-[10px] mr-1">
                           {errors.firstName}
                         </div>
                       )}
@@ -412,7 +412,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                         )}
                       </Field>
                       {errors.lastName && touched.lastName && (
-                        <div className="absolute text-red-500 right-0 italic text-[10px] md:text-xs mt-1">
+                        <div className="absolute text-red-500 right-0 italic text-[9px] md:text-[10px] mr-1">
                           {errors.lastName}
                         </div>
                       )}
@@ -439,7 +439,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                         )}
                       </Field>
                       {errors.cardNumber && touched.cardNumber && (
-                        <div className="absolute text-red-500 right-0 italic text-[10px] md:text-xs mt-1">
+                        <div className="absolute text-red-500 right-0 italic text-[9px] md:text-[10px] mr-1">
                           {errors.cardNumber}
                         </div>
                       )}
@@ -476,7 +476,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                             )}
                           </Field>
                           {errors.expiryDate && touched.expiryDate && (
-                            <div className="absolute text-red-500 right-0 italic text-[10px] md:text-xs mt-1">
+                            <div className="absolute text-red-500 right-0 italic text-[9px] md:text-[10px] mr-1">
                               {errors.expiryDate}
                             </div>
                           )}
@@ -506,7 +506,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                             )}
                           </Field>
                           {errors.cvv && touched.cvv && (
-                            <div className="absolute text-red-500 right-0 italic text-[10px] md:text-xs mt-1">
+                            <div className="absolute text-red-500 right-0 italic text-[9px] md:text-[10px] mr-1">
                               {errors.cvv}
                             </div>
                           )}
@@ -536,7 +536,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                         )}
                       </Field>
                       {errors.email && touched.email && (
-                        <div className="absolute text-red-500 right-0 italic text-[10px] md:text-xs mt-1">
+                        <div className="absolute text-red-500 right-0 italic text-[9px] md:text-[10px] mr-1">
                           {errors.email}
                         </div>
                       )}
@@ -644,7 +644,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                     )}
                   </Field>
                   {errors.address && touched.address && (
-                    <div className="absolute text-red-500 right-0 italic text-[10px] md:text-xs mt-1">
+                    <div className="absolute text-red-500 right-0 italic text-[9px] md:text-[10px] mr-1">
                       {errors.address}
                     </div>
                   )}
@@ -669,7 +669,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                     )}
                   </Field>
                   {errors.state && touched.state && (
-                    <div className="absolute text-red-500 right-0 italic text-[10px] md:text-xs mt-1">
+                    <div className="absolute text-red-500 right-0 italic text-[9px] md:text-[10px] mr-1">
                       {errors.state}
                     </div>
                   )}
@@ -694,7 +694,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                     )}
                   </Field>
                   {errors.city && touched.city && (
-                    <div className="absolute text-red-500 right-0 italic text-[10px] md:text-xs mt-1">
+                    <div className="absolute text-red-500 right-0 italic text-[9px] md:text-[10px] mr-1">
                       {errors.city}
                     </div>
                   )}
@@ -721,7 +721,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                     )}
                   </Field>
                   {errors.country && touched.country && (
-                    <div className="absolute text-red-500 right-0 italic text-[10px] md:text-xs mt-1">
+                    <div className="absolute text-red-500 right-0 italic text-[9px] md:text-[10px] mr-1">
                       {errors.country}
                     </div>
                   )}
@@ -758,7 +758,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                     )}
                   </Field>
                   {errors.zipCode && touched.zipCode && (
-                    <div className="absolute text-red-500 right-0 italic text-[10px] md:text-xs mt-1">
+                    <div className="absolute text-red-500 right-0 italic text-[9px] md:text-[10px]">
                       {errors.zipCode}
                     </div>
                   )}

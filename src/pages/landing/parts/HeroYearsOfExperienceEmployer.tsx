@@ -1,16 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./../landing.module.scss";
 import * as Yup from "yup";
 import { useLanding } from "../useLanding";
+import { useModal } from "components/modal/useModal";
 
 import man_woman_looking_at_list from "assets/man-woman-looking-at-list.jpg";
 import arrow_left_icon from "assets/Keyboard-arrow-left.svg?url";
 import { HERO_STATES } from "store/hero/hero.types";
+import { MODAL_STATES } from "store/modal/modal.types";
 
 const HeroYearsOfExperienceEmployer = () => {
-  const { heroState, handleSetHeroState } = useLanding();
-  const [selectedExperience, setSelectedExperience] = useState("");
+  const {
+    heroState,
+    handleSetHeroState,
+    selectedExperience,
+    handleSetExperience,
+    handleSetModalState,
+  } = useLanding();
+
+  const { toggleModal } = useModal();
+
+  // Initialize with the value from Redux if available
+  const [selectedExperienceLocal, setSelectedExperienceLocal] = useState(
+    selectedExperience || "",
+  );
   const [error, setError] = useState("");
+
+  // Update local state if Redux state changes
+  useEffect(() => {
+    if (selectedExperience) {
+      setSelectedExperienceLocal(selectedExperience);
+    }
+  }, [selectedExperience]);
 
   const validationSchema = Yup.object().shape({
     experience: Yup.string().required("This field is required"),
@@ -19,7 +40,7 @@ const HeroYearsOfExperienceEmployer = () => {
   const validateExperience = async () => {
     try {
       await validationSchema.validate(
-        { experience: selectedExperience },
+        { experience: selectedExperienceLocal },
         { abortEarly: false },
       );
       return true;
@@ -32,7 +53,8 @@ const HeroYearsOfExperienceEmployer = () => {
   };
 
   const handleExperienceSelect = (experience: string) => {
-    setSelectedExperience(experience);
+    setSelectedExperienceLocal(experience);
+    handleSetExperience(experience);
     if (error) setError("");
   };
 
@@ -49,7 +71,9 @@ const HeroYearsOfExperienceEmployer = () => {
     const isValid = await validateExperience();
     if (isValid) {
       setError("");
-      handleSetHeroState(HERO_STATES.LOADING);
+      // Show the perfect match results modal directly
+      handleSetModalState(MODAL_STATES.PERFECT_MATCH_RESULTS);
+      toggleModal(true);
     }
   };
 
@@ -81,7 +105,7 @@ const HeroYearsOfExperienceEmployer = () => {
                 <button
                   key={experience}
                   className={`w-full px-4 py-2 rounded-[4px]  ${
-                    selectedExperience === experience
+                    selectedExperienceLocal === experience
                       ? "bg-[#F5722E] text-white"
                       : "bg-white text-[#F5722E]"
                   }`}

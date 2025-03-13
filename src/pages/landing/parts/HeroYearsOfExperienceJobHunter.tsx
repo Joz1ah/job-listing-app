@@ -1,16 +1,37 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import styles from "./../landing.module.scss";
 import * as Yup from "yup";
 import { useLanding } from "../useLanding";
+import { useModal } from "components/modal/useModal";
 
 import arrow_left_icon from "assets/Keyboard-arrow-left.svg?url";
 import girl_with_dog_smiling_at_laptop from "assets/girl-with-dog-smiling-at-laptop.jpg";
 import { HERO_STATES } from "store/hero/hero.types";
+import { MODAL_STATES } from "store/modal/modal.types";
 
 const HeroYearsOfExperienceJobHunter = () => {
-  const { heroState, handleSetHeroState } = useLanding();
-  const [selectedExperience, setSelectedExperience] = useState("");
+  const {
+    heroState,
+    handleSetHeroState,
+    selectedExperience,
+    handleSetExperience,
+    handleSetModalState,
+  } = useLanding();
+
+  const { toggleModal } = useModal();
+
+  // Initialize with the value from Redux if available
+  const [selectedExperienceLocal, setSelectedExperienceLocal] = useState(
+    selectedExperience || "",
+  );
   const [error, setError] = useState("");
+
+  // Update local state if Redux state changes
+  useEffect(() => {
+    if (selectedExperience) {
+      setSelectedExperienceLocal(selectedExperience);
+    }
+  }, [selectedExperience]);
 
   const validationSchema = Yup.object().shape({
     experience: Yup.string().required("This field is required"),
@@ -19,7 +40,7 @@ const HeroYearsOfExperienceJobHunter = () => {
   const validateExperience = useCallback(async () => {
     try {
       await validationSchema.validate(
-        { experience: selectedExperience },
+        { experience: selectedExperienceLocal },
         { abortEarly: false },
       );
       return true;
@@ -29,10 +50,11 @@ const HeroYearsOfExperienceJobHunter = () => {
       }
       return false;
     }
-  }, [selectedExperience]);
+  }, [selectedExperienceLocal]);
 
   const handleExperienceSelect = (experience: string) => {
-    setSelectedExperience(experience);
+    setSelectedExperienceLocal(experience);
+    handleSetExperience(experience);
     if (error) setError("");
   };
 
@@ -49,9 +71,11 @@ const HeroYearsOfExperienceJobHunter = () => {
     const isValid = await validateExperience();
     if (isValid) {
       setError("");
-      handleSetHeroState(HERO_STATES.LOADING);
+      // Show the perfect match results modal directly
+      handleSetModalState(MODAL_STATES.PERFECT_MATCH_RESULTS);
+      toggleModal(true);
     }
-  }, [validateExperience]);
+  }, [validateExperience, handleSetModalState, toggleModal]);
 
   const handleClickPrevious = () => {
     setError("");
@@ -80,7 +104,7 @@ const HeroYearsOfExperienceJobHunter = () => {
               {experienceOptions.map((experience: string) => (
                 <button
                   key={experience}
-                  className={`w-full px-4 py-2 rounded-[4px] ${selectedExperience === experience ? "bg-[#F5722E] text-white" : "bg-white text-[#F5722E]"}`}
+                  className={`w-full px-4 py-2 rounded-[4px] ${selectedExperienceLocal === experience ? "bg-[#F5722E] text-white" : "bg-white text-[#F5722E]"}`}
                   onClick={() => handleExperienceSelect(experience)}
                   type="button"
                 >

@@ -23,5 +23,7 @@ declare namespace NodeJS {
         AI_RESUME_REVIEW?: boolean;
         INSTANT_MATCHING?: boolean;
         PREMIUM_ANALYTICS?: boolean;
+
+        MICROSERVICE_API_KEY:string;
     }
   }
