@@ -505,6 +505,51 @@ export const akazaApiPerfectMatch = createApiFunction({
   }),
 });
 
+export const akazaApiPerfectMatchHero = createApiFunction({
+  reducerPath: 'apiPerfectMatchHero',
+  baseQuery: fetchBaseQuery({ 
+    baseUrl: process.env.PERFECTMATCH_API_URL,
+    credentials: "include",
+    prepareHeaders: (headers) => {
+      // Only add the API key, no Authorization header
+      headers.set('x-api-key', process.env.MICROSERVICE_API_KEY || '');
+      
+      // Remove the code that adds the Authorization header
+      // const token = Cookies.get('authToken');
+      // if (token) {
+      //   headers.set('Authorization', `Bearer ${token}`);
+      // }
+      
+      return headers;
+    },
+  }),
+  tagTypes: ['HeroMatches'],
+  endpoints: (builder) => ({
+    getHeroEmployerMatch: builder.mutation({
+      query: (payload) => ({
+        url: `/perfect-match/hero-employer-match?page=${payload.page || 1}&pageSize=${payload.pageSize || 10}`,
+        method: 'POST',
+        body: {
+          keywords: payload.keywords || [],
+          yearsOfExperience: payload.yearsOfExperience || ''
+        }
+      }),
+      invalidatesTags: ['HeroMatches'],
+    }),
+    getHeroJobHunterMatch: builder.mutation({
+      query: (payload) => ({
+        url: `/perfect-match/hero-jobhunter-match?page=${payload.page || 1}&pageSize=${payload.pageSize || 10}`,
+        method: 'POST',
+        body: {
+          keywords: payload.keywords || [],
+          yearsOfExperience: payload.yearsOfExperience || ''
+        }
+      }),
+      invalidatesTags: ['HeroMatches'],
+    }),
+  }),
+});
+
 export const akazaApiInterviewRequest = createApiFunction({
   reducerPath: 'apiInterviewRequest',
   baseQuery: fetchBaseQuery({ 
@@ -718,6 +763,11 @@ export const {
   useJobHunterFreeTrialQuery,
   useEmployerFreeTrialQuery
 } = akazaApiPerfectMatch
+
+export const {
+  useGetHeroEmployerMatchMutation,
+  useGetHeroJobHunterMatchMutation
+} = akazaApiPerfectMatchHero;
 
 export const {
   useCreateEmployerInterviewMutation

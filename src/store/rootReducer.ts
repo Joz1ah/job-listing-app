@@ -15,6 +15,7 @@ import {
   akazaApiSearch,
   akazaApiAccount,
   akazaApiInterviewRequest,
+  akazaApiPerfectMatchHero,
   localApi,
 } from "api";
 
@@ -49,6 +50,7 @@ export const rootReducer = {
   [akazaApiSearch.reducerPath]: akazaApiSearch.reducer,
   [akazaApiAccount.reducerPath]: akazaApiAccount.reducer,
   [akazaApiInterviewRequest.reducerPath]: akazaApiInterviewRequest.reducer,
+  [akazaApiPerfectMatchHero.reducerPath]: akazaApiPerfectMatchHero.reducer,
   [localApi.reducerPath]: akazaApiAccount.reducer,
 };
 

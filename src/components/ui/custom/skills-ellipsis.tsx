@@ -9,13 +9,18 @@ interface SkillsWithEllipsisProps {
 const SkillsWithEllipsis: FC<SkillsWithEllipsisProps> = ({ skills }) => {
   return (
     <div className="w-full relative">
-      <span className="text-[13px] font-light block text-[#263238]">Core Skills:</span>
-      <div className="flex flex-wrap gap-1 md:overflow-hidden md:whitespace-nowrap">
+      <span className="text-[13px] font-light block text-[#263238]">
+        Core Skills:
+      </span>
+      <div
+        className="flex flex-wrap sm:flex-nowrap overflow-hidden w-full"
+        style={{ maxHeight: "calc(1.5rem * 3)" }}
+      >
         {skills.map((skill, skillIndex) => (
           <span
             key={skillIndex}
             title={skill}
-            className="text-white text-xs font-semibold px-1.5 py-0.5 rounded-[2px] inline-block max-w-[125px] truncate"
+            className="text-white text-xs font-semibold px-1.5 py-0.5 rounded-[2px] inline-block max-w-[125px] truncate mr-1 mb-1"
             style={{
               backgroundColor: skillColors[skillIndex % 2],
             }}

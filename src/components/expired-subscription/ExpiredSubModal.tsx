@@ -10,6 +10,7 @@ import like_icon from "assets/subscription-plan-icons/like-orange.svg?url";
 import infinity_icon from "assets/subscription-plan-icons/infinity-orange.svg?url";
 import lock_icon from "assets/subscription-plan-icons/lock-orange.svg?url";
 import message_icon from "assets/subscription-plan-icons/message-orange.svg?url";
+import success_gif from "assets/expired-success.gif";
 import { ROUTE_CONSTANTS } from "constants/routeConstants";
 
 type UserType = "employer" | "job-hunter";
@@ -308,6 +309,8 @@ const ExpiredSubModal: React.FC<ExpiredSubModalProps> = ({
         selectedPlan === "monthly" ? "bg-[#F9E2CE]" : "bg-[#2D3A41]"
       } p-4`}
     >
+      <img src={success_gif} alt="Success" />
+
       <h2 className="text-[#F5722E] text-[26px] font-normal mb-2">
         Great News: You're All Set!
       </h2>

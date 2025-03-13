@@ -24,7 +24,7 @@ const JobHunterHeader: FC = () => {
     </>
   );
 
-  // Format employment type and filter to only show Full Time and Part Time
+  // Format employment type and include Full Time, Part Time, and Contract Only
   const formatEmploymentTypes = (types: string) => {
     return types
       .split(",")
@@ -35,7 +35,7 @@ const JobHunterHeader: FC = () => {
           .join(" ")
           .trim(),
       )
-      .filter((type) => type === "Full Time" || type === "Part Time");
+      .filter((type) => type === "Full Time" || type === "Part Time" || type === "Contract");
   };
 
   return (

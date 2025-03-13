@@ -1,10 +1,11 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { User, CreditCard, Shield } from "lucide-react";
 /* import { Info } from "lucide-react";
 import verifiedIcon from 'images/verified.svg?url' */
-import userCheck from 'images/user-check.svg?url'
+import userCheck from "images/user-check.svg?url";
 import { useJobHunterContext } from "components";
+import { useAuth } from "contexts/AuthContext/AuthContext";
 
 interface MenuItem {
   icon: JSX.Element;
@@ -14,53 +15,83 @@ interface MenuItem {
 
 interface SettingsSidebarProps {
   userName: string;
-  userType: 'employer' | 'job-hunter';
+  userType: "employer" | "job-hunter";
   className?: string;
 }
 
-const SettingsSidebar: FC<SettingsSidebarProps> = ({ 
+const SettingsSidebar: FC<SettingsSidebarProps> = ({
   userName,
   userType,
-  className = ''
+  className = "",
 }) => {
   const location = useLocation();
-  const baseRoute = userType === 'employer' ? '/dashboard' : '/dashboard';
+  const baseRoute = userType === "employer" ? "/dashboard" : "/dashboard";
   const { subscriptionPlan } = useJobHunterContext();
+  const [displayPlan, setDisplayPlan] = useState(subscriptionPlan);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    // Get user data from context or wherever it's available
+    const userData = user?.data?.user || {};
+    // Access nested subscriptions array correctly
+    const subscriptions = userData.subscriptions || [];
+
+    // IMPORTANT: We want to show the plan type regardless of free trial status
+    // if there are any subscriptions in the history (even inactive ones)
+    if (subscriptions && subscriptions.length > 0) {
+      // Sort subscriptions by ID to find the most recent one (highest ID)
+      const sortedSubscriptions = [...subscriptions].sort(
+        (a, b) => b.id - a.id,
+      );
+      const latestSubscription = sortedSubscriptions[0];
+
+      // Convert plan value to displayPlan format - ignore subscription status
+      if (latestSubscription.plan === "Monthly") {
+        setDisplayPlan("monthlyPlan");
+      } else if (latestSubscription.plan === "Yearly") {
+        setDisplayPlan("yearlyPlan");
+      }
+    } else {
+      // Only fall back to the current subscription plan if no subscription history
+      setDisplayPlan(subscriptionPlan);
+    }
+  }, [subscriptionPlan, user]);
 
   const settingsMenu: MenuItem[] = [
     {
       icon: <User className="w-5 h-5" />,
       label: "General",
-      path: `${baseRoute}/account-settings/general`
+      path: `${baseRoute}/account-settings/general`,
     },
     {
       icon: <CreditCard className="w-5 h-5" />,
       label: "Billing & Information",
-      path: `${baseRoute}/account-settings/billing`
+      path: `${baseRoute}/account-settings/billing`,
     },
     {
       icon: <span className="text-2xl leading-none mr-1">✦</span>,
       label: "Your Subscription",
-      path: `${baseRoute}/account-settings/subscription`
+      path: `${baseRoute}/account-settings/subscription`,
     },
     {
       icon: <Shield className="w-5 h-5" />,
       label: "Privacy & Security",
-      path: `${baseRoute}/account-settings/privacy`
-    }
+      path: `${baseRoute}/account-settings/privacy`,
+    },
   ];
 
   const userInfo = (
     <div className="mb-8">
       <div className="flex items-start">
         <div className="flex-1">
-          <h2 className="text-[30px] font-normal text-white break-all md:break-words line-clamp-1 max-w-full"
-          title={userName}
+          <h2
+            className="text-[30px] font-normal text-white break-all md:break-words line-clamp-1 max-w-full"
+            title={userName}
           >
             {userName}
           </h2>
         </div>
-{/*         <div className="flex-shrink-0 ml-2 mt-2">
+        {/*         <div className="flex-shrink-0 ml-2 mt-2">
           {subscriptionPlan === 'freeTrial' ? (
             <Info className="w-7 h-7 fill-[#D6D6D6] text-[#212529]" />
           ) : (
@@ -69,11 +100,11 @@ const SettingsSidebar: FC<SettingsSidebarProps> = ({
         </div> */}
       </div>
       <p className="text-[17px] text-white mt-1 flex items-center gap-2">
-        {subscriptionPlan === "freeTrial" ? (
+        {displayPlan === "freeTrial" ? (
           <>
             <span>Free Trial</span>
           </>
-        ) : subscriptionPlan === "monthlyPlan" ? (
+        ) : displayPlan === "monthlyPlan" ? (
           <>
             <img
               src={userCheck}
@@ -100,9 +131,7 @@ const SettingsSidebar: FC<SettingsSidebarProps> = ({
     <>
       {/* Mobile/Tablet View */}
       <div className="lg:hidden w-full">
-        <div className="px-4 md:px-6 py-4 md:mt-6 space-y-4">
-          {userInfo}
-        </div>
+        <div className="px-4 md:px-6 py-4 md:mt-6 space-y-4">{userInfo}</div>
         <div className="w-full px-4">
           <div className="flex justify-center gap-10 items-center">
             {settingsMenu.map((item) => (

@@ -1,10 +1,11 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { List, XCircle, CircleCheck } from "lucide-react";
 /* import { Info } from "lucide-react";
 import verifiedIcon from "images/verified.svg?url"; */
 import userCheck from "images/user-check.svg?url";
 import { useEmployerContext } from "components";
+import { useAuth } from "contexts/AuthContext/AuthContext";
 
 interface MenuItem {
   icon: JSX.Element;
@@ -24,6 +25,35 @@ const ManageJobListingsSidebar: FC<ManageJobsSidebarProps> = ({
   const location = useLocation();
   const baseRoute = "/dashboard/manage-job-listings";
   const { subscriptionPlan } = useEmployerContext();
+  const [displayPlan, setDisplayPlan] = useState(subscriptionPlan);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    // Get user data from context or wherever it's available
+    const userData = user?.data?.user || {};
+    // Access nested subscriptions array correctly
+    const subscriptions = userData.subscriptions || [];
+
+    // IMPORTANT: We want to show the plan type regardless of free trial status
+    // if there are any subscriptions in the history (even inactive ones)
+    if (subscriptions && subscriptions.length > 0) {
+      // Sort subscriptions by ID to find the most recent one (highest ID)
+      const sortedSubscriptions = [...subscriptions].sort(
+        (a, b) => b.id - a.id,
+      );
+      const latestSubscription = sortedSubscriptions[0];
+
+      // Convert plan value to displayPlan format - ignore subscription status
+      if (latestSubscription.plan === "Monthly") {
+        setDisplayPlan("monthlyPlan");
+      } else if (latestSubscription.plan === "Yearly") {
+        setDisplayPlan("yearlyPlan");
+      }
+    } else {
+      // Only fall back to the current subscription plan if no subscription history
+      setDisplayPlan(subscriptionPlan);
+    }
+  }, [subscriptionPlan, user]);
 
   const jobListingsMenu: MenuItem[] = [
     {
@@ -47,8 +77,9 @@ const ManageJobListingsSidebar: FC<ManageJobsSidebarProps> = ({
     <div className="mb-8">
       <div className="flex items-start">
         <div className="flex-1">
-          <span className="text-[30px] font-normal text-white break-all md:break-words line-clamp-1 max-w-full"
-          title={userName}
+          <span
+            className="text-[30px] font-normal text-white break-all md:break-words line-clamp-1 max-w-full"
+            title={userName}
           >
             {userName}
           </span>
@@ -62,11 +93,11 @@ const ManageJobListingsSidebar: FC<ManageJobsSidebarProps> = ({
         </div> */}
       </div>
       <p className="text-[17px] text-white mt-1 flex items-center gap-2">
-        {subscriptionPlan === "freeTrial" ? (
+        {displayPlan === "freeTrial" ? (
           <>
             <span>Free Trial</span>
           </>
-        ) : subscriptionPlan === "monthlyPlan" ? (
+        ) : displayPlan === "monthlyPlan" ? (
           <>
             <img
               src={userCheck}
