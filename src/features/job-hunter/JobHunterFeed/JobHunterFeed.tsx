@@ -1,6 +1,7 @@
 import { FC, useState, useEffect, useRef } from "react";
 import sparkeIcon from "images/sparkle-icon.png";
-import { perfectMatch, others } from "mockData/jobs-data";
+import { usePerfectMatchContext } from "contexts/PerfectMatch/PerfectMatchContext";
+import { /*perfectMatch, others*/ } from "mockData/jobs-data";
 import jobHunterAds from "images/job-hunter-feed-card-ads.svg?url";
 import jobHunterPopAds from "images/popup-hunter.svg?url";
 import {
@@ -43,7 +44,23 @@ interface AdItem {
 type CardItem = Match | AdItem;
 
 const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
+  const {perfectMatchesJH,matchState, updateMatchState} = usePerfectMatchContext();
   const { subscriptionPlan } = useJobHunterContext();
+  const [perfectMatch, setPerfectMatch] = useState(perfectMatchesJH);
+  useEffect(() => {
+    // Only set these when component mounts or if match state changes substantially
+    if (matchState.scoreFilter !== "above60" || !matchState.selectedJobId) {
+      updateMatchState({
+        ...(perfectMatchesJH.length > 0 && {
+          selectedJobId: null,
+        }),
+        scoreFilter: "above60",
+      });
+    }
+  }, []);
+  useEffect(()=>{
+    setPerfectMatch(perfectMatchesJH)
+  },[perfectMatchesJH])
   const [displayedItems, setDisplayedItems] = useState<CardItem[]>(() => {
     // Check if we have any items first
     if (perfectMatch.length === 0) {
@@ -261,6 +278,19 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
 const OtherApplications: FC<selectedProps> = ({
   setSelectedTab
 }) => {
+  const {otherMatchesJH, matchState, updateMatchState} = usePerfectMatchContext();
+  useEffect(() => {
+    // Only set these when component mounts or if match state changes substantially
+    if (matchState.scoreFilter !== "below60" || !matchState.selectedJobId) {
+      updateMatchState({
+        ...(otherMatchesJH.length > 0 && {
+          selectedJobId:  null,
+        }),
+        scoreFilter: "below60",
+      });
+    }
+  }, []);
+  const others = otherMatchesJH;
   const { subscriptionPlan } = useJobHunterContext();
   const [displayedItems, setDisplayedItems] = useState<CardItem[]>(() => {
     // Check if we have any items first
@@ -500,6 +530,9 @@ const JobHunterFeed: FC = () => {
   }, []);
 
   const LoadingGrid = () => {
+    const {perfectMatchesJH,otherMatchesJH} = usePerfectMatchContext();
+    const perfectMatch = perfectMatchesJH;
+    const others = otherMatchesJH;
     // Calculate number of skeleton cards based on actual data
     const dataLength =
       selectedTab === "perfectMatch"

@@ -1,12 +1,13 @@
 import { FC, useState, useEffect, useRef } from "react";
+import { CustomError } from "types/errors";
 import { PendingCard } from "components";
 import { InterviewCardSkeleton } from "components";
 import { NavLink } from "react-router-dom";
 import emptyInterview from "images/calendar-empty.svg?url";
 import {
-  pendingInterviewsData,
   Interview,
 } from "mockData/employer-interviews-data";
+import { useInterviewsContext } from "contexts/Interviews/InterviewsContext";
 import { useEmployerContext } from "components";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 import { ROUTE_CONSTANTS } from "constants/routeConstants";
@@ -28,6 +29,12 @@ interface RescheduleData {
   interviewId?: string;
 }
 
+const handleError = (error:CustomError, title:string, message:string) => {
+  const { showError } = useErrorModal();
+  const errorMessage = (error as CustomError).data?.message || message;
+  showError(title, errorMessage);
+}
+
 const PendingInterviews: FC = () => {
   const [displayedItems, setDisplayedItems] = useState<Interview[]>([]);
   const [loading, setLoading] = useState(true);
@@ -36,7 +43,8 @@ const PendingInterviews: FC = () => {
   const loaderRef = useRef<HTMLDivElement>(null);
   const [declineReason, setDeclineReason] = useState<string>("");
   const { subscriptionPlan } = useEmployerContext();
-  const { showError } = useErrorModal();
+  const {interviewsList} = useInterviewsContext();
+
 
   const handleAccept = async (interview: Interview, data: AcceptData) => {
     try {
@@ -44,10 +52,9 @@ const PendingInterviews: FC = () => {
       await new Promise((resolve) => setTimeout(resolve, 3000));
       setDisplayedItems((prev) => prev.filter((item) => item !== interview));
     } catch (error) {
-      showError(
+      handleError( error as CustomError, 
         "Accept Interview Failed",
-        "Unable to accept the interview. Please try again or contact support.",
-      );
+        "Unable to accept the interview. Please try again or contact support.")
       console.error("Error accepting interview:", error);
     }
   };
@@ -58,7 +65,7 @@ const PendingInterviews: FC = () => {
       await new Promise((resolve) => setTimeout(resolve, 3000));
       setDisplayedItems((prev) => prev.filter((item) => item !== interview));
     } catch (error) {
-      showError(
+      handleError( error as CustomError, 
         "Decline Interview Failed",
         "Unable to decline the interview. Please try again or contact support.",
       );
@@ -75,7 +82,7 @@ const PendingInterviews: FC = () => {
       await new Promise((resolve) => setTimeout(resolve, 3000));
       setDisplayedItems((prev) => prev.filter((item) => item !== interview));
     } catch (error) {
-      showError(
+      handleError( error as CustomError, 
         "Reschedule Interview Failed",
         "Unable to reschedule the interview. Please try again or contact support.",
       );
@@ -98,7 +105,7 @@ const PendingInterviews: FC = () => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     const currentCount = displayedItems.length;
-    const remainingItems = pendingInterviewsData.length - currentCount;
+    const remainingItems = interviewsList.length - currentCount;
 
     if (remainingItems <= 0) {
       setHasMore(false);
@@ -107,13 +114,13 @@ const PendingInterviews: FC = () => {
     }
 
     const itemsToLoad = Math.min(2, remainingItems);
-    const newItems = pendingInterviewsData.slice(
+    const newItems = interviewsList.slice(
       currentCount,
       currentCount + itemsToLoad,
     );
     setDisplayedItems((prev) => [...prev, ...newItems]);
 
-    if (currentCount + itemsToLoad >= pendingInterviewsData.length) {
+    if (currentCount + itemsToLoad >= interviewsList.length) {
       setHasMore(false);
     }
 
@@ -124,15 +131,15 @@ const PendingInterviews: FC = () => {
     const loadInitialItems = async () => {
       setLoading(true);
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      const initialItems = pendingInterviewsData.slice(0, 6);
+      const initialItems = interviewsList.slice(0, 6);
       setDisplayedItems(initialItems);
-      setHasMore(pendingInterviewsData.length > 6);
+      setHasMore(interviewsList.length > 6);
       setLoading(false);
       setInitialLoad(false);
     };
 
     loadInitialItems();
-  }, []);
+  }, [interviewsList]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -157,10 +164,10 @@ const PendingInterviews: FC = () => {
         observer.unobserve(loaderRef.current);
       }
     };
-  }, [loading, hasMore, initialLoad]);
+  }, [loading, hasMore, initialLoad, interviewsList]);
 
   const showLoadingCards = loading;
-  const loadingCardsCount = Math.min(6, pendingInterviewsData.length);
+  const loadingCardsCount = Math.min(6, interviewsList.length);
 
   if (loading) {
     return (

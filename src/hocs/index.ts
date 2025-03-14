@@ -1,3 +1,3 @@
 export { NoSsr } from 'hocs/noSsr/NoSsr'
 export { WithSpinner } from 'hocs/withSpinner/WithSpinner'
-export { withPerfectMatchProvider, withSubscriptionExpiryWrapper } from 'hocs/withProviders/WithProviders'
+export { withPerfectMatchProvider, withInterviewsProvider, withSubscriptionExpiryWrapper } from 'hocs/withProviders/WithProviders'

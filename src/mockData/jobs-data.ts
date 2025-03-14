@@ -16,7 +16,7 @@ export interface Match {
 }
 
 export const perfectMatch: Match[] = [
-  /* {
+   {
     employerId: 1,
     position: "Software Engineer",
     company: "Fintech Solutions Ltd",
@@ -175,11 +175,11 @@ export const perfectMatch: Match[] = [
     interpersonalSkills: ["Problem-solving", "Communication", "Technical Leadership"],
     certificates: ["AWS Certified Solutions Architect"],
     isNew: false
-  }, */
+  }, 
 ];
 
 export const others: Match[] = [
-  /* {
+   {
     employerId: 11,
     position: "Lead Software Engineer",
     company: "InnovateTech Solutions",
@@ -258,5 +258,5 @@ export const others: Match[] = [
     interpersonalSkills: ["Full-stack Architecture", "Agile Methodology", "Technical Documentation"],
     certificates: ["None required"],
     isNew: false
-  }, */
+  }, 
 ];

@@ -142,6 +142,7 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage, adImage }) => {
   const { user } = useAuth();
   const cardId = generateCardId(match);
   const { subscriptionPlan } = useEmployerContext();
+  console.log(match)
 
   // Ref for the AdDialogWrapper
   const adDialogRef = useRef<HTMLDivElement>(null);

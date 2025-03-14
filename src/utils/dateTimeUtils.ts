@@ -40,3 +40,41 @@ export function combineDateAndTime(dateObj: Date, timeStr: string, timeZone?: st
 
     return dateTime; 
 }
+
+export function isNew(receivedDate: string): boolean {
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+  
+    const received = new Date(receivedDate);
+  
+    // Check if receivedDate is today or yesterday
+    return (
+      received.toDateString() === today.toDateString() || 
+      received.toDateString() === yesterday.toDateString()
+    );
+  }
+
+  export function timeAgo(date: Date): string {
+    const now = new Date();
+    const secondsAgo = Math.floor((now.getTime() - date.getTime()) / 1000);
+    const minutesAgo = Math.floor(secondsAgo / 60);
+    const hoursAgo = Math.floor(minutesAgo / 60);
+    const daysAgo = Math.floor(hoursAgo / 24);
+    const monthsAgo = Math.floor(daysAgo / 30.44); // Average month length
+    const yearsAgo = Math.floor(monthsAgo / 12);
+
+    if (yearsAgo > 0) {
+        return `${yearsAgo} year${yearsAgo > 1 ? 's' : ''}`;
+    } else if (monthsAgo > 0) {
+        return `${monthsAgo} month${monthsAgo > 1 ? 's' : ''}`;
+    } else if (daysAgo > 0) {
+        return `${daysAgo} day${daysAgo > 1 ? 's' : ''}`;
+    } else if (hoursAgo > 0) {
+        return `${hoursAgo} hour${hoursAgo > 1 ? 's' : ''}`;
+    } else if (minutesAgo > 0) {
+        return `${minutesAgo} minute${minutesAgo > 1 ? 's' : ''}`;
+    } else {
+        return `${secondsAgo} second${secondsAgo > 1 ? 's' : ''}`;
+    }
+}
