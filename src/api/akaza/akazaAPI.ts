@@ -479,8 +479,8 @@ export const akazaApiPerfectMatch = createApiFunction({
   }), 
   endpoints: (builder) => ({
     jobHunterPaid: builder.query({
-      query: ({ page, pageSize, matchesByScore }) => ({
-        url: `/perfect-match/jobHunter/${matchesByScore ? 'matches-by-score' : ''}?page=${page}&pageSize=${pageSize}`,
+      query: ({ page, pageSize, matchesByScore, scoreFilter='above60' }) => ({
+        url: `/perfect-match/jobHunter/${matchesByScore ? 'matches-by-score' : ''}?page=${page}&pageSize=${pageSize}&scoreFilter=${scoreFilter}`,
         method: 'GET',
       }),
     }),
@@ -553,7 +553,7 @@ export const akazaApiPerfectMatchHero = createApiFunction({
 export const akazaApiInterviewRequest = createApiFunction({
   reducerPath: 'apiInterviewRequest',
   baseQuery: fetchBaseQuery({ 
-    baseUrl: process.env.INTERVIEWREQUEST_API_URL ,
+    baseUrl: process.env.INTERVIEW_REQUEST_API_URL ,
     credentials: "include", 
     prepareHeaders: (headers) => {
       // Retrieve the token from cookies
@@ -565,6 +565,7 @@ export const akazaApiInterviewRequest = createApiFunction({
       return headers;
     },
   }), 
+  tagTypes: ['InterviewList'],
   endpoints: (builder) => ({
     createEmployerInterview: builder.mutation({
       query: (payLoad) => ({
@@ -579,6 +580,14 @@ export const akazaApiInterviewRequest = createApiFunction({
             //"meetingLink":payLoad.meetingLink,
           }
       }),
+    }),
+    getInterviewList: builder.query({
+      query: ({ page, limit}) => ({
+        url: `/interviews/grouped-by-status?page=${page}&limit=${limit}`,
+        method: 'GET',
+      }),
+      keepUnusedDataFor: 0,
+      providesTags: ['InterviewList'],
     }),
   }),
 });
@@ -770,7 +779,8 @@ export const {
 } = akazaApiPerfectMatchHero;
 
 export const {
-  useCreateEmployerInterviewMutation
+  useCreateEmployerInterviewMutation,
+  useGetInterviewListQuery
 }
 = akazaApiInterviewRequest
 

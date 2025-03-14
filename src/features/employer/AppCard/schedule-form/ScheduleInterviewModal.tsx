@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { CustomError } from "types/errors";
 import { useGetAccountSettingsQuery } from "api/akaza/akazaAPI";
 import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
@@ -58,6 +59,7 @@ const validationSchema = Yup.object().shape({
     .typeError("Please select a valid time"),
 });
 
+
 const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
   isOpen,
   onClose,
@@ -76,7 +78,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
   const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
   const [createInterview] = useCreateEmployerInterviewMutation();
   const { showError } = useErrorModal();
-
+  console.log(jobId)
   const formik = useFormik<FormValues>({
     initialValues: {
       interviewDate: undefined,
@@ -103,15 +105,13 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
           scheduledStart: scheduleStart.toDate(),
           scheduledEnd: scheduledEnd.toDate(),
         };
-        const response = await createInterview(payload).unwrap();
-        console.log(response);
-        console.log("Form submitted with values:", payload);
-        setShowSuccessModal(true);
+        await createInterview(payload).unwrap().then(()=>{
+          setShowSuccessModal(true);
+          //console.log("Form submitted with values:", payload);
+        });
       } catch (error) {
-        showError(
-          "Interview Scheduling Failed",
-          "Unable to schedule the interview. Please try again.",
-        );
+        const errorMessage = (error as CustomError).data?.message || "Unable to schedule the interview. Please try again.";
+        showError("Interview Scheduling Failed", errorMessage);
         console.error("Error sending invite:", error);
       } finally {
         setSubmitting(false);

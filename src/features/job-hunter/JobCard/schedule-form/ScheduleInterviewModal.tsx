@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
+import { useGetAccountSettingsQuery } from "api/akaza/akazaAPI";
+import { useNavigate } from "react-router-dom";
 import {
   Select,
   SelectContent,
@@ -15,6 +17,7 @@ import { InvitationSentModal } from "features/job-hunter";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
+import { ChevronRight } from "lucide-react";
 
 interface ScheduleInterviewModalProps {
   isOpen: boolean;
@@ -54,6 +57,8 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
   company,
   location,
 }) => {
+  const { data: settingsData } = useGetAccountSettingsQuery(null);
+  const navigate = useNavigate();
   const [isDatePickerOpen, setIsDatePickerOpen] = useState<boolean>(false);
   const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
   const { showError } = useErrorModal();
@@ -255,11 +260,27 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                   </div>
 
                   {/* Meeting Link */}
-                  <div className="flex items-center gap-2 mt-4">
-                    <img src={gmeet} alt="Meet icon" className="w-4 h-4" />
-                    <span className="text-sm text-gray-500">
-                      https://meet.google.com/xxx-xxxx-xxx
-                    </span>
+                  <div></div>
+
+                  <div className="grid grid-cols-2 gap-8">
+                    <div className="flex items-center gap-3">
+                      <img src={gmeet} alt="Meet icon" className="w-4 h-4" />
+                      <span className="text-sm text-[#F5722E]">
+                        via Google meet
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-5 justify-end select-none">
+                      <span
+                        className="text-sm text-[#263238] cursor-pointer"
+                        onClick={() => {
+                          navigate("/dashboard/account-settings/general");
+                        }}
+                      >
+                        {settingsData?.data?.timeZone} Timezone | Click to
+                        Change
+                      </span>
+                      <ChevronRight className="w-4 h-4" />
+                    </div>
                   </div>
 
                   {/* Fixed Button Area */}

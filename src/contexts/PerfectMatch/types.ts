@@ -21,6 +21,20 @@ export interface Match {
   score?: number;
 }
 
+export interface MatchJH {
+  employerId: number;
+  position: string;
+  company: string;
+  location: string;
+  coreSkills: string[];
+  posted: string;
+  experience: string;
+  description: string;
+  lookingFor: ("Full Time" | "Part Time" | "Contract only")[];
+  salaryExpectation: string;
+  language?: string[];
+}
+
 export interface PerfectMatchState {
   selectedJobId: number | null;
   scoreFilter: "above60" | "below60" | null;
@@ -34,6 +48,9 @@ export interface PerfectMatchContextType {
   perfectMatch: Match[];
   perfectMatches: Match[]; // Added to store high-score matches separately
   otherApplications: Match[]; // Added to store low-score matches separately
+  perfectMatchJH: MatchJH[];
+  perfectMatchesJH: MatchJH[]; // Added to store high-score matches separately
+  otherMatchesJH: MatchJH[]; // Added to store low-score matches separately
   activeTab: 'above60' | 'below60'; // Added to track active tab
   data: any;
   matchState: PerfectMatchState;

@@ -1,22 +1,23 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { useEmployerPaidQuery } from "api/akaza/akazaAPI";
+import { useEmployerPaidQuery, useJobHunterPaidQuery } from "api/akaza/akazaAPI";
+import { useAuth } from "contexts/AuthContext/AuthContext";
 import {
   Match,
+  MatchJH,
   PerfectMatchState,
   PerfectMatchContextType,
   PerfectMatchProviderProps,
 } from "./types";
-
+import { isNew, timeAgo } from "utils/dateTimeUtils";
 const PerfectMatchContext = createContext<PerfectMatchContextType | undefined>(
   undefined,
 );
 
 const mapPerfectMatchData = (apiResponse: any): Match[] => {
   if (!apiResponse || !apiResponse.data) return [];
-
   return apiResponse.data.map((item: any) => ({
     id: item?.jobHunter?.jobHunterId ?? 0, // Fix itemId -> jobHunterId, default to 0 if undefined
-    jobId: item?.jobHunter?.jobId ?? 0, // Fix itemId -> jobHunterId, default to 0 if undefined
+    jobId: item?.jobId ?? 0, // Fix itemId -> jobHunterId, default to 0 if undefined
     firstName: item?.jobHunter?.firstName ?? "Unknown", // Ensure first name exists
     lastName: item?.jobHunter?.lastName ?? "Unknown", // Ensure last name exists
     phoneNumber: null, // No phone number in API response
@@ -45,15 +46,50 @@ const mapPerfectMatchData = (apiResponse: any): Match[] => {
           .map((keyword: any) => keyword.keyword)
       : [], // Default to empty array if undefined
     certificates: [], // No certificates in API response
-    isNew: true, // Assuming all are new
+    isNew: isNew(item?.jobDetails?.createdAt) ?? false, // Assuming all are new
     // Add score for debugging
     score: item?.score || 0,
   }));
 };
 
+const mapPerfectMatchDataJH = (apiResponse: any): MatchJH[] => {
+  if (!apiResponse || !apiResponse.data) return [];
+  console.log(apiResponse)
+  return apiResponse.data.map((item: any) => ({
+    employerId: item?.jobHunterId ?? 0,
+    position: item?.jobDetails?.jobTitle ?? '',
+    company: item?.jobDetails?.employerName ?? '',
+    location: item?.jobDetails?.location ?? '',
+    coreSkills: item?.jobDetails?.jobKeywords
+    ? item.jobDetails.jobKeywords
+        .filter((keyword: any) => keyword.type === "core")
+        .map((keyword: any) => keyword.keyword)
+    : [], // Default to empty array if undefined,
+    posted: timeAgo(new Date(item?.jobDetails?.createdAt)) ?? '',
+    experience: item?.jobDetails?.yearsOfExperience ?? '',
+    description: item?.jobDetails?.description ?? '',
+    lookingFor: item?.jobDetails?.employmentType
+    ? item.jobDetails.employmentType.split(",")
+    : [], // Default to empty array if undefined,
+    salaryExpectation: item?.jobDetails?.salaryRange ?? "",
+    language: item?.jobDetails?.language
+    ? item.jobDetails.language.split(",")
+    : [], // Default to empty array if undefined,
+    interpersonalSkills: item?.jobDetails?.jobKeywords
+    ? item.jobDetails.jobKeywords
+        .filter((keyword: any) => keyword.type === "interpersonal")
+        .map((keyword: any) => keyword.keyword)
+    : [], // Default to empty array if undefined,,
+    certificates: [],
+    isNew: isNew(item?.jobDetails?.createdAt) ?? false, // Assuming all are new
+  }));
+
+};
 const PerfectMatchProvider: React.FC<PerfectMatchProviderProps> = ({
   children,
 }) => {
+  const {user} = useAuth();
+  const userType = user?.data?.user?.type;
   const [jobList, setJobList] = useState<any>({});
   const [matchState, setMatchState] = useState<PerfectMatchState>({
     selectedJobId: null,
@@ -65,6 +101,8 @@ const PerfectMatchProvider: React.FC<PerfectMatchProviderProps> = ({
   // Store perfect matches and other applications separately
   const [perfectMatches, setPerfectMatches] = useState<Match[]>([]);
   const [otherApplications, setOtherApplications] = useState<Match[]>([]);
+  const [perfectMatchesJH, setPerfectMatchesJH] = useState<MatchJH[]>([]);
+  const [otherMatchesJH, setOtherMatchesJH] = useState<MatchJH[]>([]);
 
   // Added state to track when job selection is changing and we're waiting for matches
   const [isLoadingMatches, setIsLoadingMatches] = useState<boolean>(false);
@@ -90,7 +128,8 @@ const PerfectMatchProvider: React.FC<PerfectMatchProviderProps> = ({
   };
 
   // Fetch data based on current matchState
-  const { data, isLoading, error } = useEmployerPaidQuery({
+  const userQueryFX = userType === 'employer' ? useEmployerPaidQuery : useJobHunterPaidQuery;
+  const { data, isLoading, error } = userQueryFX({
     page: matchState.page,
     pageSize: 100,
     matchesByScore: true,
@@ -101,15 +140,23 @@ const PerfectMatchProvider: React.FC<PerfectMatchProviderProps> = ({
   // Process the data when it arrives
   useEffect(() => {
     if (!isLoading && !error && data) {
-      const mappedData = mapPerfectMatchData(data);
-
-      // Store data in the appropriate state based on the active tab
-      if (matchState.scoreFilter === "above60") {
-        setPerfectMatches(mappedData);
-      } else if (matchState.scoreFilter === "below60") {
-        setOtherApplications(mappedData);
+      if(userType === 'employer'){
+        const mappedData = mapPerfectMatchData(data);
+        // Store data in the appropriate state based on the active tab
+        if (matchState.scoreFilter === "above60") {
+          setPerfectMatches(mappedData);
+        } else if (matchState.scoreFilter === "below60") {
+          setOtherApplications(mappedData);
+        }
+      }else{
+        const mappedData = mapPerfectMatchDataJH(data);
+        // Store data in the appropriate state based on the active tab
+        if (matchState.scoreFilter === "above60") {
+          setPerfectMatchesJH(mappedData);
+        } else if (matchState.scoreFilter === "below60") {
+          setOtherMatchesJH(mappedData);
+        }
       }
-
       // If we were loading matches due to job change, we can stop now
       setIsLoadingMatches(false);
     }
@@ -134,7 +181,9 @@ const PerfectMatchProvider: React.FC<PerfectMatchProviderProps> = ({
 
   // Get the correct data based on the active tab
   const perfectMatch =
-    matchState.scoreFilter === "above60" ? perfectMatches : otherApplications;
+  matchState.scoreFilter === "above60" ? perfectMatches : otherApplications;
+  const perfectMatchJH =
+    matchState.scoreFilter === "above60" ? perfectMatchesJH : otherMatchesJH;
 
   return (
     <PerfectMatchContext.Provider
@@ -144,6 +193,9 @@ const PerfectMatchProvider: React.FC<PerfectMatchProviderProps> = ({
         perfectMatch,
         perfectMatches,
         otherApplications,
+        perfectMatchJH,
+        perfectMatchesJH,
+        otherMatchesJH,
         activeTab,
         data,
         matchState,

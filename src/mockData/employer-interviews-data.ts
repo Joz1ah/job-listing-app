@@ -36,8 +36,8 @@ export interface Interview {
     variant?: 'employer' | 'job-hunter';
   }
 
-export const acceptedInterviewsData: Interview[] = [
-  /* {
+export const acceptedInterviewsData: Interview[] = [/*
+   {
     position: "Senior Frontend Engineer",
     candidate: "Michael Thompson",
     location: "Mountain View, CA",
@@ -117,11 +117,11 @@ export const acceptedInterviewsData: Interview[] = [
       "Code Review",
       "Mentoring",
     ],
-  }, */
-];
+  }, 
+*/];
 
-export const completedInterviewsData: Interview[] = [
-  /* {
+export const completedInterviewsData: Interview[] = [/*
+   {
     position: "Senior Frontend Engineer",
     candidate: "Daniel Roberts",
     location: "Mountain View, CA",
@@ -200,11 +200,11 @@ export const completedInterviewsData: Interview[] = [
       "Team Collaboration",
       "Incident Response",
     ],
-  }, */
-];
+  }, 
+*/];
 
-export const declinedInterviewsData: Interview[] = [
-  /* {
+export const declinedInterviewsData: Interview[] = [/*
+   {
     position: "Sr Mobile and Web Developer",
     candidate: "John Smith",
     location: "USA",
@@ -287,11 +287,11 @@ export const declinedInterviewsData: Interview[] = [
       "Cross-functional Communication",
       "Problem Solving",
     ],
-  }, */
-];
+  }, 
+*/];
 
-export const pendingInterviewsData: Interview[] = [
-  /* {
+export const pendingInterviewsData: Interview[] = [/*
+   {
     position: "Frontend Engineer",
     candidate: "Olivia Martinez",
     location: "Mountain View, CA",
@@ -440,11 +440,11 @@ export const pendingInterviewsData: Interview[] = [
       "Team Collaboration",
       "Incident Response",
     ],
-  }, */
-];
+  }, 
+*/];
 
-export const rescheduleInterviewsData: Interview[] = [
-  /* {
+export const rescheduleInterviewsData: Interview[] = [/*
+   {
     position: "Sr. Mobile and Web Developer",
     candidate: "Mia Lee",
     location: "USA",
@@ -563,5 +563,5 @@ export const rescheduleInterviewsData: Interview[] = [
       "Team Collaboration",
       "Agile Methodologies",
     ],
-  }, */
-];
+  }, 
+*/];

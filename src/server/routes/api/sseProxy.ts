@@ -33,19 +33,16 @@ export const sseNotifications = async (req: Request, res: Response): Promise<voi
       });
 
       proxyResponse.pipe(res);
-      /*
-      proxyResponse.on('data', (chunk) => {
-        const eventData = `${chunk.toString()}`;
-        //res.write(eventData);
-        console.log('Sent data to client:');
-        console.log(eventData)
-        res.write('event: message\n');
-        res.write('id: 1\n');
-        res.write('data: {"message": "test"}\n\n');
-      });
-*/
+
+
+      // Send a "ping" to the client every 30 seconds to keep the connection alive
+      //const intervalId = setInterval(() => {
+      //  res.write('data: \n\n');  // Sending empty data to keep connection alive
+      //}, 30000);  // Every 30 seconds
+
       proxyResponse.on('end', () => {
         console.log('SSE stream ended');
+        //clearInterval(intervalId);
         if (!res.headersSent) {
           res.status(200).end();
         }
@@ -53,6 +50,7 @@ export const sseNotifications = async (req: Request, res: Response): Promise<voi
 
       proxyResponse.on('error', (error) => {
         console.error('SSE stream error:', error);
+        //clearInterval(intervalId);
         if (!res.headersSent) {
           res.status(500).json({ error: 'Failed to fetch SSE stream from gateway' });
         }

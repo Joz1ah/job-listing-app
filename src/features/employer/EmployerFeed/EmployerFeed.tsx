@@ -36,7 +36,6 @@ const PerfectMatch: FC<selectedProps> = ({
     updateMatchState,
     matchState,
   } = usePerfectMatchContext();
-
   useEffect(() => {
     // Only set these when component mounts or if match state changes substantially
     if (matchState.scoreFilter !== "above60" || !matchState.selectedJobId) {

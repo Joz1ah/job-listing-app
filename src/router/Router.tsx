@@ -6,7 +6,10 @@ import spinner_loading_fallback from 'assets/images/spinner-loading-akaza.svg?ur
 import { useAuth } from 'contexts/AuthContext/AuthContext';
 import { isServer } from 'utils';
 import { IntercomProvider } from 'contexts/Intercom/IntercomContext';
-import { withPerfectMatchProvider, withSubscriptionExpiryWrapper } from 'hocs';
+import { 
+  withPerfectMatchProvider,
+  withInterviewsProvider,
+  withSubscriptionExpiryWrapper } from 'hocs';
 import { useFeatureController } from 'contexts/FeatureControllerContext/FeatureController';
 
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -31,17 +34,17 @@ const JobListingFormLayout = lazy(() => import('pages').then(module => ({ defaul
 const CompleteProfile = lazy(() => import('pages').then(module => ({ default: module.CompleteProfile })))
 const EditProfile = lazy(() => import('pages').then(module => ({ default: module.EditProfile })))
 const EmployerNotFound = lazy(() => import('pages').then(module => ({ default: module.EmployerNotFound })))
-const InterviewEmployer = lazy(() => import('pages').then(module => ({ default: module.InterviewEmployer })))
+const InterviewEmployer = lazy(() => import('pages').then(module => ({ default: withInterviewsProvider(module.InterviewEmployer)})))
 const AccountSettingsEmployer = lazy(() => import('pages').then(module => ({ default: module.AccountSettingsEmployer })))
 const ManageJobListings = lazy(() => import('pages').then(module => ({ default: module.ManageJobListings })))
 const EmployerBookmarkedJobs = lazy(() => import('pages').then(module => ({ default: module.EmployerBookmarkedJobs })))
 
 // Job Hunter pages
-const JobHunterFeedLayout = lazy(() => import('pages').then(module => ({ default: module.JobHunterFeedLayout })))
+const JobHunterFeedLayout = lazy(() => import('pages').then(module => ({ default: withPerfectMatchProvider(module.JobHunterFeedLayout) })))
 const CreateAppCard = lazy(() => import('pages').then(module => ({ default: module.CreateAppCard })))
 const EditAppCard = lazy(() => import('pages').then(module => ({ default: module.EditAppCard })))
 const JobHunterNotFound = lazy(() => import('pages').then(module => ({ default: module.JobHunterNotFound })))
-const InterviewJobHunter = lazy(() => import('pages').then(module => ({ default: module.InterviewJobHunter })))
+const InterviewJobHunter = lazy(() => import('pages').then(module => ({ default: withInterviewsProvider(module.InterviewJobHunter) })))
 const AccountSettingsJobHunter = lazy(() => import('pages').then(module => ({ default: module.AccountSettingsJobHunter })))
 const JobHunterBookmarkedJobs = lazy(() => import('pages').then(module => ({ default: module.JobHunterBookmarkedJobs })))
 

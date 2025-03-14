@@ -13,7 +13,7 @@ declare namespace NodeJS {
         PERFECTMATCH_API_URL?: string;
         ACCOUNT_API_URL?: string;
         NOTIFICATIONS_API_URL?: string,
-        INTERVIEWREQUEST_API_URL?: string,
+        INTERVIEW_REQUEST_API_URL?: string,
         //AUTHORIZE.NET VARS
         AUTHORIZE_NET_CLIENT_KEY?: string;
         AUTHORIZE_NET_API_LOGIN_ID?: string;
