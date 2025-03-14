@@ -11,6 +11,7 @@ import {
 import { Button } from "components";
 import { EmployerMatch } from "mockData/hero-carousel-perfectmatch-data";
 import { useEmployerContext } from "components";
+import { Tooltip } from "components";
 
 // Format time ago function similar to the one in AppCard
 const formatTimeAgo = (dateString: string): string => {
@@ -189,9 +190,17 @@ const HeroAppCard: FC<HeroAppCardProps> = ({ match }) => {
         </CardContent>
 
         <CardFooter className="absolute bottom-0 right-0 flex flex-row justify-end items-center space-x-1 p-2">
-          <Button className="text-[12px] font-semibold px-0 w-[133px] h-[27px] bg-[#F5722E] hover:bg-[#F5722E] cursor-default">
-            Schedule Interview
-          </Button>
+          {subscriptionPlan === "freeTrial" ? (
+            <Tooltip content="Sign up to schedule an interview">
+              <Button className="text-[12px] font-semibold px-0 w-[133px] h-[27px] bg-[#F5722E] hover:bg-[#F5722E] cursor-pointer">
+                Schedule Interview
+              </Button>
+            </Tooltip>
+          ) : (
+            <Button className="text-[12px] font-semibold px-0 w-[133px] h-[27px] bg-[#F5722E] hover:bg-[#F5722E] cursor-pointer">
+              Schedule Interview
+            </Button>
+          )}
           <MoreVertical size={12} className="text-gray-700 cursor-pointer" />
         </CardFooter>
       </Card>
