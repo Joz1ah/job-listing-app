@@ -35,7 +35,7 @@ const SelectTrigger = React.forwardRef<
 ));
 SelectTrigger.displayName = SelectPrimitive.Trigger.displayName;
 
-// Custom ScrollUpButton that only responds to clicks, not hover
+// Custom ScrollUpButton that only appears when content is scrollable
 const SelectScrollUpButton = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.ScrollUpButton>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.ScrollUpButton>
@@ -48,6 +48,39 @@ const SelectScrollUpButton = React.forwardRef<
   const isHoldingRef = React.useRef(false);
   // Track whether we're in a continuous scroll
   const isContinuousScrolling = React.useRef(false);
+  // State to track if content is scrollable upward
+  const [isScrollableUp, setIsScrollableUp] = React.useState(false);
+
+  // Check if content is scrollable when component mounts or content changes
+  React.useEffect(() => {
+    const checkScrollability = () => {
+      const viewport = document.querySelector(
+        "[data-radix-select-viewport]",
+      ) as HTMLElement;
+
+      if (viewport) {
+        // If scrollTop > 0, we can scroll up
+        setIsScrollableUp(viewport.scrollTop > 1);
+      }
+    };
+
+    // Set up the initial check after a short delay to ensure the content is rendered
+    setTimeout(checkScrollability, 50);
+
+    // Set up scroll event listener to update button visibility
+    const viewport = document.querySelector(
+      "[data-radix-select-viewport]",
+    ) as HTMLElement;
+
+    if (viewport) {
+      viewport.addEventListener("scroll", checkScrollability);
+
+      // Clean up event listener
+      return () => {
+        viewport.removeEventListener("scroll", checkScrollability);
+      };
+    }
+  }, []);
 
   // Prevent any hover interactions
   const preventHover = (e: React.MouseEvent) => {
@@ -164,6 +197,9 @@ const SelectScrollUpButton = React.forwardRef<
     };
   }, []);
 
+  // If not scrollable upward, don't render the button
+  if (!isScrollableUp) return null;
+
   return (
     <div
       className={cn(
@@ -186,7 +222,7 @@ const SelectScrollUpButton = React.forwardRef<
 });
 SelectScrollUpButton.displayName = "CustomSelectScrollUpButton";
 
-// Custom ScrollDownButton that only responds to clicks, not hover
+// Custom ScrollDownButton that only appears when content is scrollable
 const SelectScrollDownButton = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.ScrollDownButton>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.ScrollDownButton>
@@ -199,6 +235,42 @@ const SelectScrollDownButton = React.forwardRef<
   const isHoldingRef = React.useRef(false);
   // Track whether we're in a continuous scroll
   const isContinuousScrolling = React.useRef(false);
+  // State to track if content is scrollable downward
+  const [isScrollableDown, setIsScrollableDown] = React.useState(false);
+
+  // Check if content is scrollable when component mounts or content changes
+  React.useEffect(() => {
+    const checkScrollability = () => {
+      const viewport = document.querySelector(
+        "[data-radix-select-viewport]",
+      ) as HTMLElement;
+
+      if (viewport) {
+        // If scrollHeight > scrollTop + clientHeight, we can scroll down
+        const canScrollDown =
+          viewport.scrollHeight >
+          viewport.scrollTop + viewport.clientHeight + 1;
+        setIsScrollableDown(canScrollDown);
+      }
+    };
+
+    // Set up the initial check after a short delay to ensure the content is rendered
+    setTimeout(checkScrollability, 50);
+
+    // Set up scroll event listener to update button visibility
+    const viewport = document.querySelector(
+      "[data-radix-select-viewport]",
+    ) as HTMLElement;
+
+    if (viewport) {
+      viewport.addEventListener("scroll", checkScrollability);
+
+      // Clean up event listener
+      return () => {
+        viewport.removeEventListener("scroll", checkScrollability);
+      };
+    }
+  }, []);
 
   // Prevent any hover interactions
   const preventHover = (e: React.MouseEvent) => {
@@ -315,6 +387,9 @@ const SelectScrollDownButton = React.forwardRef<
     };
   }, []);
 
+  // If not scrollable downward, don't render the button
+  if (!isScrollableDown) return null;
+
   return (
     <div
       className={cn(
@@ -349,6 +424,28 @@ const SelectContent = React.forwardRef<
     }
   };
 
+  // Function to check if content is scrollable
+  const checkScrollability = React.useCallback(() => {
+    // We don't need a dedicated state for this as the scroll buttons
+    // handle their own visibility independently
+    const viewport = document.querySelector(
+      "[data-radix-select-viewport]",
+    ) as HTMLElement;
+
+    if (viewport) {
+      // Just trigger scroll event to update button visibility
+      viewport.dispatchEvent(new Event("scroll"));
+    }
+  }, []);
+
+  // Check scrollability when content changes
+  React.useEffect(() => {
+    // Need to wait a bit for content to render
+    const timeoutId = setTimeout(checkScrollability, 50);
+
+    return () => clearTimeout(timeoutId);
+  }, [children, checkScrollability]);
+
   return (
     <SelectPrimitive.Portal>
       <SelectPrimitive.Content
@@ -364,6 +461,7 @@ const SelectContent = React.forwardRef<
         onMouseOver={preventHoverScroll}
         {...props}
       >
+        {/* Only render scroll buttons if content is scrollable */}
         <SelectScrollUpButton />
         <SelectPrimitive.Viewport
           className={cn(
@@ -379,6 +477,10 @@ const SelectContent = React.forwardRef<
           // Prevent any hover-based scrolling effects
           onMouseEnter={preventHoverScroll}
           onMouseOver={preventHoverScroll}
+          onScroll={() => {
+            // Re-check scrollability on scroll
+            checkScrollability();
+          }}
         >
           {children}
         </SelectPrimitive.Viewport>
