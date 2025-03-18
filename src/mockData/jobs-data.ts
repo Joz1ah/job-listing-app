@@ -5,6 +5,7 @@ export interface Match {
   location: string;
   coreSkills: string[];
   posted: string;
+  education?: string;
   experience: string;
   description: string;
   lookingFor: ("Full Time" | "Part Time" | "Contract only")[];

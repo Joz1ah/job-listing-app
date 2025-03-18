@@ -66,7 +66,7 @@ const getEmploymentTypeLabel = (value: string): string => {
   const employmentTypeMap: Record<string, string> = {
     "full-time": "Full Time",
     "part-time": "Part Time",
-    contract: "Contract only",
+    "contract": "Contract only",
   };
 
   return employmentTypeMap[value] || value;

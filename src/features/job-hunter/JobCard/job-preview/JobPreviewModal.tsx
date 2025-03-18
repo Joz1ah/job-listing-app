@@ -12,6 +12,20 @@ interface JobPreviewModalProps {
   job: Match;
 }
 
+// Helper function to format employment preference
+const formatEmploymentPreference = (pref: string): string => {
+  switch (pref) {
+    case "full-time":
+      return "Full Time";
+    case "part-time":
+      return "Part Time";
+    case "contract":
+      return "Contract Only";
+    default:
+      return pref; // Return original value if no match
+  }
+};
+
 const JobPreviewModal: FC<JobPreviewModalProps> = ({
   isOpen,
   onClose,
@@ -22,22 +36,22 @@ const JobPreviewModal: FC<JobPreviewModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-full max-w-2xl h-[90vh] md:h-[670px] p-0 flex flex-col">
+      <DialogContent className="w-full md:min-w-[758px] h-[90vh] md:h-[822px] p-0 flex flex-col">
         <div className="flex flex-col h-full">
           {/* Scrollable Content Area */}
           <div className="flex-1 overflow-y-auto">
-            <DialogHeader className="p-6">
+            <DialogHeader className="px-6 pt-14">
               <div className="space-y-3">
                 {/* Job Title */}
                 <div className="flex flex-col items-start">
-                  <DialogTitle className="text-3xl font-semibold text-[#263238]">
+                  <DialogTitle className="text-sm md:text-[17px]  font-semibold text-[#263238]">
                     {job.position}
                   </DialogTitle>
                 </div>
 
                 {/* Company */}
                 <div className="flex flex-col gap-1">
-                  <span className="text-[17px] text-[#263238] underline">
+                  <span className="text-sm md:text-[17px]  text-[#263238] underline">
                     {job.company}
                   </span>
                 </div>
@@ -45,21 +59,21 @@ const JobPreviewModal: FC<JobPreviewModalProps> = ({
                 {/* Location */}
                 <div className="flex items-center gap-2 text-[#263238]">
                   <MapPin className="h-4 w-4 text-[#F5722E]" />
-                  <span className="text-[17px]">
+                  <span className="text-sm md:text-[17px] ">
                     Based in {job.location}
                   </span>
                 </div>
 
                 {/* Core Skills */}
                 <div className="flex flex-col gap-2">
-                  <h4 className="text-[17px] font-normal text-[#263238]">Core Skills:</h4>
+                  <h4 className="text-sm md:text-[17px] flex justify-start font-normal text-[#263238]">Core Skills:</h4>
                   <div className="flex flex-wrap gap-2">
                     {job.coreSkills.map((skill, index) => (
                       <span
                         key={skill}
                         className={`${
                           index % 2 === 0 ? "bg-[#184E77]" : "bg-[#168AAD]"
-                        } text-white px-2 text-[17px] rounded font-medium`}
+                        } text-white px-2 text-sm md:text-[17px]  rounded font-medium`}
                       >
                         {skill}
                       </span>
@@ -69,15 +83,25 @@ const JobPreviewModal: FC<JobPreviewModalProps> = ({
 
                 {/* Experience */}
                 <div className="flex items-center gap-2">
-                  <h4 className="text-[17px] font-normal text-[#263238]">Experience:</h4>
+                  <h4 className="text-sm md:text-[17px]  font-normal text-[#263238]">Experience:</h4>
                   <span className="text-[#F5722E] border border-[#F5722E] px-2 rounded-sm">
                     {job.experience}
                   </span>
                 </div>
 
+                {/* Education - Added this section */}
+                {job.education && (
+                  <div className="flex items-center gap-2">
+                    <h4 className="text-sm md:text-[17px] font-normal text-[#263238]">Education:</h4>
+                    <span className="text-[#F5722E] border border-[#F5722E] px-2 rounded-sm">
+                      {job.education}
+                    </span>
+                  </div>
+                )}
+
                 {/* Employment Preference */}
                 <div className="flex items-center gap-2">
-                  <h4 className="text-[17px] font-normal text-[#263238]">
+                  <h4 className="text-sm md:text-[17px] flex justify-start font-normal text-[#263238]">
                     Employment Preference:
                   </h4>
                   <div className="flex gap-2">
@@ -86,7 +110,7 @@ const JobPreviewModal: FC<JobPreviewModalProps> = ({
                         key={pref}
                         className="bg-[#F5722E] text-white px-2 rounded-sm"
                       >
-                        {pref}
+                        {formatEmploymentPreference(pref)}
                       </span>
                     ))}
                   </div>
@@ -94,7 +118,7 @@ const JobPreviewModal: FC<JobPreviewModalProps> = ({
 
                 {/* Salary Range */}
                 <div className="flex items-center gap-2">
-                  <h4 className="text-[17px] font-normal text-[#263238]">
+                  <h4 className="text-sm md:text-[17px] flex justify-start font-normal text-[#263238]">
                     Salary Expectation:
                   </h4>
                   <span className="bg-[#8C4227] text-white px-2 rounded-sm">
@@ -102,10 +126,10 @@ const JobPreviewModal: FC<JobPreviewModalProps> = ({
                   </span>
                 </div>
 
-                {/* Certificates */}
+                {/* Certificates - Updated this section */}
                 {job.certificates && job.certificates.length > 0 && (
                   <div className="flex flex-col gap-2">
-                    <h4 className="text-[17px] font-normal text-[#263238]">Certificates:</h4>
+                    <h4 className="text-sm md:text-[17px] flex justify-start font-normal text-[#263238]">Certificates:</h4>
                     <div className="flex flex-wrap gap-2">
                       {job.certificates.map((cert) => (
                         <span
@@ -122,7 +146,7 @@ const JobPreviewModal: FC<JobPreviewModalProps> = ({
                 {/* Interpersonal Skills */}
                 {job.interpersonalSkills && job.interpersonalSkills.length > 0 && (
                   <div className="flex flex-col gap-2">
-                    <h4 className="text-[17px] font-normal text-[#263238]">
+                    <h4 className="text-sm md:text-[17px] flex justify-start font-normal text-[#263238]">
                       Interpersonal Skills:
                     </h4>
                     <div className="flex flex-wrap gap-2">
@@ -131,7 +155,7 @@ const JobPreviewModal: FC<JobPreviewModalProps> = ({
                           key={skill}
                           className={`${
                             index % 2 === 0 ? "bg-[#184E77]" : "bg-[#168AAD]"
-                          } text-white px-2 text-[17px] rounded font-medium`}
+                          } text-white px-2 text-sm md:text-[17px]  rounded font-medium`}
                         >
                           {skill}
                         </span>
@@ -142,11 +166,11 @@ const JobPreviewModal: FC<JobPreviewModalProps> = ({
 
                 {/* Job Description */}
                 <div className="flex flex-col gap-2">
-                  <h4 className="text-[17px] font-normal text-[#263238]">
+                  <h4 className="text-sm md:text-[17px] flex justify-start font-normal text-[#263238]">
                     Job Description:
                   </h4>
-                  <div className="border rounded p-4">
-                    <p className="text-[13px] text-[#263238] leading-relaxed">
+                  <div className="border rounded p-4 max-h-[135px] overflow-y-auto">
+                    <p className="text-[10px] text-[#263238] leading-relaxed">
                       {job.description}
                     </p>
                   </div>
@@ -158,7 +182,7 @@ const JobPreviewModal: FC<JobPreviewModalProps> = ({
           {/* Fixed Button Area */}
           <div className="p-6 flex justify-start">
             <Button
-              className="bg-[#F5722E] hover:bg-[#BF532C] text-white"
+              className="bg-[#F5722E] hover:bg-[#BF532C] h-[27px] text-white px-2 py-0"
               onClick={onSchedule}
             >
               Schedule Interview
