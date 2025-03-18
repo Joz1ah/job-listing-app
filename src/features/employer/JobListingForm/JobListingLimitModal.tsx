@@ -19,7 +19,7 @@ import {
   }: JobListingLimitModalProps) => {
     return (
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="bg-[#263238] border-none w-[90%] sm:w-[430px] md:min-h-[420px] p-6 [&_button>svg]:hidden">
+        <DialogContent className="bg-[#263238] border-none w-[90%] sm:w-[430px] md:min-h-[420px] p-6 [&_button>svg]:hidden rounded-none">
             <DialogHeader className="sr-only">
               <DialogTitle>Job Listing Limit</DialogTitle>
             </DialogHeader>
