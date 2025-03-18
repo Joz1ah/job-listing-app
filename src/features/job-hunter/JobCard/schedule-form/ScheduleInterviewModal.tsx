@@ -133,11 +133,11 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
         <DialogContent className="w-full max-w-3xl h-[530px] p-0 flex flex-col">
           <div className="flex flex-col h-full">
             <div className="flex-1 overflow-y-auto">
-              <DialogHeader className="p-4 md:p-6">
+              <DialogHeader className="py-2 px-6">
                 {/* Header Title */}
                 <DialogTitle className="text-center mb-8 mt-6">
                   Schedule an interview for the{" "}
-                  <span className="text-[#F5722E]">({jobTitle})</span> position
+                  <span className="text-[#F5722E]">{jobTitle}</span> position
                 </DialogTitle>
 
                 <form onSubmit={handleSubmit} className="space-y-6">

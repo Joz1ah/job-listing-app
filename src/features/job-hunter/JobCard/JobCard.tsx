@@ -27,6 +27,22 @@ interface SecureCompanyDisplayProps {
   company: string;
 }
 
+// Helper function to convert employment type values to labels
+const getEmploymentTypeLabel = (value: string): string => {
+  const employmentTypeMap: Record<string, string> = {
+    "full-time": "Full Time",
+    "part-time": "Part Time",
+    "contract": "Contract only",
+  };
+
+  return employmentTypeMap[value.trim()] || value.trim();
+};
+
+// Updated to be case-insensitive for more reliability
+const getAvailabilityStyle = (type: string) => {
+  return type.toLowerCase().includes("part time") ? "bg-[#BF532C]" : "bg-[#F5722E]";
+};
+
 const SecureCompanyDisplay: FC<SecureCompanyDisplayProps> = ({ company }) => {
   const { subscriptionPlan } = useJobHunterContext();
 
@@ -50,10 +66,6 @@ const SecureCompanyDisplay: FC<SecureCompanyDisplayProps> = ({ company }) => {
       {company}
     </p>
   );
-};
-
-const getAvailabilityStyle = (type: string) => {
-  return type.toLowerCase() === "part time" ? "bg-[#BF532C]" : "bg-[#F5722E]";
 };
 
 const generateCardId = (match: Match): string => {
@@ -178,18 +190,25 @@ const JobCard: FC<JobCardProps> = ({ match, popupImage, adImage }) => {
                 {match.experience}
               </span>
             </div>
-            <div className="flex gap-x-2 gap-y-0 flex-wrap">
+            <div className="flex gap-2 gap-y-0 flex-wrap">
               <span className="text-[13px] font-light text-[#263238]">
                 Available for:
               </span>
-              {match.lookingFor.map((type, idx) => (
-                <span
-                  key={idx}
-                  className={`${getAvailabilityStyle(type)} text-white rounded-[4px] text-[12px] px-1.5 h-[18px] flex justify-center items-center`}
-                >
-                  {type}
-                </span>
-              ))}
+              {match.lookingFor.map((type, index) => {
+                // First get the formatted label
+                const formattedLabel = getEmploymentTypeLabel(type);
+                // Then determine style based on the formatted label
+                const styleClass = getAvailabilityStyle(formattedLabel);
+                
+                return (
+                  <span
+                    key={index}
+                    className={`${styleClass} text-white rounded-[4px] text-[12px] px-1.5 h-[18px] flex justify-center items-center`}
+                  >
+                    {formattedLabel}
+                  </span>
+                );
+              })}
             </div>
             <div className="flex gap-2 flex-wrap">
               <span className="text-[13px] font-light text-[#263238]">

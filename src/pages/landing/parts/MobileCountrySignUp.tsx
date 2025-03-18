@@ -6,7 +6,6 @@ import { useModal } from "components/modal/useModal";
 import { useLanding } from "../useLanding";
 import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
 import { MODAL_HEADER_TYPE, MODAL_STATES } from "store/modal/modal.types";
-import { isValidPhoneNumber } from "react-phone-number-input";
 import { getCountryByNumber } from "utils/phoneUtils";
 import countries from "constants/countries";
 
@@ -34,18 +33,27 @@ const MobileCountrySignUp = () => {
       .required("This field is required")
       .test(
         "phone",
-        "Phone number must be in international format and contain 11-12 digits",
+        "Please enter a valid international phone number",
         function (value) {
           if (!value) return false;
 
-          // Check if it's a valid phone number first
-          if (!isValidPhoneNumber(value)) return false;
+          // Remove all non-digit characters except plus sign at start
+          const cleaned = value.replace(/(?!^\+)\D/g, "");
 
-          // Remove all non-digit characters to check length
-          const digitsOnly = value.replace(/\D/g, "");
+          // Check if it starts with a plus sign
+          const hasPlus = value.startsWith("+");
 
-          // Check if the number of digits is between 11 and 12
-          return digitsOnly.length >= 11 && digitsOnly.length <= 12;
+          // Get only digits
+          const digitsOnly = cleaned.replace(/\+/g, "");
+
+          if (!hasPlus) return false;
+          if (digitsOnly.length < 10 || digitsOnly.length > 15) return false;
+
+          // Basic country code validation (1-4 digits after +)
+          const countryCode = digitsOnly.slice(0, 4);
+          if (!/^\d{1,4}$/.test(countryCode)) return false;
+
+          return true;
         },
       ),
     country: Yup.string().required("This field is required"),
