@@ -65,19 +65,32 @@ interface JobListing {
   location: string;
   isNew: boolean;
   posted: string;
-  requiredSkills: string[];
+  requiredSkills: string[]; // This remains for backward compatibility with the card display
   experienceLevel: string;
   employmentType: string[];
   salary: string;
   language?: string | string[];
-  isBookmarked?: boolean;
   description?: string;
+  education?: string; // Added education
+  // New properties for all skill types
+  coreSkills?: string[];
+  interpersonalSkills?: string[];
+  certifications?: string[];
+  isBookmarked?: boolean;
 }
 
 const convertApiJobToCardFormat = (apiJob: ApiJob): JobListing => {
   // Extract core skills from keywords
   const coreSkills = apiJob.keywords
     .filter(kw => kw.type === "core")
+    .map(kw => kw.keyword);
+    
+  const interpersonalSkills = apiJob.keywords
+    .filter(kw => kw.type === "interpersonal")
+    .map(kw => kw.keyword);
+    
+  const certifications = apiJob.keywords
+    .filter(kw => kw.type === "certification")
     .map(kw => kw.keyword);
 
   // Format employment type as array
@@ -116,12 +129,17 @@ const convertApiJobToCardFormat = (apiJob: ApiJob): JobListing => {
     location: apiJob.location,
     isNew: calculatePostedTime() === "today" || calculatePostedTime() === "1 day",
     posted: calculatePostedTime(),
-    requiredSkills: coreSkills.slice(0, 4), // Limit to 4 skills for display
+    requiredSkills: coreSkills.slice(0, 5), // Keep this for the card display
     experienceLevel: apiJob.yearsOfExperience,
     employmentType: employmentTypeArray,
     salary: apiJob.salaryRange,
     language: apiJob.language,
     description: apiJob.description,
+    education: apiJob.education, // Add education
+    // Add all skill types to be accessible in the preview
+    coreSkills: coreSkills,
+    interpersonalSkills: interpersonalSkills,
+    certifications: certifications,
     isBookmarked: false // Default to false, update if you add bookmark functionality
   };
 };
