@@ -318,7 +318,7 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage, adImage }) => {
             coreSkills={match.coreSkills}
             certificate={match.certificates}
             candidateName={`${match.firstName} ${match.lastName}`}
-            location={match.location}
+            country={match.country}
           />
         </>
       )}

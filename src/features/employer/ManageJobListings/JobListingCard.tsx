@@ -63,7 +63,6 @@ const JobListingCard: FC<JobListingCardProps> = ({ job, onEdit }) => {
     description: job.description || "No description provided."
   };
 
-
   return (
     <>
       <Card className="bg-[#FFFFFF] border-none w-full md:w-[436px] h-[320px] md:h-[275px] relative">
@@ -79,7 +78,7 @@ const JobListingCard: FC<JobListingCardProps> = ({ job, onEdit }) => {
               </div>
               <div className="flex flex-col items-end">
                 <span className="text-[12px] font-light text-[#717171] -mr-2">
-                  Posted {job.posted} ago
+                  {job.posted === "today" ? "Posted today" : `Posted ${job.posted} ago`}
                 </span>
               </div>
             </div>

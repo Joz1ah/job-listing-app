@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { MapPin } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
 
@@ -28,13 +28,30 @@ const ManageCardPreview: FC<ManageCardPreviewProps> = ({
   onClose,
   job,
 }) => {
+  const [maxHeight, setMaxHeight] = useState("90vh");
+
+  useEffect(() => {
+    function updateHeight() {
+      const vh = window.innerHeight;
+      const calculatedHeight = Math.min(vh * 0.9, 822);
+      setMaxHeight(`${calculatedHeight}px`);
+    }
+
+    updateHeight();
+    window.addEventListener("resize", updateHeight);
+    return () => window.removeEventListener("resize", updateHeight);
+  }, []);
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-full md:min-w-[758px] h-[90vh] md:h-[822px] p-0 flex flex-col">
+      <DialogContent
+        className="w-full md:min-w-[758px] p-0 flex flex-col"
+        style={{ height: maxHeight }}
+      >
         <div className="flex flex-col h-full">
           {/* Scrollable Content Area */}
           <div className="flex-1 overflow-y-auto">
-            <DialogHeader className="px-6 pt-14">
+            <DialogHeader className="px-6 py-8">
               <div className="space-y-4">
                 {/* Job Title */}
                 <div className="flex flex-col items-start">

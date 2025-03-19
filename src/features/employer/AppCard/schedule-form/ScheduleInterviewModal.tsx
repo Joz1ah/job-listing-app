@@ -20,7 +20,7 @@ import * as Yup from "yup";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 import { useCreateEmployerInterviewMutation } from "api/akaza/akazaAPI";
 import { combineDateAndTime } from "utils";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, MapPin } from "lucide-react";
 
 interface ScheduleInterviewModalProps {
   isOpen: boolean;
@@ -32,7 +32,7 @@ interface ScheduleInterviewModalProps {
   coreSkills: string[];
   certificate?: string[];
   candidateName?: string;
-  location?: string;
+  country?: string;
 }
 
 interface FormValues {
@@ -70,7 +70,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
   coreSkills,
   certificate = [],
   candidateName,
-  location,
+  country,
 }) => {
   const { data: settingsData } = useGetAccountSettingsQuery(null);
   const navigate = useNavigate();
@@ -199,9 +199,9 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                         {candidateName || "Name of Job Hunter"}
                       </span>
                       <div className="flex items-center gap-2">
-                        <span className="text-orange-500">*</span>
+                        <MapPin className="text-[#F5722E]" />
                         <span className="text-sm text-black">
-                          Based in {location || "(Country)"}
+                          Based in {country || "(Country)"}
                         </span>
                       </div>
                     </div>

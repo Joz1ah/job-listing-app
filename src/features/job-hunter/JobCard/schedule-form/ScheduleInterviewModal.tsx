@@ -17,7 +17,7 @@ import { InvitationSentModal } from "features/job-hunter";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, MapPin } from "lucide-react";
 
 interface ScheduleInterviewModalProps {
   isOpen: boolean;
@@ -147,7 +147,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                     <div>
                       <span className="text-sm block mb-2">{company}</span>
                       <div className="flex items-center gap-2">
-                        <span className="text-[#F5722E]">*</span>
+                      <MapPin className="text-[#F5722E]" />
                         <span className="text-sm text-black">
                           Based in {location}
                         </span>

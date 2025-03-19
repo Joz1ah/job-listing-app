@@ -4,10 +4,13 @@ import { useLanding } from "../useLanding";
 import * as Yup from "yup";
 import styles from "./../landing.module.scss";
 import { useSearchCoreQuery } from "api/akaza/akazaAPI";
+import { Tooltip } from "components";
 
 import group_people_laptop from "assets/group-people-laptop.jpg";
 import arrow_left_icon from "assets/Keyboard-arrow-left.svg?url";
+import info_icon from "assets/circle-info.svg?url"; // Add your info icon import
 import { HERO_STATES } from "store/hero/hero.types";
+import { NavLink } from "react-router-dom";
 
 // Interface for the skill data returned from the API
 interface SkillData {
@@ -185,9 +188,20 @@ const HeroSkillSetsEmployer = () => {
       <div
         className={`${styles["hero-container-overlay"]} ${styles["gradient-left-dark"]}`}
       >
-        <div className="w-full max-w-[380px] mt-12 flex flex-col gap-8">
-          <div className="w-full font-[600] text-[26px] sm:text-[36px] text-[#F5722E]">
-            What skills are you looking for? Select up to 5 skill set
+        <div className="w-full max-w-[380px] mt-12 flex flex-col">
+          <div className="w-full font-[600] text-[36px] sm:text-[36px] text-[#F5722E] mb-4">
+            Enter core technical skills
+            <Tooltip content="These are job-specific abilities like software proficiency.">
+              <span className="inline-block ml-3">
+                <img src={info_icon} alt="info" width="24" height="24" />
+              </span>
+            </Tooltip>
+          </div>
+          <div className="text-[15px] italic text-[#F5F5F7] mb-12">
+            Can't find yours?{" "}
+            <NavLink to="/contact-us" className="text-[#F5722E] underline">
+              Contact support.
+            </NavLink>
           </div>
           <div className="w-full flex flex-col gap-4">
             <div className="flex justify-between rounded-[4px] border-[2px] border-[#AEADAD] pr-2">
