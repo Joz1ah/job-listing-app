@@ -154,7 +154,7 @@ const JobCard: FC<JobCardProps> = ({ match, popupImage, adImage }) => {
             </div>
             <div className="flex flex-col items-end">
               <span className="text-[11px] font-light text-[#717171] -mr-2">
-                Posted {match.posted} ago
+                Posted {match.posted}
               </span>
             </div>
           </div>

@@ -16,14 +16,14 @@ const InterviewsContext = createContext<InterviewsContextType | undefined>(
 interface InterviewListData{
   InterviewsGroup: 'PENDING' | 'ACCEPTED' | 'DECLINED' | 'RESCHEDULE' | 'COMPLETED';
   UserType: 'employer' | 'job_hunter';
+  UserTypeId: number;
 }
 
-const mapInterviewListData = (apiResponse: any, selectedInterviewsGroup: InterviewListData['InterviewsGroup'], UserType: InterviewListData['UserType'] ): Interview[] => {
+const mapInterviewListData = (apiResponse: any, selectedInterviewsGroup: InterviewListData['InterviewsGroup'], UserType: InterviewListData['UserType'], UserTypeId: InterviewListData['UserTypeId'] ): Interview[] => {
   if (!apiResponse || !apiResponse.data) return [];
-  
-  if (UserType==='employer') 
+  if (UserType) 
     return apiResponse?.data?.groupedByStatus?.[selectedInterviewsGroup]?.map((item: any) => ({
-      id:item?.jobId ?? 0,
+      id:item?.id ?? 0,
       position: item?.jobTitle ?? 'N/A',
       candidate: (item?.jobHunter?.firstName && item?.jobHunter?.lastName) 
       ? `${item.jobHunter.firstName} ${item.jobHunter.lastName}` 
@@ -33,18 +33,18 @@ const mapInterviewListData = (apiResponse: any, selectedInterviewsGroup: Intervi
       time: item?.scheduledStartTime ?? 'N/A',
       location: item?.jobHunter?.country ?? 'N/A',
       meetingLink: item?.meetingLink ?? 'via Google Meet',
-      receivedTime: timeAgo(new Date(item?.scheduledStartDate)) ?? 'N/A',
+      receivedTime: timeAgo(new Date(item?.createdAt)) ?? 'N/A',
       sentTime: item?.scheduledStartTime ?? 'N/A',
-      isNew: isNew(item?.scheduledStartDate ?? "") || false,
+      isNew: isNew(item?.createdAt ?? "") || false,
       rating: 0,
       rated: false,
       feedback: 'N/A',
-      reason: 'N/A',
-      status: 'Pending',
-      isRequesterMe: 0,
+      reason: item?.declineReason ?? 'N/A',
+      status: item?.status ?? 'Unknown',
+      isRequesterMe: UserTypeId === item?.requestorId ? true : false,
       hasRescheduled: false,
       bookmarked: false,
-      description: 'N/A',
+      description: item?.jobDescription ?? 'N/A',
       coreSkills: item?.jobHunter?.JobHunterSkill
       ? item.jobHunter.JobHunterSkill
           .filter((skill: any) => skill.keyword.type === "core")
@@ -66,8 +66,6 @@ const mapInterviewListData = (apiResponse: any, selectedInterviewsGroup: Intervi
           .map((skill: any) => skill.keyword.keyword)
       : [],
     })) ?? [];
-  else if(UserType==='job_hunter')
-    return []
   else
     return []
 
@@ -127,7 +125,7 @@ const InterviewsProvider: React.FC<InterviewsProviderProps> = ({
   // Process the data when it arrives
   useEffect(() => {
     if (!isLoading && !error && data) {
-      const mappedData = mapInterviewListData(data, selectedInterviewsGroup, user?.data?.user?.type);
+      const mappedData = mapInterviewListData(data, selectedInterviewsGroup, user?.data?.user?.type, user?.data?.user?.relatedDetails?.id);
       setInterviewsList(mappedData);
       //setIsLoadingInterviewList(false);
     }

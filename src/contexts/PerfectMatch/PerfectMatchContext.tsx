@@ -31,7 +31,7 @@ const mapPerfectMatchData = (apiResponse: any): Match[] => {
           .filter((keyword: any) => keyword.type === "core")
           .map((keyword: any) => keyword.keyword)
       : [], // Default to empty array if undefined
-    posted: item?.jobHunter?.createdAt ?? "N/A",
+    posted: timeAgo(new Date(item?.jobHunter?.createdAt)) ?? '',
     experience: item?.jobHunter?.experience ?? "", // Default to empty string if undefined
     lookingFor: item?.jobHunter?.employmentType
       ? item.jobHunter.employmentType.split(",")

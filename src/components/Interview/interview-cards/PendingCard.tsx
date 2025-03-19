@@ -1,5 +1,6 @@
 import { FC, useState } from "react";
 import {
+  //Clock,
   MapPin,
   Bookmark,
   X,
@@ -50,21 +51,33 @@ interface DeclineReason {
   label: string;
 }
 
-const employerDeclineReasons: DeclineReason[] = [
+const employerDeclineReasons: DeclineReason[] = [/*
   { value: "position_filled", label: "Position Filled by Another Candidate" },
   { value: "found_candidate", label: "Found a Candidate Through Another Source" },
   { value: "changed_job", label: "Changed Job Requirements or Hiring Priorities" },
   { value: "role_misalignment", label: "Role Misalignment with Applicant's Qualifications" },
   { value: "scheduling_constraints", label: "Unable to Proceed Due to Scheduling Constraints" },
+   */
+  { value: "Position Filled by Another Candidate", label: "Position Filled by Another Candidate" },
+  { value: "Found a Candidate Through Another Source", label: "Found a Candidate Through Another Source" },
+  { value: "Changed Job Requirements or Hiring Priorities", label: "Changed Job Requirements or Hiring Priorities" },
+  { value: "Role Misalignment with Applicant's Qualifications", label: "Role Misalignment with Applicant's Qualifications" },
+  { value: "Unable to Proceed Due to Scheduling Constraints", label: "Unable to Proceed Due to Scheduling Constraints" },
 ];
 
-const jobHunterDeclineReasons: DeclineReason[] = [
+const jobHunterDeclineReasons: DeclineReason[] = [/*
   { value: "role_misalignment", label: "Role Misalignment" },
   { value: "salary_expectations", label: "Salary Expectations" },
   { value: "not_actively_seeking", label: "Not Actively Seeking" },
   { value: "change_career", label: "Change in Career Direction" },
   { value: "already_accepted", label: "Already Accepted Another Job" },
-  { value: "other_reason", label: "Important Other Personal Reasons" },
+  { value: "other_reason", label: "Important Other Personal Reasons" },*/
+  { value: "Role Misalignment", label: "Role Misalignment" },
+  { value: "Salary Expectations", label: "Salary Expectations" },
+  { value: "Not Actively Seeking", label: "Not Actively Seeking" },
+  { value: "Change in Career Direction", label: "Change in Career Direction" },
+  { value: "Already Accepted Another Job", label: "Already Accepted Another Job" },
+  { value: "Important Other Personal Reasons", label: "Important Other Personal Reasons" },
 ];
 
 interface PendingCardProps {
@@ -154,6 +167,25 @@ const PendingCard: FC<PendingCardProps> = ({
     resetForm();
   };
 
+  const RenderPendingTag = () => {
+    return (
+      <>
+        {interview.isRequesterMe ? (
+          <>
+          {/*
+            <div className="flex items-center justify-center w-[117px] h-[32px] gap-[3px] rounded-[4px] border border-[#F5722E] bg-[#FFE6D9] text-[#BC5C2A] font-poppins text-[12px] italic font-normal leading-normal">
+              <Clock size={14}/>
+              Pending
+            </div>
+            */}
+            <p className="text-[#F5722E] font-poppins text-[13px] font-medium leading-normal">
+              Waiting for confirmation from:
+            </p>
+          </>
+        ) : null}
+      </>
+    )
+  }
   const renderHeaderTitle = () => {
     if (variant === "employer") {
       return (
@@ -197,13 +229,14 @@ const PendingCard: FC<PendingCardProps> = ({
         </div>
         <div className="flex flex-col items-end relative">
           <span className="text-[12px] font-light text-[#717171] -mr-2">
-            Received {interview.receivedTime}
+            {interview.isRequesterMe ? 'Sent' : 'Received'} {interview.receivedTime}
           </span>
           <div className="absolute top-6 -right-2">
             <Bookmark className="w-6 h-6 text-[#F5722E]" />
           </div>
         </div>
       </div>
+      <RenderPendingTag/>
       <div className="w-full relative mt-2">
         {renderHeaderTitle()}
         <div className="flex flex-row items-center">
@@ -440,14 +473,13 @@ const PendingCard: FC<PendingCardProps> = ({
       {modalView && (
         <div className="fixed inset-0 bg-black/50 z-40" onClick={handleClose} />
       )}
-
       {/* Card */}
       <Card
         className={`bg-[#FFFFFF] border-none w-full md:w-[436px] h-auto md:h-[275px] relative ${
           modalView ? "z-50" : ""
         }`}
       >
-        {modalView === "accept" ? (
+        {modalView === "accept"? (
           <AcceptingHeader />
         ) : modalView === "decline" ? (
           <DecliningHeader />
@@ -455,7 +487,7 @@ const PendingCard: FC<PendingCardProps> = ({
           <StandardHeader />
         )}
 
-        <CardContent className="pt-1">
+        <CardContent>
           {modalView === "decline" ? <DecliningContent /> : <StandardContent />}
         </CardContent>
 
@@ -463,9 +495,9 @@ const PendingCard: FC<PendingCardProps> = ({
           <AcceptingFooter />
         ) : modalView === "decline" ? (
           <DecliningFooter />
-        ) : (
+        ) : !interview.isRequesterMe ? (
           <StandardFooter />
-        )}
+        ) : <></>}
       </Card>
 
       {/* Modals */}

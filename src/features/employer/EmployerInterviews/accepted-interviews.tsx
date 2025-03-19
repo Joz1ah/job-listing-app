@@ -4,10 +4,10 @@ import { InterviewCardSkeleton } from "components";
 import { NavLink } from "react-router-dom";
 import emptyInterview from "images/calendar-empty.svg?url";
 import {
-  acceptedInterviewsData,
   Interview,
 } from "mockData/employer-interviews-data";
 import { useEmployerContext } from "components";
+import { useInterviewsContext } from "contexts/Interviews/InterviewsContext";
 
 const AcceptedInterviews: FC = () => {
   const [displayedItems, setDisplayedItems] = useState<Interview[]>([]);
@@ -16,7 +16,9 @@ const AcceptedInterviews: FC = () => {
   const loaderRef = useRef<HTMLDivElement>(null);
   const [initialLoad, setInitialLoad] = useState(true);
   const { subscriptionPlan } = useEmployerContext();
-
+  const {interviewsList, setSelectedInterviewsGroup} = useInterviewsContext();
+  setSelectedInterviewsGroup('ACCEPTED')
+  
   const handleJoinInterview = (interview: Interview) => {
     window.open(interview.meetingLink, "_blank");
   };
@@ -32,7 +34,7 @@ const AcceptedInterviews: FC = () => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     const currentCount = displayedItems.length;
-    const remainingItems = acceptedInterviewsData.length - currentCount;
+    const remainingItems = interviewsList.length - currentCount;
 
     if (remainingItems <= 0) {
       setHasMore(false);
@@ -41,13 +43,13 @@ const AcceptedInterviews: FC = () => {
     }
 
     const itemsToLoad = Math.min(2, remainingItems);
-    const newItems = acceptedInterviewsData.slice(
+    const newItems = interviewsList.slice(
       currentCount,
       currentCount + itemsToLoad,
     );
     setDisplayedItems((prev) => [...prev, ...newItems]);
 
-    if (currentCount + itemsToLoad >= acceptedInterviewsData.length) {
+    if (currentCount + itemsToLoad >= interviewsList.length) {
       setHasMore(false);
     }
 
@@ -59,15 +61,15 @@ const AcceptedInterviews: FC = () => {
       setLoading(true);
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      const initialItems = acceptedInterviewsData.slice(0, 6);
+      const initialItems = interviewsList.slice(0, 6);
       setDisplayedItems(initialItems);
-      setHasMore(acceptedInterviewsData.length > 6);
+      setHasMore(interviewsList.length > 6);
       setLoading(false);
       setInitialLoad(false);
     };
 
     loadInitialItems();
-  }, []);
+  }, [interviewsList]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -95,7 +97,7 @@ const AcceptedInterviews: FC = () => {
   }, [loading, hasMore, initialLoad]);
 
   const showLoadingCards = loading;
-  const loadingCardsCount = Math.min(6, acceptedInterviewsData.length);
+  const loadingCardsCount = Math.min(6, interviewsList.length);
 
   if (loading) {
     return (

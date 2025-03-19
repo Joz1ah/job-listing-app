@@ -589,6 +589,35 @@ export const akazaApiInterviewRequest = createApiFunction({
       keepUnusedDataFor: 0,
       providesTags: ['InterviewList'],
     }),
+    acceptInterview: builder.mutation({
+      query: (id) => ({
+        url: `/interviews/${id}/accept`,
+        method: 'PUT',
+        body: {}
+      }),
+    }),
+    rejectInterview: builder.mutation({
+      query: (payload) => ({
+        url: `/interviews/reject`,
+        method: 'POST',
+        body: {
+          "interviewId": payload.interviewId,
+          "reason": payload.reason
+      }
+      }),
+    }),
+    rescheduleInterview: builder.mutation({
+      query: (payload) => ({
+        url: `/interviews/reschedule`,
+        method: 'POST',
+        body: {
+          "interviewId": payload.interviewId,
+          "newStart": payload.newStart,
+          "newEnd": payload.newEnd,
+          "reason": payload.reason
+        }
+      }),
+    }),
   }),
 });
 
@@ -780,7 +809,10 @@ export const {
 
 export const {
   useCreateEmployerInterviewMutation,
-  useGetInterviewListQuery
+  useGetInterviewListQuery,
+  useAcceptInterviewMutation,
+  useRejectInterviewMutation,
+  useRescheduleInterviewMutation
 }
 = akazaApiInterviewRequest
 

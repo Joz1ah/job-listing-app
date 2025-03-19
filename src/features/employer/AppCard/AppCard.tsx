@@ -1,4 +1,4 @@
-import { FC, useState, useEffect, useRef } from "react";
+import { FC, useState, useRef } from "react";
 import { SkillsWithEllipsis } from "components";
 import { Bookmark, MoreVertical, MapPin } from "lucide-react";
 import {
@@ -18,6 +18,7 @@ import { useAuth } from "contexts/AuthContext/AuthContext";
 import { AdDialogWrapper } from "components";
 
 // Function to format the date string for display
+/*
 const formatTimeAgo = (dateString: string): string => {
   const date = new Date(dateString);
   const now = new Date();
@@ -31,13 +32,14 @@ const formatTimeAgo = (dateString: string): string => {
   if (diffMins < 60) {
     return "just now";
   } else if (diffHours < 24) {
-    return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
+    return `${diffHours} hour${diffHours > 1 ? "s" : ""}`;
   } else {
-    return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
+    return `${diffDays} day${diffDays > 1 ? "s" : ""}`;
   }
 };
-
+*/
 // Function to check if a post is new (less than 24 hours old)
+/*
 const isNewPost = (dateString: string): boolean => {
   const date = new Date(dateString);
   const now = new Date();
@@ -46,7 +48,7 @@ const isNewPost = (dateString: string): boolean => {
 
   return diffHours < 24;
 };
-
+*/
 interface AppCardProps {
   jobId: number;
   match: Match;
@@ -137,23 +139,22 @@ const LanguageTag: FC<{ language: string }> = ({ language }) => (
 const AppCard: FC<AppCardProps> = ({ match, popupImage, adImage }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
-  const [formattedPostDate, setFormattedPostDate] = useState("N/A");
-  const [shouldShowNew, setShouldShowNew] = useState(false);
+  //const [formattedPostDate, setFormattedPostDate] = useState("N/A");
+  //const [shouldShowNew, setShouldShowNew] = useState(false);
   const { user } = useAuth();
   const cardId = generateCardId(match);
   const { subscriptionPlan } = useEmployerContext();
-  console.log(match)
 
   // Ref for the AdDialogWrapper
   const adDialogRef = useRef<HTMLDivElement>(null);
-
+/*
   useEffect(() => {
     if (match.posted) {
       setFormattedPostDate(formatTimeAgo(match.posted));
       setShouldShowNew(isNewPost(match.posted));
     }
   }, [match.posted]);
-
+*/
   const handleCardClick = () => {
     if (subscriptionPlan === "freeTrial") return;
     if (!isScheduleModalOpen) {
@@ -194,7 +195,7 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage, adImage }) => {
         <CardHeader className="flex flex-col justify-between items-start pb-0">
           <div className="flex flex-row -mt-4 justify-between w-full relative">
             <div className="h-5">
-              {shouldShowNew && (
+              {match.isNew && (
                 <span className="text-[13px] text-[#F5722E] font-bold italic">
                   ☆ NEW
                 </span>
@@ -202,7 +203,7 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage, adImage }) => {
             </div>
             <div className="flex flex-col items-end">
               <span className="text-[11px] font-light text-[#717171] -mr-2">
-                Posted {formattedPostDate}
+                Posted {match.posted}
               </span>
             </div>
           </div>
