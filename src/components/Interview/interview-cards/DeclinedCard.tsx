@@ -59,7 +59,7 @@ const DeclinedCard: FC<DeclinedCardProps> = ({ interview, variant }) => {
             </div>
             <div className="flex flex-col items-end relative">
               <span className="text-[12px] font-light text-[#717171] -mr-2">
-                Sent {interview.sentTime}
+                {interview.isRequesterMe ? 'Sent' : 'Received'} {interview.receivedTime}
               </span>
               <div className="absolute top-6 -right-2">
                 <Bookmark className="w-6 h-6 text-[#F5722E]" />

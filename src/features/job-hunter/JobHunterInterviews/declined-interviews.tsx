@@ -4,9 +4,9 @@ import { InterviewCardSkeleton } from "components";
 import { NavLink } from "react-router-dom";
 import emptyInterview from "images/calendar-empty.svg?url";
 import {
-  declinedInterviewsData,
   Interview,
 } from "mockData/job-hunter-interviews-data";
+import { useInterviewsContext } from "contexts/Interviews/InterviewsContext";
 import { useJobHunterContext } from "components";
 import { ROUTE_CONSTANTS } from "constants/routeConstants";
 
@@ -17,6 +17,9 @@ const DeclinedInterviews: FC = () => {
   const loaderRef = useRef<HTMLDivElement>(null);
   const [initialLoad, setInitialLoad] = useState(true);
   const { subscriptionPlan } = useJobHunterContext();
+  const {interviewsList, setSelectedInterviewsGroup} = useInterviewsContext();
+  console.log(interviewsList)
+  setSelectedInterviewsGroup('DECLINED')
 
   const loadMore = async () => {
     if (loading || !hasMore) return;
@@ -25,7 +28,7 @@ const DeclinedInterviews: FC = () => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     const currentCount = displayedItems.length;
-    const remainingItems = declinedInterviewsData.length - currentCount;
+    const remainingItems = interviewsList.length - currentCount;
 
     if (remainingItems <= 0) {
       setHasMore(false);
@@ -34,13 +37,13 @@ const DeclinedInterviews: FC = () => {
     }
 
     const itemsToLoad = Math.min(2, remainingItems);
-    const newItems = declinedInterviewsData.slice(
+    const newItems = interviewsList.slice(
       currentCount,
       currentCount + itemsToLoad,
     );
     setDisplayedItems((prev) => [...prev, ...newItems]);
 
-    if (currentCount + itemsToLoad >= declinedInterviewsData.length) {
+    if (currentCount + itemsToLoad >= interviewsList.length) {
       setHasMore(false);
     }
 
@@ -52,15 +55,15 @@ const DeclinedInterviews: FC = () => {
       setLoading(true);
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      const initialItems = declinedInterviewsData.slice(0, 6);
+      const initialItems = interviewsList.slice(0, 6);
       setDisplayedItems(initialItems);
-      setHasMore(declinedInterviewsData.length > 6);
+      setHasMore(interviewsList.length > 6);
       setLoading(false);
       setInitialLoad(false);
     };
 
     loadInitialItems();
-  }, []);
+  }, [interviewsList]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -88,7 +91,7 @@ const DeclinedInterviews: FC = () => {
   }, [loading, hasMore, initialLoad]);
 
   const showLoadingCards = loading;
-  const loadingCardsCount = Math.min(6, declinedInterviewsData.length);
+  const loadingCardsCount = Math.min(6, interviewsList.length);
 
   if (loading) {
     return (
