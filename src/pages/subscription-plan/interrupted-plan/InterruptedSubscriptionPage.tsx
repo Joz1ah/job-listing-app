@@ -15,20 +15,23 @@ import { FreeTrialSuccessModal } from "./FreeTrialSuccessModal";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 import { usePaymentCreateMutation } from "api/akaza/akazaAPI";
 import { InterruptedPaymentForm } from "./InterruptedPaymentForm";
-import card_icon from 'assets/subscription-plan-icons/card.svg?url'
+import card_icon from "assets/subscription-plan-icons/card.svg?url";
 import calender_icon from "assets/subscription-plan-icons/calendar.svg?url";
 import line_graph_icon from "assets/subscription-plan-icons/linegraph.svg?url";
 import like_icon from "assets/subscription-plan-icons/thumbsup.svg?url";
-import infinity_icon from "assets/subscription-plan-icons/unli.svg?url";
+import handshake_icon from "assets/subscription-plan-icons/handshake.svg?url";
 import lock_icon from "assets/subscription-plan-icons/lock.svg?url";
 import message_icon from "assets/subscription-plan-icons/chat.svg?url";
 import calender_icon_orange from "assets/subscription-plan-icons/calendar-orange.svg?url";
 import line_graph_icon_orange from "assets/subscription-plan-icons/line-graph-orange.svg?url";
 import like_icon_orange from "assets/subscription-plan-icons/like-orange.svg?url";
-import infinity_icon_orange from "assets/subscription-plan-icons/infinity-orange.svg?url";
+import handshake_icon_orange from "assets/subscription-plan-icons/handshake-orange.svg?url";
 import lock_icon_orange from "assets/subscription-plan-icons/lock-orange.svg?url";
 import message_icon_orange from "assets/subscription-plan-icons/message-orange.svg?url";
-import { createAuthNetTokenizer, createAuthnetPaymentSecureData } from "services/authnet/authnetService";
+import {
+  createAuthNetTokenizer,
+  createAuthnetPaymentSecureData,
+} from "services/authnet/authnetService";
 
 type PlanProps = {
   type: string;
@@ -42,7 +45,9 @@ type PlanProps = {
   buttonText: string;
 };
 
-const PricingCard: React.FC<PlanProps & { onSelect?: () => void; hideButton?: boolean }> = ({
+const PricingCard: React.FC<
+  PlanProps & { onSelect?: () => void; hideButton?: boolean }
+> = ({
   type,
   price,
   features,
@@ -169,10 +174,11 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
   const handleCombinedFormSubmit = async (values: any) => {
     setIsLoading(true);
 
-    const baseAmount = plan.type === 'Monthly' ? 5 : 55;
+    const baseAmount = plan.type === "Monthly" ? 5 : 55;
     const transactionFee = baseAmount * 0.096;
     const subtotal = baseAmount + transactionFee;
-    const tax = values.country?.toLowerCase() === 'canada' ? subtotal * 0.13 : 0;
+    const tax =
+      values.country?.toLowerCase() === "canada" ? subtotal * 0.13 : 0;
     const totalAmount = Number((subtotal + tax).toFixed(2));
 
     const secureData = createAuthnetPaymentSecureData({
@@ -180,38 +186,41 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
       month: values.expiryDate.split("/")[0],
       year: values.expiryDate.split("/")[1],
       cardCode: values.cvv,
-   })
-
-    window.Accept.dispatchData(secureData, async (response: AcceptJsResponse) => {
-      if (response.messages.resultCode === 'Ok') {
-        try {
-          await paymentSubmit({
-            provider: 'authnet',
-            plan: plan.type,
-            amount: totalAmount,
-            paymentMethodId: response.opaqueData.dataValue,
-            daysTrial: 0,
-            firstName: values.firstName,
-            lastName: values.lastName,
-            email: values.email,
-            address: values.address,
-            city: values.city,
-            state: values.state,
-            zip: values.zipCode,
-            country: values.country,
-          }).unwrap();
-
-          setIsLoading(false);
-          onSuccess();
-        } catch (err: any) {
-          showError(err?.data?.errors, err?.data?.message);
-          setIsLoading(false);
-        }
-      } else {
-        setIsLoading(false);
-        showError('Payment Error', response.messages.message[0].text);
-      }
     });
+
+    window.Accept.dispatchData(
+      secureData,
+      async (response: AcceptJsResponse) => {
+        if (response.messages.resultCode === "Ok") {
+          try {
+            await paymentSubmit({
+              provider: "authnet",
+              plan: plan.type,
+              amount: totalAmount,
+              paymentMethodId: response.opaqueData.dataValue,
+              daysTrial: 0,
+              firstName: values.firstName,
+              lastName: values.lastName,
+              email: values.email,
+              address: values.address,
+              city: values.city,
+              state: values.state,
+              zip: values.zipCode,
+              country: values.country,
+            }).unwrap();
+
+            setIsLoading(false);
+            onSuccess();
+          } catch (err: any) {
+            showError(err?.data?.errors, err?.data?.message);
+            setIsLoading(false);
+          }
+        } else {
+          setIsLoading(false);
+          showError("Payment Error", response.messages.message[0].text);
+        }
+      },
+    );
   };
 
   return (
@@ -230,10 +239,12 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
             {plan.type === "Yearly" ? "Great Choice!" : "Unlock More"}
           </h1>
           <h2 className="text-xl text-[#F5722E] mb-2">
-            {plan.type === "Yearly" ? "Unlock Full Access Now!" : "with a Simple Subscription."}
+            {plan.type === "Yearly"
+              ? "Unlock Full Access Now!"
+              : "with a Simple Subscription."}
           </h2>
           <p className="text-[#F8F8FF] text-sm">
-            {plan.type === "Yearly" 
+            {plan.type === "Yearly"
               ? "We are thrilled to have you as part of our community! Your decision to unlock full access to our yearly plan for $55 marks the start of a new beginning to provide exceptional service and improve our offerings."
               : "We're excited to welcome you to our community! By subscribing to our monthly plan, you're taking a step towards unlocking our service and continually enhance our offerings. Your support means so much to us!"}
           </p>
@@ -242,11 +253,11 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
         <div className="h-[3px] bg-[#F5722E] mt-4 mb-10" />
 
         <div className="flex flex-col lg:flex-row items-center lg:items-start gap-6">
-          <PricingCard {...plan} hideButton={true}/>
+          <PricingCard {...plan} hideButton={true} />
 
           <div className="w-full md:w-[743px] h-auto md:h-[580px] bg-[#2D3A41] px-4 pt-1 pb-4 rounded flex justify-center">
             <InterruptedPaymentForm
-              planType={plan.type.toLowerCase() as 'monthly' | 'yearly'}
+              planType={plan.type.toLowerCase() as "monthly" | "yearly"}
               onSubmit={handleCombinedFormSubmit}
               isSubmitting={isLoading}
             />
@@ -288,26 +299,25 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
           : "bg-[#F5F5F7BF]/75"
       }`}
     >
-
-        {/* {isHighlighted && (
+      {/* {isHighlighted && (
           <div className="mb-2 flex gap-1">
             <Trophy size={20} className="text-[#F5722E]" />
             <span className="text-[#F5722E] text-sm">Best Value</span>
           </div>
         )} */}
 
-        <h3 className="text-2xl flex justify-center text-[#F5722E] font-semibold mb-2">
-          {title}
-        </h3>
+      <h3 className="text-2xl flex justify-center text-[#F5722E] font-semibold mb-2">
+        {title}
+      </h3>
 
-        <p
-          className={`text-sm mb-2 ${
-            isHighlighted ? "text-[#F5F5F7]" : "text-[#263238]"
-          }`}
-        >
-          {description}
-        </p>
-        <div className="flex-grow flex flex-col justify-center">
+      <p
+        className={`text-sm mb-2 ${
+          isHighlighted ? "text-[#F5F5F7]" : "text-[#263238]"
+        }`}
+      >
+        {description}
+      </p>
+      <div className="flex-grow flex flex-col justify-center">
         <div className="space-y-3 mb-2">
           {features.map((feature, index) => (
             <div key={index} className="flex items-start gap-3">
@@ -327,7 +337,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
             </div>
           ))}
         </div>
-        </div>
+      </div>
 
       <div className="mt-auto flex justify-center">
         <Button
@@ -356,54 +366,94 @@ const FreeTrial: React.FC<FreeTrialProps> = ({ onBack, onSelectPlan }) => {
   const [updateFreeTrialStatus] = useUpdateFreeTrialStatusMutation();
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useAuth();
-  const isEmployer = user?.data?.user?.type === 'employer';
+  const isEmployer = user?.data?.user?.type === "employer";
 
   const freeFeatures = [
     {
       icon: <img src={sparkle_icon_green} className="w-4 h-4" alt="sparkle" />,
       text: "Perfect Match automation",
     },
-    { icon: <img src={message_icon} className="w-5 h-5" />, text: "Live chat support" },
-    { icon: <img src={card_icon} className="w-5 h-5" />, text: "No credit or debit card required" },
+    {
+      icon: <img src={message_icon} className="w-5 h-5" />,
+      text: "Live chat support",
+    },
+    {
+      icon: <img src={card_icon} className="w-5 h-5" />,
+      text: "No credit or debit card required",
+    },
   ];
 
   const yearlyFeatures = [
-    ...(isEmployer 
+    ...(isEmployer
       ? [
-          { icon: <img src={infinity_icon_orange} className="w-5 h-5" />, text: "Unlimited Interview Invites" },
-          { icon: <img src={calender_icon_orange} className="w-5 h-5" />, text: "Up to 5 Job Listings" },
+          {
+            icon: <img src={handshake_icon_orange} className="w-5 h-5" />,
+            text: "Up to 3 Interview Invites",
+          },
+          {
+            icon: <img src={calender_icon_orange} className="w-5 h-5" />,
+            text: "Up to 3 Job Listings",
+          },
         ]
       : [
-          { icon: <img src={calender_icon_orange} className="w-5 h-5" />, text: "Send up to 3 Interview Invites" },
-        ]
-    ),
+          {
+            icon: <img src={calender_icon_orange} className="w-5 h-5" />,
+            text: "Send up to 3 Interview Invites",
+          },
+        ]),
     {
       icon: <img src={sparkle_icon} className="w-4 h-4" alt="sparkle" />,
       text: "Perfect Match automation",
     },
-    { icon: <img src={like_icon_orange} className="w-5 h-5" />, text: "Insights and Feedback" },
-    { icon: <img src={line_graph_icon_orange} />, text: "Labour Market Insights" },
-    { icon: <img src={lock_icon_orange} />, text: isEmployer ? "Exclusive Employer Resources" : "Exclusive Resources" },
+    {
+      icon: <img src={like_icon_orange} className="w-5 h-5" />,
+      text: "Insights and Feedback",
+    },
+    {
+      icon: <img src={line_graph_icon_orange} />,
+      text: "Labour Market Insights",
+    },
+    {
+      icon: <img src={lock_icon_orange} />,
+      text: isEmployer ? "Exclusive Employer Resources" : "Exclusive Resources",
+    },
     { icon: <img src={message_icon_orange} />, text: "Live chat support" },
   ];
 
   const monthlyFeatures = [
-    ...(isEmployer 
+    ...(isEmployer
       ? [
-          { icon: <img src={infinity_icon_orange} className="w-5 h-5" />, text: "Unlimited Interview Invites" },
-          { icon: <img src={calender_icon_orange} className="w-5 h-5" />, text: "Up to 5 Job Listings" },
+          {
+            icon: <img src={handshake_icon_orange} className="w-5 h-5" />,
+            text: "Up to 3 Interview Invites",
+          },
+          {
+            icon: <img src={calender_icon_orange} className="w-5 h-5" />,
+            text: "Up to 3 Job Listings",
+          },
         ]
       : [
-          { icon: <img src={calender_icon_orange} className="w-5 h-5" />, text: "Send up to 3 Interview Invites" },
-        ]
-    ),
+          {
+            icon: <img src={calender_icon_orange} className="w-5 h-5" />,
+            text: "Send up to 3 Interview Invites",
+          },
+        ]),
     {
       icon: <img src={sparkle_icon} className="w-4 h-4" alt="sparkle" />,
       text: "Perfect Match automation",
     },
-    { icon: <img src={like_icon_orange} className="w-5 h-5" />, text: "Insights and Feedback" },
-    { icon: <img src={line_graph_icon_orange} />, text: "Labour Market Insights" },
-    { icon: <img src={lock_icon_orange} />, text: isEmployer ? "Exclusive Employer Resources" : "Exclusive Resources" },
+    {
+      icon: <img src={like_icon_orange} className="w-5 h-5" />,
+      text: "Insights and Feedback",
+    },
+    {
+      icon: <img src={line_graph_icon_orange} />,
+      text: "Labour Market Insights",
+    },
+    {
+      icon: <img src={lock_icon_orange} />,
+      text: isEmployer ? "Exclusive Employer Resources" : "Exclusive Resources",
+    },
     { icon: <img src={message_icon_orange} />, text: "Live chat support" },
   ];
 
@@ -418,20 +468,23 @@ const FreeTrial: React.FC<FreeTrialProps> = ({ onBack, onSelectPlan }) => {
       setShowConfirmationModal(false);
       setShowSuccessModal(true);
     } catch (error) {
-      console.error('Error updating free trial status:', error);
+      console.error("Error updating free trial status:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleSubscriptionCardSelect = (type: 'Yearly' | 'Monthly') => {
+  const handleSubscriptionCardSelect = (type: "Yearly" | "Monthly") => {
     const selectedPlan = {
       type,
-      price: type === 'Yearly' ? 55 : 5,
-      features: type === 'Yearly' ? yearlyFeatures : monthlyFeatures,
-      isHighlighted: type === 'Yearly',
-      subtext: type === 'Yearly' ? '+ $5.28 transaction fee' : '+ $0.48 transaction fee',
-      buttonText: 'Choose Plan',
+      price: type === "Yearly" ? 55 : 5,
+      features: type === "Yearly" ? yearlyFeatures : monthlyFeatures,
+      isHighlighted: type === "Yearly",
+      subtext:
+        type === "Yearly"
+          ? "+ $5.28 transaction fee"
+          : "+ $0.48 transaction fee",
+      buttonText: "Choose Plan",
     };
     onSelectPlan(selectedPlan);
   };
@@ -484,7 +537,7 @@ const FreeTrial: React.FC<FreeTrialProps> = ({ onBack, onSelectPlan }) => {
                 features={yearlyFeatures}
                 isHighlighted={true}
                 buttonText="Choose Plan"
-                onSelect={() => handleSubscriptionCardSelect('Yearly')}
+                onSelect={() => handleSubscriptionCardSelect("Yearly")}
               />
               <SubscriptionCard
                 title="Monthly Plan"
@@ -492,12 +545,12 @@ const FreeTrial: React.FC<FreeTrialProps> = ({ onBack, onSelectPlan }) => {
                 features={monthlyFeatures}
                 isHighlighted={false}
                 buttonText="Choose Plan"
-                onSelect={() => handleSubscriptionCardSelect('Monthly')}
+                onSelect={() => handleSubscriptionCardSelect("Monthly")}
               />
             </div>
 
-            <Button 
-              variant="link" 
+            <Button
+              variant="link"
               className="text-[#F5722E] text-md mt-4"
               onClick={handleStartFreeTrial}
             >
@@ -517,7 +570,7 @@ const FreeTrial: React.FC<FreeTrialProps> = ({ onBack, onSelectPlan }) => {
           isOpen={showSuccessModal}
           onClose={() => {
             setShowSuccessModal(false);
-            window.location.href = '/dashboard';
+            window.location.href = "/dashboard";
           }}
         />
       </div>
@@ -530,7 +583,7 @@ const InterruptedSubscriptionPage: React.FC = () => {
   const [selectedPlan, setSelectedPlan] = useState<PlanProps | null>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const { user } = useAuth();
-  const isEmployer = user?.data?.user?.type === 'employer';
+  const isEmployer = user?.data?.user?.type === "employer";
 
   const plans: PlanProps[] = [
     {
@@ -539,22 +592,38 @@ const InterruptedSubscriptionPage: React.FC = () => {
       subtext: "+ $5.28 transaction fee",
       buttonText: "Choose Plan",
       features: [
-        ...(isEmployer 
+        ...(isEmployer
           ? [
-              { icon: <img src={infinity_icon} className="w-5 h-5" />, text: "Unlimited Interview Invites" },
-              { icon: <img src={calender_icon} className="w-5 h-5" />, text: "Up to 5 Job Listings" },
+              {
+                icon: <img src={handshake_icon} className="w-5 h-5" />,
+                text: "Up to 3 Interview Invites",
+              },
+              {
+                icon: <img src={calender_icon} className="w-5 h-5" />,
+                text: "Up to 3 Job Listings",
+              },
             ]
           : [
-              { icon: <img src={calender_icon} className="w-5 h-5" />, text: "Send up to 3 Interview Invites" },
-            ]
-        ),
+              {
+                icon: <img src={calender_icon} className="w-5 h-5" />,
+                text: "Send up to 3 Interview Invites",
+              },
+            ]),
         {
           icon: <img src={sparkle_icon_green} className="w-4 h-4" />,
           text: "Perfect Match automation",
         },
-        { icon: <img src={like_icon} className="w-5 h-5" />, text: "Insights and Feedback" },
+        {
+          icon: <img src={like_icon} className="w-5 h-5" />,
+          text: "Insights and Feedback",
+        },
         { icon: <img src={line_graph_icon} />, text: "Labour Market Insights" },
-        { icon: <img src={lock_icon} />, text: isEmployer ? "Exclusive Employer Resources" : "Exclusive resources" },
+        {
+          icon: <img src={lock_icon} />,
+          text: isEmployer
+            ? "Exclusive Employer Resources"
+            : "Exclusive resources",
+        },
         { icon: <img src={message_icon} />, text: "Live chat support" },
       ],
       isHighlighted: true,
@@ -565,22 +634,38 @@ const InterruptedSubscriptionPage: React.FC = () => {
       subtext: "+ $0.48 transaction fee",
       buttonText: "Choose Plan",
       features: [
-        ...(isEmployer 
+        ...(isEmployer
           ? [
-              { icon: <img src={infinity_icon} className="w-5 h-5" />, text: "Unlimited Interview Invites" },
-              { icon: <img src={calender_icon} className="w-5 h-5" />, text: "Up to 5 Job Listings" },
+              {
+                icon: <img src={handshake_icon} className="w-5 h-5" />,
+                text: "Up to 3 Interview Invites",
+              },
+              {
+                icon: <img src={calender_icon} className="w-5 h-5" />,
+                text: "Up to 3 Job Listings",
+              },
             ]
           : [
-              { icon: <img src={calender_icon} className="w-5 h-5" />, text: "Send up to 3 Interview Invites" },
-            ]
-        ),
+              {
+                icon: <img src={calender_icon} className="w-5 h-5" />,
+                text: "Send up to 3 Interview Invites",
+              },
+            ]),
         {
           icon: <img src={sparkle_icon_green} className="w-4 h-4" />,
           text: "Perfect Match automation",
         },
-        { icon: <img src={like_icon} className="w-5 h-5" />, text: "Insights and Feedback" },
+        {
+          icon: <img src={like_icon} className="w-5 h-5" />,
+          text: "Insights and Feedback",
+        },
         { icon: <img src={line_graph_icon} />, text: "Labour Market Insights" },
-        { icon: <img src={lock_icon} />, text: isEmployer ? "Exclusive Employer Resources" : "Exclusive resources" },
+        {
+          icon: <img src={lock_icon} />,
+          text: isEmployer
+            ? "Exclusive Employer Resources"
+            : "Exclusive resources",
+        },
         { icon: <img src={message_icon} />, text: "Live chat support" },
       ],
     },
@@ -594,8 +679,14 @@ const InterruptedSubscriptionPage: React.FC = () => {
           icon: <img src={sparkle_icon_green} className="w-4 h-4" />,
           text: "Perfect Match automation",
         },
-        { icon: <img src={message_icon} className="w-5 h-5" />, text: "Live chat support" },
-        { icon: <img src={card_icon} className="w-5 h-5" />, text: "No credit or debit card required" },
+        {
+          icon: <img src={message_icon} className="w-5 h-5" />,
+          text: "Live chat support",
+        },
+        {
+          icon: <img src={card_icon} className="w-5 h-5" />,
+          text: "No credit or debit card required",
+        },
       ],
     },
   ];
@@ -631,7 +722,9 @@ const InterruptedSubscriptionPage: React.FC = () => {
           )
         );
       case "free-trial":
-        return <FreeTrial onBack={handleBack} onSelectPlan={handlePlanSelect}/>;
+        return (
+          <FreeTrial onBack={handleBack} onSelectPlan={handlePlanSelect} />
+        );
       default:
         return (
           <>

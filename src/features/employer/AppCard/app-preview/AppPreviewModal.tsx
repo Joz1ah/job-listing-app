@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
 import { MapPin } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
 import { Button } from "components";
@@ -20,10 +20,26 @@ const AppPreviewModal: FC<AppPreviewModalProps> = ({
   app,
 }) => {
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+  const [maxHeight, setMaxHeight] = useState("90vh");
+
+  useEffect(() => {
+    function updateHeight() {
+      const vh = window.innerHeight;
+      const calculatedHeight = Math.min(vh * 0.9, 670);
+      setMaxHeight(`${calculatedHeight}px`);
+    }
+
+    updateHeight();
+    window.addEventListener("resize", updateHeight);
+    return () => window.removeEventListener("resize", updateHeight);
+  }, []);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-full max-w-2xl h-[90vh] md:h-[670px] p-0 flex flex-col">
+      <DialogContent
+        className="w-full max-w-2xl p-0 flex flex-col"
+        style={{ height: maxHeight }}
+      >
         <div className="flex flex-col h-full">
           {/* Scrollable Content Area */}
           <div className="flex-1 overflow-y-auto">
@@ -44,14 +60,14 @@ const AppPreviewModal: FC<AppPreviewModalProps> = ({
                 {/* Location */}
                 <div className="flex items-center gap-2 text-[#263238]">
                   <MapPin className="h-4 w-4 text-[#F5722E]" />
-                  <span className="text-[17px]">
-                    Based in {app.location}
-                  </span>
+                  <span className="text-[17px]">Based in {app.country}</span>
                 </div>
 
                 {/* Core Skills */}
                 <div className="flex flex-col gap-2">
-                  <h4 className="text-[17px] font-normal text-[#263238]">Core Skills:</h4>
+                  <h4 className="text-[17px] font-normal text-[#263238]">
+                    Core Skills:
+                  </h4>
                   <div className="flex flex-wrap gap-2">
                     {app.coreSkills.map((skill, index) => (
                       <span
@@ -68,7 +84,9 @@ const AppPreviewModal: FC<AppPreviewModalProps> = ({
 
                 {/* Experience */}
                 <div className="flex items-center gap-2">
-                  <h4 className="text-[17px] font-normal text-[#263238]">Experience:</h4>
+                  <h4 className="text-[17px] font-normal text-[#263238]">
+                    Experience:
+                  </h4>
                   <span className="text-[#F5722E] border border-[#F5722E] px-2 rounded-sm">
                     {app.experience}
                   </span>
@@ -103,7 +121,9 @@ const AppPreviewModal: FC<AppPreviewModalProps> = ({
 
                 {/* Languages */}
                 <div className="flex items-center gap-2">
-                  <h4 className="text-[17px] font-normal text-[#263238]">Languages:</h4>
+                  <h4 className="text-[17px] font-normal text-[#263238]">
+                    Languages:
+                  </h4>
                   <div className="flex gap-2">
                     {app.language.map((lang) => (
                       <span
@@ -118,37 +138,42 @@ const AppPreviewModal: FC<AppPreviewModalProps> = ({
 
                 {/* Education */}
                 <div className="flex items-center gap-2">
-                  <h4 className="text-[17px] font-normal text-[#263238]">Education:</h4>
+                  <h4 className="text-[17px] font-normal text-[#263238]">
+                    Education:
+                  </h4>
                   <span className="text-[#F5722E] border border-[#F5722E] px-2 rounded-sm">
                     {app.education}
                   </span>
                 </div>
 
                 {/* Interpersonal Skills */}
-                {app.interpersonalSkills && app.interpersonalSkills.length > 0 && (
-                  <div className="flex flex-col gap-2">
-                    <h4 className="text-[17px] font-normal text-[#263238]">
-                      Interpersonal Skills:
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {app.interpersonalSkills.map((skill, index) => (
-                        <span
-                          key={skill}
-                          className={`${
-                            index % 2 === 0 ? "bg-[#184E77]" : "bg-[#168AAD]"
-                          } text-white px-2 text-[17px] rounded font-medium`}
-                        >
-                          {skill}
-                        </span>
-                      ))}
+                {app.interpersonalSkills &&
+                  app.interpersonalSkills.length > 0 && (
+                    <div className="flex flex-col gap-2">
+                      <h4 className="text-[17px] font-normal text-[#263238]">
+                        Interpersonal Skills:
+                      </h4>
+                      <div className="flex flex-wrap gap-2">
+                        {app.interpersonalSkills.map((skill, index) => (
+                          <span
+                            key={skill}
+                            className={`${
+                              index % 2 === 0 ? "bg-[#184E77]" : "bg-[#168AAD]"
+                            } text-white px-2 text-[17px] rounded font-medium`}
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
                 {/* Certificates */}
                 {app.certificates && app.certificates.length > 0 && (
                   <div className="flex flex-col gap-2">
-                    <h4 className="text-[17px] font-normal text-[#263238]">Certificates:</h4>
+                    <h4 className="text-[17px] font-normal text-[#263238]">
+                      Certificates:
+                    </h4>
                     <div className="flex flex-wrap gap-2">
                       {app.certificates.map((cert) => (
                         <span
@@ -183,11 +208,11 @@ const AppPreviewModal: FC<AppPreviewModalProps> = ({
           coreSkills={app.coreSkills}
           certificate={app.certificates}
           candidateName={`${app.firstName} ${app.lastName}`}
-          location={app.location}
+          country={app.location}
         />
       </DialogContent>
     </Dialog>
   );
 };
 
-export { AppPreviewModal }
+export { AppPreviewModal };

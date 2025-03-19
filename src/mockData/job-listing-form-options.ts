@@ -175,6 +175,7 @@ export const selectOptions: SelectOptions = {
     { value: "Location", label: "Location" },
     { value: "Salary", label: "Salary" },
     { value: "Language", label: "Language" },
+    { value: "Certification", label: "Certification"},
     { value: "None", label: "None" },
   ],
 };

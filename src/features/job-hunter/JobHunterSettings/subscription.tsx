@@ -9,7 +9,6 @@ import trophy_icon from "assets/subscription-plan-icons/trophy-orange.svg?url";
 import calender_icon from "assets/subscription-plan-icons/calendar-orange.svg?url";
 import line_graph_icon from "assets/subscription-plan-icons/line-graph-orange.svg?url";
 import like_icon from "assets/subscription-plan-icons/like-orange.svg?url";
-import infinity_icon from "assets/subscription-plan-icons/infinity-orange.svg?url";
 import lock_icon from "assets/subscription-plan-icons/lock-orange.svg?url";
 import message_icon from "assets/subscription-plan-icons/message-orange.svg?url";
 import TooltipWrapper from "components/ui/custom/tooltip-wrapper";
@@ -79,12 +78,8 @@ const SubscriptionSettings: React.FC = () => {
   const features: PlanFeatures = {
     yearly: [
       {
-        icon: <img src={infinity_icon} className="w-5 h-5" />,
-        text: "Unlimited interview Invites",
-      },
-      {
         icon: <img src={calender_icon} className=" w-5 h-5" />,
-        text: "Up to 5 Job Listings",
+        text: "Send up to 3 Interview Invites",
       },
       {
         icon: <img src={sparkle_icon} className="w-5 h-5" />,
@@ -100,18 +95,14 @@ const SubscriptionSettings: React.FC = () => {
       },
       {
         icon: <img src={lock_icon} className="w-5 h-5" />,
-        text: "Exclusive Employer Resources",
+        text: "Exclusive resources",
       },
       { icon: <img src={message_icon} />, text: "Live chat support" },
     ],
     monthly: [
       {
         icon: <img src={calender_icon} className=" w-5 h-5" />,
-        text: "Up to 5 Job Listings",
-      },
-      {
-        icon: <img src={infinity_icon} className="w-5 h-5" />,
-        text: "Unlimited interviews",
+        text: "Send up to 3 Interview Invites",
       },
       {
         icon: <img src={sparkle_icon} className="w-5 h-5" />,
@@ -119,7 +110,7 @@ const SubscriptionSettings: React.FC = () => {
       },
       {
         icon: <img src={like_icon} className="w-5 h-5" />,
-        text: "Ratings and Feedback",
+        text: "Insights and Feedback",
       },
       {
         icon: <img src={line_graph_icon} className="w-5 h-5" />,
@@ -127,7 +118,7 @@ const SubscriptionSettings: React.FC = () => {
       },
       {
         icon: <img src={lock_icon} className="w-5 h-5" />,
-        text: "Exclusive Employer Resources",
+        text: "Exclusive resources",
       },
       {
         icon: <img src={message_icon} className="w-5 h-5" />,
@@ -321,7 +312,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
       </h3>
 
       <p
-        className={`text-sm mb-2 ${
+        className={`text-sm mb-2 text-center ${
           isHighlighted ? "text-[#F5F5F7]" : "text-[#263238]"
         }`}
       >

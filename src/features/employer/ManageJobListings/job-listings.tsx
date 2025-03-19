@@ -103,31 +103,61 @@ const convertApiJobToCardFormat = (apiJob: ApiJob): JobListing => {
       return formatted.charAt(0).toUpperCase() + formatted.slice(1);
     });
 
-  // Calculate how long ago the job was posted
-  const calculatePostedTime = (): string => {
-    const creationDate = new Date(apiJob.expiresAt);
-    creationDate.setMonth(creationDate.getMonth() - 1); // Assuming expiration is 1 month after posting
-    const now = new Date();
-    const diffTime = Math.abs(now.getTime() - creationDate.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-    if (diffDays < 1) return "today";
-    if (diffDays === 1) return "1 day";
-    if (diffDays < 7) return `${diffDays} days`;
-    const diffWeeks = Math.floor(diffDays / 7);
-    if (diffWeeks === 1) return "1 week";
-    if (diffWeeks < 4) return `${diffWeeks} weeks`;
-    const diffMonths = Math.floor(diffDays / 30);
-    if (diffMonths === 1) return "1 month";
-    return `${diffMonths} months`;
-  };
+    const calculatePostedTime = (): string => {
+      // Get current date and expiration date
+      const now = new Date();
+      const expirationDate = new Date(apiJob.expiresAt);
+      
+      // Calculate approximate creation date (30 days before expiration)
+      const creationDate = new Date(expirationDate);
+      creationDate.setDate(creationDate.getDate() - 30);
+      
+      // Calculate difference in days
+      const diffTime = Math.abs(now.getTime() - creationDate.getTime());
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      
+      // Handle special cases
+      if (diffDays === 0) {
+        // Check if it's the same calendar day (ignore time)
+        const nowDateStr = now.toISOString().split('T')[0];
+        const creationDateStr = creationDate.toISOString().split('T')[0];
+        
+        if (nowDateStr === creationDateStr) {
+          return "today";
+        }
+      }
+      
+      // Return appropriate string based on time difference
+      if (diffDays === 0) return "today";
+      if (diffDays === 1) return "1 day";
+      if (diffDays < 7) return `${diffDays} days`;
+      const diffWeeks = Math.floor(diffDays / 7);
+      if (diffWeeks === 1) return "1 week";
+      if (diffWeeks < 4) return `${diffWeeks} weeks`;
+      const diffMonths = Math.floor(diffDays / 30);
+      if (diffMonths === 1) return "1 month";
+      return `${diffMonths} months`;
+    };
+  
+    // Determine if job is new (less than 1 day old)
+    const isJobNew = (): boolean => {
+      const now = new Date();
+      const expirationDate = new Date(apiJob.expiresAt);
+      const creationDate = new Date(expirationDate);
+      creationDate.setDate(creationDate.getDate() - 30);
+      
+      const diffTime = Math.abs(now.getTime() - creationDate.getTime());
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      
+      return diffDays < 1; // Less than 1 day old
+    };
 
   return {
     id: apiJob.id.toString(),
     title: apiJob.title,
     company: apiJob.employer.businessName,
     location: apiJob.location,
-    isNew: calculatePostedTime() === "today" || calculatePostedTime() === "1 day",
+    isNew: isJobNew(),
     posted: calculatePostedTime(),
     requiredSkills: coreSkills.slice(0, 5), // Keep this for the card display
     experienceLevel: apiJob.yearsOfExperience,
