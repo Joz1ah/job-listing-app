@@ -54,8 +54,9 @@ const mapPerfectMatchData = (apiResponse: any): Match[] => {
 
 const mapPerfectMatchDataJH = (apiResponse: any): MatchJH[] => {
   if (!apiResponse || !apiResponse.data) return [];
-  console.log(apiResponse)
   return apiResponse.data.map((item: any) => ({
+    id: item?.jobHunter?.jobHunterId ?? 0, // Fix itemId -> jobHunterId, default to 0 if undefined
+    jobId: item?.jobId ?? 0, // Fix itemId -> jobHunterId, default to 0 if undefined
     employerId: item?.jobHunterId ?? 0,
     position: item?.jobDetails?.jobTitle ?? '',
     company: item?.jobDetails?.employerName ?? '',

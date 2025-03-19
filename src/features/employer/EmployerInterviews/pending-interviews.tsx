@@ -70,10 +70,10 @@ const PendingInterviews: FC = () => {
   const handleDecline = async (interview: Interview, data: DeclineData) => {
     try {
       console.log("Decline:", interview, data);
-      const _rejectInterview = await new Promise<() => void>((resolve) => 
-        setTimeout(() => resolve(() => rejectInterview(data.interviewId)), 3000)
-      );
-      _rejectInterview();
+      await rejectInterview({
+        interviewId: data.interviewId,
+        reason: data.reason
+      }).unwrap();
       setDisplayedItems((prev) => prev.filter((item) => item !== interview));
     } catch (error) {
       handleError( showError, error as CustomError, 

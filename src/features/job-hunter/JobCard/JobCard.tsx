@@ -12,12 +12,13 @@ import { SkillsWithEllipsis } from "components";
 import { JobPreviewModal } from "features/job-hunter";
 import { useBookmarks } from "components";
 import { ScheduleInterviewModal } from "features/job-hunter";
-import { Match } from "mockData/jobs-data";
+import { MatchJH } from "contexts/PerfectMatch/types";
 import { useJobHunterContext } from "components";
 import { AdDialogWrapper } from "components";
 
 interface JobCardProps {
-  match: Match;
+  jobId: number;
+  match: MatchJH;
   popupImage?: string;
   adImage?: string; // Add adImage prop
   timerDuration?: number; // Add timer duration prop
@@ -68,7 +69,7 @@ const SecureCompanyDisplay: FC<SecureCompanyDisplayProps> = ({ company }) => {
   );
 };
 
-const generateCardId = (match: Match): string => {
+const generateCardId = (match: MatchJH): string => {
   return `${match.position}-${match.company}-${match.location}`
     .toLowerCase()
     .replace(/\s+/g, "-");
@@ -268,6 +269,7 @@ const JobCard: FC<JobCardProps> = ({ match, popupImage, adImage }) => {
             company={match.company}
             location={match.location}
             certificate={match.certificates}
+            jobId={match.jobId}
           />
         </>
       )}

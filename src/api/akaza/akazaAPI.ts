@@ -581,6 +581,19 @@ export const akazaApiInterviewRequest = createApiFunction({
           }
       }),
     }),
+    createJobHunterInterview: builder.mutation({
+      query: (payLoad) => ({
+        url: `/interviews/jobhunter`,
+        method: 'POST',
+        body: {
+            "jobId": payLoad.jobId,
+            "scheduledStart": payLoad.scheduledStart,
+            "scheduledEnd": payLoad.scheduledEnd,
+            //"location": payLoad.location,
+            //"meetingLink":payLoad.meetingLink,
+          }
+      }),
+    }),
     getInterviewList: builder.query({
       query: ({ page, limit}) => ({
         url: `/interviews/grouped-by-status?page=${page}&limit=${limit}`,
@@ -809,6 +822,7 @@ export const {
 
 export const {
   useCreateEmployerInterviewMutation,
+  useCreateJobHunterInterviewMutation,
   useGetInterviewListQuery,
   useAcceptInterviewMutation,
   useRejectInterviewMutation,
