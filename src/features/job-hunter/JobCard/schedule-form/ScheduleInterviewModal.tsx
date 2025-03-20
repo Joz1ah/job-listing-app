@@ -40,7 +40,7 @@ const validationSchema = Yup.object().shape({
     .min(new Date(), "Cannot select a past date")
     .max(
       new Date(new Date().setMonth(new Date().getMonth() + 2)),
-      "Cannot select a date more than 2 months"
+      "Cannot select a date more than 2 months",
     )
     .typeError("Please select a valid date"),
   interviewTime: Yup.string()
@@ -77,8 +77,8 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
         setShowSuccessModal(true);
       } catch (error) {
         showError(
-          'Interview Scheduling Failed',
-          'Unable to schedule the interview. Please try again.'
+          "Interview Scheduling Failed",
+          "Unable to schedule the interview. Please try again.",
         );
         console.error("Error sending invite:", error);
       } finally {
@@ -87,7 +87,16 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
     },
   });
 
-  const { values, touched, errors, handleSubmit, setFieldValue, resetForm, isValid } = formik;
+  const {
+    values,
+    touched,
+    errors,
+    handleSubmit,
+    setFieldValue,
+    resetForm,
+    isValid,
+    isSubmitting,
+  } = formik;
 
   // Reset form when modal closes
   useEffect(() => {
@@ -123,9 +132,10 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
   };
 
   // Button class based on validation state
-  const sendInviteButtonClass = isValid
-    ? "bg-[#F5722E] hover:bg-[#F5722E]/70 text-white text-[16px] font-normal"
-    : "bg-[#AEADAD] hover:bg-[#AEADAD]/70 text-white text-[16px] font-normal";
+  const sendInviteButtonClass =
+    !isValid || isSubmitting
+      ? "bg-[#AEADAD] hover:bg-[#AEADAD]/70 text-white text-[16px] font-normal cursor-not-allowed"
+      : "bg-[#F5722E] hover:bg-[#F5722E]/70 text-white text-[16px] font-normal";
 
   return (
     <>
@@ -147,7 +157,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                     <div>
                       <span className="text-sm block mb-2">{company}</span>
                       <div className="flex items-center gap-2">
-                      <MapPin className="text-[#F5722E]" />
+                        <MapPin className="text-[#F5722E]" />
                         <span className="text-sm text-black">
                           Based in {location}
                         </span>
@@ -175,7 +185,9 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                       </div>
 
                       <div>
-                        <span className="text-sm block mb-2">Certificates:</span>
+                        <span className="text-sm block mb-2">
+                          Certificates:
+                        </span>
                         <div className="flex flex-wrap gap-1.5">
                           {certificate && certificate.length > 0 ? (
                             certificate.map((cert, index) => (
@@ -289,6 +301,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                       <Button
                         type="submit"
                         className={sendInviteButtonClass}
+                        disabled={!isValid || isSubmitting}
                       >
                         Send Invite
                       </Button>

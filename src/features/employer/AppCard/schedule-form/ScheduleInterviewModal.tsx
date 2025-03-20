@@ -59,7 +59,6 @@ const validationSchema = Yup.object().shape({
     .typeError("Please select a valid time"),
 });
 
-
 const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
   isOpen,
   onClose,
@@ -78,7 +77,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
   const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
   const [createInterview] = useCreateEmployerInterviewMutation();
   const { showError } = useErrorModal();
-  console.log(jobId)
+
   const formik = useFormik<FormValues>({
     initialValues: {
       interviewDate: undefined,
@@ -105,12 +104,15 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
           scheduledStart: scheduleStart.toDate(),
           scheduledEnd: scheduledEnd.toDate(),
         };
-        await createInterview(payload).unwrap().then(()=>{
-          setShowSuccessModal(true);
-          //console.log("Form submitted with values:", payload);
-        });
+        await createInterview(payload)
+          .unwrap()
+          .then(() => {
+            setShowSuccessModal(true);
+          });
       } catch (error) {
-        const errorMessage = (error as CustomError).data?.message || "Unable to schedule the interview. Please try again.";
+        const errorMessage =
+          (error as CustomError).data?.message ||
+          "Unable to schedule the interview. Please try again.";
         showError("Interview Scheduling Failed", errorMessage);
         console.error("Error sending invite:", error);
       } finally {
@@ -127,6 +129,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
     setFieldValue,
     resetForm,
     isValid,
+    isSubmitting,
   } = formik;
 
   // Reset form when modal closes
@@ -163,9 +166,10 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
   };
 
   // Button class based on validation state
-  const sendInviteButtonClass = isValid
-    ? "bg-[#F5722E] hover:bg-[#F5722E]/70 text-white text-[16px] font-normal"
-    : "bg-[#AEADAD] hover:bg-[#AEADAD]/70 text-white text-[16px] font-normal";
+  const sendInviteButtonClass =
+    !isValid || isSubmitting
+      ? "bg-[#AEADAD] hover:bg-[#AEADAD]/70 text-white text-[16px] font-normal cursor-not-allowed"
+      : "bg-[#F5722E] hover:bg-[#F5722E]/70 text-white text-[16px] font-normal";
 
   return (
     <>
@@ -340,7 +344,11 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                   {/* Fixed Button Area */}
                   <div className="p-4 md:p-6">
                     <div className="flex gap-2">
-                      <Button type="submit" className={sendInviteButtonClass}>
+                      <Button
+                        type="submit"
+                        className={sendInviteButtonClass}
+                        disabled={!isValid || isSubmitting}
+                      >
                         Send Invite
                       </Button>
                       <Button
