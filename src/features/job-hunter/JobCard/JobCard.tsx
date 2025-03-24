@@ -32,7 +32,7 @@ const getEmploymentTypeLabel = (value: string): string => {
   const employmentTypeMap: Record<string, string> = {
     "full-time": "Full Time",
     "part-time": "Part Time",
-    "contract": "Contract only",
+    contract: "Contract only",
   };
 
   return employmentTypeMap[value.trim()] || value.trim();
@@ -40,7 +40,9 @@ const getEmploymentTypeLabel = (value: string): string => {
 
 // Updated to be case-insensitive for more reliability
 const getAvailabilityStyle = (type: string) => {
-  return type.toLowerCase().includes("part time") ? "bg-[#BF532C]" : "bg-[#F5722E]";
+  return type.toLowerCase().includes("part time")
+    ? "bg-[#BF532C]"
+    : "bg-[#F5722E]";
 };
 
 const SecureCompanyDisplay: FC<SecureCompanyDisplayProps> = ({ company }) => {
@@ -104,7 +106,8 @@ const JobCard: FC<JobCardProps> = ({ match, popupImage, adImage }) => {
   // Ref for the AdDialogWrapper
   const adDialogRef = useRef<HTMLDivElement>(null);
 
-  const handleCardClick = () => {
+  const handlePreview = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent propagation
     if (subscriptionPlan === "freeTrial") return;
     if (!isScheduleModalOpen) {
       setIsModalOpen(true);
@@ -135,14 +138,7 @@ const JobCard: FC<JobCardProps> = ({ match, popupImage, adImage }) => {
 
   return (
     <>
-      <Card
-        className={`bg-[#FFFFFF] border-none w-full max-w-[436px] h-[350px] sm:h-[275px] relative transition-shadow duration-200 ${
-          subscriptionPlan === "freeTrial"
-            ? "cursor-default"
-            : "cursor-pointer hover:shadow-lg"
-        }`}
-        onClick={handleCardClick}
-      >
+      <Card className="bg-[#FFFFFF] border-none w-full max-w-[436px] h-[350px] sm:h-[275px] relative transition-shadow duration-200">
         <CardHeader className="flex flex-col justify-between items-start pb-0">
           <div className="flex flex-row -mt-4 justify-between w-full">
             <div className="h-5">
@@ -159,7 +155,10 @@ const JobCard: FC<JobCardProps> = ({ match, popupImage, adImage }) => {
             </div>
           </div>
           <div className="w-full relative">
-            <CardTitle className="text-sm font-semibold text-[#263238]">
+            <CardTitle
+              className="text-sm font-semibold text-[#263238] hover:text-[#F5722E] cursor-pointer"
+              onClick={handlePreview}
+            >
               {match.position}
             </CardTitle>
             <BookmarkButton
@@ -199,7 +198,7 @@ const JobCard: FC<JobCardProps> = ({ match, popupImage, adImage }) => {
                 const formattedLabel = getEmploymentTypeLabel(type);
                 // Then determine style based on the formatted label
                 const styleClass = getAvailabilityStyle(formattedLabel);
-                
+
                 return (
                   <span
                     key={index}
