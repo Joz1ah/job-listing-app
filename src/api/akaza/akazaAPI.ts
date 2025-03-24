@@ -581,6 +581,19 @@ export const akazaApiInterviewRequest = createApiFunction({
           }
       }),
     }),
+    createJobHunterInterview: builder.mutation({
+      query: (payLoad) => ({
+        url: `/interviews/jobhunter`,
+        method: 'POST',
+        body: {
+            "jobId": payLoad.jobId,
+            "scheduledStart": payLoad.scheduledStart,
+            "scheduledEnd": payLoad.scheduledEnd,
+            //"location": payLoad.location,
+            //"meetingLink":payLoad.meetingLink,
+          }
+      }),
+    }),
     getInterviewList: builder.query({
       query: ({ page, limit}) => ({
         url: `/interviews/grouped-by-status?page=${page}&limit=${limit}`,
@@ -588,6 +601,35 @@ export const akazaApiInterviewRequest = createApiFunction({
       }),
       keepUnusedDataFor: 0,
       providesTags: ['InterviewList'],
+    }),
+    acceptInterview: builder.mutation({
+      query: (id) => ({
+        url: `/interviews/${id}/accept`,
+        method: 'PUT',
+        body: {}
+      }),
+    }),
+    rejectInterview: builder.mutation({
+      query: (payload) => ({
+        url: `/interviews/reject`,
+        method: 'POST',
+        body: {
+          "interviewId": payload.interviewId,
+          "reason": payload.reason
+      }
+      }),
+    }),
+    rescheduleInterview: builder.mutation({
+      query: (payload) => ({
+        url: `/interviews/reschedule`,
+        method: 'POST',
+        body: {
+          "interviewId": payload.interviewId,
+          "newStart": payload.newStart,
+          "newEnd": payload.newEnd,
+          "reason": payload.reason
+        }
+      }),
     }),
   }),
 });
@@ -780,7 +822,11 @@ export const {
 
 export const {
   useCreateEmployerInterviewMutation,
-  useGetInterviewListQuery
+  useCreateJobHunterInterviewMutation,
+  useGetInterviewListQuery,
+  useAcceptInterviewMutation,
+  useRejectInterviewMutation,
+  useRescheduleInterviewMutation
 }
 = akazaApiInterviewRequest
 

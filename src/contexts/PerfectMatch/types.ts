@@ -22,6 +22,8 @@ export interface Match {
 }
 
 export interface MatchJH {
+  id: number;
+  jobId: number;
   employerId: number;
   position: string;
   company: string;
@@ -33,6 +35,8 @@ export interface MatchJH {
   lookingFor: ("Full Time" | "Part Time" | "Contract only")[];
   salaryExpectation: string;
   language?: string[];
+  certificates?: string[];
+  isNew?: boolean;
 }
 
 export interface PerfectMatchState {

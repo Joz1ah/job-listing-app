@@ -9,7 +9,7 @@ import {
   OtherOpportunitiesEmptyState,
 } from "features/job-hunter";
 import { AdDialogWrapper } from "components";
-
+import { MatchJH as Match } from "contexts/PerfectMatch/types";
 import { Button } from "components";
 import { JobCardSkeleton } from "components";
 import { BookmarkLimitHandler } from "components";
@@ -21,7 +21,7 @@ import { useJobHunterContext } from "components";
 interface selectedProps {
   setSelectedTab: (tab: string) => void;
 }
-
+/*
 interface Match {
   employerId: number;
   position: string;
@@ -34,7 +34,7 @@ interface Match {
   lookingFor: ("Full Time" | "Part Time" | "Contract only")[];
   salaryExpectation: string;
   language?: string[];
-}
+}*/
 
 interface AdItem {
   isAd: true;
@@ -240,7 +240,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
             popupImage={jobHunterPopAds}
           />
         ) : (
-          <JobCard key={index} match={item} popupImage={jobHunterPopAds}/>
+          <JobCard key={index} jobId={item.jobId} match={item} popupImage={jobHunterPopAds}/>
         ),
       )}
       {showLoadingCards && (
@@ -457,7 +457,7 @@ const OtherApplications: FC<selectedProps> = ({
             popupImage={jobHunterPopAds}
           />
         ) : (
-          <JobCard key={index} match={item} popupImage={jobHunterPopAds}/>
+          <JobCard key={index} jobId={item.jobId} match={item} popupImage={jobHunterPopAds}/>
         ),
       )}
 

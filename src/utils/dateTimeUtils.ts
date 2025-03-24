@@ -65,16 +65,16 @@ export function isNew(receivedDate: string): boolean {
     const yearsAgo = Math.floor(monthsAgo / 12);
 
     if (yearsAgo > 0) {
-        return `${yearsAgo} year${yearsAgo > 1 ? 's' : ''}`;
+        return `${yearsAgo} year${yearsAgo > 1 ? 's' : ''} ago`;
     } else if (monthsAgo > 0) {
-        return `${monthsAgo} month${monthsAgo > 1 ? 's' : ''}`;
+        return `${monthsAgo} month${monthsAgo > 1 ? 's' : ''} ago`;
     } else if (daysAgo > 0) {
-        return `${daysAgo} day${daysAgo > 1 ? 's' : ''}`;
+        return `${daysAgo} day${daysAgo > 1 ? 's' : ''} ago`;
     } else if (hoursAgo > 0) {
-        return `${hoursAgo} hour${hoursAgo > 1 ? 's' : ''}`;
+        return `${hoursAgo} hour${hoursAgo > 1 ? 's' : ''} ago`;
     } else if (minutesAgo > 0) {
-        return `${minutesAgo} minute${minutesAgo > 1 ? 's' : ''}`;
+        return `${minutesAgo} minute${minutesAgo > 1 ? 's' : ''} ago`;
     } else {
-        return `${secondsAgo} second${secondsAgo > 1 ? 's' : ''}`;
+        return `${secondsAgo} second${secondsAgo > 1 ? 's' : ''} ago`;
     }
 }

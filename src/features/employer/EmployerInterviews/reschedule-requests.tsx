@@ -8,6 +8,7 @@ import {
   Interview,
 } from "mockData/employer-interviews-data";
 import { useEmployerContext } from "components";
+import { useInterviewsContext } from "contexts/Interviews/InterviewsContext";
 
 const RescheduleRequests: FC = () => {
   const [displayedItems, setDisplayedItems] = useState<Interview[]>([]);
@@ -16,6 +17,9 @@ const RescheduleRequests: FC = () => {
   const loaderRef = useRef<HTMLDivElement>(null);
   const [initialLoad, setInitialLoad] = useState(true);
   const { subscriptionPlan } = useEmployerContext();
+  const {interviewsList, setSelectedInterviewsGroup} = useInterviewsContext();
+
+  setSelectedInterviewsGroup('RESCHEDULE');
 
   const handleAccept = async (interview: Interview) => {
     console.log("Accepted interview:", interview.position);
@@ -83,7 +87,7 @@ const RescheduleRequests: FC = () => {
     };
 
     loadInitialItems();
-  }, []);
+  }, [interviewsList]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(

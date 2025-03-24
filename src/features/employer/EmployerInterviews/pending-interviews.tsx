@@ -11,6 +11,7 @@ import { useInterviewsContext } from "contexts/Interviews/InterviewsContext";
 import { useEmployerContext } from "components";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 import { ROUTE_CONSTANTS } from "constants/routeConstants";
+import { useAcceptInterviewMutation, useRejectInterviewMutation } from "api/akaza/akazaAPI";
 
 interface AcceptData {
   confirmed: boolean;
@@ -29,8 +30,10 @@ interface RescheduleData {
   interviewId?: string;
 }
 
-const handleError = (error:CustomError, title:string, message:string) => {
-  const { showError } = useErrorModal();
+const handleError = (errorComponent:any, error:CustomError, title:string, message:string) => {
+  const showError = errorComponent;
+  console.log('trying to handle error')
+  console.log(error,title,message)
   const errorMessage = (error as CustomError).data?.message || message;
   showError(title, errorMessage);
 }
@@ -43,16 +46,21 @@ const PendingInterviews: FC = () => {
   const loaderRef = useRef<HTMLDivElement>(null);
   const [declineReason, setDeclineReason] = useState<string>("");
   const { subscriptionPlan } = useEmployerContext();
-  const {interviewsList} = useInterviewsContext();
+  const {interviewsList, setSelectedInterviewsGroup} = useInterviewsContext();
+  const [acceptInterview] = useAcceptInterviewMutation();
+  const [rejectInterview] = useRejectInterviewMutation();
+  const { showError } = useErrorModal();
 
+  setSelectedInterviewsGroup('PENDING')
 
   const handleAccept = async (interview: Interview, data: AcceptData) => {
     try {
       console.log("Accept:", interview, data);
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      await acceptInterview(data.interviewId).unwrap();
       setDisplayedItems((prev) => prev.filter((item) => item !== interview));
     } catch (error) {
-      handleError( error as CustomError, 
+      console.log('handling error')
+      handleError( showError, error as CustomError, 
         "Accept Interview Failed",
         "Unable to accept the interview. Please try again or contact support.")
       console.error("Error accepting interview:", error);
@@ -62,10 +70,13 @@ const PendingInterviews: FC = () => {
   const handleDecline = async (interview: Interview, data: DeclineData) => {
     try {
       console.log("Decline:", interview, data);
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      await rejectInterview({
+        interviewId: data.interviewId,
+        reason: data.reason
+      }).unwrap();
       setDisplayedItems((prev) => prev.filter((item) => item !== interview));
     } catch (error) {
-      handleError( error as CustomError, 
+      handleError( showError, error as CustomError, 
         "Decline Interview Failed",
         "Unable to decline the interview. Please try again or contact support.",
       );
@@ -82,7 +93,7 @@ const PendingInterviews: FC = () => {
       await new Promise((resolve) => setTimeout(resolve, 3000));
       setDisplayedItems((prev) => prev.filter((item) => item !== interview));
     } catch (error) {
-      handleError( error as CustomError, 
+      handleError( showError, error as CustomError, 
         "Reschedule Interview Failed",
         "Unable to reschedule the interview. Please try again or contact support.",
       );

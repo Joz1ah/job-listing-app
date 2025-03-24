@@ -40,26 +40,16 @@ interface RescheduleData {
 }
 
 const rescheduleReasons: RescheduleReason[] = [
-  {
-    id: "health_issues",
-    label: "Health Issues",
-  },
-  {
-    id: "schedule_conflicts",
-    label: "Schedule Conflicts",
-  },
-  {
-    id: "personal_family_emergency",
-    label: "Personal/Family Emergency",
-  },
-  {
-    id: "preparation",
-    label: "Unforseen Circumstances (e.g.outage/weather/traveling)",
-  },
-  {
-    id: "other",
-    label: "Other",
-  },
+  /*{ id: "health_issues", label: "Health Issues",},
+  { id: "schedule_conflicts", label: "Schedule Conflicts",},
+  { id: "personal_family_emergency", label: "Personal/Family Emergency",},
+  { id: "preparation", label: "Unforseen Circumstances (e.g.outage/weather/traveling)",},
+  { id: "other", label: "Other",},*/
+  { id: "Health Issues", label: "Health Issues",},
+  { id: "Schedule Conflicts", label: "Schedule Conflicts",},
+  { id: "Personal/Family Emergency", label: "Personal/Family Emergency",},
+  { id: "Unforseen Circumstances (e.g.outage/weather/traveling)", label: "Unforseen Circumstances (e.g.outage/weather/traveling)",},
+  { id: "Other", label: "Other",},
 ];
 
 interface RescheduleModalProps extends BaseModalProps {
