@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import { AuthContextProps } from './types';
 import { useDispatch } from 'react-redux';
-import { useGetUserInfoQuery,akazaApiAccount } from 'api/akaza/akazaAPI';
+import { useGetUserInfoQuery, akazaApiAccount } from 'api/akaza/akazaAPI';
 
 // Create the AuthContext
 export const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -13,17 +13,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Initialize from cookie on mount
     return Cookies.get('authToken') || null;
   });
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState(true); // Add this line
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!Cookies.get('authToken'));
+  const [isLoading, setIsLoading] = useState(true);
   
-  const { data: user, error, refetch } = useGetUserInfoQuery(null, {
+  const { data: user, error, refetch, isLoading: isUserDataLoading } = useGetUserInfoQuery(null, {
     skip: !token
   });
   const dispatch = useDispatch();
 
   const login = (newToken: string) => {
+    // Always set both the state and cookie when logging in
     setToken(newToken);
-    //Cookies.set('authToken', newToken, { expires: 7, path: '' });
+    Cookies.set('authToken', newToken, { 
+      expires: 1, 
+      path: '/',
+      secure: true,
+      sameSite: 'strict'
+    });
+    setIsAuthenticated(true);
   };
 
   const logout = () => {
@@ -32,9 +39,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const hostname = window.location.hostname;
     const rootDomain = '.' + hostname.split('.').slice(-2).join('.');
       
-      [hostname, rootDomain].forEach(domain => {
-        Cookies.remove('authToken', { path: '/', domain });
-      });
+    [hostname, rootDomain].forEach(domain => {
+      Cookies.remove('authToken', { path: '/', domain });
+    });
     dispatch(akazaApiAccount.util.resetApiState());
   };
 
@@ -51,14 +58,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Update authenticated state when user data changes
   useEffect(() => {
-    if (user && token) {
-      setIsAuthenticated(true);
+    // Only update authentication state when user data loading is complete
+    if (token && !isUserDataLoading) {
+      if (user) {
+        setIsAuthenticated(true);
+      } else if (error) {
+        // If there's an error loading user data, log out
+        console.error('Error loading user data:', error);
+        logout();
+      }
+      // Set isLoading to false only after we've determined authentication status
       setIsLoading(false);
-    } else if (error) {
-      logout();
+    } else if (!token) {
+      // No token, so we're definitely not authenticated
+      setIsAuthenticated(false);
       setIsLoading(false);
     }
-  }, [user, error, token]);
+  }, [user, error, token, isUserDataLoading]);
 
   // Initial auth check
   useEffect(() => {
@@ -69,6 +85,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return;
       }
       setToken(storedToken);
+      // Note: We don't set isLoading=false here, we'll wait for the user data to load
     };
     checkAuth();
   }, []);
@@ -81,7 +98,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       isLoading,
       login, 
       logout,
-      refreshUser // Add refreshUser to the context value
+      refreshUser
     }}>
       {children}
     </AuthContext.Provider>
