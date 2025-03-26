@@ -154,7 +154,7 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage, adImage }) => {
 
   // Ref for the AdDialogWrapper
   const adDialogRef = useRef<HTMLDivElement>(null);
-/*
+  /*
   useEffect(() => {
     if (match.posted) {
       setFormattedPostDate(formatTimeAgo(match.posted));
@@ -162,7 +162,8 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage, adImage }) => {
     }
   }, [match.posted]);
 */
-  const handleCardClick = () => {
+  const handlePreview = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent event propagation
     if (subscriptionPlan === "freeTrial") return;
     if (!isScheduleModalOpen) {
       setIsModalOpen(true);

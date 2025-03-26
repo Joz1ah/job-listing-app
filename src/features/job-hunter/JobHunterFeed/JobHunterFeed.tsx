@@ -1,7 +1,6 @@
 import { FC, useState, useEffect, useRef } from "react";
 import sparkeIcon from "images/sparkle-icon.png";
 import { usePerfectMatchContext } from "contexts/PerfectMatch/PerfectMatchContext";
-import { /*perfectMatch, others*/ } from "mockData/jobs-data";
 import jobHunterAds from "images/job-hunter-feed-card-ads.svg?url";
 import jobHunterPopAds from "images/popup-hunter.svg?url";
 import {
@@ -13,28 +12,12 @@ import { MatchJH as Match } from "contexts/PerfectMatch/types";
 import { Button } from "components";
 import { JobCardSkeleton } from "components";
 import { BookmarkLimitHandler } from "components";
-
 import { JobCard } from "features/job-hunter";
-
 import { useJobHunterContext } from "components";
 
 interface selectedProps {
   setSelectedTab: (tab: string) => void;
 }
-/*
-interface Match {
-  employerId: number;
-  position: string;
-  company: string;
-  location: string;
-  coreSkills: string[];
-  posted: string;
-  experience: string;
-  description: string;
-  lookingFor: ("Full Time" | "Part Time" | "Contract only")[];
-  salaryExpectation: string;
-  language?: string[];
-}*/
 
 interface AdItem {
   isAd: true;
@@ -44,44 +27,36 @@ interface AdItem {
 type CardItem = Match | AdItem;
 
 const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
-  const {perfectMatchesJH,matchState, updateMatchState} = usePerfectMatchContext();
+  const { perfectMatchesJH, matchState, updateMatchState, isLoadingMatches } =
+    usePerfectMatchContext();
   const { subscriptionPlan } = useJobHunterContext();
   const [perfectMatch, setPerfectMatch] = useState(perfectMatchesJH);
+
+  // Add a flag to prevent premature display of data during initial loading
+  const [initialDataLoaded, setInitialDataLoaded] = useState(false);
+
   useEffect(() => {
-    // Only set these when component mounts or if match state changes substantially
-    if (matchState.scoreFilter !== "above60" || !matchState.selectedJobId) {
+    // Only update on mount and avoid unnecessary updates
+    if (!matchState.selectedJobId && perfectMatchesJH.length > 0) {
       updateMatchState({
-        ...(perfectMatchesJH.length > 0 && {
-          selectedJobId: null,
-        }),
+        selectedJobId: null,
         scoreFilter: "above60",
       });
     }
-  }, []);
-  useEffect(()=>{
-    setPerfectMatch(perfectMatchesJH)
-  },[perfectMatchesJH])
-  const [displayedItems, setDisplayedItems] = useState<CardItem[]>(() => {
-    // Check if we have any items first
-    if (perfectMatch.length === 0) {
-      return [];
-    }
+  }, [perfectMatchesJH]);
 
-    // Initial load of 5 items
-    const initialItems = perfectMatch.slice(0, 5);
-    if (subscriptionPlan === 'freeTrial' && initialItems.length >= 3) {
-      // Only insert ad if we have at least 3 real items
-      return [
-        ...initialItems.slice(0, 3),
-        { isAd: true, image: jobHunterAds },
-        ...initialItems.slice(3),
-      ];
-    }
-    return initialItems;
-  });
+  useEffect(() => {
+    setPerfectMatch(perfectMatchesJH);
 
+    // Mark initial data as loaded once we have our first set of matches
+    if (!initialDataLoaded && perfectMatchesJH.length > 0) {
+      setInitialDataLoaded(true);
+    }
+  }, [perfectMatchesJH]);
+
+  const [displayedItems, setDisplayedItems] = useState<CardItem[]>([]);
   const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(perfectMatch.length > 6);
+  const [hasMore, setHasMore] = useState(false);
   const loaderRef = useRef<HTMLDivElement>(null);
 
   const loadMore = async () => {
@@ -89,11 +64,13 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
 
     setLoading(true);
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 300)); // Reduced from 1000ms to 300ms for better responsiveness
 
-    const currentItemCount = subscriptionPlan === 'freeTrial'
-      ? displayedItems.filter((item): item is Match => !("isAd" in item)).length
-      : displayedItems.length;
+    const currentItemCount =
+      subscriptionPlan === "freeTrial"
+        ? displayedItems.filter((item): item is Match => !("isAd" in item))
+            .length
+        : displayedItems.length;
     const startIndex = currentItemCount;
     const remainingItems = perfectMatch.length - startIndex;
 
@@ -103,7 +80,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
       return;
     }
 
-    if (subscriptionPlan === 'freeTrial') {
+    if (subscriptionPlan === "freeTrial") {
       // Calculate if we need an ad in the next 2 positions
       const realItemsCount = displayedItems.filter(
         (item) => !("isAd" in item),
@@ -150,8 +127,18 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
     setLoading(false);
   };
 
-  // Reset when switching tabs
+  // Update displayed items when perfectMatch changes
   useEffect(() => {
+    // Don't update displayed items if we're still loading matches from API
+    if (isLoadingMatches) {
+      // Clear displayed items when loading to prevent flicker
+      setDisplayedItems([]);
+      return;
+    }
+
+    // Reset loading state when data changes
+    setLoading(true);
+
     if (perfectMatch.length === 0) {
       setDisplayedItems([]);
       setHasMore(false);
@@ -159,8 +146,11 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
       return;
     }
 
-    const initialItems = perfectMatch.slice(0, subscriptionPlan === 'freeTrial' ? 5 : 6);
-    if (subscriptionPlan === 'freeTrial' && initialItems.length >= 3) {
+    const initialItems = perfectMatch.slice(
+      0,
+      subscriptionPlan === "freeTrial" ? 5 : 6,
+    );
+    if (subscriptionPlan === "freeTrial" && initialItems.length >= 3) {
       setDisplayedItems([
         ...initialItems.slice(0, 3),
         { isAd: true, image: jobHunterAds },
@@ -171,13 +161,14 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
     }
     setHasMore(perfectMatch.length > 6);
     setLoading(false);
-  }, [setSelectedTab, subscriptionPlan, perfectMatch, jobHunterAds]);
+  }, [subscriptionPlan, perfectMatch, jobHunterAds, isLoadingMatches]);
 
   // Calculate loading cards
-  const remainingItems = subscriptionPlan === 'freeTrial'
-    ? perfectMatch.length -
-      displayedItems.filter((item) => !("isAd" in item)).length
-    : perfectMatch.length - displayedItems.length;
+  const remainingItems =
+    subscriptionPlan === "freeTrial"
+      ? perfectMatch.length -
+        displayedItems.filter((item) => !("isAd" in item)).length
+      : perfectMatch.length - displayedItems.length;
 
   const showLoadingCards = loading && remainingItems > 0;
   const loadingCardsCount = Math.min(2, remainingItems);
@@ -215,7 +206,10 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
     });
   };
 
-  const showEmptyState = !loading && displayedItems.length === 0;
+  // Only show empty state when we're sure there's no data and we're not loading
+  const showEmptyState =
+    !isLoadingMatches && !loading && perfectMatch.length === 0;
+
   if (showEmptyState) {
     return (
       <PerfectMatchEmptyState
@@ -240,7 +234,12 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
             popupImage={jobHunterPopAds}
           />
         ) : (
-          <JobCard key={index} jobId={item.jobId} match={item} popupImage={jobHunterPopAds}/>
+          <JobCard
+            key={index}
+            jobId={item.jobId}
+            match={item}
+            popupImage={jobHunterPopAds}
+          />
         ),
       )}
       {showLoadingCards && (
@@ -275,44 +274,29 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
   );
 };
 
-const OtherApplications: FC<selectedProps> = ({
-  setSelectedTab
-}) => {
-  const {otherMatchesJH, matchState, updateMatchState} = usePerfectMatchContext();
+const OtherApplications: FC<selectedProps> = ({ setSelectedTab }) => {
+  const { otherMatchesJH, matchState, updateMatchState, isLoadingMatches } =
+    usePerfectMatchContext();
+  const { subscriptionPlan } = useJobHunterContext();
+
+  // Add a flag to prevent premature display of data during initial loading
+  const [initialDataLoaded, setInitialDataLoaded] = useState(false);
+
   useEffect(() => {
-    // Only set these when component mounts or if match state changes substantially
-    if (matchState.scoreFilter !== "below60" || !matchState.selectedJobId) {
+    // Only update on mount and avoid unnecessary updates
+    if (!matchState.selectedJobId && otherMatchesJH.length > 0) {
       updateMatchState({
-        ...(otherMatchesJH.length > 0 && {
-          selectedJobId:  null,
-        }),
+        selectedJobId: null,
         scoreFilter: "below60",
       });
     }
-  }, []);
+  }, [otherMatchesJH]);
+
   const others = otherMatchesJH;
-  const { subscriptionPlan } = useJobHunterContext();
-  const [displayedItems, setDisplayedItems] = useState<CardItem[]>(() => {
-    // Check if we have any items first
-    if (others.length === 0) {
-      return [];
-    }
 
-    // Initial load of 5 items
-    const initialItems = others.slice(0, 5);
-    if (subscriptionPlan === 'freeTrial' && initialItems.length >= 3) {
-      // Only insert ad if we have at least 3 real items
-      return [
-        ...initialItems.slice(0, 3),
-        { isAd: true, image: jobHunterAds },
-        ...initialItems.slice(3),
-      ];
-    }
-    return initialItems;
-  });
-
+  const [displayedItems, setDisplayedItems] = useState<CardItem[]>([]);
   const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(others.length > 6);
+  const [hasMore, setHasMore] = useState(false);
   const loaderRef = useRef<HTMLDivElement>(null);
 
   const loadMore = async () => {
@@ -320,11 +304,13 @@ const OtherApplications: FC<selectedProps> = ({
 
     setLoading(true);
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 300)); // Reduced from 1000ms to 300ms for better responsiveness
 
-    const currentItemCount = subscriptionPlan === 'freeTrial'
-      ? displayedItems.filter((item): item is Match => !("isAd" in item)).length
-      : displayedItems.length;
+    const currentItemCount =
+      subscriptionPlan === "freeTrial"
+        ? displayedItems.filter((item): item is Match => !("isAd" in item))
+            .length
+        : displayedItems.length;
     const startIndex = currentItemCount;
     const remainingItems = others.length - startIndex;
 
@@ -334,7 +320,7 @@ const OtherApplications: FC<selectedProps> = ({
       return;
     }
 
-    if (subscriptionPlan === 'freeTrial') {
+    if (subscriptionPlan === "freeTrial") {
       // Calculate if we need an ad in the next 2 positions
       const realItemsCount = displayedItems.filter(
         (item) => !("isAd" in item),
@@ -378,8 +364,23 @@ const OtherApplications: FC<selectedProps> = ({
     setLoading(false);
   };
 
-  // Reset when switching tabs
+  // Update displayed items when others changes
   useEffect(() => {
+    // Don't update displayed items if we're still loading matches from API
+    if (isLoadingMatches) {
+      // Clear displayed items when loading to prevent flicker
+      setDisplayedItems([]);
+      return;
+    }
+
+    // Mark initial data as loaded once we have our first set of matches
+    if (!initialDataLoaded && others.length > 0) {
+      setInitialDataLoaded(true);
+    }
+
+    // Reset loading state when data changes
+    setLoading(true);
+
     if (others.length === 0) {
       setDisplayedItems([]);
       setHasMore(false);
@@ -387,8 +388,11 @@ const OtherApplications: FC<selectedProps> = ({
       return;
     }
 
-    const initialItems = others.slice(0, subscriptionPlan === 'freeTrial' ? 5 : 6);
-    if (subscriptionPlan === 'freeTrial' && initialItems.length >= 3) {
+    const initialItems = others.slice(
+      0,
+      subscriptionPlan === "freeTrial" ? 5 : 6,
+    );
+    if (subscriptionPlan === "freeTrial" && initialItems.length >= 3) {
       setDisplayedItems([
         ...initialItems.slice(0, 3),
         { isAd: true, image: jobHunterAds },
@@ -399,12 +403,14 @@ const OtherApplications: FC<selectedProps> = ({
     }
     setHasMore(others.length > 6);
     setLoading(false);
-  }, [setSelectedTab, subscriptionPlan, others, jobHunterAds]);
+  }, [subscriptionPlan, others, jobHunterAds, isLoadingMatches]);
 
   // Calculate loading cards
-  const remainingItems = subscriptionPlan === 'freeTrial'
-    ? others.length - displayedItems.filter((item) => !("isAd" in item)).length
-    : others.length - displayedItems.length;
+  const remainingItems =
+    subscriptionPlan === "freeTrial"
+      ? others.length -
+        displayedItems.filter((item) => !("isAd" in item)).length
+      : others.length - displayedItems.length;
 
   const showLoadingCards = loading && remainingItems > 0;
   const loadingCardsCount = Math.min(2, remainingItems);
@@ -442,7 +448,9 @@ const OtherApplications: FC<selectedProps> = ({
     });
   };
 
-  const showEmptyState = !loading && displayedItems.length === 0;
+  // Only show empty state when we're sure there's no data and we're not loading
+  const showEmptyState = !isLoadingMatches && !loading && others.length === 0;
+
   if (showEmptyState) {
     return <OtherOpportunitiesEmptyState />;
   }
@@ -457,7 +465,12 @@ const OtherApplications: FC<selectedProps> = ({
             popupImage={jobHunterPopAds}
           />
         ) : (
-          <JobCard key={index} jobId={item.jobId} match={item} popupImage={jobHunterPopAds}/>
+          <JobCard
+            key={index}
+            jobId={item.jobId}
+            match={item}
+            popupImage={jobHunterPopAds}
+          />
         ),
       )}
 
@@ -480,7 +493,7 @@ const OtherApplications: FC<selectedProps> = ({
             </span>
             <Button
               variant="link"
-              className="text-[20px] text-[#F5722E]  font-semibold pl-2 underline pt-0"
+              className="text-[20px] text-[#F5722E] font-semibold pl-2 underline pt-0"
               onClick={handleClick}
             >
               perfect matches
@@ -494,70 +507,99 @@ const OtherApplications: FC<selectedProps> = ({
   );
 };
 
-
 const JobHunterFeed: FC = () => {
   const [selectedTab, setSelectedTab] = useState("perfectMatch");
-  const [isLoading, setIsLoading] = useState(true);
   const { subscriptionPlan } = useJobHunterContext();
+  const {
+    perfectMatchesJH,
+    otherMatchesJH,
+    updateMatchState,
+    isLoadingMatches,
+  } = usePerfectMatchContext();
+
+  // State to track if other application cards have been viewed
+  const [hasViewedOtherCards, setHasViewedOtherCards] = useState(false);
+
+  // Forced loading state for other application cards
+  const [forcedOtherCardsLoading, setForcedOtherCardsLoading] = useState(false);
+
+  // Reference to loading timeout
+  const loadingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Set initial scoreFilter on component mount
+  useEffect(() => {
+    updateMatchState({ scoreFilter: "above60" });
+  }, []);
+
+  // Clean up timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (loadingTimeoutRef.current) {
+        clearTimeout(loadingTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const handleUpgradeClick = () => {
     console.log("Upgrade clicked");
     // Implement your upgrade logic here
   };
 
+  // Handle tab changes with FORCED skeleton for first switch to other apps
   const handleTabChange = (tab: string) => {
-    const scrollViewport = document.querySelector(
-      "[data-radix-scroll-area-viewport]",
-    );
-    if (scrollViewport) {
-      scrollViewport.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-    }
-
-    setSelectedTab(tab);
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 500);
-  };
-
-  useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 500);
-  }, []);
-
-  const LoadingGrid = () => {
-    const {perfectMatchesJH,otherMatchesJH} = usePerfectMatchContext();
-    const perfectMatch = perfectMatchesJH;
-    const others = otherMatchesJH;
-    // Calculate number of skeleton cards based on actual data
-    const dataLength =
-      selectedTab === "perfectMatch"
-        ? Math.min(perfectMatch.length, subscriptionPlan === 'freeTrial' ? 5 : 6)
-        : Math.min(others.length, subscriptionPlan === 'freeTrial' ? 5 : 6);
-
-    // If there's no data, don't show loading state
-    if (dataLength === 0) {
-      return selectedTab === "perfectMatch" ? (
-        <PerfectMatchEmptyState
-          onExploreClick={() => handleTabChange("otherApplications")}
-        />
-      ) : (
-        <OtherOpportunitiesEmptyState />
+    // Only proceed if we're actually changing tabs
+    if (selectedTab !== tab) {
+      // Scroll to top if needed
+      const scrollViewport = document.querySelector(
+        "[data-radix-scroll-area-viewport]",
       );
-    }
+      if (scrollViewport) {
+        scrollViewport.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      }
 
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 justify-items-center w-full max-w-[436px] md:max-w-[900px] mx-auto px-4 md:px-0">
-        {Array.from({ length: dataLength }).map((_, i) => (
-          <JobCardSkeleton key={i} />
-        ))}
-      </div>
-    );
+      // Set the selected tab first
+      setSelectedTab(tab);
+
+      // If switching to other applications for the first time, force loading state
+      if (tab === "otherApplications" && !hasViewedOtherCards) {
+        // Force the loading state
+        setForcedOtherCardsLoading(true);
+
+        // Clear any existing timeout
+        if (loadingTimeoutRef.current) {
+          clearTimeout(loadingTimeoutRef.current);
+        }
+
+        // Set up a timeout to turn off forced loading after a delay
+        // This ensures skeleton is shown regardless of how fast data loads
+        loadingTimeoutRef.current = setTimeout(() => {
+          setForcedOtherCardsLoading(false);
+          setHasViewedOtherCards(true);
+        }, 1500); 
+      }
+
+      // Update context for data loading
+      if (tab === "perfectMatch") {
+        updateMatchState({ scoreFilter: "above60" });
+      } else {
+        updateMatchState({ scoreFilter: "below60" });
+      }
+    }
   };
+
+  // Determine current data based on selected tab
+  const currentData =
+    selectedTab === "perfectMatch" ? perfectMatchesJH : otherMatchesJH;
+
+  const showSkeleton =
+    isLoadingMatches ||
+    (selectedTab === "otherApplications" && forcedOtherCardsLoading);
+
+  // TRUE when we have no data
+  const hasNoData = !showSkeleton && currentData.length === 0;
 
   return (
     <BookmarkLimitHandler
@@ -578,7 +620,10 @@ const JobHunterFeed: FC = () => {
                   : "text-[#AEADAD] hover:text-[#F5722E]"
               }`}
               onClick={() => handleTabChange("perfectMatch")}
-              disabled={isLoading}
+              disabled={
+                isLoadingMatches ||
+                (selectedTab === "otherApplications" && forcedOtherCardsLoading)
+              }
             >
               <div
                 className="absolute bottom-0 left-0 w-full h-0.5 bg-[#F5722E] transform origin-left transition-transform duration-200 ease-out"
@@ -606,7 +651,10 @@ const JobHunterFeed: FC = () => {
                   : "text-[#AEADAD] hover:text-[#F5722E]"
               }`}
               onClick={() => handleTabChange("otherApplications")}
-              disabled={isLoading}
+              disabled={
+                isLoadingMatches ||
+                (selectedTab === "otherApplications" && forcedOtherCardsLoading)
+              }
             >
               <div
                 className="absolute bottom-0 right-0 w-full h-0.5 bg-[#F5722E] transform origin-right transition-transform duration-200 ease-out"
@@ -621,19 +669,33 @@ const JobHunterFeed: FC = () => {
             </button>
           </div>
 
+          {/* Content Section */}
           <div className="w-full max-w-[932px] mx-auto px-4">
-            {isLoading ? (
-              <LoadingGrid />
-            ) : (
+            {showSkeleton ? (
+              // Show skeleton state during loading
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 justify-items-center w-full max-w-[436px] md:max-w-[900px] mx-auto px-0">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <JobCardSkeleton key={i} />
+                ))}
+              </div>
+            ) : hasNoData ? (
+              // Show empty state if we have no data
               <div className="w-full">
                 {selectedTab === "perfectMatch" ? (
-                  <PerfectMatch
-                    setSelectedTab={handleTabChange}
+                  <PerfectMatchEmptyState
+                    onExploreClick={() => handleTabChange("otherApplications")}
                   />
                 ) : (
-                  <OtherApplications
-                    setSelectedTab={handleTabChange}
-                  />
+                  <OtherOpportunitiesEmptyState />
+                )}
+              </div>
+            ) : (
+              // Show the actual content
+              <div className="w-full">
+                {selectedTab === "perfectMatch" ? (
+                  <PerfectMatch setSelectedTab={handleTabChange} />
+                ) : (
+                  <OtherApplications setSelectedTab={handleTabChange} />
                 )}
               </div>
             )}

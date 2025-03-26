@@ -1,6 +1,5 @@
 import { FC, useState, useEffect, useRef } from "react";
 import sparkeIcon from "images/sparkle-icon.png";
-//import { /*perfectMatch,*/ others } from "mockData/job-hunter-data";
 import { Button } from "components";
 import { AppCardSkeleton, BookmarkLimitHandler } from "components";
 import { AppCard } from "features/employer";
@@ -31,44 +30,26 @@ const PerfectMatch: FC<selectedProps> = ({
   setSelectedTab,
   subscriptionPlan,
 }) => {
-  const {
-    perfectMatches, // Use perfectMatches instead of perfectMatch
-    updateMatchState,
-    matchState,
-  } = usePerfectMatchContext();
+  const { perfectMatches, updateMatchState, matchState, isLoadingMatches } =
+    usePerfectMatchContext();
+
   useEffect(() => {
-    // Only set these when component mounts or if match state changes substantially
-    if (matchState.scoreFilter !== "above60" || !matchState.selectedJobId) {
+    // Only update on mount and avoid unnecessary updates
+    if (!matchState.selectedJobId && perfectMatches.length > 0) {
       updateMatchState({
-        ...(perfectMatches.length > 0 && {
-          selectedJobId: perfectMatches[0]?.id || null,
-        }),
+        selectedJobId: perfectMatches[0]?.id || null,
         scoreFilter: "above60",
       });
     }
-  }, []);
+  }, [perfectMatches]);
 
-  const [displayedItems, setDisplayedItems] = useState<CardItem[]>(() => {
-    if (!perfectMatches || perfectMatches.length === 0) {
-      return [];
-    }
-
-    // Initial load of 5 items
-    const initialItems = perfectMatches.slice(0, 5);
-    if (subscriptionPlan === "freeTrial" && initialItems.length >= 3) {
-      // Only insert ad if we have at least 3 real items
-      return [
-        ...initialItems.slice(0, 3),
-        { isAd: true, image: employerAds },
-        ...initialItems.slice(3),
-      ];
-    }
-    return initialItems;
-  });
-
+  const [displayedItems, setDisplayedItems] = useState<CardItem[]>([]);
   const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(perfectMatches.length > 6);
+  const [hasMore, setHasMore] = useState(false);
   const loaderRef = useRef<HTMLDivElement>(null);
+
+  // We no longer need this flag with our improved loading logic
+  // const [initialDataLoaded, setInitialDataLoaded] = useState(false);
 
   const loadMore = async () => {
     if (loading || !hasMore) return;
@@ -143,6 +124,16 @@ const PerfectMatch: FC<selectedProps> = ({
 
   // Update displayed items when perfectMatches changes
   useEffect(() => {
+    // Clear displayed items immediately when loading starts
+    if (isLoadingMatches) {
+      setDisplayedItems([]);
+      setHasMore(false);
+      return;
+    }
+
+    // Reset loading state when data changes
+    setLoading(true);
+
     if (perfectMatches.length === 0) {
       setDisplayedItems([]);
       setHasMore(false);
@@ -165,7 +156,9 @@ const PerfectMatch: FC<selectedProps> = ({
     }
     setHasMore(perfectMatches.length > 6);
     setLoading(false);
-  }, [subscriptionPlan, perfectMatches, employerAds]);
+
+    // No need to mark initial data loaded with our improved loading system
+  }, [subscriptionPlan, perfectMatches, employerAds, isLoadingMatches]);
 
   // Calculate loading cards
   const remainingItems =
@@ -177,6 +170,7 @@ const PerfectMatch: FC<selectedProps> = ({
   const showLoadingCards = loading && remainingItems > 0;
   const loadingCardsCount = Math.min(2, remainingItems);
 
+  // Intersection observer for infinite scroll
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -210,7 +204,10 @@ const PerfectMatch: FC<selectedProps> = ({
     });
   };
 
-  const showEmptyState = !loading && displayedItems.length === 0;
+  // Only show empty state when we're sure there's no data and we're not loading
+  const showEmptyState =
+    !isLoadingMatches && !loading && perfectMatches.length === 0;
+
   if (showEmptyState) {
     return (
       <PerfectMatchEmptyState
@@ -235,7 +232,12 @@ const PerfectMatch: FC<selectedProps> = ({
             popupImage={employerPopAds}
           />
         ) : (
-          <AppCard jobId={123} key={index} match={item} popupImage={employerPopAds} />
+          <AppCard
+            jobId={123}
+            key={index}
+            match={item}
+            popupImage={employerPopAds}
+          />
         ),
       )}
 
@@ -275,45 +277,24 @@ const OtherApplications: FC<selectedProps> = ({
   setSelectedTab,
   subscriptionPlan,
 }) => {
-  const {
-    otherApplications, // Use otherApplications instead of perfectMatch/others
-    updateMatchState,
-    matchState,
-  } = usePerfectMatchContext();
+  const { otherApplications, updateMatchState, matchState, isLoadingMatches } =
+    usePerfectMatchContext();
 
   useEffect(() => {
-    // Only set these when component mounts or if match state changes substantially
-    if (matchState.scoreFilter !== "below60" || !matchState.selectedJobId) {
+    // Only update on mount and avoid unnecessary updates
+    if (!matchState.selectedJobId && otherApplications.length > 0) {
       updateMatchState({
-        ...(otherApplications.length > 0 && {
-          selectedJobId: otherApplications[0]?.id || null,
-        }),
+        selectedJobId: otherApplications[0]?.id || null,
         scoreFilter: "below60",
       });
     }
-  }, []);
+  }, [otherApplications]);
 
-  const [displayedItems, setDisplayedItems] = useState<CardItem[]>(() => {
-    if (otherApplications.length === 0) {
-      return [];
-    }
-
-    // Initial load of 5 items
-    const initialItems = otherApplications.slice(0, 5);
-    if (subscriptionPlan === "freeTrial" && initialItems.length >= 3) {
-      // Only insert ad if we have at least 3 real items
-      return [
-        ...initialItems.slice(0, 3),
-        { isAd: true, image: employerAds },
-        ...initialItems.slice(3),
-      ];
-    }
-    return initialItems;
-  });
-
+  const [displayedItems, setDisplayedItems] = useState<CardItem[]>([]);
   const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(otherApplications.length > 6);
+  const [hasMore, setHasMore] = useState(false);
   const loaderRef = useRef<HTMLDivElement>(null);
+
 
   const loadMore = async () => {
     if (loading || !hasMore) return;
@@ -388,6 +369,16 @@ const OtherApplications: FC<selectedProps> = ({
 
   // Update displayed items when otherApplications changes
   useEffect(() => {
+    // Clear displayed items immediately when loading starts
+    if (isLoadingMatches) {
+      setDisplayedItems([]);
+      setHasMore(false);
+      return;
+    }
+
+    // Reset loading state when data changes
+    setLoading(true);
+
     if (otherApplications.length === 0) {
       setDisplayedItems([]);
       setHasMore(false);
@@ -410,7 +401,9 @@ const OtherApplications: FC<selectedProps> = ({
     }
     setHasMore(otherApplications.length > 6);
     setLoading(false);
-  }, [subscriptionPlan, otherApplications, employerAds]);
+
+    // No need to mark initial data loaded with our improved loading system
+  }, [subscriptionPlan, otherApplications, employerAds, isLoadingMatches]);
 
   // Calculate loading cards
   const remainingItems =
@@ -455,7 +448,10 @@ const OtherApplications: FC<selectedProps> = ({
     });
   };
 
-  const showEmptyState = !loading && displayedItems.length === 0;
+  // Only show empty state when we're sure there's no data and we're not loading
+  const showEmptyState =
+    !isLoadingMatches && !loading && otherApplications.length === 0;
+
   if (showEmptyState) {
     return <OtherApplicationEmptyState />;
   }
@@ -470,7 +466,12 @@ const OtherApplications: FC<selectedProps> = ({
             popupImage={employerPopAds}
           />
         ) : (
-          <AppCard jobId={123} key={index} match={item} popupImage={employerPopAds} />
+          <AppCard
+            jobId={123}
+            key={index}
+            match={item}
+            popupImage={employerPopAds}
+          />
         ),
       )}
       {/* Dynamic Loading Cards */}
@@ -507,88 +508,100 @@ const OtherApplications: FC<selectedProps> = ({
 };
 
 const EmployerFeed: FC = () => {
+  // Initialize with "perfectMatch" as the default tab
   const [selectedTab, setSelectedTab] = useState("perfectMatch");
-  const [isLoading, setIsLoading] = useState(true);
   const { subscriptionPlan } = useEmployerContext();
-  const { perfectMatches, otherApplications, updateMatchState } =
-    usePerfectMatchContext();
+  const {
+    perfectMatches,
+    otherApplications,
+    updateMatchState,
+    isLoadingMatches,
+  } = usePerfectMatchContext();
 
-  const handleUpgradeClick = () => {
-    console.log("Upgrade clicked");
-    // Implement your upgrade logic here
-  };
+  // State to track if other application cards have been viewed
+  const [hasViewedOtherCards, setHasViewedOtherCards] = useState(false);
 
-  // Handle tab changes
-  const handleTabChange = (tab: string) => {
-    const scrollViewport = document.querySelector(
-      "[data-radix-scroll-area-viewport]",
-    );
-    if (scrollViewport) {
-      scrollViewport.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-    }
+  // Forced loading state for other application cards
+  const [forcedOtherCardsLoading, setForcedOtherCardsLoading] = useState(false);
 
-    // Set the scoreFilter based on the selected tab
-    // but don't reset the selectedJobId to prevent data loss
-    if (tab === "perfectMatch") {
-      updateMatchState({ scoreFilter: "above60" });
-    } else {
-      updateMatchState({ scoreFilter: "below60" });
-    }
+  // Reference to loading timeout
+  const loadingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-    setSelectedTab(tab);
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 500);
-  };
-
+  // Set initial scoreFilter on component mount
   useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 500);
+    updateMatchState({ scoreFilter: "above60" });
   }, []);
 
-  const LoadingGrid = () => {
-    // Calculate number of skeleton cards based on actual data
-    const dataLength =
-      selectedTab === "perfectMatch"
-        ? Math.min(
-            perfectMatches.length,
-            subscriptionPlan === "freeTrial" ? 5 : 6,
-          )
-        : Math.min(
-            otherApplications.length,
-            subscriptionPlan === "freeTrial" ? 5 : 6,
-          );
+  // Clean up timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (loadingTimeoutRef.current) {
+        clearTimeout(loadingTimeoutRef.current);
+      }
+    };
+  }, []);
 
-    // If there's no data, don't show loading state
-    if (dataLength === 0) {
-      return selectedTab === "perfectMatch" ? (
-        <PerfectMatchEmptyState
-          onExploreClick={() => handleTabChange("otherApplications")}
-        />
-      ) : (
-        <OtherApplicationEmptyState />
+  // Handle tab changes with FORCED skeleton for first switch to other apps
+  const handleTabChange = (tab: string) => {
+    // Only proceed if we're actually changing tabs
+    if (selectedTab !== tab) {
+      // Scroll to top if needed
+      const scrollViewport = document.querySelector(
+        "[data-radix-scroll-area-viewport]",
       );
-    }
+      if (scrollViewport) {
+        scrollViewport.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      }
 
-    return (
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 xl:gap-5 justify-items-center w-full md:min-w-[436px] xl:w-[900px] mx-auto px-0">
-        {Array.from({ length: dataLength }).map((_, i) => (
-          <AppCardSkeleton key={i} />
-        ))}
-      </div>
-    );
+      // Set the selected tab first
+      setSelectedTab(tab);
+
+      // If switching to other applications for the first time, force loading state
+      if (tab === "otherApplications" && !hasViewedOtherCards) {
+        // Force the loading state
+        setForcedOtherCardsLoading(true);
+
+        // Clear any existing timeout
+        if (loadingTimeoutRef.current) {
+          clearTimeout(loadingTimeoutRef.current);
+        }
+
+        // Set up a timeout to turn off forced loading after a delay
+        // This ensures skeleton is shown regardless of how fast data loads
+        loadingTimeoutRef.current = setTimeout(() => {
+          setForcedOtherCardsLoading(false);
+          setHasViewedOtherCards(true);
+        }, 1500); // Show loading for 1.5 seconds minimum
+      }
+
+      // Update context for data loading
+      if (tab === "perfectMatch") {
+        updateMatchState({ scoreFilter: "above60" });
+      } else {
+        updateMatchState({ scoreFilter: "below60" });
+      }
+    }
   };
+
+  // Determine current data based on selected tab
+  const currentData =
+    selectedTab === "perfectMatch" ? perfectMatches : otherApplications;
+
+  const showSkeleton =
+    isLoadingMatches ||
+    (selectedTab === "otherApplications" && forcedOtherCardsLoading);
+
+  // TRUE when we have no data
+  const hasNoData = !showSkeleton && currentData.length === 0;
 
   return (
     <BookmarkLimitHandler
       subscriptionPlan={subscriptionPlan}
       maxBookmarks={3}
-      onUpgradeClick={handleUpgradeClick}
+      onUpgradeClick={() => console.log("Upgrade clicked")}
       limitPopupImage={employerPopAds}
       limitPopupTitle="Bookmark Limit Reached"
       limitPopupDescription="Upgrade to bookmark more matches!"
@@ -601,7 +614,10 @@ const EmployerFeed: FC = () => {
               className={`font-semibold mr-6 pb-2 text-[17px] inline-flex items-center gap-2 transition-all duration-200 relative group
               ${selectedTab === "perfectMatch" ? "text-[#F5722E]" : "text-[#AEADAD] hover:text-[#F5722E]"}`}
               onClick={() => handleTabChange("perfectMatch")}
-              disabled={isLoading}
+              disabled={
+                isLoadingMatches ||
+                (selectedTab === "otherApplications" && forcedOtherCardsLoading)
+              }
             >
               <div
                 className="absolute bottom-0 left-0 w-full h-0.5 bg-[#F5722E] transform origin-left transition-transform duration-200 ease-out"
@@ -626,7 +642,10 @@ const EmployerFeed: FC = () => {
               className={`font-semibold pb-2 text-[17px] transition-all duration-200 relative
               ${selectedTab === "otherApplications" ? "text-[#F5722E]" : "text-[#AEADAD] hover:text-[#F5722E]"}`}
               onClick={() => handleTabChange("otherApplications")}
-              disabled={isLoading}
+              disabled={
+                isLoadingMatches ||
+                (selectedTab === "otherApplications" && forcedOtherCardsLoading)
+              }
             >
               <div
                 className="absolute bottom-0 right-0 w-full h-0.5 bg-[#F5722E] transform origin-right transition-transform duration-200 ease-out"
@@ -643,9 +662,26 @@ const EmployerFeed: FC = () => {
 
           {/* Content Section */}
           <div className="w-full">
-            {isLoading ? (
-              <LoadingGrid />
+            {showSkeleton ? (
+              // Show skeleton state during loading
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 xl:gap-5 justify-items-center w-full md:min-w-[436px] xl:w-[900px] mx-auto px-0">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <AppCardSkeleton key={i} />
+                ))}
+              </div>
+            ) : hasNoData ? (
+              // Show empty state if we have no data
+              <div className="w-full">
+                {selectedTab === "perfectMatch" ? (
+                  <PerfectMatchEmptyState
+                    onExploreClick={() => handleTabChange("otherApplications")}
+                  />
+                ) : (
+                  <OtherApplicationEmptyState />
+                )}
+              </div>
             ) : (
+              // Show the actual content
               <div className="w-full">
                 {selectedTab === "perfectMatch" ? (
                   <PerfectMatch
@@ -666,5 +702,4 @@ const EmployerFeed: FC = () => {
     </BookmarkLimitHandler>
   );
 };
-
 export { EmployerFeed };
