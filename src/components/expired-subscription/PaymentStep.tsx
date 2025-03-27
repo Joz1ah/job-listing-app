@@ -355,7 +355,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
               validateOnBlur={true}
               onSubmit={handleFirstStep}
             >
-              {({ errors, touched, handleSubmit, setFieldTouched }) => (
+              {({ errors, touched, isValid, handleSubmit, setFieldTouched }) => (
                 <form onSubmit={handleSubmit}>
                   <div className="space-y-4">
                     <InputField
@@ -540,7 +540,11 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                   <div className="space-y-3 mt-5">
                     <Button
                       type="submit"
-                      className="w-full bg-[#F5722E] hover:bg-[#F5722E]/90 text-white h-[34px] rounded"
+                      className={`w-full ${
+                        isValid
+                          ? "bg-[#F5722E] hover:bg-[#F5722E]/90"
+                          : "bg-[#AEADAD] hover:bg-[#AEADAD]/90"
+                      } text-white h-[34px] rounded`}
                     >
                       Next
                     </Button>
@@ -602,7 +606,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
         validateOnBlur={true}
         onSubmit={handleSubmit}
       >
-        {({ errors, touched, handleSubmit, values, setFieldTouched }) => (
+        {({ errors, touched, isValid, handleSubmit, values, setFieldTouched }) => (
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 lg:grid-cols-2 max-w-5xl md:mx-8 gap-8 pt-2">
               {/* Left Column - Address Form */}
@@ -909,7 +913,11 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                   <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full bg-[#F5722E] hover:bg-[#F5722E]/90 text-white h-[34px] rounded"
+                    className={`w-full ${
+                      isValid
+                        ? "bg-[#F5722E] hover:bg-[#F5722E]/90"
+                        : "bg-[#AEADAD] hover:bg-[#AEADAD]/90"
+                    } text-white h-[34px] rounded`}
                   >
                     {isSubmitting ? "Processing..." : "Complete Payment"}
                   </Button>
