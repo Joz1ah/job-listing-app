@@ -558,11 +558,11 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
 
                 <Button
                   type="submit"
-                  disabled={isSubmitting || !isValid}
+                  disabled={isSubmitting}
                   className={`w-full ${
                     isValid
                       ? "bg-[#F5722E] hover:bg-[#F5722E]/90"
-                      : "bg-[#AEADAD]"
+                      : "bg-[#AEADAD] hover:bg-[#AEADAD]/90"
                   } text-white h-[34px] rounded mt-4 ${
                     isSubmitting ? "opacity-50 cursor-not-allowed" : ""
                   }`}
