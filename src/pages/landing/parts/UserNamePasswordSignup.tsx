@@ -6,6 +6,7 @@ import { useLanding } from "../useLanding";
 import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
 import { MODAL_STATES } from "store/modal/modal.types";
 import { NavLink } from "react-router-dom";
+import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 
 type ErrorFields = "email" | "password" | "passwordConfirm";
 type ErrorState = Record<ErrorFields, string>;
@@ -18,6 +19,7 @@ const UserNamePasswordSignup = () => {
     handleSetTempCredentials,
     modalState,
   } = useLanding();
+  const { showError } = useErrorModal(); // Use the error modal context
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
@@ -125,8 +127,13 @@ const UserNamePasswordSignup = () => {
 
         await generateOTP({ email: credentials.email })
           .unwrap()
-          .catch(() => {
+          .catch((err) => {
             setIsSubmitting(false);
+            // Show error modal for OTP generation failure
+            showError(
+              "OTP Generation Failed",
+              err?.data?.message || "Failed to send verification code. Please try again."
+            );
           });
         setTimeout(() => {
           setIsSubmitting(false);
@@ -146,11 +153,11 @@ const UserNamePasswordSignup = () => {
               err.data.message.includes("network") ||
               err.data.message.includes("internet")))
         ) {
-          setOrganizedErrors((prev) => ({
-            ...prev,
-            email:
-              "Internet connection error. Please check your connection and try again.",
-          }));
+          // Show network error in the modal instead of inline
+          showError(
+            "Connection Error", 
+            "Internet connection error. Please check your connection and try again."
+          );
           return;
         }
 
@@ -165,29 +172,12 @@ const UserNamePasswordSignup = () => {
             email: "Email already exists",
           }));
         } else {
-          // For other errors, display the actual error message
+          // For other server errors, use the error modal
           const errorMessage =
             err?.data?.message ||
             "An error occurred during sign up. Please try again.";
-
-          // Try to determine which field the error applies to
-          if (errorMessage.toLowerCase().includes("email")) {
-            setOrganizedErrors((prev) => ({
-              ...prev,
-              email: errorMessage,
-            }));
-          } else if (errorMessage.toLowerCase().includes("password")) {
-            setOrganizedErrors((prev) => ({
-              ...prev,
-              password: errorMessage,
-            }));
-          } else {
-            // Default to showing in email field if can't determine
-            setOrganizedErrors((prev) => ({
-              ...prev,
-              email: errorMessage,
-            }));
-          }
+            
+          showError("Sign Up Error", errorMessage);
         }
       }
     } catch (err) {

@@ -75,15 +75,25 @@ const ServerErrorModal: React.FC<{
     onClose();
   };
 
+  // Format the error message for better display
+  const formatErrorMessage = () => {
+    if (typeof error.message === "string") {
+      return error.message;
+    } else {
+      // Pretty print JSON for better readability
+      try {
+        return JSON.stringify(error.message, null, 2);
+      } catch {
+        return JSON.stringify(error.message);
+      }
+    }
+  };
+
   return (
     <div className={style.overlay} onClick={handleOverlayClick}>
       <div className={style.modal}>
         <h2>{error.title || "Server Error"}</h2>
-        <p>
-          {typeof error.message === "string"
-            ? error.message
-            : JSON.stringify(error.message)}
-        </p>
+        <p>{formatErrorMessage()}</p>
         <button className={style["button-close"]} onClick={handleCloseClick}>
           Close
         </button>
