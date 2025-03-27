@@ -317,13 +317,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
               validateOnBlur={true}
               onSubmit={handleFirstStep}
             >
-              {({
-                errors,
-                touched,
-                isValid,
-                handleSubmit,
-                setFieldTouched,
-              }) => (
+              {({ errors, touched, handleSubmit, setFieldTouched }) => (
                 <form onSubmit={handleSubmit}>
                   <div className="space-y-6">
                     <InputField label="First Name" variant="primary">
@@ -479,12 +473,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                   <div className="space-y-3 mt-6">
                     <Button
                       type="submit"
-                      disabled={!isValid}
-                      className={`w-full ${
-                        isValid
-                          ? "bg-[#F5722E] hover:bg-[#F5722E]/90"
-                          : "bg-[#AEADAD]"
-                      } text-white h-[34px] rounded`}
+                      className="w-full bg-[#F5722E] hover:bg-[#F5722E]/90 text-white h-[34px] rounded"
                     >
                       Next
                     </Button>
@@ -528,14 +517,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
         validateOnBlur={true}
         onSubmit={handleSubmit}
       >
-        {({
-          errors,
-          touched,
-          isValid,
-          handleSubmit,
-          values,
-          setFieldTouched,
-        }) => (
+        {({ errors, touched, handleSubmit, values, setFieldTouched }) => (
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 lg:grid-cols-2 max-w-5xl mx-8 gap-8 pt-2">
               {/* Left Column - Address Form */}
@@ -791,12 +773,8 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                 <div className="space-y-3">
                   <Button
                     type="submit"
-                    disabled={isSubmitting || !isValid}
-                    className={`w-full ${
-                      isValid
-                        ? "bg-[#F5722E] hover:bg-[#F5722E]/90"
-                        : "bg-[#AEADAD] cursor-not-allowed"
-                    } text-white h-[34px] rounded`}
+                    disabled={isSubmitting}
+                    className="w-full bg-[#F5722E] hover:bg-[#F5722E]/90 text-white h-[34px] rounded"
                   >
                     {isSubmitting ? "Processing..." : "Complete Payment"}
                   </Button>
