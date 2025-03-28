@@ -41,6 +41,7 @@ const mapInterviewListData = (apiResponse: any, selectedInterviewsGroup: Intervi
       feedback: 'N/A',
       reason: item?.declineReason ?? 'N/A',
       status: item?.status ?? 'Unknown',
+      requestor: item?.requestor ?? 'N/A',
       isRequesterMe: UserTypeId === item?.requestorId ? true : false,
       hasRescheduled: false,
       bookmarked: false,

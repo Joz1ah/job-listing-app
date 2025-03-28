@@ -3,12 +3,12 @@ import { SkillsWithEllipsis } from "components";
 import { Bookmark, MoreVertical, MapPin } from "lucide-react";
 import { Card, CardHeader, CardContent, CardFooter } from "components";
 import { Button } from "components";
-import { Match } from "mockData/jobs-data";
+import { MatchJH } from "contexts/PerfectMatch/types";
 import { JobPreviewModal } from "../JobCard/job-preview/JobPreviewModal";
 import { useJobHunterContext } from "components";
 
 interface BookmarkCardProps {
-  match: Match;
+  match: MatchJH;
   bookmarked?: boolean;
   onBookmark?: () => void;
 }

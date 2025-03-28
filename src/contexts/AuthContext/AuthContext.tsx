@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import { AuthContextProps } from './types';
 import { useDispatch } from 'react-redux';
-import { useGetUserInfoQuery,akazaApiAccount } from 'api/akaza/akazaAPI';
+import { useGetUserInfoQuery, akazaApiAccount, useGetAccountSettingsQuery } from 'api/akaza/akazaAPI';
 
 // Create the AuthContext
 export const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -19,6 +19,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const { data: user, error, refetch } = useGetUserInfoQuery(null, {
     skip: !token
   });
+  const { data: userSettings, error: errorSettings, refetch: refetchSettings } = useGetAccountSettingsQuery(null, {
+    skip: !token
+  });
+  
   const dispatch = useDispatch();
 
   const login = (newToken: string) => {
@@ -43,6 +47,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (!token) return;
     try {
       await refetch().unwrap();
+      await refetchSettings().unwrap();
     } catch (error) {
       console.error('Error refreshing user:', error);
       logout();
@@ -51,14 +56,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Update authenticated state when user data changes
   useEffect(() => {
-    if (user && token) {
+    if (user && userSettings && token) {
       setIsAuthenticated(true);
       setIsLoading(false);
     } else if (error) {
       logout();
       setIsLoading(false);
     }
-  }, [user, error, token]);
+  }, [user, userSettings, error, errorSettings, token]);
 
   // Initial auth check
   useEffect(() => {
@@ -76,6 +81,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   return (
     <AuthContext.Provider value={{ 
       user, 
+      userSettings,
       token, 
       isAuthenticated, 
       isLoading,

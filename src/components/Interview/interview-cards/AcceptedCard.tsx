@@ -3,7 +3,7 @@ import { MapPin, Info, Check, Bookmark } from "lucide-react";
 import { Card, CardHeader, CardContent, CardFooter } from "components";
 import { Button } from "components";
 import { Tooltip } from "components";
-import { Interview } from "mockData/employer-interviews-data";
+import { Interview } from "contexts/Interviews/types";
 import { CandidatePreviewModal } from "../modals/CandidatePreviewModal";
 import { JobInterviewPreviewModal } from "../modals/JobInterviewPreviewModal";
 
@@ -11,6 +11,7 @@ import gmeet from "images/google-meet.svg?url";
 
 interface AcceptedCardProps {
   interview: Interview;
+  //currentViewerId?: null;
   variant: "employer" | "job-hunter";
   onJoinInterview?: () => void;
   onPreviewJob?: () => void;
@@ -18,6 +19,7 @@ interface AcceptedCardProps {
 
 const AcceptedCard: FC<AcceptedCardProps> = ({
   interview,
+  //currentViewerId,
   variant,
   onJoinInterview,
 }) => {

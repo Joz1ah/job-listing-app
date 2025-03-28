@@ -3,13 +3,14 @@ import { MapPin } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
 import { Button } from "components";
 import { ScheduleInterviewModal } from "features/job-hunter";
-import { Match } from "mockData/jobs-data";
+import { MatchJH } from "contexts/PerfectMatch/types";
+import { useAuth } from "contexts/AuthContext/AuthContext";
 
 interface JobPreviewModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSchedule?: (e: React.MouseEvent) => void;
-  job: Match;
+  job: MatchJH;
 }
 
 // Helper function to format employment preference
@@ -34,6 +35,7 @@ const JobPreviewModal: FC<JobPreviewModalProps> = ({
 }) => {
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [maxHeight, setMaxHeight] = useState("90vh");
+  const {userSettings} = useAuth();
 
   useEffect(() => {
     function updateHeight() {
@@ -216,13 +218,15 @@ const JobPreviewModal: FC<JobPreviewModalProps> = ({
         </div>
 
         <ScheduleInterviewModal
-          isOpen={isScheduleModalOpen}
-          onClose={() => setIsScheduleModalOpen(false)}
-          jobTitle={job.position}
-          coreSkills={job.coreSkills}
-          company={job.company}
-          location={job.location}
-          certificate={job.certificates}
+            isOpen={isScheduleModalOpen}
+            onClose={() => setIsScheduleModalOpen(false)}
+            timeZone={userSettings?.data.timeZone}
+            jobTitle={job.position}
+            coreSkills={job.coreSkills}
+            company={job.company}
+            location={job.location}
+            certificate={job.certificates}
+            jobId={job.jobId}
         />
       </DialogContent>
     </Dialog>

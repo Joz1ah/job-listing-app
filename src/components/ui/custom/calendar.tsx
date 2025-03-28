@@ -22,6 +22,7 @@ interface CalendarProps {
   initialDate?: Date;
   variant?: 'default' | 'secondary';
   meetings?: Meeting[];
+  disablePastDates?: boolean;
 }
 
 const Calendar: React.FC<CalendarProps> = ({ 
@@ -29,7 +30,8 @@ const Calendar: React.FC<CalendarProps> = ({
   onDateSelect, 
   initialDate,
   variant = 'default',
-  meetings = []
+  meetings = [],
+  disablePastDates = false
 }) => {
   const today = new Date();
   today.setHours(0, 0, 0, 0); // Normalize today's date
@@ -57,22 +59,8 @@ const Calendar: React.FC<CalendarProps> = ({
   const dayNames = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 
   const hasMeetings = (date: Date): boolean => {
-    const dateString = new Date(
-      date.getFullYear(),
-      date.getMonth(),
-      date.getDate()
-    ).toISOString().split('T')[0];
-    
-    return meetings.some(meeting => {
-      const meetingDate = new Date(meeting.timeSlot.date);
-      const meetingDateString = new Date(
-        meetingDate.getFullYear(),
-        meetingDate.getMonth(),
-        meetingDate.getDate()
-      ).toISOString().split('T')[0];
-      
-      return dateString === meetingDateString;
-    });
+    const dateString = date.toISOString().split('T')[0];
+    return meetings.some(meeting => meeting.timeSlot.date === dateString);
   };
   
   const previousMonth = (e: React.MouseEvent): void => {
@@ -85,126 +73,87 @@ const Calendar: React.FC<CalendarProps> = ({
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1));
   };
 
-  const isToday = (date: Date): boolean => {
-    return date.getDate() === today.getDate() &&
-           date.getMonth() === today.getMonth() &&
-           date.getFullYear() === today.getFullYear();
-  };
-
-  const isSelected = (date: Date): boolean => {
-    return date.getDate() === selectedDate.getDate() &&
-           date.getMonth() === selectedDate.getMonth() &&
-           date.getFullYear() === selectedDate.getFullYear();
-  };
+  const isToday = (date: Date): boolean => date.toDateString() === today.toDateString();
+  const isSelected = (date: Date): boolean => date.toDateString() === selectedDate.toDateString();
+  const isPastDate = (date: Date): boolean => disablePastDates && date < today;
 
   const handleDateSelect = (date: Date): void => {
+    if (disablePastDates && isPastDate(date)) return;
     setSelectedDate(date);
-    if (onDateSelect) {
-      onDateSelect(date);
-    }
+    onDateSelect?.(date);
   };
   
   const generateDays = (): JSX.Element[] => {
     const days: JSX.Element[] = [];
-    const totalDays = firstDayOfMonth + daysInMonth;
-    const totalCells = Math.ceil(totalDays / 7) * 7;
+    const totalCells = Math.ceil((firstDayOfMonth + daysInMonth) / 7) * 7;
     
     for (let i = 0; i < totalCells; i++) {
       const dayNumber = i - firstDayOfMonth + 1;
       const isCurrentMonth = dayNumber > 0 && dayNumber <= daysInMonth;
-      const currentDayDate = new Date(
-        currentDate.getFullYear(), 
-        currentDate.getMonth(), 
-        dayNumber
-      );
+      const currentDayDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), dayNumber);
       
       if (isCurrentMonth) {
         const isCurrentDateToday = isToday(currentDayDate);
         const isCurrentDateSelected = isSelected(currentDayDate);
         const hasScheduledMeetings = hasMeetings(currentDayDate);
+        const pastDate = isPastDate(currentDayDate);
         
         days.push(
           <div
             key={i}
-            className="relative"
+            className="relative select-none"
             onClick={() => handleDateSelect(currentDayDate)}
           >
             <div
               className={cn(
-                'h-8 w-8 text-sm rounded-full flex flex-col items-center transition-colors duration-200 cursor-pointer',
+                'h-8 w-8 text-sm rounded-full flex flex-col items-center transition-colors duration-200',
                 {
                   'bg-[#F5722E] text-white hover:bg-orange-600': isCurrentDateSelected,
                   'ring-2 ring-[#F5722E] ring-offset-2': isCurrentDateToday && !isCurrentDateSelected,
-                  'text-gray-100 hover:bg-gray-700 ring-offset-zinc-900': variant === 'default' && !isCurrentDateSelected,
-                  'text-gray-900 hover:bg-gray-100 ring-offset-white': variant === 'secondary' && !isCurrentDateSelected,
+                  'text-gray-400 cursor-not-allowed': pastDate,
+                  'text-gray-100 hover:bg-gray-700 cursor-pointer': variant === 'default' && !isCurrentDateSelected && !pastDate,
+                  'text-gray-900 hover:bg-gray-100 cursor-pointer': variant === 'secondary' && !isCurrentDateSelected && !pastDate,
                 }
               )}
             >
               <span className="flex items-center justify-center h-8">{dayNumber}</span>
-              {hasScheduledMeetings && !isCurrentDateSelected && (
+              {hasScheduledMeetings && !isCurrentDateSelected && !pastDate && (
                 <div className="w-1 h-1 rounded-full bg-[#F5722E] -mt-1.5" />
               )}
             </div>
           </div>
         );
       } else {
-        days.push(<div key={i} className="h-8 w-8" />);
+        days.push(<div key={i} className="h-8 w-8 select-none" />);
       }
     }
     return days;
   };
 
-  const containerClasses = cn(
-    'w-[300px] h-[310px] p-4 rounded-lg',
-    variant === 'default' ? 'bg-zinc-800 text-gray-100' : 'bg-white text-gray-900',
-    className
-  );
-
-  const navigationButtonClasses = cn(
-    'p-1 rounded-lg cursor-pointer',
-    {
-      'hover:bg-gray-700': variant === 'default',
-      'hover:bg-gray-100': variant === 'secondary'
-    }
-  );
-
-  const dayNameClasses = cn(
-    'h-8 flex items-center justify-center text-xs font-medium',
-    variant === 'default' ? 'text-gray-400' : 'text-gray-500'
-  );
-
   return (
-    <div className={containerClasses}>
-      <div className="flex items-center justify-between mb-4">
-        <div
-          onClick={previousMonth}
-          className={navigationButtonClasses}
-          aria-label="Previous month"
-        >
+    <div className={cn(
+      'w-[300px] h-[310px] p-4 rounded-lg select-none',
+      variant === 'default' ? 'bg-zinc-800 text-gray-100' : 'bg-white text-gray-900',
+      className
+    )}>
+      <div className="flex items-center justify-between mb-4 select-none">
+        <div onClick={previousMonth} className="p-1 rounded-lg cursor-pointer hover:bg-gray-700">
           <ChevronLeft className="w-5 h-5" />
         </div>
-        
         <h2 className="text-sm font-medium">
           {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
         </h2>
-        
-        <div
-          onClick={nextMonth}
-          className={navigationButtonClasses}
-          aria-label="Next month"
-        >
+        <div onClick={nextMonth} className="p-1 rounded-lg cursor-pointer hover:bg-gray-700">
           <ChevronRight className="w-5 h-5" />
         </div>
       </div>
-      
       <div className="grid grid-cols-7 gap-1 mb-2">
         {dayNames.map(day => (
-          <div key={day} className={dayNameClasses}>
+          <div key={day} className="h-8 flex items-center justify-center text-xs font-medium text-gray-400 select-none">
             {day}
           </div>
         ))}
       </div>
-      
       <div className="grid grid-cols-7 gap-1">
         {generateDays()}
       </div>
@@ -212,4 +161,4 @@ const Calendar: React.FC<CalendarProps> = ({
   );
 };
 
-export { Calendar }
+export { Calendar };

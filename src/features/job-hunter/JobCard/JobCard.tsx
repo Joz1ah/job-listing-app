@@ -14,6 +14,7 @@ import { useBookmarks } from "components";
 import { ScheduleInterviewModal } from "features/job-hunter";
 import { MatchJH } from "contexts/PerfectMatch/types";
 import { useJobHunterContext } from "components";
+import { useAuth } from "contexts/AuthContext/AuthContext";
 import { AdDialogWrapper } from "components";
 
 interface JobCardProps {
@@ -102,6 +103,7 @@ const JobCard: FC<JobCardProps> = ({ match, popupImage, adImage }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const cardId = generateCardId(match);
+  const { userSettings } = useAuth();
   const { subscriptionPlan } = useJobHunterContext();
 
   // Ref for the AdDialogWrapper
@@ -263,6 +265,7 @@ const JobCard: FC<JobCardProps> = ({ match, popupImage, adImage }) => {
           <ScheduleInterviewModal
             isOpen={isScheduleModalOpen}
             onClose={() => setIsScheduleModalOpen(false)}
+            timeZone={userSettings?.data.timeZone}
             jobTitle={match.position}
             coreSkills={match.coreSkills}
             company={match.company}

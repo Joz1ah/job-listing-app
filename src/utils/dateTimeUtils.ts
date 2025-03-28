@@ -13,7 +13,7 @@ dayjs.extend(timezone);
  * @returns {Date} A new Date object with the combined date and time.
  */
 export function combineDateAndTime(dateObj: Date, timeStr: string, timeZone?: string): dayjs.Dayjs {
-    let dateTime = dayjs(dateObj).utc(); // Convert Date object to a Day.js instance in UTC
+    let dateTime = dayjs(dateObj); // Keep it in local time first
 
     // Extract time and AM/PM
     const timeMatch = timeStr.match(/(\d+):(\d+)\s?(AM|PM)/i);
@@ -40,7 +40,6 @@ export function combineDateAndTime(dateObj: Date, timeStr: string, timeZone?: st
 
     return dateTime; 
 }
-
 export function isNew(receivedDate: string): boolean {
     const today = new Date();
     const yesterday = new Date();
@@ -58,23 +57,20 @@ export function isNew(receivedDate: string): boolean {
   export function timeAgo(date: Date): string {
     const now = new Date();
     const secondsAgo = Math.floor((now.getTime() - date.getTime()) / 1000);
-    const minutesAgo = Math.floor(secondsAgo / 60);
-    const hoursAgo = Math.floor(minutesAgo / 60);
-    const daysAgo = Math.floor(hoursAgo / 24);
-    const monthsAgo = Math.floor(daysAgo / 30.44); // Average month length
+    const daysAgo = Math.floor(secondsAgo / 86400);
+    const weeksAgo = Math.floor(daysAgo / 7);
+    const monthsAgo = Math.floor(daysAgo / 30.44);
     const yearsAgo = Math.floor(monthsAgo / 12);
 
     if (yearsAgo > 0) {
         return `${yearsAgo} year${yearsAgo > 1 ? 's' : ''} ago`;
     } else if (monthsAgo > 0) {
         return `${monthsAgo} month${monthsAgo > 1 ? 's' : ''} ago`;
-    } else if (daysAgo > 0) {
-        return `${daysAgo} day${daysAgo > 1 ? 's' : ''} ago`;
-    } else if (hoursAgo > 0) {
-        return `${hoursAgo} hour${hoursAgo > 1 ? 's' : ''} ago`;
-    } else if (minutesAgo > 0) {
-        return `${minutesAgo} minute${minutesAgo > 1 ? 's' : ''} ago`;
+    } else if (weeksAgo > 0) {
+        return `${weeksAgo} week${weeksAgo > 1 ? 's' : ''} ago`;
+    } else if (daysAgo > 1) {
+        return `${daysAgo} days ago`;
     } else {
-        return `${secondsAgo} second${secondsAgo > 1 ? 's' : ''} ago`;
+        return `Today`;
     }
 }

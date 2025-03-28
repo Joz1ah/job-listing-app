@@ -15,6 +15,7 @@ export interface Interview {
     feedback?: string;
     reason?: string;
     status?: 'Accepted' | 'Pending' | 'Declined';
+    requestor?: string;
     isRequesterMe?: boolean;
     hasRescheduled?: boolean;
     bookmarked?: boolean;

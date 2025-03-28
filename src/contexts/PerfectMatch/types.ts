@@ -29,12 +29,14 @@ export interface MatchJH {
   company: string;
   location: string;
   coreSkills: string[];
+  education: string;
   posted: string;
   experience: string;
   description: string;
   lookingFor: ("Full Time" | "Part Time" | "Contract only")[];
   salaryExpectation: string;
   language?: string[];
+  interpersonalSkills: string[];
   certificates?: string[];
   isNew?: boolean;
 }

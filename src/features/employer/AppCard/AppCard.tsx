@@ -148,7 +148,7 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage, adImage }) => {
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   //const [formattedPostDate, setFormattedPostDate] = useState("N/A");
   //const [shouldShowNew, setShouldShowNew] = useState(false);
-  const { user } = useAuth();
+  const { user, userSettings } = useAuth();
   const cardId = generateCardId(match);
   const { subscriptionPlan } = useEmployerContext();
 
@@ -318,6 +318,7 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage, adImage }) => {
             jobId={match.jobId}
             jobHunterId={match.id}
             employerId={user?.data.user.id}
+            timeZone={userSettings?.data.timeZone}
             position={match.position}
             coreSkills={match.coreSkills}
             certificate={match.certificates}

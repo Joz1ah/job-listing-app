@@ -7,6 +7,7 @@ export interface User {
   
   export interface AuthContextProps {
     user: User | null;
+    userSettings: any | null;
     token: string | null;
     isAuthenticated: boolean;
     isLoading: boolean;

@@ -226,8 +226,6 @@ const PendingInterviews: FC = () => {
             <span className="text-[#F5722E] font-medium mx-1">
               PERFECT MATCHES
             </span>
-            to connect & fill your job listing seamlessly
-            <br />
           </p>
 
           <NavLink

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { CustomError } from "types/errors";
-import { useGetAccountSettingsQuery } from "api/akaza/akazaAPI";
 import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
 import {
@@ -25,6 +24,7 @@ import { ChevronRight, MapPin } from "lucide-react";
 interface ScheduleInterviewModalProps {
   isOpen: boolean;
   onClose: () => void;
+  timeZone: string;
   jobId?: number;
   jobHunterId?: number;
   employerId?: number;
@@ -48,7 +48,7 @@ interface FormValues {
 const validationSchema = Yup.object().shape({
   interviewDate: Yup.date()
     .required("Please select a date")
-    .min(new Date(), "Cannot select a past date")
+    .min(new Date(new Date().setHours(0, 0, 0, 0)), "Cannot select a past date")
     .max(
       new Date(new Date().setMonth(new Date().getMonth() + 2)),
       "Cannot select a date more than 2 months",
@@ -62,6 +62,7 @@ const validationSchema = Yup.object().shape({
 const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
   isOpen,
   onClose,
+  timeZone,
   jobId,
   jobHunterId,
   employerId,
@@ -71,13 +72,12 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
   candidateName,
   country,
 }) => {
-  const { data: settingsData } = useGetAccountSettingsQuery(null);
   const navigate = useNavigate();
   const [isDatePickerOpen, setIsDatePickerOpen] = useState<boolean>(false);
   const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
   const [createInterview] = useCreateEmployerInterviewMutation();
   const { showError } = useErrorModal();
-
+  console.log(jobId)
   const formik = useFormik<FormValues>({
     initialValues: {
       interviewDate: undefined,
@@ -89,6 +89,17 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
       meetingLink: "https://meet.google.com/xxx-xxxx-xxx",
     },
     validationSchema,
+    validate: async (values) => {
+      console.log("Formik Values Before Validation:", values); // ✅ Logs raw values
+      try {
+        await validationSchema.validate(values, { abortEarly: false });
+        console.log("Validated Data:", values); // ✅ Logs if validation passes
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          console.error("Validation Errors:", err.errors); // ❌ Logs validation errors
+        }
+      }
+    },
     validateOnMount: true,
     onSubmit: async (values, { setSubmitting }) => {
       try {
@@ -97,18 +108,19 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
           values.interviewDate as Date,
           values.interviewTime as string,
         );
-        const scheduledEnd = scheduleStart.add(1, "hour");
+        const scheduledEnd = scheduleStart.add(30, "minutes");
         const payload = {
           jobId: values.jobId,
           jobHunterId: values.jobHunterId,
-          scheduledStart: scheduleStart.toDate(),
-          scheduledEnd: scheduledEnd.toDate(),
+          machineTimeZone: timeZone,
+          scheduledStart: scheduleStart.format("YYYY-MM-DDTHH:mm:ssZ"),
+          scheduledEnd: scheduledEnd.format("YYYY-MM-DDTHH:mm:ssZ"),
         };
-        await createInterview(payload)
-          .unwrap()
-          .then(() => {
-            setShowSuccessModal(true);
-          });
+        console.log(payload)
+        await createInterview(payload).unwrap().then(()=>{
+          setShowSuccessModal(true);
+          //console.log("Form submitted with values:", payload);
+        });
       } catch (error) {
         const errorMessage =
           (error as CustomError).data?.message ||
@@ -278,6 +290,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                                 onDateSelect={handleDateSelect}
                                 initialDate={values.interviewDate}
                                 variant="secondary"
+                                disablePastDates={true}
                               />
                             </div>
                           )}
@@ -330,7 +343,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                           navigate("/dashboard/account-settings/general");
                         }}
                       >
-                        {settingsData?.data?.timeZone} Timezone | Click to
+                        {timeZone} | Click to
                         Change
                       </span>
                       <ChevronRight className="w-4 h-4 flex-shrink-0" />

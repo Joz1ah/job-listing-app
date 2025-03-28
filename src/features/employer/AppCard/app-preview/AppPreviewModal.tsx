@@ -5,6 +5,7 @@ import { Button } from "components";
 import { ScheduleInterviewModal } from "features/employer";
 //import { Match } from "mockData/job-hunter-data";
 import { Match } from "contexts/PerfectMatch/types";
+import { useAuth } from "contexts/AuthContext/AuthContext";
 
 interface AppPreviewModalProps {
   isOpen: boolean;
@@ -21,6 +22,7 @@ const AppPreviewModal: FC<AppPreviewModalProps> = ({
 }) => {
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [maxHeight, setMaxHeight] = useState("90vh");
+  const {user, userSettings} = useAuth();
 
   useEffect(() => {
     function updateHeight() {
@@ -202,13 +204,17 @@ const AppPreviewModal: FC<AppPreviewModalProps> = ({
         </div>
 
         <ScheduleInterviewModal
-          isOpen={isScheduleModalOpen}
-          onClose={() => setIsScheduleModalOpen(false)}
-          position={app.position}
-          coreSkills={app.coreSkills}
-          certificate={app.certificates}
-          candidateName={`${app.firstName} ${app.lastName}`}
-          country={app.location}
+            isOpen={isScheduleModalOpen}
+            onClose={() => setIsScheduleModalOpen(false)}
+            jobId={app.jobId}
+            jobHunterId={app.id}
+            employerId={user?.data.user.id}
+            timeZone={userSettings?.data.timeZone}
+            position={app.position}
+            coreSkills={app.coreSkills}
+            certificate={app.certificates}
+            candidateName={`${app.firstName} ${app.lastName}`}
+            country={app.country}
         />
       </DialogContent>
     </Dialog>

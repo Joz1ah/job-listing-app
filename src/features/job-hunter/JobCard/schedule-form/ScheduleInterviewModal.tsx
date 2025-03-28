@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
-import { useGetAccountSettingsQuery } from "api/akaza/akazaAPI";
 import { useNavigate } from "react-router-dom";
 import {
   Select,
@@ -24,6 +23,7 @@ import { ChevronRight, MapPin } from "lucide-react";
 interface ScheduleInterviewModalProps {
   isOpen: boolean;
   onClose: () => void;
+  timeZone: string;
   jobId?: number;
   jobTitle: string;
   coreSkills: string[];
@@ -55,6 +55,7 @@ const validationSchema = Yup.object().shape({
 const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
   isOpen,
   onClose,
+  timeZone,
   jobId,
   jobTitle,
   coreSkills,
@@ -62,7 +63,6 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
   company,
   location,
 }) => {
-  const { data: settingsData } = useGetAccountSettingsQuery(null);
   const navigate = useNavigate();
   const [isDatePickerOpen, setIsDatePickerOpen] = useState<boolean>(false);
   const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
@@ -308,7 +308,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                           navigate("/dashboard/account-settings/general");
                         }}
                       >
-                        {settingsData?.data?.timeZone} Timezone | Click to
+                        {timeZone} Timezone | Click to
                         Change
                       </span>
                       <ChevronRight className="w-4 h-4 flex-shrink-0" />

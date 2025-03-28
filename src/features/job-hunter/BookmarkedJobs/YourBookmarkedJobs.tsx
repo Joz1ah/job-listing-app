@@ -3,13 +3,13 @@ import { BookmarkCard } from "features/job-hunter";
 import { InterviewCardSkeleton } from "components";
 import { NavLink } from "react-router-dom";
 import emptyBookmark from "images/bookmark-empty.svg?url";
-import { Match } from "mockData/jobs-data";
+import { MatchJH } from "contexts/PerfectMatch/types";
 import { BookmarkProvider } from "contexts/BookmarkContext";
 import { useJobHunterContext } from "components";
 import { ROUTE_CONSTANTS } from "constants/routeConstants";
 
 // You can replace this with your actual mock data
-const mockBookmarks: Match[] = [
+const mockBookmarks: MatchJH[] = [
   /* {
     employerId: 1,
     position: "Software Engineer",
@@ -62,7 +62,7 @@ const mockBookmarks: Match[] = [
 ];
 
 const BookmarkedJobsContent: FC = () => {
-  const [displayedItems, setDisplayedItems] = useState<Match[]>([]);
+  const [displayedItems, setDisplayedItems] = useState<MatchJH[]>([]);
   const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
   const loaderRef = useRef<HTMLDivElement>(null);
