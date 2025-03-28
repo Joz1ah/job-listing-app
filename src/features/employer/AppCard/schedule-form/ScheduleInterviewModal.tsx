@@ -113,7 +113,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
         const payload = {
           jobId: values.jobId,
           jobHunterId: values.jobHunterId,
-          requestorTimeZone: timezone,
+          requestorTimezone: timezone,
           scheduledStart: scheduleStart.format("YYYY-MM-DDTHH:mm"),
           scheduledEnd: scheduledEnd.format("YYYY-MM-DDTHH:mm"),
         };

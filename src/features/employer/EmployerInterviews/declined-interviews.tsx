@@ -3,9 +3,7 @@ import { DeclinedCard } from "components";
 import { InterviewCardSkeleton } from "components";
 import { NavLink } from "react-router-dom";
 import emptyInterview from "images/calendar-empty.svg?url";
-import {
-  Interview,
-} from "mockData/employer-interviews-data";
+import { Interview } from "contexts/Interviews/types";
 import { useInterviewsContext } from "contexts/Interviews/InterviewsContext";
 import { useEmployerContext } from "components";
 import { ROUTE_CONSTANTS } from "constants/routeConstants";

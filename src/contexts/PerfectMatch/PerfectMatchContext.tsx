@@ -61,6 +61,7 @@ const mapPerfectMatchDataJH = (apiResponse: any): MatchJH[] => {
     position: item?.jobDetails?.jobTitle ?? '',
     company: item?.jobDetails?.employerName ?? '',
     location: item?.jobDetails?.location ?? '',
+    country: item.jobDetails?.country ?? "Unknown",
     coreSkills: item?.jobDetails?.jobKeywords
     ? item.jobDetails.jobKeywords
         .filter((keyword: any) => keyword.type === "core")

@@ -6,7 +6,7 @@ import { Tooltip } from "components";
 import { CandidatePreviewModal } from "../modals/CandidatePreviewModal";
 import { JobInterviewPreviewModal } from "../modals/JobInterviewPreviewModal";
 import { RatingModal } from "features/employer";
-import { Interview } from "mockData/employer-interviews-data";
+import { Interview } from "contexts/Interviews/types";
 
 interface RatingData {
   rating: number;
@@ -104,7 +104,7 @@ const CompletedCard: FC<CompletedCardProps> = ({
             <div className="flex flex-row items-center">
               <MapPin size={14} className="text-[#F5722E]" />
               <p className="text-[13px] font-light mt-0 ml-2 text-[#263238]">
-                Based in {interview.location}
+                Based in {interview.country}
               </p>
             </div>
           </div>

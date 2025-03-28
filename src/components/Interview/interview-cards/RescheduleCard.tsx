@@ -17,7 +17,7 @@ import { RescheduleModal } from "../modals/RescheduleModal";
 import { useNavigate } from "react-router-dom";
 import { EmployerInterviewCalendarModal } from "../modals/EmployerInterviewCalendarModal";
 import { HunterInterviewCalendarModal } from "../modals/HunterInterviewCalendarModal";
-import { Interview } from "mockData/employer-interviews-data";
+import { Interview } from "contexts/Interviews/types";
 
 interface AcceptData {
   confirmed: boolean;
@@ -166,7 +166,7 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
             <div className="flex items-center mt-1">
               <MapPin size={14} className="text-[#F5722E]" />
               <p className="text-[13px] text-[#263238] ml-1">
-                Based in {interview.location}
+                Based in {interview.country}
               </p>
             </div>
           </div>

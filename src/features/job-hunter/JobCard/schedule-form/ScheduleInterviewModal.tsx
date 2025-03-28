@@ -69,7 +69,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
   const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
   const [createInterview] = useCreateJobHunterInterviewMutation();
   const { showError } = useErrorModal();
-  createInterview
+  console.log(timezone)
   const formik = useFormik<FormValues>({
     initialValues: {
       interviewDate: undefined,

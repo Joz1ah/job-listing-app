@@ -1,14 +1,20 @@
 import { FC, useState, useEffect, useRef } from "react";
+import { CustomError } from "types/errors";
 import { RescheduleCard } from "components";
 import { InterviewCardSkeleton } from "components";
 import { NavLink } from "react-router-dom";
 import emptyInterview from "images/calendar-empty.svg?url";
-import {
-  rescheduleInterviewsData,
-  Interview,
-} from "mockData/job-hunter-interviews-data";
+import { Interview } from "contexts/Interviews/types";
+import { useInterviewsContext } from "contexts/Interviews/InterviewsContext";
 import { useJobHunterContext } from "components";
 
+const handleError = (errorComponent:any, error:CustomError, title:string, message:string) => {
+  const showError = errorComponent;
+  console.log('trying to handle error')
+  console.log(error,title,message)
+  const errorMessage = (error as CustomError).data?.message || message;
+  showError(title, errorMessage);
+}
 const RescheduleRequests: FC = () => {
   const [displayedItems, setDisplayedItems] = useState<Interview[]>([]);
   const [loading, setLoading] = useState(true);
@@ -16,6 +22,10 @@ const RescheduleRequests: FC = () => {
   const loaderRef = useRef<HTMLDivElement>(null);
   const [initialLoad, setInitialLoad] = useState(true);
   const { subscriptionPlan } = useJobHunterContext();
+  const {interviewsList, setSelectedInterviewsGroup} = useInterviewsContext();
+
+  setSelectedInterviewsGroup('RESCHEDULE')
+  handleError
 
   const handleAccept = async (interview: Interview) => {
     console.log("Accepted interview:", interview.position);
@@ -48,7 +58,7 @@ const RescheduleRequests: FC = () => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     const currentCount = displayedItems.length;
-    const remainingItems = rescheduleInterviewsData.length - currentCount;
+    const remainingItems = interviewsList.length - currentCount;
 
     if (remainingItems <= 0) {
       setHasMore(false);
@@ -57,13 +67,13 @@ const RescheduleRequests: FC = () => {
     }
 
     const itemsToLoad = Math.min(2, remainingItems);
-    const newItems = rescheduleInterviewsData.slice(
+    const newItems = interviewsList.slice(
       currentCount,
       currentCount + itemsToLoad,
     );
     setDisplayedItems((prev) => [...prev, ...newItems]);
 
-    if (currentCount + itemsToLoad >= rescheduleInterviewsData.length) {
+    if (currentCount + itemsToLoad >= interviewsList.length) {
       setHasMore(false);
     }
 
@@ -75,15 +85,15 @@ const RescheduleRequests: FC = () => {
       setLoading(true);
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      const initialItems = rescheduleInterviewsData.slice(0, 6);
+      const initialItems = interviewsList.slice(0, 6);
       setDisplayedItems(initialItems);
-      setHasMore(rescheduleInterviewsData.length > 6);
+      setHasMore(interviewsList.length > 6);
       setLoading(false);
       setInitialLoad(false);
     };
 
     loadInitialItems();
-  }, []);
+  }, [interviewsList]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -188,7 +198,7 @@ const RescheduleRequests: FC = () => {
         {loading && (
           <>
             {Array.from({
-              length: Math.min(6, rescheduleInterviewsData.length),
+              length: Math.min(6, interviewsList.length),
             }).map((_, index) => (
               <InterviewCardSkeleton key={`skeleton-${index}`} />
             ))}

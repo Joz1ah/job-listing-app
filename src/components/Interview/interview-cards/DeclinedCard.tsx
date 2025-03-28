@@ -3,7 +3,7 @@ import { MapPin, X, Bookmark } from "lucide-react";
 import { Card, CardHeader, CardContent } from "components";
 import { CandidatePreviewModal } from "../modals/CandidatePreviewModal";
 import { JobInterviewPreviewModal } from "../modals/JobInterviewPreviewModal";
-import { Interview } from "mockData/employer-interviews-data";
+import { Interview } from "contexts/Interviews/types";
 
 interface DeclinedCardProps {
   interview: Interview;
@@ -82,7 +82,7 @@ const DeclinedCard: FC<DeclinedCardProps> = ({ interview, variant }) => {
             <div className="flex items-center mt-1">
               <MapPin size={14} className="text-[#F5722E]" />
               <p className="text-xs ml-1 text-[#263238]">
-                Based in {interview.location}
+                Based in {interview.country}
               </p>
             </div>
           </div>

@@ -28,6 +28,7 @@ export interface MatchJH {
   position: string;
   company: string;
   location: string;
+  country?: string;
   coreSkills: string[];
   education: string;
   posted: string;

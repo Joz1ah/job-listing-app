@@ -573,7 +573,7 @@ export const akazaApiInterviewRequest = createApiFunction({
         method: 'POST',
         body: {
             "jobId": payLoad.jobId,
-            "requestorTimezone": payLoad.requestorTimeZone,
+            "requestorTimezone": payLoad.requestorTimezone,
             "jobHunterId": payLoad.jobHunterId,
             "scheduledStart": payLoad.scheduledStart,
             "scheduledEnd": payLoad.scheduledEnd,
@@ -588,7 +588,7 @@ export const akazaApiInterviewRequest = createApiFunction({
         method: 'POST',
         body: {
             "jobId": payLoad.jobId,
-            "requestorTimezone": payLoad.requestorTimeZone,
+            "requestorTimezone": payLoad.requestorTimezone,
             "scheduledStart": payLoad.scheduledStart,
             "scheduledEnd": payLoad.scheduledEnd,
             //"location": payLoad.location,

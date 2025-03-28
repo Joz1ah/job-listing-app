@@ -3,10 +3,7 @@ import { RescheduleCard } from "components";
 import { InterviewCardSkeleton } from "components";
 import { NavLink } from "react-router-dom";
 import emptyInterview from "images/calendar-empty.svg?url";
-import {
-  rescheduleInterviewsData,
-  Interview,
-} from "mockData/employer-interviews-data";
+import { Interview } from "contexts/Interviews/types";
 import { useEmployerContext } from "components";
 import { useInterviewsContext } from "contexts/Interviews/InterviewsContext";
 
@@ -52,7 +49,7 @@ const RescheduleRequests: FC = () => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     const currentCount = displayedItems.length;
-    const remainingItems = rescheduleInterviewsData.length - currentCount;
+    const remainingItems = interviewsList.length - currentCount;
 
     if (remainingItems <= 0) {
       setHasMore(false);
@@ -61,13 +58,13 @@ const RescheduleRequests: FC = () => {
     }
 
     const itemsToLoad = Math.min(2, remainingItems);
-    const newItems = rescheduleInterviewsData.slice(
+    const newItems = interviewsList.slice(
       currentCount,
       currentCount + itemsToLoad,
     );
     setDisplayedItems((prev) => [...prev, ...newItems]);
 
-    if (currentCount + itemsToLoad >= rescheduleInterviewsData.length) {
+    if (currentCount + itemsToLoad >= interviewsList.length) {
       setHasMore(false);
     }
 
@@ -79,9 +76,9 @@ const RescheduleRequests: FC = () => {
       setLoading(true);
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      const initialItems = rescheduleInterviewsData.slice(0, 6);
+      const initialItems = interviewsList.slice(0, 6);
       setDisplayedItems(initialItems);
-      setHasMore(rescheduleInterviewsData.length > 6);
+      setHasMore(interviewsList.length > 6);
       setLoading(false);
       setInitialLoad(false);
     };
@@ -192,7 +189,7 @@ const RescheduleRequests: FC = () => {
         {loading && (
           <>
             {Array.from({
-              length: Math.min(6, rescheduleInterviewsData.length),
+              length: Math.min(6, interviewsList.length),
             }).map((_, index) => (
               <InterviewCardSkeleton key={`skeleton-${index}`} />
             ))}

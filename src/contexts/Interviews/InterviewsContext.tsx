@@ -33,7 +33,9 @@ const mapInterviewListData = (apiResponse: any, timeZone: InterviewListData['tim
       date: timeZone=='UTC' ? item?.scheduledStartDate : getDateInTimezone(timeZone, item?.scheduledStartDate,undefined,true).format('MMMM DD YYYY') ?? 'N/A',
       time: timeZone === 'UTC'
       ? `${item?.scheduledStartTime} UTC`
-      : `${getDateInTimezone(timeZone, item?.scheduledStartDate, item?.scheduledStartTime, true).format('h:mm A')} ${getTimezoneAbbreviation(timeZone) ?? 'N/A'}`,      location: item?.jobHunter?.country ?? 'N/A',
+      : `${getDateInTimezone(timeZone, item?.scheduledStartDate, item?.scheduledStartTime, true).format('h:mm A')} ${getTimezoneAbbreviation(timeZone) ?? 'N/A'}`,
+      location: item?.jobHunter?.location ?? 'N/A',
+      country: UserType=='employer' ? item?.jobHunter?.country ?? 'N/A' : item?.employer?.country ?? 'N/A',
       meetingLink: item?.meetingLink ?? 'via Google Meet',
       receivedTime: timeAgo(new Date(item?.createdAt)) ?? 'N/A',
       sentTime: item?.scheduledStartTime ?? 'N/A',
