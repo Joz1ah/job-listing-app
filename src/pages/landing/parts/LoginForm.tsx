@@ -7,7 +7,6 @@ import { Eye, EyeOff } from "lucide-react";
 import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
 import { MODAL_STATES } from "store/modal/modal.types";
 import * as Yup from "yup";
-import Cookies from "js-cookie";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 
 interface LoginFormValues {
@@ -39,13 +38,6 @@ const LoginForm = () => {
 
       // Check if we have the token in the response
       if (response?.data?.token) {
-        // Set the cookie explicitly first with the remember me option
-        Cookies.set("authToken", response.data.token, {
-          expires: values.rememberMe ? 7 : 1,
-          path: "/",
-          secure: true,
-          sameSite: "strict",
-        });
 
         // Store user preferences in localStorage
         const userType = response.data.user?.type;
