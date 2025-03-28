@@ -24,7 +24,7 @@ const RescheduleRequests: FC = () => {
   const { subscriptionPlan } = useJobHunterContext();
   const {interviewsList, setSelectedInterviewsGroup} = useInterviewsContext();
 
-  setSelectedInterviewsGroup('RESCHEDULE')
+  setSelectedInterviewsGroup('RESCHEDULED')
   handleError
 
   const handleAccept = async (interview: Interview) => {

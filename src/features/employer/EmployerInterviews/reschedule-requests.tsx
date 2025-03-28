@@ -16,7 +16,7 @@ const RescheduleRequests: FC = () => {
   const { subscriptionPlan } = useEmployerContext();
   const {interviewsList, setSelectedInterviewsGroup} = useInterviewsContext();
 
-  setSelectedInterviewsGroup('RESCHEDULE');
+  setSelectedInterviewsGroup('RESCHEDULED');
 
   const handleAccept = async (interview: Interview) => {
     console.log("Accepted interview:", interview.position);

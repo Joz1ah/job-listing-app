@@ -34,6 +34,7 @@ interface RescheduleReason {
 }
 
 interface RescheduleData {
+  reason: string;
   date: string;
   time: string;
   interviewId?: string;
@@ -114,8 +115,8 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
     validationSchema,
     onSubmit: async (values) => {
       setIsLoading(true);
-
       onReschedule({
+        reason: values.reason || '',
         date: values.interviewDate?.toISOString() ?? "",
         time: values.interviewTime ?? "",
         interviewId: interview.id,
@@ -296,6 +297,7 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
                               onDateSelect={handleDateSelect}
                               initialDate={values.interviewDate}
                               variant="secondary"
+                              disablePastDates={true}
                             />
                           </div>
                         )}
