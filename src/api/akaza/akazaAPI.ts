@@ -633,6 +633,17 @@ export const akazaApiInterviewRequest = createApiFunction({
         }
       }),
     }),
+    ratingFeedback: builder.mutation({
+      query: (payload) => ({
+        url: `/interviews/${payload.interviewId}/feedback`,
+        method: 'POST',
+        body: {
+          "interviewId": payload.interviewId,
+          "rating": payload.rating,
+          "comments": payload.comments
+        }
+      }),
+    }),
   }),
 });
 
@@ -828,7 +839,8 @@ export const {
   useGetInterviewListQuery,
   useAcceptInterviewMutation,
   useRejectInterviewMutation,
-  useRescheduleInterviewMutation
+  useRescheduleInterviewMutation,
+  useRatingFeedbackMutation
 }
 = akazaApiInterviewRequest
 

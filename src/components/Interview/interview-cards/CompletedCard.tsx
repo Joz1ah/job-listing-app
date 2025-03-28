@@ -11,6 +11,7 @@ import { Interview } from "contexts/Interviews/types";
 interface RatingData {
   rating: number;
   feedback: string;
+  setShowSuccess: (show: boolean) => void;
 }
 
 interface CompletedCardProps {
@@ -26,12 +27,10 @@ const CompletedCard: FC<CompletedCardProps> = ({
 }) => {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
-
-  const handleRatingSubmit = (data: RatingData) => {
+  const handleRatingSubmit = async (data: RatingData) => {
     onRateInterview?.(data);
-    setIsRatingModalOpen(false);
-  };
-
+    //setIsRatingModalOpen(false);
+  }
   const renderStars = (rating: number | undefined) => {
     if (!rating) return renderStars(0);
     return Array.from({ length: 5 }).map((_, index) => (

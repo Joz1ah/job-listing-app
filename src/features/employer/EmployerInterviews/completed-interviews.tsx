@@ -6,6 +6,14 @@ import emptyInterview from "images/calendar-empty.svg?url";
 import { Interview } from "contexts/Interviews/types";
 import { useEmployerContext } from "components";
 import { useInterviewsContext } from "contexts/Interviews/InterviewsContext";
+import { useRatingFeedbackMutation } from "api/akaza/akazaAPI";
+import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
+
+interface ratingFeedbackData {
+  rating: number;
+  feedback: string;
+  setShowSuccess: (show: boolean) => void;
+}
 
 const CompletedInterviews: FC = () => {
   const [displayedItems, setDisplayedItems] = useState<Interview[]>([]);
@@ -15,8 +23,32 @@ const CompletedInterviews: FC = () => {
   const [initialLoad, setInitialLoad] = useState(true);
   const { subscriptionPlan } = useEmployerContext();
   const {interviewsList, setSelectedInterviewsGroup} = useInterviewsContext();
+  const [submitRatingFeedback] = useRatingFeedbackMutation();
+  const { showError } = useErrorModal();
 
   setSelectedInterviewsGroup('COMPLETED');
+
+  const handleRatingFeedback = async (interview: Interview, data: ratingFeedbackData) => {
+
+    try {
+      console.log(data)
+      const payload = {
+        "interviewId": interview.id,
+        "rating": data.rating,
+        "comments": data.feedback
+      }
+      await submitRatingFeedback(payload).unwrap().then(()=>{
+        data.setShowSuccess(false)
+      });
+    } catch (error) {
+      showError(
+        "Interview Rating and Feedback Failed",
+        "Unable to give feedback and rating to the interview. Please try again.",
+      );
+      console.error("Error sending invite:", error);
+    } finally {
+    }
+  };
 
   const loadMore = async () => {
     if (loading || !hasMore) return;
@@ -157,6 +189,7 @@ const CompletedInterviews: FC = () => {
           displayedItems.map((interview, index) => (
             <CompletedCard
               key={index}
+              onRateInterview={(data) => handleRatingFeedback(interview, data)}
               interview={interview}
               variant="employer"
             />

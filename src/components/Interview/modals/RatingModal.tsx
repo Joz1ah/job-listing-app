@@ -20,6 +20,7 @@ interface Interview {
 interface RatingData {
   rating: number;
   feedback: string;
+  setShowSuccess: (show: boolean) => void;
 }
 
 interface RatingModalProps {
@@ -47,9 +48,9 @@ const RatingModal: React.FC<RatingModalProps> = ({
 
   const handleSubmit = (): void => {
     if (onSubmit) {
-      onSubmit({ rating, feedback });
+      onSubmit({ rating, feedback, setShowSuccess });
     }
-    setShowSuccess(true);
+    //setShowSuccess(true);
   };
 
   const handleSuccessClose = () => {
