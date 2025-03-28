@@ -8,6 +8,7 @@ import {
   InterviewsProviderProps,
 } from "./types";
 import { isNew, timeAgo } from "utils/dateTimeUtils";
+import { getDateInTimezone } from "utils/dateTimeUtils";
 
 const InterviewsContext = createContext<InterviewsContextType | undefined>(
   undefined,
@@ -15,11 +16,12 @@ const InterviewsContext = createContext<InterviewsContextType | undefined>(
 
 interface InterviewListData{
   InterviewsGroup: 'PENDING' | 'ACCEPTED' | 'DECLINED' | 'RESCHEDULE' | 'COMPLETED';
+  timeZone: string;
   UserType: 'employer' | 'job_hunter';
   UserTypeId: number;
 }
 
-const mapInterviewListData = (apiResponse: any, selectedInterviewsGroup: InterviewListData['InterviewsGroup'], UserType: InterviewListData['UserType'], UserTypeId: InterviewListData['UserTypeId'] ): Interview[] => {
+const mapInterviewListData = (apiResponse: any, timeZone: InterviewListData['timeZone'], selectedInterviewsGroup: InterviewListData['InterviewsGroup'], UserType: InterviewListData['UserType'], UserTypeId: InterviewListData['UserTypeId'] ): Interview[] => {
   if (!apiResponse || !apiResponse.data) return [];
   if (UserType) 
     return apiResponse?.data?.groupedByStatus?.[selectedInterviewsGroup]?.map((item: any) => ({
@@ -29,8 +31,8 @@ const mapInterviewListData = (apiResponse: any, selectedInterviewsGroup: Intervi
       ? `${item.jobHunter.firstName} ${item.jobHunter.lastName}` 
       : 'Unknown User',
       company: item?.employer?.businessName ?? 'Unknown Company',
-      date: item?.scheduledStartDate ?? 'N/A',
-      time: item?.scheduledStartTime ?? 'N/A',
+      date: timeZone=='UTC' ? item?.scheduledStartDate : getDateInTimezone(timeZone, item?.scheduledStartDate).format('MMMM DD YYYY') ?? 'N/A',
+      time: timeZone=='UTC' ? item?.scheduledStartTime : getDateInTimezone(timeZone, item?.scheduledStartDate, item?.scheduledStartTime).format('h:mm A') ?? 'N/A',
       location: item?.jobHunter?.country ?? 'N/A',
       meetingLink: item?.meetingLink ?? 'via Google Meet',
       receivedTime: timeAgo(new Date(item?.createdAt)) ?? 'N/A',
@@ -117,7 +119,7 @@ const InterviewsProvider: React.FC<InterviewsProviderProps> = ({
     page: 1,
     hasMore: true,
   });
-  const {user} = useAuth();
+  const {user,userSettings} = useAuth();
   const { data, isLoading, error } = useGetInterviewListQuery({
     page: interviewsListState.page,
     limit: 100,
@@ -126,7 +128,13 @@ const InterviewsProvider: React.FC<InterviewsProviderProps> = ({
   // Process the data when it arrives
   useEffect(() => {
     if (!isLoading && !error && data) {
-      const mappedData = mapInterviewListData(data, selectedInterviewsGroup, user?.data?.user?.type, user?.data?.user?.relatedDetails?.id);
+      const mappedData = mapInterviewListData(
+        data,
+        userSettings?.data.timeZone,
+        selectedInterviewsGroup,
+        user?.data?.user?.type,
+        user?.data?.user?.relatedDetails?.id
+      );
       setInterviewsList(mappedData);
       //setIsLoadingInterviewList(false);
     }

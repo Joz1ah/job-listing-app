@@ -77,11 +77,21 @@ export function isNew(receivedDate: string | Date): boolean {
 }
 
 /**
- * Gets the current date and time in a specified time zone.
+ * Gets the current date and time in a specified time zone, or a custom date if provided.
+ * Optionally, you can also pass a custom time (either 24-hour or 12-hour format) to override the time part.
  * 
  * @param {string} timeZone - The time zone (e.g., 'Asia/Shanghai').
- * @returns {Date} - The current date and time in the specified time zone.
+ * @param {string | Date} [customDate] - An optional custom date (e.g., '2025-03-28') or Date object.
+ * @param {string} [customTime] - An optional custom time (e.g., '14:30:00' or '02:30:00 PM').
+ * @returns {dayjs.Dayjs} - The current or custom date and time in the specified time zone as a dayjs object.
  */
-export const getDateInTimezone = (timeZone:string) => {
-    return dayjs().tz(timeZone);
+export const getDateInTimezone = (timeZone: string, customDate?: string | Date, customTime?: string) => {
+    let date = customDate ? dayjs(customDate) : dayjs();
+  
+    // If custom time is provided, set the time part
+    if (customTime) {
+      date = dayjs(`${date.format('YYYY-MM-DD')} ${customTime}`, 'YYYY-MM-DD hh:mm:ss A');
+    }
+  
+    return date.tz(timeZone);
   };
