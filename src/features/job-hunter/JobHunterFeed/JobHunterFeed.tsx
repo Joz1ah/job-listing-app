@@ -670,7 +670,7 @@ const JobHunterFeed: FC = () => {
           </div>
 
           {/* Content Section */}
-          <div className="w-full max-w-[932px] mx-auto px-4">
+          <div className="w-full max-w-[932px] mx-auto">
             {showSkeleton ? (
               // Show skeleton state during loading
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 justify-items-center w-full max-w-[436px] md:max-w-[900px] mx-auto px-0">

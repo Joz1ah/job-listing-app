@@ -475,7 +475,7 @@ const PendingCard: FC<PendingCardProps> = ({
       )}
       {/* Card */}
       <Card
-        className={`bg-[#FFFFFF] border-none w-full md:w-[436px] h-auto md:h-[275px] relative ${
+        className={`bg-[#FFFFFF] border-none w-full sm:min-w-[436px] max-w-[436px] h-[275px] relative ${
           modalView ? "z-50" : ""
         }`}
       >
