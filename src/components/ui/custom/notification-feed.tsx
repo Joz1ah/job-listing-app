@@ -10,7 +10,7 @@ import DOMPurify from "dompurify";
 import sparkle_icon from "assets/sparkle-icon.svg?url";
 import { AdDialogWrapper } from "components";
 import { useAuth } from "contexts/AuthContext/AuthContext";
-
+import { isNew, timeAgo } from "utils/dateTimeUtils";
 interface NotificationFeedProps {
   subscriptionPlan?: "freeTrial" | "monthlyPlan" | "yearlyPlan";
   userType?: "employer" | "job_hunter";
@@ -75,22 +75,22 @@ const NotificationFeed: FC<NotificationFeedProps> = ({
     (n) => n.unread,
   ).length;
 
-  const getTimeLabel = (timestamp: Date) => {
-    const diff = Date.now() - timestamp.getTime();
-    const minutes = diff / (1000 * 60);
-    const hours = minutes / 60;
-    const days = hours / 24;
+  // const getTimeLabel = (timestamp: Date) => {
+  //   const diff = Date.now() - timestamp.getTime();
+  //   const minutes = diff / (1000 * 60);
+  //   const hours = minutes / 60;
+  //   const days = hours / 24;
 
-    if (minutes <= 60) {
-      return { label: "New", timeText: "now" };
-    } else if (minutes < 300) {
-      return { label: "Earlier", timeText: `${Math.floor(hours)}h` };
-    } else if (hours < 24) {
-      return { label: "", timeText: `${Math.floor(hours)}h` };
-    } else {
-      return { label: "", timeText: `${Math.floor(days)}d` };
-    }
-  };
+  //   if (minutes <= 60) {
+  //     return { label: "New", timeText: "now" };
+  //   } else if (minutes < 300) {
+  //     return { label: "Earlier", timeText: `${Math.floor(hours)}h` };
+  //   } else if (hours < 24) {
+  //     return { label: "", timeText: `${Math.floor(hours)}h` };
+  //   } else {
+  //     return { label: "", timeText: `${Math.floor(days)}d` };
+  //   }
+  // };
 
   const markAsRead = (notificationId: number) => {
     setNewNotifications((prev) =>
@@ -124,8 +124,8 @@ const NotificationFeed: FC<NotificationFeedProps> = ({
   }: {
     notification: NotificationItem;
   }) => {
-    const { label, timeText } = getTimeLabel(notification.createdAt);
-
+    const timeText = timeAgo(notification.createdAt);
+    const label = isNew(notification.createdAt) ? 'New' : '';
     return (
       <div
         className="group cursor-pointer"
