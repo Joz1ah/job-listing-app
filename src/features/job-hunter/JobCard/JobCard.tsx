@@ -265,7 +265,7 @@ const JobCard: FC<JobCardProps> = ({ match, popupImage, adImage }) => {
           <ScheduleInterviewModal
             isOpen={isScheduleModalOpen}
             onClose={() => setIsScheduleModalOpen(false)}
-            timeZone={userSettings?.data.timeZone}
+            timezone={userSettings?.data.timeZone}
             jobTitle={match.position}
             coreSkills={match.coreSkills}
             company={match.company}

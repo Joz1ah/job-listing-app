@@ -25,7 +25,7 @@ import { getDateInTimezone } from "utils/dateTimeUtils";
 interface ScheduleInterviewModalProps {
   isOpen: boolean;
   onClose: () => void;
-  timeZone: string;
+  timezone: string;
   jobId?: number;
   jobHunterId?: number;
   employerId?: number;
@@ -63,7 +63,7 @@ const validationSchema = Yup.object().shape({
 const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
   isOpen,
   onClose,
-  timeZone,
+  timezone,
   jobId,
   jobHunterId,
   employerId,
@@ -113,7 +113,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
         const payload = {
           jobId: values.jobId,
           jobHunterId: values.jobHunterId,
-          requestorTimeZone: timeZone,
+          requestorTimeZone: timezone,
           scheduledStart: scheduleStart.format("YYYY-MM-DDTHH:mm"),
           scheduledEnd: scheduledEnd.format("YYYY-MM-DDTHH:mm"),
         };
@@ -292,7 +292,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                                 initialDate={values.interviewDate}
                                 variant="secondary"
                                 disablePastDates={true}
-                                disableFutureDates={getDateInTimezone(timeZone).add(2,'months').toDate()}
+                                disableFutureDates={getDateInTimezone(timezone).add(2,'months').toDate()}
                               />
                             </div>
                           )}
@@ -345,7 +345,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                           navigate("/dashboard/account-settings/general");
                         }}
                       >
-                        {timeZone} | Click to
+                        {timezone} | Click to
                         Change
                       </span>
                       <ChevronRight className="w-4 h-4 flex-shrink-0" />

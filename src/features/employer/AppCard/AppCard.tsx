@@ -318,7 +318,7 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage, adImage }) => {
             jobId={match.jobId}
             jobHunterId={match.id}
             employerId={user?.data.user.id}
-            timeZone={userSettings?.data.timeZone}
+            timezone={userSettings?.data.timeZone}
             position={match.position}
             coreSkills={match.coreSkills}
             certificate={match.certificates}

@@ -220,7 +220,7 @@ const JobPreviewModal: FC<JobPreviewModalProps> = ({
         <ScheduleInterviewModal
             isOpen={isScheduleModalOpen}
             onClose={() => setIsScheduleModalOpen(false)}
-            timeZone={userSettings?.data.timeZone}
+            timezone={userSettings?.data.timeZone}
             jobTitle={job.position}
             coreSkills={job.coreSkills}
             company={job.company}
