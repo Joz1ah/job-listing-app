@@ -256,6 +256,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                                 onDateSelect={handleDateSelect}
                                 initialDate={values.interviewDate}
                                 variant="secondary"
+                                disablePastDates={true}
                               />
                             </div>
                           )}
