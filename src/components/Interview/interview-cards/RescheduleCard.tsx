@@ -141,7 +141,7 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
 
   return (
     <>
-      <Card className="bg-white border border-gray-200 w-full md:w-[436px] h-[275px] relative">
+      <Card className="bg-white border border-gray-200 w-full sm:min-w-[436px] max-w-[436px] h-[275px] relative">
         {interview.isNew && (
           <span className="absolute top-2 left-4 text-[13px] text-[#F5722E] font-bold italic">
             ★ NEW
