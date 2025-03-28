@@ -83,15 +83,51 @@ export function isNew(receivedDate: string | Date): boolean {
  * @param {string} timeZone - The time zone (e.g., 'Asia/Shanghai').
  * @param {string | Date} [customDate] - An optional custom date (e.g., '2025-03-28') or Date object.
  * @param {string} [customTime] - An optional custom time (e.g., '14:30:00' or '02:30:00 PM').
+ * @param {boolean} [isUTC] - If utc no utc conversion will happen.
  * @returns {dayjs.Dayjs} - The current or custom date and time in the specified time zone as a dayjs object.
  */
-export const getDateInTimezone = (timeZone: string, customDate?: string | Date, customTime?: string) => {
-    let date = customDate ? dayjs(customDate) : dayjs();
-  
-    // If custom time is provided, set the time part
-    if (customTime) {
-      date = dayjs(`${date.format('YYYY-MM-DD')} ${customTime}`, 'YYYY-MM-DD hh:mm:ss A');
+export const getDateInTimezone = (timeZone: string, customDate?: string, customTime?: string, isUTC: boolean = false) => {
+
+    // If no customDate or customTime is provided, default to the current date and time
+    const currentDateTime = dayjs();
+
+    // If customDate and customTime are provided, combine them into a single string
+    let combinedDateTime = '';
+    if (customDate && customTime) {
+        combinedDateTime = `${customDate} ${customTime}`;
+    } else if (customDate) {
+        // If only customDate is provided, use current time
+        combinedDateTime = `${customDate} ${currentDateTime.format('hh:mm A')}`;
+    } else if (customTime) {
+        // If only customTime is provided, use current date
+        combinedDateTime = `${currentDateTime.format('MMMM DD, YYYY')} ${customTime}`;
+    } else {
+        // If neither is provided, default to current date and time
+        combinedDateTime = currentDateTime.format('MMMM DD, YYYY hh:mm A');
     }
+
+    // Parse the combined datetime string as UTC if it's not UTC
+    let date = isUTC 
+        ? dayjs.utc(combinedDateTime, 'MMMM DD, YYYY hh:mm A')  // No conversion needed if already in UTC
+        : dayjs.utc(combinedDateTime, 'MMMM DD, YYYY hh:mm A');  // Parse the datetime as UTC
+
+    // Convert to the specified time zone if not in UTC
+    return isUTC ? date : date.tz(timeZone);
+};
+
+  /**
+ * Gets the short time zone abbreviation for a given time zone.
+ * 
+ * @param {string} timezone - The time zone (e.g., 'Europe/Bratislava').
+ * @returns {string} - The short time zone abbreviation (e.g., 'CEST').
+ */
+export const getTimezoneAbbreviation = (timezone: string) => {
+    const shortTimezone = new Intl.DateTimeFormat('en-US', {
+      timeZone: timezone,
+      timeZoneName: 'short',
+    })
+      .formatToParts(new Date())
+      .find(part => part.type === 'timeZoneName')?.value;
   
-    return date.tz(timeZone);
+    return shortTimezone;
   };
