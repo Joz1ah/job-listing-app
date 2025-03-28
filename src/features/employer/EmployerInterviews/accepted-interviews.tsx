@@ -18,7 +18,8 @@ const AcceptedInterviews: FC = () => {
   setSelectedInterviewsGroup('ACCEPTED')
   
   const handleJoinInterview = (interview: Interview) => {
-    window.open(interview.meetingLink, "_blank");
+    if(interview?.meetingLink)
+      window.open(interview.meetingLink, "_blank");
   };
 
   /*   const handlePreviewJob = (interview: Interview) => {

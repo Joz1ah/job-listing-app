@@ -111,7 +111,11 @@ const AcceptedCard: FC<AcceptedCardProps> = ({
             <div className="flex items-center gap-1">
               <Button
                 onClick={onJoinInterview}
-                className="text-xs w-[118px] h-[32px] font-normal bg-[#AEADAD] hover:bg-gray-500 text-white p-0 rounded-sm"
+                variant="outline"
+                className={`text-xs w-[118px] h-[32px] font-normal 
+                  ${interview.meetingLink ? 
+                    'text-[#F5722E] border-2 border-[#F5722E] hover:bg-[#F5722E] hover:text-white' :
+                    'pointer-events-none bg-[#AEADAD] text-white hover:text-white hover:bg-[#AEADAD]'} p-0 rounded-sm`}
               >
                 <img src={gmeet} alt="google meet" />
                 Join Interview

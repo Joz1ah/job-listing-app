@@ -90,17 +90,17 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
       meetingLink: "https://meet.google.com/xxx-xxxx-xxx",
     },
     validationSchema,
-    validate: async (values) => {
-      console.log("Formik Values Before Validation:", values); // ✅ Logs raw values
-      try {
-        await validationSchema.validate(values, { abortEarly: false });
-        console.log("Validated Data:", values); // ✅ Logs if validation passes
-      } catch (err) {
-        if (err instanceof Yup.ValidationError) {
-          console.error("Validation Errors:", err.errors); // ❌ Logs validation errors
-        }
-      }
-    },
+    // validate: async (values) => {
+    //   console.log("Formik Values Before Validation:", values); // ✅ Logs raw values
+    //   try {
+    //     await validationSchema.validate(values, { abortEarly: false });
+    //     console.log("Validated Data:", values); // ✅ Logs if validation passes
+    //   } catch (err) {
+    //     if (err instanceof Yup.ValidationError) {
+    //       console.error("Validation Errors:", err.errors); // ❌ Logs validation errors
+    //     }
+    //   }
+    // },
     validateOnMount: true,
     onSubmit: async (values, { setSubmitting }) => {
       try {
