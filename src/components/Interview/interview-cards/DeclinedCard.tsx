@@ -52,7 +52,7 @@ const DeclinedCard: FC<DeclinedCardProps> = ({ interview, variant }) => {
           <div className="flex flex-row -mt-4 justify-between w-full">
             <div className="h-[20px]">
               {interview.isNew && (
-                <span className="absolute text-[13px] text-[#F5722E] font-bold italic">
+                <span className="text-[13px] text-[#F5722E] font-bold italic">
                   ★ NEW
                 </span>
               )}
