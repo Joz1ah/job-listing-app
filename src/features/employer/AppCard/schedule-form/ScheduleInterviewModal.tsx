@@ -59,7 +59,6 @@ const validationSchema = Yup.object().shape({
     .typeError("Please select a valid time"),
 });
 
-
 const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
   isOpen,
   onClose,
@@ -78,7 +77,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
   const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
   const [createInterview] = useCreateEmployerInterviewMutation();
   const { showError } = useErrorModal();
-  console.log(jobId)
+
   const formik = useFormik<FormValues>({
     initialValues: {
       interviewDate: undefined,
@@ -105,12 +104,15 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
           scheduledStart: scheduleStart.toDate(),
           scheduledEnd: scheduledEnd.toDate(),
         };
-        await createInterview(payload).unwrap().then(()=>{
-          setShowSuccessModal(true);
-          //console.log("Form submitted with values:", payload);
-        });
+        await createInterview(payload)
+          .unwrap()
+          .then(() => {
+            setShowSuccessModal(true);
+          });
       } catch (error) {
-        const errorMessage = (error as CustomError).data?.message || "Unable to schedule the interview. Please try again.";
+        const errorMessage =
+          (error as CustomError).data?.message ||
+          "Unable to schedule the interview. Please try again.";
         showError("Interview Scheduling Failed", errorMessage);
         console.error("Error sending invite:", error);
       } finally {
@@ -127,6 +129,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
     setFieldValue,
     resetForm,
     isValid,
+    isSubmitting,
   } = formik;
 
   // Reset form when modal closes
@@ -163,18 +166,19 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
   };
 
   // Button class based on validation state
-  const sendInviteButtonClass = isValid
-    ? "bg-[#F5722E] hover:bg-[#F5722E]/70 text-white text-[16px] font-normal"
-    : "bg-[#AEADAD] hover:bg-[#AEADAD]/70 text-white text-[16px] font-normal";
+  const sendInviteButtonClass =
+    !isValid || isSubmitting
+      ? "bg-[#AEADAD] hover:bg-[#AEADAD]/70 text-white text-[16px] font-normal cursor-not-allowed"
+      : "bg-[#F5722E] hover:bg-[#F5722E]/70 text-white text-[16px] font-normal";
 
   return (
     <>
       {/* Updated to use closeOnOutsideClick={false} */}
       <Dialog open={isOpen} onOpenChange={handleModalClose}>
-        <DialogContent
-          className="w-full max-w-3xl h-[530px] p-0 flex flex-col"
-          closeOnOutsideClick={false}
-        >
+      <DialogContent 
+  className="w-[calc(100%-2rem)] md:w-full max-w-3xl h-auto p-0 flex flex-col mt-0 translate-y-12 top-4 sm:top-6"
+  closeOnOutsideClick={false}
+>
           <div
             className="flex flex-col h-full"
             onClick={(e: React.MouseEvent<HTMLDivElement>) =>
@@ -182,20 +186,18 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
             }
           >
             <div className="flex-1 overflow-y-auto">
-              <DialogHeader className="py-2 px-6">
-                <DialogTitle className="text-center text-orange-500 mb-8 mt-6">
+              <DialogHeader className="py-2 px-4 sm:px-6">
+                <DialogTitle className="text-center text-orange-500 mb-4 sm:mb-8 mt-4 sm:mt-6 text-base sm:text-lg">
                   Schedule an interview for the candidate below for the
-                  <div className="mt-1">
-                    <span className="text-orange-500">{position}</span> position
-                  </div>
+                    <span> {position}</span> position
                 </DialogTitle>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  {/* Name and Skills Grid */}
-                  <div className="grid grid-cols-2">
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  {/* Name and Skills Grid - Responsive */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-0">
                     {/* Left Column */}
-                    <div>
-                      <span className="text-sm block mb-2">
+                    <div className="mb-4 sm:mb-0">
+                      <span className="text-sm flex justify-start mb-2">
                         {candidateName || "Name of Job Hunter"}
                       </span>
                       <div className="flex items-center gap-2">
@@ -209,7 +211,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                     {/* Right Column */}
                     <div className="space-y-4">
                       <div>
-                        <span className="text-sm block mb-2">Core Skills:</span>
+                        <span className="text-sm flex justify-start mb-2">Core Skills:</span>
                         <div className="flex flex-wrap gap-1.5">
                           {coreSkills.map((skill, index) => (
                             <span
@@ -227,7 +229,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                       </div>
 
                       <div>
-                        <span className="text-sm block mb-2">
+                        <span className="text-sm flex justify-start mb-2">
                           Certificates:
                         </span>
                         <div className="flex flex-wrap gap-1.5">
@@ -250,8 +252,8 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                     </div>
                   </div>
 
-                  {/* Date and Time Selection */}
-                  <div className="grid grid-cols-2 gap-8">
+                  {/* Date and Time Selection - Responsive */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8 mt-4 sm:mt-0">
                     <div>
                       <InputField
                         label="Date"
@@ -269,7 +271,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                               : "Select a date"}
                           </div>
                           {isDatePickerOpen && (
-                            <div className="fixed z-50 left-[40%] md:left-[26%] -translate-x-1/2">
+                            <div className="fixed z-50 left-1/2 -translate-x-1/2 sm:left-[40%] md:left-[26%] sm:-translate-x-1/2">
                               <DatePicker
                                 isOpen={isDatePickerOpen}
                                 onClose={() => setIsDatePickerOpen(false)}
@@ -313,19 +315,17 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                     </div>
                   </div>
 
-                  {/* Meeting Link */}
-                  <div></div>
-
-                  <div className="grid grid-cols-2 gap-8">
+                  {/* Meeting Link and Timezone - Responsive */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8 mt-2 sm:mt-0">
                     <div className="flex items-center gap-3">
                       <img src={gmeet} alt="Meet icon" className="w-4 h-4" />
                       <span className="text-sm text-[#F5722E]">
                         via Google meet
                       </span>
                     </div>
-                    <div className="flex items-center gap-5 justify-end select-none">
+                    <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-5 select-none">
                       <span
-                        className="text-sm text-[#263238] cursor-pointer"
+                        className="text-xs sm:text-sm text-[#263238] cursor-pointer"
                         onClick={() => {
                           navigate("/dashboard/account-settings/general");
                         }}
@@ -333,20 +333,24 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                         {settingsData?.data?.timeZone} Timezone | Click to
                         Change
                       </span>
-                      <ChevronRight className="w-4 h-4" />
+                      <ChevronRight className="w-4 h-4 flex-shrink-0" />
                     </div>
                   </div>
 
-                  {/* Fixed Button Area */}
-                  <div className="p-4 md:p-6">
-                    <div className="flex gap-2">
-                      <Button type="submit" className={sendInviteButtonClass}>
+                  {/* Buttons - Responsive */}
+                  <div className="p-2 sm:p-4 md:p-6">
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <Button
+                        type="submit"
+                        className={`${sendInviteButtonClass} w-full sm:w-auto`}
+                        disabled={!isValid || isSubmitting}
+                      >
                         Send Invite
                       </Button>
                       <Button
                         type="button"
                         variant="outline"
-                        className="text-[#F5722E] border-[#F5722E] hover:text-white hover:bg-[#F5722E] text-[16px]"
+                        className="text-[#F5722E] border-[#F5722E] hover:text-white hover:bg-[#F5722E] text-[16px] w-full sm:w-auto"
                         onClick={handleModalClose}
                       >
                         Cancel

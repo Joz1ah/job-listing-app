@@ -61,6 +61,8 @@ interface AppCardProps {
 
 interface SecureNameDisplayProps {
   realName: string;
+  onClick: (e: React.MouseEvent) => void;
+  subscriptionPlan: string;
 }
 
 // Helper function to convert employment type values to labels
@@ -68,15 +70,17 @@ const getEmploymentTypeLabel = (value: string): string => {
   const employmentTypeMap: Record<string, string> = {
     "full-time": "Full Time",
     "part-time": "Part Time",
-    "contract": "Contract only",
+    contract: "Contract only",
   };
 
   return employmentTypeMap[value] || value;
 };
 
-const SecureNameDisplay: FC<SecureNameDisplayProps> = ({ realName }) => {
-  const { subscriptionPlan } = useEmployerContext();
-
+const SecureNameDisplay: FC<SecureNameDisplayProps> = ({
+  realName,
+  onClick,
+  subscriptionPlan,
+}) => {
   if (subscriptionPlan === "freeTrial") {
     return (
       <div className="relative">
@@ -93,7 +97,10 @@ const SecureNameDisplay: FC<SecureNameDisplayProps> = ({ realName }) => {
   }
 
   return (
-    <CardTitle className="text-sm font-semibold text-[#263238]">
+    <CardTitle
+      className="text-sm font-semibold text-[#263238] hover:text-[#F5722E] cursor-pointer"
+      onClick={onClick}
+    >
       {realName}
     </CardTitle>
   );
@@ -147,7 +154,7 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage, adImage }) => {
 
   // Ref for the AdDialogWrapper
   const adDialogRef = useRef<HTMLDivElement>(null);
-/*
+  /*
   useEffect(() => {
     if (match.posted) {
       setFormattedPostDate(formatTimeAgo(match.posted));
@@ -155,7 +162,8 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage, adImage }) => {
     }
   }, [match.posted]);
 */
-  const handleCardClick = () => {
+  const handlePreview = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent event propagation
     if (subscriptionPlan === "freeTrial") return;
     if (!isScheduleModalOpen) {
       setIsModalOpen(true);
@@ -184,14 +192,7 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage, adImage }) => {
 
   return (
     <>
-      <Card
-        className={`bg-[#FFFFFF] border-none w-full max-w-[436px] h-[350px] sm:h-[275px] relative transition-shadow duration-200 ${
-          subscriptionPlan === "freeTrial"
-            ? "cursor-default"
-            : "cursor-pointer hover:shadow-lg"
-        }`}
-        onClick={handleCardClick}
-      >
+      <Card className="bg-[#FFFFFF] border-none w-full max-w-[436px] h-[350px] sm:h-[275px] relative transition-shadow duration-200">
         <CardHeader className="flex flex-col justify-between items-start pb-0">
           <div className="flex flex-row -mt-4 justify-between w-full relative">
             <div className="h-5">
@@ -210,6 +211,8 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage, adImage }) => {
           <div className="w-full relative">
             <SecureNameDisplay
               realName={`${match.firstName} ${match.lastName}`}
+              onClick={handlePreview}
+              subscriptionPlan={subscriptionPlan}
             />
             <BookmarkButton
               cardId={cardId}

@@ -1,17 +1,39 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "store/store";
 import { useModal } from "../useModal";
 import close_icon from "assets/close.svg?url";
 import akazalogo_dark from "assets/akazalogo-dark.svg?url";
-import { MODAL_HEADER_TYPE } from "store/modal/modal.types";
+import { MODAL_HEADER_TYPE, MODAL_STATES } from "store/modal/modal.types";
 import { CloseConfirmationModal } from "../close-confirmation";
 
 const ModalHeader = () => {
   const { selectedModalHeader, toggleModal, resetModalState } = useModal();
   const [showConfirmation, setShowConfirmation] = useState(false);
+  
+  // Get current modal state directly from Redux
+  const currentModalState = useSelector((state: RootState) => state.modal.modalState);
+
+  // List of modal states that should skip the confirmation
+  const skipConfirmationModals = [
+    MODAL_STATES.LOGIN,
+    MODAL_STATES.SIGNUP_CONGRATULATIONS,
+    MODAL_STATES.SIGNUP_SELECT_USER_TYPE,
+    MODAL_STATES.SIGNUP_STEP2,
+    // Add other modal states you want to skip confirmation for
+  ];
 
   // When close icon is clicked
   const handleCloseClick = () => {
-    setShowConfirmation(true);
+    // Check if current modal should skip confirmation
+    if (currentModalState && skipConfirmationModals.includes(currentModalState)) {
+      // Close directly without confirmation
+      resetModalState();
+      toggleModal(false);
+    } else {
+      // Show confirmation for other modals
+      setShowConfirmation(true);
+    }
   };
 
   // When user clicks "Stay"

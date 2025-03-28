@@ -31,7 +31,7 @@ const InvitationSentModal: React.FC<InvitationSentModalProps> = ({
             </h2>
             
             <p className="text-black text-sm max-w-xs">
-              Please wait for the Job Hunter to respond within 72 hours.
+              Please wait for the Employer to respond within 72 hours.
             </p>
 
             <div className="flex flex-col w-full space-y-3 pt-4">

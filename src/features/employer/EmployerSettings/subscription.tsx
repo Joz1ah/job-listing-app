@@ -9,7 +9,7 @@ import trophy_icon from "assets/subscription-plan-icons/trophy-orange.svg?url";
 import calender_icon from "assets/subscription-plan-icons/calendar-orange.svg?url";
 import line_graph_icon from "assets/subscription-plan-icons/line-graph-orange.svg?url";
 import like_icon from "assets/subscription-plan-icons/like-orange.svg?url";
-import handshake_icon from "assets/subscription-plan-icons/handshake-orange.svg?url";
+import infinity_icon from "assets/subscription-plan-icons/infinity-orange.svg?url";
 import lock_icon from "assets/subscription-plan-icons/lock-orange.svg?url";
 import message_icon from "assets/subscription-plan-icons/message-orange.svg?url";
 import TooltipWrapper from "components/ui/custom/tooltip-wrapper";
@@ -79,12 +79,12 @@ const SubscriptionSettings: React.FC = () => {
   const features: PlanFeatures = {
     yearly: [
       {
-        icon: <img src={handshake_icon} className="w-5 h-5" />,
-        text: "Up to 3 interview Invites",
+        icon: <img src={infinity_icon} className="w-5 h-5" />,
+        text: "Unlimited interview Invites",
       },
       {
         icon: <img src={calender_icon} className=" w-5 h-5" />,
-        text: "Up to 3 Job Listings",
+        text: "Up to 5 Job Listings",
       },
       {
         icon: <img src={sparkle_icon} className="w-5 h-5" />,
@@ -106,12 +106,12 @@ const SubscriptionSettings: React.FC = () => {
     ],
     monthly: [
       {
-        icon: <img src={handshake_icon} className="w-5 h-5" />,
-        text: "Up to 3 Interview Invites",
+        icon: <img src={infinity_icon} className="w-5 h-5" />,
+        text: "Unlimited Interview Invites",
       },
       {
         icon: <img src={calender_icon} className=" w-5 h-5" />,
-        text: "Up to 3 Job Listings",
+        text: "Up to 5 Job Listings",
       },
       {
         icon: <img src={sparkle_icon} className="w-5 h-5" />,

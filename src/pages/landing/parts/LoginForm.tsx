@@ -7,7 +7,8 @@ import { Eye, EyeOff } from "lucide-react";
 import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
 import { MODAL_STATES } from "store/modal/modal.types";
 import * as Yup from "yup";
-import { ROUTE_CONSTANTS } from "constants/routeConstants";
+import Cookies from "js-cookie";
+import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 
 interface LoginFormValues {
   email: string;
@@ -20,10 +21,8 @@ const LoginForm = () => {
   const [apiLoginErrorMessage, setApiLoginErrorMessage] = useState("");
   const { login } = useAuth();
   const { isResetPasswordSuccesful, handleSetModalState } = useLanding();
+  const { showError } = useErrorModal(); // Use the error modal context
 
-  //useEffect(()=>{
-  //  console.log(isResetPasswordSuccesful)
-  //},[isResetPasswordSuccesful])
   // State to toggle password visibility
   const [showPassword, setShowPassword] = useState(false);
 
@@ -40,9 +39,15 @@ const LoginForm = () => {
 
       // Check if we have the token in the response
       if (response?.data?.token) {
-        // Login with auth context
-        login(response.data.token);
+        // Set the cookie explicitly first with the remember me option
+        Cookies.set("authToken", response.data.token, {
+          expires: values.rememberMe ? 7 : 1,
+          path: "/",
+          secure: true,
+          sameSite: "strict",
+        });
 
+        // Store user preferences in localStorage
         const userType = response.data.user?.type;
         const isFreeTrial = response.data.user?.freeTrial;
 
@@ -53,22 +58,47 @@ const LoginForm = () => {
           isFreeTrial ? "freeTrial" : "monthlyPlan",
         );
 
-        // Use window.location for a full page refresh instead of React Router navigation
-        setTimeout(() => {
-          window.location.href = ROUTE_CONSTANTS.DASHBOARD;
-        }, 1000);
+        // Let the AuthContext handle navigation based on user state
+        login(response.data.token);
+
+        // The navigation will be handled by AuthContext
       } else {
         throw new Error("No token received");
       }
     } catch (err: any) {
       console.error("Login error:", err);
-      // Handle API-specific errors
+      
+      // Handle different types of errors
       if (err.status === 401) {
+        // Authentication errors (wrong credentials) stay in the form
         setApiLoginErrorMessage("Invalid Username or Password");
+        setFieldError("general", "Invalid Username or Password");
+      } else if (
+        err.status === "FETCH_ERROR" ||
+        err.message === "Failed to fetch" ||
+        err.error === "Failed to fetch" ||
+        (err.data &&
+          err.data.message &&
+          (err.data.message.includes("ERR_INTERNET_DISCONNECTED") ||
+            err.data.message.includes("network") ||
+            err.data.message.includes("internet")))
+      ) {
+        // Only show serious network errors in modal
+        showError(
+          "Connection Error",
+          "Internet connection error. Please check your connection and try again."
+        );
+        setApiLoginErrorMessage("Network error. Please check your connection.");
       } else {
-        setApiLoginErrorMessage("An error occurred during login");
+        // Only display unexpected server errors in the modal
+        showError(
+          "Server Error",
+          err?.data?.message || "An unexpected error occurred. Please try again."
+        );
+        
+        // Keep the error message in the form
+        setApiLoginErrorMessage("An error occurred during login. Please try again.");
       }
-      setFieldError("general", "Invalid Username or Password");
     } finally {
       setSubmitting(false);
     }
@@ -172,11 +202,13 @@ const LoginForm = () => {
               className={`${email && password ? "bg-[#F5722E]" : "bg-[#AEADAD]"} text-white py-2 px-4 rounded disabled:opacity-50 w-full h-[45px]`}
               disabled={isSubmitting || !email || !password}
             >
-              <img
-                src={button_loading_spinner}
-                alt="Loading"
-                className={`inline-block mr-2 h-full ${isSubmitting ? "block animate-spin" : "hidden"}`}
-              />
+              {isSubmitting ? (
+                <img
+                  src={button_loading_spinner}
+                  alt="Loading"
+                  className="inline-block mr-2 h-6 animate-spin"
+                />
+              ) : null}
               {isSubmitting ? "Logging in..." : "Login"}
             </button>
           </div>

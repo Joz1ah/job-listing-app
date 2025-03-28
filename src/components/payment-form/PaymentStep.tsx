@@ -479,11 +479,10 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                   <div className="space-y-3 mt-6">
                     <Button
                       type="submit"
-                      disabled={!isValid}
                       className={`w-full ${
                         isValid
                           ? "bg-[#F5722E] hover:bg-[#F5722E]/90"
-                          : "bg-[#AEADAD]"
+                          : "bg-[#AEADAD] hover:bg-[#AEADAD]/90"
                       } text-white h-[34px] rounded`}
                     >
                       Next
@@ -791,11 +790,11 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                 <div className="space-y-3">
                   <Button
                     type="submit"
-                    disabled={isSubmitting || !isValid}
+                    disabled={isSubmitting}
                     className={`w-full ${
                       isValid
                         ? "bg-[#F5722E] hover:bg-[#F5722E]/90"
-                        : "bg-[#AEADAD] cursor-not-allowed"
+                        : "bg-[#AEADAD] hover:bg-[#AEADAD]/90"
                     } text-white h-[34px] rounded`}
                   >
                     {isSubmitting ? "Processing..." : "Complete Payment"}
