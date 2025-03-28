@@ -2,16 +2,12 @@ import { Request, Response } from "express";
 import https from 'https';
 
 export const sseNotifications = async (req: Request, res: Response): Promise<void> => {
-  
   try {
     const authHeader = req.headers.authorization;
     const token = req.cookies['authToken'];
     const cookieAuth = `Bearer ${token}`;
-    //const page = parseInt(req.query.page as string, 10) || 1;
-    //const limit = parseInt(req.query.limit as string, 10) || 5; 
     const endpoint = `/notifications/stream`;
     const sseUrl = `${process.env.NOTIFICATIONS_API_URL}${endpoint}` || '';
-    //console.log(`Proxying SSE to client... ${sseUrl}`);
 
     if (!sseUrl) {
       throw new Error('SSE URL is not defined');
@@ -34,23 +30,17 @@ export const sseNotifications = async (req: Request, res: Response): Promise<voi
 
       proxyResponse.pipe(res);
 
-
-      // Send a "ping" to the client every 30 seconds to keep the connection alive
-      //const intervalId = setInterval(() => {
-      //  res.write('data: \n\n');  // Sending empty data to keep connection alive
-      //}, 30000);  // Every 30 seconds
-
       proxyResponse.on('end', () => {
         console.log('SSE stream ended');
-        //clearInterval(intervalId);
         if (!res.headersSent) {
           res.status(200).end();
         }
       });
 
       proxyResponse.on('error', (error) => {
-        console.error('SSE stream error:', error);
-        //clearInterval(intervalId);
+        // Log error message and the client's IP address
+        const clientIp = req.ip || req.connection.remoteAddress;
+        console.error(`SSE stream error: Error: ${error.message}, Client IP: ${clientIp}`);
         if (!res.headersSent) {
           res.status(500).json({ error: 'Failed to fetch SSE stream from gateway' });
         }
