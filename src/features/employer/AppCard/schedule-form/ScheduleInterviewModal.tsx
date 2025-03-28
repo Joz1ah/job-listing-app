@@ -113,9 +113,9 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
         const payload = {
           jobId: values.jobId,
           jobHunterId: values.jobHunterId,
-          machineTimeZone: timeZone,
-          scheduledStart: scheduleStart.format("YYYY-MM-DDTHH:mm:ssZ"),
-          scheduledEnd: scheduledEnd.format("YYYY-MM-DDTHH:mm:ssZ"),
+          requestorTimeZone: timeZone,
+          scheduledStart: scheduleStart.format("YYYY-MM-DDTHH:mm"),
+          scheduledEnd: scheduledEnd.format("YYYY-MM-DDTHH:mm"),
         };
         console.log(payload)
         await createInterview(payload).unwrap().then(()=>{

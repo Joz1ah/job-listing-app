@@ -85,11 +85,12 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
           values.interviewDate as Date,
           values.interviewTime as string,
         );
-        const scheduledEnd = scheduleStart.add(1, "hour");
+        const scheduledEnd = scheduleStart.add(30, "minutes");
         const payload = {
           jobId: values.jobId,
-          scheduledStart: scheduleStart.toDate(),
-          scheduledEnd: scheduledEnd.toDate(),
+          requestorTimeZone: timeZone,
+          scheduledStart: scheduleStart.format("YYYY-MM-DDTHH:mm"),
+          scheduledEnd: scheduledEnd.format("YYYY-MM-DDTHH:mm"),
         };
         await createInterview(payload).unwrap().then(()=>{
           setShowSuccessModal(true);
