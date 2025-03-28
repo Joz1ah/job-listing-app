@@ -23,6 +23,7 @@ interface CalendarProps {
   variant?: 'default' | 'secondary';
   meetings?: Meeting[];
   disablePastDates?: boolean;
+  disableFutureDates?: Date | null; // Added prop to disable future dates after a specific date
 }
 
 const Calendar: React.FC<CalendarProps> = ({ 
@@ -31,7 +32,8 @@ const Calendar: React.FC<CalendarProps> = ({
   initialDate,
   variant = 'default',
   meetings = [],
-  disablePastDates = false
+  disablePastDates = false,
+  disableFutureDates // Added prop to disable future dates
 }) => {
   const today = new Date();
   today.setHours(0, 0, 0, 0); // Normalize today's date
@@ -76,9 +78,15 @@ const Calendar: React.FC<CalendarProps> = ({
   const isToday = (date: Date): boolean => date.toDateString() === today.toDateString();
   const isSelected = (date: Date): boolean => date.toDateString() === selectedDate.toDateString();
   const isPastDate = (date: Date): boolean => disablePastDates && date < today;
+  const isFutureDate = (date: Date): boolean => {
+    if (disableFutureDates === null || disableFutureDates === undefined) {
+      return false; // If `disableFutureDates` is `null` or `undefined`, we don't disable future dates
+    }
+    return date > disableFutureDates;
+  };
 
   const handleDateSelect = (date: Date): void => {
-    if (disablePastDates && isPastDate(date)) return;
+    if ((disablePastDates && isPastDate(date)) || (disableFutureDates && isFutureDate(date))) return;
     setSelectedDate(date);
     onDateSelect?.(date);
   };
@@ -97,6 +105,7 @@ const Calendar: React.FC<CalendarProps> = ({
         const isCurrentDateSelected = isSelected(currentDayDate);
         const hasScheduledMeetings = hasMeetings(currentDayDate);
         const pastDate = isPastDate(currentDayDate);
+        const futureDate = isFutureDate(currentDayDate);
         
         days.push(
           <div
@@ -110,14 +119,14 @@ const Calendar: React.FC<CalendarProps> = ({
                 {
                   'bg-[#F5722E] text-white hover:bg-orange-600': isCurrentDateSelected,
                   'ring-2 ring-[#F5722E] ring-offset-2': isCurrentDateToday && !isCurrentDateSelected,
-                  'text-gray-400 cursor-not-allowed': pastDate,
-                  'text-gray-100 hover:bg-gray-700 cursor-pointer': variant === 'default' && !isCurrentDateSelected && !pastDate,
-                  'text-gray-900 hover:bg-gray-100 cursor-pointer': variant === 'secondary' && !isCurrentDateSelected && !pastDate,
+                  'text-gray-400 cursor-not-allowed': pastDate || futureDate, // Disable if past or future date
+                  'text-gray-100 hover:bg-gray-700 cursor-pointer': variant === 'default' && !isCurrentDateSelected && !pastDate && !futureDate,
+                  'text-gray-900 hover:bg-gray-100 cursor-pointer': variant === 'secondary' && !isCurrentDateSelected && !pastDate && !futureDate,
                 }
               )}
             >
               <span className="flex items-center justify-center h-8">{dayNumber}</span>
-              {hasScheduledMeetings && !isCurrentDateSelected && !pastDate && (
+              {hasScheduledMeetings && !isCurrentDateSelected && !pastDate && !futureDate && (
                 <div className="w-1 h-1 rounded-full bg-[#F5722E] -mt-1.5" />
               )}
             </div>

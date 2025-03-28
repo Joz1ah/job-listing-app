@@ -19,6 +19,7 @@ import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 import { useCreateJobHunterInterviewMutation } from "api/akaza/akazaAPI";
 import { combineDateAndTime } from "utils";
 import { ChevronRight, MapPin } from "lucide-react";
+import { getDateInTimezone } from "utils/dateTimeUtils";
 
 interface ScheduleInterviewModalProps {
   isOpen: boolean;
@@ -257,6 +258,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                                 initialDate={values.interviewDate}
                                 variant="secondary"
                                 disablePastDates={true}
+                                disableFutureDates={getDateInTimezone(timeZone).add(2,'months').toDate()}
                               />
                             </div>
                           )}

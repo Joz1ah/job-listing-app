@@ -9,6 +9,7 @@ interface DatePickerProps {
   isOpen?: boolean;
   onClose?: () => void;
   disablePastDates?: boolean;
+  disableFutureDates?: Date | null;
 }
 
 const DatePicker: React.FC<DatePickerProps> = ({
@@ -18,7 +19,8 @@ const DatePicker: React.FC<DatePickerProps> = ({
   initialDate,
   isOpen = true,
   onClose,
-  disablePastDates = false
+  disablePastDates = false,
+  disableFutureDates = null
 }) => {
   const pickerRef = useRef<HTMLDivElement>(null);
   
@@ -55,6 +57,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
         initialDate={initialDate}
         variant={variant}
         disablePastDates={disablePastDates}
+        disableFutureDates={disableFutureDates}
       />
     </div>
   );

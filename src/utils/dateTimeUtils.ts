@@ -40,11 +40,12 @@ export function combineDateAndTime(dateObj: Date, timeStr: string, timeZone?: st
 
     return dateTime; 
 }
-export function isNew(receivedDate: string): boolean {
+export function isNew(receivedDate: string | Date): boolean {
     const today = new Date();
     const yesterday = new Date();
     yesterday.setDate(today.getDate() - 1);
   
+    // Ensure receivedDate is a Date object
     const received = new Date(receivedDate);
   
     // Check if receivedDate is today or yesterday
@@ -74,3 +75,13 @@ export function isNew(receivedDate: string): boolean {
         return `Today`;
     }
 }
+
+/**
+ * Gets the current date and time in a specified time zone.
+ * 
+ * @param {string} timeZone - The time zone (e.g., 'Asia/Shanghai').
+ * @returns {Date} - The current date and time in the specified time zone.
+ */
+export const getDateInTimezone = (timeZone:string) => {
+    return dayjs().tz(timeZone);
+  };
