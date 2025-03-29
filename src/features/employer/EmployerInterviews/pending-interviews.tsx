@@ -9,7 +9,9 @@ import { useInterviewsContext } from "contexts/Interviews/InterviewsContext";
 import { useEmployerContext } from "components";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 import { ROUTE_CONSTANTS } from "constants/routeConstants";
-import { useAcceptInterviewMutation, useRejectInterviewMutation } from "api/akaza/akazaAPI";
+import { useAcceptInterviewMutation, useRejectInterviewMutation, useRescheduleInterviewMutation } from "api/akaza/akazaAPI";
+import { combineDateAndTime } from "utils";
+import { useAuth } from "contexts/AuthContext/AuthContext";
 
 interface AcceptData {
   confirmed: boolean;
@@ -26,6 +28,7 @@ interface RescheduleData {
   date: string;
   time: string;
   interviewId?: string;
+  reason: string;
 }
 
 const handleError = (errorComponent:any, error:CustomError, title:string, message:string) => {
@@ -47,7 +50,9 @@ const PendingInterviews: FC = () => {
   const {interviewsList, setSelectedInterviewsGroup} = useInterviewsContext();
   const [acceptInterview] = useAcceptInterviewMutation();
   const [rejectInterview] = useRejectInterviewMutation();
+  const [rescheduleInterview] = useRescheduleInterviewMutation();
   const { showError } = useErrorModal();
+  const { userSettings } = useAuth();
 
   setSelectedInterviewsGroup('PENDING')
 
@@ -82,12 +87,29 @@ const PendingInterviews: FC = () => {
     }
   };
 
+
   const handleReschedule = async (
     interview: Interview,
     data: RescheduleData,
   ) => {
     try {
       console.log("Reschedule:", interview, data);
+        const scheduleStart = combineDateAndTime(
+          new Date(data.date),
+          data.time as string,
+        );
+        const scheduledEnd = scheduleStart.add(30, "minutes");
+        const payload = {
+          interviewId: data.interviewId,
+          requestorTimezone: userSettings.data?.timeZone,
+          newStart: scheduleStart.format("YYYY-MM-DDTHH:mm"),
+          newEnd: scheduledEnd.format("YYYY-MM-DDTHH:mm"),
+          reason: data.reason
+        };
+        console.log(payload)
+      await rescheduleInterview(payload).unwrap().then(()=>{
+        //console.log("Form submitted with values:", payload);
+      });
       await new Promise((resolve) => setTimeout(resolve, 3000));
       setDisplayedItems((prev) => prev.filter((item) => item !== interview));
     } catch (error) {
