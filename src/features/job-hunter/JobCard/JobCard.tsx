@@ -172,7 +172,7 @@ const JobCard: FC<JobCardProps> = ({ match, popupImage, adImage }) => {
             <div className="flex flex-row items-center gap-1">
               <MapPin size={14} className="text-[#F5722E]" />
               <p className="text-[13px] font-light mt-0 text-[#263238]">
-                Based in {match.location}
+                Based in {match.country}
               </p>
             </div>
           </div>
@@ -269,7 +269,7 @@ const JobCard: FC<JobCardProps> = ({ match, popupImage, adImage }) => {
             jobTitle={match.position}
             coreSkills={match.coreSkills}
             company={match.company}
-            location={match.location}
+            country={match.country}
             certificate={match.certificates}
             jobId={match.jobId}
           />

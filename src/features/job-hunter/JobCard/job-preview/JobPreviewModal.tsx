@@ -78,7 +78,7 @@ const JobPreviewModal: FC<JobPreviewModalProps> = ({
                 <div className="flex items-center gap-2 text-[#263238]">
                   <MapPin className="h-4 w-4 text-[#F5722E]" />
                   <span className="text-sm md:text-[17px] ">
-                    Based in {job.location}
+                    Based in {job.country}
                   </span>
                 </div>
 
@@ -224,7 +224,7 @@ const JobPreviewModal: FC<JobPreviewModalProps> = ({
             jobTitle={job.position}
             coreSkills={job.coreSkills}
             company={job.company}
-            location={job.location}
+            country={job.country}
             certificate={job.certificates}
             jobId={job.jobId}
         />

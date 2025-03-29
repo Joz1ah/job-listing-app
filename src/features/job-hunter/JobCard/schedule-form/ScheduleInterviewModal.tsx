@@ -30,7 +30,7 @@ interface ScheduleInterviewModalProps {
   coreSkills: string[];
   certificate?: string[];
   company: string;
-  location: string;
+  country: string | undefined;
 }
 
 interface FormValues {
@@ -62,7 +62,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
   coreSkills,
   certificate = [],
   company,
-  location,
+  country,
 }) => {
   const navigate = useNavigate();
   const [isDatePickerOpen, setIsDatePickerOpen] = useState<boolean>(false);
@@ -183,7 +183,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                       <div className="flex items-center gap-2">
                         <MapPin className="text-[#F5722E]" />
                         <span className="text-sm text-black">
-                          Based in {location}
+                          Based in {country}
                         </span>
                       </div>
                     </div>
