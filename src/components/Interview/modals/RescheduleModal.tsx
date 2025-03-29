@@ -19,7 +19,7 @@ import { DatePicker } from "components";
 import gmeet from "images/google-meet.svg?url";
 import { InputField } from "components";
 import { useNavigate } from "react-router-dom";
-import { Interview } from "mockData/employer-interviews-data";
+import { Interview } from "contexts/Interviews/types";
 
 interface BaseModalProps {
   isOpen: boolean;

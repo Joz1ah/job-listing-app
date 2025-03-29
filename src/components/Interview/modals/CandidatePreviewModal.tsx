@@ -32,7 +32,7 @@ const CandidatePreviewModal: FC<BaseModalProps> = ({
                 <div className="flex items-center gap-2 text-[#263238]">
                   <MapPin className="h-4 w-4 text-[#F5722E]" />
                   <span className="text-[17px] text-[#263238]">
-                    Based in {interview.location}
+                    Based in {interview.country}
                   </span>
                 </div>
 
