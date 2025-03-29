@@ -32,7 +32,7 @@ const mapInterviewListData = (apiResponse: any, timeZone: InterviewListData['tim
       company: item?.employer?.businessName ?? 'Unknown Company',
       date: timeZone=='UTC' ?
         item?.scheduledStartDate :
-        convertUTCToTimezone(`${item?.scheduledStartDate} ${item?.scheduledStartTime}`, timeZone).toFormat('MMMM dd yyyy') ?? 'N/A',
+        convertUTCToTimezone(`${item?.scheduledStartDate} ${item?.scheduledStartTime}`, timeZone).toFormat('MMMM dd, yyyy') ?? 'N/A',
       time: timeZone === 'UTC'
       ? `${item?.scheduledStartTime} UTC`
       : `${convertUTCToTimezone(`${item?.scheduledStartDate} ${item?.scheduledStartTime}`, timeZone).toFormat('h:mm a')} ${getTimezoneAbbreviation(timeZone) ?? 'N/A'}`,
