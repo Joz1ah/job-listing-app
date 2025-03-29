@@ -50,7 +50,7 @@ const mapInterviewListData = (apiResponse: any, timeZone: InterviewListData['tim
       status: item?.status ?? 'Unknown',
       requestor: item?.requestor ?? 'N/A',
       isRequesterMe: UserTypeId === item?.requestorId ? true : false,
-      isRescheduleRequesterMe: UserType === item?.RescheduleRequest ? true : false,
+      isRescheduleRequesterMe: UserType === item?.RescheduleRequest.rescheduleRequestorType ? true : false,
       hasRescheduled: false,
       bookmarked: false,
       description: item?.jobDescription ?? 'N/A',
