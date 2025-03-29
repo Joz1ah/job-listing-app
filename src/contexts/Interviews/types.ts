@@ -18,6 +18,7 @@ export interface Interview {
     status?: 'Accepted' | 'Pending' | 'Declined';
     requestor?: string;
     isRequesterMe?: boolean;
+    isRescheduleRequesterMe?: boolean;
     hasRescheduled?: boolean;
     bookmarked?: boolean;
     description?: string;

@@ -159,7 +159,7 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
 
           <div className="w-full mt-2">
             <span className="text-[13px] text-[#F5722E] font-semibold">
-              {interview.isRequesterMe
+              {interview.isRescheduleRequesterMe
                 ? "You Requested Reschedule to:"
                 : "Requested Reschedule by:"}
             </span>
@@ -218,7 +218,7 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
                     You've successfully declined this interview!
                   </span>
                 </div>
-              ) : interview.isRequesterMe ? (
+              ) : interview.isRescheduleRequesterMe ? (
                 // My request layout
                 <div className="flex items-center gap-2 flex-wrap justify-center">
                   {interview.hasRescheduled ? (
@@ -281,7 +281,7 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
 
         <div className="absolute top-2 right-4 flex flex-col items-end">
           <span className="text-[12px] text-[#717171]">
-            {interview.isRequesterMe
+            {interview.isRescheduleRequesterMe
               ? `Sent ${interview.sentTime}`
               : `Received ${interview.receivedTime}`}
           </span>

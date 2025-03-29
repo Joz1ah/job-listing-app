@@ -21,6 +21,7 @@ interface InterviewListData{
 }
 
 const mapInterviewListData = (apiResponse: any, timeZone: InterviewListData['timeZone'], selectedInterviewsGroup: InterviewListData['InterviewsGroup'], UserType: InterviewListData['UserType'], UserTypeId: InterviewListData['UserTypeId'] ): Interview[] => {
+  UserTypeId
   if (!apiResponse || !apiResponse.data) return [];
   if (UserType) 
     return apiResponse?.data?.groupedByStatus?.[selectedInterviewsGroup]?.map((item: any) => ({
@@ -49,6 +50,7 @@ const mapInterviewListData = (apiResponse: any, timeZone: InterviewListData['tim
       status: item?.status ?? 'Unknown',
       requestor: item?.requestor ?? 'N/A',
       isRequesterMe: UserTypeId === item?.requestorId ? true : false,
+      isRescheduleRequesterMe: UserType === item?.RescheduleRequest ? true : false,
       hasRescheduled: false,
       bookmarked: false,
       description: item?.jobDescription ?? 'N/A',
