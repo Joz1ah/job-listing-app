@@ -629,7 +629,8 @@ export const akazaApiInterviewRequest = createApiFunction({
           "interviewId": payload.interviewId,
           "newStart": payload.newStart,
           "newEnd": payload.newEnd,
-          "reason": payload.reason
+          "reason": payload.reason,
+          "requestorTimezone": payload.requestorTimezone
         }
       }),
     }),
