@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon';
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
@@ -86,35 +87,78 @@ export function isNew(receivedDate: string | Date): boolean {
  * @param {boolean} [isUTC] - If utc no utc conversion will happen.
  * @returns {dayjs.Dayjs} - The current or custom date and time in the specified time zone as a dayjs object.
  */
-export const getDateInTimezone = (timeZone: string, customDate?: string, customTime?: string, isUTC: boolean = false) => {
-
-    // If no customDate or customTime is provided, default to the current date and time
-    const currentDateTime = dayjs();
-
-    // If customDate and customTime are provided, combine them into a single string
+export const getDateInTimezone = (
+    timezone: string,
+    customDate?: string,
+    customTime?: string,
+    isUTC: boolean = true
+  ) => {
+    // Step 1: Combine the date and time into a single string
     let combinedDateTime = '';
+    
     if (customDate && customTime) {
-        combinedDateTime = `${customDate} ${customTime}`;
+      combinedDateTime = `${customDate} ${customTime}`;
     } else if (customDate) {
-        // If only customDate is provided, use current time
-        combinedDateTime = `${customDate} ${currentDateTime.format('hh:mm A')}`;
+      combinedDateTime = `${customDate} ${dayjs().format('hh:mm A')}`;
     } else if (customTime) {
-        // If only customTime is provided, use current date
-        combinedDateTime = `${currentDateTime.format('MMMM DD, YYYY')} ${customTime}`;
+      combinedDateTime = `${dayjs().format('MMMM DD, YYYY')} ${customTime}`;
     } else {
-        // If neither is provided, default to current date and time
-        combinedDateTime = currentDateTime.format('MMMM DD, YYYY hh:mm A');
+      combinedDateTime = dayjs().format('MMMM DD, YYYY hh:mm A');
     }
-
-    // Parse the combined datetime string as UTC if it's not UTC
-    let date = isUTC 
-        ? dayjs.utc(combinedDateTime, 'MMMM DD, YYYY hh:mm A')  // No conversion needed if already in UTC
-        : dayjs.utc(combinedDateTime, 'MMMM DD, YYYY hh:mm A');  // Parse the datetime as UTC
-
-    // Convert to the specified time zone if not in UTC
-    return isUTC ? date : date.tz(timeZone);
-};
-
+  
+    // Step 2: Parse the datetime string in the provided timezone (not UTC)
+    let date = dayjs.tz(combinedDateTime, timezone); // Treat the input as being in the given timezone
+  
+    // Step 3: If isUTC is true, convert to UTC time
+    if (isUTC) {
+      date = date.utc(); // Convert to UTC
+    }
+  
+    // Step 4: Return the Day.js object for UTC
+    return date;
+  };
+/**
+ * Converts a date or date-time (with optional time) to the specified timezone's time.
+ * Supports both ISO format and custom format like "March 28, 2025 8:00 PM".
+ *
+ * @param {string} inputTime - The time as a string, either in ISO format or custom format.
+ * @param {string} timezone - The full name of the timezone, e.g., 'Asia/Shanghai'.
+ * @returns {DateTime} - The Luxon DateTime object in the target timezone.
+ */
+export const convertUTCToTimezone = (inputTime: string, timezone: string): DateTime => {
+    let dateTime: DateTime;
+    console.log('inputTime')
+    console.log(inputTime)
+    console.log('timezone')
+    console.log(timezone)
+    // Check if the input is in ISO format (date or date-time, e.g., '2025-03-29' or '2025-03-29T12:00:00Z')
+    if (inputTime.includes('-')) {
+      // Handle ISO format date-time or date-only
+      if (inputTime.length === 10) {
+        // Date-only format (e.g., '2025-03-29')
+        dateTime = DateTime.fromISO(inputTime, { zone: 'utc' }).startOf('day');
+      } else {
+        // Full ISO format (e.g., '2025-03-29T12:00:00Z')
+        dateTime = DateTime.fromISO(inputTime, { zone: 'utc' });
+      }
+    } else {
+      // Handle custom format (e.g., "March 28, 2025" or "March 28, 2025 8:00 PM")
+      if (inputTime.includes(':') || inputTime.includes('PM') || inputTime.includes('AM')) {
+        // Date-time with time (e.g., "March 28, 2025 8:00 PM")
+        dateTime = DateTime.fromFormat(inputTime, 'MMMM dd, yyyy hh:mm a', { zone: 'utc' });
+      } else {
+        // Date-only custom format (e.g., "March 28, 2025")
+        dateTime = DateTime.fromFormat(inputTime, 'MMMM dd, yyyy', { zone: 'utc' }).startOf('day');
+      }
+    }
+  
+    // Convert to the specified timezone
+    dateTime = dateTime.setZone(timezone);
+  
+    // Return the Luxon DateTime object in the target timezone
+    return dateTime;
+  };
+  
   /**
  * Gets the short time zone abbreviation for a given time zone.
  * 

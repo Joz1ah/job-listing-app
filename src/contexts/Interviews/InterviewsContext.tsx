@@ -7,7 +7,7 @@ import {
   InterviewsContextType,
   InterviewsProviderProps,
 } from "./types";
-import { isNew, timeAgo, getDateInTimezone, getTimezoneAbbreviation } from "utils/dateTimeUtils";
+import { isNew, timeAgo, convertUTCToTimezone, getTimezoneAbbreviation } from "utils/dateTimeUtils";
 
 const InterviewsContext = createContext<InterviewsContextType | undefined>(
   undefined,
@@ -30,10 +30,12 @@ const mapInterviewListData = (apiResponse: any, timeZone: InterviewListData['tim
       ? `${item.jobHunter.firstName} ${item.jobHunter.lastName}` 
       : 'Unknown User',
       company: item?.employer?.businessName ?? 'Unknown Company',
-      date: timeZone=='UTC' ? item?.scheduledStartDate : getDateInTimezone(timeZone, item?.scheduledStartDate,undefined,true).format('MMMM DD YYYY') ?? 'N/A',
+      date: timeZone=='UTC' ?
+        item?.scheduledStartDate :
+        convertUTCToTimezone(`${item?.scheduledStartDate} ${item?.scheduledStartTime}`, timeZone).toFormat('MMMM dd yyyy') ?? 'N/A',
       time: timeZone === 'UTC'
       ? `${item?.scheduledStartTime} UTC`
-      : `${getDateInTimezone(timeZone, item?.scheduledStartDate, item?.scheduledStartTime, true).format('h:mm A')} ${getTimezoneAbbreviation(timeZone) ?? 'N/A'}`,
+      : `${convertUTCToTimezone(`${item?.scheduledStartDate} ${item?.scheduledStartTime}`, timeZone).toFormat('h:mm a')} ${getTimezoneAbbreviation(timeZone) ?? 'N/A'}`,
       location: item?.jobHunter?.location ?? 'N/A',
       country: UserType=='employer' ? item?.jobHunter?.country ?? 'N/A' : item?.employer?.country ?? 'N/A',
       meetingLink: item?.meetingLink ?? 'via Google Meet',
