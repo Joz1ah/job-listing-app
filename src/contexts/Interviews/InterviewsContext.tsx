@@ -41,7 +41,7 @@ const mapInterviewListData = (apiResponse: any, timeZone: InterviewListData['tim
       sentTime: item?.scheduledStartTime ?? 'N/A',
       isNew: isNew(item?.createdAt ?? "") || false,
       rating: 0,
-      rated: false,
+      rated: item?.rated ?? 'N/A',
       feedback: 'N/A',
       reason: item?.declineReason ?? 'N/A',
       status: item?.status ?? 'Unknown',

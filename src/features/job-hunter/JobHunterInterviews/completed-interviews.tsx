@@ -43,7 +43,7 @@ const CompletedInterviews: FC = () => {
     } catch (error) {
       showError(
         "Interview Rating and Feedback Failed",
-        "Unable to give feedback and rating to the interview. Please try again.",
+        "Unable to give rating and feedback to the interview. Please try again.",
       );
       console.error("Error sending invite:", error);
     } finally {

@@ -16,7 +16,7 @@ const DeclinedInterviews: FC = () => {
   const [initialLoad, setInitialLoad] = useState(true);
   const { subscriptionPlan } = useJobHunterContext();
   const {interviewsList, setSelectedInterviewsGroup} = useInterviewsContext();
-  console.log(interviewsList)
+
   setSelectedInterviewsGroup('DECLINED')
 
   const loadMore = async () => {

@@ -1,4 +1,5 @@
 import { FC, useState, useEffect, useRef } from "react";
+import { CustomError } from "types/errors";
 import { RescheduleCard } from "components";
 import { InterviewCardSkeleton } from "components";
 import { NavLink } from "react-router-dom";
@@ -6,6 +7,36 @@ import emptyInterview from "images/calendar-empty.svg?url";
 import { Interview } from "contexts/Interviews/types";
 import { useEmployerContext } from "components";
 import { useInterviewsContext } from "contexts/Interviews/InterviewsContext";
+import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
+import { useAcceptInterviewMutation, useRejectInterviewMutation, useRescheduleInterviewMutation } from "api/akaza/akazaAPI";
+import { combineDateAndTime } from "utils";
+import { useAuth } from "contexts/AuthContext/AuthContext";
+
+// interface AcceptData {
+//   confirmed: boolean;
+//   interviewId?: string;
+// }
+
+// interface DeclineData {
+//   reason: string;
+//   message: string;
+//   interviewId?: string;
+// }
+
+interface RescheduleData {
+  date: string;
+  time: string;
+  interviewId?: string;
+  reason: string;
+}
+
+const handleError = (errorComponent:any, error:CustomError, title:string, message:string) => {
+  const showError = errorComponent;
+  console.log('trying to handle error')
+  console.log(error,title,message)
+  const errorMessage = (error as CustomError).data?.message || message;
+  showError(title, errorMessage);
+}
 
 const RescheduleRequests: FC = () => {
   const [displayedItems, setDisplayedItems] = useState<Interview[]>([]);
@@ -15,31 +46,77 @@ const RescheduleRequests: FC = () => {
   const [initialLoad, setInitialLoad] = useState(true);
   const { subscriptionPlan } = useEmployerContext();
   const {interviewsList, setSelectedInterviewsGroup} = useInterviewsContext();
+  const [acceptInterview] = useAcceptInterviewMutation();
+  const [rejectInterview] = useRejectInterviewMutation();
+  const [rescheduleInterview] = useRescheduleInterviewMutation();
+  const { showError } = useErrorModal();
+  const { userSettings } = useAuth();
 
-  setSelectedInterviewsGroup('RESCHEDULED');
+  setSelectedInterviewsGroup('RESCHEDULED')
 
   const handleAccept = async (interview: Interview) => {
-    console.log("Accepted interview:", interview.position);
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-    // Remove the accepted interview from the list
-    setDisplayedItems((prev) => prev.filter((item) => item !== interview));
+    try {
+      console.log("Accept:", interview);
+      await acceptInterview(interview.id).unwrap();
+      setDisplayedItems((prev) => prev.filter((item) => item !== interview));
+    } catch (error) {
+      console.log('handling error')
+      handleError( showError, error as CustomError, 
+        "Accept Interview Failed",
+        "Unable to accept the interview. Please try again or contact support.")
+      console.error("Error accepting interview:", error);
+    }
   };
 
   const handleDecline = async (interview: Interview) => {
-    console.log("Declined interview:", interview.position);
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-    // Remove the declined interview from the list
-    setDisplayedItems((prev) => prev.filter((item) => item !== interview));
+    try {
+      console.log("Decline:", interview);
+      console.log(interview.id)
+      await rejectInterview({
+        interviewId: interview.id,
+        reason: 'Reschedule Declined'
+      }).unwrap();
+      setDisplayedItems((prev) => prev.filter((item) => item !== interview));
+    } catch (error) {
+      handleError( showError, error as CustomError, 
+        "Decline Interview Failed",
+        "Unable to decline the interview. Please try again or contact support.",
+      );
+      console.error("Error declining interview:", error);
+    }
   };
 
-  const handleReschedule = (interview: Interview) => {
-    console.log("Reschedule requested for:", interview.position);
-    // Update the interview's hasRescheduled status
-    setDisplayedItems((prev) =>
-      prev.map((item) =>
-        item === interview ? { ...item, hasRescheduled: true } : item,
-      ),
-    );
+  const handleReschedule = async (
+    interview: Interview,
+    data: RescheduleData,
+  ) => {
+    try {
+      console.log("Reschedule:", interview, data);
+        const scheduleStart = combineDateAndTime(
+          new Date(data.date),
+          data.time as string,
+        );
+        const scheduledEnd = scheduleStart.add(30, "minutes");
+        const payload = {
+          interviewId: data.interviewId,
+          requestorTimezone: userSettings.data?.timeZone,
+          newStart: scheduleStart.format("YYYY-MM-DDTHH:mm"),
+          newEnd: scheduledEnd.format("YYYY-MM-DDTHH:mm"),
+          reason: data.reason
+        };
+        console.log(payload)
+      await rescheduleInterview(payload).unwrap().then(()=>{
+        //console.log("Form submitted with values:", payload);
+      });
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+      setDisplayedItems((prev) => prev.filter((item) => item !== interview));
+    } catch (error) {
+      handleError( showError, error as CustomError, 
+        "Reschedule Interview Failed",
+        "Unable to reschedule the interview. Please try again or contact support.",
+      );
+      console.error("Error rescheduling interview:", error);
+    }
   };
 
   const loadMore = async () => {
@@ -181,7 +258,7 @@ const RescheduleRequests: FC = () => {
               interview={interview}
               onAccept={() => handleAccept(interview)}
               onDecline={() => handleDecline(interview)}
-              onReschedule={() => handleReschedule(interview)}
+              onReschedule={(data) => handleReschedule(interview,data)}
               variant="employer"
             />
           ))}

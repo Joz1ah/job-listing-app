@@ -34,6 +34,7 @@ interface RescheduleData {
   date: string;
   time: string;
   interviewId?: string;
+  reason: string;
 }
 
 interface RescheduleCardProps {

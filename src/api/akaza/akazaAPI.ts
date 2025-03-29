@@ -635,7 +635,7 @@ export const akazaApiInterviewRequest = createApiFunction({
     }),
     ratingFeedback: builder.mutation({
       query: (payload) => ({
-        url: `/interviews/${payload.interviewId}/feedback`,
+        url: `/interviews/feedback`,
         method: 'POST',
         body: {
           "interviewId": payload.interviewId,
