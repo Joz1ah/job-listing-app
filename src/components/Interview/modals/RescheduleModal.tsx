@@ -207,7 +207,7 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
                   <div className="flex items-center mt-1">
                     <MapPin className="text-[#F5722E]" size={12} />
                     <p className="text-xs text-[#263238] break-words">
-                      Based in {interview.location}
+                      Based in {interview.country}
                     </p>
                   </div>
                 </div>
