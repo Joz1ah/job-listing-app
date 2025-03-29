@@ -154,7 +154,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
 
   // Button class based on validation state - this will ensure proper styling
   const sendInviteButtonClass =
-    !isValid || isSubmitting
+    !isValid || isSubmitting || !formik.dirty
       ? "bg-[#AEADAD] hover:bg-[#AEADAD]/70 text-white text-[16px] font-normal cursor-not-allowed"
       : "bg-[#F5722E] hover:bg-[#F5722E]/70 text-white text-[16px] font-normal";
 
