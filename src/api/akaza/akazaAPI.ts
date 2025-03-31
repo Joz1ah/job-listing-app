@@ -151,6 +151,7 @@ export const akazaApiAuth = createApiFunction({
           email: payLoad.email,
           password: payLoad.password,
         },
+        extraOptions: { forceRefetch: true }, // Prevents caching
         invalidatesTags: ['Auth']
       }),
       async onQueryStarted(args,{ queryFulfilled }) {
