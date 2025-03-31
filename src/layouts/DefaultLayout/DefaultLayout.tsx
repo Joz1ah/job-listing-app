@@ -72,20 +72,20 @@ export const DefaultLayout: React.FC<DefaultLayoutProps> = ({
   };
 
   // Optional debugging
-  useEffect(() => {
-    console.log(
-      "DefaultLayout - User subscription data:",
-      user?.data?.user?.subscriptions,
-    );
-    console.log(
-      "DefaultLayout - Direct subscription property:",
-      user?.data?.user?.subscription,
-    );
-    console.log(
-      "DefaultLayout - Calculated subscription plan:",
-      getSubscriptionPlan(),
-    );
-  }, [user]);
+  // useEffect(() => {
+  //   console.log(
+  //     "DefaultLayout - User subscription data:",
+  //     user?.data?.user?.subscriptions,
+  //   );
+  //   console.log(
+  //     "DefaultLayout - Direct subscription property:",
+  //     user?.data?.user?.subscription,
+  //   );
+  //   console.log(
+  //     "DefaultLayout - Calculated subscription plan:",
+  //     getSubscriptionPlan(),
+  //   );
+  // }, [user]);
 
   useEffect(() => {
     createExternalCookiePolicy();
