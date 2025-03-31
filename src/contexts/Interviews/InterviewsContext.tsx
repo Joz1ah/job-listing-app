@@ -131,6 +131,14 @@ const InterviewsProvider: React.FC<InterviewsProviderProps> = ({
     limit: 100,
   });
 
+  const refetchInterviews = async () => {
+    try {
+      await refetch();
+    } catch (error) {
+      console.error('Failed to refetch interviews:', error);
+    }
+  }
+
   useEffect(() => {
     const fetchData = async () => {
       refetch()
@@ -176,7 +184,8 @@ const InterviewsProvider: React.FC<InterviewsProviderProps> = ({
         setInterviewsListState,
         setSelectedInterviewsGroup,
         nextPage,
-        prevPage
+        prevPage,
+        refetchInterviews
       }}
     >
       {children}

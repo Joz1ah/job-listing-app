@@ -47,6 +47,7 @@ export interface Interview {
     nextPage: () => void;
     prevPage: () => void;
     isLoadingInterviews: boolean;
+    refetchInterviews: () => void;
   }
   
   export interface InterviewsProviderProps {
