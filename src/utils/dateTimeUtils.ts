@@ -127,10 +127,6 @@ export const getDateInTimezone = (
  */
 export const convertUTCToTimezone = (inputTime: string, timezone: string): DateTime => {
     let dateTime: DateTime;
-    console.log('inputTime')
-    console.log(inputTime)
-    console.log('timezone')
-    console.log(timezone)
     // Check if the input is in ISO format (date or date-time, e.g., '2025-03-29' or '2025-03-29T12:00:00Z')
     if (inputTime.includes('-')) {
       // Handle ISO format date-time or date-only
