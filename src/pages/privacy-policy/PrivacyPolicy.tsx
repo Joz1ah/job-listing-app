@@ -2,6 +2,7 @@ import { DefaultLayout } from 'layouts';
 import { useState, useEffect, useRef } from 'react';
 import spinner_loading_fallback from 'assets/images/spinner-loading-akaza.svg?url';
 import akaza_title_vector from 'assets/akaza-vector-1.svg?url'
+import { PageMeta } from "components";
 
 const PrivacyPolicy: React.FC = () => {
   const [iframeLoaded, setIframeLoaded] = useState(false);
@@ -150,6 +151,11 @@ const PrivacyPolicy: React.FC = () => {
   }, [iframeLoaded]);
 
   return (
+    <>
+    <PageMeta 
+        title="Privacy Policy" 
+        description="Akaza is a modern job marketplace with a new concept. No resume, No endless scrolling, you just choose your Perfect Match!"
+    />
     <DefaultLayout>
       <div className="bg-[#263238] flex lg:justify-center lg:items-center w-full pt-5 select-none">
           <div className="flex w-[67rem] xl:w-[1100px] xl:pl-[2.5rem] xl:bg-[#2D3A41] xl:justify-center xl:items-center">
@@ -182,6 +188,7 @@ const PrivacyPolicy: React.FC = () => {
         />
       </div>
     </DefaultLayout>
+    </>
   );
 };
 

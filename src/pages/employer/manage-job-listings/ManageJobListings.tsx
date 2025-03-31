@@ -3,12 +3,17 @@ import { Outlet } from "react-router-dom";
 import { ManageJobListingsSidebar } from "features/employer";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import { KeywordMappingProvider } from "contexts/KeyWordMappingContext";
+import { PageMeta } from "components";
 
 const ManageJobListings: FC = () => {
   const { user } = useAuth();
 
   return (
     <>
+    <PageMeta 
+        title="Manage Job Listings" 
+        description="Akaza is a modern job marketplace with a new concept. No resume, No endless scrolling, you just choose your Perfect Match!"
+    />
       <KeywordMappingProvider>
         <div className="flex justify-center w-full max-w-screen-xl mx-auto md:py-16 py-6">
           <div className="flex flex-col lg:flex-row w-full pt-8">

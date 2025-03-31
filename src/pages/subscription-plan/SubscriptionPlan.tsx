@@ -14,6 +14,7 @@ import { DefaultLayout } from "layouts";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import styles from "./subscriptionPlan.module.scss";
 import subscription_card from "assets/card-orange.svg?url";
+import { PageMeta } from "components";
 
 interface PlanFeature {
   icon: React.ReactNode;
@@ -153,6 +154,11 @@ const SubscriptionPlan: FC = () => {
   ];
 
   return (
+    <>
+    <PageMeta 
+        title="Subscription Plans" 
+        description="Akaza is a modern job marketplace with a new concept. No resume, No endless scrolling, you just choose your Perfect Match!"
+    />
     <DefaultLayout>
       <div
         className={`${styles["subscription-plan-container"]} pb-10 md:pt-10`}
@@ -182,6 +188,7 @@ const SubscriptionPlan: FC = () => {
         </div>
       </div>
     </DefaultLayout>
+  </>
   );
 };
 

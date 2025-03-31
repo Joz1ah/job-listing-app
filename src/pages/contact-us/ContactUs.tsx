@@ -5,6 +5,7 @@ import { Formik, FieldProps, Field, } from 'formik';
 import { Input, InputField, Textarea} from "components";
 import * as Yup from 'yup';
 import {useSendContactUsEmailMutation} from 'api/akaza/akazaAPI';
+import { PageMeta } from "components";
 
 //import bgLogo from 'assets/contact-us/bg-logo.svg?url';
 /*
@@ -58,6 +59,11 @@ const ContactUs: FC = () => {
         })
     }
     return (
+    <>
+        <PageMeta 
+            title="Contact us" 
+            description="Akaza is a modern job marketplace with a new concept. No resume, No endless scrolling, you just choose your Perfect Match!"
+        />
         <DefaultLayout>
             <div className={style['contact-us-container']}>
                 <div className={style['form-container-wrapper']}>
@@ -377,6 +383,7 @@ const ContactUs: FC = () => {
 
             </div>
         </DefaultLayout>
+    </>
     )
 }
 

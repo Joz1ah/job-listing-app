@@ -1,10 +1,16 @@
 import { FC } from "react";
 import { EmployerHeader } from "layouts";
 import { EmployerFeed, Sidebar } from "features/employer";
+import { PageMeta } from "components";
 
 const EmployerFeedLayout: FC = () => {
 
   return (
+    <>
+    <PageMeta 
+        title="Dashboard Feed" 
+        description="Akaza is a modern job marketplace with a new concept. No resume, No endless scrolling, you just choose your Perfect Match!"
+    />
       <div className="px-4 xl:px-12 md:pt-20">
         {/* Main content area with two columns */}
         <div className="flex flex-col md:flex-row md:space-x-6">
@@ -20,6 +26,7 @@ const EmployerFeedLayout: FC = () => {
           </div>
         </div>
       </div>
+    </>
   );
 };
 

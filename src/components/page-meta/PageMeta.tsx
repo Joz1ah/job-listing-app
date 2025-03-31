@@ -29,7 +29,7 @@ const PageMeta: FC<Props> = (props: Props) => {
       {title != null
         ? (
           <title>
-            {title} - {t.appName}
+            {t.appName} - {title}
           </title>
           )
         : (

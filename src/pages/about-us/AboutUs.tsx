@@ -1,9 +1,15 @@
 import React from 'react';
 import { DefaultLayout } from 'layouts';
 import style from './aboutUs.module.scss';
+import { PageMeta } from "components";
 
 const AboutUs : React.FC = () => {
     return (
+    <>
+    <PageMeta 
+        title="About us" 
+        description="Akaza is a modern job marketplace with a new concept. No resume, No endless scrolling, you just choose your Perfect Match!"
+    />
     <DefaultLayout>
         <div className={style['about-us-container']}>
             <div className='
@@ -35,6 +41,7 @@ const AboutUs : React.FC = () => {
             </div>
         </div>
     </DefaultLayout>
+    </>
     )
 }
 
