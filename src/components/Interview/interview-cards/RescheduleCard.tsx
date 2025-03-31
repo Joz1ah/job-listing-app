@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { Card, CardHeader, CardContent } from "components";
 import { Button } from "components";
-import { Tooltip } from "components";
+//import { Tooltip } from "components";
 import { CandidatePreviewModal } from "../modals/CandidatePreviewModal";
 import { JobInterviewPreviewModal } from "../modals/JobInterviewPreviewModal";
 import { RescheduleModal } from "../modals/RescheduleModal";
@@ -220,6 +220,8 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
                 </div>
               ) : interview.isRescheduleRequesterMe ? (
                 // My request layout
+                <>
+                {/*
                 <div className="flex items-center gap-2 flex-wrap justify-center">
                   {interview.hasRescheduled ? (
                     <Tooltip content="You've already exceeded the limit to reschedule">
@@ -244,6 +246,8 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
                     </Button>
                   )}
                 </div>
+                */}
+                </>
               ) : (
                 // Their request layout
                 <div className="flex items-center gap-2">

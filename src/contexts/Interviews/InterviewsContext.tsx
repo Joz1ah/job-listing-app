@@ -33,7 +33,7 @@ const mapInterviewListData = (apiResponse: any, timeZone: InterviewListData['tim
       company: item?.employer?.businessName ?? 'Unknown Company',
       date: timeZone=='UTC' ?
         item?.scheduledStartDate :
-        convertUTCToTimezone(`${item?.scheduledStartDate} ${item?.scheduledStartTime}`, timeZone).toFormat('MMMM dd, yyyy') ?? 'N/A',
+        convertUTCToTimezone(`${item?.scheduledStartDate} ${item?.scheduledStartTime}`, timeZone).toFormat('MMMM d, yyyy') ?? 'N/A',
       time: timeZone === 'UTC'
       ? `${item?.scheduledStartTime} UTC`
       : `${convertUTCToTimezone(`${item?.scheduledStartDate} ${item?.scheduledStartTime}`, timeZone).toFormat('h:mm a')} ${getTimezoneAbbreviation(timeZone) ?? 'N/A'}`,
@@ -41,7 +41,7 @@ const mapInterviewListData = (apiResponse: any, timeZone: InterviewListData['tim
       country: UserType=='employer' ? item?.jobHunter?.country ?? 'N/A' : item?.employer?.country ?? 'N/A',
       meetingLink: item?.meetingLink ?? 'via Google Meet',
       receivedTime: timeAgo(new Date(item?.createdAt)) ?? 'N/A',
-      sentTime: item?.scheduledStartTime ?? 'N/A',
+      sentTime: timeAgo(new Date(item?.createdAt)) ?? 'N/A',
       isNew: isNew(item?.createdAt ?? "") || false,
       rating: 0,
       rated: item?.rated ?? 'N/A',
@@ -126,10 +126,17 @@ const InterviewsProvider: React.FC<InterviewsProviderProps> = ({
     hasMore: true,
   });
   const {user,userSettings} = useAuth();
-  const { data, isLoading, error } = useGetInterviewListQuery({
+  const { data, isLoading, error, refetch } = useGetInterviewListQuery({
     page: interviewsListState.page,
     limit: 100,
   });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      refetch()
+    };
+    fetchData();
+  }, [selectedInterviewsGroup]);
 
   // Process the data when it arrives
   useEffect(() => {

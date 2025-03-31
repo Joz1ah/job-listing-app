@@ -15,7 +15,7 @@ const DeclinedInterviews: FC = () => {
   const loaderRef = useRef<HTMLDivElement>(null);
   const [initialLoad, setInitialLoad] = useState(true);
   const { subscriptionPlan } = useEmployerContext();
-  const {interviewsList, setSelectedInterviewsGroup} = useInterviewsContext();
+  const {interviewsList, setSelectedInterviewsGroup, isLoadingInterviews} = useInterviewsContext();
 
   setSelectedInterviewsGroup('DECLINED');
 
@@ -91,7 +91,7 @@ const DeclinedInterviews: FC = () => {
   const showLoadingCards = loading;
   const loadingCardsCount = Math.min(6, interviewsList.length);
 
-  if (loading) {
+  if (loading || isLoadingInterviews) {
     return (
       <div className="h-full w-full flex items-center justify-center">
         <div className="flex flex-col items-center justify-center p-4 sm:p-8 text-center">

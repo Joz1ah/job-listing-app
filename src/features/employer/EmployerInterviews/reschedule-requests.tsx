@@ -45,7 +45,7 @@ const RescheduleRequests: FC = () => {
   const loaderRef = useRef<HTMLDivElement>(null);
   const [initialLoad, setInitialLoad] = useState(true);
   const { subscriptionPlan } = useEmployerContext();
-  const {interviewsList, setSelectedInterviewsGroup} = useInterviewsContext();
+  const {interviewsList, setSelectedInterviewsGroup, isLoadingInterviews} = useInterviewsContext();
   const [acceptInterview] = useAcceptInterviewMutation();
   const [rejectInterview] = useRejectInterviewMutation();
   const [rescheduleInterview] = useRescheduleInterviewMutation();
@@ -188,7 +188,7 @@ const RescheduleRequests: FC = () => {
     };
   }, [loading, hasMore, initialLoad]);
 
-  if (loading) {
+  if (loading || isLoadingInterviews) {
     return (
       <div className="h-full w-full flex items-center justify-center">
         <div className="flex flex-col items-center justify-center p-4 sm:p-8 text-center">
@@ -213,7 +213,7 @@ const RescheduleRequests: FC = () => {
 
   // Show empty state if there are no reschedule requests and we're not loading
   if (
-    (!loading && displayedItems.length === 0) ||
+    (!isLoadingInterviews && !loading && displayedItems.length === 0) ||
     subscriptionPlan === "freeTrial"
   ) {
     return (

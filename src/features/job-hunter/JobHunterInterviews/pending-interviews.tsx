@@ -46,7 +46,7 @@ const PendingInterviews: FC = () => {
   const loaderRef = useRef<HTMLDivElement>(null);
   const [declineReason, setDeclineReason] = useState<string>("");
   const { subscriptionPlan } = useJobHunterContext();
-  const {interviewsList, setSelectedInterviewsGroup} = useInterviewsContext();
+  const {interviewsList, setSelectedInterviewsGroup, isLoadingInterviews} = useInterviewsContext();
   const [acceptInterview] = useAcceptInterviewMutation();
   const [rejectInterview] = useRejectInterviewMutation();
   const [rescheduleInterview] = useRescheduleInterviewMutation();
@@ -56,6 +56,10 @@ const PendingInterviews: FC = () => {
   setSelectedInterviewsGroup('PENDING')
 
   const handleAccept = async (interview: Interview, data: AcceptData) => {
+    interview
+    data
+    acceptInterview
+    /*
     try {
       console.log("Accept:", interview, data);
       await acceptInterview(data.interviewId).unwrap();
@@ -67,6 +71,7 @@ const PendingInterviews: FC = () => {
         "Unable to accept the interview. Please try again or contact support.")
       console.error("Error accepting interview:", error);
     }
+      */
   };
 
   const handleDecline = async (interview: Interview, data: DeclineData) => {
@@ -198,7 +203,7 @@ const PendingInterviews: FC = () => {
   const showLoadingCards = loading;
   const loadingCardsCount = Math.min(6, interviewsList.length);
 
-  if (loading) {
+  if (loading || isLoadingInterviews) {
     return (
       <div className="h-full w-full flex items-center justify-center">
         <div className="flex flex-col items-center justify-center p-4 sm:p-8 text-center">
