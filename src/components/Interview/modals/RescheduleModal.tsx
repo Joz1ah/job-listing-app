@@ -131,11 +131,7 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
       // Close the modal after 1 second and navigate based on variant
       setTimeout(() => {
         onClose();
-        navigate(
-          variant === "employer"
-            ? "/dashboard/interviews/reschedule"
-            : "/dashboard/interviews/reschedule",
-        );
+        navigate("/dashboard/interviews/reschedule", { replace: true });
       }, 1000);
     },
   });
