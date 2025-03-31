@@ -141,6 +141,7 @@ export const akazaApiAuth = createApiFunction({
       return headers;
     },
   }), 
+  tagTypes: ['Auth'],
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (payLoad) => ({
@@ -150,6 +151,7 @@ export const akazaApiAuth = createApiFunction({
           email: payLoad.email,
           password: payLoad.password,
         },
+        invalidatesTags: ['Auth']
       }),
       async onQueryStarted(args,{ queryFulfilled }) {
         const rememberLogin = args?.rememberMe || false
