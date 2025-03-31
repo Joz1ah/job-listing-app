@@ -26,7 +26,10 @@ const Landing: FC = (): ReactElement => {
 
   return (
     <LandingContext.Provider value={{ isFreeTrial }}>
-      <PageMeta title="Akaza" />
+      <PageMeta 
+        title="Akaza" 
+        description="Akaza is a modern job marketplace with a new concept. No resume, No endless scrolling, you just choose your Perfect Match!"
+      />
       <DefaultLayout className={styles["landing-container"]}>
         <div className={`${styles.main} flex flex-col gap-0`}>
           {isIndexRoute && (
