@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
 import { useNavigate } from "react-router-dom";
 import {
@@ -70,13 +70,21 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
   const [createInterview] = useCreateJobHunterInterviewMutation();
   const { showError } = useErrorModal();
   const [isMobileView, setIsMobileView] = useState<boolean>(false);
+  const dateInputRef = useRef<HTMLDivElement>(null);
 
-  // Check viewport size
+  // State to track window dimensions for responsive positioning
+  const [windowDimensions, setWindowDimensions] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight
+  });
+
+  // Check viewport size and handle resize events
   useEffect(() => {
     const checkViewportSize = () => {
       setIsMobileView(window.innerWidth < 640);
     };
 
+    // Simple resize handler that only checks mobile view state
     checkViewportSize();
     window.addEventListener("resize", checkViewportSize);
 
@@ -84,6 +92,33 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
       window.removeEventListener("resize", checkViewportSize);
     };
   }, []);
+
+  // Add resize and scroll listeners to update dimensions without flickering
+  useEffect(() => {
+    if (isDatePickerOpen && !isMobileView) {
+      // Debounce function to prevent excessive rerenders
+      let resizeTimer: NodeJS.Timeout;
+      
+      const handleResizeOrScroll = () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          setWindowDimensions({
+            width: window.innerWidth,
+            height: window.innerHeight
+          });
+        }, 50); // 50ms debounce
+      };
+      
+      window.addEventListener('resize', handleResizeOrScroll);
+      window.addEventListener('scroll', handleResizeOrScroll, true);
+      
+      return () => {
+        clearTimeout(resizeTimer);
+        window.removeEventListener('resize', handleResizeOrScroll);
+        window.removeEventListener('scroll', handleResizeOrScroll, true);
+      };
+    }
+  }, [isDatePickerOpen, isMobileView]);
 
   const formik = useFormik<FormValues>({
     initialValues: {
@@ -162,8 +197,12 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
 
   const handleDateSelect = (selectedDate: Date): void => {
     setFieldValue("interviewDate", selectedDate);
+    // Close the date picker after selecting a date
     setIsDatePickerOpen(false);
   };
+
+  // The "Done" button handler is no longer needed, as we'll close on clicking outside
+  // We can safely remove this code
 
   const handleTimeSelect = (time: string): void => {
     setFieldValue("interviewTime", time);
@@ -175,14 +214,17 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
       ? "bg-[#AEADAD] hover:bg-[#AEADAD]/70 text-white text-[16px] font-normal cursor-not-allowed"
       : "bg-[#F5722E] hover:bg-[#F5722E]/70 text-white text-[16px] font-normal";
 
-  // Render date picker based on screen size
+  // Completely redesigned approach using a modal-like overlay
   const renderDatePicker = () => {
     if (!isDatePickerOpen) return null;
 
+    // The calendar position depends on whether it's mobile or desktop
+    let calendarPosition;
+
     if (isMobileView) {
-      // Mobile version
-      return (
-        <div className="relative my-2 mb-8 pb-4">
+      // Center the calendar on mobile
+      calendarPosition = (
+        <div className="fixed z-[1002] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-auto">
           <DatePicker
             isOpen={isDatePickerOpen}
             onClose={() => setIsDatePickerOpen(false)}
@@ -197,23 +239,79 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
         </div>
       );
     } else {
-      // Desktop version - unchanged from original code
-      return (
-        <div className="fixed z-50 left-1/2 -translate-x-1/2 sm:left-[40%] md:left-[26%] sm:-translate-x-1/2">
-          <DatePicker
-            isOpen={isDatePickerOpen}
-            onClose={() => setIsDatePickerOpen(false)}
-            onDateSelect={handleDateSelect}
-            initialDate={values.interviewDate}
-            variant="secondary"
-            disablePastDates={true}
-            disableFutureDates={getDateInTimezone(timezone)
-              .add(2, "months")
-              .toDate()}
-          />
-        </div>
-      );
+      // Desktop positioning - align with input field
+      const inputRect = dateInputRef.current?.getBoundingClientRect();
+      
+      if (!inputRect) {
+        // Fallback to center positioning if input field not found
+        calendarPosition = (
+          <div 
+            className="fixed z-[1002] left-1/2 transform -translate-x-1/2 pointer-events-auto"
+            style={{ top: '25%' }}
+          >
+            <DatePicker
+              isOpen={isDatePickerOpen}
+              onClose={() => setIsDatePickerOpen(false)}
+              onDateSelect={handleDateSelect}
+              initialDate={values.interviewDate}
+              variant="secondary"
+              disablePastDates={true}
+              disableFutureDates={getDateInTimezone(timezone)
+                .add(2, "months")
+                .toDate()}
+            />
+          </div>
+        );
+      } else {
+        // Position relative to the input field
+        const calendarHeight = 310;
+        const spaceBelow = windowDimensions.height - inputRect.bottom - 8;
+        const spaceAbove = inputRect.top - 8;
+        
+        let top;
+        if (spaceBelow >= calendarHeight || spaceBelow >= spaceAbove) {
+          top = inputRect.bottom + 8;
+        } else {
+          top = inputRect.top - calendarHeight - 8;
+        }
+        
+        calendarPosition = (
+          <div 
+            className="fixed z-[1002] pointer-events-auto"
+            style={{ 
+              left: `${inputRect.left}px`,
+              top: `${top}px`
+            }}
+          >
+            <DatePicker
+              isOpen={isDatePickerOpen}
+              onClose={() => setIsDatePickerOpen(false)}
+              onDateSelect={handleDateSelect}
+              initialDate={values.interviewDate}
+              variant="secondary"
+              disablePastDates={true}
+              disableFutureDates={getDateInTimezone(timezone)
+                .add(2, "months")
+                .toDate()}
+            />
+          </div>
+        );
+      }
     }
+
+    // Return a modal-like structure with a semi-transparent overlay
+    return (
+      <div className="fixed inset-0 z-[1001] pointer-events-auto">
+        {/* Semi-transparent overlay that catches all clicks outside the calendar */}
+        <div 
+          className="absolute inset-0 bg-black bg-opacity-0 pointer-events-auto" 
+          onClick={() => setIsDatePickerOpen(false)}
+        />
+        
+        {/* Calendar positioned according to the rules above */}
+        {calendarPosition}
+      </div>
+    );
   };
 
   return (
@@ -305,6 +403,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                       >
                         <div className="relative">
                           <div
+                            ref={dateInputRef}
                             className="w-full border-2 rounded-[10px] bg-transparent h-[56px] px-3 flex items-center cursor-pointer border-[#263238] text-sm"
                             onClick={() => setIsDatePickerOpen(true)}
                           >
@@ -312,8 +411,6 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                               ? values.interviewDate.toLocaleDateString()
                               : "Select a date"}
                           </div>
-
-                          {renderDatePicker()}
                         </div>
                       </InputField>
                     </div>
@@ -395,6 +492,9 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* DatePicker - rendered outside the modal structure */}
+      {renderDatePicker()}
 
       <InvitationSentModal
         isOpen={showSuccessModal}
