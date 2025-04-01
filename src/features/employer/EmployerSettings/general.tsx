@@ -93,7 +93,7 @@ const GeneralSettings: FC = () => {
   const [updateEmail, { isLoading: isUpdatingEmail }] =
     useUpdateEmailMutation();
 
-  const settings = settingsData?.data || DEFAULT_SETTINGS;
+  const settings = settingsData?.data.settings || DEFAULT_SETTINGS;
 
   const handleTimezoneChange = async (newTimeZone: string) => {
     if (!user?.data?.user?.id) return;
