@@ -151,6 +151,8 @@ const csp = (req: Request, res: Response, next: NextFunction): void => {
           'https://js.intercomcdn.com/',
           'https://cdnapp.websitepolicies.net', //cookies
           'https://cdn.jsdelivr.net', //cookies
+          'https://www.googletagmanager.com',
+          'https://www.google-analytics.com',
           IS_DEV ? "'unsafe-eval'" : ''
         ].filter(Boolean),
         frameSrc: ["'self'", "https://js.stripe.com", "http://js.stripe.com","https://intercom-sheets.com","https://app.websitepolicies.com"],
@@ -163,7 +165,8 @@ const csp = (req: Request, res: Response, next: NextFunction): void => {
           'https://apitest.authorize.net',
           'wss://nexus-websocket-a.intercom.io',
           'https://cdnapp.websitepolicies.net', //cookies
-          'https://consents.websitepolicies.com/' //cookies
+          'https://consents.websitepolicies.com/', //cookies
+          'https://www.google-analytics.com'
         ],
         formAction: [
           "'self'", // Allow form submissions to the same origin

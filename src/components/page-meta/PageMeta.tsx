@@ -23,9 +23,19 @@ const prepareData = ({ title, description, image }: Props): Props => ({
 const PageMeta: FC<Props> = (props: Props) => {
   const { title, description, image } = prepareData(props)
   const { t } = useTranslations()
-
+  const nonce = document.head.querySelector('meta[property="csp-nonce"]')?.getAttribute('content') || '';
   return (
     <Helmet>
+      {/* Google Analytics script */}
+      <script nonce={nonce} async src="https://www.googletagmanager.com/gtag/js?id=G-RKRJ2HNNN8"></script>
+      <script nonce={nonce}>
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RKRJ2HNNN8');
+        `}
+      </script>
       {title != null
         ? (
           <title>
