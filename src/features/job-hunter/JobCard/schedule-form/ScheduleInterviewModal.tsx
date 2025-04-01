@@ -69,12 +69,27 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
   const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
   const [createInterview] = useCreateJobHunterInterviewMutation();
   const { showError } = useErrorModal();
-  console.log(timezone)
+  const [isMobileView, setIsMobileView] = useState<boolean>(false);
+
+  // Check viewport size
+  useEffect(() => {
+    const checkViewportSize = () => {
+      setIsMobileView(window.innerWidth < 640);
+    };
+
+    checkViewportSize();
+    window.addEventListener("resize", checkViewportSize);
+
+    return () => {
+      window.removeEventListener("resize", checkViewportSize);
+    };
+  }, []);
+
   const formik = useFormik<FormValues>({
     initialValues: {
       interviewDate: undefined,
       interviewTime: undefined,
-      jobId: jobId
+      jobId: jobId,
     },
     validationSchema,
     validateOnMount: true,
@@ -92,10 +107,12 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
           scheduledStart: scheduleStart.format("YYYY-MM-DDTHH:mm"),
           scheduledEnd: scheduledEnd.format("YYYY-MM-DDTHH:mm"),
         };
-        await createInterview(payload).unwrap().then(()=>{
-          setShowSuccessModal(true);
-          //console.log("Form submitted with values:", payload);
-        });
+        await createInterview(payload)
+          .unwrap()
+          .then(() => {
+            setShowSuccessModal(true);
+            //console.log("Form submitted with values:", payload);
+          });
       } catch (error) {
         showError(
           "Interview Scheduling Failed",
@@ -158,11 +175,53 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
       ? "bg-[#AEADAD] hover:bg-[#AEADAD]/70 text-white text-[16px] font-normal cursor-not-allowed"
       : "bg-[#F5722E] hover:bg-[#F5722E]/70 text-white text-[16px] font-normal";
 
+  // Render date picker based on screen size
+  const renderDatePicker = () => {
+    if (!isDatePickerOpen) return null;
+
+    if (isMobileView) {
+      // Mobile version
+      return (
+        <div className="relative my-2 mb-8 pb-4">
+          <DatePicker
+            isOpen={isDatePickerOpen}
+            onClose={() => setIsDatePickerOpen(false)}
+            onDateSelect={handleDateSelect}
+            initialDate={values.interviewDate}
+            variant="secondary"
+            disablePastDates={true}
+            disableFutureDates={getDateInTimezone(timezone)
+              .add(2, "months")
+              .toDate()}
+          />
+        </div>
+      );
+    } else {
+      // Desktop version - unchanged from original code
+      return (
+        <div className="fixed z-50 left-1/2 -translate-x-1/2 sm:left-[40%] md:left-[26%] sm:-translate-x-1/2">
+          <DatePicker
+            isOpen={isDatePickerOpen}
+            onClose={() => setIsDatePickerOpen(false)}
+            onDateSelect={handleDateSelect}
+            initialDate={values.interviewDate}
+            variant="secondary"
+            disablePastDates={true}
+            disableFutureDates={getDateInTimezone(timezone)
+              .add(2, "months")
+              .toDate()}
+          />
+        </div>
+      );
+    }
+  };
+
   return (
     <>
       <Dialog open={isOpen} onOpenChange={handleModalClose}>
         <DialogContent
-          className="w-[calc(100%-2rem)] md:w-full max-w-3xl h-auto p-0 flex flex-col mt-0 translate-y-12 top-4 sm:top-6"
+          // Only add max-height and overflow for mobile view
+          className={`w-[calc(100%-2rem)] md:w-full max-w-3xl h-auto p-0 flex flex-col mt-0 translate-y-12 top-4 sm:top-6 ${isMobileView ? "max-h-[90vh] overflow-y-auto" : ""}`}
           closeOnOutsideClick={false}
         >
           <div className="flex flex-col h-full">
@@ -170,8 +229,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
               <DialogHeader className="py-2 px-4 sm:px-6">
                 {/* Header Title */}
                 <DialogTitle className="text-center text-[#F5722E] mb-4 mt-6 sm:mb-8 sm:mt-6 text-base sm:text-lg">
-                  Schedule an interview for the{" "}
-                  <span>{jobTitle}</span> position
+                  Schedule an interview for the <span>{jobTitle}</span> position
                 </DialogTitle>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -179,7 +237,9 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-0">
                     {/* Left Column - Name and Location */}
                     <div className="mb-4 sm:mb-0">
-                      <span className="text-sm flex justify-start mb-2">{company}</span>
+                      <span className="text-sm flex justify-start mb-2">
+                        {company}
+                      </span>
                       <div className="flex items-center gap-2">
                         <MapPin className="text-[#F5722E]" />
                         <span className="text-sm text-black">
@@ -191,7 +251,9 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                     {/* Right Column - Skills and Certificate */}
                     <div className="space-y-4">
                       <div>
-                        <span className="text-sm flex justify-start mb-2">Core Skills:</span>
+                        <span className="text-sm flex justify-start mb-2">
+                          Core Skills:
+                        </span>
                         <div className="flex flex-wrap gap-1.5">
                           {coreSkills.map((skill, index) => (
                             <span
@@ -250,19 +312,8 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                               ? values.interviewDate.toLocaleDateString()
                               : "Select a date"}
                           </div>
-                          {isDatePickerOpen && (
-                            <div className="fixed z-50 left-1/2 -translate-x-1/2 sm:left-[40%] md:left-[26%] sm:-translate-x-1/2">
-                              <DatePicker
-                                isOpen={isDatePickerOpen}
-                                onClose={() => setIsDatePickerOpen(false)}
-                                onDateSelect={handleDateSelect}
-                                initialDate={values.interviewDate}
-                                variant="secondary"
-                                disablePastDates={true}
-                                disableFutureDates={getDateInTimezone(timezone).add(2,'months').toDate()}
-                              />
-                            </div>
-                          )}
+
+                          {renderDatePicker()}
                         </div>
                       </InputField>
                     </div>
@@ -312,8 +363,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                           navigate("/dashboard/account-settings/general");
                         }}
                       >
-                        {timezone} Timezone | Click to
-                        Change
+                        {timezone} Timezone | Click to Change
                       </span>
                       <ChevronRight className="w-4 h-4 flex-shrink-0" />
                     </div>

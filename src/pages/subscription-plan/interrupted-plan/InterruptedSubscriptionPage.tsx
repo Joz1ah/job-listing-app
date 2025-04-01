@@ -638,11 +638,11 @@ const InterruptedSubscriptionPage: React.FC = () => {
           ? [
               {
                 icon: <img src={infinity_icon} className="w-5 h-5" />,
-                text: "Up to 3 Interview Invites",
+                text: "Unlimited Interview Invites",
               },
               {
                 icon: <img src={calender_icon} className="w-5 h-5" />,
-                text: "Up to 3 Job Listings",
+                text: "Up to 5 Job Listings",
               },
             ]
           : [

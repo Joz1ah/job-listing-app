@@ -78,7 +78,22 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
   const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
   const [createInterview] = useCreateEmployerInterviewMutation();
   const { showError } = useErrorModal();
-  console.log(jobId)
+  const [isMobileView, setIsMobileView] = useState<boolean>(false);
+  
+  // Check viewport size
+  useEffect(() => {
+    const checkViewportSize = () => {
+      setIsMobileView(window.innerWidth < 640);
+    };
+    
+    checkViewportSize();
+    window.addEventListener('resize', checkViewportSize);
+    
+    return () => {
+      window.removeEventListener('resize', checkViewportSize);
+    };
+  }, []);
+  
   const formik = useFormik<FormValues>({
     initialValues: {
       interviewDate: undefined,
@@ -90,17 +105,6 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
       meetingLink: "https://meet.google.com/xxx-xxxx-xxx",
     },
     validationSchema,
-    // validate: async (values) => {
-    //   console.log("Formik Values Before Validation:", values); // ✅ Logs raw values
-    //   try {
-    //     await validationSchema.validate(values, { abortEarly: false });
-    //     console.log("Validated Data:", values); // ✅ Logs if validation passes
-    //   } catch (err) {
-    //     if (err instanceof Yup.ValidationError) {
-    //       console.error("Validation Errors:", err.errors); // ❌ Logs validation errors
-    //     }
-    //   }
-    // },
     validateOnMount: true,
     onSubmit: async (values, { setSubmitting }) => {
       try {
@@ -120,7 +124,6 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
         console.log(payload)
         await createInterview(payload).unwrap().then(()=>{
           setShowSuccessModal(true);
-          //console.log("Form submitted with values:", payload);
         });
       } catch (error) {
         const errorMessage =
@@ -184,14 +187,51 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
       ? "bg-[#AEADAD] hover:bg-[#AEADAD]/70 text-white text-[16px] font-normal cursor-not-allowed"
       : "bg-[#F5722E] hover:bg-[#F5722E]/70 text-white text-[16px] font-normal";
 
+  // Render date picker based on screen size
+  const renderDatePicker = () => {
+    if (!isDatePickerOpen) return null;
+    
+    if (isMobileView) {
+      // Mobile version
+      return (
+        <div className="relative my-2 mb-8 pb-4">
+          <DatePicker
+            isOpen={isDatePickerOpen}
+            onClose={() => setIsDatePickerOpen(false)}
+            onDateSelect={handleDateSelect}
+            initialDate={values.interviewDate}
+            variant="secondary"
+            disablePastDates={true}
+            disableFutureDates={getDateInTimezone(timezone).add(2,'months').toDate()}
+          />
+        </div>
+      );
+    } else {
+      // Desktop version - unchanged from original code
+      return (
+        <div className="fixed z-50 left-1/2 -translate-x-1/2 sm:left-[40%] md:left-[26%] sm:-translate-x-1/2">
+          <DatePicker
+            isOpen={isDatePickerOpen}
+            onClose={() => setIsDatePickerOpen(false)}
+            onDateSelect={handleDateSelect}
+            initialDate={values.interviewDate}
+            variant="secondary"
+            disablePastDates={true}
+            disableFutureDates={getDateInTimezone(timezone).add(2,'months').toDate()}
+          />
+        </div>
+      );
+    }
+  };
+
   return (
     <>
       {/* Updated to use closeOnOutsideClick={false} */}
       <Dialog open={isOpen} onOpenChange={handleModalClose}>
-      <DialogContent 
-  className="w-[calc(100%-2rem)] md:w-full max-w-3xl h-auto p-0 flex flex-col mt-0 translate-y-12 top-4 sm:top-6"
-  closeOnOutsideClick={false}
->
+        <DialogContent 
+          className={`w-[calc(100%-2rem)] md:w-full max-w-3xl h-auto p-0 flex flex-col mt-0 translate-y-12 top-4 sm:top-6 ${isMobileView ? "max-h-[90vh] overflow-y-auto" : ""}`}
+          closeOnOutsideClick={false}
+        >
           <div
             className="flex flex-col h-full"
             onClick={(e: React.MouseEvent<HTMLDivElement>) =>
@@ -283,19 +323,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                               ? values.interviewDate.toLocaleDateString()
                               : "Select a date"}
                           </div>
-                          {isDatePickerOpen && (
-                            <div className="fixed z-50 left-1/2 -translate-x-1/2 sm:left-[40%] md:left-[26%] sm:-translate-x-1/2">
-                              <DatePicker
-                                isOpen={isDatePickerOpen}
-                                onClose={() => setIsDatePickerOpen(false)}
-                                onDateSelect={handleDateSelect}
-                                initialDate={values.interviewDate}
-                                variant="secondary"
-                                disablePastDates={true}
-                                disableFutureDates={getDateInTimezone(timezone).add(2,'months').toDate()}
-                              />
-                            </div>
-                          )}
+                          {renderDatePicker()}
                         </div>
                       </InputField>
                     </div>
