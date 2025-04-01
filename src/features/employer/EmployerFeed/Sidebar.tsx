@@ -100,7 +100,7 @@ const Sidebar: FC = () => {
 
   const SelectComponent = () => {
     const { user } = useAuth();
-    const isFirstJobListing = user?.data?.user?.jobCounts?.count === 0;
+    const isFirstJobListing = user?.data?.user?.jobCounts?.count === 0 && data?.data.jobs.length < 1;
 
     return (
       <div className="relative pt-4 w-full">
