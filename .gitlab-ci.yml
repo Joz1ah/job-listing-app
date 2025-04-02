@@ -86,6 +86,11 @@ deployment:
         export SSH_HOST="$SSH_HOST_APP"
         export SSH_USER="$SSH_USER_PRODUCTION_SERVICE"
         echo "Production deployment: Using SSH_USER=$SSH_USER and SSH_HOST=$SSH_HOST"
+      elif [[ "$CI_COMMIT_REF_NAME" == "sit" ]]; then
+        echo "$SSH_PRIVATE_KEY" | sed 's/\r$//' > ~/.ssh/id_rsa
+        export SSH_HOST="$SSH_HOST_SIT"
+        export SSH_USER="$SSH_USER"
+        echo "Non-production deployment: Using SSH_USER=$SSH_USER and SSH_HOST=$SSH_HOST"      
       else
         echo "$SSH_PRIVATE_KEY" | sed 's/\r$//' > ~/.ssh/id_rsa
         export SSH_HOST="$SSH_HOST"
