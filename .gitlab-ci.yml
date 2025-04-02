@@ -28,6 +28,7 @@ docker_build:
   only:
     - main
     - production
+    - sit    
     - tags
     - /^v\d+\.\d+\.\d+$/  # Matches tags like v1.0.0, v2.1.3, etc.
 
@@ -47,6 +48,7 @@ docker_push:
     - docker push gcr.io/$GOOGLE_PROJECT_ID/akaza-app:$CI_COMMIT_SHA
   only:
     - main
+    - sit    
     - production    
     - tags
     - /^v\d+\.\d+\.\d+$/  # Matches tags like v1.0.0, v2.1.3, etc.
@@ -130,12 +132,16 @@ deployment:
       if [[ "$CI_COMMIT_REF_NAME" == "production" ]]; then
         DEPLOY_PATH="/home/production"
         ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "$DEPLOY_PATH/deploy.sh $CI_COMMIT_SHA" 
+      elif [[ "$CI_COMMIT_REF_NAME" == "sit" ]]; then
+        DEPLOY_PATH="/home/sit-deployer/akaza-app"
+        ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "$DEPLOY_PATH/deploy.sh $CI_COMMIT_SHA "
       else
         DEPLOY_PATH="/home/sit-deployer/sit/akaza-app"
         ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "$DEPLOY_PATH/deploy.sh  /tmp/deploy_vars.txt" 
-      fi      
+      fi        
   only:
     - main
     - production    
+    - sit
   variables:
     GOOGLE_APPLICATION_CREDENTIALS: /tmp/key.json
