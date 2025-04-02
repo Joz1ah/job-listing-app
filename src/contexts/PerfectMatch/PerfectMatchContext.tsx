@@ -45,7 +45,11 @@ const mapPerfectMatchData = (apiResponse: any): Match[] => {
           .filter((keyword: any) => keyword.type === "interpersonal")
           .map((keyword: any) => keyword.keyword)
       : [], // Default to empty array if undefined
-    certificates: [], // No certificates in API response
+    certificates: item?.jobHunter?.matchingKeywords
+    ? item.jobHunter.matchingKeywords
+        .filter((keyword: any) => keyword.type === "certification")
+        .map((keyword: any) => keyword.keyword)
+    : [], // No certificates in API response
     isNew: isNew(item?.jobDetails?.createdAt) ?? false, // Assuming all are new
     // Add score for debugging
     score: item?.score || 0,
@@ -82,7 +86,11 @@ const mapPerfectMatchDataJH = (apiResponse: any): MatchJH[] => {
         .filter((keyword: any) => keyword.type === "interpersonal")
         .map((keyword: any) => keyword.keyword)
     : [], // Default to empty array if undefined,,
-    certificates: [],
+    certificates: item?.jobDetails?.jobKeywords
+    ? item.jobHunter.matchingKeywords
+        .filter((keyword: any) => keyword.type === "certification")
+        .map((keyword: any) => keyword.keyword)
+    : [], 
     isNew: isNew(item?.jobDetails?.createdAt) ?? false, // Assuming all are new
   }));
 
