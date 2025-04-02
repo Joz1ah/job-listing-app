@@ -56,10 +56,6 @@ const PendingInterviews: FC = () => {
   setSelectedInterviewsGroup('PENDING')
 
   const handleAccept = async (interview: Interview, data: AcceptData) => {
-    interview
-    data
-    acceptInterview
-    /*
     try {
       console.log("Accept:", interview, data);
       await acceptInterview(data.interviewId).unwrap();
@@ -71,7 +67,6 @@ const PendingInterviews: FC = () => {
         "Unable to accept the interview. Please try again or contact support.")
       console.error("Error accepting interview:", error);
     }
-      */
   };
 
   const handleDecline = async (interview: Interview, data: DeclineData) => {
