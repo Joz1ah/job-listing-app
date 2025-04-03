@@ -22,24 +22,29 @@ const CompletedInterviews: FC = () => {
   const loaderRef = useRef<HTMLDivElement>(null);
   const [initialLoad, setInitialLoad] = useState(true);
   const { subscriptionPlan } = useEmployerContext();
-  const {interviewsList, setSelectedInterviewsGroup, isLoadingInterviews} = useInterviewsContext();
+  const { interviewsList, setSelectedInterviewsGroup, isLoadingInterviews } =
+    useInterviewsContext();
   const [submitRatingFeedback] = useRatingFeedbackMutation();
   const { showError } = useErrorModal();
 
-  setSelectedInterviewsGroup('COMPLETED');
+  setSelectedInterviewsGroup("COMPLETED");
 
-  const handleRatingFeedback = async (interview: Interview, data: ratingFeedbackData) => {
-
+  const handleRatingFeedback = async (
+    interview: Interview,
+    data: ratingFeedbackData,
+  ) => {
     try {
-      console.log(data)
+      console.log(data);
       const payload = {
-        "interviewId": interview.id,
-        "rating": data.rating,
-        "comments": data.feedback
-      }
-      await submitRatingFeedback(payload).unwrap().then(()=>{
-        data.setShowSuccess(false)
-      });
+        interviewId: interview.id,
+        rating: data.rating,
+        comments: data.feedback,
+      };
+      await submitRatingFeedback(payload)
+        .unwrap()
+        .then(() => {
+          data.setShowSuccess(false);
+        });
     } catch (error) {
       showError(
         "Interview Rating and Feedback Failed",
@@ -119,10 +124,8 @@ const CompletedInterviews: FC = () => {
     };
   }, [loading, hasMore, initialLoad]);
 
-  const showLoadingCards = loading;
-  const loadingCardsCount = Math.min(6, interviewsList.length);
-
-  if (loading || isLoadingInterviews) {
+  // Show page skeleton (empty state skeleton) when loading and we have no data
+  if ((loading || isLoadingInterviews) && interviewsList.length === 0) {
     return (
       <div className="h-full w-full flex items-center justify-center">
         <div className="flex flex-col items-center justify-center p-4 sm:p-8 text-center">
@@ -145,9 +148,24 @@ const CompletedInterviews: FC = () => {
     );
   }
 
+  // Show card skeletons when there is data but it's still loading
+  if ((loading || isLoadingInterviews) && interviewsList.length > 0) {
+    return (
+      <div className="flex flex-col items-center w-full">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-y-6 gap-x-14 justify-items-center w-full">
+          {Array.from({ length: Math.min(6, interviewsList.length) }).map(
+            (_, index) => (
+              <InterviewCardSkeleton key={`skeleton-${index}`} />
+            ),
+          )}
+        </div>
+      </div>
+    );
+  }
+
   // Show empty state if there are no completed interviews and we're not loading
   if (
-    (!loading && displayedItems.length === 0) ||
+    (!isLoadingInterviews && !loading && interviewsList.length === 0) ||
     subscriptionPlan === "freeTrial"
   ) {
     return (
@@ -195,13 +213,22 @@ const CompletedInterviews: FC = () => {
             />
           ))}
 
-        {showLoadingCards && (
-          <>
-            {Array.from({ length: loadingCardsCount }).map((_, index) => (
-              <InterviewCardSkeleton key={`skeleton-${index}`} />
-            ))}
-          </>
-        )}
+        {/* Show skeleton cards for "load more" functionality when scrolling */}
+        {!loading &&
+          !isLoadingInterviews &&
+          displayedItems.length > 0 &&
+          hasMore && (
+            <>
+              {Array.from({
+                length: Math.min(
+                  2,
+                  interviewsList.length - displayedItems.length,
+                ),
+              }).map((_, index) => (
+                <InterviewCardSkeleton key={`loading-more-${index}`} />
+              ))}
+            </>
+          )}
         <div ref={loaderRef} className="h-px w-px" />
       </div>
     </div>
