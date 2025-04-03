@@ -68,7 +68,11 @@ const mapInterviewListData = (apiResponse: any, timeZone: InterviewListData['tim
       ? item.jobHunter.language.split(",")
       : [],
       education: item?.jobHunter?.education ?? "N/A", // Default to empty string if undefined
-      certificate: item?.jobHunter?.certificates ?? "N/A", // Default to empty string if undefined
+      certificate: item?.jobHunter?.JobHunterSkill
+      ? item.jobHunter.JobHunterSkill
+          .filter((skill: any) => skill.keyword.type === "certification")
+          .map((skill: any) => skill.keyword.keyword)
+      : [], // Default to empty string if undefined
       interpersonalSkills: item?.jobHunter?.JobHunterSkill
       ? item.jobHunter.JobHunterSkill
           .filter((skill: any) => skill.keyword.type === "interpersonal")

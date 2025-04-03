@@ -52,7 +52,7 @@ const JobPreviewModal: FC<JobPreviewModalProps> = ({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
-        className="w-full md:min-w-[758px] p-0 flex flex-col"
+        className="w-[calc(100%-2rem)] md:w-full md:min-w-[758px] p-0 flex flex-col"
         style={{ height: maxHeight }}
       >
         <div className="flex flex-col h-full">
@@ -123,6 +123,29 @@ const JobPreviewModal: FC<JobPreviewModalProps> = ({
                   </div>
                 )}
 
+                {/* Certifications - Added right after Education */}
+                <div className="flex items-center gap-2">
+                  <h4 className="text-sm md:text-[17px] font-normal text-[#263238]">
+                    Certifications:
+                  </h4>
+                  {(!job.certificates || job.certificates.length === 0) ? (
+                    <span className="text-[#F5722E] border border-[#F5722E] px-2 rounded-sm">
+                      N/A
+                    </span>
+                  ) : (
+                    <div className="flex flex-wrap gap-2">
+                      {job.certificates.map((cert) => (
+                        <span
+                          key={cert}
+                          className="text-[#F5722E] border border-[#F5722E] px-2 rounded-sm"
+                        >
+                          {cert}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
                 {/* Employment Preference */}
                 <div className="flex items-center gap-2">
                   <h4 className="text-sm md:text-[17px] flex justify-start font-normal text-[#263238]">
@@ -149,25 +172,6 @@ const JobPreviewModal: FC<JobPreviewModalProps> = ({
                     {job.salaryExpectation}
                   </span>
                 </div>
-
-                {/* Certificates - Updated this section */}
-                {job.certificates && job.certificates.length > 0 && (
-                  <div className="flex flex-col gap-2">
-                    <h4 className="text-sm md:text-[17px] flex justify-start font-normal text-[#263238]">
-                      Certificates:
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {job.certificates.map((cert) => (
-                        <span
-                          key={cert}
-                          className="text-[#F5722E] border border-[#F5722E] px-2 rounded-sm"
-                        >
-                          {cert}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
 
                 {/* Interpersonal Skills */}
                 {job.interpersonalSkills &&
@@ -196,7 +200,7 @@ const JobPreviewModal: FC<JobPreviewModalProps> = ({
                   <h4 className="text-sm md:text-[17px] flex justify-start font-normal text-[#263238]">
                     Job Description:
                   </h4>
-                  <div className="border rounded p-4 max-h-[135px] overflow-y-auto">
+                  <div className="border rounded p-4 max-h-[200px] overflow-y-auto">
                     <p className="text-[10px] text-[#263238] leading-relaxed">
                       {job.description}
                     </p>
