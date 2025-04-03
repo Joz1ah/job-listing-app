@@ -3,6 +3,19 @@ import { MapPin } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
 import { BaseModalProps } from "mockData/job-hunter-interviews-data";
 
+const formatEmploymentPreference = (pref: string): string => {
+  switch (pref) {
+    case "full-time":
+      return "Full Time";
+    case "part-time":
+      return "Part Time";
+    case "contract":
+      return "Contract Only";
+    default:
+      return pref; // Return original value if no match
+  }
+};
+
 const JobInterviewPreviewModal: FC<BaseModalProps> = ({
   isOpen,
   onClose,
@@ -57,7 +70,7 @@ const JobInterviewPreviewModal: FC<BaseModalProps> = ({
 
                 {/* Experience */}
                 {interview.experience && (
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <h4 className="text-[17px] font-normal text-[#263238]">
                       Experience:
                     </h4>
@@ -69,17 +82,17 @@ const JobInterviewPreviewModal: FC<BaseModalProps> = ({
 
                 {/* Employment Preference */}
                 {interview.employmentPreference && (
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-start md:items-center gap-2 flex-wrap">
                     <h4 className="text-[17px] font-normal text-[#263238]">
                       Employment Preference:
                     </h4>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                       {interview.employmentPreference.map((pref) => (
                         <span
                           key={pref}
                           className="bg-[#F5722E] text-white px-2 rounded-sm"
                         >
-                          {pref}
+                          {formatEmploymentPreference(pref)}
                         </span>
                       ))}
                     </div>
@@ -88,7 +101,7 @@ const JobInterviewPreviewModal: FC<BaseModalProps> = ({
 
                 {/* Salary Expectation */}
                 {interview.salaryExpectation && (
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <h4 className="text-[17px] font-normal text-[#263238]">
                       Salary Expectation:
                     </h4>
@@ -100,11 +113,11 @@ const JobInterviewPreviewModal: FC<BaseModalProps> = ({
 
                 {/* Language */}
                 {interview.languages && (
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-start md:items-center gap-2 flex-wrap">
                     <h4 className="text-[17px] font-normal text-[#263238]">
                       Language:
                     </h4>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                       {interview.languages.map((lang) => (
                         <span
                           key={lang}
@@ -119,7 +132,7 @@ const JobInterviewPreviewModal: FC<BaseModalProps> = ({
 
                 {/* Education */}
                 {interview.education && (
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <h4 className="text-[17px] font-normal text-[#263238]">
                       Education:
                     </h4>
@@ -131,7 +144,7 @@ const JobInterviewPreviewModal: FC<BaseModalProps> = ({
 
                 {/* Certificate */}
                 {interview.certificate && (
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <h4 className="text-[17px] font-normal text-[#263238]">
                       Certificate:
                     </h4>
@@ -168,9 +181,11 @@ const JobInterviewPreviewModal: FC<BaseModalProps> = ({
                     <h4 className="text-[17px] font-normal text-[#263238]">
                       Job Description:
                     </h4>
-                    <p className="text-sm text-gray-700 whitespace-pre-wrap border border-gray-200 rounded-md p-4">
-                      {interview.description}
-                    </p>
+                    <div className="max-h-40 overflow-y-auto border border-gray-200 rounded-md p-4">
+                      <p className="text-sm text-gray-700 whitespace-pre-wrap">
+                        {interview.description}
+                      </p>
+                    </div>
                   </div>
                 )}
               </div>
