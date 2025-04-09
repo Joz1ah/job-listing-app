@@ -9,7 +9,11 @@ import { useInterviewsContext } from "contexts/Interviews/InterviewsContext";
 import { useJobHunterContext } from "components";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 import { ROUTE_CONSTANTS } from "constants/routeConstants";
-import { useAcceptInterviewMutation, useRejectInterviewMutation, useRescheduleInterviewMutation } from "api/akaza/akazaAPI";
+import {
+  useAcceptInterviewMutation,
+  useRejectInterviewMutation,
+  useRescheduleInterviewMutation,
+} from "api/akaza/akazaAPI";
 import { combineDateAndTime } from "utils";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 
@@ -31,13 +35,18 @@ interface RescheduleData {
   reason: string;
 }
 
-const handleError = (errorComponent:any, error:CustomError, title:string, message:string) => {
+const handleError = (
+  errorComponent: any,
+  error: CustomError,
+  title: string,
+  message: string,
+) => {
   const showError = errorComponent;
-  console.log('trying to handle error')
-  console.log(error,title,message)
+  console.log("trying to handle error");
+  console.log(error, title, message);
   const errorMessage = (error as CustomError).data?.message || message;
   showError(title, errorMessage);
-}
+};
 const PendingInterviews: FC = () => {
   const [displayedItems, setDisplayedItems] = useState<Interview[]>([]);
   const [loading, setLoading] = useState(true);
@@ -46,16 +55,21 @@ const PendingInterviews: FC = () => {
   const loaderRef = useRef<HTMLDivElement>(null);
   const [declineReason, setDeclineReason] = useState<string>("");
   const { subscriptionPlan } = useJobHunterContext();
-  const {interviewsList, setSelectedInterviewsGroup, isLoadingInterviews} = useInterviewsContext();
+  const { interviewsList, setSelectedInterviewsGroup, isLoadingInterviews } =
+    useInterviewsContext();
   const [acceptInterview] = useAcceptInterviewMutation();
   const [rejectInterview] = useRejectInterviewMutation();
   const [rescheduleInterview] = useRescheduleInterviewMutation();
   const { showError } = useErrorModal();
   const { userSettings } = useAuth();
 
-  setSelectedInterviewsGroup('PENDING')
+  setSelectedInterviewsGroup("PENDING");
 
   const handleAccept = async (interview: Interview, data: AcceptData) => {
+    interview;
+    data;
+    acceptInterview;
+    
     try {
       console.log("Accept:", interview, data);
       await acceptInterview(data.interviewId).unwrap();
@@ -74,11 +88,13 @@ const PendingInterviews: FC = () => {
       console.log("Decline:", interview, data);
       await rejectInterview({
         interviewId: data.interviewId,
-        reason: data.reason
+        reason: data.reason,
       }).unwrap();
       setDisplayedItems((prev) => prev.filter((item) => item !== interview));
     } catch (error) {
-      handleError( showError, error as CustomError, 
+      handleError(
+        showError,
+        error as CustomError,
         "Decline Interview Failed",
         "Unable to decline the interview. Please try again or contact support.",
       );
@@ -92,26 +108,30 @@ const PendingInterviews: FC = () => {
   ) => {
     try {
       console.log("Reschedule:", interview, data);
-        const scheduleStart = combineDateAndTime(
-          new Date(data.date),
-          data.time as string,
-        );
-        const scheduledEnd = scheduleStart.add(30, "minutes");
-        const payload = {
-          interviewId: data.interviewId,
-          requestorTimezone: userSettings.data?.timeZone,
-          newStart: scheduleStart.format("YYYY-MM-DDTHH:mm"),
-          newEnd: scheduledEnd.format("YYYY-MM-DDTHH:mm"),
-          reason: data.reason
-        };
-        console.log(payload)
-      await rescheduleInterview(payload).unwrap().then(()=>{
-        //console.log("Form submitted with values:", payload);
-      });
+      const scheduleStart = combineDateAndTime(
+        new Date(data.date),
+        data.time as string,
+      );
+      const scheduledEnd = scheduleStart.add(30, "minutes");
+      const payload = {
+        interviewId: data.interviewId,
+        requestorTimezone: userSettings.data?.timeZone,
+        newStart: scheduleStart.format("YYYY-MM-DDTHH:mm"),
+        newEnd: scheduledEnd.format("YYYY-MM-DDTHH:mm"),
+        reason: data.reason,
+      };
+      console.log(payload);
+      await rescheduleInterview(payload)
+        .unwrap()
+        .then(() => {
+          //console.log("Form submitted with values:", payload);
+        });
       await new Promise((resolve) => setTimeout(resolve, 3000));
       setDisplayedItems((prev) => prev.filter((item) => item !== interview));
     } catch (error) {
-      handleError( showError, error as CustomError, 
+      handleError(
+        showError,
+        error as CustomError,
         "Reschedule Interview Failed",
         "Unable to reschedule the interview. Please try again or contact support.",
       );
@@ -195,10 +215,8 @@ const PendingInterviews: FC = () => {
     };
   }, [loading, hasMore, initialLoad]);
 
-  const showLoadingCards = loading;
-  const loadingCardsCount = Math.min(6, interviewsList.length);
-
-  if (loading || isLoadingInterviews) {
+  // Show page skeleton (empty state skeleton) when loading and we have no data
+  if ((loading || isLoadingInterviews) && interviewsList.length === 0) {
     return (
       <div className="h-full w-full flex items-center justify-center">
         <div className="flex flex-col items-center justify-center p-4 sm:p-8 text-center">
@@ -221,9 +239,24 @@ const PendingInterviews: FC = () => {
     );
   }
 
+  // Show card skeletons when there is data but it's still loading
+  if ((loading || isLoadingInterviews) && interviewsList.length > 0) {
+    return (
+      <div className="flex flex-col items-center w-full">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-y-6 gap-x-14 justify-items-center w-full">
+          {Array.from({ length: Math.min(6, interviewsList.length) }).map(
+            (_, index) => (
+              <InterviewCardSkeleton key={`skeleton-${index}`} />
+            ),
+          )}
+        </div>
+      </div>
+    );
+  }
+
   // Show empty state if there are no pending interviews and we're not loading
   if (
-    (!loading && displayedItems.length === 0) ||
+    (!isLoadingInterviews && !loading && interviewsList.length === 0) ||
     subscriptionPlan === "freeTrial"
   ) {
     return (
@@ -274,13 +307,22 @@ const PendingInterviews: FC = () => {
             />
           ))}
 
-        {showLoadingCards && (
-          <>
-            {Array.from({ length: loadingCardsCount }).map((_, index) => (
-              <InterviewCardSkeleton key={`skeleton-${index}`} />
-            ))}
-          </>
-        )}
+        {/* Show skeleton cards for "load more" functionality when scrolling */}
+        {!loading &&
+          !isLoadingInterviews &&
+          displayedItems.length > 0 &&
+          hasMore && (
+            <>
+              {Array.from({
+                length: Math.min(
+                  2,
+                  interviewsList.length - displayedItems.length,
+                ),
+              }).map((_, index) => (
+                <InterviewCardSkeleton key={`loading-more-${index}`} />
+              ))}
+            </>
+          )}
 
         <div ref={loaderRef} className="h-px w-px" />
       </div>

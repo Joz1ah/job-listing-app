@@ -12,6 +12,7 @@ import { SkillsWithEllipsis } from "components";
 import { JobPreviewModal } from "features/job-hunter";
 import { useBookmarks } from "components";
 import { ScheduleInterviewModal } from "features/job-hunter";
+import { MaxedInterviewLimitModal } from "components/Interview/modals/InterviewLimit";
 import { MatchJH } from "contexts/PerfectMatch/types";
 import { useJobHunterContext } from "components";
 import { useAuth } from "contexts/AuthContext/AuthContext";
@@ -21,8 +22,8 @@ interface JobCardProps {
   jobId: number;
   match: MatchJH;
   popupImage?: string;
-  adImage?: string; // Add adImage prop
-  timerDuration?: number; // Add timer duration prop
+  adImage?: string;
+  timerDuration?: number;
 }
 
 interface SecureCompanyDisplayProps {
@@ -102,12 +103,23 @@ const BookmarkButton: FC<{
 const JobCard: FC<JobCardProps> = ({ match, popupImage, adImage }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+  const [isMaxedLimitModalOpen, setIsMaxedLimitModalOpen] = useState(false);
   const cardId = generateCardId(match);
-  const { userSettings } = useAuth();
+  const { userSettings, user } = useAuth();
   const { subscriptionPlan } = useJobHunterContext();
 
   // Ref for the AdDialogWrapper
   const adDialogRef = useRef<HTMLDivElement>(null);
+
+  const checkInterviewLimit = () => {
+    const interviewCounts = user?.data?.user?.interviewCounts;
+    
+    if (interviewCounts && interviewCounts.exceedsMaximum === true) {
+      return true;
+    }
+    
+    return false;
+  };
 
   const handlePreview = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent propagation
@@ -135,7 +147,13 @@ const JobCard: FC<JobCardProps> = ({ match, popupImage, adImage }) => {
       return;
     }
 
-    setIsScheduleModalOpen(true);
+    // Check if user has exceeded maximum interview count
+    if (checkInterviewLimit()) {
+      setIsMaxedLimitModalOpen(true);
+    } else {
+      setIsScheduleModalOpen(true);
+    }
+    
     setIsModalOpen(false);
   };
 
@@ -272,6 +290,10 @@ const JobCard: FC<JobCardProps> = ({ match, popupImage, adImage }) => {
             country={match.country}
             certificate={match.certificates}
             jobId={match.jobId}
+          />
+          <MaxedInterviewLimitModal
+            isOpen={isMaxedLimitModalOpen}
+            onClose={() => setIsMaxedLimitModalOpen(false)}
           />
         </>
       )}

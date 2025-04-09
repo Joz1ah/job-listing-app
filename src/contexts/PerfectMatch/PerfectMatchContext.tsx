@@ -87,10 +87,10 @@ const mapPerfectMatchDataJH = (apiResponse: any): MatchJH[] => {
         .map((keyword: any) => keyword.keyword)
     : [], // Default to empty array if undefined,,
     certificates: item?.jobDetails?.jobKeywords
-    ? item.jobHunter.matchingKeywords
+    ? item.jobDetails.jobKeywords
         .filter((keyword: any) => keyword.type === "certification")
         .map((keyword: any) => keyword.keyword)
-    : [], 
+    : [],
     isNew: isNew(item?.jobDetails?.createdAt) ?? false, // Assuming all are new
   }));
 
