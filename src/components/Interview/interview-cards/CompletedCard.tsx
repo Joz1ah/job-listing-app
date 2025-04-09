@@ -32,15 +32,15 @@ const CompletedCard: FC<CompletedCardProps> = ({
     //setIsRatingModalOpen(false);
   }
   const renderStars = (rating: number | undefined) => {
-    if (!rating) return renderStars(0);
-    return Array.from({ length: 5 }).map((_, index) => (
+    const starCount = 5;
+    const stars = Array.from({ length: starCount }, (_, index) => (
       <Star
         key={index}
-        className={`w-4 h-4 text-[#F5722E] ${
-          index < rating ? "fill-[#F5722E]" : "fill-transparent"
-        }`}
+        className={`w-5 h-5 text-[#F5722E] ${index < (rating || 0) ? "fill-[#F5722E]" : "fill-transparent"}`}
       />
     ));
+  
+    return <>{stars}</>;
   };
 
   const renderTitle = () => {
@@ -136,10 +136,10 @@ const CompletedCard: FC<CompletedCardProps> = ({
                 <div className="flex items-center gap-1 pt-3">
                   <div className="flex items-center">
                     <span className="text-[#263238] text-sm">You rated: </span>
-                    <span className="text-sm text-[#263238] ml-1">
+                    <span className="text-base text-[#263238] ml-1">
                       {interview.rating}
                     </span>
-                    <div className="flex ml-1">
+                    <div className="flex ml-1 mt-[-3px]">
                       {renderStars(interview.rating)}
                     </div>
                   </div>

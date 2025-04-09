@@ -1,21 +1,15 @@
-import React from 'react';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from 'components';
-import { Button } from 'components';
-import { NavLink } from 'react-router-dom';
-import { ROUTE_CONSTANTS } from 'constants/routeConstants';
+import React from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
+import { Button } from "components";
+import { ROUTE_CONSTANTS } from "constants/routeConstants";
 
 interface InvitationSentModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const InvitationSentModal: React.FC<InvitationSentModalProps> = ({ 
-  isOpen, 
+const InvitationSentModal: React.FC<InvitationSentModalProps> = ({
+  isOpen,
   onClose,
 }) => {
   return (
@@ -29,34 +23,26 @@ const InvitationSentModal: React.FC<InvitationSentModalProps> = ({
             <h2 className="text-2xl font-semibold text-[#F5722E]">
               Invitation sent!
             </h2>
-            
+
             <p className="text-black text-sm max-w-xs">
               Please wait for the Employer to respond within 72 hours.
             </p>
 
             <div className="flex flex-col w-full space-y-3 pt-4">
-              <NavLink 
-                to="/dashboard/interviews/pending"
-                onClick={onClose}
-              >
-                <Button 
-                  className="w-full bg-[#F5722E] hover:bg-orange-600 text-white font-normal py-2"
-                >
+              <a href="/dashboard/interviews/pending" onClick={onClose}>
+                <Button className="w-full bg-[#F5722E] hover:bg-orange-600 text-white font-normal py-2">
                   View Interviews
                 </Button>
-              </NavLink>
+              </a>
 
-              <NavLink 
-                to={ROUTE_CONSTANTS.DASHBOARD}
-                onClick={onClose}
-              >
-                <Button 
-                  variant="link" 
+              <a href={ROUTE_CONSTANTS.DASHBOARD} onClick={onClose}>
+                <Button
+                  variant="link"
                   className="text-[#F5722E] hover:text-orange-600"
                 >
                   Back To Job Feed
                 </Button>
-              </NavLink>
+              </a>
             </div>
           </div>
         </div>
@@ -65,4 +51,4 @@ const InvitationSentModal: React.FC<InvitationSentModalProps> = ({
   );
 };
 
-export { InvitationSentModal }
+export { InvitationSentModal };
