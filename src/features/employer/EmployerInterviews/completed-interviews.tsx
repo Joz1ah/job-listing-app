@@ -203,7 +203,7 @@ const CompletedInterviews: FC = () => {
   return (
     <div className="flex flex-col items-center w-full">
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-y-6 gap-x-14 justify-items-center w-full">
-        {!initialLoad &&
+        {!initialLoad && !isLoadingInterviews &&
           displayedItems.map((interview, index) => (
             <CompletedCard
               key={index}

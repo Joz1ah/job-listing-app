@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { debounce } from 'lodash';
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import { useGetInterviewListQuery } from "api/akaza/akazaAPI";
 import {
@@ -43,9 +44,9 @@ const mapInterviewListData = (apiResponse: any, timeZone: InterviewListData['tim
       receivedTime: timeAgo(new Date(item?.createdAt)) ?? 'N/A',
       sentTime: timeAgo(new Date(item?.createdAt)) ?? 'N/A',
       isNew: isNew(item?.createdAt ?? "") || false,
-      rating: 0,
+      rating: item?.feedback?.rating ?? null,
       rated: item?.rated ?? 'N/A',
-      feedback: 'N/A',
+      feedback: item?.feedback?.comments ?? null,
       reason: item?.declineReason ?? 'N/A',
       status: item?.status ?? 'Unknown',
       requestor: item?.requestor ?? 'N/A',
@@ -144,14 +145,20 @@ const InterviewsProvider: React.FC<InterviewsProviderProps> = ({
   }
 
   useEffect(() => {
-    const fetchData = async () => {
-      refetch()
-    };
-    fetchData();
+    if (selectedInterviewsGroup) {
+      const fetchData = async () => {
+        await refetch();
+      };
+      fetchData();
+    }
   }, [selectedInterviewsGroup]);
 
-  // Process the data when it arrives
+  const debouncedSetInterviewsList = debounce((mappedData: Interview[]) => {
+    setInterviewsList(mappedData);
+  }, 300);
+
   useEffect(() => {
+    setInterviewsList([])
     if (!isLoading && !error && data) {
       const mappedData = mapInterviewListData(
         data,
@@ -160,8 +167,7 @@ const InterviewsProvider: React.FC<InterviewsProviderProps> = ({
         user?.data?.user?.type,
         user?.data?.user?.relatedDetails?.id
       );
-      setInterviewsList(mappedData);
-      //setIsLoadingInterviewList(false);
+      debouncedSetInterviewsList(mappedData);
     }
   }, [data, isLoading, error, selectedInterviewsGroup]);
 
