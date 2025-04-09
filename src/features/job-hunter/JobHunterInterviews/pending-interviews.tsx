@@ -81,7 +81,6 @@ const PendingInterviews: FC = () => {
         "Unable to accept the interview. Please try again or contact support.")
       console.error("Error accepting interview:", error);
     }
-      */
   };
 
   const handleDecline = async (interview: Interview, data: DeclineData) => {
