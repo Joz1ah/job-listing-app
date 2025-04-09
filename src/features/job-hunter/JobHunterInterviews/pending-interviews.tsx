@@ -69,7 +69,7 @@ const PendingInterviews: FC = () => {
     interview;
     data;
     acceptInterview;
-    /*
+    
     try {
       console.log("Accept:", interview, data);
       await acceptInterview(data.interviewId).unwrap();
