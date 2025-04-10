@@ -515,6 +515,8 @@ const InterpersonalSkillsTagInput: React.FC<Omit<TagInputProps, "options">> = (
 };
 
 const LanguageTagInput: React.FC<Omit<TagInputProps, "options">> = (props) => {
+  const [searchQuery, setSearchQuery] = useState("");
+
   const languages = [
     { label: "Arabic", value: "Arabic" },
     { label: "Bengali", value: "Bengali" },
@@ -541,12 +543,27 @@ const LanguageTagInput: React.FC<Omit<TagInputProps, "options">> = (props) => {
     { label: "Vietnamese", value: "Vietnamese" },
   ];
 
+  // Filter languages based on search query
+  const filteredLanguages = useMemo(() => {
+    if (!searchQuery) return languages;
+
+    return languages.filter((lang) =>
+      lang.label.toLowerCase().startsWith(searchQuery.toLowerCase()),
+    );
+  }, [searchQuery]);
+
+  const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  }, []);
+
   return (
     <TagInputs
       {...props}
-      options={languages}
+      options={filteredLanguages}
       maxTags={4}
       suggestionTitle="Select Language"
+      onInputChange={handleSearch}
+      placeholder={props.placeholder || "Type to search languages"}
     />
   );
 };
