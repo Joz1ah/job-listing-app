@@ -48,7 +48,7 @@ const CompletedCard: FC<CompletedCardProps> = ({
       return (
         <>
           <h3
-            className="text-[14px] font-semibold text-[#263238] cursor-pointer hover:underline"
+            className="text-[14px] font-semibold text-[#263238] cursor-pointer hover:text-[#F5722E]"
             onClick={() => setIsPreviewOpen(true)}
           >
             {interview.candidate}
@@ -62,7 +62,7 @@ const CompletedCard: FC<CompletedCardProps> = ({
     return (
       <>
         <h3
-          className="text-[14px] font-semibold text-[#263238] cursor-pointer hover:underline"
+          className="text-[14px] font-semibold text-[#263238] cursor-pointer hover:text-[#F5722E]"
           onClick={() => setIsPreviewOpen(true)}
         >
           {interview.position}

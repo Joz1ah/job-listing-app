@@ -14,7 +14,7 @@ const InvitationSentModal: React.FC<InvitationSentModalProps> = ({
 }) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-full max-w-[535px] p-0">
+      <DialogContent className="w-[calc(100%-2rem)] md:w-full max-w-[535px] p-0">
         <DialogHeader>
           <DialogTitle className="sr-only">Invitation Sent</DialogTitle>
         </DialogHeader>

@@ -18,7 +18,7 @@ const DeclinedCard: FC<DeclinedCardProps> = ({ interview, variant }) => {
       return (
         <>
           <p
-            className="text-sm font-bold cursor-pointer hover:underline text-[#263238]"
+            className="text-sm font-bold cursor-pointer hover:text-[#F5722E] text-[#263238]"
             onClick={() => setIsPreviewOpen(true)}
           >
             {interview.candidate}
@@ -32,7 +32,7 @@ const DeclinedCard: FC<DeclinedCardProps> = ({ interview, variant }) => {
     return (
       <>
         <p
-          className="text-sm font-bold cursor-pointer hover:underline text-[#263238]"
+          className="text-sm font-bold cursor-pointer hover:text-[#F5722E] text-[#263238]"
           onClick={() => setIsPreviewOpen(true)}
         >
           {interview.position}

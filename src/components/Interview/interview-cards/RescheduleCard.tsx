@@ -107,7 +107,7 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
       return (
         <>
           <h3
-            className="text-[14px] font-semibold mt-1 cursor-pointer hover:underline text-[#263238]"
+            className="text-[14px] font-semibold mt-1 cursor-pointer hover:text-[#F5722E] text-[#263238]"
             onClick={() => setIsPreviewOpen(true)}
           >
             {interview.candidate}
@@ -121,7 +121,7 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
     return (
       <>
         <h3
-          className="text-[14px] font-semibold mt-1 cursor-pointer hover:underline text-[#263238]"
+          className="text-[14px] font-semibold mt-1 cursor-pointer hover:text-[#F5722E] text-[#263238]"
           onClick={() => setIsPreviewOpen(true)}
         >
           {interview.position}
