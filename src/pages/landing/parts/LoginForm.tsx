@@ -8,6 +8,8 @@ import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
 import { MODAL_STATES } from "store/modal/modal.types";
 import * as Yup from "yup";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
+import { useNavigate } from "react-router-dom";
+import { ROUTE_CONSTANTS } from "constants/routeConstants";
 
 interface LoginFormValues {
   email: string;
@@ -20,7 +22,8 @@ const LoginForm = () => {
   const [apiLoginErrorMessage, setApiLoginErrorMessage] = useState("");
   const { login } = useAuth();
   const { isResetPasswordSuccesful, handleSetModalState } = useLanding();
-  const { showError } = useErrorModal(); // Use the error modal context
+  const { showError } = useErrorModal();
+  const navigate = useNavigate();
 
   // State to toggle password visibility
   const [showPassword, setShowPassword] = useState(false);
@@ -38,7 +41,6 @@ const LoginForm = () => {
 
       // Check if we have the token in the response
       if (response?.data?.token) {
-
         // Store user preferences in localStorage
         const userType = response.data.user?.type;
         const isFreeTrial = response.data.user?.freeTrial;
@@ -50,10 +52,12 @@ const LoginForm = () => {
           isFreeTrial ? "freeTrial" : "monthlyPlan",
         );
 
-        // Let the AuthContext handle navigation based on user state
+        // Let the AuthContext handle the login (token storage)
         login(response.data.token);
-
-        // The navigation will be handled by AuthContext
+        
+        // Explicitly navigate to dashboard after successful login
+        // This ensures redirection to dashboard regardless of which page login occurs from
+        navigate(ROUTE_CONSTANTS.DASHBOARD, { replace: true });
       } else {
         throw new Error("No token received");
       }
