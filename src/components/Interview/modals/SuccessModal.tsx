@@ -26,7 +26,7 @@ const SuccessModal: React.FC<SuccessModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="w-[calc(100%-2rem)] md:w-full sm:max-w-md">
         <DialogTitle className="sr-only">Rating Submission Success</DialogTitle>
         <div className="relative bg-white p-6 rounded-lg text-center">
           <h2 className="text-[#F5722E] text-2xl font-medium mb-8">

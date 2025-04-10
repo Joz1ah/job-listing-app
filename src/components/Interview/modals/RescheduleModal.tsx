@@ -166,7 +166,7 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
   return (
     <>
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="max-w-[700px] w-full md:w-[700px] h-[550px] p-0 bg-white rounded-lg">
+        <DialogContent className="w-[calc(100%-2rem)] md:w-full max-w-3xl h-auto p-0 bg-white">
           <div className="flex flex-col h-full">
             <DialogHeader className="p-6 pb-4 text-left">
               <DialogTitle className="sr-only">
