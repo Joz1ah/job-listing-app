@@ -104,11 +104,11 @@ const RatingModal: React.FC<RatingModalProps> = ({
   if (mode === "view") {
     return (
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="w-[calc(100%-2rem)] md:w-full sm:max-w-md">
           <DialogTitle className="sr-only">
             Interview Rating Details
           </DialogTitle>
-          <div className="relative bg-white p-6 rounded-lg text-center">
+          <div className="relative bg-white rounded-lg text-center">
             <h2 className="text-[#FF5722] text-lg font-normal mb-4">
               You rate this interview with:
             </h2>
@@ -146,9 +146,9 @@ const RatingModal: React.FC<RatingModalProps> = ({
   return (
     <>
       <Dialog open={isOpen && !showSuccess} onOpenChange={onClose}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="w-[calc(100%-2rem)] md:w-full sm:max-w-md rounded-lg">
           <DialogTitle className="sr-only">Rate Interview</DialogTitle>
-          <div className="relative bg-white p-6 rounded-lg">
+          <div className="relative bg-white">
             <h2 className="text-[#FF5722] text-xl font-medium mb-2">
               Rate your interview with:
             </h2>
@@ -156,7 +156,7 @@ const RatingModal: React.FC<RatingModalProps> = ({
             {renderInterviewDetails()}
 
             <div className="flex items-center text-sm text-[#263238] mb-6">
-              <MapPin className="w-4 h-4 text-[#F5722E] mr-1" />
+              <MapPin className="min-w-4 min-h-4 w-4 h-4 text-[#F5722E] mr-1 flex-shrink-0" />
               Based in {interview.location}
             </div>
 
