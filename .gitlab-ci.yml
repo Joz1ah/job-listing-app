@@ -59,7 +59,7 @@ docker_push:
     GOOGLE_APPLICATION_CREDENTIALS: /tmp/sa-key.json
 
 docker_uat:
-  stage: docker_promote
+  stage: docker_uat
   image: google/cloud-sdk:latest
   before_script:
     - echo "$SERVICE_ACCOUNT_KEYS" > /tmp/key.json  
