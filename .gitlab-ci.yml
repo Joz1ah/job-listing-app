@@ -89,6 +89,11 @@ deployment:
         export SSH_HOST="$SSH_HOST_SIT"
         export SSH_USER="$SSH_USER"
         echo "Non-production deployment: Using SSH_USER=$SSH_USER and SSH_HOST=$SSH_HOST"      
+      elif [[ "$CI_COMMIT_REF_NAME" == "uat" ]]; then
+        echo "$SSH_PRIVATE_KEY" | sed 's/\r$//' > ~/.ssh/id_rsa
+        export SSH_HOST="$SSH_HOST_UAT"
+        export SSH_USER="$SSH_USER_UAT_SERVICE"
+        echo "UAT deployment: Using SSH_USER=$SSH_USER and SSH_HOST=$SSH_HOST"
       else
         echo "$SSH_PRIVATE_KEY" | sed 's/\r$//' > ~/.ssh/id_rsa
         export SSH_HOST="$SSH_HOST"
@@ -138,6 +143,9 @@ deployment:
       elif [[ "$CI_COMMIT_REF_NAME" == "sit" ]]; then
         DEPLOY_PATH="/home/sit-deployer/akaza-app"
         ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "$DEPLOY_PATH/deploy.sh $CI_COMMIT_SHA "
+      elif [[ "$CI_COMMIT_REF_NAME" == "uat" ]]; then
+        DEPLOY_PATH="/home/uat/signup-api"
+        ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "$DEPLOY_PATH/deploy.sh  /tmp/deploy_vars.txt" 
       else
         DEPLOY_PATH="/home/sit-deployer/sit/akaza-app"
         ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "$DEPLOY_PATH/deploy.sh  /tmp/deploy_vars.txt" 
