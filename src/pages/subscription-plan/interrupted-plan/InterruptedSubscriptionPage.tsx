@@ -71,11 +71,11 @@ const PricingCard: React.FC<
           </span>
         </div>
       )} */}
-      <div className="inline-block px-4 py-1 rounded-full w-[124px] border border-[#F5722E] text-[#F5722E] mb-4 font-bold text-2xl">
+      <div className="inline-block px-4 py-1 rounded-full w-auto border border-[#F5722E] text-[#F5722E] mb-4 font-bold text-2xl">
         {type}
       </div>
       <div className="flex justify-center items-baseline gap-0 mb-1">
-        <span className="text-2xl text-[#F5722E]">$</span>
+        <span className="text-2xl text-[#F5722E]">CAD $</span>
         <span className="text-5xl font-bold text-[#F5722E] leading-none">
           {price}
         </span>
@@ -166,6 +166,8 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
   const [paymentSubmit] = usePaymentCreateMutation();
   const [isLoading, setIsLoading] = useState(false);
   const { showError } = useErrorModal();
+  const { user } = useAuth();
+  const isEmployer = user?.data?.user?.type === "employer";
 
   useEffect(() => {
     createAuthNetTokenizer();
@@ -174,7 +176,13 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
   const handleCombinedFormSubmit = async (values: any) => {
     setIsLoading(true);
 
-    const baseAmount = plan.type === "Monthly" ? 5 : 55;
+    const { user } = useAuth();
+    const isEmployer = user?.data?.user?.type === "employer";
+    
+    const baseAmount = plan.type === "Monthly" 
+      ? (isEmployer ? 50 : 5) 
+      : (isEmployer ? 550 : 55);
+    
     const transactionFee = baseAmount * 0.096;
     const subtotal = baseAmount + transactionFee;
     const tax =
@@ -233,28 +241,41 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
           <ArrowLeft size={20} />
           <span className="ml-2">Back to Plans</span>
         </button>
-
+  
         <div className="text-left max-w-3xl mx-auto mb-8">
-          <h1 className="text-3xl text-[#F5722E] mb-1">
-            {plan.type === "Yearly" ? "Great Choice!" : "Unlock More"}
-          </h1>
-          <h2 className="text-xl text-[#F5722E] mb-2">
-            {plan.type === "Yearly"
-              ? "Unlock Full Access Now!"
-              : "with a Simple Subscription."}
-          </h2>
-          <p className="text-[#F8F8FF] text-sm">
-            {plan.type === "Yearly"
-              ? "We are thrilled to have you as part of our community! Your decision to unlock full access to our yearly plan for $55 marks the start of a new beginning to provide exceptional service and improve our offerings."
-              : "We're excited to welcome you to our community! By subscribing to our monthly plan, you're taking a step towards unlocking our service and continually enhance our offerings. Your support means so much to us!"}
-          </p>
+          {plan.type === "FREEMIUM" ? (
+            <>
+              <h1 className="text-3xl text-[#F5722E] mb-1">
+                Get Started with a FreeSubscription – No Cost, Just Benefits!
+              </h1>
+              <p className="text-[#F8F8FF] text-sm mt-2">
+                Start your FREEMIUM today and gain full access to all our features, allowing you to explore everything we offer with no commitment or charges for the first 3 days. Completely risk-free!
+              </p>
+            </>
+          ) : (
+            <>
+              <h1 className="text-3xl text-[#F5722E] mb-1">
+                {plan.type === "Yearly" ? "Great Choice!" : "Unlock More"}
+              </h1>
+              <h2 className="text-xl text-[#F5722E] mb-2">
+                {plan.type === "Yearly"
+                  ? "Unlock Full Access Now!"
+                  : "with a Simple Subscription."}
+              </h2>
+              <p className="text-[#F8F8FF] text-sm">
+                {plan.type === "Yearly"
+                  ? `We are thrilled to have you as part of our community! Your decision to unlock full access to our yearly plan for CAD ${isEmployer ? '550' : '55'} marks the start of a new beginning to provide exceptional service and improve our offerings.`
+                  : `We're excited to welcome you to our community! By subscribing to our monthly plan, you're taking a step towards unlocking our service and continually enhance our offerings. Your support means so much to us!`}
+              </p>
+            </>
+          )}
         </div>
-
+  
         <div className="h-[3px] bg-[#F5722E] mt-4 mb-10" />
-
+  
         <div className="flex flex-col lg:flex-row items-center lg:items-start gap-6">
           <PricingCard {...plan} hideButton={true} />
-
+  
           <div className="w-full md:w-[743px] h-auto md:h-[580px] bg-[#2D3A41] px-4 pt-1 pb-4 rounded flex justify-center">
             <InterruptedPaymentForm
               planType={plan.type.toLowerCase() as "monthly" | "yearly"}
@@ -367,6 +388,14 @@ const FreeTrial: React.FC<FreeTrialProps> = ({ onBack, onSelectPlan }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useAuth();
   const isEmployer = user?.data?.user?.type === "employer";
+  
+  // Set base prices based on user type
+  const yearlyPrice = isEmployer ? 550 : 55;
+  const monthlyPrice = isEmployer ? 50 : 5;
+  
+  // Calculate transaction fees
+  const yearlyTransactionFee = Number((yearlyPrice * 0.096).toFixed(2));
+  const monthlyTransactionFee = Number((monthlyPrice * 0.096).toFixed(2));
 
   const freeFeatures = [
     {
@@ -477,13 +506,13 @@ const FreeTrial: React.FC<FreeTrialProps> = ({ onBack, onSelectPlan }) => {
   const handleSubscriptionCardSelect = (type: "Yearly" | "Monthly") => {
     const selectedPlan = {
       type,
-      price: type === "Yearly" ? 55 : 5,
+      price: type === "Yearly" ? yearlyPrice : monthlyPrice,
       features: type === "Yearly" ? yearlyFeatures : monthlyFeatures,
       isHighlighted: type === "Yearly",
       subtext:
         type === "Yearly"
-          ? "+ $5.28 transaction fee"
-          : "+ $0.48 transaction fee",
+          ? `+ CAD ${yearlyTransactionFee} transaction fee`
+          : `+ CAD ${monthlyTransactionFee} transaction fee`,
       buttonText: "Choose Plan",
     };
     onSelectPlan(selectedPlan);
@@ -516,11 +545,11 @@ const FreeTrial: React.FC<FreeTrialProps> = ({ onBack, onSelectPlan }) => {
         <div className="flex flex-col lg:flex-row items-center lg:items-start gap-6">
           <div className="w-[360px] flex-shrink-0">
             <PricingCard
-              type="Free"
+              type="FREEMIUM"
               price={0}
               subtext="3 days free trial"
               features={freeFeatures}
-              buttonText="Start Free Trial"
+              buttonText="Start FREEMIUM"
               hideButton={true}
             />
           </div>
@@ -554,7 +583,7 @@ const FreeTrial: React.FC<FreeTrialProps> = ({ onBack, onSelectPlan }) => {
               className="text-[#F5722E] text-md mt-4"
               onClick={handleStartFreeTrial}
             >
-              Continue to Free Trial
+              Continue to FREEMIUM
             </Button>
           </div>
         </div>
@@ -584,12 +613,20 @@ const InterruptedSubscriptionPage: React.FC = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const { user } = useAuth();
   const isEmployer = user?.data?.user?.type === "employer";
+  
+  // Set base prices based on user type
+  const yearlyPrice = isEmployer ? 550 : 55;
+  const monthlyPrice = isEmployer ? 50 : 5;
+  
+  // Calculate transaction fees
+  const yearlyTransactionFee = Number((yearlyPrice * 0.096).toFixed(2));
+  const monthlyTransactionFee = Number((monthlyPrice * 0.096).toFixed(2));
 
   const plans: PlanProps[] = [
     {
       type: "Yearly",
-      price: 55,
-      subtext: "+ $5.28 transaction fee",
+      price: yearlyPrice,
+      subtext: `+ CAD ${yearlyTransactionFee} transaction fee`,
       buttonText: "Choose Plan",
       features: [
         ...(isEmployer
@@ -630,8 +667,8 @@ const InterruptedSubscriptionPage: React.FC = () => {
     },
     {
       type: "Monthly",
-      price: 5,
-      subtext: "+ $0.48 transaction fee",
+      price: monthlyPrice,
+      subtext: `+ CAD ${monthlyTransactionFee} transaction fee`,
       buttonText: "Choose Plan",
       features: [
         ...(isEmployer
@@ -670,10 +707,10 @@ const InterruptedSubscriptionPage: React.FC = () => {
       ],
     },
     {
-      type: "Free",
+      type: "FREEMIUM",
       price: 0,
       subtext: "3 days free trial",
-      buttonText: "Start Free Trial",
+      buttonText: "Start FREEMIUM",
       features: [
         {
           icon: <img src={sparkle_icon_green} className="w-4 h-4" />,
@@ -693,7 +730,7 @@ const InterruptedSubscriptionPage: React.FC = () => {
 
   const handlePlanSelect = (plan: PlanProps) => {
     setSelectedPlan(plan);
-    if (plan.type === "Free") {
+    if (plan.type === "FREEMIUM") {
       setStep("free-trial");
     } else {
       setStep("payment");

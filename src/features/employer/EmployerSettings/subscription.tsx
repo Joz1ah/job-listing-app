@@ -159,7 +159,7 @@ const SubscriptionSettings: React.FC = () => {
           <p className="text-[#F8F8FF] text-[13px]">
             Select the perfect plan for your needs: get started with our $5
             monthly plan for easy access to all essential features, or save more
-            with our $55 yearly plan, offering full access to premium content
+            with our CAD $550 yearly plan, offering full access to premium content
             and exclusive benefits throughout the year
           </p>
         </div>
@@ -180,7 +180,7 @@ const SubscriptionSettings: React.FC = () => {
     switch (subscriptionPlan) {
       case "freeTrial":
         statusText = "You're subscribed to the";
-        planName = "Free Trial";
+        planName = "FREEMIUM";
         break;
       case "monthlyPlan":
         statusText = "You're subscribed to the";
@@ -209,7 +209,7 @@ const SubscriptionSettings: React.FC = () => {
         <p className="text-[#F8F8FF] text-[13px]">
           Select the perfect plan for your needs: get started with our $5
           monthly plan for easy access to all essential features, or save more
-          with our $55 yearly plan, offering full access to premium content and
+          with our CAD $550 yearly plan, offering full access to premium content and
           exclusive benefits throughout the year
         </p>
       </div>

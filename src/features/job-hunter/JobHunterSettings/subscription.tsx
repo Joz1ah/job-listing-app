@@ -172,7 +172,7 @@ const SubscriptionSettings: React.FC = () => {
     switch (subscriptionPlan) {
       case "freeTrial":
         statusText = "You're subscribed to the";
-        planName = "Free Trial";
+        planName = "FREEMIUM";
         break;
       case "monthlyPlan":
         statusText = "You're subscribed to the";

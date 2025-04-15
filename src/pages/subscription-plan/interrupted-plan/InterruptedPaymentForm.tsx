@@ -10,6 +10,7 @@ import mastercard_icon from "assets/credit-card-icons/cc_mastercard.svg?url";
 import discover_icon from "assets/credit-card-icons/cc_discover.svg?url";
 import { CountrySelect } from "components";
 import { NavLink } from "react-router-dom";
+import { useAuth } from "contexts/AuthContext/AuthContext";
 
 interface InterruptedPaymentFormProps {
   planType: "monthly" | "yearly";
@@ -45,7 +46,18 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
   onSubmit,
   isSubmitting,
 }) => {
-  const baseAmount = planType === "monthly" ? 5 : 55;
+  const { user } = useAuth();
+  const userType = user?.data?.user?.type;
+  const isEmployer = userType === "employer";
+
+  // Define base amounts based on user type
+  let baseAmount = 0;
+  if (isEmployer) {
+    baseAmount = planType === "monthly" ? 50 : 550; // CAD for employers
+  } else {
+    baseAmount = planType === "monthly" ? 5 : 55; // CAD for job hunters
+  }
+
   const transactionFee = Number((baseAmount * 0.096).toFixed(2));
   const subtotal = baseAmount + transactionFee;
 
@@ -149,7 +161,7 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
             {/* Left Column */}
             <div className="space-y-4">
-              <div className="flex gap-2 mt-6">
+              <div className="flex gap-2 mt-6 justify-center">
                 <img src={visa_icon} alt="Visa" />
                 <img src={amex_icon} alt="American Express" />
                 <img src={mastercard_icon} alt="Mastercard" />
@@ -460,11 +472,11 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
               <div className="space-y-2 text-sm pt-4">
                 <div className="flex justify-between text-[#F5F5F7]">
                   <span>Subscription Fee</span>
-                  <span>${baseAmount.toFixed(2)}</span>
+                  <span>CAD ${baseAmount.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-[#F5F5F7]">
                   <span>Transaction 9.6%</span>
-                  <span>${transactionFee}</span>
+                  <span>CAD ${transactionFee}</span>
                 </div>
                 <div className="flex justify-between text-[#F5F5F7]">
                   <span>
@@ -473,7 +485,7 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
                       : "0% Tax"}
                   </span>
                   <span>
-                    $
+                    CAD $
                     {values.country?.toLowerCase() === "canada"
                       ? (subtotal * 0.13).toFixed(2)
                       : "0.00"}
@@ -482,7 +494,7 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
                 <div className="flex justify-between text-[#F5722E] font-semibold mt-4">
                   <span>Total</span>
                   <span>
-                    $
+                    CAD $
                     {(() => {
                       const tax =
                         values.country?.toLowerCase() === "canada"
@@ -545,7 +557,7 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
                   By clicking "Complete Payment" you will be charged the total
                   price of{" "}
                   <span className="text-[#F5722E]">
-                    $
+                    CAD $
                     {(() => {
                       const tax =
                         values.country?.toLowerCase() === "canada"
