@@ -70,7 +70,7 @@ docker_uat:
     - echo "Promoting Docker image to uat..."
     - docker pull gcr.io/$GOOGLE_PROJECT_ID/akaza-app:$CI_COMMIT_SHA
     - docker tag gcr.io/$GOOGLE_PROJECT_ID/akaza-app:$CI_COMMIT_SHA gcr.io/$GOOGLE_PROJECT_ID/uat-app:$CI_COMMIT_SHA
-    - docker push gcr.io/$GOOGLE_PROJECT_ID/uat_app:$CI_COMMIT_SHA
+    - docker push gcr.io/$GOOGLE_PROJECT_ID/uat-app:$CI_COMMIT_SHA
   only:
     - uat
   variables:
