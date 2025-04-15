@@ -167,7 +167,7 @@ deployment:
         DEPLOY_PATH="/home/sit-deployer/akaza-app"
         ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "$DEPLOY_PATH/deploy.sh $CI_COMMIT_SHA "
       elif [[ "$CI_COMMIT_REF_NAME" == "uat" ]]; then
-        DEPLOY_PATH="/home/uat/signup-api"
+        DEPLOY_PATH="/home/uat/app"
         ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "$DEPLOY_PATH/deploy.sh  /tmp/deploy_vars.txt" 
       else
         DEPLOY_PATH="/home/sit-deployer/sit/akaza-app"
