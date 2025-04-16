@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState, useEffect } from "react";
 import { Button } from "components";
 import { useNavigate } from "react-router-dom";
 import sparkle_icon from "assets/images/sparkle-icon.png";
@@ -117,7 +117,9 @@ const PlanCard: FC<PlanProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-1">
             {features.map((feature, index) => (
               <div key={index} className="flex items-center gap-2">
-                <span className="text-[#F5722E] min-w-5 flex-shrink-0">{feature.icon}</span>
+                <span className="text-[#F5722E] min-w-5 flex-shrink-0">
+                  {feature.icon}
+                </span>
                 <span className="text-gray-700 text-sm">{feature.text}</span>
               </div>
             ))}
@@ -129,9 +131,21 @@ const PlanCard: FC<PlanProps> = ({
 };
 
 const SubscriptionPlan: FC = () => {
-  const { user } = useAuth();
-  const userType = user?.data?.user?.type;
+  const { user, isAuthenticated } = useAuth();
+  const [userType, setUserType] = useState<string>("job_hunter");
+
+  useEffect(() => {
+    // If user is authenticated, use their actual user type
+    if (isAuthenticated && user?.data?.user?.type) {
+      setUserType(user.data.user.type);
+    }
+  }, [isAuthenticated, user]);
+
   const isEmployer = userType === "employer";
+
+  const handleToggleUserType = (type: string) => {
+    setUserType(type);
+  };
 
   const yearlyFeatures = [
     {
@@ -234,7 +248,33 @@ const SubscriptionPlan: FC = () => {
         <div
           className={`${styles["subscription-plan-container"]} pb-10 md:pt-10`}
         >
-          <div className="max-w-full mx-auto px-4">
+          <div className="max-w-full mx-auto px-4 pt-4">
+            {/* Toggle buttons for user type - only shown for unauthenticated users */}
+            {!isAuthenticated && (
+              <div className="flex flex-row justify-center mb-8 w-full gap-4 sm:gap-2 px-4">
+                <button
+                  className={`h-[35px] w-[130px] sm:h-[70px] sm:w-[258px] border border-[#F5722E] rounded-md text-sm sm:text-xl font-bold transition-colors duration-200 ${
+                    userType === "job_hunter"
+                      ? "bg-[#F5722E] text-white"
+                      : "bg-transparent text-[#F5722E] hover:bg-[#F5722E] hover:text-white"
+                  }`}
+                  onClick={() => handleToggleUserType("job_hunter")}
+                >
+                  Job Hunter
+                </button>
+                <button
+                  className={`h-[35px] w-[130px] sm:h-[70px] sm:w-[258px] border border-[#F5722E] rounded-md text-sm sm:text-xl font-bold transition-colors duration-200 ${
+                    userType === "employer"
+                      ? "bg-[#F5722E] text-white"
+                      : "bg-transparent text-[#F5722E] hover:bg-[#F5722E] hover:text-white"
+                  }`}
+                  onClick={() => handleToggleUserType("employer")}
+                >
+                  Employer
+                </button>
+              </div>
+            )}
+
             <div className="space-y-6 pt-4 flex flex-col items-center">
               <PlanCard
                 title="Yearly Plan"
