@@ -207,7 +207,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
       <div className="w-full">
         {renderCompanyLogo()}
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 max-w-5xl mx-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 max-w-5xl mx-4 lg:mx-8">
           <div className="mb-8 md:mb-0">
             <div className="flex flex-col pb-6">
               <div className="flex justify-start mt-4">
