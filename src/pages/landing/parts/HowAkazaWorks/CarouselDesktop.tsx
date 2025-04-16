@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import carousel1_jobhunter from "assets/landing-carousel/landing-carousel-1-jobhunter.mp4";
 import carousel1_employer from "assets/landing-carousel/landing-carousel-1-employer.mp4";
-import carousel2 from "assets/landing-carousel/landing-carousel-2-desktop.gif";
-import carousel3 from "assets/landing-carousel/landing-carousel-3-desktop.gif";
-import carousel4 from "assets/landing-carousel/landing-carousel-4-desktop.mp4";
+import carousel2 from "assets/landing-carousel/landing-carousel-2.gif";
+import carousel3 from "assets/landing-carousel/landing-carousel-3.gif";
+import carousel4 from "assets/landing-carousel/landing-carousel-4.gif";
 import sparkle_icon from "assets/sparkle-icon.svg?url";
 import company_logo from "assets/images/company-logo-light.svg?url";
 import { useModal } from "components/modal/useModal";
-import { useLanding } from "pages/landing/useLanding";
+import { useLanding } from "../../useLanding";
 import { MODAL_HEADER_TYPE, MODAL_STATES } from "store/modal/modal.types";
 import { HERO_STATES } from "store/hero/hero.types";
 
@@ -30,6 +30,8 @@ interface Slide {
 const CarouselDesktop = () => {
   const { handleSetSelectedModalHeader, toggleModal } = useModal();
   const { handleSetModalState, handleSetHeroState } = useLanding();
+
+  const [userType, setUserType] = useState<"employer" | "jobhunter">("jobhunter"); // Default to jobhunter
 
   const slides: Slide[] = [
     {
@@ -88,8 +90,37 @@ const CarouselDesktop = () => {
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  
+  // Removed fade state as it's no longer needed
 
-  // Navigation functions
+  // Pre-load both videos for smoother transitions
+  useEffect(() => {
+    const jobHunterVideo = new Audio(carousel1_jobhunter);
+    const employerVideo = new Audio(carousel1_employer);
+    
+    // Preload videos
+    jobHunterVideo.preload = "auto";
+    employerVideo.preload = "auto";
+    
+    return () => {
+      // Clean up
+      jobHunterVideo.src = "";
+      employerVideo.src = "";
+    };
+  }, []);
+
+  // Handle sign up button click
+  const handleSignup = () => {
+    // First, update the modal state to show signup step 2
+    handleSetModalState(MODAL_STATES.SIGNUP_SELECT_USER_TYPE);
+    handleSetSelectedModalHeader(MODAL_HEADER_TYPE.WITH_LOGO_AND_CLOSE);
+    handleSetHeroState(HERO_STATES.PERFECT_MATCH_ALGO);
+
+    // Then open the modal with the updated state
+    toggleModal(true);
+  };
+  
+  // Remove fade effects for slide navigation
   const goToPrevious = () => {
     setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? slides.length - 1 : prevIndex - 1
@@ -102,12 +133,73 @@ const CarouselDesktop = () => {
     );
   };
 
-  // Handle sign up button click
-  const handleSignup = () => {
-    handleSetModalState(MODAL_STATES.SIGNUP_SELECT_USER_TYPE);
-    handleSetSelectedModalHeader(MODAL_HEADER_TYPE.WITH_LOGO_AND_CLOSE);
-    handleSetHeroState(HERO_STATES.PERFECT_MATCH_ALGO);
-    toggleModal(true);
+  // Handle toggle between employer and job hunter in first slide
+  const handleUserTypeToggle = (type: "employer" | "jobhunter") => {
+    if (userType !== type && currentIndex === 0) {
+      setUserType(type);
+    }
+  };
+
+  // Render media based on type with consistent height
+  const renderMedia = (slide: Slide) => {
+    // Special handling for first slide with toggle functionality
+    if (currentIndex === 0 && slide.type === "video") {
+      return (
+        <div
+          className="w-full h-full flex items-center justify-center relative mt-10"
+          style={{ height: "380px" }}
+        >
+          {/* Both videos are always in the DOM but only one is visible */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <video
+              key="jobhunter-video"
+              autoPlay
+              loop
+              muted
+              playsInline
+              className={`max-w-full max-h-full object-contain transition-opacity duration-700 ${
+                userType === "jobhunter" ? "opacity-100" : "opacity-0"
+              }`}
+              style={{ maxHeight: "380px" }}
+            >
+              <source src={slide.srcJobHunter} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          
+          <div className="absolute inset-0 flex items-center justify-center">
+            <video
+              key="employer-video"
+              autoPlay
+              loop
+              muted
+              playsInline
+              className={`max-w-full max-h-full object-contain transition-opacity duration-700 ${
+                userType === "employer" ? "opacity-100" : "opacity-0"
+              }`}
+              style={{ maxHeight: "380px" }}
+            >
+              <source src={slide.srcEmployer} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </div>
+      );
+    } else if (slide.type === "image" && slide.src) {
+      return (
+        <div className="w-full h-full flex items-center justify-center mt-10"
+          style={{ height: "380px" }}
+        >
+          <img
+            src={slide.src}
+            alt="Carousel content"
+            className="max-w-full max-h-full object-contain"
+            style={{ maxHeight: "380px" }}
+          />
+        </div>
+      );
+    }
+    return null;
   };
 
   // Add resize handler to ensure consistent appearance
@@ -121,268 +213,206 @@ const CarouselDesktop = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, [currentIndex]);
 
-  // Navigation buttons component for consistency
-  const NavigationButtons = () => (
-    <>
-      {currentIndex > 0 && (
-        <button
-          onClick={goToPrevious}
-          className="absolute left-0 top-1/2 transform -translate-y-1/2 w-20 h-20 flex items-center justify-center text-white hover:text-orange-500 transition-colors"
-          aria-label="Previous"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="80"
-            height="80"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <polyline points="15 18 9 12 15 6"></polyline>
-          </svg>
-        </button>
-      )}
-      
-      <button
-        onClick={goToNext}
-        className="absolute right-0 top-1/2 transform -translate-y-1/2 w-20 h-20 flex items-center justify-center text-white hover:text-orange-500 transition-colors"
-        aria-label="Next"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="80"
-          height="80"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <polyline points="9 18 15 12 9 6"></polyline>
-        </svg>
-      </button>
-    </>
-  );
-
-  // Render current slide with appropriate desktop layout that works at various sizes
+  // Render current slide with fixed header and content areas
   const renderCurrentSlide = () => {
     const slide = slides[currentIndex];
 
-    if (currentIndex === 0) {
-      // First slide with How Akaza Works? showing both videos closer together
-      return (
-        <div className="flex flex-col w-full relative">
-          {/* Main content area - responsive layout with reduced gap */}
-          <div className="flex flex-wrap lg:flex-nowrap w-full items-center relative" style={{ minHeight: "60vh" }}>
-            {/* Left side with Akaza logo - positioned closer to videos but left-aligned */}
-            <div className="w-full lg:w-1/3 flex items-center justify-center lg:justify-start">
-              <div className="text-center lg:text-left pl-4 lg:pl-8 xl:pl-12">
-                <h1 className="text-6xl lg:text-7xl xl:text-8xl font-bold leading-tight">
-                  How
-                  <br />
-                  Does
-                  <br />
-                  <span className="inline-block">
+    return (
+      <div className="flex flex-col">
+        {/* Header Section - Reduced height, even smaller for last slide */}
+        <div
+          className="w-full text-center px-2 sm:px-4 pt-6 pb-3 sm:pt-8 sm:pb-4 flex flex-col justify-center overflow-visible"
+          style={{ height: slide.isLastSlide ? "100px" : "210px" }}
+        >
+          {!slide.isLastSlide ? (
+            <>
+              <h2
+                className={`font-medium px-1 sm:px-2 overflow-visible break-words ${slide.showLogo ? "text-2xl sm:text-4xl mb-12 font-bold italic" : "text-lg sm:text-xl"}`}
+              >
+                {slide.showLogo ? (
+                  <span className="inline-flex items-center justify-center">
+                    How{" "}
                     <img
                       src={company_logo}
-                      className="h-16 lg:h-20 xl:h-24 my-0 inline-block"
-                      alt="Akaza logo"
-                    />
+                      className="h-8 sm:h-10 mx-2 mb-2"
+                      alt="Company logo"
+                    />{" "}
+                    Works?
                   </span>
-                  <br />
-                  Work?
-                </h1>
-              </div>
-            </div>
-
-            {/* Videos container - adjusted width to fill space */}
-            <div className="w-full lg:w-2/3 flex justify-center lg:justify-start lg:pt-0 mt-0 lg:pl-0">
-              {/* Video container with reduced spacing */}
-              <div className="flex flex-wrap lg:flex-nowrap justify-center lg:justify-start lg:space-x-4 xl:space-x-6">
-                {/* Job Hunter video */}
-                <div className="w-full lg:w-auto flex flex-col items-center mt-2 lg:mt-0">
-                  <div className="mb-2 lg:mb-3">
-                    <div
-                      className="border border-orange-500 bg-orange-500 text-white px-6 lg:px-8 xl:px-10 py-2 lg:py-3 rounded-md text-base lg:text-lg xl:text-xl cursor-default"
-                    >
-                      {slide.buttons?.left}
-                    </div>
-                  </div>
-                  <div className="flex justify-center">
-                    <video
-                      key={`jobhunter-${Date.now()}`}
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      className="max-w-full h-auto object-contain"
-                      style={{ maxHeight: "300px", width: "auto" }}
-                    >
-                      <source src={slide.srcJobHunter} type="video/mp4" />
-                      Your browser does not support the video tag.
-                    </video>
-                  </div>
-                </div>
-
-                {/* Employer video */}
-                <div className="w-full lg:w-auto flex flex-col items-center mt-2 lg:mt-0">
-                  <div className="mb-2 lg:mb-3">
-                    <div
-                      className="border border-orange-500 bg-transparent text-orange-500 px-6 lg:px-8 xl:px-10 py-2 lg:py-3 rounded-md text-base lg:text-lg xl:text-xl cursor-default"
-                    >
-                      {slide.buttons?.right}
-                    </div>
-                  </div>
-                  <div className="flex justify-center">
-                    <video
-                      key={`employer-${Date.now()}`}
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      className="max-w-full h-auto object-contain"
-                      style={{ maxHeight: "300px", width: "auto" }}
-                    >
-                      <source src={slide.srcEmployer} type="video/mp4" />
-                      Your browser does not support the video tag.
-                    </video>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Common navigation buttons */}
-            <NavigationButtons />
-          </div>
-
-          {/* Footer text for slide 1 - moved up by removing margins */}
-          <div className="text-center mt-0 pt-2">
-            <p className="text-lg lg:text-xl xl:text-2xl">
-              As a Job Hunter, <span className="text-orange-500">Complete your application card</span> &<br />
-              as an Employer, <span className="text-orange-500">Complete your first job listing</span>
-            </p>
-          </div>
-        </div>
-      );
-    } else if (slide.isLastSlide) {
-      // Last slide with "It's that simple" content
-      return (
-        <div className="w-full flex flex-col items-center justify-center relative" style={{ minHeight: "60vh" }}>
-          <h2 className="text-3xl lg:text-4xl xl:text-5xl font-medium mb-8 lg:mb-12">It's that simple</h2>
-          <button
-            onClick={handleSignup}
-            className="bg-orange-500 text-white px-10 lg:px-12 xl:px-16 py-3 lg:py-4 xl:py-5 text-xl lg:text-2xl rounded-md hover:bg-orange-600 transition-colors"
-          >
-            {slide.buttons?.left}
-          </button>
-
-          {/* Common navigation buttons */}
-          <NavigationButtons />
-        </div>
-      );
-    } else {
-      // Slides 2-4 with similar layout
-      return (
-        <div className="flex flex-col w-full relative" style={{ minHeight: "60vh" }}>
-          {/* Top buttons with more spacing - responsive */}
-          <div className="flex justify-center mb-6 lg:mb-8 mt-6 lg:mt-10 space-x-10">
-            <div
-              className="border border-orange-500 px-5 lg:px-8 xl:px-10 py-2 lg:py-3 rounded-md text-orange-500 text-base lg:text-lg xl:text-xl mx-4 lg:mx-8 xl:mx-10 cursor-default"
-            >
-              {slide.buttons?.left}
-            </div>
-            {slide.buttons?.right && (
-              <div
-                className="border border-orange-500 px-5 lg:px-8 xl:px-10 py-2 lg:py-3 rounded-md text-orange-500 text-base lg:text-lg xl:text-xl mx-4 lg:mx-8 xl:mx-10 cursor-default"
-              >
-                {slide.buttons.right}
-              </div>
-            )}
-          </div>
-
-          {/* Underlined Text Display in the middle top */}
-          {slide.underlinedText && (
-            <div className="flex justify-center mb-6 lg:mb-8">
-              <div className="text-center">
-                <span className="text-orange-500 font-semibold border-b-2 border-orange-500 pb-1 text-lg lg:text-xl xl:text-2xl inline-block">
+                ) : (
+                  slide.header
+                )}
+              </h2>
+              {slide.subheader && (
+                <p className="text-lg sm:text-xl mt-1 px-1 sm:px-2 overflow-visible break-words">
                   {slide.underlinedText === "Perfect Match" ? (
-                    <span className="inline-flex items-center align-middle">
-                      <img
-                        src={sparkle_icon}
-                        className="w-5 h-5 lg:w-6 lg:h-6 mr-1 lg:mr-2"
-                        alt=""
-                      />
-                      {slide.underlinedText}
-                    </span>
+                    <>
+                      {slide.subheader.split(slide.underlinedText)[0]}
+                      <span className="inline-flex items-center align-middle">
+                        <img
+                          src={sparkle_icon}
+                          className="w-5 h-5 mr-1"
+                          alt=""
+                        />{" "}
+                        <span className="text-orange-500 font-semibold">
+                          {slide.underlinedText}
+                        </span>
+                      </span>
+                      {slide.subheader.split(slide.underlinedText)[1]}
+                    </>
+                  ) : slide.underlinedText ? (
+                    <>{slide.subheader.split(slide.underlinedText)[0]}</>
                   ) : (
-                    slide.underlinedText
+                    slide.subheader
                   )}
-                </span>
-              </div>
+                </p>
+              )}
+
+              {/* Button Row - Consistent large size across all slides */}
+              {slide.buttons && (
+                <div className="flex flex-wrap justify-center gap-4 sm:gap-8 mt-6">
+                  <button
+                    onClick={() =>
+                      currentIndex === 0
+                        ? handleUserTypeToggle("jobhunter")
+                        : null
+                    }
+                    className={`border border-orange-500 rounded-md transition-colors w-[140px] h-[50px] px-3 py-1 text-xl ${
+                      userType === "jobhunter" && currentIndex === 0
+                        ? "bg-orange-500 text-white shadow-[0_0_15px_rgba(249,115,22,0.7)]"
+                        : "text-orange-500 hover:bg-orange-500 hover:text-white"
+                    }`}
+                    style={{
+                      cursor: currentIndex === 0 ? "pointer" : "default",
+                    }}
+                  >
+                    {slide.buttons.left}
+                  </button>
+                  {slide.buttons.right && (
+                    <button
+                      onClick={() =>
+                        currentIndex === 0
+                          ? handleUserTypeToggle("employer")
+                          : null
+                      }
+                      className={`border border-orange-500 rounded-md transition-colors w-[140px] h-[50px] px-3 py-1 text-xl ${
+                        userType === "employer" && currentIndex === 0
+                          ? "bg-orange-500 text-white shadow-[0_0_15px_rgba(249,115,22,0.7)]"
+                          : "text-orange-500 hover:bg-orange-500 hover:text-white"
+                      }`}
+                      style={{
+                        cursor: currentIndex === 0 ? "pointer" : "default",
+                      }}
+                    >
+                      {slide.buttons.right}
+                    </button>
+                  )}
+                </div>
+              )}
+
+              {/* Underlined Text Display (shown only if needed) */}
+              {slide.underlinedText && (
+                <div className="mt-4 sm:mt-5 mb-6">
+                  <span className="text-orange-500 font-semibold border-b-2 border-orange-500 pb-1">
+                    {slide.underlinedText === "Perfect Match" ? (
+                      <span className="inline-flex items-center align-middle">
+                        <img
+                          src={sparkle_icon}
+                          className="w-5 h-5 mr-1"
+                          alt=""
+                        />
+                        {slide.underlinedText}
+                      </span>
+                    ) : (
+                      slide.underlinedText
+                    )}
+                  </span>
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="h-full w-full"></div> // Empty header for last slide
+          )}
+        </div>
+
+        {/* Media Content Area - Adjusted height for last slide to center content better */}
+        <div
+          className="flex items-center justify-center p-4 pt-10"
+          style={{ height: slide.isLastSlide ? "460px" : "400px" }}
+        >
+          {slide.isLastSlide ? (
+            <div className="w-full flex flex-col items-center justify-center py-4">
+              <h2 className="text-2xl font-medium mb-8">It's that simple</h2>
+              <button
+                onClick={handleSignup}
+                className="bg-orange-500 text-white px-7 py-3 rounded-md hover:bg-orange-600 transition-colors text-lg sm:text-xl"
+              >
+                {slide.buttons?.left}
+              </button>
+            </div>
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              {renderMedia(slide)}
             </div>
           )}
-
-          {/* Media Content - responsive */}
-          <div className="flex justify-center mb-2 lg:mb-4">
-            <div className="w-full px-6 lg:px-10 xl:px-16">
-              {currentIndex === 3 && slide.type === "image" ? (
-                // For slide 4, properly show the mp4 video instead
-                <video
-                  key={`slide4-${Date.now()}`}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="w-full h-auto object-contain mx-auto"
-                  style={{ maxHeight: "400px" }}
-                >
-                  <source src={carousel4} type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
-              ) : (
-                <img
-                  src={slide.src}
-                  alt="Carousel content"
-                  className="w-full h-auto object-contain mx-auto"
-                  style={{ maxHeight: "400px" }}
-                />
-              )}
-            </div>
-          </div>
-
-          {/* Footer text - moved up by reducing margins */}
-          <div className="text-center mt-0 mb-0 px-4 lg:px-0">
-            <p className="text-lg lg:text-xl xl:text-2xl">
-              {currentIndex === 1 ? (
-                <>No Resume. No more endless scrolling. Just choose your <span className="text-orange-500">Perfect Match</span></>
-              ) : currentIndex === 2 ? (
-                <>Job hunters and employers can now <span className="text-orange-500">schedule interviews</span> instantly!</>
-              ) : (
-                <>Start the conversation, show up ready & hold each other accountable by providing feedback</>
-              )}
-            </p>
-          </div>
-          
-          {/* Common navigation buttons */}
-          <NavigationButtons />
         </div>
-      );
-    }
+      </div>
+    );
   };
 
   return (
     <div className="flex flex-col w-full bg-[#161A1D] text-white min-h-screen">
-      {/* Full-width container with dark background - centered vertically with flex and padding */}
-      <div className="w-full bg-[#161A1D] flex flex-col justify-center min-h-screen py-16">
-        {/* Responsive content container - position relative for the absolute positioned nav buttons */}
-        <div className="w-full mx-auto max-w-screen-xl relative">
+      {/* Full-width container with dark background */}
+      <div className="w-full bg-[#161A1D] pt-10 sm:pt-12">
+        {/* Content container with max width */}
+        <div className="max-w-md mx-auto">
           <div className="flex flex-col">
             {/* Main content section */}
             {renderCurrentSlide()}
+
+            {/* Footer section with navigation */}
+            <div className="w-full flex justify-center space-x-6 py-6 mt-1">
+              {currentIndex > 0 && (
+                <button
+                  onClick={goToPrevious}
+                  className="w-10 h-10 flex items-center justify-center bg-transparent text-white"
+                  aria-label="Previous"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="32"
+                    height="32"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                  </svg>
+                </button>
+              )}
+              <button
+                onClick={goToNext}
+                className="w-10 h-10 flex items-center justify-center bg-transparent text-white"
+                aria-label="Next"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="32"
+                  height="32"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       </div>
