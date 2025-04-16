@@ -148,7 +148,7 @@ const SubscriptionSettings: React.FC = () => {
             <span className="text-3xl mr-2">✦</span> Your Subscription
           </h2>
           <p className="text-[#F8F8FF] text-[13px]">
-            Select the perfect plan for your needs: get started with our $5
+            Select the perfect plan for your needs: get started with our $50
             monthly plan for easy access to all essential features, or save more
             with our CAD $550 yearly plan, offering full access to premium content
             and exclusive benefits throughout the year
@@ -198,7 +198,7 @@ const SubscriptionSettings: React.FC = () => {
           <span className="text-3xl mr-2">✦</span> Your Subscription
         </h2>
         <p className="text-[#F8F8FF] text-[13px]">
-          Select the perfect plan for your needs: get started with our $5
+          Select the perfect plan for your needs: get started with our $50
           monthly plan for easy access to all essential features, or save more
           with our CAD $550 yearly plan, offering full access to premium content and
           exclusive benefits throughout the year

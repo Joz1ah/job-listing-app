@@ -15,12 +15,17 @@ const SubscriptionSuccessModal = ({
   onClose,
   type,
 }: SubscriptionSuccessModalProps) => {
-  // Determine price based on plan type
-  const price = type === "Yearly" ? "55" : "5";
-
   // Get user information from auth context to check if user is employer
   const { user } = useAuth();
   const isEmployer = user?.data?.user?.type === "employer";
+  // Determine price based on plan type
+  let price = "";
+
+  if (type === "Yearly") {
+    price = isEmployer ? "550" : "50";
+  } else {
+    price = isEmployer ? "50" : "5";
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
