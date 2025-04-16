@@ -111,6 +111,11 @@ const ExpiredSubModal: React.FC<ExpiredSubModalProps> = ({
   userType,
   isSubscriptionExpired = false,
 }) => {
+  // If it's not a subscription expiry, don't render the modal at all
+  if (!isSubscriptionExpired) {
+    return null;
+  }
+
   const [currentStep, setCurrentStep] = useState<Step>("plans");
   const [selectedPlan, setSelectedPlan] = useState<PlanType | null>(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
@@ -160,9 +165,7 @@ const ExpiredSubModal: React.FC<ExpiredSubModalProps> = ({
     <div className="w-full">
       <div className="text-center mb-4 bg-[#F9E2CE] p-2">
         <h3 className="text-[#F5722E] text-xl font-extrabold mb-2">
-          {isSubscriptionExpired
-            ? "Your Subscription has expired"
-            : "Your Free Trial has expired"}
+          Your Subscription has expired
         </h3>
         <p className="text-[#263238] text-[13px] md:text-[15px]">
           To continue enjoying access to{" "}
@@ -347,15 +350,13 @@ const ExpiredSubModal: React.FC<ExpiredSubModalProps> = ({
     </div>
   );
 
-  return (
+  return open ? (
     <>
       {/* Custom overlay that starts below the header */}
-      {open && (
-        <div
-          className="fixed inset-0 bg-black/50 z-40"
-          style={{ top: isMobile ? "56px" : "72px" }} // Adjust based on mobile/desktop header height
-        />
-      )}
+      <div
+        className="fixed inset-0 bg-black/50 z-40"
+        style={{ top: isMobile ? "56px" : "72px" }} // Adjust based on mobile/desktop header height
+      />
 
       <Dialog open={open} onOpenChange={() => {}} modal={false}>
         <DialogHeader className="sr-only">
@@ -382,7 +383,7 @@ const ExpiredSubModal: React.FC<ExpiredSubModalProps> = ({
         </DialogContent>
       </Dialog>
     </>
-  );
+  ) : null;
 };
 
 export { ExpiredSubModal };
