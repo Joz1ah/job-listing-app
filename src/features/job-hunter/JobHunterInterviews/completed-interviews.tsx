@@ -43,7 +43,7 @@ const CompletedInterviews: FC = () => {
       await submitRatingFeedback(payload)
         .unwrap()
         .then(() => {
-          data.setShowSuccess(false);
+          data.setShowSuccess(true);
         });
     } catch (error) {
       showError(
