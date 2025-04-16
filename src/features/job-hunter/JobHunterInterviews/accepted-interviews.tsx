@@ -14,9 +14,11 @@ const AcceptedInterviews: FC = () => {
   const loaderRef = useRef<HTMLDivElement>(null);
   const [initialLoad, setInitialLoad] = useState(true);
   const { subscriptionPlan } = useJobHunterContext();
-  const { interviewsList, setSelectedInterviewsGroup, isLoadingInterviews } =
-    useInterviewsContext();
-  setSelectedInterviewsGroup("ACCEPTED");
+  const { interviewsList, setSelectedInterviewsGroup, isLoadingInterviews } = useInterviewsContext();
+
+  useEffect(() => {
+    setSelectedInterviewsGroup("ACCEPTED");
+  }, []);
 
   const handleJoinInterview = (interview: Interview) => {
     if (interview?.meetingLink) window.open(interview.meetingLink, "_blank");
@@ -55,19 +57,19 @@ const AcceptedInterviews: FC = () => {
     setLoading(false);
   };
 
-  useEffect(() => {
-    const loadInitialItems = async () => {
-      setLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
 
+  useEffect(() => {
+    if (!interviewsList || interviewsList.length === 0) return;
+  
+    const timeout = setTimeout(() => {
       const initialItems = interviewsList.slice(0, 6);
       setDisplayedItems(initialItems);
       setHasMore(interviewsList.length > 6);
-      setLoading(false);
       setInitialLoad(false);
-    };
-
-    loadInitialItems();
+      setLoading(false);
+    }, 1000);
+  
+    return () => clearTimeout(timeout);
   }, [interviewsList]);
 
   useEffect(() => {
