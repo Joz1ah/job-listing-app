@@ -173,8 +173,6 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
 
   const handleCombinedFormSubmit = async (values: any) => {
     setIsLoading(true);
-
-    const { user } = useAuth();
     const isEmployer = user?.data?.user?.type === "employer";
     
     const baseAmount = plan.type === "Monthly" 
