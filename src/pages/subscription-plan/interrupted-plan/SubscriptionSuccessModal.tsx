@@ -48,7 +48,7 @@ const SubscriptionSuccessModal = ({
             </h2>
 
             <p className="text-gray-200 text-sm">
-              Your ${price} {type.toLowerCase()} plan gives you access to our
+              Your CAD ${price} {type.toLowerCase()} plan gives you access to our
               best features!
               {!isEmployer &&
                 " Complete Your Application Card to start enjoying exclusive access."}

@@ -605,27 +605,21 @@ const SubscriptionPlanSelection: React.FC = () => {
                   : unchecked_green
               }
               label={
-                <div className="flex flex-col">
-                  <div className="flex items-baseline">
-                    <span className="text-orange-500 text-sm font-bold mr-1">
-                      CAD
-                    </span>
-                    <span className="text-orange-500">$</span>
-                    <span className="text-[38px] font-black text-orange-500">
-                      {dataStates.selectedUserType === "employer"
-                        ? "550"
-                        : "50"}
-                    </span>
-                    <span className="text-orange-500 text-xl">/year</span>
-                    <span className="text-xl text-[#AEADAD] line-through ml-2">
-                      $
-                      {dataStates.selectedUserType === "employer"
-                        ? "600"
-                        : "60"}
-                      /year
-                    </span>
-                  </div>
-                </div>
+<div className="flex flex-col">
+  <div className="flex items-baseline whitespace-nowrap">
+    <span className="text-orange-500 text-sm font-bold mr-1">CAD</span>
+    <span className="text-orange-500">$</span>
+    <span className="text-[38px] font-black text-orange-500">
+      {dataStates.selectedUserType === "employer" ? "550" : "50"}
+    </span>
+    <span className="text-orange-500 text-xl">/year</span>
+    <span className="text-xl text-[#AEADAD] line-through ml-2">
+      $
+      {dataStates.selectedUserType === "employer" ? "600" : "60"}
+      /year
+    </span>
+  </div>
+</div>
               }
               selectedPlan={currentSelectedPlan}
               text1="+ transaction fee"
@@ -645,7 +639,7 @@ const SubscriptionPlanSelection: React.FC = () => {
               }
               label={
                 <div className="flex flex-col">
-                  <div className="flex items-baseline">
+                  <div className="flex items-baseline whitespace-nowrap">
                     <span className="text-orange-500 text-sm font-bold mr-1">
                       CAD
                     </span>
