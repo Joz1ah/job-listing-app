@@ -10,7 +10,7 @@ import { DeleteAccountAlert } from "./alerts/DeleteAccountAlert";
 import { useUpdatePasswordMutation } from "api/akaza/akazaAPI";
 import { useJobHunterContext } from "components";
 import { AdDialogWrapper } from "components";
-import jobHunterPopAds from "images/popup-hunter.svg?url";
+import jobHunterPopAds from "images/jobhunter-dashboard-popup-ads.svg?url";
 import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
 
 interface FormData {

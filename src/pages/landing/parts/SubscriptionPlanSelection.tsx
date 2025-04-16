@@ -18,11 +18,10 @@ import unchecked_green from "assets/toggles/unchecked-green.svg?url";
 import checked_green from "assets/toggles/checked-green.svg?url";
 import subscription_sparkle_icon from "assets/images/sparkle-icon-green.svg?url";
 import subscription_thumbsup_icon from "assets/subscription-plan-icons/thumbsup.svg?url";
-import subscription_lock_icon from "assets/subscription-plan-icons/lock.svg?url";
 import subscription_linegraph_icon from "assets/subscription-plan-icons/linegraph.svg?url";
 import subscription_chat_icon from "assets/subscription-plan-icons/chat.svg?url";
 import subscription_bolt_icon from "assets/subscription-plan-icons/bolt.svg?url";
-import subscription_infinity from "assets/subscription-plan-icons/infinity.svg?url";
+import subscription_handshake from "assets/subscription-plan-icons/handshake.svg?url";
 import subscription_card from "assets/subscription-plan-icons/card.svg?url";
 import subscription_calendar from "assets/subscription-plan-icons/calendar.svg?url";
 
@@ -68,13 +67,13 @@ const getPlanFeatures = (
   // Disabled features for free plan based on user type
   const employerDisabledFeatures = [
     {
-      icon: subscription_infinity,
-      text: "Unlimited Interview Invites",
+      icon: subscription_handshake,
+      text: "Send 3 interview Invites per month",
       disabled: true,
     },
     {
       icon: subscription_calendar,
-      text: "Up to 5 Job Listings",
+      text: "Create 3 job listings per month",
       disabled: true,
     },
     {
@@ -85,11 +84,6 @@ const getPlanFeatures = (
     {
       icon: subscription_linegraph_icon,
       text: "Labour Market Insights",
-      disabled: true,
-    },
-    {
-      icon: subscription_lock_icon,
-      text: "Exclusive Employer Resources",
       disabled: true,
     },
   ];
@@ -97,7 +91,7 @@ const getPlanFeatures = (
   const jobHunterDisabledFeatures = [
     {
       icon: subscription_calendar,
-      text: "Send up to 3 Interview Invites",
+      text: "Send 3 interview Invites per month",
       disabled: true,
     },
     {
@@ -110,56 +104,41 @@ const getPlanFeatures = (
       text: "Labour Market Insights",
       disabled: true,
     },
-    {
-      icon: subscription_lock_icon,
-      text: "Exclusive Resources",
-      disabled: true,
-    },
   ];
 
   // User type specific features for paid plans
   const employerSpecificFeatures = {
     [PLAN_SELECTION_ITEMS.MONTHLY]: [
-      { icon: subscription_infinity, text: "Unlimited Interview Invites" },
-      { icon: subscription_calendar, text: "Up to 5 Job Listings" },
+      { icon: subscription_handshake, text: "Send 3 interview Invites per month" },
+      { icon: subscription_calendar, text: "Create 3 job listings per month" },
       { icon: subscription_sparkle_icon, text: "Perfect Match Automation" },
       { icon: subscription_thumbsup_icon, text: "Insights and Feedback" },
       { icon: subscription_linegraph_icon, text: "Labour Market Insights" },
-      {
-        icon: subscription_lock_icon,
-        text: "Exclusive Employer Resources",
-      },
       { icon: subscription_chat_icon, text: "Live chat support" },
     ],
     [PLAN_SELECTION_ITEMS.ANNUAL]: [
-      { icon: subscription_infinity, text: "Unlimited Interview Invites" },
-      { icon: subscription_calendar, text: "Up to 5 Job Listings" },
+      { icon: subscription_handshake, text: "Send 3 interview Invites per month" },
+      { icon: subscription_calendar, text: "Create 3 job listings per month" },
       { icon: subscription_sparkle_icon, text: "Perfect Match Automation" },
       { icon: subscription_thumbsup_icon, text: "Insights and Feedback" },
       { icon: subscription_linegraph_icon, text: "Labour Market Insights" },
-      {
-        icon: subscription_lock_icon,
-        text: "Exclusive Employer Resources",
-      },
       { icon: subscription_chat_icon, text: "Live chat support" },
     ],
   };
 
   const jobHunterSpecificFeatures = {
     [PLAN_SELECTION_ITEMS.MONTHLY]: [
-      { icon: subscription_calendar, text: "Send up to 3 Interview Invites" },
+      { icon: subscription_calendar, text: "Send 3 interview Invites per month" },
       { icon: subscription_sparkle_icon, text: "Perfect Match Automation" },
       { icon: subscription_thumbsup_icon, text: "Insights and Feedback" },
       { icon: subscription_linegraph_icon, text: "Labour Market Insights" },
-      { icon: subscription_lock_icon, text: "Exclusive Resources" },
       { icon: subscription_chat_icon, text: "Live chat support" },
     ],
     [PLAN_SELECTION_ITEMS.ANNUAL]: [
-      { icon: subscription_calendar, text: "Send up to 3 Interview Invites" },
+      { icon: subscription_calendar, text: "Send 3 interview Invites per month" },
       { icon: subscription_sparkle_icon, text: "Perfect Match Automation" },
       { icon: subscription_thumbsup_icon, text: "Insights and Feedback" },
       { icon: subscription_linegraph_icon, text: "Labour Market Insights" },
-      { icon: subscription_lock_icon, text: "Exclusive Resources" },
       { icon: subscription_chat_icon, text: "Live chat support" },
     ],
   };

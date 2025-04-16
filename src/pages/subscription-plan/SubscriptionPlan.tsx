@@ -9,11 +9,10 @@ import subscription_card from "assets/card-orange.svg?url";
 import { PageMeta } from "components";
 
 import trophy_icon from "assets/subscription-plan-icons/trophy-orange.svg?url";
-import infinity_icon from "assets/subscription-plan-icons/infinity-orange.svg?url";
+import handshake_icon from "assets/subscription-plan-icons/handshake-orange.svg?url";
 import calender_icon from "assets/subscription-plan-icons/calendar-orange.svg?url";
 import line_graph_icon from "assets/subscription-plan-icons/line-graph-orange.svg?url";
 import like_icon from "assets/subscription-plan-icons/like-orange.svg?url";
-import lock_icon from "assets/subscription-plan-icons/lock-orange.svg?url";
 import message_icon from "assets/subscription-plan-icons/message-orange.svg?url";
 
 interface PlanFeature {
@@ -138,19 +137,19 @@ const SubscriptionPlan: FC = () => {
     {
       icon: (
         <img
-          src={isEmployer ? infinity_icon : calender_icon}
+          src={isEmployer ? handshake_icon : calender_icon}
           className="w-5 h-5"
         />
       ),
       text: isEmployer
-        ? "Unlimited interview invites"
-        : "Send up to 3 interview invites",
+        ? "Send 3 interview Invites per month"
+        : "Send 3 interview Invites per month",
     },
     ...(isEmployer
       ? [
           {
             icon: <img src={calender_icon} className="w-5 h-5" />,
-            text: "Up to 3 Job Listings",
+            text: "Create 3 job listings per month",
           },
         ]
       : []),
@@ -165,10 +164,6 @@ const SubscriptionPlan: FC = () => {
     {
       icon: <img src={line_graph_icon} className="w-5 h-5" />,
       text: "Labour Market Insights",
-    },
-    {
-      icon: <img src={lock_icon} className="w-5 h-5" />,
-      text: isEmployer ? "Exclusive Employer Resources" : "Exclusive Resources",
     },
     {
       icon: <img src={message_icon} className="w-5 h-5" />,
@@ -180,19 +175,19 @@ const SubscriptionPlan: FC = () => {
     {
       icon: (
         <img
-          src={isEmployer ? infinity_icon : calender_icon}
+          src={isEmployer ? handshake_icon : calender_icon}
           className="w-5 h-5"
         />
       ),
       text: isEmployer
-        ? "Unlimited interview invites"
-        : "Send up to 3 interview invites",
+        ? "Send 3 interview Invites per month"
+        : "Send 3 interview Invites per month",
     },
     ...(isEmployer
       ? [
           {
             icon: <img src={calender_icon} className="w-5 h-5" />,
-            text: "Up to 3 Job Listings",
+            text: "Create 3 job listings per month",
           },
         ]
       : []),
@@ -207,10 +202,6 @@ const SubscriptionPlan: FC = () => {
     {
       icon: <img src={line_graph_icon} className="w-5 h-5" />,
       text: "Labour Market Insights",
-    },
-    {
-      icon: <img src={lock_icon} className="w-5 h-5" />,
-      text: isEmployer ? "Exclusive Employer Resources" : "Exclusive Resources",
     },
     {
       icon: <img src={message_icon} className="w-5 h-5" />,

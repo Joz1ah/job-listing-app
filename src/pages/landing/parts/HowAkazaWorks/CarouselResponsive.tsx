@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import CarouselMobile from "./CarouselMobile";
+import CarouselDesktop from "./CarouselDesktop";
 
 const CarouselResponsive = () => {
   const [isMobile, setIsMobile] = useState(false);
@@ -24,7 +25,7 @@ const CarouselResponsive = () => {
 
   return (
     <>
-      {isMobile ? <CarouselMobile /> : <CarouselMobile />}
+      {isMobile ? <CarouselMobile /> : <CarouselDesktop />}
     </>
   );
 };

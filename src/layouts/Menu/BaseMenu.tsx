@@ -7,7 +7,7 @@ import { useIntercomContext } from "contexts/Intercom/IntercomContext";
 import companyLogo from "images/company-logo.png";
 import akazaLogoWhite from "images/akaza-logo-white.png";
 import menuButton from "images/menu-button.png";
-import employerPopAds from "images/popup-employer.svg?url";
+import employerPopAds from "images/employer-dashboard-popup-ads.svg?url";
 import { useSSE } from "contexts/SSEClient/SSEClient";
 import { ROUTE_CONSTANTS } from "constants/routeConstants";
 import { AdDialogWrapper } from "components";

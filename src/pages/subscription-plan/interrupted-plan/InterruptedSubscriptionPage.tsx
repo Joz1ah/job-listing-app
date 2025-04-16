@@ -19,14 +19,12 @@ import card_icon from "assets/subscription-plan-icons/card.svg?url";
 import calender_icon from "assets/subscription-plan-icons/calendar.svg?url";
 import line_graph_icon from "assets/subscription-plan-icons/linegraph.svg?url";
 import like_icon from "assets/subscription-plan-icons/thumbsup.svg?url";
-import infinity_icon from "assets/subscription-plan-icons/infinity.svg?url";
-import lock_icon from "assets/subscription-plan-icons/lock.svg?url";
+import handshake_icon from "assets/subscription-plan-icons/handshake.svg?url";
 import message_icon from "assets/subscription-plan-icons/chat.svg?url";
 import calender_icon_orange from "assets/subscription-plan-icons/calendar-orange.svg?url";
 import line_graph_icon_orange from "assets/subscription-plan-icons/line-graph-orange.svg?url";
 import like_icon_orange from "assets/subscription-plan-icons/like-orange.svg?url";
-import infinity_icon_orange from "assets/subscription-plan-icons/infinity-orange.svg?url";
-import lock_icon_orange from "assets/subscription-plan-icons/lock-orange.svg?url";
+import handshake_icon_orange from "assets/subscription-plan-icons/handshake-orange.svg?url";
 import message_icon_orange from "assets/subscription-plan-icons/message-orange.svg?url";
 import {
   createAuthNetTokenizer,
@@ -392,10 +390,6 @@ const FreeTrial: React.FC<FreeTrialProps> = ({ onBack, onSelectPlan }) => {
   // Set base prices based on user type
   const yearlyPrice = isEmployer ? 550 : 55;
   const monthlyPrice = isEmployer ? 50 : 5;
-  
-  // Calculate transaction fees
-  const yearlyTransactionFee = Number((yearlyPrice * 0.096).toFixed(2));
-  const monthlyTransactionFee = Number((monthlyPrice * 0.096).toFixed(2));
 
   const freeFeatures = [
     {
@@ -416,18 +410,18 @@ const FreeTrial: React.FC<FreeTrialProps> = ({ onBack, onSelectPlan }) => {
     ...(isEmployer
       ? [
           {
-            icon: <img src={infinity_icon_orange} className="w-5 h-5" />,
-            text: "Unlimited Interview Invites",
+            icon: <img src={handshake_icon_orange} className="w-5 h-5" />,
+            text: "Send 3 interview Invites per month",
           },
           {
             icon: <img src={calender_icon_orange} className="w-5 h-5" />,
-            text: "Up to 5 Job Listings",
+            text: "Create 3 job listings per month",
           },
         ]
       : [
           {
             icon: <img src={calender_icon_orange} className="w-5 h-5" />,
-            text: "Send up to 3 Interview Invites",
+            text: "Send 3 interview Invites per month",
           },
         ]),
     {
@@ -441,10 +435,6 @@ const FreeTrial: React.FC<FreeTrialProps> = ({ onBack, onSelectPlan }) => {
     {
       icon: <img src={line_graph_icon_orange} />,
       text: "Labour Market Insights",
-    },
-    {
-      icon: <img src={lock_icon_orange} />,
-      text: isEmployer ? "Exclusive Employer Resources" : "Exclusive Resources",
     },
     { icon: <img src={message_icon_orange} />, text: "Live chat support" },
   ];
@@ -453,18 +443,18 @@ const FreeTrial: React.FC<FreeTrialProps> = ({ onBack, onSelectPlan }) => {
     ...(isEmployer
       ? [
           {
-            icon: <img src={infinity_icon_orange} className="w-5 h-5" />,
-            text: "Unlimited Interview Invites",
+            icon: <img src={handshake_icon_orange} className="w-5 h-5" />,
+            text: "Send 3 interview Invites per month",
           },
           {
             icon: <img src={calender_icon_orange} className="w-5 h-5" />,
-            text: "Up to 5 Job Listings",
+            text: "Create 3 job listings per month",
           },
         ]
       : [
           {
             icon: <img src={calender_icon_orange} className="w-5 h-5" />,
-            text: "Send up to 3 Interview Invites",
+            text: "Send 3 interview Invites per month",
           },
         ]),
     {
@@ -478,10 +468,6 @@ const FreeTrial: React.FC<FreeTrialProps> = ({ onBack, onSelectPlan }) => {
     {
       icon: <img src={line_graph_icon_orange} />,
       text: "Labour Market Insights",
-    },
-    {
-      icon: <img src={lock_icon_orange} />,
-      text: isEmployer ? "Exclusive Employer Resources" : "Exclusive Resources",
     },
     { icon: <img src={message_icon_orange} />, text: "Live chat support" },
   ];
@@ -511,8 +497,8 @@ const FreeTrial: React.FC<FreeTrialProps> = ({ onBack, onSelectPlan }) => {
       isHighlighted: type === "Yearly",
       subtext:
         type === "Yearly"
-          ? `+ CAD ${yearlyTransactionFee} transaction fee`
-          : `+ CAD ${monthlyTransactionFee} transaction fee`,
+          ? `+ transaction fee`
+          : `+ transaction fee`,
       buttonText: "Choose Plan",
     };
     onSelectPlan(selectedPlan);
@@ -617,33 +603,29 @@ const InterruptedSubscriptionPage: React.FC = () => {
   // Set base prices based on user type
   const yearlyPrice = isEmployer ? 550 : 55;
   const monthlyPrice = isEmployer ? 50 : 5;
-  
-  // Calculate transaction fees
-  const yearlyTransactionFee = Number((yearlyPrice * 0.096).toFixed(2));
-  const monthlyTransactionFee = Number((monthlyPrice * 0.096).toFixed(2));
 
   const plans: PlanProps[] = [
     {
       type: "Yearly",
       price: yearlyPrice,
-      subtext: `+ CAD ${yearlyTransactionFee} transaction fee`,
+      subtext: `+ transaction fee`,
       buttonText: "Choose Plan",
       features: [
         ...(isEmployer
           ? [
               {
-                icon: <img src={infinity_icon} className="w-5 h-5" />,
-                text: "Unlimited Interview Invites",
+                icon: <img src={handshake_icon} className="w-5 h-5" />,
+                text: "Send 3 interview Invites per month",
               },
               {
                 icon: <img src={calender_icon} className="w-5 h-5" />,
-                text: "Up to 5 Job Listings",
+                text: "Create 3 job listings per month",
               },
             ]
           : [
               {
                 icon: <img src={calender_icon} className="w-5 h-5" />,
-                text: "Send up to 3 Interview Invites",
+                text: "Send 3 interview Invites per month",
               },
             ]),
         {
@@ -655,12 +637,6 @@ const InterruptedSubscriptionPage: React.FC = () => {
           text: "Insights and Feedback",
         },
         { icon: <img src={line_graph_icon} />, text: "Labour Market Insights" },
-        {
-          icon: <img src={lock_icon} />,
-          text: isEmployer
-            ? "Exclusive Employer Resources"
-            : "Exclusive resources",
-        },
         { icon: <img src={message_icon} />, text: "Live chat support" },
       ],
       isHighlighted: true,
@@ -668,24 +644,24 @@ const InterruptedSubscriptionPage: React.FC = () => {
     {
       type: "Monthly",
       price: monthlyPrice,
-      subtext: `+ CAD ${monthlyTransactionFee} transaction fee`,
+      subtext: `+ transaction fee`,
       buttonText: "Choose Plan",
       features: [
         ...(isEmployer
           ? [
               {
-                icon: <img src={infinity_icon} className="w-5 h-5" />,
-                text: "Unlimited Interview Invites",
+                icon: <img src={handshake_icon} className="w-5 h-5" />,
+                text: "Send 3 interview Invites per month",
               },
               {
                 icon: <img src={calender_icon} className="w-5 h-5" />,
-                text: "Up to 5 Job Listings",
+                text: "Create 3 job listings per month",
               },
             ]
           : [
               {
                 icon: <img src={calender_icon} className="w-5 h-5" />,
-                text: "Send up to 3 Interview Invites",
+                text: "Send 3 interview Invites per month",
               },
             ]),
         {
@@ -697,12 +673,6 @@ const InterruptedSubscriptionPage: React.FC = () => {
           text: "Insights and Feedback",
         },
         { icon: <img src={line_graph_icon} />, text: "Labour Market Insights" },
-        {
-          icon: <img src={lock_icon} />,
-          text: isEmployer
-            ? "Exclusive Employer Resources"
-            : "Exclusive resources",
-        },
         { icon: <img src={message_icon} />, text: "Live chat support" },
       ],
     },

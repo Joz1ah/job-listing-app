@@ -4,7 +4,7 @@ import { Input, Button, Textarea } from "components";
 import { NavLink } from "react-router-dom";
 import sparkeIcon from "images/sparkle-icon.png";
 import saveChanges from "images/save-changes.svg?url";
-import employerPopAds from "images/popup-employer.svg?url";
+import employerPopAds from "images/employer-dashboard-popup-ads.svg?url";
 import { selectOptions } from "mockData/job-listing-form-options";
 import { useJobListCreateMutation } from "api/akaza/akazaAPI";
 import { useAuth } from "contexts/AuthContext/AuthContext";

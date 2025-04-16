@@ -7,8 +7,7 @@ import trophy_icon from "assets/subscription-plan-icons/trophy-orange.svg?url";
 import calender_icon from "assets/subscription-plan-icons/calendar-orange.svg?url";
 import line_graph_icon from "assets/subscription-plan-icons/line-graph-orange.svg?url";
 import like_icon from "assets/subscription-plan-icons/like-orange.svg?url";
-import infinity_icon from "assets/subscription-plan-icons/infinity-orange.svg?url";
-import lock_icon from "assets/subscription-plan-icons/lock-orange.svg?url";
+import handshake_icon from "assets/subscription-plan-icons/handshake-orange.svg?url";
 import message_icon from "assets/subscription-plan-icons/message-orange.svg?url";
 import success_gif from "assets/expired-success.gif";
 import { ROUTE_CONSTANTS } from "constants/routeConstants";
@@ -39,18 +38,18 @@ const getFeatures = (userType: UserType): PlanFeatures => ({
     ...(userType === "employer"
       ? [
           {
-            icon: <img src={infinity_icon} className="w-5 h-5" />,
-            text: "Unlimited Interview Invites",
+            icon: <img src={handshake_icon} className="w-5 h-5" />,
+            text: "Send 3 interview Invites per month",
           },
           {
             icon: <img src={calender_icon} className="w-5 h-5" />,
-            text: "Up to 5 Job Listings",
+            text: "Create 3 job listings per month",
           },
         ]
       : [
           {
             icon: <img src={calender_icon} className="w-5 h-5" />,
-            text: "Send up to 3 Interview Invites",
+            text: "Send 3 interview Invites per month",
           },
         ]),
     {
@@ -64,13 +63,6 @@ const getFeatures = (userType: UserType): PlanFeatures => ({
     {
       icon: <img src={line_graph_icon} className="w-5 h-5" />,
       text: "Labour Market Insights",
-    },
-    {
-      icon: <img src={lock_icon} className="w-5 h-5" />,
-      text:
-        userType === "employer"
-          ? "Exclusive Employer Resources"
-          : "Exclusive Resources",
     },
     {
       icon: <img src={message_icon} className="w-5 h-5" />,
@@ -81,18 +73,18 @@ const getFeatures = (userType: UserType): PlanFeatures => ({
     ...(userType === "employer"
       ? [
           {
-            icon: <img src={infinity_icon} className="w-5 h-5" />,
-            text: "Unlimited Interview Invites",
+            icon: <img src={handshake_icon} className="w-5 h-5" />,
+            text: "Send 3 interview Invites per month",
           },
           {
             icon: <img src={calender_icon} className="w-5 h-5" />,
-            text: "Up to 5 Job Listings",
+            text: "Create 3 job listings per month",
           },
         ]
       : [
           {
             icon: <img src={calender_icon} className="w-5 h-5" />,
-            text: "Send up to 3 Interview Invites",
+            text: "Send 3 interview Invites per month",
           },
         ]),
     {
@@ -106,13 +98,6 @@ const getFeatures = (userType: UserType): PlanFeatures => ({
     {
       icon: <img src={line_graph_icon} className="w-5 h-5" />,
       text: "Labour Market Insights",
-    },
-    {
-      icon: <img src={lock_icon} className="w-5 h-5" />,
-      text:
-        userType === "employer"
-          ? "Exclusive Employer Resources"
-          : "Exclusive Resources",
     },
     {
       icon: <img src={message_icon} className="w-5 h-5" />,
