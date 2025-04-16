@@ -62,7 +62,9 @@ const RescheduleRequests: FC = () => {
   const { showError } = useErrorModal();
   const { userSettings } = useAuth();
 
-  setSelectedInterviewsGroup("RESCHEDULED");
+  useEffect(() => {
+    setSelectedInterviewsGroup("RESCHEDULED");
+  }, []);
 
   const handleAccept = async (interview: Interview) => {
     try {
@@ -168,18 +170,17 @@ const RescheduleRequests: FC = () => {
   };
 
   useEffect(() => {
-    const loadInitialItems = async () => {
-      setLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
+    if (!interviewsList || interviewsList.length === 0) return;
+  
+    const timeout = setTimeout(() => {
       const initialItems = interviewsList.slice(0, 6);
       setDisplayedItems(initialItems);
       setHasMore(interviewsList.length > 6);
-      setLoading(false);
       setInitialLoad(false);
-    };
-
-    loadInitialItems();
+      setLoading(false);
+    }, 1000);
+  
+    return () => clearTimeout(timeout);
   }, [interviewsList]);
 
   useEffect(() => {
