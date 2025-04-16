@@ -7,14 +7,22 @@ import {
   DialogTrigger,
 } from "components";
 import { Button } from "components";
-import {
-  CalendarCheck,
-  Infinity,
-  ThumbsUp,
-  ChartNoAxesCombined,
-  LockKeyhole,
-  MessageCircleMore,
-} from "lucide-react";
+
+// Removed Lucide icon imports
+// import {
+//   CalendarCheck,
+//   Infinity,
+//   ThumbsUp,
+//   ChartNoAxesCombined,
+//   MessageCircleMore,
+// } from "lucide-react";
+
+// Using all the imported SVGs
+import calender_icon from "assets/subscription-plan-icons/calendar-orange.svg?url";
+import line_graph_icon from "assets/subscription-plan-icons/line-graph-orange.svg?url";
+import like_icon from "assets/subscription-plan-icons/like-orange.svg?url";
+import handshake_icon from "assets/subscription-plan-icons/handshake-orange.svg?url";
+import message_icon from "assets/subscription-plan-icons/message-orange.svg?url";
 
 import sparkle_icon from "assets/images/sparkle-icon.png";
 import { useNavigate } from 'react-router-dom';
@@ -99,13 +107,13 @@ const SubscriptionDialog: React.FC = () => {
   }, [user]);
   
   const benefits: Benefit[] = [
-    { icon: <CalendarCheck className="w-5 h-5" />, text: 'Up to 5 Job Listings' },
-    { icon: <Infinity className="w-5 h-5" />, text: 'Unlimited Interviews' },
+    // Replaced Lucide icons with imported SVG images
+    { icon: <img src={handshake_icon} alt="infinity" className="w-5 h-5" />, text: 'Send 3 interview Invites per month' },
+    { icon: <img src={calender_icon} alt="calendar" className="w-5 h-5" />, text: 'Create 3 job listings per month' }, 
     { icon: <img src={sparkle_icon} alt="sparkle" className="w-5 h-5" />, text: 'Perfect Match automation' },
-    { icon: <ThumbsUp className="w-5 h-5" />, text: 'Insights and Feedback' },
-    { icon: <ChartNoAxesCombined className="w-5 h-5" />, text: 'Labour Market Insights' },
-    { icon: <LockKeyhole className="w-5 h-5" />, text: 'Exclusive Employer Resources' },
-    { icon: <MessageCircleMore className="w-5 h-5" />, text: 'Live chat support' }
+    { icon: <img src={like_icon} alt="thumbs up" className="w-5 h-5" />, text: 'Insights and Feedback' },
+    { icon: <img src={line_graph_icon} alt="chart" className="w-5 h-5" />, text: 'Labour Market Insights' },
+    { icon: <img src={message_icon} alt="message" className="w-5 h-5" />, text: 'Live chat support' }
   ];
 
   const handleToggleAccordion = (): void => {

@@ -10,7 +10,7 @@ import { DeleteAccountAlert } from "./alerts/DeleteAccountAlert";
 import { useUpdatePasswordMutation } from "api/akaza/akazaAPI";
 import { useEmployerContext } from "components";
 import { AdDialogWrapper } from "components";
-import employerPopAds from "images/popup-employer.svg?url";
+import employerPopAds from "images/employer-dashboard-popup-ads.svg?url";
 import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
 
 interface FormData {

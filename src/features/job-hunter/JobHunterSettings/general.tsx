@@ -8,7 +8,7 @@ import { Switch } from "components";
 import googleLogo from "images/google-logo-icon.svg?url";
 import { useJobHunterContext } from "components";
 import { AdDialogWrapper } from "components";
-import jobHunterPopAds from "images/popup-hunter.svg?url";
+import jobHunterPopAds from "images/jobhunter-dashboard-popup-ads.svg?url";
 import { TimezoneSelector } from "components";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import spinner_loading_fallback from "assets/images/spinner-loading-akaza.svg?url";

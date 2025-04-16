@@ -3,8 +3,8 @@ import sparkeIcon from "images/sparkle-icon.png";
 import { Button } from "components";
 import { AppCardSkeleton, BookmarkLimitHandler } from "components";
 import { AppCard } from "features/employer";
-import employerAds from "images/employer-feed-card-ads.svg?url";
-import employerPopAds from "images/popup-employer.svg?url";
+import employerAds from "images/employer-dashboard-ads.svg?url";
+import employerPopAds from "images/employer-dashboard-popup-ads.svg?url";
 import {
   PerfectMatchEmptyState,
   OtherApplicationEmptyState,

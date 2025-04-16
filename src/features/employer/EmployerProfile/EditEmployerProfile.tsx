@@ -59,7 +59,7 @@ const validationSchema = Yup.object().shape({
     .required("This field is required")
     .matches(/^(?:https?:\/\/)(.+)/i, {
       message:
-        'Website URL must start with "http://" or "https://" and include a domain',
+        'URL must start with "http://" or "https://"',
       excludeEmptyString: true,
     })
     .test({

@@ -1,13 +1,5 @@
-import { FC } from "react";
+import { FC, useState, useEffect } from "react";
 import { Button } from "components";
-import {
-  ThumbsUp,
-  ChartNoAxesCombined,
-  LockKeyhole,
-  MessageCircleMore,
-  Trophy,
-  //Gift,
-} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import sparkle_icon from "assets/images/sparkle-icon.png";
 import { DefaultLayout } from "layouts";
@@ -15,6 +7,13 @@ import { useAuth } from "contexts/AuthContext/AuthContext";
 import styles from "./subscriptionPlan.module.scss";
 import subscription_card from "assets/card-orange.svg?url";
 import { PageMeta } from "components";
+
+import trophy_icon from "assets/subscription-plan-icons/trophy-orange.svg?url";
+import handshake_icon from "assets/subscription-plan-icons/handshake-orange.svg?url";
+import calender_icon from "assets/subscription-plan-icons/calendar-orange.svg?url";
+import line_graph_icon from "assets/subscription-plan-icons/line-graph-orange.svg?url";
+import like_icon from "assets/subscription-plan-icons/like-orange.svg?url";
+import message_icon from "assets/subscription-plan-icons/message-orange.svg?url";
 
 interface PlanFeature {
   icon: React.ReactNode;
@@ -27,6 +26,9 @@ interface PlanProps {
   period: string;
   features: PlanFeature[];
   bestValue?: boolean;
+  isFree?: boolean;
+  transactionFee?: boolean;
+  originalPrice?: string;
 }
 
 const PlanCard: FC<PlanProps> = ({
@@ -35,6 +37,9 @@ const PlanCard: FC<PlanProps> = ({
   period,
   features,
   bestValue,
+  isFree,
+  transactionFee,
+  originalPrice,
 }) => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
@@ -52,62 +57,55 @@ const PlanCard: FC<PlanProps> = ({
     }
   };
 
-  const allFeatures = features;
-
   return (
     <div
-      className={`w-full md:w-[640px] md:h-[220px] ${bestValue ? "bg-[#F5F5F7BF]" : "bg-[#F5F5F7BF]"} shadow-[0_4px_8px_rgba(0,_0,_0,_0.2),_0_-4px_8px_rgba(0,_0,_0,_0.05)] px-6 py-4 transform transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_2px_rgba(245,114,46,0.6)] mb-8 rounded-none`}
+      className={`w-full md:w-[640px] md:h-[220px] bg-white shadow-[0_4px_8px_rgba(0,_0,_0,_0.1)] px-4 sm:px-6 md:px-10 py-4 transform transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_2px_rgba(245,114,46,0.6)] rounded-md`}
     >
       {/* Single row with two columns */}
-      <div className="flex justify-between h-full">
+      <div className="flex flex-col md:flex-row md:justify-between h-full">
         {/* Left column */}
-        <div className="flex flex-col justify-start">
+        <div className="flex flex-col justify-start mb-6 md:mb-0">
           {bestValue && (
-            <div className="flex items-center gap-1 mb-2">
-              <Trophy size={16} className="text-[#F5722E]" />
+            <div className="flex items-center gap-1 mb-1">
+              <img src={trophy_icon} className="text-[#F5722E] w-4 h-4" />
               <span className="text-[#F5722E] text-sm italic font-bold">
                 Best Value
               </span>
             </div>
           )}
-          {title === "Free Trial" ? (
-            <div className="mb-2">
-              <span className="text-[#F5722E] text-2xl font-bold">
-                Free Trial
-              </span>
-              <div
-                className={`text-xl font-bold ${bestValue ? "text-[#F5F5F7]" : "text-[#263238]"} mt-1`}
-              >
-                for 3 days only
-              </div>
-            </div>
+
+          {isFree ? (
+            <>
+              <h3 className="text-[#F5722E] text-2xl font-bold mb-1">
+                FREEMIUM
+              </h3>
+              <p className="text-gray-500 text-sm mb-3">enjoy with zero fees</p>
+            </>
           ) : (
-            <div className="flex items-baseline gap-1 mb-2">
-              <span className="text-[#F5722E] text-2xl font-bold">
-                ${price}
-              </span>
-              <span className={`text-[#F5722E] text-2xl font-bold`}>
-                {period}
-              </span>
-              {bestValue && (
-                <span className="text-gray-400 text-2xl ml-2 line-through">
-                  $60
+            <>
+              <div className="flex flex-wrap items-baseline gap-1 mb-1">
+                <span className="text-[#F5722E] text-2xl font-bold">
+                  CAD ${price}
                 </span>
+                <span className="text-[#F5722E] text-xl font-bold">
+                  {period}
+                </span>
+                {bestValue && originalPrice && (
+                  <span className="text-gray-400 text-lg ml-2 line-through">
+                    ${originalPrice}
+                  </span>
+                )}
+              </div>
+              {transactionFee && (
+                <p className="text-gray-500 text-sm mb-1">+ transaction fee</p>
               )}
-            </div>
+            </>
           )}
-          {price !== "0" && (
-            <h3 className={`text-[#263238] text-xl font-semibold mb-2`}>
-              {title}
-            </h3>
-          )}
-          <p className={`text-[#263238] text-[15px] mb-2`}>
-            Maximize your reach, save more,
-            <br />
-            and hire the best talent faster
-          </p>
+
+          <h3 className="text-gray-800 text-xl font-semibold mb-3">{title}</h3>
+
           <Button
-            className="w-32 h-8 bg-[#F5722E] text-[#F5F5F7] py-1 px-4 rounded-md hover:bg-[#F5722E]/90 text-[15px] font-medium"
+            className="w-32 h-10 bg-[#F5722E] text-white py-1 px-4 rounded-md hover:bg-[#F5722E]/90 text-base font-medium"
             onClick={handleStartNow}
           >
             Start Now
@@ -116,11 +114,13 @@ const PlanCard: FC<PlanProps> = ({
 
         {/* Right column */}
         <div className="flex flex-col justify-center">
-          <div className="flex flex-col gap-2">
-            {allFeatures.map((feature, index) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-1">
+            {features.map((feature, index) => (
               <div key={index} className="flex items-center gap-2">
-                <span className="text-[#F5722E]">{feature.icon}</span>
-                <span className={`text-[#263238] text-sm`}>{feature.text}</span>
+                <span className="text-[#F5722E] min-w-5 flex-shrink-0">
+                  {feature.icon}
+                </span>
+                <span className="text-gray-700 text-sm">{feature.text}</span>
               </div>
             ))}
           </div>
@@ -131,64 +131,179 @@ const PlanCard: FC<PlanProps> = ({
 };
 
 const SubscriptionPlan: FC = () => {
-  const features = [
+  const { user, isAuthenticated } = useAuth();
+  const [userType, setUserType] = useState<string>("job_hunter");
+
+  useEffect(() => {
+    // If user is authenticated, use their actual user type
+    if (isAuthenticated && user?.data?.user?.type) {
+      setUserType(user.data.user.type);
+    }
+  }, [isAuthenticated, user]);
+
+  const isEmployer = userType === "employer";
+
+  const handleToggleUserType = (type: string) => {
+    setUserType(type);
+  };
+
+  const yearlyFeatures = [
     {
-      icon: <img src={sparkle_icon} className="w-[22px] h-[22px]" />,
+      icon: (
+        <img
+          src={isEmployer ? handshake_icon : calender_icon}
+          className="w-5 h-5"
+        />
+      ),
+      text: isEmployer
+        ? "Send 3 interview Invites per month"
+        : "Send 3 interview Invites per month",
+    },
+    ...(isEmployer
+      ? [
+          {
+            icon: <img src={calender_icon} className="w-5 h-5" />,
+            text: "Create 3 job listings per month",
+          },
+        ]
+      : []),
+    {
+      icon: <img src={sparkle_icon} className="w-5 h-5" />,
       text: "Perfect Match automation",
     },
-    { icon: <ThumbsUp size={22} />, text: "Insights and Feedback" },
-    { icon: <ChartNoAxesCombined size={22} />, text: "Analytics Dashboard" },
-    { icon: <LockKeyhole size={22} />, text: "Exclusive Employer Resources" },
-    { icon: <MessageCircleMore size={22} />, text: "Live chat support" },
+    {
+      icon: <img src={like_icon} className="w-5 h-5" />,
+      text: "Insights and Feedback",
+    },
+    {
+      icon: <img src={line_graph_icon} className="w-5 h-5" />,
+      text: "Labour Market Insights",
+    },
+    {
+      icon: <img src={message_icon} className="w-5 h-5" />,
+      text: "Live chat support",
+    },
   ];
-  const featuresFreeTrial = [
+
+  const monthlyFeatures = [
     {
-      icon: <img src={sparkle_icon} className="w-[22px] h-[22px]" />,
+      icon: (
+        <img
+          src={isEmployer ? handshake_icon : calender_icon}
+          className="w-5 h-5"
+        />
+      ),
+      text: isEmployer
+        ? "Send 3 interview Invites per month"
+        : "Send 3 interview Invites per month",
+    },
+    ...(isEmployer
+      ? [
+          {
+            icon: <img src={calender_icon} className="w-5 h-5" />,
+            text: "Create 3 job listings per month",
+          },
+        ]
+      : []),
+    {
+      icon: <img src={sparkle_icon} className="w-5 h-5" />,
       text: "Perfect Match automation",
     },
-    { icon: <MessageCircleMore size={22} />, text: "Live chat support" },
     {
-      icon: <img src={subscription_card} />,
+      icon: <img src={like_icon} className="w-5 h-5" />,
+      text: "Insights and Feedback",
+    },
+    {
+      icon: <img src={line_graph_icon} className="w-5 h-5" />,
+      text: "Labour Market Insights",
+    },
+    {
+      icon: <img src={message_icon} className="w-5 h-5" />,
+      text: "Live chat support",
+    },
+  ];
+
+  const freeFeatures = [
+    {
+      icon: <img src={sparkle_icon} className="w-5 h-5" />,
+      text: "Perfect Match automation",
+    },
+    {
+      icon: <img src={message_icon} className="w-5 h-5" />,
+      text: "Live chat support",
+    },
+    {
+      icon: <img src={subscription_card} className="w-5 h-5" />,
       text: "No credit or debit card required",
     },
   ];
 
   return (
     <>
-    <PageMeta 
-        title="Subscription Plans" 
+      <PageMeta
+        title="Subscription Plans"
         description="Akaza is a modern job marketplace with a new concept. No resume, No endless scrolling, you just choose your Perfect Match!"
-    />
-    <DefaultLayout>
-      <div
-        className={`${styles["subscription-plan-container"]} pb-10 md:pt-10`}
-      >
-        <div className=" mx-auto px-4">
-          <div className="space-y-6 pt-4">
-            <PlanCard
-              title="Yearly Plan"
-              price="55"
-              period="/year"
-              features={features}
-              bestValue={true}
-            />
-            <PlanCard
-              title="Monthly Plan"
-              price="5"
-              period="/ month"
-              features={features}
-            />
-            <PlanCard
-              title="Free Trial"
-              price="0"
-              period="for 3 days only"
-              features={featuresFreeTrial}
-            />
+      />
+      <DefaultLayout>
+        <div
+          className={`${styles["subscription-plan-container"]} pb-10 md:pt-10`}
+        >
+          <div className="max-w-full mx-auto px-4 pt-4">
+            {/* Toggle buttons for user type - only shown for unauthenticated users */}
+            {!isAuthenticated && (
+              <div className="flex flex-row justify-center mb-8 w-full gap-4 sm:gap-2 px-4">
+                <button
+                  className={`h-[35px] w-[130px] sm:h-[70px] sm:w-[258px] border border-[#F5722E] rounded-md text-sm sm:text-xl font-bold transition-colors duration-200 ${
+                    userType === "job_hunter"
+                      ? "bg-[#F5722E] text-white"
+                      : "bg-transparent text-[#F5722E] hover:bg-[#F5722E] hover:text-white"
+                  }`}
+                  onClick={() => handleToggleUserType("job_hunter")}
+                >
+                  Job Hunter
+                </button>
+                <button
+                  className={`h-[35px] w-[130px] sm:h-[70px] sm:w-[258px] border border-[#F5722E] rounded-md text-sm sm:text-xl font-bold transition-colors duration-200 ${
+                    userType === "employer"
+                      ? "bg-[#F5722E] text-white"
+                      : "bg-transparent text-[#F5722E] hover:bg-[#F5722E] hover:text-white"
+                  }`}
+                  onClick={() => handleToggleUserType("employer")}
+                >
+                  Employer
+                </button>
+              </div>
+            )}
+
+            <div className="space-y-6 pt-4 flex flex-col items-center">
+              <PlanCard
+                title="Yearly Plan"
+                price={isEmployer ? "550" : "55"}
+                period="/year"
+                features={yearlyFeatures}
+                bestValue={true}
+                transactionFee={true}
+                originalPrice={isEmployer ? "600" : "60"}
+              />
+              <PlanCard
+                title="Monthly Plan"
+                price={isEmployer ? "50" : "5"}
+                period="/month"
+                features={monthlyFeatures}
+                transactionFee={true}
+              />
+              <PlanCard
+                title=""
+                price="0"
+                period=""
+                features={freeFeatures}
+                isFree={true}
+              />
+            </div>
           </div>
         </div>
-      </div>
-    </DefaultLayout>
-  </>
+      </DefaultLayout>
+    </>
   );
 };
 

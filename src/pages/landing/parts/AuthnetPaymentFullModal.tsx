@@ -48,6 +48,7 @@ const AuthnetPaymentFullModal = () => {
     modalState,
     tempLoginEmail,
     tempLoginPassword,
+    dataStates,
   } = useLanding();
   const { isModalOpen, toggleModal, resetModalState } = useModal();
   const [paymentSubmit] = usePaymentCreateMutation();
@@ -57,6 +58,9 @@ const AuthnetPaymentFullModal = () => {
   const { login } = useAuth();
   const closeModalRef = useRef<HTMLImageElement>(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
+
+  // Determine if user is employer
+  const isEmployer = dataStates.selectedUserType === "employer";
 
   const formatExpirationDate = (value: string): string => {
     const cleaned = value.replace(/[^0-9]/g, "");
@@ -83,7 +87,13 @@ const AuthnetPaymentFullModal = () => {
   const handleSubmit = async (values: PaymentFormValues) => {
     setIsSubmitting(true);
     const baseAmount =
-      currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY ? 5 : 55;
+      currentSelectedPlan == PLAN_SELECTION_ITEMS.MONTHLY
+        ? isEmployer
+          ? 50
+          : 5
+        : isEmployer
+          ? 550
+          : 55;
     const transactionFee = baseAmount * 0.096;
     const subtotal = baseAmount + transactionFee;
     const tax =
@@ -753,11 +763,15 @@ const AuthnetPaymentFullModal = () => {
                                 Subscription Fee
                               </span>
                               <span className="font-medium">
-                                $
+                                CAD $
                                 {currentSelectedPlan ==
                                 PLAN_SELECTION_ITEMS.MONTHLY
-                                  ? "5.00"
-                                  : "55.00"}
+                                  ? isEmployer
+                                    ? "50.00"
+                                    : "5.00"
+                                  : isEmployer
+                                    ? "550.00"
+                                    : "55.00"}
                               </span>
                             </div>
                             <div className="flex justify-between text-[11px]">
@@ -765,11 +779,13 @@ const AuthnetPaymentFullModal = () => {
                                 Transaction Fee 9.6%
                               </span>
                               <span className="font-medium">
-                                $
+                                CAD $
                                 {currentSelectedPlan ==
                                 PLAN_SELECTION_ITEMS.MONTHLY
-                                  ? (5 * 0.096).toFixed(2)
-                                  : (55 * 0.096).toFixed(2)}
+                                  ? ((isEmployer ? 50 : 5) * 0.096).toFixed(2)
+                                  : ((isEmployer ? 550 : 55) * 0.096).toFixed(
+                                      2,
+                                    )}
                               </span>
                             </div>
                             <div className="flex justify-between text-[11px]">
@@ -779,13 +795,17 @@ const AuthnetPaymentFullModal = () => {
                                   : "0% Tax"}
                               </span>
                               <span className="font-medium">
-                                $
+                                CAD $
                                 {(() => {
                                   const baseAmount =
                                     currentSelectedPlan ==
                                     PLAN_SELECTION_ITEMS.MONTHLY
-                                      ? 5
-                                      : 55;
+                                      ? isEmployer
+                                        ? 50
+                                        : 5
+                                      : isEmployer
+                                        ? 550
+                                        : 55;
                                   const transactionFee = baseAmount * 0.096;
                                   const subtotal = baseAmount + transactionFee;
                                   return values.country?.toLowerCase() ===
@@ -800,13 +820,17 @@ const AuthnetPaymentFullModal = () => {
                                 Total
                               </span>
                               <span className="text-[11px] text-orange-500">
-                                $
+                                CAD $
                                 {(() => {
                                   const baseAmount =
                                     currentSelectedPlan ==
                                     PLAN_SELECTION_ITEMS.MONTHLY
-                                      ? 5
-                                      : 55;
+                                      ? isEmployer
+                                        ? 50
+                                        : 5
+                                      : isEmployer
+                                        ? 550
+                                        : 55;
                                   const transactionFee = baseAmount * 0.096;
                                   const subtotal = baseAmount + transactionFee;
                                   const tax =
@@ -879,13 +903,17 @@ const AuthnetPaymentFullModal = () => {
                               the total price of{" "}
                             </label>
                             <label>
-                              $
+                              CAD $
                               {(() => {
                                 const baseAmount =
                                   currentSelectedPlan ==
                                   PLAN_SELECTION_ITEMS.MONTHLY
-                                    ? 5
-                                    : 55;
+                                    ? isEmployer
+                                      ? 50
+                                      : 5
+                                    : isEmployer
+                                      ? 550
+                                      : 55;
                                 const transactionFee = baseAmount * 0.096;
                                 const subtotal = baseAmount + transactionFee;
                                 const tax =

@@ -13,6 +13,7 @@ import mastercard_icon from "assets/credit-card-icons/cc_mastercard.svg?url";
 import discover_icon from "assets/credit-card-icons/cc_discover.svg?url";
 import companyLogoLight from "images/company-logo-light.svg?url";
 import { CountrySelect } from "components";
+import { useAuth } from "contexts/AuthContext/AuthContext";
 import {
   createAuthNetTokenizer,
   createAuthnetPaymentSecureData,
@@ -27,6 +28,8 @@ interface PaymentStepProps {
     text: string;
   }>;
   onSuccess: () => void;
+  // Optional prop to override user type from context
+  userType?: "employer" | "job_hunter";
 }
 
 interface PaymentFormValues {
@@ -72,11 +75,29 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
   planType,
   features,
   onSuccess,
+  userType: propUserType,
 }) => {
   const [paymentSubmit] = usePaymentCreateMutation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { showError } = useErrorModal();
   const [currentStep, setCurrentStep] = useState<1 | 2>(1);
+  const { user } = useAuth();
+
+  // Determine if user is employer - first try from props, then from auth context
+  const contextUserType = user?.data?.user?.type;
+  const isEmployer =
+    propUserType === "employer" || contextUserType === "employer";
+
+  // Set base prices based on user type
+  const yearlyPrice = isEmployer ? 550 : 55;
+  const monthlyPrice = isEmployer ? 50 : 5;
+
+  // Get the current base amount based on plan type and user type
+  const baseAmount = planType === "monthly" ? monthlyPrice : yearlyPrice;
+
+  // Calculate derived values
+  const transactionFee = Number((baseAmount * 0.096).toFixed(2));
+
   const [paymentFormData, setPaymentFormData] = useState<PaymentFormValues>({
     firstName: "",
     lastName: "",
@@ -111,8 +132,6 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
     setIsSubmitting(true);
     setAddressFormData(values);
 
-    const baseAmount = planType === "monthly" ? 5 : 55;
-    const transactionFee = baseAmount * 0.096;
     const subtotal = baseAmount + transactionFee;
     const tax =
       values.country?.toLowerCase() === "canada" ? subtotal * 0.13 : 0;
@@ -199,20 +218,22 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                   <img src={discover_icon} alt="Discover" />
                 </div>
               </div>
-              <div className="flex items-baseline gap-1">
-                <span className="text-[32px] font-extrabold text-[#F5722E]">
-                  ${planType === "yearly" ? "55" : "5"}
+              <div className="flex items-baseline">
+                <span className="text-[#F5722E] mr-1 text-sm font-bold">CAD</span>
+                <span className="text-[#F5722E] text-sm">$</span>
+                <span className="text-[32px] font-bold text-[#F5722E]">
+                  {planType === "yearly" ? yearlyPrice : monthlyPrice}
                 </span>
-                <span className="text-xl font-bold text-[#F5722E]">
-                  /{planType === "yearly" ? "year" : "month"}
+                <span className="text-lg font-semibold text-[#F5722E]">
+                  /year
                 </span>
                 {planType === "yearly" && (
-                  <span className="text-[32px] text-[#AEADAD] ml-2 relative after:absolute after:w-full after:h-[1px] after:bg-[#AEADAD] after:left-0 after:top-1/2">
-                    $60/year
+                  <span className="text-2xl text-gray-400 ml-2 line-through">
+                    ${isEmployer ? "600" : "60"}/year
                   </span>
                 )}
               </div>
-              <span className="text-[13px] text-[#F5F5F7] -mt-2 font-extralight">
+              <span className="text-[13px] text-[#F5F5F7] -mt-1 font-extralight">
                 + transaction fee
               </span>
             </div>
@@ -723,13 +744,11 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                 <div className="space-y-2 text-sm pt-4">
                   <div className="flex justify-between text-[#F5F5F7]">
                     <span>Subscription Fee</span>
-                    <span>${planType === "yearly" ? "55.00" : "5.00"}</span>
+                    <span>CAD ${baseAmount.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-[#F5F5F7]">
                     <span>Transaction Fee (9.6%)</span>
-                    <span>
-                      ${(planType === "yearly" ? 5.28 : 0.48).toFixed(2)}
-                    </span>
+                    <span>CAD ${transactionFee.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-[#F5F5F7]">
                     <span>
@@ -738,10 +757,8 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                         : "0% Tax"}
                     </span>
                     <span>
-                      $
+                      CAD $
                       {(() => {
-                        const baseAmount = planType === "yearly" ? 55 : 5;
-                        const transactionFee = baseAmount * 0.096;
                         const subtotal = baseAmount + transactionFee;
                         return values.country?.toLowerCase() === "canada"
                           ? (subtotal * 0.13).toFixed(2)
@@ -752,10 +769,8 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                   <div className="flex justify-between text-[#F5722E] font-semibold mt-4">
                     <span>Total</span>
                     <span>
-                      $
+                      CAD $
                       {(() => {
-                        const baseAmount = planType === "yearly" ? 55 : 5;
-                        const transactionFee = baseAmount * 0.096;
                         const subtotal = baseAmount + transactionFee;
                         const tax =
                           values.country?.toLowerCase() === "canada"
@@ -772,10 +787,8 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                     By clicking "Complete Payment" you will be charged the total
                     price of{" "}
                     <span className="text-[#F5722E]">
-                      $
+                      CAD $
                       {(() => {
-                        const baseAmount = planType === "yearly" ? 55 : 5;
-                        const transactionFee = baseAmount * 0.096;
                         const subtotal = baseAmount + transactionFee;
                         const tax =
                           values.country?.toLowerCase() === "canada"

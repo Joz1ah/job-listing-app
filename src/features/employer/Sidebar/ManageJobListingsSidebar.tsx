@@ -95,7 +95,7 @@ const ManageJobListingsSidebar: FC<ManageJobsSidebarProps> = ({
       <p className="text-[17px] text-white mt-1 flex items-center gap-2">
         {displayPlan === "freeTrial" ? (
           <>
-            <span>Free Trial</span>
+            <span>Freemium</span>
           </>
         ) : displayPlan === "monthlyPlan" ? (
           <>

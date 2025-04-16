@@ -322,7 +322,7 @@ const PerfectMatchResultsModal = () => {
               onClick={handleSignup}
               className="text-center text-[10px] text-[#AEADAD] hover:text-gray-500 transition-colors cursor-pointer"
             >
-              or continue with free trial
+              or continue with FREEMIUM
             </button>
           </div>
         </div>
