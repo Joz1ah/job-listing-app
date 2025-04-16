@@ -8,8 +8,9 @@ interface SubscriptionExpiryWrapperProps {
 }
 
 /**
- * SubscriptionExpiryWrapper - Checks for expired subscriptions or trial periods
+ * SubscriptionExpiryWrapper - Checks for expired subscriptions
  * and displays the modal throughout the application.
+ * Note: Free trial expiration is handled elsewhere.
  */
 export const SubscriptionExpiryWrapper: React.FC<
   SubscriptionExpiryWrapperProps
@@ -21,7 +22,7 @@ export const SubscriptionExpiryWrapper: React.FC<
   const [showExpiredModal, setShowExpiredModal] = useState(forceShow);
 
   useEffect(() => {
-    // If forceShow is true, always show the modal
+    // If forceShow is true, always show the modal (for testing)
     if (forceShow) {
       setShowExpiredModal(true);
       return;
@@ -76,31 +77,19 @@ export const SubscriptionExpiryWrapper: React.FC<
       return;
     }
     
-    // Case 3: Free trial - user never had a subscription, check email verification date
-    const emailVerifiedAt = userData.emailVerifiedAt;
-    if (emailVerifiedAt) {
-      const emailVerifiedDate = new Date(emailVerifiedAt);
-      const currentDate = new Date();
-      
-      // Calculate difference in days
-      const diffTime = currentDate.getTime() - emailVerifiedDate.getTime();
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      
-      // Show modal if trial period has passed (3 days)
-      setShowExpiredModal(diffDays > 3);
-    } else {
-      // No email verification date and no subscriptions
-      // This is an edge case - we'll show the modal to be safe
-      setShowExpiredModal(true);
-    }
+    // For all other cases (including free trial expiry), don't show the modal
+    setShowExpiredModal(false);
   }, [user, forceShow]);
 
   // Determine user type for the modal
   const userType =
     user?.data?.user?.type === "job_hunter" ? "job-hunter" : "employer";
     
-  // Determine if the user had a subscription before or is just from free trial
-  const hadSubscriptionsBefore = user?.data?.user?.subscriptions?.length > 0 || false;
+  // Determine if the user had a subscription before
+  const hadSubscriptionsBefore = 
+    user?.data?.user?.subscriptions?.some((sub: any) => 
+      Array.isArray(sub) ? sub.length > 0 : true
+    ) || false;
 
   return (
     <>

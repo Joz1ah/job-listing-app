@@ -9,8 +9,7 @@ import trophy_icon from "assets/subscription-plan-icons/trophy-orange.svg?url";
 import calender_icon from "assets/subscription-plan-icons/calendar-orange.svg?url";
 import line_graph_icon from "assets/subscription-plan-icons/line-graph-orange.svg?url";
 import like_icon from "assets/subscription-plan-icons/like-orange.svg?url";
-import infinity_icon from "assets/subscription-plan-icons/infinity-orange.svg?url";
-import lock_icon from "assets/subscription-plan-icons/lock-orange.svg?url";
+import handshake_icon from "assets/subscription-plan-icons/handshake-orange.svg?url";
 import message_icon from "assets/subscription-plan-icons/message-orange.svg?url";
 import TooltipWrapper from "components/ui/custom/tooltip-wrapper";
 import { ROUTE_CONSTANTS } from "constants/routeConstants";
@@ -79,12 +78,12 @@ const SubscriptionSettings: React.FC = () => {
   const features: PlanFeatures = {
     yearly: [
       {
-        icon: <img src={infinity_icon} className="w-5 h-5" />,
-        text: "Unlimited interview Invites",
+        icon: <img src={handshake_icon} className="w-5 h-5" />,
+        text: "Send 3 interview Invites per month",
       },
       {
         icon: <img src={calender_icon} className=" w-5 h-5" />,
-        text: "Up to 5 Job Listings",
+        text: "Create 3 job listings per month",
       },
       {
         icon: <img src={sparkle_icon} className="w-5 h-5" />,
@@ -98,20 +97,16 @@ const SubscriptionSettings: React.FC = () => {
         icon: <img src={line_graph_icon} className="w-5 h-5" />,
         text: "Labour Market Insights",
       },
-      {
-        icon: <img src={lock_icon} className="w-5 h-5" />,
-        text: "Exclusive Employer Resources",
-      },
       { icon: <img src={message_icon} />, text: "Live chat support" },
     ],
     monthly: [
       {
-        icon: <img src={infinity_icon} className="w-5 h-5" />,
-        text: "Unlimited Interview Invites",
+        icon: <img src={handshake_icon} className="w-5 h-5" />,
+        text: "Send 3 interview Invites per month",
       },
       {
         icon: <img src={calender_icon} className=" w-5 h-5" />,
-        text: "Up to 5 Job Listings",
+        text: "Create 3 job listings per month",
       },
       {
         icon: <img src={sparkle_icon} className="w-5 h-5" />,
@@ -124,10 +119,6 @@ const SubscriptionSettings: React.FC = () => {
       {
         icon: <img src={line_graph_icon} className="w-5 h-5" />,
         text: "Labour Market Insights",
-      },
-      {
-        icon: <img src={lock_icon} className="w-5 h-5" />,
-        text: "Exclusive Employer Resources",
       },
       {
         icon: <img src={message_icon} className="w-5 h-5" />,
@@ -159,7 +150,7 @@ const SubscriptionSettings: React.FC = () => {
           <p className="text-[#F8F8FF] text-[13px]">
             Select the perfect plan for your needs: get started with our $5
             monthly plan for easy access to all essential features, or save more
-            with our $55 yearly plan, offering full access to premium content
+            with our CAD $550 yearly plan, offering full access to premium content
             and exclusive benefits throughout the year
           </p>
         </div>
@@ -180,7 +171,7 @@ const SubscriptionSettings: React.FC = () => {
     switch (subscriptionPlan) {
       case "freeTrial":
         statusText = "You're subscribed to the";
-        planName = "Free Trial";
+        planName = "FREEMIUM";
         break;
       case "monthlyPlan":
         statusText = "You're subscribed to the";
@@ -209,7 +200,7 @@ const SubscriptionSettings: React.FC = () => {
         <p className="text-[#F8F8FF] text-[13px]">
           Select the perfect plan for your needs: get started with our $5
           monthly plan for easy access to all essential features, or save more
-          with our $55 yearly plan, offering full access to premium content and
+          with our CAD $550 yearly plan, offering full access to premium content and
           exclusive benefits throughout the year
         </p>
       </div>

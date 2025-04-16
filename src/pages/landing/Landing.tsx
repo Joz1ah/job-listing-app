@@ -13,7 +13,7 @@ import _5dollarspermonth from "assets/5dollarspermonth.svg?url";
 import styles from "./landing.module.scss";
 import HeroContainer from "./parts/HeroContainer";
 import PricingContainer from "./parts/PricingContainer";
-import LandingCarousel from "./parts/LandingCarousel";
+import CarouselResponsive from "./parts/HowAkazaWorks/CarouselResponsive";
 
 const Landing: FC = (): ReactElement => {
   const { isAuthenticated, user } = useAuth();
@@ -35,7 +35,7 @@ const Landing: FC = (): ReactElement => {
           {isIndexRoute && (
             <>
               <HeroContainer />
-              <LandingCarousel />
+              <CarouselResponsive />
               <PricingContainer />
             </>
           )}

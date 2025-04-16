@@ -18,11 +18,10 @@ import unchecked_green from "assets/toggles/unchecked-green.svg?url";
 import checked_green from "assets/toggles/checked-green.svg?url";
 import subscription_sparkle_icon from "assets/images/sparkle-icon-green.svg?url";
 import subscription_thumbsup_icon from "assets/subscription-plan-icons/thumbsup.svg?url";
-import subscription_lock_icon from "assets/subscription-plan-icons/lock.svg?url";
 import subscription_linegraph_icon from "assets/subscription-plan-icons/linegraph.svg?url";
 import subscription_chat_icon from "assets/subscription-plan-icons/chat.svg?url";
 import subscription_bolt_icon from "assets/subscription-plan-icons/bolt.svg?url";
-import subscription_infinity from "assets/subscription-plan-icons/infinity.svg?url";
+import subscription_handshake from "assets/subscription-plan-icons/handshake.svg?url";
 import subscription_card from "assets/subscription-plan-icons/card.svg?url";
 import subscription_calendar from "assets/subscription-plan-icons/calendar.svg?url";
 
@@ -50,6 +49,7 @@ interface MobilePlanCardProps {
   subtitle?: string;
   isSelected?: boolean;
   onSelect: (plan: PLAN_SELECTION_ITEMS) => void;
+  oldPrice?: string;
 }
 
 const getPlanFeatures = (
@@ -67,13 +67,13 @@ const getPlanFeatures = (
   // Disabled features for free plan based on user type
   const employerDisabledFeatures = [
     {
-      icon: subscription_infinity,
-      text: "Unlimited Interview Invites",
+      icon: subscription_handshake,
+      text: "Send 3 interview Invites per month",
       disabled: true,
     },
     {
       icon: subscription_calendar,
-      text: "Up to 5 Job Listings",
+      text: "Create 3 job listings per month",
       disabled: true,
     },
     {
@@ -84,11 +84,6 @@ const getPlanFeatures = (
     {
       icon: subscription_linegraph_icon,
       text: "Labour Market Insights",
-      disabled: true,
-    },
-    {
-      icon: subscription_lock_icon,
-      text: "Exclusive Employer Resources",
       disabled: true,
     },
   ];
@@ -96,7 +91,7 @@ const getPlanFeatures = (
   const jobHunterDisabledFeatures = [
     {
       icon: subscription_calendar,
-      text: "Send up to 3 Interview Invites",
+      text: "Send 3 interview Invites per month",
       disabled: true,
     },
     {
@@ -109,56 +104,41 @@ const getPlanFeatures = (
       text: "Labour Market Insights",
       disabled: true,
     },
-    {
-      icon: subscription_lock_icon,
-      text: "Exclusive Resources",
-      disabled: true,
-    },
   ];
 
   // User type specific features for paid plans
   const employerSpecificFeatures = {
     [PLAN_SELECTION_ITEMS.MONTHLY]: [
-      { icon: subscription_infinity, text: "Unlimited Interview Invites" },
-      { icon: subscription_calendar, text: "Up to 5 Job Listings" },
+      { icon: subscription_handshake, text: "Send 3 interview Invites per month" },
+      { icon: subscription_calendar, text: "Create 3 job listings per month" },
       { icon: subscription_sparkle_icon, text: "Perfect Match Automation" },
       { icon: subscription_thumbsup_icon, text: "Insights and Feedback" },
       { icon: subscription_linegraph_icon, text: "Labour Market Insights" },
-      {
-        icon: subscription_lock_icon,
-        text: "Exclusive Employer Resources",
-      },
       { icon: subscription_chat_icon, text: "Live chat support" },
     ],
     [PLAN_SELECTION_ITEMS.ANNUAL]: [
-      { icon: subscription_infinity, text: "Unlimited Interview Invites" },
-      { icon: subscription_calendar, text: "Up to 5 Job Listings" },
+      { icon: subscription_handshake, text: "Send 3 interview Invites per month" },
+      { icon: subscription_calendar, text: "Create 3 job listings per month" },
       { icon: subscription_sparkle_icon, text: "Perfect Match Automation" },
       { icon: subscription_thumbsup_icon, text: "Insights and Feedback" },
       { icon: subscription_linegraph_icon, text: "Labour Market Insights" },
-      {
-        icon: subscription_lock_icon,
-        text: "Exclusive Employer Resources",
-      },
       { icon: subscription_chat_icon, text: "Live chat support" },
     ],
   };
 
   const jobHunterSpecificFeatures = {
     [PLAN_SELECTION_ITEMS.MONTHLY]: [
-      { icon: subscription_calendar, text: "Send up to 3 Interview Invites" },
+      { icon: subscription_calendar, text: "Send 3 interview Invites per month" },
       { icon: subscription_sparkle_icon, text: "Perfect Match Automation" },
       { icon: subscription_thumbsup_icon, text: "Insights and Feedback" },
       { icon: subscription_linegraph_icon, text: "Labour Market Insights" },
-      { icon: subscription_lock_icon, text: "Exclusive Resources" },
       { icon: subscription_chat_icon, text: "Live chat support" },
     ],
     [PLAN_SELECTION_ITEMS.ANNUAL]: [
-      { icon: subscription_calendar, text: "Send up to 3 Interview Invites" },
+      { icon: subscription_calendar, text: "Send 3 interview Invites per month" },
       { icon: subscription_sparkle_icon, text: "Perfect Match Automation" },
       { icon: subscription_thumbsup_icon, text: "Insights and Feedback" },
       { icon: subscription_linegraph_icon, text: "Labour Market Insights" },
-      { icon: subscription_lock_icon, text: "Exclusive Resources" },
       { icon: subscription_chat_icon, text: "Live chat support" },
     ],
   };
@@ -194,7 +174,7 @@ const PriceTag: React.FC<PriceTagProps> = ({
       className={`relative w-full shadow-lg rounded-none overflow-hidden
         ${isSelected ? "p-[3px] bg-gradient-to-r from-orange-400 to-orange-700" : "p-[1px] bg-gradient-to-br from-gray-200 to-gray-300"}`}
     >
-      <div className="grid grid-cols-[1fr,1fr,0.5fr] items-center w-full h-[111px] p-4 bg-white rounded-none">
+      <div className="grid grid-cols-[1fr,1fr,0.5fr] items-center w-full h-[111px] py-4 pr-1 pl-2 bg-white rounded-none">
         <div className="flex flex-col items-start">
           <div className="text-xl font-semibold text-orange-500">{label}</div>
           <div className="text-[10px] text-gray-500">{text1}</div>
@@ -202,7 +182,7 @@ const PriceTag: React.FC<PriceTagProps> = ({
         <div className="flex justify-start">
           <div className="text-[11px] text-gray-500">{text2}</div>
         </div>
-        <div className="flex justify-end">
+        <div className="absolute right-2">
           <img src={icon} alt="selection" className="w-6 h-6" />
         </div>
       </div>
@@ -216,6 +196,7 @@ const MobilePlanCard: React.FC<MobilePlanCardProps> = ({
   price,
   transactionFee,
   onSelect,
+  oldPrice,
 }) => {
   const isFree = plan === PLAN_SELECTION_ITEMS.FREE;
   const isAnnual = plan === PLAN_SELECTION_ITEMS.ANNUAL;
@@ -277,14 +258,14 @@ const MobilePlanCard: React.FC<MobilePlanCardProps> = ({
             </>
           ) : (
             <div className="p-2 flex-grow">
-              <div className="text-start pl-6 mb-2">
+              <div className="text-start mb-2">
                 {price && (
                   <div className="mt-4">
                     <div className="text-3xl font-bold text-orange-500">
-                      {price}
+                      <span className="text-lg font-bold">CAD</span> {price}
                       {isAnnual && (
                         <span className="text-lg text-gray-400 line-through ml-2">
-                          $60
+                          {oldPrice}
                         </span>
                       )}
                     </div>
@@ -334,7 +315,7 @@ const MobilePlanCard: React.FC<MobilePlanCardProps> = ({
                     : "bg-white text-green-500 border border-green-500 hover:bg-green-50"
               }`}
             >
-              {isFree ? "Start Free Trial" : "Subscribe Today"}
+              {isFree ? "Start FREEMIUM" : "Subscribe Today"}
             </button>
           </div>
         </div>
@@ -365,7 +346,7 @@ const FeaturesList: React.FC<{
         <div className="flex flex-col h-full w-full bg-[#F5F5F7] rounded-none">
           <div className="flex-1 p-2">
             <h3 className="flex justify-center font-semibold mb-8 text-gray-800">
-              Your Free Trial Includes:
+              Your FREEMIUM Includes:
             </h3>
             <div className="flex flex-col gap-5">
               {filteredFeatures.map((feature, index) => (
@@ -385,13 +366,13 @@ const FeaturesList: React.FC<{
               className="w-[100px] h-[100px]"
             />
             <p className="text-center text-[13px] text-orange-500 mb-4">
-              Go beyond free and experience it all
+              Go beyond FREEMIUM and experience it all
             </p>
             <button
               onClick={onSubscribe}
               className="w-full px-4 py-1 text-[15px] h-[32px] bg-orange-500 text-white rounded-md hover:bg-orange-600 transition-colors"
             >
-              Start Free Trial
+              Start FREEMIUM
             </button>
           </div>
         </div>
@@ -565,9 +546,16 @@ const SubscriptionPlanSelection: React.FC = () => {
                   PLAN_SELECTION_ITEMS.ANNUAL,
                   dataStates.selectedUserType as "employer" | "job_hunter",
                 )}
-                price="$55/year"
-                transactionFee="+ $5.28 transaction fee"
+                price={
+                  dataStates.selectedUserType === "employer"
+                    ? "$550/year"
+                    : "$50/year"
+                }
+                transactionFee="+ transaction fee"
                 onSelect={handleMobileSubscription}
+                oldPrice={
+                  dataStates.selectedUserType === "employer" ? "$600" : "$60"
+                }
               />
             </CarouselItem>
 
@@ -578,8 +566,12 @@ const SubscriptionPlanSelection: React.FC = () => {
                   PLAN_SELECTION_ITEMS.MONTHLY,
                   dataStates.selectedUserType as "employer" | "job_hunter",
                 )}
-                price="$5/month"
-                transactionFee="+ $0.48 transaction fee"
+                price={
+                  dataStates.selectedUserType === "employer"
+                    ? "$50/month"
+                    : "$5/month"
+                }
+                transactionFee="+ transaction fee"
                 onSelect={handleMobileSubscription}
               />
             </CarouselItem>
@@ -591,8 +583,8 @@ const SubscriptionPlanSelection: React.FC = () => {
                   PLAN_SELECTION_ITEMS.FREE,
                   dataStates.selectedUserType as "employer" | "job_hunter",
                 )}
-                price="Free"
-                transactionFee="for 3  days only"
+                price="Freemium"
+                transactionFee="for 3 days only"
                 onSelect={handleMobileSubscription}
               />
             </CarouselItem>
@@ -613,19 +605,30 @@ const SubscriptionPlanSelection: React.FC = () => {
                   : unchecked_green
               }
               label={
-                <>
-                  <div className="flex items-center gap-2">
-                    <span>$</span>
-                    <span className="text-[38px] font-black">55</span>
-                    <span className="text-xl">/year</span>
-                    <span className="text-xl text-[#AEADAD] line-through">
-                      $60/year
+                <div className="flex flex-col">
+                  <div className="flex items-baseline">
+                    <span className="text-orange-500 text-sm font-bold mr-1">
+                      CAD
+                    </span>
+                    <span className="text-orange-500">$</span>
+                    <span className="text-[38px] font-black text-orange-500">
+                      {dataStates.selectedUserType === "employer"
+                        ? "550"
+                        : "50"}
+                    </span>
+                    <span className="text-orange-500 text-xl">/year</span>
+                    <span className="text-xl text-[#AEADAD] line-through ml-2">
+                      $
+                      {dataStates.selectedUserType === "employer"
+                        ? "600"
+                        : "60"}
+                      /year
                     </span>
                   </div>
-                </>
+                </div>
               }
               selectedPlan={currentSelectedPlan}
-              text1="+ $5.28 transaction fee"
+              text1="+ transaction fee"
               text2=""
               planRef={PLAN_SELECTION_ITEMS.ANNUAL}
             />
@@ -641,14 +644,21 @@ const SubscriptionPlanSelection: React.FC = () => {
                   : unchecked_green
               }
               label={
-                <>
-                  <span>$</span>
-                  <span className="text-[38px] font-black">5</span>
-                  <span>/month</span>
-                </>
+                <div className="flex flex-col">
+                  <div className="flex items-baseline">
+                    <span className="text-orange-500 text-sm font-bold mr-1">
+                      CAD
+                    </span>
+                    <span className="text-orange-500">$</span>
+                    <span className="text-[38px] font-black text-orange-500">
+                      {dataStates.selectedUserType === "employer" ? "50" : "5"}
+                    </span>
+                    <span className="text-orange-500 text-xl">/month</span>
+                  </div>
+                </div>
               }
               selectedPlan={currentSelectedPlan}
-              text1="+ $0.48 transaction fee"
+              text1="+ transaction fee"
               text2=""
               planRef={PLAN_SELECTION_ITEMS.MONTHLY}
             />
@@ -661,7 +671,7 @@ const SubscriptionPlanSelection: React.FC = () => {
                   ? checked_green
                   : unchecked_green
               }
-              label="Free"
+              label="Freemium"
               selectedPlan={currentSelectedPlan}
               text1="enjoy with zero fees"
               text2=""

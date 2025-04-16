@@ -1,7 +1,7 @@
 import { useLoginMutation } from "api/akaza/akazaAPI";
 import { Form, Formik, Field, ErrorMessage } from "formik";
 import { useAuth } from "contexts/AuthContext/AuthContext";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useLanding } from "../useLanding";
 import { Eye, EyeOff } from "lucide-react";
 import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
@@ -25,6 +25,9 @@ const LoginForm = () => {
   const { showError } = useErrorModal();
   const navigate = useNavigate();
 
+  // This ref will help us track if validation errors should be shown
+  const formHasBeenSubmitted = useRef(false);
+
   // State to toggle password visibility
   const [showPassword, setShowPassword] = useState(false);
 
@@ -32,10 +35,24 @@ const LoginForm = () => {
     handleSetModalState(MODAL_STATES.FORGOT_PASSWORD_EMAIL);
   };
 
+  // Clear API error messages when the user changes the form
+  const handleFormChange = () => {
+    if (formHasBeenSubmitted.current) {
+      setApiLoginErrorMessage("");
+    }
+  };
+
   const handleSubmit = async (
     values: LoginFormValues,
-    { setSubmitting, setFieldError }: any,
+    { setSubmitting, setStatus }: any,
   ) => {
+    // Mark that the form has been submitted
+    formHasBeenSubmitted.current = true;
+
+    // Clear any previous error messages
+    setApiLoginErrorMessage("");
+    setStatus({});
+
     try {
       const response = await loginSubmit(values).unwrap();
 
@@ -54,7 +71,7 @@ const LoginForm = () => {
 
         // Let the AuthContext handle the login (token storage)
         login(response.data.token);
-        
+
         // Explicitly navigate to dashboard after successful login
         // This ensures redirection to dashboard regardless of which page login occurs from
         navigate(ROUTE_CONSTANTS.DASHBOARD, { replace: true });
@@ -63,12 +80,13 @@ const LoginForm = () => {
       }
     } catch (err: any) {
       console.error("Login error:", err);
-      
+
       // Handle different types of errors
       if (err.status === 401) {
         // Authentication errors (wrong credentials) stay in the form
         setApiLoginErrorMessage("Invalid Username or Password");
-        setFieldError("general", "Invalid Username or Password");
+        // Also set it in Formik's status for more reliable display
+        setStatus({ generalError: "Invalid Username or Password" });
       } else if (
         err.status === "FETCH_ERROR" ||
         err.message === "Failed to fetch" ||
@@ -82,18 +100,21 @@ const LoginForm = () => {
         // Only show serious network errors in modal
         showError(
           "Connection Error",
-          "Internet connection error. Please check your connection and try again."
+          "Internet connection error. Please check your connection and try again.",
         );
         setApiLoginErrorMessage("Network error. Please check your connection.");
       } else {
         // Only display unexpected server errors in the modal
         showError(
           "Server Error",
-          err?.data?.message || "An unexpected error occurred. Please try again."
+          err?.data?.message ||
+            "An unexpected error occurred. Please try again.",
         );
-        
+
         // Keep the error message in the form
-        setApiLoginErrorMessage("An error occurred during login. Please try again.");
+        setApiLoginErrorMessage(
+          "An error occurred during login. Please try again.",
+        );
       }
     } finally {
       setSubmitting(false);
@@ -112,8 +133,16 @@ const LoginForm = () => {
       initialValues={{ email: "", password: "", rememberMe: false }}
       validationSchema={LoginSchema}
       onSubmit={handleSubmit}
+      validateOnChange={true}
     >
-      {({ errors, touched, isSubmitting, values: { email, password } }) => (
+      {({
+        errors,
+        touched,
+        isSubmitting,
+        values: { email, password },
+        status,
+        handleChange,
+      }) => (
         <Form className="flex flex-col w-full py-5 px-4 md:py-4 md:px-[50px]">
           <div className="text-left mb-5">
             {isResetPasswordSuccesful ? (
@@ -140,6 +169,10 @@ const LoginForm = () => {
                   type="text"
                   placeholder="Email"
                   className={`w-full bg-[#F5F5F7] text-sm py-2 border-b-2 focus:border-orange-500 focus:outline-none ${touched.email && errors.email ? "border-red-500" : "border-gray-300"}`}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    handleFormChange();
+                    handleChange(e);
+                  }}
                 />
               </div>
               <ErrorMessage
@@ -155,6 +188,10 @@ const LoginForm = () => {
                   type={showPassword ? "text" : "password"}
                   placeholder="Password"
                   className={`w-full bg-[#F5F5F7] text-sm py-2 border-b-2 focus:border-orange-500 focus:outline-none ${touched.password && errors.password ? "border-red-500" : "border-gray-300"}`}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    handleFormChange();
+                    handleChange(e);
+                  }}
                 />
                 <button
                   type="button"
@@ -172,9 +209,14 @@ const LoginForm = () => {
                 className="text-red-500 text-[10px] mt-1"
               />
             </div>
-            <div className="text-red-500 text-[10px] mt-1">
-              {apiLoginErrorMessage ? apiLoginErrorMessage : ""}
-            </div>
+            {/* Only show API/login errors if there are no validation errors for password */}
+            {!(touched.password && errors.password) && (
+              <div className="text-red-500 text-[10px] mt-1">
+                {apiLoginErrorMessage || (status && status.generalError)
+                  ? apiLoginErrorMessage || status.generalError
+                  : ""}
+              </div>
+            )}
           </div>
 
           <div className="flex justify-between items-center pb-4">
