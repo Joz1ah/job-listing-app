@@ -64,7 +64,7 @@ const FreeTrialConfirmationModal = ({
               You're about to proceed with the next step.
             </h2>
             <p className="text-white text-base px-6 mt-2">
-              This is to confirm that you would like to continue to a free trial
+              This is to confirm that you would like to continue to a FREEMIUM
             </p>
           </div>
 

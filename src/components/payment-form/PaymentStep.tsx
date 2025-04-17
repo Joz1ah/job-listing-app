@@ -207,7 +207,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
       <div className="w-full">
         {renderCompanyLogo()}
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 max-w-5xl mx-4 lg:mx-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 max-w-5xl mx-2 lg:mx-8">
           <div className="mb-8 md:mb-0">
             <div className="flex flex-col pb-6">
               <div className="flex justify-start mt-4">
@@ -219,7 +219,9 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                 </div>
               </div>
               <div className="flex items-baseline">
-                <span className="text-[#F5722E] mr-1 text-sm font-bold">CAD</span>
+                <span className="text-[#F5722E] mr-1 text-sm font-bold">
+                  CAD
+                </span>
                 <span className="text-[#F5722E] text-sm">$</span>
                 <span className="text-[32px] font-bold text-[#F5722E]">
                   {planType === "yearly" ? yearlyPrice : monthlyPrice}
@@ -298,7 +300,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                   .required("This field is required")
                   .matches(
                     /^(0[1-9]|1[0-2])\/([0-9]{2})$/,
-                    "Must be in MM/YY format",
+                    "MM/YY format",
                   )
                   .test("expiry", "Invalid date", function (value) {
                     if (!value) return false;
@@ -347,7 +349,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
               }) => (
                 <form onSubmit={handleSubmit}>
                   <div className="space-y-6">
-                    <InputField label="First Name" variant="primary">
+                    <InputField label="First Name" variant="primary"  size="form">
                       <Field name="firstName">
                         {({ field }: FieldProps) => (
                           <Input
@@ -369,7 +371,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                         </div>
                       )}
                     </InputField>
-                    <InputField label="Last Name" variant="primary">
+                    <InputField label="Last Name" variant="primary"  size="form">
                       <Field name="lastName">
                         {({ field }: FieldProps) => (
                           <Input
@@ -392,7 +394,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                       )}
                     </InputField>
 
-                    <InputField label="Card Number" variant="primary">
+                    <InputField label="Card Number" variant="primary"  size="form">
                       <Field name="cardNumber">
                         {({ field }: FieldProps) => (
                           <Input
@@ -417,7 +419,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
 
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <InputField label="Expiry Date" variant="primary">
+                        <InputField label="Expiry Date" variant="primary"  size="form">
                           <Field name="expiryDate">
                             {({ field, form }: FieldProps) => (
                               <Input
@@ -447,7 +449,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                         </InputField>
                       </div>
                       <div>
-                        <InputField label="CVV" variant="primary">
+                        <InputField label="CVV" variant="primary"  size="form">
                           <Field name="cvv">
                             {({ field }: FieldProps) => (
                               <Input
@@ -472,7 +474,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                       </div>
                     </div>
 
-                    <InputField label="Email Address" variant="primary">
+                    <InputField label="Email Address" variant="primary"  size="form">
                       <Field name="email">
                         {({ field }: FieldProps) => (
                           <Input
@@ -557,10 +559,10 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
           setFieldTouched,
         }) => (
           <form onSubmit={handleSubmit}>
-            <div className="grid grid-cols-1 lg:grid-cols-2 max-w-5xl mx-8 gap-8 pt-2">
+            <div className="grid grid-cols-1 lg:grid-cols-2 max-w-5xl mx-2 md:mx-8 gap-8 pt-2">
               {/* Left Column - Address Form */}
               <div className="space-y-6">
-                <InputField label="Billing Address" variant="primary">
+                <InputField label="Billing Address" variant="primary"  size="form">
                   <Field name="address">
                     {({ field }: FieldProps) => (
                       <Input
@@ -581,7 +583,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                   )}
                 </InputField>
 
-                <InputField label="State" variant="primary">
+                <InputField label="State" variant="primary"  size="form">
                   <Field name="state">
                     {({ field }: FieldProps) => (
                       <Input
@@ -602,7 +604,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                   )}
                 </InputField>
 
-                <InputField label="City" variant="primary">
+                <InputField label="City" variant="primary"  size="form">
                   <Field name="city">
                     {({ field }: FieldProps) => (
                       <Input
@@ -623,7 +625,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                   )}
                 </InputField>
 
-                <InputField label="Country" variant="primary">
+                <InputField label="Country" variant="primary"  size="form">
                   <Field name="country">
                     {({ field, form }: FieldProps) => (
                       <div className="relative">
@@ -646,7 +648,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                   )}
                 </InputField>
 
-                <InputField label="Zip/Postal Code" variant="primary">
+                <InputField label="Zip/Postal Code" variant="primary"  size="form">
                   <Field name="zipCode">
                     {({ field, form }: FieldProps) => (
                       <Input
