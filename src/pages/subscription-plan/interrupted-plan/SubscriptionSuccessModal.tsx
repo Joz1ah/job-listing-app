@@ -18,14 +18,10 @@ const SubscriptionSuccessModal = ({
   // Get user information from auth context to check if user is employer
   const { user } = useAuth();
   const isEmployer = user?.data?.user?.type === "employer";
-  // Determine price based on plan type
-  let price = "";
 
-  if (type === "Yearly") {
-    price = isEmployer ? "550" : "50";
-  } else {
-    price = isEmployer ? "50" : "5";
-  }
+  // Determine price based on plan type and user type
+  const price =
+    type === "Yearly" ? (isEmployer ? "550" : "55") : isEmployer ? "50" : "5";
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -48,8 +44,8 @@ const SubscriptionSuccessModal = ({
             </h2>
 
             <p className="text-gray-200 text-sm">
-              Your CAD ${price} {type.toLowerCase()} plan gives you access to our
-              best features!
+              Your CAD ${price} {type.toLowerCase()} plan gives you access to
+              our best features!
               {!isEmployer &&
                 " Complete Your Application Card to start enjoying exclusive access."}
             </p>

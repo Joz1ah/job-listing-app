@@ -32,6 +32,7 @@ const labelVariants = cva("font-normal", {
       sm: "text-[13px]",
       md: "text-base",
       lg: "text-lg",
+      form: "text-[13px] md:text-[16px]", // Added form size with responsive sizing
     },
   },
   defaultVariants: {
@@ -83,6 +84,7 @@ const tooltipIconVariants = cva("relative -top-1 cursor-pointer", {
       sm: "",
       md: "",
       lg: "",
+      form: "", // Added form size to match the pattern
     },
   },
   defaultVariants: {
@@ -114,7 +116,7 @@ interface InputFieldProps
   showIcon?: boolean;
   showAlertIcon?: boolean;
   tooltipContent?: string | React.ReactNode;
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg" | "form"; // Updated to include form
   errorMessageSize?: "tiny" | "xs" | "sm" | "base";
   children: React.ReactNode;
 }
@@ -145,6 +147,7 @@ const InputField = React.forwardRef<HTMLDivElement, InputFieldProps>(
       sm: 12,
       md: 14,
       lg: 16,
+      form: 14, // Default size for form, will adjust based on screen size
     };
 
     return (
