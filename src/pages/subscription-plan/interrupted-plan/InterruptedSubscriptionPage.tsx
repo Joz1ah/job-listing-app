@@ -173,6 +173,8 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
 
   const handleCombinedFormSubmit = async (values: any) => {
     setIsLoading(true);
+
+    const { user } = useAuth();
     const isEmployer = user?.data?.user?.type === "employer";
     
     const baseAmount = plan.type === "Monthly" 
@@ -260,7 +262,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
               </h2>
               <p className="text-[#F8F8FF] text-sm">
                 {plan.type === "Yearly"
-                  ? `We are thrilled to have you as part of our community! Your decision to unlock full access to our yearly plan for CAD ${isEmployer ? '550' : '55'} marks the start of a new beginning to provide exceptional service and improve our offerings.`
+                  ? `We are thrilled to have you as part of our community! Your decision to unlock full access to our yearly plan for CAD $${isEmployer ? '550' : '55'} marks the start of a new beginning to provide exceptional service and improve our offerings.`
                   : `We're excited to welcome you to our community! By subscribing to our monthly plan, you're taking a step towards unlocking our service and continually enhance our offerings. Your support means so much to us!`}
               </p>
             </>
