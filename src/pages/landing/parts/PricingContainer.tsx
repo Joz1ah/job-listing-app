@@ -1,55 +1,27 @@
 import styles from "./../landing.module.scss";
 import { Link } from "react-router-dom";
-
-import flame_vector from "assets/flame-vector.svg?url";
-import orange_check from "assets/orange-check.svg?url";
-import corner_rectangle_orange from "assets/corner-rectangle-orange.png";
-import corner_bottom_stripes from "assets/corner-bottom-stripes.png";
-import _5dollarspermonth from "assets/5dollarspermonth.svg?url";
+import metana_akaza from 'assets/metanaXakaza.jpg';
 
 const PricingContainer = () => {
   return (
     <div className={`${styles["pricing-container"]}`}>
-      <div className={`${styles["desc1-wrapper"]}`}>
-        <div className={`${styles.desc1}`}>
-          {[
-            "Perfect Match automation",
-            "Ratings & Feedback",
-            " Access to diverse private sector industries",
-            "Basic analytic page",
-            "Access to exclusive informative content",
-            "Live chat support",
-          ].map((label: string) => (
-            <div className={`${styles["sub-desc"]}`}>
-              <div>
-                <img src={orange_check}></img>
-              </div>
-              <div>{label}</div>
-            </div>
-          ))}
-        </div>
-        <div className={`${styles["desc1-2"]}`}>
-          <div className={`${styles["corner-recatangle"]}`}>
-            <div className={`${styles["image-wrapper"]}`}>
-              <div>
-                <img src={corner_rectangle_orange}></img>
-              </div>
-              <div>
-                <img src={_5dollarspermonth}></img>
-              </div>
-              <div>Get this for only</div>
-            </div>
-          </div>
-        </div>
-        <div className={`${styles["desc1-3"]}`}>
-          <div className={`${styles["corner-bottom-stripes"]}`}>
-            <img src={corner_bottom_stripes}></img>
-          </div>
-          <div className={`${styles["corner-flame"]}`}>
-            <img src={flame_vector}></img>
-          </div>
-        </div>
+      {/* First section with just the image, no container styling */}
+      <div className={`${styles["metana-section"]}`}>
+        <Link 
+          to={"https://metana.io"} 
+          target="https://metana.io/landing/full-stack-bootcamp/?utm_source=akaza-io"
+          rel="noopener noreferrer"
+          className={`${styles["metana-link"]}`}
+        >
+          <img 
+            src={metana_akaza} 
+            alt="Metana x Akaza Partnership" 
+            className={`${styles["metana-akaza-image"]}`}
+          />
+        </Link>
       </div>
+      
+      {/* Second section unchanged */}
       <div className={`${styles["desc2-wrapper"]}`}>
         <div className={`${styles.desc2}`}>
           <div className={`${styles["sub-desc"]}`}>
