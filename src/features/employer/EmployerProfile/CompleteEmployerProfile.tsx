@@ -57,8 +57,7 @@ const validationSchema = Yup.object().shape({
     .trim()
     .required("This field is required")
     .matches(/^(?:https?:\/\/)(.+)/i, {
-      message:
-        'URL must start with "http://" or "https://"',
+      message: 'URL must start with "http://" or "https://"',
       excludeEmptyString: true,
     })
     .test({
@@ -84,31 +83,27 @@ const validationSchema = Yup.object().shape({
     .email("Invalid email address"),
   mobileNumber: Yup.string()
     .required("This field is required")
-    .test(
-      "phone",
-      "Please enter a valid international phone number",
-      function (value) {
-        if (!value) return false;
+    .test("phone", "Please enter a valid phone number", function (value) {
+      if (!value) return false;
 
-        // Remove all non-digit characters except plus sign at start
-        const cleaned = value.replace(/(?!^\+)\D/g, "");
+      // Remove all non-digit characters except plus sign at start
+      const cleaned = value.replace(/(?!^\+)\D/g, "");
 
-        // Check if it starts with a plus sign
-        const hasPlus = value.startsWith("+");
+      // Check if it starts with a plus sign
+      const hasPlus = value.startsWith("+");
 
-        // Get only digits
-        const digitsOnly = cleaned.replace(/\+/g, "");
+      // Get only digits
+      const digitsOnly = cleaned.replace(/\+/g, "");
 
-        if (!hasPlus) return false;
-        if (digitsOnly.length < 10 || digitsOnly.length > 15) return false;
+      if (!hasPlus) return false;
+      if (digitsOnly.length < 10 || digitsOnly.length > 15) return false;
 
-        // Basic country code validation (1-4 digits after +)
-        const countryCode = digitsOnly.slice(0, 4);
-        if (!/^\d{1,4}$/.test(countryCode)) return false;
+      // Basic country code validation (1-4 digits after +)
+      const countryCode = digitsOnly.slice(0, 4);
+      if (!/^\d{1,4}$/.test(countryCode)) return false;
 
-        return true;
-      },
-    ),
+      return true;
+    }),
   unitAndBldg: Yup.string().required("This field is required"),
   streetAddress: Yup.string().required("This field is required"),
   city: Yup.string().required("This field is required"),
@@ -480,7 +475,6 @@ const CompleteEmployerProfile: FC = () => {
                   value={values.country || ""}
                   onChange={(value) => setFieldValue("country", value)}
                   className="bg-transparent border-[#AEADAD] h-[56px] hover:text-white border-2 focus:border-[#F5722E] w-full rounded-[8px] text-white placeholder:text-[#AEADAD] px-3 py-2"
-                  popoverClassName="w-[335px]"
                 />
               </InputField>
             </div>
