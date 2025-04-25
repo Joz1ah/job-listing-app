@@ -27,13 +27,14 @@ const PageMeta: FC<Props> = (props: Props) => {
   return (
     <Helmet>
       {/* Google Analytics script */}
-      <script nonce={nonce} async src="https://www.googletagmanager.com/gtag/js?id=G-RKRJ2HNNN8"></script>
+      <script nonce={nonce} async src="https://www.googletagmanager.com/gtag/js?id=G-X06XBEF4Q1"></script>
       <script nonce={nonce}>
         {`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
-          gtag('config', 'G-RKRJ2HNNN8');
+
+          gtag('config', 'G-X06XBEF4Q1');
         `}
       </script>
       {title != null
