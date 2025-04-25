@@ -7,18 +7,18 @@ const PricingContainer = () => {
     <div className={`${styles["pricing-container"]}`}>
       {/* First section with just the image, no container styling */}
       <div className={`${styles["metana-section"]}`}>
-        <Link 
-          to={"https://metana.io"} 
-          target="https://metana.io/landing/full-stack-bootcamp/?utm_source=akaza-io"
+        <a
+          href="https://metana.io/landing/full-stack-bootcamp/?utm_source=akaza-io"
+          target="_blank"
           rel="noopener noreferrer"
-          className={`${styles["metana-link"]}`}
+          className={styles["metana-link"]}
         >
-          <img 
-            src={metana_akaza} 
-            alt="Metana x Akaza Partnership" 
-            className={`${styles["metana-akaza-image"]}`}
+          <img
+            src={metana_akaza}
+            alt="Metana x Akaza Partnership"
+            className={styles["metana-akaza-image"]}
           />
-        </Link>
+        </a>
       </div>
       
       {/* Second section unchanged */}
