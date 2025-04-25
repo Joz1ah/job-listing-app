@@ -9,7 +9,7 @@ import {
   CommandItem,
 } from "components";
 import { Popover, PopoverContent, PopoverTrigger } from "components";
-import { memo, useState } from "react";
+import { memo, useState, useRef, useEffect } from "react";
 import countries from 'constants/countries';
 
 interface CountrySelectProps {
@@ -29,12 +29,34 @@ const CountrySelect = ({
   popoverClassName,
 }: CountrySelectProps) => {
   const [open, setOpen] = useState(false);
+  const [width, setWidth] = useState(0);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+
+  // Update width when the component mounts or window resizes
+  useEffect(() => {
+    const updateWidth = () => {
+      if (triggerRef.current) {
+        const newWidth = triggerRef.current.offsetWidth;
+        setWidth(newWidth);
+      }
+    };
+
+    // Set initial width
+    updateWidth();
+
+    // Add resize listener
+    window.addEventListener('resize', updateWidth);
+
+    // Clean up
+    return () => window.removeEventListener('resize', updateWidth);
+  }, []);
 
   return (
     <div className="relative w-full">
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
+            ref={triggerRef}
             variant="outline"
             role="combobox"
             aria-expanded={open}
@@ -46,26 +68,27 @@ const CountrySelect = ({
               className,
             )}
           >
-          <span className="truncate">
-            {value
-              ? countries.find((country) => country.name.toLowerCase() === value.toLowerCase())?.name || "Country not found"
-              : "Select country..."}
-          </span>
+            <span className="truncate">
+              {value
+                ? countries.find((country) => country.name.toLowerCase() === value.toLowerCase())?.name || "Country not found"
+                : "Select country..."}
+            </span>
 
             <ChevronDown className="h-4 w-4 opacity-50 flex-shrink-0 mr-2.5" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent
+        <PopoverContent 
           className={cn(
-            "p-0 rounded-none w-[var(--radix-popover-trigger-width)] max-w-[410px] min-w-[280px]",
+            "p-0 bg-white border border-gray-200 shadow-md",
             popoverClassName
           )}
-          align="start"
+          style={{ width: `${width}px` }}
+          align="start" 
           side="bottom"
+          sideOffset={2}
           avoidCollisions={false}
-          collisionPadding={0}
         >
-          <Command>
+          <Command className="w-full bg-white">
             <CommandInput placeholder="Search country..." className="h-9" />
             <CommandEmpty>No country found.</CommandEmpty>
             <CommandGroup className="max-h-64 overflow-auto">
