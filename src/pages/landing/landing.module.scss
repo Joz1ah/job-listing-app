@@ -638,7 +638,7 @@ body {
   display: flex;
   flex-direction: row;
   padding: 32px;
-  gap: 30px;
+  gap: 20px;
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -738,7 +738,7 @@ body {
             > .orange, > .white {
               margin-right: 5px; // Space between words
               white-space: nowrap; // Keep each word on one line
-            }
+            } 
             
             @media (max-width: 400px) {
               font-size: 0.6em; // Even smaller on very small screens
@@ -971,6 +971,38 @@ body {
     font-size: 14px;
     line-height: 18px;
     margin-top: 10px;
+  }
+}
+
+.metana-section {
+  flex: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.metana-link {
+  display: block;
+  width: 100%;
+}
+
+.metana-akaza-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .pricing-container {
+    flex-direction: column;
+    padding: 16px;
+    gap: 15px;
+  }
+
+  .metana-section {
+    width: auto;
+    margin-bottom: 15px;
   }
 }
 
