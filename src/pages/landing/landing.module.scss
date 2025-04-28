@@ -622,16 +622,35 @@ body {
   margin-bottom: 20px;
 }
 
+/* Base button style (same as original) */
 .button-regular {
   border-radius: 4px;
   background: #f5722e;
   color: #fff;
   font-family: Poppins-R;
-  font-size: 30px;
+  font-size: 24px;
   font-style: normal;
   font-weight: 400;
-  line-height: 20px;
-  padding: 15px 60px;
+  line-height: 28px;
+  padding: 10px 35px;
+}
+
+/* Mobile styles - apply at 768px and smaller screens */
+@media only screen and (max-width: 768px) {
+  .button-regular {
+    font-size: 16px;
+    line-height: 20px;
+    padding: 8px 24px;
+  }
+}
+
+/* Small mobile styles - apply at 480px and smaller screens */
+@media only screen and (max-width: 480px) {
+  .button-regular {
+    font-size: 14px;
+    line-height: 18px;
+    padding: 6px 18px;
+  }
 }
 
 .pricing-container {
@@ -890,10 +909,10 @@ body {
     background: #161a1d;
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
     font-family: Poppins-R;
-    font-size: 45px;
+    font-size: 30px;
     font-style: normal;
     font-weight: 700;
-    line-height: 55px;
+    line-height: 35px;
     padding: 20px;
     padding-top: 10px;
 
@@ -905,12 +924,12 @@ body {
     }
 
     > .desc2 {
-      padding: 10px;
+      padding: 2px;
 
       .sub-desc {
         display: flex;
         flex-direction: row;
-        column-gap: 15px;
+        column-gap: 10px;
         flex-wrap: wrap;
 
         > div {
@@ -927,7 +946,6 @@ body {
       }
       
       &:nth-child(2) {
-        // margin-top: 21.5px;
         color: #fff;
         font-size: 24px;
         font-style: normal;
@@ -937,9 +955,10 @@ body {
     }
   }
 
+  /* Small screens */
   @media (max-width: 400px) {
     > .desc2-wrapper {
-      font-size: 30px;
+      font-size: 25px;
       line-height: 35px;
       padding: 10px;
       padding-top: 8px;
@@ -955,6 +974,53 @@ body {
       }
     }
   }
+
+  /* Medium  screens */
+  @media (max-width: 1250px) {
+    > .desc2-wrapper {
+      font-size: 40px;
+      line-height: 45px;
+      padding: 10px;
+      padding-top: 15px;
+
+      > .button-wrapper {
+        margin-top: 0px;
+      }
+      
+      > .desc2 {
+        .sub-desc {
+          column-gap: 6px; /* Reduced column gap for tablets */
+        }
+      }
+    }
+  }
+
+  /* Large screens */
+  @media (min-width: 1700px) {
+    > .desc2-wrapper {
+      font-size: 45px;
+      line-height: 50px;
+      padding: 30px;
+      padding-top: 15px;
+      
+      > .desc2 {
+        padding: 5px;
+        
+        .sub-desc {
+          column-gap: 10px; /* Increased column gap for larger screens */
+        }
+        
+        &:nth-child(2) {
+          font-size: 35px;
+          line-height: 40px;
+        }
+      }
+      
+      > .button-wrapper {
+        margin-top: 15px;
+      }
+    }
+  }
 }
 
 .pricing-container > .desc2-wrapper > .desc2 > :nth-child(2) {
@@ -966,7 +1032,23 @@ body {
   line-height: 28px;
 }
 
-@media (max-width: 400px) {
+@media (max-width: 1250px) {
+  .pricing-container > .desc2-wrapper > .desc2 > :nth-child(2) {
+    font-size: 30px;
+    line-height: 34px;
+    margin-top: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .pricing-container > .desc2-wrapper > .desc2 > :nth-child(2) {
+    font-size: 20px;
+    line-height: 24px;
+    margin-top: 10px;
+  }
+}
+
+@media (max-width: 500px) {
   .pricing-container > .desc2-wrapper > .desc2 > :nth-child(2) {
     font-size: 14px;
     line-height: 18px;
@@ -996,13 +1078,12 @@ body {
 @media (max-width: 768px) {
   .pricing-container {
     flex-direction: column;
-    padding: 16px;
-    gap: 15px;
+    padding: 10px 16px 16px 16px;
+    gap: 10px;
   }
 
   .metana-section {
     width: auto;
-    margin-bottom: 15px;
   }
 }
 
