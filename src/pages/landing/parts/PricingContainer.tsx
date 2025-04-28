@@ -40,6 +40,7 @@ const PricingContainer = () => {
             src={isTablet ? metana_akaza_tablet : metana_akaza}
             alt="Metana x Akaza Partnership"
             className={styles["metana-akaza-image"]}
+            style={{ borderRadius: '8px' }} // Added inline style for rounded corners
           />
         </a>
       </div>
