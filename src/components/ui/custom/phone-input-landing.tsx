@@ -18,14 +18,14 @@ import { ScrollArea } from "components";
 const cn = (...classes: (string | undefined)[]) =>
   classes.filter(Boolean).join(" ");
 
-// Input Component
+// Input Component - MODIFIED: reduced right padding and made text smaller
 const InputComponent = React.forwardRef<
   HTMLInputElement,
   React.InputHTMLAttributes<HTMLInputElement>
 >(({ className, ...props }, ref) => (
   <Input
     className={cn(
-      "rounded-none border-none bg-transparent text-[#263238] h-full pr-24",
+      "rounded-none border-none bg-transparent text-[#263238] h-full pr-14 text-sm pl-0",
       "placeholder:text-gray-50/50 focus-visible:ring-0 focus-visible:ring-offset-0",
       className,
     )}
@@ -35,11 +35,11 @@ const InputComponent = React.forwardRef<
 ));
 InputComponent.displayName = "InputComponent";
 
-// Flag Component
+// Flag Component - MODIFIED: reduced margin and size
 const FlagComponent = ({ country, countryName }: RPNInput.FlagProps) => {
   const Flag = flags[country];
   return (
-    <span className="flex h-6 w-6 overflow-hidden rounded-full ml-6 relative">
+    <span className="flex h-5 w-5 overflow-hidden rounded-full ml-2 relative">
       <span className="absolute inset-0 flex items-center justify-end scale-[1.8]">
         {Flag && <Flag title={countryName} />}
       </span>
@@ -102,8 +102,8 @@ const CountrySelect = ({
             type="button"
             variant="ghost"
             className={cn(
-              "flex items-center gap-1 h-full px-2",
-              "bg-transparent hover:bg-transparent min-w-[80px]",
+              "flex items-center gap-1 h-full px-1",
+              "bg-transparent hover:bg-transparent min-w-[60px]",
               "border-none focus-visible:ring-0 focus-visible:ring-offset-0",
               "absolute right-0 top-0",
             )}
@@ -111,7 +111,7 @@ const CountrySelect = ({
           >
             <div className="flex items-center gap-1">
               <FlagComponent country={value} countryName={value} />
-              <ChevronDown className="h-4 w-4 opacity-50" />
+              <ChevronDown className="h-3 w-3 opacity-50" />
             </div>
           </Button>
         </PopoverTrigger>

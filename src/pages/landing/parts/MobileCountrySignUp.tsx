@@ -1,5 +1,6 @@
 import { useJobHunterContactMutation } from "api/akaza/akazaAPI";
-import { PhoneInputLanding, CountrySelect } from "components";
+import { PhoneInputLanding } from "components";
+import CountrySelectLanding from "components/ui/custom/country-select-landing";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { useModal } from "components/modal/useModal";
@@ -62,7 +63,7 @@ const MobileCountrySignUp = () => {
   return modalState && modalState === MODAL_STATES.SIGNUP_STEP4 ? (
     <div
       id="step4_signup"
-      className="flex flex-col items-center justify-center w-full h-full p-4"
+      className="flex flex-col items-center justify-center w-full h-full p-2"
     >
       <Formik
         initialValues={initialValues}
@@ -152,7 +153,7 @@ const MobileCountrySignUp = () => {
                     <RequiredAsterisk />
                   </label>
                   <div className="relative w-2/3">
-                    <CountrySelect
+                    <CountrySelectLanding
                       value={values.country}
                       onChange={(value) => setFieldValue("country", value)}
                     />
