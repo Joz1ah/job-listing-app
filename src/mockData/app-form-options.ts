@@ -1,9 +1,6 @@
 export interface FormData {
   firstName: string;
   lastName: string;
-  birthday: string;
-  emailAddress: string;
-  mobileNumber: string;
   employmentType: string[];
   salaryRange: string;
   yearsOfExperience: string;

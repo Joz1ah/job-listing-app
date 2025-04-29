@@ -196,9 +196,6 @@ export const akazaApiAuth = createApiFunction({
           "lastName": payLoad.lastName,
           "location": payLoad.location,
           "language": payLoad.language,
-          "birthday": payLoad.birthday,
-          "email": payLoad.email,
-          "phoneNumber": payLoad.phoneNumber,
           "employmentType": payLoad.employmentType,
           "education": payLoad.education,
           "yearsOfExperience": payLoad.yearsOfExperience,
@@ -206,8 +203,10 @@ export const akazaApiAuth = createApiFunction({
           "interpersonal": payLoad.interpersonal,
           "certification": payLoad.certification,
           "salaryRange": payLoad.salaryRange,
-          "country": payLoad.country
-      },
+          "country": payLoad.country,
+          "linkedln": payLoad.linkedln, // Added LinkedIn profile
+          "formerEmployers": payLoad.formerEmployers // Added former employers array
+        },
       }),
     }),
     employerContact: builder.mutation({
