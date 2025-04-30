@@ -345,20 +345,29 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
                     Core Skills:
                   </p>
                   <div className="flex flex-wrap gap-1 mx-1">
-                    {[0, 1, 2, 3, 4].map((i) => {
-                      const skill = hasSkills ? formattedSkills[i] : null;
-                      return (
-                        <span
-                          key={i}
-                          title={skill || "Skills"}
-                          className={`text-white text-xs font-semibold px-1.5 py-0.5 rounded-[2px] inline-block max-w-32 truncate ${
-                            i % 2 === 0 ? "bg-[#168AAD]" : "bg-[#184E77]"
-                          }`}
-                        >
-                          {skill || "Skills"}
-                        </span>
-                      );
-                    })}
+                    {hasSkills
+                      ? formattedSkills.map((skill, i) => (
+                          <span
+                            key={i}
+                            title={skill}
+                            className={`text-white text-xs font-semibold px-1.5 py-0.5 rounded-[2px] inline-block max-w-32 truncate ${
+                              i % 2 === 0 ? "bg-[#168AAD]" : "bg-[#184E77]"
+                            }`}
+                          >
+                            {skill}
+                          </span>
+                        ))
+                      : [0, 1, 2, 3, 4].map((i) => (
+                          <span
+                            key={i}
+                            title="Skills"
+                            className={`text-white text-xs font-semibold px-1.5 py-0.5 rounded-[2px] inline-block max-w-32 truncate ${
+                              i % 2 === 0 ? "bg-[#168AAD]" : "bg-[#184E77]"
+                            }`}
+                          >
+                            Skills
+                          </span>
+                        ))}
                   </div>
                 </div>
 
