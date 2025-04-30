@@ -223,16 +223,35 @@ const EditApplicationCard: FC = () => {
             .map((lang: string) => lang.trim())
         : [],
       country: user?.data?.user?.relatedDetails?.country || "",
-      linkedln: user?.data?.user?.relatedDetails?.
-      linkedln || "",
+      linkedln: user?.data?.user?.relatedDetails?.linkedln || "",
       formerEmployers: initialFormerEmployers,
     },
     validationSchema,
     validateOnMount: true,
+    validateOnChange: true,
+    validateOnBlur: true,
     onSubmit: async () => {
       setShowPreview(true);
     },
   });
+
+  // Create a modified version of the values for the preview
+  // This maps the 'linkedln' property to 'linkedinProfile' for AppCardPreview
+  const previewValues = {
+    ...values,
+    linkedinProfile: values.linkedln, // Add this line to map linkedln to linkedinProfile
+  };
+
+  // Handle LinkedIn change - similar to ApplicationCardForm
+  const handleLinkedInChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Update the field value without triggering validation on former employers
+    setFieldValue("linkedln", e.target.value, false);
+    // Only validate the linkedln field
+    validateForm({
+      ...values,
+      linkedln: e.target.value,
+    });
+  };
 
   // Update validation schema when years of experience changes
   useEffect(() => {
@@ -558,6 +577,7 @@ const EditApplicationCard: FC = () => {
                 <InputField
                   label="LinkedIn Profile"
                   className="bg-transparent"
+                  onChange={handleLinkedInChange}
                   error={errors.linkedln}
                   touched={touched.linkedln}
                   showIcon={true}
@@ -615,15 +635,25 @@ const EditApplicationCard: FC = () => {
                     name="yearsOfExperience"
                     value={values.yearsOfExperience}
                     onValueChange={(value) => {
-                      setFieldValue("yearsOfExperience", value);
+                      setFieldValue("yearsOfExperience", value, false);
 
-                      if (value !== "No experience") {
-                        // Run validation immediately after field touch to update isValid
-                        setTimeout(() => validateForm(), 0);
-                      } else {
-                        // For "No experience", run validation immediately
-                        setTimeout(() => validateForm(), 0);
+                      // If "No experience" selected, reset former employers without validation
+                      if (value === "No experience") {
+                        setFieldValue(
+                          "formerEmployers",
+                          [{ name: "", jobTitle: "", duration: "" }],
+                          false,
+                        );
                       }
+
+                      // Update validation schema with new value
+                      const newValidationSchema = createValidationSchema(value);
+                      setValidationSchema(newValidationSchema);
+
+                      // Then validate the form with the new schema
+                      setTimeout(() => {
+                        validateForm();
+                      }, 0);
                     }}
                   >
                     <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
@@ -768,6 +798,7 @@ const EditApplicationCard: FC = () => {
                 </InputField>
 
                 {/* Only show former employer fields when years of experience is not 'No experience' */}
+                {/* Only show former employer fields when years of experience is not 'No experience' */}
                 {showFormerEmployer && (
                   <div className="flex flex-col gap-6">
                     {/* Former Employer Name */}
@@ -784,9 +815,14 @@ const EditApplicationCard: FC = () => {
                         name="formerEmployers[0].name"
                         value={values.formerEmployers[0]?.name}
                         onChange={handleChange}
-                        onBlur={() =>
-                          setFieldTouched("formerEmployers[0].name", true)
-                        }
+                        onBlur={() => {
+                          setFieldTouched(
+                            "formerEmployers[0].name",
+                            true,
+                            false,
+                          ); // Mark as touched without validating
+                          validateForm(); // Validate the whole form but only after touch is set
+                        }}
                         placeholder="Former Employer"
                         className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
                       />
@@ -806,9 +842,14 @@ const EditApplicationCard: FC = () => {
                         name="formerEmployers[0].jobTitle"
                         value={values.formerEmployers[0]?.jobTitle}
                         onChange={handleChange}
-                        onBlur={() =>
-                          setFieldTouched("formerEmployers[0].jobTitle", true)
-                        }
+                        onBlur={() => {
+                          setFieldTouched(
+                            "formerEmployers[0].jobTitle",
+                            true,
+                            false,
+                          ); // Mark as touched without validating
+                          validateForm(); // Validate the whole form but only after touch is set
+                        }}
                         placeholder="Former Job Title"
                         className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
                       />
@@ -828,9 +869,14 @@ const EditApplicationCard: FC = () => {
                         name="formerEmployers[0].duration"
                         value={values.formerEmployers[0]?.duration}
                         onChange={handleChange}
-                        onBlur={() =>
-                          setFieldTouched("formerEmployers[0].duration", true)
-                        }
+                        onBlur={() => {
+                          setFieldTouched(
+                            "formerEmployers[0].duration",
+                            true,
+                            false,
+                          ); // Mark as touched without validating
+                          validateForm(); // Validate the whole form but only after touch is set
+                        }}
                         placeholder="(e.g. 2 years, 10 months)"
                         className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
                       />
@@ -985,7 +1031,10 @@ const EditApplicationCard: FC = () => {
           </form>
         </div>
         <div className="w-auto flex justify-center">
-          <AppCardPreview values={values} selectOptions={selectOptions} />
+          <AppCardPreview
+            values={previewValues}
+            selectOptions={selectOptions}
+          />
         </div>
       </div>
     </>

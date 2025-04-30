@@ -1,13 +1,19 @@
-import React from "react";
-import { MapPin, /* Mail, Phone, Calendar, */ X } from "lucide-react";
-import { Card, CardFooter } from "components";
+import React, { useState, useEffect } from "react";
+import { MapPin } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
 import { Button } from "components";
 import { selectOptions, FormData } from "mockData/app-form-options";
+
+interface FormerEmployer {
+  name: string;
+  jobTitle: string;
+  duration: string;
+}
 
 interface ApplicationFormPreviewProps {
   isOpen: boolean;
   onClose: () => void;
-  formData: FormData;
+  formData: FormData & { formerEmployers?: FormerEmployer[] };
   onConfirm: () => void;
 }
 
@@ -17,7 +23,7 @@ const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
   onConfirm,
   onClose,
 }) => {
-  if (!isOpen) return null;
+  const [maxHeight, setMaxHeight] = useState("90vh");
 
   const getLabel = (
     value: string,
@@ -44,165 +50,211 @@ const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
       .join(' ');
   };
 
+  const showFormerEmployer = formData.yearsOfExperience && formData.yearsOfExperience !== "No experience";
+
+  useEffect(() => {
+    function updateHeight() {
+      const vh = window.innerHeight;
+      const calculatedHeight = Math.min(vh * 0.9, 670);
+      setMaxHeight(`${calculatedHeight}px`);
+    }
+
+    updateHeight();
+    window.addEventListener("resize", updateHeight);
+    return () => window.removeEventListener("resize", updateHeight);
+  }, []);
+
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 flex flex-col items-center overflow-y-auto p-4 pt-8">
-      <Card className="bg-white w-full max-w-[760px] h-auto relative mt-12">
-        <button
-          onClick={onClose}
-          className="absolute right-4 top-4 text-gray-500 hover:text-gray-700"
-        >
-          <X size={20} />
-        </button>
-        <div className="p-4 md:p-8 md:pb-4 space-y-[19px]">
-          {/* Personal Information */}
-          <div>
-            <h2 className="text-3xl md:text-3xl font-semibold text-[#263238]">
-              {formData.firstName} {formData.lastName}
-            </h2>
-            {/* <div className="flex items-center gap-2 text-sm md:text-[17px] mt-1">
-              <Calendar size={16} className="text-[#F5722E]" />
-              <span className="text-[#263238]">{formData.birthday}</span>
-            </div> */}
-          </div>
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent
+        className="w-[calc(100%-2rem)] md:w-full max-w-2xl p-0 flex flex-col"
+        style={{ height: maxHeight }}
+      >
+        <div className="flex flex-col h-full">
+          {/* Scrollable Content Area */}
+          <div className="flex-1 overflow-y-auto">
+            <DialogHeader className="px-6 py-4">
+              <div className="space-y-3">
+                {/* Personal Information */}
+                <div className="flex flex-col items-start">
+                  <DialogTitle className="text-lg md:text-3xl font-semibold text-[#263238]">
+                    {formData.firstName} {formData.lastName}
+                  </DialogTitle>
+                </div>
 
-          {/* Contact Information */}
-          <div className="space-y-2">
-            {/* <div className="flex items-center gap-2 text-sm md:text-[17px]">
-              <Mail size={16} className="text-[#F5722E]" />
-              <span className="text-[#263238]">{formData.emailAddress}</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm md:text-[17px]">
-              <Phone size={16} className="text-[#F5722E]" />
-              <span className="text-[#263238]">{formData.mobileNumber}</span>
-            </div> */}
-            <div className="flex items-center gap-2 text-sm md:text-[17px]">
-              <MapPin size={16} className="text-[#F5722E]" />
-              <span className="text-[#263238]">Based in {getLabel(formData.country, "country")}</span>
-            </div>
-          </div>
+                {/* Contact Information */}
+                <div className="flex items-center gap-2 text-[#263238]">
+                  <MapPin className="h-4 w-4 text-[#F5722E]" />
+                  <span className="text-sm md:text-[17px]">Based in {getLabel(formData.country, "country")}</span>
+                </div>
 
-          {/* Core Skills */}
-          <div className="space-y-2">
-            <p className="text-sm md:text-[17px] text-[#263238]">Core Skills:</p>
-            <div className="flex flex-wrap gap-2">
-              {formData.coreSkills.map((skill, index) => (
-                <span
-                  key={skill}
-                  className={`${
-                    index % 2 === 0 ? "bg-[#184E77]" : "bg-[#168AAD]"
-                  } text-white text-xs md:text-[17px] font-semibold px-2 md:px-3 py-1 rounded`}
-                >
-                  {toTitleCase(skill)}
-                </span>
-              ))}
-            </div>
-          </div>
+                {/* Core Skills */}
+                <div className="flex flex-col gap-2">
+                  <h4 className="flex justify-start text-sm md:text-[17px] font-normal text-[#263238]">
+                    Core Skills:
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    {formData.coreSkills.map((skill, index) => (
+                      <span
+                        key={skill}
+                        className={`${
+                          index % 2 === 0 ? "bg-[#184E77]" : "bg-[#168AAD]"
+                        } text-white px-2 text-sm md:text-[17px] rounded font-medium`}
+                      >
+                        {toTitleCase(skill)}
+                      </span>
+                    ))}
+                  </div>
+                </div>
 
-          {/* Experience Row */}
-          <div className="flex items-center gap-2 text-sm md:text-[17px]">
-            <span className="text-[#263238]">Experience:</span>
-            <span className="text-[#F5722E] border border-[#F5722E] rounded px-2 md:px-3 py-0.5">
-              {getLabel(formData.yearsOfExperience, "yearsOfExperience")}
-            </span>
-          </div>
-
-          {/* Employment Preference */}
-          <div className="flex flex-wrap items-center gap-2 text-sm md:text-[17px]">
-            <span className="text-[#263238]">Employment Preference:</span>
-            <div className="flex flex-wrap gap-2">
-              {getLabels(formData.employmentType, "employmentType").map((emp) => (
-                <span
-                  key={emp}
-                  className={`${
-                    emp === "Part Time" ? "bg-[#BF532C]" : "bg-[#F5722E]"
-                  } text-white rounded px-2 md:px-3 py-0.5`}
-                >
-                  {emp}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* Expected Salary Row */}
-          <div className="flex items-center gap-2 text-sm md:text-[17px]">
-            <span className="text-[#263238]">Salary Expectation:</span>
-            <span className="bg-[#8C4227] text-white rounded px-2 md:px-3 py-0.5">
-              {getLabel(formData.salaryRange, "salaryRange")}
-            </span>
-          </div>
-
-          {/* Language Row */}
-          <div className="flex flex-wrap items-center gap-2 text-sm md:text-[17px]">
-            <span className="text-[#263238]">Language:</span>
-            <div className="flex flex-wrap gap-2">
-              {getLabels(formData.languages, "languages").map((lang) => (
-                <span
-                  key={lang}
-                  className="text-[#F5722E] border border-[#F5722E] rounded px-2 md:px-3 py-0.5"
-                >
-                  {lang}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* Education Row */}
-          <div className="flex items-center gap-2 text-sm md:text-[17px]">
-            <span className="text-[#263238]">Education:</span>
-            <span className="text-[#F5722E] border border-[#F5722E] rounded px-2 md:px-3 py-0.5">
-              {getLabel(formData.education, "education")}
-            </span>
-          </div>
-
-          {/* Certifications */}
-          <div className="flex flex-wrap items-center gap-2 text-sm md:text-[17px]">
-            <span className="text-sm md:text-[17px] text-[#263238]">Certificate:</span>
-            {formData.certifications.length > 0 ? (
-              <div className="flex flex-wrap gap-2">
-                {formData.certifications.map((cert) => (
-                  <span
-                    key={cert}
-                    className="bg-[#F5722E] text-white text-xs md:text-[17px] rounded px-2 md:px-3 py-1 max-w-[150px] md:max-w-none inline-block md:inline truncate md:truncate-none"
-                  >
-                    {toTitleCase(cert)}
+                {/* Experience */}
+                <div className="flex items-center gap-2">
+                  <h4 className="text-sm md:text-[17px] font-normal text-[#263238]">
+                    Experience:
+                  </h4>
+                  <span className="text-[#F5722E] text-sm md:text-[17px] border border-[#F5722E] px-2 rounded-sm">
+                    {getLabel(formData.yearsOfExperience, "yearsOfExperience")}
                   </span>
-                ))}
+                </div>
+
+                {/* Employment Preference */}
+                <div className="flex items-center gap-2">
+                  <h4 className="text-sm md:text-[17px] font-normal text-[#263238]">
+                    Looking For:
+                  </h4>
+                  <div className="flex gap-2">
+                    {getLabels(formData.employmentType, "employmentType").map((emp) => (
+                      <span
+                        key={emp}
+                        className="bg-[#F5722E] text-sm md:text-[17px] text-white px-2 rounded-sm"
+                      >
+                        {emp}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Salary Range */}
+                <div className="flex items-center gap-2">
+                  <h4 className="text-sm md:text-[17px] font-normal text-[#263238]">
+                    Salary Expectation:
+                  </h4>
+                  <span className="bg-[#8C4227] text-sm md:text-[17px] text-white px-2 rounded-sm">
+                    {getLabel(formData.salaryRange, "salaryRange")}
+                  </span>
+                </div>
+
+                {/* Languages */}
+                <div className="flex items-center gap-2">
+                  <h4 className="text-sm md:text-[17px] font-normal text-[#263238]">
+                    Languages:
+                  </h4>
+                  <div className="flex gap-2">
+                    {getLabels(formData.languages, "languages").map((lang) => (
+                      <span
+                        key={lang}
+                        className="text-[#F5722E] text-sm md:text-[17px] border border-[#F5722E] px-2 rounded-sm"
+                      >
+                        {lang}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Education */}
+                <div className="flex items-center gap-2">
+                  <h4 className="text-sm md:text-[17px] font-normal text-[#263238]">
+                    Education:
+                  </h4>
+                  <span className="text-[#F5722E] text-sm md:text-[17px] border border-[#F5722E] px-2 rounded-sm">
+                    {getLabel(formData.education, "education")}
+                  </span>
+                </div>
+
+                {/* Certifications */}
+                <div className="flex items-center gap-2">
+                  <h4 className="text-sm md:text-[17px] font-normal text-[#263238]">
+                    Certifications:
+                  </h4>
+                  {!formData.certifications || formData.certifications.length === 0 ? (
+                    <span className="bg-[#F5722E] text-sm md:text-[17px] text-white px-2 rounded-sm">
+                      N/A
+                    </span>
+                  ) : (
+                    <div className="flex flex-wrap gap-2">
+                      {formData.certifications.map((cert) => (
+                        <span
+                          key={cert}
+                          className="bg-[#F5722E] text-sm md:text-[17px] text-white px-2 rounded-sm"
+                        >
+                          {toTitleCase(cert)}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Interpersonal Skills */}
+                {formData.interpersonalSkills && formData.interpersonalSkills.length > 0 && (
+                  <div className="flex flex-col gap-2">
+                    <h4 className="flex justify-start text-sm md:text-[17px] font-normal text-[#263238]">
+                      Interpersonal Skills:
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {formData.interpersonalSkills.map((skill, index) => (
+                        <span
+                          key={skill}
+                          className={`${
+                            index % 2 === 0 ? "bg-[#184E77]" : "bg-[#168AAD]"
+                          } text-white px-2 text-sm md:text-[17px] rounded font-medium`}
+                        >
+                          {toTitleCase(skill)}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Former Employers */}
+                {showFormerEmployer && formData.formerEmployers && formData.formerEmployers.length > 0 && (
+                  <div className="space-y-3">
+                    {formData.formerEmployers.map((employer, index) => {
+                      // Skip empty entries
+                      if (!employer.name && !employer.jobTitle && !employer.duration) {
+                        return null;
+                      }
+                      return (
+                        <div key={index} className="space-y-[10px]">
+                          <p className="flex justify-start text-sm md:text-[17px] text-[#263238]">
+                            <span className="font-medium">Company:&nbsp;</span>{employer.name}
+                          </p>
+                          <p className="flex justify-start text-sm md:text-[17px] text-[#263238]">
+                            <span className="font-medium">Position:&nbsp;</span>{employer.jobTitle}
+                          </p>
+                          <p className="flex justify-start text-sm md:text-[17px] text-[#263238]">
+                            <span className="font-medium">Duration:&nbsp;</span>{employer.duration}
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
-            ) : (
-              <span className="bg-[#F5722E] text-white text-xs md:text-[17px] font-semibold px-2 md:px-3 py-1 rounded">
-                None
-              </span>
-            )}
+            </DialogHeader>
           </div>
 
-          {/* Interpersonal Skills */}
-          <div className="space-y-2">
-            <p className="text-sm md:text-[17px] text-[#263238]">Interpersonal Skills:</p>
-            <div className="flex flex-wrap gap-2">
-              {formData.interpersonalSkills.map((skill, index) => (
-                <span
-                  key={skill}
-                  className={`${
-                    index % 2 === 0 ? "bg-[#184E77]" : "bg-[#168AAD]"
-                  } text-white text-xs md:text-[17px] font-semibold px-2 md:px-3 py-1 rounded`}
-                >
-                  {toTitleCase(skill)}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <CardFooter className="flex justify-start px-0 pb-0 pt-8 bg-transparent">
+          {/* Fixed Button Area */}
+          <div className="p-6 flex justify-start">
             <Button
+              className="bg-[#F5722E] hover:bg-[#BF532C] text-white"
               onClick={onConfirm}
-              className="bg-[#F5722E] text-white text-xs hover:bg-[#F5722E]/90 py-2 h-[27px]"
             >
               Go To Job Feed
             </Button>
-          </CardFooter>
+          </div>
         </div>
-      </Card>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 
