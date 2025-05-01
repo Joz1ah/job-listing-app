@@ -1,6 +1,7 @@
 import { FC, useState, useRef } from "react";
 import { SkillsWithEllipsis } from "components";
 import { Bookmark, MoreVertical, MapPin } from "lucide-react";
+import linkedin_icon from "assets/linkedin.svg?url";
 import {
   Card,
   CardHeader,
@@ -143,6 +144,31 @@ const LanguageTag: FC<{ language: string }> = ({ language }) => (
   </span>
 );
 
+// Add a LinkedIn Link component
+const LinkedInLink: FC<{ linkedInUrl: string }> = ({ linkedInUrl }) => {
+  const handleLinkedInClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click when clicking on LinkedIn link
+    
+    // Add protocol if missing
+    let url = linkedInUrl;
+    if (!url.startsWith('http')) {
+      url = 'https://' + url;
+    }
+    
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
+  return (
+    <div 
+      className="flex items-center gap-1 text-[13px] font-light cursor-pointer text-[#263238] underline"
+      onClick={handleLinkedInClick}
+    >
+      <img src={linkedin_icon} alt="LinkedIn" className="w-4 h-4" />
+      <span>LinkedIn Profile</span>
+    </div>
+  );
+};
+
 const AppCard: FC<AppCardProps> = ({ match, popupImage, adImage }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
@@ -218,17 +244,24 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage, adImage }) => {
               cardId={cardId}
               className="absolute top-0 right-[-8px]"
             />
-            <div className="flex flex-row items-center">
-              <MapPin size={14} className="text-[#F5722E]" />
-              <p className="text-[13px] font-light mt-0 text-[#263238]">
-                Based in {match.country}
-              </p>
+            <div className="flex flex-col space-y-1">
+              <div className="flex flex-row items-center">
+                <MapPin size={14} className="text-[#F5722E]" />
+                <p className="text-[13px] font-light mt-0 text-[#263238]">
+                  Based in {match.country}
+                </p>
+              </div>
+              
+              {/* Add LinkedIn profile link if available AND job hunter is not on free trial */}
+              {match.linkedIn && !match.isFreeTrial && (
+                <LinkedInLink linkedInUrl={match.linkedIn} />
+              )}
             </div>
           </div>
         </CardHeader>
 
         <CardContent>
-          <div className="h-auto md:h-[60px]">
+          <div className="h-auto md:h-[40px]">
             <SkillsWithEllipsis skills={match.coreSkills} />
           </div>
 

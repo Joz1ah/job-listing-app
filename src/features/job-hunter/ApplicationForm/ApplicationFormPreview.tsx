@@ -171,9 +171,9 @@ const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
                   </span>
                 </div>
 
-                {/* Certifications */}
-                <div className="flex items-center gap-2">
-                  <h4 className="text-sm md:text-[17px] font-normal text-[#263238]">
+                {/* Certifications - Fixed to display label above certificates */}
+                <div className="flex flex-col gap-2">
+                  <h4 className="flex justify-start text-sm md:text-[17px] font-normal text-[#263238]">
                     Certifications:
                   </h4>
                   {!formData.certifications || formData.certifications.length === 0 ? (
@@ -244,9 +244,9 @@ const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
           </div>
 
           {/* Fixed Button Area */}
-          <div className="p-6 flex justify-start">
+          <div className="pt-2 px-6 pb-4 flex justify-start">
             <Button
-              className="bg-[#F5722E] hover:bg-[#BF532C] text-white"
+              className="bg-[#F5722E] hover:bg-[#BF532C] w-[133px] h-[27px] px-0 text-white"
               onClick={onConfirm}
             >
               Go To Job Feed

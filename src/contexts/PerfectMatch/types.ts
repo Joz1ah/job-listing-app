@@ -19,6 +19,8 @@ export interface Match {
   certificates?: string[];
   isNew?: boolean;
   score?: number;
+  linkedIn?: string;
+  isFreeTrial: boolean;
 }
 
 export interface MatchJH {
