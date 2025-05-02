@@ -18,6 +18,35 @@ import { useNavigate } from "react-router-dom";
 import { EmployerInterviewCalendarModal } from "../modals/EmployerInterviewCalendarModal";
 import { HunterInterviewCalendarModal } from "../modals/HunterInterviewCalendarModal";
 import { Interview } from "contexts/Interviews/types";
+import linkedin_icon from "assets/linkedin.svg?url";
+
+interface LinkedInLinkProps {
+  linkedInUrl: string;
+}
+
+const LinkedInLink: FC<LinkedInLinkProps> = ({ linkedInUrl }) => {
+  const handleLinkedInClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click when clicking on LinkedIn link
+    
+    // Add protocol if missing
+    let url = linkedInUrl;
+    if (!url.startsWith("http")) {
+      url = "https://" + url;
+    }
+    
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
+
+  return (
+    <div 
+      className="flex items-center gap-1 text-[13px] font-light cursor-pointer text-[#263238] underline"
+      onClick={handleLinkedInClick}
+    >
+      <img src={linkedin_icon} alt="LinkedIn" className="w-4 h-4" />
+      <span>LinkedIn Profile</span>
+    </div>
+  );
+};
 
 interface AcceptData {
   confirmed: boolean;
@@ -170,6 +199,11 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
                 Based in {interview.country}
               </p>
             </div>
+            
+            {/* Add LinkedIn Link - Only for employer variant and if not on free trial */}
+            {variant === "employer" && interview.linkedIn && (
+              <LinkedInLink linkedInUrl={interview.linkedIn} />
+            )}
           </div>
         </CardHeader>
 
@@ -192,7 +226,7 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
               </span>
             </div>
 
-            <div className="flex justify-start mt-3 w-full">
+            <div className="flex justify-start w-full">
               {isLoading ? (
                 <div className="flex items-center gap-2">
                   <LoaderCircle className="w-5 h-5 animate-spin text-[#F5722E]" />

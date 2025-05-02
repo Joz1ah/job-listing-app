@@ -3,6 +3,7 @@ import { MapPin } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
 import { Button } from "components";
 import { selectOptions, FormData } from "mockData/app-form-options";
+import linkedin_icon from "assets/linkedin.svg?url";
 
 interface FormerEmployer {
   name: string;
@@ -13,9 +14,37 @@ interface FormerEmployer {
 interface ApplicationFormPreviewProps {
   isOpen: boolean;
   onClose: () => void;
-  formData: FormData & { formerEmployers?: FormerEmployer[] };
+  formData: FormData & {
+    formerEmployers?: FormerEmployer[];
+    linkedln?: string;
+  };
   onConfirm: () => void;
 }
+
+// LinkedIn Link component
+const LinkedInLink: React.FC<{ linkedInUrl: string }> = ({ linkedInUrl }) => {
+  const handleLinkedInClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent propagation
+
+    // Add protocol if missing
+    let url = linkedInUrl;
+    if (!url.startsWith("http")) {
+      url = "https://" + url;
+    }
+
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
+
+  return (
+    <div
+      className="flex items-center gap-1 text-[13px] md:text-[17px] cursor-pointer text-[#263238] underline"
+      onClick={handleLinkedInClick}
+    >
+      <img src={linkedin_icon} alt="LinkedIn" className="w-4 h-4" />
+      <span>LinkedIn Profile</span>
+    </div>
+  );
+};
 
 const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
   isOpen,
@@ -27,7 +56,7 @@ const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
 
   const getLabel = (
     value: string,
-    optionType: keyof typeof selectOptions
+    optionType: keyof typeof selectOptions,
   ): string => {
     const option = selectOptions[optionType].find((opt) => opt.value === value);
     return option?.label || value;
@@ -35,22 +64,26 @@ const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
 
   const getLabels = (
     values: string[],
-    optionType: keyof typeof selectOptions
+    optionType: keyof typeof selectOptions,
   ): string[] => {
     return values.map((value) => {
-      const option = selectOptions[optionType].find((opt) => opt.value === value);
+      const option = selectOptions[optionType].find(
+        (opt) => opt.value === value,
+      );
       return option?.label || value;
     });
   };
 
   const toTitleCase = (text: string): string => {
     return text
-      .split(' ')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join(' ');
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
   };
 
-  const showFormerEmployer = formData.yearsOfExperience && formData.yearsOfExperience !== "No experience";
+  const showFormerEmployer =
+    formData.yearsOfExperience &&
+    formData.yearsOfExperience !== "No experience";
 
   useEffect(() => {
     function updateHeight() {
@@ -82,11 +115,20 @@ const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
                   </DialogTitle>
                 </div>
 
-                {/* Contact Information */}
+                {/* Location */}
                 <div className="flex items-center gap-2 text-[#263238]">
                   <MapPin className="h-4 w-4 text-[#F5722E]" />
-                  <span className="text-sm md:text-[17px]">Based in {getLabel(formData.country, "country")}</span>
+                  <span className="text-sm md:text-[17px]">
+                    Based in {getLabel(formData.country, "country")}
+                  </span>
                 </div>
+
+                {/* LinkedIn - Only if not on free trial */}
+                {formData.linkedln && (
+                  <div className="flex items-center gap-2">
+                    <LinkedInLink linkedInUrl={formData.linkedln} />
+                  </div>
+                )}
 
                 {/* Core Skills */}
                 <div className="flex flex-col gap-2">
@@ -123,14 +165,16 @@ const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
                     Looking For:
                   </h4>
                   <div className="flex gap-2">
-                    {getLabels(formData.employmentType, "employmentType").map((emp) => (
-                      <span
-                        key={emp}
-                        className="bg-[#F5722E] text-sm md:text-[17px] text-white px-2 rounded-sm"
-                      >
-                        {emp}
-                      </span>
-                    ))}
+                    {getLabels(formData.employmentType, "employmentType").map(
+                      (emp) => (
+                        <span
+                          key={emp}
+                          className="bg-[#F5722E] text-sm md:text-[17px] text-white px-2 rounded-sm"
+                        >
+                          {emp}
+                        </span>
+                      ),
+                    )}
                   </div>
                 </div>
 
@@ -176,69 +220,86 @@ const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
                   <h4 className="flex justify-start text-sm md:text-[17px] font-normal text-[#263238]">
                     Certifications:
                   </h4>
-                  {!formData.certifications || formData.certifications.length === 0 ? (
-                    <span className="bg-[#F5722E] text-sm md:text-[17px] text-white px-2 rounded-sm">
-                      N/A
-                    </span>
-                  ) : (
-                    <div className="flex flex-wrap gap-2">
-                      {formData.certifications.map((cert) => (
+                  <div className="flex flex-wrap gap-2">
+                    {!formData.certifications ||
+                    formData.certifications.length === 0 ? (
+                      <span className="bg-[#F5722E] text-sm md:text-[17px] text-white px-2 rounded-sm">
+                        N/A
+                      </span>
+                    ) : (
+                      formData.certifications.map((cert) => (
                         <span
                           key={cert}
                           className="bg-[#F5722E] text-sm md:text-[17px] text-white px-2 rounded-sm"
                         >
                           {toTitleCase(cert)}
                         </span>
-                      ))}
-                    </div>
-                  )}
+                      ))
+                    )}
+                  </div>
                 </div>
 
                 {/* Interpersonal Skills */}
-                {formData.interpersonalSkills && formData.interpersonalSkills.length > 0 && (
-                  <div className="flex flex-col gap-2">
-                    <h4 className="flex justify-start text-sm md:text-[17px] font-normal text-[#263238]">
-                      Interpersonal Skills:
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {formData.interpersonalSkills.map((skill, index) => (
-                        <span
-                          key={skill}
-                          className={`${
-                            index % 2 === 0 ? "bg-[#184E77]" : "bg-[#168AAD]"
-                          } text-white px-2 text-sm md:text-[17px] rounded font-medium`}
-                        >
-                          {toTitleCase(skill)}
-                        </span>
-                      ))}
+                {formData.interpersonalSkills &&
+                  formData.interpersonalSkills.length > 0 && (
+                    <div className="flex flex-col gap-2">
+                      <h4 className="flex justify-start text-sm md:text-[17px] font-normal text-[#263238]">
+                        Interpersonal Skills:
+                      </h4>
+                      <div className="flex flex-wrap gap-2">
+                        {formData.interpersonalSkills.map((skill, index) => (
+                          <span
+                            key={skill}
+                            className={`${
+                              index % 2 === 0 ? "bg-[#184E77]" : "bg-[#168AAD]"
+                            } text-white px-2 text-sm md:text-[17px] rounded font-medium`}
+                          >
+                            {toTitleCase(skill)}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
                 {/* Former Employers */}
-                {showFormerEmployer && formData.formerEmployers && formData.formerEmployers.length > 0 && (
-                  <div className="space-y-3">
-                    {formData.formerEmployers.map((employer, index) => {
-                      // Skip empty entries
-                      if (!employer.name && !employer.jobTitle && !employer.duration) {
-                        return null;
-                      }
-                      return (
-                        <div key={index} className="space-y-[10px]">
-                          <p className="flex justify-start text-sm md:text-[17px] text-[#263238]">
-                            <span className="font-medium">Company:&nbsp;</span>{employer.name}
-                          </p>
-                          <p className="flex justify-start text-sm md:text-[17px] text-[#263238]">
-                            <span className="font-medium">Position:&nbsp;</span>{employer.jobTitle}
-                          </p>
-                          <p className="flex justify-start text-sm md:text-[17px] text-[#263238]">
-                            <span className="font-medium">Duration:&nbsp;</span>{employer.duration}
-                          </p>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
+                {showFormerEmployer &&
+                  formData.formerEmployers &&
+                  formData.formerEmployers.length > 0 && (
+                    <div className="space-y-3">
+                      {formData.formerEmployers.map((employer, index) => {
+                        // Skip empty entries
+                        if (
+                          !employer.name &&
+                          !employer.jobTitle &&
+                          !employer.duration
+                        ) {
+                          return null;
+                        }
+                        return (
+                          <div key={index} className="space-y-[10px]">
+                            <p className="flex justify-start text-sm md:text-[17px] text-[#263238]">
+                              <span className="font-medium">
+                                Company:&nbsp;
+                              </span>
+                              {employer.name}
+                            </p>
+                            <p className="flex justify-start text-sm md:text-[17px] text-[#263238]">
+                              <span className="font-medium">
+                                Position:&nbsp;
+                              </span>
+                              {employer.jobTitle}
+                            </p>
+                            <p className="flex justify-start text-sm md:text-[17px] text-[#263238]">
+                              <span className="font-medium">
+                                Duration:&nbsp;
+                              </span>
+                              {employer.duration}
+                            </p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
               </div>
             </DialogHeader>
           </div>

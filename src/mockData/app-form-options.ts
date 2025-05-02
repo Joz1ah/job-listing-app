@@ -10,6 +10,7 @@ export interface FormData {
   languages: string[];
   country: string;
   certifications: string[];
+  linkedIn?: string;
 }
 
 interface SelectOption {

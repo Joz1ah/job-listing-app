@@ -2,6 +2,32 @@ import { FC, useState, useEffect } from "react";
 import { MapPin } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
 import { BaseModalProps } from "mockData/employer-interviews-data";
+import linkedin_icon from "assets/linkedin.svg?url";
+
+// LinkedIn Link component
+const LinkedInLink: FC<{ linkedInUrl: string }> = ({ linkedInUrl }) => {
+  const handleLinkedInClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent propagation
+    
+    // Add protocol if missing
+    let url = linkedInUrl;
+    if (!url.startsWith("http")) {
+      url = "https://" + url;
+    }
+    
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
+
+  return (
+    <div 
+      className="flex items-center gap-1 text-[13px] md:text-[17px] cursor-pointer text-[#263238] underline"
+      onClick={handleLinkedInClick}
+    >
+      <img src={linkedin_icon} alt="LinkedIn" className="w-4 h-4" />
+      <span>LinkedIn Profile</span>
+    </div>
+  );
+};
 
 const formatEmploymentPreference = (pref: string): string => {
   switch (pref) {
@@ -66,6 +92,13 @@ const CandidatePreviewModal: FC<BaseModalProps> = ({
                     Based in {interview.country}
                   </span>
                 </div>
+
+                {/* LinkedIn - Only if not on free trial */}
+                {interview.linkedIn && (
+                  <div className="flex items-center gap-2">
+                    <LinkedInLink linkedInUrl={interview.linkedIn} />
+                  </div>
+                )}
 
                 {/* Core Skills */}
                 <div className="flex flex-col gap-2">
@@ -201,6 +234,33 @@ const CandidatePreviewModal: FC<BaseModalProps> = ({
                         </span>
                       ))}
                     </div>
+                  </div>
+                )}
+
+                {/* Former Employers */}
+                {interview.formerEmployers && interview.formerEmployers.length > 0 && (
+                  <div className="flex flex-col gap-2 mt-2">
+                    {interview.formerEmployers.map((employer, index) => (
+                      <div key={index} className="space-y-2">
+                        <div>
+                          <p className="text-sm md:text-[17px] text-[#263238]">
+                            <span className="font-normal">Former Employer Name:</span> {employer.name}
+                          </p>
+                        </div>
+                        
+                        <div>
+                          <p className="text-sm md:text-[17px] text-[#263238]">
+                            <span className="font-normal">Former Job Title:</span> {employer.jobTitle}
+                          </p>
+                        </div>
+                        
+                        <div>
+                          <p className="text-sm md:text-[17px] text-[#263238]">
+                            <span className="font-normal">Duration:</span> {employer.duration || "Not specified"}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>

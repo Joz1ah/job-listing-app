@@ -56,6 +56,8 @@ const mapPerfectMatchData = (apiResponse: any): Match[] => {
 
     isFreeTrial: item?.jobHunter?.isFreeTrial ?? false,
 
+    formerEmployers: item?.formerEmployers ?? [],
+
     // Add score for debugging
     score: item?.score || 0,
   }));

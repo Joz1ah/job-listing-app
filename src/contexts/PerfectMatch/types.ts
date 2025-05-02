@@ -1,3 +1,11 @@
+export interface FormerEmployer {
+  id?: number;
+  jobHunterId?: number;
+  name: string;
+  jobTitle: string;
+  duration?: string;
+}
+
 export interface Match {
   id: number;
   jobId: number;
@@ -21,6 +29,7 @@ export interface Match {
   score?: number;
   linkedIn?: string;
   isFreeTrial: boolean;
+  formerEmployers?: FormerEmployer[]; 
 }
 
 export interface MatchJH {
