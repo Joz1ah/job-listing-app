@@ -6,6 +6,7 @@ import { ScheduleInterviewModal } from "features/employer";
 //import { Match } from "mockData/job-hunter-data";
 import { Match } from "contexts/PerfectMatch/types";
 import { useAuth } from "contexts/AuthContext/AuthContext";
+import linkedin_icon from "assets/linkedin.svg?url";
 
 interface AppPreviewModalProps {
   isOpen: boolean;
@@ -25,6 +26,31 @@ const formatEmploymentPreference = (pref: string): string => {
     default:
       return pref; // Return original value if no match
   }
+};
+
+// LinkedInLink component to be used in the modal
+const LinkedInLink: FC<{ linkedInUrl: string }> = ({ linkedInUrl }) => {
+  const handleLinkedInClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent propagation
+
+    // Add protocol if missing
+    let url = linkedInUrl;
+    if (!url.startsWith("http")) {
+      url = "https://" + url;
+    }
+
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
+
+  return (
+    <div
+      className="flex items-center gap-1 text-[13px] md:text-[17px] cursor-pointer text-[#263238] underline"
+      onClick={handleLinkedInClick}
+    >
+      <img src={linkedin_icon} alt="LinkedIn" className="w-4 h-4" />
+      <span>LinkedIn Profile</span>
+    </div>
+  );
 };
 
 const AppPreviewModal: FC<AppPreviewModalProps> = ({
@@ -75,8 +101,17 @@ const AppPreviewModal: FC<AppPreviewModalProps> = ({
                 {/* Location */}
                 <div className="flex items-center gap-2 text-[#263238]">
                   <MapPin className="h-4 w-4 text-[#F5722E]" />
-                  <span className="text-sm md:text-[17px]">Based in {app.country}</span>
+                  <span className="text-sm md:text-[17px]">
+                    Based in {app.country}
+                  </span>
                 </div>
+
+                {/* LinkedIn */}
+                {app.linkedIn && !app.isFreeTrial && (
+                  <div className="flex items-center gap-2 text-[#263238]">
+                    <LinkedInLink linkedInUrl={app.linkedIn} />
+                  </div>
+                )}
 
                 {/* Core Skills */}
                 <div className="flex flex-col gap-2">
@@ -162,12 +197,12 @@ const AppPreviewModal: FC<AppPreviewModalProps> = ({
                 </div>
 
                 {/* Certificates */}
-                <div className="flex items-center gap-2">
-                  <h4 className="text-sm md:text-[17px] font-normal text-[#263238]">
+                <div className="flex flex-col gap-2">
+                  <h4 className="flex justify-start text-sm md:text-[17px] font-normal text-[#263238]">
                     Certifications:
                   </h4>
                   {!app.certificates || app.certificates.length === 0 ? (
-                    <span className="bg-[#F5722E] text-sm md:text-[17px]  text-white px-2 rounded-sm flex-wrap">
+                    <span className="bg-[#F5722E] text-sm md:text-[17px] text-white px-2 rounded-sm">
                       N/A
                     </span>
                   ) : (
@@ -175,7 +210,7 @@ const AppPreviewModal: FC<AppPreviewModalProps> = ({
                       {app.certificates.map((cert) => (
                         <span
                           key={cert}
-                          className="bg-[#F5722E] text-sm md:text-[17px]  text-white px-2 rounded-sm flex-wrap"
+                          className="bg-[#F5722E] text-sm md:text-[17px] text-white px-2 rounded-sm"
                         >
                           {cert}
                         </span>
@@ -189,7 +224,7 @@ const AppPreviewModal: FC<AppPreviewModalProps> = ({
                   app.interpersonalSkills.length > 0 && (
                     <div className="flex flex-col gap-2">
                       <h4 className="flex justify-start text-sm md:text-[17px] font-normal text-[#263238]">
-                        Interpersonal Skills:
+                        Interpersonal Skills: 
                       </h4>
                       <div className="flex flex-wrap gap-2">
                         {app.interpersonalSkills.map((skill, index) => (
@@ -205,14 +240,40 @@ const AppPreviewModal: FC<AppPreviewModalProps> = ({
                       </div>
                     </div>
                   )}
+
+                {/* Former Employers - Moved below all other fields */}
+                {app.formerEmployers && !app.isFreeTrial  && (
+                  <div className="flex flex-col gap-2 mt-2">
+                    {app.formerEmployers.map((employer, index) => (
+                      <div key={index} className="space-y-[10px]">
+                        <p className="flex justify-start text-sm md:text-[17px] text-[#263238]">
+                          <span className="font-medium">
+                            Former Employer Name:&nbsp;
+                          </span>
+                          {employer.name}
+                        </p>
+                        <p className="flex justify-start text-sm md:text-[17px] text-[#263238]">
+                          <span className="font-medium">
+                            Former Job Title:&nbsp;
+                          </span>
+                          {employer.jobTitle}
+                        </p>
+                        <p className="flex justify-start text-sm md:text-[17px] text-[#263238]">
+                          <span className="font-medium">Duration:&nbsp;</span>
+                          {employer.duration}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </DialogHeader>
           </div>
 
           {/* Fixed Button Area */}
-          <div className="p-6 flex justify-start">
+          <div className="px-6 py-4 flex justify-start">
             <Button
-              className="bg-[#F5722E] hover:bg-[#BF532C] text-white"
+              className="bg-[#F5722E] hover:bg-[#BF532C] w-[133px] h-[27px] text-xs px-0 text-white"
               onClick={onSchedule}
             >
               Schedule Interview

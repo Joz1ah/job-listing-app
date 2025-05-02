@@ -148,18 +148,18 @@ const LanguageTag: FC<{ language: string }> = ({ language }) => (
 const LinkedInLink: FC<{ linkedInUrl: string }> = ({ linkedInUrl }) => {
   const handleLinkedInClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent card click when clicking on LinkedIn link
-    
+
     // Add protocol if missing
     let url = linkedInUrl;
-    if (!url.startsWith('http')) {
-      url = 'https://' + url;
+    if (!url.startsWith("http")) {
+      url = "https://" + url;
     }
-    
-    window.open(url, '_blank', 'noopener,noreferrer');
+
+    window.open(url, "_blank", "noopener,noreferrer");
   };
 
   return (
-    <div 
+    <div
       className="flex items-center gap-1 text-[13px] font-light cursor-pointer text-[#263238] underline"
       onClick={handleLinkedInClick}
     >
@@ -251,11 +251,13 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage, adImage }) => {
                   Based in {match.country}
                 </p>
               </div>
-              
+
               {/* Add LinkedIn profile link if available AND job hunter is not on free trial */}
-              {match.linkedIn && !match.isFreeTrial && (
-                <LinkedInLink linkedInUrl={match.linkedIn} />
-              )}
+              {match.linkedIn &&
+                !match.isFreeTrial &&
+                subscriptionPlan !== "freeTrial" && (
+                  <LinkedInLink linkedInUrl={match.linkedIn} />
+                )}
             </div>
           </div>
         </CardHeader>

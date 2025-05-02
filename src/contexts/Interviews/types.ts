@@ -1,3 +1,10 @@
+export interface FormerEmployer {
+  id?: number;
+  name: string;
+  jobTitle: string;
+  duration?: string;
+}
+
 export interface Interview {
     id?:string;
     position: string;
@@ -30,6 +37,8 @@ export interface Interview {
     education?: string;
     certificate?: string;
     interpersonalSkills?: string[];
+    linkedIn?: string;
+    formerEmployers?: FormerEmployer[];
   }
   
   export interface interviewsListState {
