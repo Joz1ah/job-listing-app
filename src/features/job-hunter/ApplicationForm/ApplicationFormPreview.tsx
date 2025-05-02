@@ -279,13 +279,13 @@ const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
                           <div key={index} className="space-y-[10px]">
                             <p className="flex justify-start text-sm md:text-[17px] text-[#263238]">
                               <span className="font-medium">
-                                Company:&nbsp;
+                                Former Employer Name:&nbsp;
                               </span>
                               {employer.name}
                             </p>
                             <p className="flex justify-start text-sm md:text-[17px] text-[#263238]">
                               <span className="font-medium">
-                                Position:&nbsp;
+                                Former Job Title:&nbsp;
                               </span>
                               {employer.jobTitle}
                             </p>
