@@ -373,7 +373,7 @@ const ApplicationCardForm: FC = () => {
         certification: certificationIds,
         salaryRange: values.salaryRange,
         country: values.country,
-        linkedln: values.linkedln || null, // Make LinkedIn profile optional
+        linkedln: values.linkedln || "", // Make LinkedIn profile optional
         formerEmployers: showFormerEmployer ? filteredFormerEmployers : [], // Only include if user has experience
       };
 
