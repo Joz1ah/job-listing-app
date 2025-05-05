@@ -434,7 +434,7 @@ const EditApplicationCard: FC = () => {
         certification: certificationIds as string[],
         salaryRange: values.salaryRange,
         country: values.country,
-        linkedln: values.linkedln || null,
+        linkedln: values.linkedln || "",
         formerEmployers: showFormerEmployer ? filteredFormerEmployers : [], // Only include if user has experience
       };
 
