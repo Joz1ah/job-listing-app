@@ -159,12 +159,17 @@ const JobInterviewPreviewModal: FC<BaseModalProps> = ({
                   </div>
                 )}
 
-                {/* Certificate */}
-                {interview.certificate && (
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <h4 className="text-sm md:text-[17px] font-normal text-[#263238]">
-                      Certificate:
-                    </h4>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h4 className="text-sm md:text-[17px] font-normal text-[#263238]">
+                    Certificate:
+                  </h4>
+                  {!interview.certificate ||
+                  (Array.isArray(interview.certificate) &&
+                    interview.certificate.length === 0) ? (
+                    <span className="bg-[#F5722E] text-sm md:text-[17px] text-white px-2 rounded-sm">
+                      N/A
+                    </span>
+                  ) : (
                     <div className="flex flex-wrap gap-2">
                       {Array.isArray(interview.certificate) ? (
                         interview.certificate.map((cert) => (
@@ -181,8 +186,8 @@ const JobInterviewPreviewModal: FC<BaseModalProps> = ({
                         </span>
                       )}
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
 
                 {/* Interpersonal Skills */}
                 {interview.interpersonalSkills && (
