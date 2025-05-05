@@ -498,6 +498,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                     </Button>
                   </div>
                 </div>
+                <div className="h-16 md:h-0"></div>
               </form>
             </DialogHeader>
           </div>
