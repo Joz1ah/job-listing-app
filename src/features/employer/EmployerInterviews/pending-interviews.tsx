@@ -64,6 +64,22 @@ const PendingInterviews: FC = () => {
   const { showError } = useErrorModal();
   const { userSettings } = useAuth();
 
+  //Preload the image
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+
+  useEffect(() => {
+    const img = new Image();
+    img.src = emptyInterview;
+
+    img.onload = () => {
+      setIsImageLoaded(true);
+    };
+
+    img.onerror = () => {
+      console.error("Image failed to load:", emptyInterview);
+    };
+  }, []);
+
   useEffect(() => {
     setSelectedInterviewsGroup("PENDING");
   }, []);
@@ -179,7 +195,12 @@ const PendingInterviews: FC = () => {
   };
 
   useEffect(() => {
-    if (!interviewsList || interviewsList.length === 0) return;
+    if (!interviewsList || interviewsList.length === 0){
+      const timeout = setTimeout(() => {
+        setLoading(false)
+      }, 1000);
+      return() => clearTimeout(timeout);
+    }
   
     const timeout = setTimeout(() => {
       const initialItems = interviewsList.slice(0, 6);
@@ -258,7 +279,7 @@ const PendingInterviews: FC = () => {
 
   // Show empty state ONLY if we're not loading AND there are no interviews or subscription is freeTrial
   if (
-    (!isLoadingInterviews && !loading && interviewsList.length === 0) ||
+    (!isLoadingInterviews && !loading && interviewsList.length === 0 && isImageLoaded) ||
     subscriptionPlan === "freeTrial"
   ) {
     return (

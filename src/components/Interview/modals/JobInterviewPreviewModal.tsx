@@ -37,7 +37,7 @@ const JobInterviewPreviewModal: FC<BaseModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent 
+      <DialogContent
         className="w-[calc(100%-2rem)] md:w-full md:min-w-[760px] p-0 flex flex-col"
         style={{ height: maxHeight }}
       >
@@ -48,11 +48,11 @@ const JobInterviewPreviewModal: FC<BaseModalProps> = ({
               <div className="space-y-4">
                 {/* Name */}
                 <div className="flex flex-col items-start">
-                  <DialogTitle className=" mb-1">
-                    <h2 className="text-lg md:text-xl font-semibold text-[#263238]">
+                  <DialogTitle className="mb-1">
+                    <h2 className="flex justify-start text-lg md:text-xl font-semibold text-[#263238]">
                       {interview.position}
                     </h2>
-                    <p className="text-[15px] md:text-lg text-[#263238] font-normal underline">
+                    <p className="text-left text-[15px] md:text-lg text-[#263238] font-normal underline">
                       {interview.company}
                     </p>
                   </DialogTitle>
@@ -159,15 +159,20 @@ const JobInterviewPreviewModal: FC<BaseModalProps> = ({
                   </div>
                 )}
 
-                {/* Certificate */}
-                {interview.certificate && (
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <h4 className="text-sm md:text-[17px] font-normal text-[#263238]">
-                      Certificate:
-                    </h4>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h4 className="text-sm md:text-[17px] font-normal text-[#263238]">
+                    Certificate:
+                  </h4>
+                  {!interview.certificate ||
+                  (Array.isArray(interview.certificate) &&
+                    interview.certificate.length === 0) ? (
+                    <span className="bg-[#F5722E] text-sm md:text-[17px] text-white px-2 rounded-sm">
+                      N/A
+                    </span>
+                  ) : (
                     <div className="flex flex-wrap gap-2">
                       {Array.isArray(interview.certificate) ? (
-                        interview.certificate.map((cert ) => (
+                        interview.certificate.map((cert) => (
                           <span
                             key={cert}
                             className="bg-[#F5722E] text-sm md:text-[17px] text-white px-2 rounded-sm"
@@ -181,8 +186,8 @@ const JobInterviewPreviewModal: FC<BaseModalProps> = ({
                         </span>
                       )}
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
 
                 {/* Interpersonal Skills */}
                 {interview.interpersonalSkills && (

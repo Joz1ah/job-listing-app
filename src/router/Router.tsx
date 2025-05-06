@@ -13,6 +13,8 @@ import {
 import { useFeatureController } from 'contexts/FeatureControllerContext/FeatureController';
 
 import { useNavigate, useSearchParams } from "react-router-dom";
+import LinkRedirect from "features/link/linkRedirect";
+
 const BaseLayout = lazy(() => import('pages').then(module => ({ default: module.BaseLayout })))
 
 const NotFound = lazy(() => import('pages').then(module => ({ default: module.NotFoundPage })))
@@ -329,6 +331,10 @@ const routes: RouteObject[] = [
   {
     path: '',
     element: <RedirectTo to={ROUTE_CONSTANTS.LANDING} />,
+  },
+  {
+    path: ROUTE_CONSTANTS.LINK,
+    element: <LinkRedirect />,
   },
   {
     path: ROUTE_CONSTANTS.TEST,

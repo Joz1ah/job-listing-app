@@ -100,6 +100,10 @@ export const DefaultLayout: React.FC<DefaultLayoutProps> = ({
       handleSetModalState(MODAL_STATES.FORGOT_PASSWORD_NEW_PASSWORD);
       toggleModal(true);
     }
+    if (location.state?.login) {
+      handleSetModalState(MODAL_STATES.LOGIN);
+      toggleModal(true);
+    }
   }, [location.pathname]);
 
   useEffect(() => {
