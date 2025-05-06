@@ -1,3 +1,6 @@
+// The key change is in the Former Employer section where we add word-wrap and max-width
+// to ensure long text properly wraps
+
 import React, { useState, useEffect } from "react";
 import { MapPin } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
@@ -106,7 +109,7 @@ const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
         <div className="flex flex-col h-full">
           {/* Scrollable Content Area */}
           <div className="flex-1 overflow-y-auto">
-            <DialogHeader className="px-6 py-4">
+            <DialogHeader className="px-4 sm:px-6 py-4">
               <div className="space-y-3">
                 {/* Personal Information */}
                 <div className="flex flex-col items-start">
@@ -261,7 +264,7 @@ const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
                     </div>
                   )}
 
-                {/* Former Employers */}
+                {/* Former Employers - FIXED SECTION */}
                 {showFormerEmployer &&
                   formData.formerEmployers &&
                   formData.formerEmployers.length > 0 && (
@@ -277,23 +280,23 @@ const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
                         }
                         return (
                           <div key={index} className="space-y-[10px]">
-                            <p className="flex justify-start text-sm md:text-[17px] text-[#263238]">
-                              <span className="font-medium">
+                            <p className="flex text-sm md:text-[17px] text-[#263238] flex-wrap text-left">
+                              <span className="font-medium whitespace-nowrap">
                                 Former Employer Name:&nbsp;
                               </span>
-                              {employer.name}
+                              <span className="break-words">{employer.name}</span>
                             </p>
-                            <p className="flex justify-start text-sm md:text-[17px] text-[#263238]">
-                              <span className="font-medium">
+                            <p className="flex text-sm md:text-[17px] text-[#263238] flex-wrap text-left">
+                              <span className="font-medium whitespace-nowrap">
                                 Former Job Title:&nbsp;
                               </span>
-                              {employer.jobTitle}
+                              <span className="break-words">{employer.jobTitle}</span>
                             </p>
-                            <p className="flex justify-start text-sm md:text-[17px] text-[#263238]">
-                              <span className="font-medium">
+                            <p className="flex text-sm md:text-[17px] text-[#263238] flex-wrap text-left">
+                              <span className="font-medium whitespace-nowrap">
                                 Duration:&nbsp;
                               </span>
-                              {employer.duration}
+                              <span className="break-words">{employer.duration}</span>
                             </p>
                           </div>
                         );
@@ -305,7 +308,7 @@ const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
           </div>
 
           {/* Fixed Button Area */}
-          <div className="pt-2 px-6 pb-4 flex justify-start">
+          <div className="pt-2 px-4 sm:px-6 pb-4 flex justify-start">
             <Button
               className="bg-[#F5722E] hover:bg-[#BF532C] w-[133px] h-[27px] px-0 text-white"
               onClick={onConfirm}

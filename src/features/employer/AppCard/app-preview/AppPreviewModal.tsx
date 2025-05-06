@@ -224,7 +224,7 @@ const AppPreviewModal: FC<AppPreviewModalProps> = ({
                   app.interpersonalSkills.length > 0 && (
                     <div className="flex flex-col gap-2">
                       <h4 className="flex justify-start text-sm md:text-[17px] font-normal text-[#263238]">
-                        Interpersonal Skills: 
+                        Interpersonal Skills:
                       </h4>
                       <div className="flex flex-wrap gap-2">
                         {app.interpersonalSkills.map((skill, index) => (
@@ -242,25 +242,31 @@ const AppPreviewModal: FC<AppPreviewModalProps> = ({
                   )}
 
                 {/* Former Employers - Moved below all other fields */}
-                {app.formerEmployers && !app.isFreeTrial  && (
+                {app.formerEmployers && !app.isFreeTrial && (
                   <div className="flex flex-col gap-2 mt-2">
                     {app.formerEmployers.map((employer, index) => (
                       <div key={index} className="space-y-[10px]">
-                        <p className="flex justify-start text-sm md:text-[17px] text-[#263238]">
-                          <span className="font-medium">
+                        <p className="flex text-sm md:text-[17px] text-[#263238] flex-wrap text-left">
+                          <span className="font-medium whitespace-nowrap">
                             Former Employer Name:&nbsp;
                           </span>
-                          {employer.name}
+                          <span className="break-words">{employer.name}</span>
                         </p>
-                        <p className="flex justify-start text-sm md:text-[17px] text-[#263238]">
-                          <span className="font-medium">
+                        <p className="flex text-sm md:text-[17px] text-[#263238] flex-wrap text-left">
+                          <span className="font-medium whitespace-nowrap">
                             Former Job Title:&nbsp;
                           </span>
-                          {employer.jobTitle}
+                          <span className="break-words">
+                            {employer.jobTitle}
+                          </span>
                         </p>
-                        <p className="flex justify-start text-sm md:text-[17px] text-[#263238]">
-                          <span className="font-medium">Duration:&nbsp;</span>
-                          {employer.duration}
+                        <p className="flex text-sm md:text-[17px] text-[#263238] flex-wrap text-left">
+                          <span className="font-medium whitespace-nowrap">
+                            Duration:&nbsp;
+                          </span>
+                          <span className="break-words">
+                            {employer.duration}
+                          </span>
                         </p>
                       </div>
                     ))}
