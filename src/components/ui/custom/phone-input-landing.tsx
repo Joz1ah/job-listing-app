@@ -3,14 +3,6 @@ import * as RPNInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
 import { ChevronDown } from "lucide-react";
 import { Button } from "components";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "components";
 import { Input } from "components";
 import { Popover, PopoverContent, PopoverTrigger } from "components";
 import { ScrollArea } from "components";
@@ -48,7 +40,7 @@ const FlagComponent = ({ country, countryName }: RPNInput.FlagProps) => {
 };
 FlagComponent.displayName = "FlagComponent";
 
-// Country Select Component with improved positioning
+// Optimized Country Select Component
 const CountrySelect = ({
   disabled,
   value,
@@ -60,23 +52,27 @@ const CountrySelect = ({
   onChange: (value: RPNInput.Country) => void;
   options: { label: string; value: RPNInput.Country }[];
 }) => {
-  const handleSelect = React.useCallback(
-    (country: RPNInput.Country) => {
-      onChange(country);
-    },
-    [onChange],
-  );
-
   // Reference to the parent container
   const parentRef = useRef<HTMLDivElement | null>(null);
-
+  
+  // State for dropdown open/closed
+  const [isOpen, setIsOpen] = useState(false);
+  
   // State for dropdown width
   const [dropdownWidth, setDropdownWidth] = useState(300);
-
+  
+  // Search input ref
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  
+  // State for search text
+  const [searchText, setSearchText] = useState("");
+  
+  // Only calculate filtered options when dropdown is open
+  const validOptions = options.filter(x => x.value);
+  
   // Update width when window resizes
   useEffect(() => {
     const updateWidth = () => {
-      // Get the parent element (the entire phone input)
       const parentElement = parentRef.current?.closest(
         "[data-phone-input-landing-container]",
       );
@@ -86,17 +82,47 @@ const CountrySelect = ({
       }
     };
 
-    updateWidth();
-    window.addEventListener("resize", updateWidth);
-
-    return () => {
-      window.removeEventListener("resize", updateWidth);
-    };
-  }, []);
-
+    if (isOpen) {
+      updateWidth();
+      window.addEventListener("resize", updateWidth);
+      
+      // Focus search input when opened
+      setTimeout(() => {
+        if (searchInputRef.current) {
+          searchInputRef.current.focus();
+        }
+      }, 10);
+      
+      return () => {
+        window.removeEventListener("resize", updateWidth);
+      };
+    }
+    
+    // Reset search when dropdown is closed
+    if (!isOpen) {
+      setSearchText("");
+    }
+  }, [isOpen]);
+  
+  // Handle country selection
+  const handleSelectCountry = (country: RPNInput.Country) => {
+    onChange(country);
+    setIsOpen(false);
+  };
+  
+  // Filter countries based on search
+  const getFilteredCountries = () => {
+    if (!searchText) return validOptions;
+    
+    const query = searchText.toLowerCase();
+    return validOptions.filter(option => 
+      option.label.toLowerCase().startsWith(query)
+    );
+  };
+  
   return (
     <div ref={parentRef}>
-      <Popover>
+      <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <Button
             type="button"
@@ -117,46 +143,50 @@ const CountrySelect = ({
         </PopoverTrigger>
         <PopoverContent
           style={{ width: `${dropdownWidth}px` }}
-          className="p-0 bg-white border-[#AEADAD] z-50"
+          className="p-0 bg-white border border-gray-200 rounded-md shadow-md z-50 overflow-hidden"
           side="bottom"
           align="end"
           sideOffset={5}
         >
-          <Command className="bg-white">
-            <CommandInput
-              placeholder="Search country..."
-              className="text-black"
-            />
-            <CommandList>
+          {isOpen && (
+            <div className="bg-white">
+              <div className="p-3 border-b border-gray-200">
+                <input
+                  ref={searchInputRef}
+                  className="w-full p-2 border border-gray-300 rounded-md text-black text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Search country..."
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                />
+              </div>
               <ScrollArea className="h-72">
-                <CommandEmpty className="text-black">
-                  No country found.
-                </CommandEmpty>
-                <CommandGroup>
-                  {options
-                    .filter((x) => x.value)
-                    .map((option) => (
-                      <CommandItem
-                        className="gap-2 text-black"
+                <div className="py-1">
+                  {getFilteredCountries().length === 0 ? (
+                    <div className="px-4 py-3 text-sm text-gray-500">No country found.</div>
+                  ) : (
+                    getFilteredCountries().map((option) => (
+                      <button
                         key={option.value}
-                        onSelect={() => handleSelect(option.value)}
+                        className="flex items-center gap-3 w-full px-4 py-2 text-left hover:bg-gray-100 text-black"
+                        onClick={() => handleSelectCountry(option.value)}
                       >
                         <FlagComponent
                           country={option.value}
                           countryName={option.label}
                         />
-                        <span className="flex-1 text-sm">{option.label}</span>
+                        <span className="flex-1 text-sm font-medium">{option.label}</span>
                         {option.value && (
                           <span className="text-sm text-gray-500">
                             {`+${RPNInput.getCountryCallingCode(option.value)}`}
                           </span>
                         )}
-                      </CommandItem>
-                    ))}
-                </CommandGroup>
+                      </button>
+                    ))
+                  )}
+                </div>
               </ScrollArea>
-            </CommandList>
-          </Command>
+            </div>
+          )}
         </PopoverContent>
       </Popover>
     </div>

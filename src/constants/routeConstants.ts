@@ -17,6 +17,7 @@
     COMING_SOON: '/coming-soon',
     TERMS_AND_CONDITIONS: '/terms-and-conditions',
     PRIVACY_POLICY: '/privacy-policy',
+    LINK: '/link/:code',
 
     // Test Route
     TEST: '/test',
