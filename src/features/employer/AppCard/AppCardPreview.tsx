@@ -322,31 +322,35 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
                   ? `${values.firstName} ${values.lastName}`
                   : "Your First and Last Name"}
               </CardTitle>
-              <p className="text-[13px] text-[#263238] flex items-center mb-2">
+              <div className="flex items-center mb-1">
                 <MapPin size={12} className="mr-1 text-[#F5722E]" />
-                Based in{" "}
-                {hasCountry ? getLabel("country", values.country) : "(Country)"}
-              </p>
+                <p className="text-[13px] text-[#263238]">
+                  Based in{" "}
+                  {hasCountry ? getLabel("country", values.country) : "(Country)"}
+                </p>
+              </div>
               
               {/* LinkedIn Profile Link for Mobile - only shown if URL is valid */}
               {hasValidLinkedIn && (
-                <p 
-                  className="text-[13px] text-[#263238] flex items-center mb-2 cursor-pointer underline" 
+                <div 
+                  className="flex items-center mb-2 cursor-pointer" 
                   onClick={openLinkedInProfile}
                 >
                   <img src={linkedin_icon} alt="LinkedIn" className="mr-1 w-3 h-3" />
-                  LinkedIn Profile
-                </p>
+                  <p className="text-[13px] text-[#263238] underline">
+                    LinkedIn Profile
+                  </p>
+                </div>
               )}
 
-              <div className="flex flex-col gap-1 ">
-                <div className="h-auto sm:h-60">
+              <div className="flex flex-col gap-1">
+                <div className="h-auto">
                   <p className="text-xs font-light text-gray-800">
                     Core Skills:
                   </p>
                   <div className="flex flex-wrap gap-1 mx-1">
                     {hasSkills
-                      ? formattedSkills.map((skill, i) => (
+                      ? formattedSkills.slice(0, 5).map((skill, i) => (
                           <span
                             key={i}
                             title={skill}
@@ -360,7 +364,6 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
                       : [0, 1, 2, 3, 4].map((i) => (
                           <span
                             key={i}
-                            title="Skills"
                             className={`text-white text-xs font-semibold px-1.5 py-0.5 rounded-[2px] inline-block max-w-32 truncate ${
                               i % 2 === 0 ? "bg-[#168AAD]" : "bg-[#184E77]"
                             }`}
@@ -371,7 +374,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
                   </div>
                 </div>
 
-                <div className="flex gap-1 mt-8">
+                <div className="flex gap-1 mt-4">
                   <span className="text-[13px] font-light">Experience:</span>
                   <span className="text-[#F5722E] rounded-[4px] text-[12px] px-1 h-[18px] flex justify-center items-center outline outline-1 outline-[#F5722E]">
                     {hasExperience
