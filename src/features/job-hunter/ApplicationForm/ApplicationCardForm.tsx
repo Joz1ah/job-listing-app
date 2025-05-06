@@ -183,6 +183,11 @@ const ApplicationCardForm: FC = () => {
     },
   });
 
+  const previewValues = {
+    ...values,
+    linkedinProfile: values.linkedln, // Add this line to map linkedln to linkedinProfile
+  };
+
   const handleLinkedInChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Update the field value without triggering validation on former employers
     setFieldValue("linkedln", e.target.value, false);
@@ -1009,7 +1014,7 @@ const ApplicationCardForm: FC = () => {
           </form>
         </div>
         <div className="w-auto flex justify-center">
-          <AppCardPreview values={values} selectOptions={selectOptions} />
+          <AppCardPreview values={previewValues} selectOptions={selectOptions} />
         </div>
       </div>
     </>
