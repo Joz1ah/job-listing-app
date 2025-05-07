@@ -502,6 +502,7 @@ const ApplicationCardForm: FC = () => {
                     showIcon={true}
                     tooltipContent="Feel free to enter up to 4 languages in which you are fluent, both in speaking and writing."
                     variant="primary"
+                    disableErrorBorder={true}
                   >
                     <LanguageTagInput
                       value={values.languages || []}
@@ -509,6 +510,7 @@ const ApplicationCardForm: FC = () => {
                       className="min-h-[56px] pt-1 px-1"
                       tagClassName="bg-[#F5722E]"
                       placeholder="Select Language"
+                      error={Boolean(errors.languages && touched.languages)}
                     />
                   </InputField>
                 </div>
@@ -698,6 +700,7 @@ const ApplicationCardForm: FC = () => {
                     showIcon={true}
                     tooltipContent="Job-specific, measurable abilities like software proficiency, coding, or design tools."
                     variant="primary"
+                    disableErrorBorder={true}
                   >
                     <CoreSkillsTagInput
                       value={values.coreSkills || []}
@@ -708,6 +711,7 @@ const ApplicationCardForm: FC = () => {
                         secondColor: "#168AAD",
                       }}
                       placeholder="Type and enter to add core skill"
+                      error={Boolean(errors.coreSkills && touched.coreSkills)}
                     />
                   </InputField>
                 </div>
@@ -721,6 +725,7 @@ const ApplicationCardForm: FC = () => {
                     showIcon={true}
                     tooltipContent="Personal qualities like communication, teamwork, and problem-solving."
                     variant="primary"
+                    disableErrorBorder={true}
                   >
                     <InterpersonalSkillsTagInput
                       value={values.interpersonalSkills || []}
@@ -733,6 +738,7 @@ const ApplicationCardForm: FC = () => {
                         secondColor: "#168AAD",
                       }}
                       placeholder="Type and enter to add interpersonal skill"
+                      error={Boolean(errors.interpersonalSkills && touched.interpersonalSkills)}
                     />
                   </InputField>
                 </div>
@@ -746,6 +752,7 @@ const ApplicationCardForm: FC = () => {
                     showIcon={true}
                     tooltipContent="Select relevant certifications that enhance your job qualifications. If not listed, You may leave it blank."
                     variant="primary"
+                    disableErrorBorder={true}
                   >
                     <CertificationTagInput
                       value={values.certifications || []}
@@ -759,6 +766,7 @@ const ApplicationCardForm: FC = () => {
                         firstColor: "#184E77",
                         secondColor: "#168AAD",
                       }}
+                      error={Boolean(errors.certifications && touched.certifications)}
                     />
                   </InputField>
                 </div>

@@ -1,5 +1,5 @@
-// The key change is in the Former Employer section where we add word-wrap and max-width
-// to ensure long text properly wraps
+// The key change is in the Former Employer section where we add proper spacing 
+// between multiple employer entries with a divider
 
 import React, { useState, useEffect } from "react";
 import { MapPin } from "lucide-react";
@@ -264,11 +264,9 @@ const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
                     </div>
                   )}
 
-                {/* Former Employers - FIXED SECTION */}
-                {showFormerEmployer &&
-                  formData.formerEmployers &&
-                  formData.formerEmployers.length > 0 && (
-                    <div className="space-y-3">
+                {/* Former Employers - UPDATED SECTION */}
+                {showFormerEmployer && formData.formerEmployers && formData.formerEmployers.length > 0 && (
+                    <div className="mt-10">
                       {formData.formerEmployers.map((employer, index) => {
                         // Skip empty entries
                         if (
@@ -279,32 +277,38 @@ const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
                           return null;
                         }
                         return (
-                          <div key={index} className="space-y-[10px]">
-                            <p className="flex text-sm md:text-[17px] text-[#263238] flex-wrap text-left">
-                              <span className="font-medium whitespace-nowrap">
-                                Former Employer Name:&nbsp;
-                              </span>
-                              <span className="break-words">
-                                {employer.name}
-                              </span>
-                            </p>
-                            <p className="flex text-sm md:text-[17px] text-[#263238] flex-wrap text-left">
-                              <span className="font-medium whitespace-nowrap">
-                                Former Job Title:&nbsp;
-                              </span>
-                              <span className="break-words">
-                                {employer.jobTitle}
-                              </span>
-                            </p>
-                            <p className="flex text-sm md:text-[17px] text-[#263238] flex-wrap text-left">
-                              <span className="font-medium whitespace-nowrap">
-                                Duration:&nbsp;
-                              </span>
-                              <span className="break-words">
-                                {employer.duration}
-                              </span>
-                            </p>
-                          </div>
+                          <React.Fragment key={index}>
+                            <div className="space-y-[10px] mb-4">
+                              <p className="flex text-sm md:text-[17px] text-[#263238] flex-wrap text-left">
+                                <span className="font-medium whitespace-nowrap">
+                                  Former Employer Name:&nbsp;
+                                </span>
+                                <span className="break-words">
+                                  {employer.name}
+                                </span>
+                              </p>
+                              <p className="flex text-sm md:text-[17px] text-[#263238] flex-wrap text-left">
+                                <span className="font-medium whitespace-nowrap">
+                                  Former Job Title:&nbsp;
+                                </span>
+                                <span className="break-words">
+                                  {employer.jobTitle}
+                                </span>
+                              </p>
+                              <p className="flex text-sm md:text-[17px] text-[#263238] flex-wrap text-left">
+                                <span className="font-medium whitespace-nowrap">
+                                  Duration:&nbsp;
+                                </span>
+                                <span className="break-words">
+                                  {employer.duration}
+                                </span>
+                              </p>
+                            </div>
+                            {/* Add extra space if not the last employer */}
+                            {index < (formData.formerEmployers?.length ?? 0) - 1 && (
+                              <div className="h-4"></div>
+                            )}
+                          </React.Fragment>
                         );
                       })}
                     </div>
