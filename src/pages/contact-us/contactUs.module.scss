@@ -80,6 +80,13 @@
         border-radius: 4px;
         background: #F5722E;
         width: 160px;
+        transition: background-color 0.3s ease;
+        cursor: pointer;
+        
+        /* Add button-invalid class for when form is not valid */
+        &.button-invalid {
+            background: #AEADAD; /* Gray color for invalid form state */
+        }
     }
     .form-button-submit-wrapper{
         margin-top:.3em;
@@ -271,7 +278,4 @@
             gap: .8em;
         }
       }
-
-      
 }
-
