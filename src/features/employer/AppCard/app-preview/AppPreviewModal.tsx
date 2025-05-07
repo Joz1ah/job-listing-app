@@ -206,7 +206,7 @@ const AppPreviewModal: FC<AppPreviewModalProps> = ({
                       N/A
                     </span>
                   ) : (
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-2 text-left">
                       {app.certificates.map((cert) => (
                         <span
                           key={cert}

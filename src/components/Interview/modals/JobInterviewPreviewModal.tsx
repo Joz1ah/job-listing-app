@@ -170,7 +170,7 @@ const JobInterviewPreviewModal: FC<BaseModalProps> = ({
                       N/A
                     </span>
                   ) : (
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-2 text-left">
                       {Array.isArray(interview.certificate) ? (
                         interview.certificate.map((cert) => (
                           <span
