@@ -107,6 +107,19 @@ const errorMessageVariants = cva("absolute right-1 italic text-[#E63946] mt-1", 
   },
 });
 
+// New variant for the input container to handle error borders
+const inputContainerVariants = cva("relative", {
+  variants: {
+    hasError: {
+      true: "[&>*:first-child]:border-[#E63946] [&>*:first-child]:border-2",
+      false: "",
+    },
+  },
+  defaultVariants: {
+    hasError: false,
+  },
+});
+
 interface InputFieldProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof inputWrapperVariants> {
@@ -118,6 +131,7 @@ interface InputFieldProps
   tooltipContent?: string | React.ReactNode;
   size?: "sm" | "md" | "lg" | "form"; // Updated to include form
   errorMessageSize?: "tiny" | "xs" | "sm" | "base";
+  disableErrorBorder?: boolean; // New prop to disable error border
   children: React.ReactNode;
 }
 
@@ -135,6 +149,7 @@ const InputField = React.forwardRef<HTMLDivElement, InputFieldProps>(
       showAlertIcon = true,
       tooltipContent,
       errorMessageSize = "xs",
+      disableErrorBorder = false, // Default to false to maintain existing behavior
       ...props
     },
     ref,
@@ -174,7 +189,8 @@ const InputField = React.forwardRef<HTMLDivElement, InputFieldProps>(
             </div>
           </div>
 
-          <div className="relative">
+          {/* Added inputContainerVariants to apply error border with disable option */}
+          <div className={inputContainerVariants({ hasError: !!showError && !disableErrorBorder })}>
             {children}
             {showError && showAlertIcon && (
               <div className="absolute -right-6 top-1/2 -translate-y-1/2">

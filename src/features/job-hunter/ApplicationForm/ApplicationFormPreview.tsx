@@ -223,17 +223,17 @@ const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
                   <h4 className="flex justify-start text-sm md:text-[17px] font-normal text-[#263238]">
                     Certifications:
                   </h4>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2 text-left w-full">
                     {!formData.certifications ||
                     formData.certifications.length === 0 ? (
-                      <span className="bg-[#F5722E] text-sm md:text-[17px] text-white px-2 rounded-sm">
+                      <span className="bg-[#F5722E] text-sm md:text-[17px] text-white px-2 rounded-sm text-left">
                         N/A
                       </span>
                     ) : (
                       formData.certifications.map((cert) => (
                         <span
                           key={cert}
-                          className="bg-[#F5722E] text-sm md:text-[17px] text-white px-2 rounded-sm"
+                          className="bg-[#F5722E] text-sm md:text-[17px] text-white px-2 rounded-sm text-left"
                         >
                           {toTitleCase(cert)}
                         </span>
@@ -284,19 +284,25 @@ const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
                               <span className="font-medium whitespace-nowrap">
                                 Former Employer Name:&nbsp;
                               </span>
-                              <span className="break-words">{employer.name}</span>
+                              <span className="break-words">
+                                {employer.name}
+                              </span>
                             </p>
                             <p className="flex text-sm md:text-[17px] text-[#263238] flex-wrap text-left">
                               <span className="font-medium whitespace-nowrap">
                                 Former Job Title:&nbsp;
                               </span>
-                              <span className="break-words">{employer.jobTitle}</span>
+                              <span className="break-words">
+                                {employer.jobTitle}
+                              </span>
                             </p>
                             <p className="flex text-sm md:text-[17px] text-[#263238] flex-wrap text-left">
                               <span className="font-medium whitespace-nowrap">
                                 Duration:&nbsp;
                               </span>
-                              <span className="break-words">{employer.duration}</span>
+                              <span className="break-words">
+                                {employer.duration}
+                              </span>
                             </p>
                           </div>
                         );

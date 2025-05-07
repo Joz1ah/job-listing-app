@@ -204,7 +204,7 @@ const CandidatePreviewModal: FC<BaseModalProps> = ({
                       N/A
                     </span>
                   ) : (
-                    <div className="flex flex-col gap-2 w-full">
+                    <div className="flex flex-col gap-2 w-full text-left">
                       {interview.certificate.map((cert) => (
                         <span
                           key={cert}
