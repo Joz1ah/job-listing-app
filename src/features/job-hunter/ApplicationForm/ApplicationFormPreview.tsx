@@ -266,7 +266,7 @@ const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
 
                 {/* Former Employers - UPDATED SECTION */}
                 {showFormerEmployer && formData.formerEmployers && formData.formerEmployers.length > 0 && (
-                    <div className="mt-10">
+                    <div className="pt-3">
                       {formData.formerEmployers.map((employer, index) => {
                         // Skip empty entries
                         if (
@@ -278,7 +278,7 @@ const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
                         }
                         return (
                           <React.Fragment key={index}>
-                            <div className="space-y-[10px] mt-8 mb-4">
+                            <div className="space-y-[10px] mb-4">
                               <p className="flex text-sm md:text-[17px] text-[#263238] flex-wrap text-left">
                                 <span className="font-medium whitespace-nowrap">
                                   Former Employer Name:&nbsp;
@@ -306,7 +306,7 @@ const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
                             </div>
                             {/* Add extra space if not the last employer */}
                             {index < (formData.formerEmployers?.length ?? 0) - 1 && (
-                              <div className="h-4"></div>
+                              <div className="h-2"></div>
                             )}
                           </React.Fragment>
                         );
