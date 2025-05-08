@@ -278,7 +278,7 @@ const ApplicationFormPreview: React.FC<ApplicationFormPreviewProps> = ({
                         }
                         return (
                           <React.Fragment key={index}>
-                            <div className="space-y-[10px] mb-4">
+                            <div className="space-y-[10px] mt-8 mb-4">
                               <p className="flex text-sm md:text-[17px] text-[#263238] flex-wrap text-left">
                                 <span className="font-medium whitespace-nowrap">
                                   Former Employer Name:&nbsp;
