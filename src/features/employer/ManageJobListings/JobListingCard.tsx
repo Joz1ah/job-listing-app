@@ -85,7 +85,7 @@ const JobListingCard: FC<JobListingCardProps> = ({ job, onEdit }) => {
 
             {/* Positioned the trash icon outside the title area with higher z-index */}
             <div className="absolute top-8 right-2 z-10">
-              <Tooltip content="Can't delete job listing for now" TranslateX="-translate-x-[30%]">
+              <Tooltip content="Can't delete job listing for now">
                 <div className="p-1"> {/* Added padding to increase hover area */}
                   <Trash2
                     className="w-5 h-5 text-red-500 hover:text-red-700 cursor-not-allowed"

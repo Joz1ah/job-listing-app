@@ -50,7 +50,7 @@ const validationSchema = Yup.object().shape({
   interviewDate: Yup.date()
     .required("Please select a date")
     .min(
-      new Date(new Date().setHours(0, 0, 0, 0) + 86400000), // Add 24 hours (86400000 ms) to current date
+      new Date(new Date().setHours(0, 0, 0, 0) + 86400000),
       "Please select a future date",
     )
     .max(
@@ -384,14 +384,13 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                       </div>
                     </div>
 
-                    {/* Right Column */}
-                    <div className="space-y-4">
-                      <div>
-                        <span className="text-sm flex justify-start mb-2">
-                          Core Skills:
-                        </span>
-                        <div className="flex flex-wrap gap-1.5">
-                          {coreSkills.map((skill, index) => (
+                    <div>
+                      <span className="text-sm flex justify-start mb-2">
+                        Certificates:
+                      </span>
+                      <div className="flex flex-wrap gap-1.5 text-left">
+                        {certificate && certificate.length > 0 ? (
+                          certificate.map((cert, index) => (
                             <span
                               key={index}
                               className="text-orange-500 border border-orange-500 px-2 py-0.5 text-xs rounded"
@@ -488,7 +487,6 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                     <Button
                       type="submit"
                       className={`${sendInviteButtonClass} w-full sm:w-auto`}
-                      disabled={!isValid || isSubmitting}
                     >
                       Send Invite
                     </Button>
