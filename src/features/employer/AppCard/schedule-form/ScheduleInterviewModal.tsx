@@ -387,7 +387,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                       <span className="text-sm flex justify-start mb-2">
                         Certificates:
                       </span>
-                      <div className="flex flex-wrap gap-1.5">
+                      <div className="flex flex-wrap gap-1.5 text-left">
                         {certificate && certificate.length > 0 ? (
                           certificate.map((cert, index) => (
                             <span

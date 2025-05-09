@@ -9,21 +9,6 @@ const JobHunterHeader: FC = () => {
   const { user } = useAuth();
   const relatedDetails = user?.data?.user?.relatedDetails;
 
-  const DesktopTooltip = ({
-    content,
-    children,
-  }: {
-    content: string;
-    children: React.ReactNode;
-  }) => (
-    <>
-      <div className="md:hidden">{children}</div>
-      <div className="hidden md:block">
-        <Tooltip content={content}>{children}</Tooltip>
-      </div>
-    </>
-  );
-
   // Format employment type and include Full Time, Part Time, and Contract Only
   const formatEmploymentTypes = (types: string) => {
     return types
@@ -56,15 +41,13 @@ const JobHunterHeader: FC = () => {
           </div>
 
           {subscriptionPlan !== "freeTrial" && (
-            <div className="hidden md:flex items-center space-x-2">
-              <DesktopTooltip content="This is how employers rated your interview">
-                <div className="flex items-center space-x-2 font-light text-white">
-                  <span className="border-2 border-dotted border-[#F5722E] text-[15px] px-2 py-1 border-opacity-70 whitespace-nowrap">
-                    Your interview rating from Employers
-                  </span>
-                  <Info className="fill-[#D6D6D6] text-[#263238]" size={14} />
-                </div>
-              </DesktopTooltip>
+            <div className="hidden md:flex items-center space-x-2 font-light text-white">
+              <span className="border-2 border-dotted border-[#F5722E] text-[15px] px-2 py-1 border-opacity-70 whitespace-nowrap">
+                Your interview rating from Employers
+              </span>
+              <Tooltip content="This is how employers rated your interview">
+                <Info className="fill-[#D6D6D6] text-[#263238]" size={14} />
+              </Tooltip>
             </div>
           )}
         </div>
