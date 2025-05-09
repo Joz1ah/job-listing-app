@@ -114,7 +114,7 @@ const SubscriptionSettings: React.FC = () => {
       },
       {
         icon: <img src={like_icon} className="w-5 h-5" />,
-        text: "Ratings and Feedback",
+        text: "Insights and Feedback",
       },
       {
         icon: <img src={line_graph_icon} className="w-5 h-5" />,

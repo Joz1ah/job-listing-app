@@ -4,16 +4,14 @@ import { EmployerFeed, Sidebar } from "features/employer";
 import { PageMeta } from "components";
 
 const EmployerFeedLayout: FC = () => {
-
   return (
     <>
-    <PageMeta 
+      <PageMeta 
         title="Dashboard Feed" 
         description="Akaza is a modern job marketplace with a new concept. No resume, No endless scrolling, you just choose your Perfect Match!"
-    />
-      <div className="px-4 xl:px-12 md:pt-20">
-        {/* Main content area with two columns */}
-        <div className="flex flex-col md:flex-row md:space-x-6">
+      />
+      <div className="flex justify-center md:pt-24 px-4">
+        <div className="flex flex-col md:flex-row md:space-x-8 max-w-screen-xl w-full">
           {/* Left column - contains header and sidebar */}
           <div className="md:w-[311px] flex-shrink-0">
             <EmployerHeader />
@@ -21,7 +19,7 @@ const EmployerFeedLayout: FC = () => {
           </div>
           
           {/* Right column - contains feed */}
-          <div className="flex-1 md:pt-8">
+          <div className="flex-1">
             <EmployerFeed />
           </div>
         </div>

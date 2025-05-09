@@ -38,7 +38,8 @@ interface TagInputProps {
     secondColor?: string;
   };
   maxTagLength?: number;
-  onInputChange?: (e: React.ChangeEvent<HTMLInputElement>) => void; // Fixed: Remove comma and add proper type
+  onInputChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  error?: boolean;
 }
 
 interface Skill {
@@ -63,6 +64,7 @@ const TagInputs: React.FC<TagInputProps> = ({
   alternateColors,
   //maxTagLength = 12,
   onInputChange,
+  error = false,
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -297,8 +299,9 @@ const TagInputs: React.FC<TagInputProps> = ({
 
       <div
         className={cn(
-          "bg-transparent border-2 border-[#AEADAD] rounded-[10px] min-h-[36px] overflow-hidden group",
-          "focus-within:border-[#F5722E]",
+          "bg-transparent border-2 rounded-[10px] min-h-[36px] overflow-hidden group",
+          error ? "border-red-500" : "border-[#AEADAD]",
+          !error && "focus-within:border-[#F5722E]",
           "transition-all duration-200 ease-in-out",
           disabled && "opacity-50 cursor-not-allowed",
           className,

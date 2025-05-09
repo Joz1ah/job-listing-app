@@ -348,19 +348,39 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                   <span> {position}</span> position
                 </DialogTitle>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  {/* Name and Skills Grid - Responsive */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-0">
-                    {/* Left Column */}
-                    <div className="mb-4 sm:mb-0">
-                      <span className="text-sm flex justify-start mb-2">
-                        {candidateName || "Name of Job Hunter"}
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {/* Name and Skills Grid - Responsive */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-0">
+                  {/* Left Column */}
+                  <div className="mb-4 sm:mb-0">
+                    <span className="text-sm flex justify-start mb-2">
+                      {candidateName || "Name of Job Hunter"}
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <MapPin className="text-[#F5722E]" />
+                      <span className="text-sm text-black">
+                        Based in {country || "(Country)"}
                       </span>
-                      <div className="flex items-center gap-2">
-                        <MapPin className="text-[#F5722E]" />
-                        <span className="text-sm text-black">
-                          Based in {country || "(Country)"}
-                        </span>
+                    </div>
+                  </div>
+
+                  {/* Right Column */}
+                  <div className="space-y-4">
+                    <div>
+                      <span className="text-sm flex justify-start mb-2">
+                        Core Skills:
+                      </span>
+                      <div className="flex flex-wrap gap-1.5">
+                        {coreSkills.map((skill, index) => (
+                          <span
+                            key={index}
+                            className={`${
+                              index % 2 === 0 ? "bg-[#184E77]" : "bg-[#168AAD]"
+                            } text-white px-2 py-0.5 text-xs rounded`}
+                          >
+                            {skill}
+                          </span>
+                        ))}
                       </div>
                     </div>
 
@@ -374,115 +394,61 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                           {coreSkills.map((skill, index) => (
                             <span
                               key={index}
-                              className={`${
-                                index % 2 === 0
-                                  ? "bg-[#184E77]"
-                                  : "bg-[#168AAD]"
-                              } text-white px-2 py-0.5 text-xs rounded`}
+                              className="text-orange-500 border border-orange-500 px-2 py-0.5 text-xs rounded"
                             >
-                              {skill}
+                              {cert}
                             </span>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div>
-                        <span className="text-sm flex justify-start mb-2">
-                          Certificates:
-                        </span>
-                        <div className="flex flex-wrap gap-1.5">
-                          {certificate && certificate.length > 0 ? (
-                            certificate.map((cert, index) => (
-                              <span
-                                key={index}
-                                className="text-orange-500 border border-orange-500 px-2 py-0.5 text-xs rounded"
-                              >
-                                {cert}
-                              </span>
-                            ))
-                          ) : (
-                            <span className="text-gray-400 text-xs">
-                              No certificates provided
-                            </span>
-                          )}
-                        </div>
+                          ))
+                        ) : (
+                          <span className="text-gray-400 text-xs">
+                            No certificates provided
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
+                </div>
 
-                  {/* Date and Time Selection - Responsive */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8 mt-4 sm:mt-0">
-                    <div>
-                      <InputField
-                        label="Date"
-                        variant="secondary"
-                        error={errors.interviewDate}
-                        touched={touched.interviewDate}
-                      >
-                        <div className="relative">
-                          <div
-                            ref={dateInputRef}
-                            className="w-full border-2 rounded-[10px] bg-transparent h-[56px] px-3 flex items-center cursor-pointer border-[#263238] text-sm"
-                            onClick={() => setIsDatePickerOpen(true)}
-                          >
-                            {values.interviewDate
-                              ? values.interviewDate.toLocaleDateString()
-                              : "Select a date"}
-                          </div>
-                        </div>
-                      </InputField>
-                    </div>
-
-                    <div>
-                      <InputField
-                        label="Time"
-                        variant="secondary"
-                        touched={touched.interviewTime}
-                        error={errors.interviewTime}
-                      >
-                        <Select
-                          value={values.interviewTime}
-                          onValueChange={handleTimeSelect}
+                {/* Date and Time Selection - Responsive */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8 mt-4 sm:mt-0">
+                  <div>
+                    <InputField
+                      label="Date"
+                      variant="secondary"
+                      error={errors.interviewDate}
+                      touched={touched.interviewDate}
+                    >
+                      <div className="relative">
+                        <div
+                          ref={dateInputRef}
+                          className="w-full border-2 rounded-[10px] bg-transparent h-[56px] px-3 flex items-center cursor-pointer border-[#263238] text-sm"
+                          onClick={() => setIsDatePickerOpen(true)}
                         >
-                          <SelectTrigger className="w-full border-2 rounded-[10px] bg-transparent h-[56px] border-[#263238]">
-                            <SelectValue placeholder="Select a time" />
-                          </SelectTrigger>
-                          <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:px-0 border-none rounded-none max-h-[200px]">
-                            {timeSlots.map((time) => (
-                              <SelectItem
-                                key={time}
-                                value={time}
-                                className="rounded-none justify-center pl-3 h-[55px]"
-                              >
-                                {time}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </InputField>
-                    </div>
+                          {values.interviewDate
+                            ? values.interviewDate.toLocaleDateString()
+                            : "Select a date"}
+                        </div>
+                      </div>
+                    </InputField>
                   </div>
 
-                  {/* Meeting Link and Timezone - Responsive */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8 mt-2 sm:mt-0">
-                    <div className="flex items-center gap-3">
-                      <img src={gmeet} alt="Meet icon" className="w-4 h-4" />
-                      <span className="text-sm text-[#F5722E]">
-                        via Google meet
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-5 select-none">
-                      <span
-                        className="text-xs sm:text-sm text-[#263238] cursor-pointer"
-                        onClick={() => {
-                          navigate("/dashboard/account-settings/general");
-                        }}
+                  <div>
+                    <InputField
+                      label="Time"
+                      variant="secondary"
+                      touched={touched.interviewTime}
+                      error={errors.interviewTime}
+                    >
+                      <Select
+                        value={values.interviewTime}
+                        onValueChange={handleTimeSelect}
                       >
                         {timezone} | Click to Change
                       </span>
                       <ChevronRight className="w-4 h-4 flex-shrink-0" />
                     </div>
                   </div>
+                </div>
 
                   {/* Buttons - Responsive */}
                   <div className="p-2 sm:p-4 md:p-6">
@@ -503,9 +469,42 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                       </Button>
                     </div>
                   </div>
-                </form>
-              </DialogHeader>
-            </div>
+                  <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-5 select-none">
+                    <span
+                      className="text-xs sm:text-sm text-[#263238] cursor-pointer"
+                      onClick={() => {
+                        navigate("/dashboard/account-settings/general");
+                      }}
+                    >
+                      {timezone} | Click to Change
+                    </span>
+                    <ChevronRight className="w-4 h-4 flex-shrink-0" />
+                  </div>
+                </div>
+
+                {/* Buttons - Responsive */}
+                <div className="p-2 sm:p-4 md:p-6">
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <Button
+                      type="submit"
+                      className={`${sendInviteButtonClass} w-full sm:w-auto`}
+                      disabled={!isValid || isSubmitting}
+                    >
+                      Send Invite
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="text-[#F5722E] border-[#F5722E] hover:text-white hover:bg-[#F5722E] text-[16px] w-full sm:w-auto"
+                      onClick={handleModalClose}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+                <div className="h-16 md:h-0"></div>
+              </form>
+            </DialogHeader>
           </div>
         </DialogContent>
       </Dialog>
