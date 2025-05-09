@@ -332,7 +332,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
       {/* Updated to use closeOnOutsideClick={false} */}
       <Dialog open={isOpen} onOpenChange={handleModalClose}>
         <DialogContent
-          className={`w-[calc(100%-2rem)] md:w-full max-w-3xl h-auto p-0 flex flex-col mt-0 translate-y-12 top-4 sm:top-6 ${isMobileView ? "max-h-[90vh] overflow-y-auto" : ""}`}
+          className="w-[calc(100%-2rem)] md:w-full max-w-3xl h-auto p-0 flex flex-col mt-0 translate-y-12 top-4 sm:top-6 max-h-[90vh] overflow-y-auto"
           closeOnOutsideClick={false}
         >
           <div
@@ -341,12 +341,11 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
               e.stopPropagation()
             }
           >
-            <div className="flex-1 overflow-y-auto">
-              <DialogHeader className="py-2 px-4 sm:px-6">
-                <DialogTitle className="text-center text-orange-500 mb-4 sm:mb-8 mt-4 sm:mt-6 text-base sm:text-lg">
-                  Schedule an interview for the candidate below for the
-                  <span> {position}</span> position
-                </DialogTitle>
+            <DialogHeader className="py-2 px-4 sm:px-6">
+              <DialogTitle className="text-center text-orange-500 mb-4 sm:mb-8 mt-4 sm:mt-6 text-base sm:text-lg">
+                Schedule an interview for the candidate below for the
+                <span> {position}</span> position
+              </DialogTitle>
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 {/* Name and Skills Grid - Responsive */}
@@ -442,31 +441,32 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                         value={values.interviewTime}
                         onValueChange={handleTimeSelect}
                       >
-                        {timezone} | Click to Change
-                      </span>
-                      <ChevronRight className="w-4 h-4 flex-shrink-0" />
-                    </div>
+                        <SelectTrigger className="w-full border-2 rounded-[10px] bg-transparent h-[56px] border-[#263238]">
+                          <SelectValue placeholder="Select a time" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:px-0 border-none rounded-none max-h-[200px]">
+                          {timeSlots.map((time) => (
+                            <SelectItem
+                              key={time}
+                              value={time}
+                              className="rounded-none justify-center pl-3 h-[55px]"
+                            >
+                              {time}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </InputField>
                   </div>
                 </div>
 
-                  {/* Buttons - Responsive */}
-                  <div className="p-2 sm:p-4 md:p-6">
-                    <div className="flex flex-col sm:flex-row gap-2">
-                      <Button
-                        type="submit"
-                        className={`${sendInviteButtonClass} w-full sm:w-auto`}
-                      >
-                        Send Invite
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className="text-[#F5722E] border-[#F5722E] hover:text-white hover:bg-[#F5722E] text-[16px] w-full sm:w-auto"
-                        onClick={handleModalClose}
-                      >
-                        Cancel
-                      </Button>
-                    </div>
+                {/* Meeting Link and Timezone - Responsive */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8 mt-2 sm:mt-0">
+                  <div className="flex items-center gap-3">
+                    <img src={gmeet} alt="Meet icon" className="w-4 h-4" />
+                    <span className="text-sm text-[#F5722E]">
+                      via Google meet
+                    </span>
                   </div>
                   <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-5 select-none">
                     <span
