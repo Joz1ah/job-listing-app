@@ -49,7 +49,10 @@ interface FormValues {
 const validationSchema = Yup.object().shape({
   interviewDate: Yup.date()
     .required("Please select a date")
-    .min(new Date(new Date().setHours(0, 0, 0, 0)), "Cannot select a past date")
+    .min(
+      new Date(new Date().setHours(0, 0, 0, 0) + 86400000), // Add 24 hours (86400000 ms) to current date
+      "Please select a future date",
+    )
     .max(
       new Date(new Date().setMonth(new Date().getMonth() + 2)),
       "Cannot select a date more than 2 months",
@@ -80,54 +83,54 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
   const { showError } = useErrorModal();
   const [isMobileView, setIsMobileView] = useState<boolean>(false);
   const dateInputRef = useRef<HTMLDivElement>(null);
-  
+
   // State to track window dimensions for responsive positioning
   const [windowDimensions, setWindowDimensions] = useState({
     width: window.innerWidth,
-    height: window.innerHeight
+    height: window.innerHeight,
   });
-  
+
   // Check viewport size
   useEffect(() => {
     const checkViewportSize = () => {
       setIsMobileView(window.innerWidth < 640);
     };
-    
+
     checkViewportSize();
-    window.addEventListener('resize', checkViewportSize);
-    
+    window.addEventListener("resize", checkViewportSize);
+
     return () => {
-      window.removeEventListener('resize', checkViewportSize);
+      window.removeEventListener("resize", checkViewportSize);
     };
   }, []);
-  
+
   // Add resize and scroll listeners to update dimensions without flickering
   useEffect(() => {
     if (isDatePickerOpen && !isMobileView) {
       // Debounce function to prevent excessive rerenders
       let resizeTimer: NodeJS.Timeout;
-      
+
       const handleResizeOrScroll = () => {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => {
           setWindowDimensions({
             width: window.innerWidth,
-            height: window.innerHeight
+            height: window.innerHeight,
           });
         }, 50); // 50ms debounce
       };
-      
-      window.addEventListener('resize', handleResizeOrScroll);
-      window.addEventListener('scroll', handleResizeOrScroll, true);
-      
+
+      window.addEventListener("resize", handleResizeOrScroll);
+      window.addEventListener("scroll", handleResizeOrScroll, true);
+
       return () => {
         clearTimeout(resizeTimer);
-        window.removeEventListener('resize', handleResizeOrScroll);
-        window.removeEventListener('scroll', handleResizeOrScroll, true);
+        window.removeEventListener("resize", handleResizeOrScroll);
+        window.removeEventListener("scroll", handleResizeOrScroll, true);
       };
     }
   }, [isDatePickerOpen, isMobileView]);
-  
+
   const formik = useFormik<FormValues>({
     initialValues: {
       interviewDate: undefined,
@@ -155,10 +158,12 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
           scheduledStart: scheduleStart.format("YYYY-MM-DDTHH:mm"),
           scheduledEnd: scheduledEnd.format("YYYY-MM-DDTHH:mm"),
         };
-        console.log(payload)
-        await createInterview(payload).unwrap().then(()=>{
-          setShowSuccessModal(true);
-        });
+        console.log(payload);
+        await createInterview(payload)
+          .unwrap()
+          .then(() => {
+            setShowSuccessModal(true);
+          });
       } catch (error) {
         const errorMessage =
           (error as CustomError).data?.message ||
@@ -219,7 +224,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
   // Button class based on validation state
   const sendInviteButtonClass =
     !isValid || isSubmitting || !formik.dirty
-      ? "bg-[#AEADAD] hover:bg-[#AEADAD]/70 text-white text-[16px] font-normal cursor-not-allowed"
+      ? "bg-[#AEADAD] hover:bg-[#AEADAD]/70 text-white text-[16px] font-normal"
       : "bg-[#F5722E] hover:bg-[#F5722E]/70 text-white text-[16px] font-normal";
 
   // Completely redesigned approach using a modal-like overlay
@@ -249,13 +254,13 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
     } else {
       // Desktop positioning - align with input field
       const inputRect = dateInputRef.current?.getBoundingClientRect();
-      
+
       if (!inputRect) {
         // Fallback to center positioning if input field not found
         calendarPosition = (
-          <div 
+          <div
             className="fixed z-[1002] left-1/2 transform -translate-x-1/2 pointer-events-auto"
-            style={{ top: '25%' }}
+            style={{ top: "25%" }}
           >
             <DatePicker
               isOpen={isDatePickerOpen}
@@ -275,20 +280,20 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
         const calendarHeight = 310;
         const spaceBelow = windowDimensions.height - inputRect.bottom - 8;
         const spaceAbove = inputRect.top - 8;
-        
+
         let top;
         if (spaceBelow >= calendarHeight || spaceBelow >= spaceAbove) {
           top = inputRect.bottom + 8;
         } else {
           top = inputRect.top - calendarHeight - 8;
         }
-        
+
         calendarPosition = (
-          <div 
+          <div
             className="fixed z-[1002] pointer-events-auto"
-            style={{ 
+            style={{
               left: `${inputRect.left}px`,
-              top: `${top}px`
+              top: `${top}px`,
             }}
           >
             <DatePicker
@@ -311,11 +316,11 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
     return (
       <div className="fixed inset-0 z-[1001] pointer-events-auto">
         {/* Semi-transparent overlay that catches all clicks outside the calendar */}
-        <div 
-          className="absolute inset-0 bg-black bg-opacity-0 pointer-events-auto" 
+        <div
+          className="absolute inset-0 bg-black bg-opacity-0 pointer-events-auto"
           onClick={() => setIsDatePickerOpen(false)}
         />
-        
+
         {/* Calendar positioned according to the rules above */}
         {calendarPosition}
       </div>
@@ -326,7 +331,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
     <>
       {/* Updated to use closeOnOutsideClick={false} */}
       <Dialog open={isOpen} onOpenChange={handleModalClose}>
-        <DialogContent 
+        <DialogContent
           className={`w-[calc(100%-2rem)] md:w-full max-w-3xl h-auto p-0 flex flex-col mt-0 translate-y-12 top-4 sm:top-6 ${isMobileView ? "max-h-[90vh] overflow-y-auto" : ""}`}
           closeOnOutsideClick={false}
         >
@@ -340,7 +345,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
               <DialogHeader className="py-2 px-4 sm:px-6">
                 <DialogTitle className="text-center text-orange-500 mb-4 sm:mb-8 mt-4 sm:mt-6 text-base sm:text-lg">
                   Schedule an interview for the candidate below for the
-                    <span> {position}</span> position
+                  <span> {position}</span> position
                 </DialogTitle>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -362,7 +367,9 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                     {/* Right Column */}
                     <div className="space-y-4">
                       <div>
-                        <span className="text-sm flex justify-start mb-2">Core Skills:</span>
+                        <span className="text-sm flex justify-start mb-2">
+                          Core Skills:
+                        </span>
                         <div className="flex flex-wrap gap-1.5">
                           {coreSkills.map((skill, index) => (
                             <span
@@ -471,8 +478,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                           navigate("/dashboard/account-settings/general");
                         }}
                       >
-                        {timezone} | Click to
-                        Change
+                        {timezone} | Click to Change
                       </span>
                       <ChevronRight className="w-4 h-4 flex-shrink-0" />
                     </div>
@@ -484,7 +490,6 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                       <Button
                         type="submit"
                         className={`${sendInviteButtonClass} w-full sm:w-auto`}
-                        disabled={!isValid || isSubmitting}
                       >
                         Send Invite
                       </Button>
