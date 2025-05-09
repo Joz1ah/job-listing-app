@@ -18,6 +18,22 @@ const DeclinedInterviews: FC = () => {
   const { interviewsList, setSelectedInterviewsGroup, isLoadingInterviews } =
     useInterviewsContext();
 
+  //Preload the image
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+
+  useEffect(() => {
+    const img = new Image();
+    img.src = emptyInterview;
+
+    img.onload = () => {
+      setIsImageLoaded(true);
+    };
+
+    img.onerror = () => {
+      console.error("Image failed to load:", emptyInterview);
+    };
+  }, []);
+
   useEffect(() => {
     setSelectedInterviewsGroup("DECLINED");
   }, []);
@@ -52,7 +68,12 @@ const DeclinedInterviews: FC = () => {
   };
 
   useEffect(() => {
-    if (!interviewsList || interviewsList.length === 0) return;
+    if (!interviewsList || interviewsList.length === 0){
+      const timeout = setTimeout(() => {
+        setLoading(false)
+      }, 1000);
+      return() => clearTimeout(timeout);
+    }
   
     const timeout = setTimeout(() => {
       const initialItems = interviewsList.slice(0, 6);
@@ -131,7 +152,7 @@ const DeclinedInterviews: FC = () => {
 
   // Show empty state if there are no declined interviews and we're not loading
   if (
-    (!isLoadingInterviews && !loading && interviewsList.length === 0) ||
+    (!isLoadingInterviews && !loading && interviewsList.length === 0 && isImageLoaded) ||
     subscriptionPlan === "freeTrial"
   ) {
     return (

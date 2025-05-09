@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Bookmark, MapPin, MoreVertical } from "lucide-react";
 import sparkle_icon from "assets/images/sparkle-icon.png";
+import linkedin_icon from "assets/linkedin.svg?url";
 import {
   Card,
   CardHeader,
@@ -29,9 +30,6 @@ interface SelectOptions {
 interface FormValues {
   firstName: string;
   lastName: string;
-  birthday: string;
-  emailAddress: string;
-  mobileNumber: string;
   employmentType: string[];
   salaryRange: string;
   yearsOfExperience: string;
@@ -40,6 +38,7 @@ interface FormValues {
   education: string;
   languages: string[];
   country: string;
+  linkedinProfile?: string;
   jobTitle?: string;
 }
 
@@ -106,11 +105,13 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
         .join(" ");
     }) || [];
 
-  const truncateLanguage = (language: string) => {
-    if (language.length > 16) {
-      return `${language.slice(0, 8)}...`;
-    }
-    return language;
+  // LinkedIn URL validation function
+  const isValidLinkedInUrl = (url: string | null | undefined): boolean => {
+    if (!url) return false; // Return false for null, undefined, or empty values
+    
+    // Use the same validation regex from the form validation schema
+    const linkedinRegex = /^(https?:\/\/)?(www\.)?linkedin\.com\/in\/[\w-]+\/?$/i;
+    return linkedinRegex.test(url);
   };
 
   const hasName = values.firstName || values.lastName;
@@ -119,7 +120,19 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
   const hasExperience = values.yearsOfExperience;
   const hasEmploymentType = values.employmentType?.length > 0;
   const hasSalary = values.salaryRange;
-  const hasLanguages = values.languages?.length > 0;
+  const hasValidLinkedIn = values.linkedinProfile && isValidLinkedInUrl(values.linkedinProfile);
+
+  // Function to open LinkedIn profile in new tab
+  const openLinkedInProfile = () => {
+    if (hasValidLinkedIn && values.linkedinProfile) {
+      // Ensure URL has a protocol for proper redirection
+      let url = values.linkedinProfile;
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'https://' + url;
+      }
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+  };
 
   return (
     <div className="flex flex-col items-center md:items-start md:w-[436px] pb-6">
@@ -166,6 +179,18 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
                     : " (Country)"}
                 </p>
               </div>
+              {/* LinkedIn Profile Link - only shown if URL is valid */}
+              {hasValidLinkedIn && (
+                <div 
+                  className="flex flex-row items-center gap-1 h-[16px] mt-1 cursor-pointer" 
+                  onClick={openLinkedInProfile}
+                >
+                  <img src={linkedin_icon} alt="LinkedIn" className="w-3.5 h-3.5" />
+                  <p className="text-[13px] font-light mt-0 text-[#263238] underline">
+                    LinkedIn Profile
+                  </p>
+                </div>
+              )}
             </div>
           </CardHeader>
 
@@ -258,27 +283,6 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
                   </span>
                 )}
               </div>
-
-              <div className="flex gap-1">
-                <span className="text-[13px] font-light text-[#263238]">
-                  Language:
-                </span>
-                {hasLanguages ? (
-                  values.languages?.map((lang, index) => (
-                    <span
-                      key={index}
-                      title={lang}
-                      className="text-[13px] font-light text-[#F5722E] rounded px-1 h-[18px] flex justify-center items-center border border-[#F5722E]"
-                    >
-                      {truncateLanguage(getLabel("languages", lang) as string)}
-                    </span>
-                  ))
-                ) : (
-                  <span className="text-[13px] font-light text-[#F5722E] rounded px-1 h-[18px] flex justify-center items-center border border-[#F5722E]">
-                    Languages spoken & written
-                  </span>
-                )}
-              </div>
             </div>
           </CardContent>
 
@@ -318,20 +322,35 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
                   ? `${values.firstName} ${values.lastName}`
                   : "Your First and Last Name"}
               </CardTitle>
-              <p className="text-[13px] text-[#263238] flex items-center mb-2">
+              <div className="flex items-center mb-1">
                 <MapPin size={12} className="mr-1 text-[#F5722E]" />
-                Based in{" "}
-                {hasCountry ? getLabel("country", values.country) : "(Country)"}
-              </p>
+                <p className="text-[13px] text-[#263238]">
+                  Based in{" "}
+                  {hasCountry ? getLabel("country", values.country) : "(Country)"}
+                </p>
+              </div>
+              
+              {/* LinkedIn Profile Link for Mobile - only shown if URL is valid */}
+              {hasValidLinkedIn && (
+                <div 
+                  className="flex items-center mb-2 cursor-pointer" 
+                  onClick={openLinkedInProfile}
+                >
+                  <img src={linkedin_icon} alt="LinkedIn" className="mr-1 w-3 h-3" />
+                  <p className="text-[13px] text-[#263238] underline">
+                    LinkedIn Profile
+                  </p>
+                </div>
+              )}
 
-              <div className="flex flex-col gap-1 ">
-                <div className="h-auto sm:h-60">
+              <div className="flex flex-col gap-1">
+                <div className="h-auto">
                   <p className="text-xs font-light text-gray-800">
                     Core Skills:
                   </p>
                   <div className="flex flex-wrap gap-1 mx-1">
                     {hasSkills
-                      ? formattedSkills.map((skill, i) => (
+                      ? formattedSkills.slice(0, 5).map((skill, i) => (
                           <span
                             key={i}
                             title={skill}
@@ -345,7 +364,6 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
                       : [0, 1, 2, 3, 4].map((i) => (
                           <span
                             key={i}
-                            title="Skills"
                             className={`text-white text-xs font-semibold px-1.5 py-0.5 rounded-[2px] inline-block max-w-32 truncate ${
                               i % 2 === 0 ? "bg-[#168AAD]" : "bg-[#184E77]"
                             }`}
@@ -356,7 +374,7 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
                   </div>
                 </div>
 
-                <div className="flex gap-1 mt-8">
+                <div className="flex gap-1 mt-4">
                   <span className="text-[13px] font-light">Experience:</span>
                   <span className="text-[#F5722E] rounded-[4px] text-[12px] px-1 h-[18px] flex justify-center items-center outline outline-1 outline-[#F5722E]">
                     {hasExperience
@@ -394,27 +412,6 @@ const AppCardPreview: React.FC<PreviewCardProps> = ({
                       ? getLabel("salaryRange", values.salaryRange)
                       : "Amount in USD"}
                   </span>
-                </div>
-
-                <div className="flex gap-1 flex-wrap">
-                  <span className="text-[13px] font-light">Language:</span>
-                  {hasLanguages ? (
-                    values.languages?.map((lang, index) => (
-                      <span
-                        key={index}
-                        title={lang}
-                        className="text-[#F5722E] rounded-[4px] text-[12px] px-1 h-[18px] flex justify-center items-center outline outline-1 outline-[#F5722E]"
-                      >
-                        {truncateLanguage(
-                          getLabel("languages", lang) as string,
-                        )}
-                      </span>
-                    ))
-                  ) : (
-                    <span className="text-[#F5722E] rounded-[4px] text-[13px] px-1 h-[18px] flex justify-center items-center outline outline-1 outline-[#F5722E]">
-                      languages spoken & written
-                    </span>
-                  )}
                 </div>
               </div>
             </div>
