@@ -49,7 +49,10 @@ interface FormValues {
 const validationSchema = Yup.object().shape({
   interviewDate: Yup.date()
     .required("Please select a date")
-    .min(new Date(new Date().setHours(0, 0, 0, 0)), "Cannot select a past date")
+    .min(
+      new Date(new Date().setHours(0, 0, 0, 0) + 86400000),
+      "Please select a future date",
+    )
     .max(
       new Date(new Date().setMonth(new Date().getMonth() + 2)),
       "Cannot select a date more than 2 months",
@@ -221,7 +224,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
   // Button class based on validation state
   const sendInviteButtonClass =
     !isValid || isSubmitting || !formik.dirty
-      ? "bg-[#AEADAD] hover:bg-[#AEADAD]/70 text-white text-[16px] font-normal cursor-not-allowed"
+      ? "bg-[#AEADAD] hover:bg-[#AEADAD]/70 text-white text-[16px] font-normal"
       : "bg-[#F5722E] hover:bg-[#F5722E]/70 text-white text-[16px] font-normal";
 
   // Completely redesigned approach using a modal-like overlay
@@ -484,7 +487,6 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                     <Button
                       type="submit"
                       className={`${sendInviteButtonClass} w-full sm:w-auto`}
-                      disabled={!isValid || isSubmitting}
                     >
                       Send Invite
                     </Button>
