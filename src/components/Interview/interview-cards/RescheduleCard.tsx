@@ -27,18 +27,18 @@ interface LinkedInLinkProps {
 const LinkedInLink: FC<LinkedInLinkProps> = ({ linkedInUrl }) => {
   const handleLinkedInClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent card click when clicking on LinkedIn link
-    
+
     // Add protocol if missing
     let url = linkedInUrl;
     if (!url.startsWith("http")) {
       url = "https://" + url;
     }
-    
+
     window.open(url, "_blank", "noopener,noreferrer");
   };
 
   return (
-    <div 
+    <div
       className="flex items-center gap-1 text-[13px] font-light cursor-pointer text-[#263238] underline"
       onClick={handleLinkedInClick}
     >
@@ -136,7 +136,7 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
       return (
         <>
           <h3
-            className="text-[14px] font-semibold mt-1 cursor-pointer hover:text-[#F5722E] text-[#263238]"
+            className="text-[14px] font-semibold cursor-pointer hover:text-[#F5722E] text-[#263238]"
             onClick={() => setIsPreviewOpen(true)}
           >
             {interview.candidate}
@@ -150,7 +150,7 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
     return (
       <>
         <h3
-          className="text-[14px] font-semibold mt-1 cursor-pointer hover:text-[#F5722E] text-[#263238]"
+          className="text-[14px] font-semibold cursor-pointer hover:text-[#F5722E] text-[#263238]"
           onClick={() => setIsPreviewOpen(true)}
         >
           {interview.position}
@@ -171,7 +171,7 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
 
   return (
     <>
-      <Card className="bg-white border border-gray-200 w-full sm:min-w-[436px] max-w-[436px] h-[275px] relative">
+      <Card className="bg-white border-none w-full sm:min-w-[436px] sm:max-w-[436px] max-w-[308px] h-[395px] sm:h-[275px] relative">
         {interview.isNew && (
           <span className="absolute top-2 left-4 text-[13px] text-[#F5722E] font-bold italic">
             ★ NEW
@@ -199,7 +199,7 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
                 Based in {interview.country}
               </p>
             </div>
-            
+
             {/* Add LinkedIn Link - Only for employer variant and if not on free trial */}
             {variant === "employer" && interview.linkedIn && (
               <LinkedInLink linkedInUrl={interview.linkedIn} />
@@ -226,7 +226,8 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
               </span>
             </div>
 
-            <div className="flex justify-start w-full">
+            {/* Desktop layout for buttons */}
+            <div className="hidden sm:flex flex-row justify-center sm:justify-start w-full gap-2">
               {isLoading ? (
                 <div className="flex items-center gap-2">
                   <LoaderCircle className="w-5 h-5 animate-spin text-[#F5722E]" />
@@ -252,66 +253,94 @@ const RescheduleCard: FC<RescheduleCardProps> = ({
                     You've successfully declined this interview!
                   </span>
                 </div>
-              ) : interview.isRescheduleRequesterMe ? (
-                // My request layout
-                <>
-                {/*
-                <div className="flex items-center gap-2 flex-wrap justify-center">
-                  {interview.hasRescheduled ? (
-                    <Tooltip content="You've already exceeded the limit to reschedule">
-                      <Button
-                        onClick={handleOpenReschedule}
-                        variant="outline"
-                        disabled={interview.hasRescheduled}
-                        className="rounded text-[13px] bg-gray-100 text-[#717171] hover:text-white h-[32px] w-[117px] p-0 cursor-not-allowed"
-                      >
-                        <RefreshCcw className="w-4 h-4 mr-1" />
-                        Reschedule
-                      </Button>
-                    </Tooltip>
-                  ) : (
-                    <Button
-                      onClick={handleOpenReschedule}
-                      variant="outline"
-                      className="border-2 rounded text-[13px] border-[#168AAD] text-[#168AAD] hover:bg-[#168AAD] hover:text-white h-[32px] w-[117px] p-0"
-                    >
-                      <RefreshCcw className="w-4 h-4 mr-1" strokeWidth={3} />
-                      Reschedule
-                    </Button>
-                  )}
-                </div>
-                */}
-                </>
               ) : (
-                // Their request layout
-                <div className="flex items-center gap-2">
-                  <Button
-                    onClick={handleAccept}
-                    variant="outline"
-                    className="border-2 border-[#4BAF66] text-[#4BAF66] hover:bg-[#4BAF66] p-0 hover:text-white h-[32px] w-[117px] rounded text-[13px] flex items-center justify-center gap-1"
-                  >
-                    <Check className="w-4 h-4" strokeWidth={4} />
-                    Accept
-                  </Button>
-                  <Button
-                    onClick={handleDecline}
-                    variant="outline"
-                    className="border-2 border-[#E53835] text-[#E53835] hover:bg-[#E53835] p-0 hover:text-white h-[32px] w-[117px] rounded text-[13px] flex items-center justify-center gap-1"
-                  >
-                    <X className="w-4 h-4" strokeWidth={4} />
-                    Decline
-                  </Button>
-                  <div className="flex items-center gap-2">
+                !interview.isRescheduleRequesterMe && (
+                  <>
+                    <Button
+                      onClick={handleAccept}
+                      variant="outline"
+                      className="border-2 border-[#4BAF66] text-[#4BAF66] hover:bg-[#4BAF66] p-0 hover:text-white h-[32px] w-[117px] rounded text-[12px] flex items-center justify-center gap-1"
+                    >
+                      <Check className="w-4 h-4" strokeWidth={4} />
+                      <span>Accept</span>
+                    </Button>
+                    <Button
+                      onClick={handleDecline}
+                      variant="outline"
+                      className="border-2 border-[#E53835] text-[#E53835] hover:bg-[#E53835] p-0 hover:text-white h-[32px] w-[117px] rounded text-[12px] flex items-center justify-center gap-1"
+                    >
+                      <X className="w-4 h-4" strokeWidth={4} />
+                      <span>Decline</span>
+                    </Button>
                     <Button
                       onClick={handleOpenReschedule}
                       variant="outline"
-                      className="border-2 border-[#168AAD] text-[#168AAD] hover:bg-[#168AAD] p-0 hover:text-white h-[32px] w-[117px] rounded text-[13px] flex items-center justify-center gap-1"
+                      className="border-2 border-[#168AAD] text-[#168AAD] hover:bg-[#168AAD] p-0 hover:text-white h-[32px] w-[117px] rounded text-[12px] flex items-center justify-center gap-1"
                     >
                       <RefreshCcw className="w-4 h-4" strokeWidth={3} />
-                      Reschedule
+                      <span>Reschedule</span>
                     </Button>
-                  </div>
+                  </>
+                )
+              )}
+            </div>
+
+            {/* Mobile layout for buttons */}
+            <div className="flex sm:hidden flex-col items-center w-full gap-1 mt-2">
+              {isLoading ? (
+                <div className="flex items-center gap-2">
+                  <LoaderCircle className="w-5 h-5 animate-spin text-[#F5722E]" />
+                  <span className="text-sm font-medium text-[#F5722E]">
+                    {isAccepted
+                      ? "Accepting..."
+                      : isDeclined
+                        ? "Declining..."
+                        : "Processing..."}
+                  </span>
                 </div>
+              ) : isAccepted ? (
+                <div className="flex items-center gap-2 text-[#4BAF66]">
+                  <Check className="w-5 h-5" />
+                  <span className="text-sm font-medium">
+                    You've successfully accepted the interview!
+                  </span>
+                </div>
+              ) : isDeclined ? (
+                <div className="flex items-center gap-2 text-[#E53835]">
+                  <Check className="w-5 h-5" />
+                  <span className="text-sm font-medium">
+                    You've successfully declined this interview!
+                  </span>
+                </div>
+              ) : (
+                !interview.isRescheduleRequesterMe && (
+                  <>
+                    <Button
+                      onClick={handleAccept}
+                      variant="outline"
+                      className="border-2 border-[#4BAF66] text-[#4BAF66] hover:bg-[#4BAF66] hover:text-white text-[15px] w-[165px] h-[35px] rounded-[4px] flex items-center justify-center gap-2 bg-transparent"
+                    >
+                      <Check className="w-5 h-5" strokeWidth={4} />
+                      <span>Accept</span>
+                    </Button>
+                    <Button
+                      onClick={handleDecline}
+                      variant="outline"
+                      className="border-2 border-[#E53835] text-[#E53835] hover:bg-[#E53835] hover:text-white text-[15px] w-[165px] h-[35px] rounded-[4px] flex items-center justify-center gap-2 bg-transparent"
+                    >
+                      <X className="w-5 h-5" strokeWidth={4} />
+                      <span>Decline</span>
+                    </Button>
+                    <Button
+                      onClick={handleOpenReschedule}
+                      variant="outline"
+                      className="border-2 border-[#168AAD] text-[#168AAD] hover:bg-[#168AAD] hover:text-white  text-[15px] w-[165px] h-[35px] rounded-[4px] flex items-center justify-center gap-2 bg-transparent"
+                    >
+                      <RefreshCcw className="w-5 h-5" strokeWidth={3} />
+                      <span>Reschedule</span>
+                    </Button>
+                  </>
+                )
               )}
             </div>
           </div>
