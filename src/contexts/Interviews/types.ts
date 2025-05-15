@@ -39,6 +39,7 @@ export interface Interview {
     interpersonalSkills?: string[];
     linkedIn?: string;
     formerEmployers?: FormerEmployer[];
+    freeTrial?: boolean;
   }
   
   export interface interviewsListState {
