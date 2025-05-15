@@ -116,7 +116,9 @@ const DeclinedCard: FC<DeclinedCardProps> = ({ interview, variant }) => {
             </div>
             
             {/* Add LinkedIn Link - Only for employer variant and if not on free trial */}
-            {variant === "employer" && interview.linkedIn && (
+            {variant === "employer" && 
+             interview.linkedIn && 
+             !interview.freeTrial && (
               <LinkedInLink linkedInUrl={interview.linkedIn} />
             )}
           </div>

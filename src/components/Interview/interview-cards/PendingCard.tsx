@@ -326,9 +326,11 @@ const PendingCard: FC<PendingCardProps> = ({
         </div>
 
         {/* Add LinkedIn Link in accepting view too */}
-        {variant === "employer" && interview.linkedIn && (
-          <LinkedInLink linkedInUrl={interview.linkedIn} />
-        )}
+        {variant === "employer" && 
+             interview.linkedIn && 
+             !interview.freeTrial && (
+              <LinkedInLink linkedInUrl={interview.linkedIn} />
+            )}
       </div>
     </CardHeader>
   );
