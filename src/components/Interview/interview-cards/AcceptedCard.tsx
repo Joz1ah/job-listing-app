@@ -6,8 +6,37 @@ import { Tooltip } from "components";
 import { Interview } from "contexts/Interviews/types";
 import { CandidatePreviewModal } from "../modals/CandidatePreviewModal";
 import { JobInterviewPreviewModal } from "../modals/JobInterviewPreviewModal";
+import linkedin_icon from "assets/linkedin.svg?url";
 
 import gmeet from "images/google-meet.svg?url";
+
+interface LinkedInLinkProps {
+  linkedInUrl: string;
+}
+
+const LinkedInLink: FC<LinkedInLinkProps> = ({ linkedInUrl }) => {
+  const handleLinkedInClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click when clicking on LinkedIn link
+
+    // Add protocol if missing
+    let url = linkedInUrl;
+    if (!url.startsWith("http")) {
+      url = "https://" + url;
+    }
+
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
+
+  return (
+    <div
+      className="flex items-center gap-1 text-[13px] font-light cursor-pointer text-[#263238] underline mb-1"
+      onClick={handleLinkedInClick}
+    >
+      <img src={linkedin_icon} alt="LinkedIn" className="w-4 h-4" />
+      <span>LinkedIn Profile</span>
+    </div>
+  );
+};
 
 interface AcceptedCardProps {
   interview: Interview;
@@ -55,7 +84,7 @@ const AcceptedCard: FC<AcceptedCardProps> = ({
 
   return (
     <>
-      <Card className="bg-white border-none w-full sm:min-w-[436px] max-w-[436px] h-[275px] relative">
+      <Card className="bg-white border-none w-full sm:min-w-[436px] sm:max-w-[436px] max-w-[308px] h-[395px] sm:h-[275px] relative">
         <CardHeader className="flex flex-col justify-between items-start pb-0">
           <div className="flex flex-row -mt-4 justify-between w-full">
             <div className="h-[20px]">
@@ -82,6 +111,13 @@ const AcceptedCard: FC<AcceptedCardProps> = ({
                 Based in {interview.country}
               </p>
             </div>
+
+            {/* Add LinkedIn Link - Only for employer variant and if not on free trial */}
+            {variant === "employer" && 
+             interview.linkedIn && 
+             !interview.freeTrial && (
+              <LinkedInLink linkedInUrl={interview.linkedIn} />
+            )}
           </div>
         </CardHeader>
 
@@ -106,28 +142,31 @@ const AcceptedCard: FC<AcceptedCardProps> = ({
           </div>
         </CardContent>
 
-        <CardFooter className="flex flex-col items-start space-y-4">
+        {/* Desktop Footer */}
+        <CardFooter className="hidden sm:flex flex-col items-start space-y-4">
           <div className="flex flex-row justify-start space-x-6 w-full">
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 relative">
               <Button
                 onClick={onJoinInterview}
                 variant="outline"
                 className={`text-xs w-[118px] h-[32px] font-normal 
-                  ${interview.meetingLink ? 
-                    'text-[#F5722E] border-2 border-[#F5722E] hover:bg-[#F5722E] hover:text-white' :
-                    'pointer-events-none bg-[#AEADAD] text-white hover:text-white hover:bg-[#AEADAD]'} p-0 rounded-sm`}
+                  ${
+                    interview.meetingLink
+                      ? "text-[#F5722E] border-2 border-[#F5722E] hover:bg-[#F5722E] hover:text-white"
+                      : "pointer-events-none bg-[#AEADAD] text-white hover:text-white hover:bg-[#AEADAD]"
+                  } p-0 rounded-sm`}
               >
                 <img src={gmeet} alt="google meet" />
                 Join Interview
               </Button>
               <Tooltip content="The meeting link will be accessible on the day of the interview">
-                <Info className="w-3 h-3 fill-[#F5722E] mb-6 text-white" />
+                <Info className="w-3 h-3 fill-[#F5722E] text-white absolute -right-3 -top-[15px]" />
               </Tooltip>
             </div>
             <Button
               onClick={() => setIsPreviewOpen(true)}
               variant="outline"
-              className="text-xs w-[108px] h-[32px] font-normal text-[#F5722E] border-2 border-[#F5722E] hover:bg-[#F5722E] hover:text-white rounded-sm"
+              className="text-xs w-[108px] h-[32px] font-normal text-[#F5722E] px-0 border-2 border-[#F5722E] hover:bg-[#F5722E] hover:text-white rounded-sm"
             >
               Preview Job
             </Button>
@@ -135,6 +174,41 @@ const AcceptedCard: FC<AcceptedCardProps> = ({
           <div className="flex flex-row justify-start w-full items-center">
             <span className="text-sm text-[#263238] font-normal flex items-center gap-1">
               Status: <Check className="w-4 h-4 text-[#4BAF66] inline" />{" "}
+              <span className="text-[#4BAF66]">{interview.status}</span>
+            </span>
+          </div>
+        </CardFooter>
+
+        {/* Mobile Footer */}
+        <CardFooter className="flex sm:hidden flex-col items-center space-y-4 pt-6">
+          <div className="flex items-center gap-1 relative">
+            <Button
+              onClick={onJoinInterview}
+              variant="outline"
+              className={`text-[15px] w-[165px] h-[35px] font-normal 
+                ${
+                  interview.meetingLink
+                    ? "bg-[#D9D9D9] text-black hover:bg-[#D9D9D9] hover:text-black border-none"
+                    : "bg-[#D9D9D9] text-black hover:bg-[#D9D9D9] hover:text-black border-none pointer-events-none opacity-60"
+                } rounded-[4px] flex items-center justify-center gap-2`}
+            >
+              <img src={gmeet} alt="google meet" className="w-5 h-5" />
+              Join Interview
+            </Button>
+            <Tooltip content="The meeting link will be accessible on the day of the interview">
+              <Info className="w-4 h-4 fill-[#F5722E] text-white absolute -right-4 -top-[20px]" />
+            </Tooltip>
+          </div>
+          <Button
+            onClick={() => setIsPreviewOpen(true)}
+            variant="outline"
+            className="text-[15px] w-[165px] h-[35px] font-normal text-[#F5722E] border-2 border-[#F5722E] hover:bg-[#F5722E] hover:text-white rounded-[4px] bg-transparent"
+          >
+            Preview Job
+          </Button>
+          <div className="flex items-center justify-center w-full pt-2">
+            <span className="text-[14px] text-[#263238] font-normal flex items-center gap-1">
+              Status: <Check className="w-4 h-4 text-[#4BAF66]" />
               <span className="text-[#4BAF66]">{interview.status}</span>
             </span>
           </div>

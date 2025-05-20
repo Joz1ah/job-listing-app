@@ -93,7 +93,7 @@ const tooltipIconVariants = cva("relative -top-1 cursor-pointer", {
   },
 });
 
-const errorMessageVariants = cva("absolute right-1 italic text-[#E63946] mt-1", {
+const errorMessageVariants = cva("absolute left-0 text-[#E63946] mt-1", {
   variants: {
     size: {
       tiny: "text-[10px]",
@@ -107,20 +107,7 @@ const errorMessageVariants = cva("absolute right-1 italic text-[#E63946] mt-1", 
   },
 });
 
-// New variant for the input container to handle error borders
-const inputContainerVariants = cva("relative", {
-  variants: {
-    hasError: {
-      true: "[&>*:first-child]:border-[#E63946] [&>*:first-child]:border-2",
-      false: "",
-    },
-  },
-  defaultVariants: {
-    hasError: false,
-  },
-});
-
-interface InputFieldProps
+interface ContactUsInputFieldProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof inputWrapperVariants> {
   label: string;
@@ -129,13 +116,12 @@ interface InputFieldProps
   showIcon?: boolean;
   showAlertIcon?: boolean;
   tooltipContent?: string | React.ReactNode;
-  size?: "sm" | "md" | "lg" | "form"; // Updated to include form
+  size?: "sm" | "md" | "lg" | "form";
   errorMessageSize?: "tiny" | "xs" | "sm" | "base";
-  disableErrorBorder?: boolean; // New prop to disable error border
   children: React.ReactNode;
 }
 
-const InputField = React.forwardRef<HTMLDivElement, InputFieldProps>(
+const ContactUsInputField = React.forwardRef<HTMLDivElement, ContactUsInputFieldProps>(
   (
     {
       label,
@@ -149,7 +135,6 @@ const InputField = React.forwardRef<HTMLDivElement, InputFieldProps>(
       showAlertIcon = true,
       tooltipContent,
       errorMessageSize = "xs",
-      disableErrorBorder = false, // Default to false to maintain existing behavior
       ...props
     },
     ref,
@@ -189,11 +174,12 @@ const InputField = React.forwardRef<HTMLDivElement, InputFieldProps>(
             </div>
           </div>
 
-          {/* Added inputContainerVariants to apply error border with disable option */}
-          <div className={inputContainerVariants({ hasError: !!showError && !disableErrorBorder })}>
-            {children}
+          <div className="relative">
+            {React.cloneElement(children as React.ReactElement, {
+              className: `${(children as React.ReactElement).props.className} ${showError ? 'pr-10' : ''}`,
+            })}
             {showError && showAlertIcon && (
-              <div className="absolute -right-6 top-1/2 -translate-y-1/2">
+              <div className="absolute right-3 top-1/2 -translate-y-1/2">
                 <AlertTriangle
                   className={alertIconVariants({ variant })}
                   size={20}
@@ -213,6 +199,6 @@ const InputField = React.forwardRef<HTMLDivElement, InputFieldProps>(
   },
 );
 
-InputField.displayName = "InputField";
+ContactUsInputField.displayName = "ContactUsInputField";
 
-export { InputField };
+export { ContactUsInputField };

@@ -79,6 +79,12 @@ const mapInterviewListData = (apiResponse: any, timeZone: InterviewListData['tim
           .filter((skill: any) => skill.keyword.type === "interpersonal")
           .map((skill: any) => skill.keyword.keyword)
       : [],
+      // Add LinkedIn URL
+      linkedIn: item?.jobHunter?.linkedln ?? null,
+      // Add free trial status
+      freeTrial: item?.jobHunter?.freeTrial ?? false,
+      // Add former employers with proper formatting
+      formerEmployers: item?.jobHunter?.FormerEmployer ?? [],
     })) ?? [];
   else
     return []

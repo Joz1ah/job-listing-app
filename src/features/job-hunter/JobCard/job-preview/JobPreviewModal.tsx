@@ -13,17 +13,32 @@ interface JobPreviewModalProps {
   job: MatchJH;
 }
 
-// Helper function to format employment preference
+// Improved helper function to format employment preference
 const formatEmploymentPreference = (pref: string): string => {
-  switch (pref) {
-    case "full-time":
+  // Handle the case where pref might be null or undefined
+  if (!pref) return "";
+  
+  // Remove any hyphens and convert to lowercase for case-insensitive comparison
+  const normalizedPref = pref.toLowerCase().replace(/-/g, " ");
+  
+  // Check against normalized strings (without hyphens)
+  switch (normalizedPref) {
+    case "full time":
+    case "fulltime":
       return "Full Time";
-    case "part-time":
+    case "part time":
+    case "parttime":
       return "Part Time";
     case "contract":
+    case "contract only":
       return "Contract Only";
     default:
-      return pref; // Return original value if no match
+      // Capitalize each word as a fallback
+      // First replace any hyphens with spaces, then capitalize
+      return pref.replace(/-/g, " ")
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ');
   }
 };
 
@@ -58,18 +73,18 @@ const JobPreviewModal: FC<JobPreviewModalProps> = ({
         <div className="flex flex-col h-full">
           {/* Scrollable Content Area */}
           <div className="flex-1 overflow-y-auto">
-            <DialogHeader className="px-6 pt-14">
+            <DialogHeader className="px-6 pt-10">
               <div className="space-y-3">
                 {/* Job Title */}
                 <div className="flex flex-col items-start">
-                  <DialogTitle className="text-sm md:text-[17px]  font-semibold text-[#263238]">
+                  <DialogTitle className="text-[17px] md:text-xl font-semibold text-[#263238]">
                     {job.position}
                   </DialogTitle>
                 </div>
 
                 {/* Company */}
-                <div className="flex flex-col gap-1">
-                  <span className="text-sm md:text-[17px]  text-[#263238] underline">
+                <div className="flex flex-col items-start">
+                  <span className="text-sm md:text-[17px] text-[#263238] underline">
                     {job.company}
                   </span>
                 </div>
@@ -77,7 +92,7 @@ const JobPreviewModal: FC<JobPreviewModalProps> = ({
                 {/* Location */}
                 <div className="flex items-center gap-2 text-[#263238]">
                   <MapPin className="h-4 w-4 text-[#F5722E]" />
-                  <span className="text-sm md:text-[17px] ">
+                  <span className="text-sm md:text-[17px]">
                     Based in {job.country}
                   </span>
                 </div>
@@ -93,7 +108,7 @@ const JobPreviewModal: FC<JobPreviewModalProps> = ({
                         key={skill}
                         className={`${
                           index % 2 === 0 ? "bg-[#184E77]" : "bg-[#168AAD]"
-                        } text-white px-2 text-sm md:text-[17px]  rounded font-medium`}
+                        } text-white px-2 text-sm md:text-[17px] rounded font-medium`}
                       >
                         {skill}
                       </span>
@@ -103,15 +118,15 @@ const JobPreviewModal: FC<JobPreviewModalProps> = ({
 
                 {/* Experience */}
                 <div className="flex items-center gap-2">
-                  <h4 className="text-sm md:text-[17px]  font-normal text-[#263238]">
+                  <h4 className="text-sm md:text-[17px] font-normal text-[#263238]">
                     Experience:
                   </h4>
-                  <span className="text-[#F5722E] border border-[#F5722E] px-2 rounded-sm">
+                  <span className="text-sm md:text-[17px] text-[#F5722E] border border-[#F5722E] px-2 rounded-sm">
                     {job.experience}
                   </span>
                 </div>
 
-                {/* Education - Added this section */}
+                {/* Education */}
                 {job.education && (
                   <div className="flex items-center gap-2">
                     <h4 className="text-sm md:text-[17px] font-normal text-[#263238]">
@@ -123,21 +138,21 @@ const JobPreviewModal: FC<JobPreviewModalProps> = ({
                   </div>
                 )}
 
-                {/* Certifications - Added right after Education */}
-                <div className="flex items-center gap-2">
-                  <h4 className="text-sm md:text-[17px] font-normal text-[#263238]">
+                {/* Certifications */}
+                <div className="flex flex-col md:flex-row gap-2">
+                  <h4 className="text-sm md:text-[17px] font-normal text-[#263238] text-left">
                     Certifications:
                   </h4>
                   {(!job.certificates || job.certificates.length === 0) ? (
-                    <span className="text-[#F5722E] border border-[#F5722E] px-2 rounded-sm">
+                    <span className="text-[#F5722E] border border-[#F5722E] px-2 rounded-sm text-left">
                       N/A
                     </span>
                   ) : (
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-2 text-left">
                       {job.certificates.map((cert) => (
                         <span
                           key={cert}
-                          className="text-[#F5722E] border border-[#F5722E] px-2 rounded-sm"
+                          className="text-sm md:text-[17px] text-[#F5722E] border border-[#F5722E] px-2 rounded-sm"
                         >
                           {cert}
                         </span>
@@ -146,16 +161,16 @@ const JobPreviewModal: FC<JobPreviewModalProps> = ({
                   )}
                 </div>
 
-                {/* Employment Preference */}
-                <div className="flex items-center gap-2">
-                  <h4 className="text-sm md:text-[17px] flex justify-start font-normal text-[#263238]">
+                {/* Employment Preference - FIXED SECTION */}
+                <div className="flex flex-col md:flex-row gap-2">
+                  <h4 className="text-sm md:text-[17px] font-normal text-[#263238] text-left">
                     Employment Preference:
                   </h4>
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2 text-left">
                     {job.lookingFor.map((pref) => (
                       <span
                         key={pref}
-                        className="bg-[#F5722E] text-white px-2 rounded-sm"
+                        className="text-sm md:text-[17px] bg-[#F5722E] text-white px-2 rounded-sm"
                       >
                         {formatEmploymentPreference(pref)}
                       </span>
@@ -168,7 +183,7 @@ const JobPreviewModal: FC<JobPreviewModalProps> = ({
                   <h4 className="text-sm md:text-[17px] flex justify-start font-normal text-[#263238]">
                     Salary Expectation:
                   </h4>
-                  <span className="bg-[#8C4227] text-white px-2 rounded-sm">
+                  <span className="text-sm md:text-[17px] bg-[#8C4227] text-white px-2 rounded-sm">
                     {job.salaryExpectation}
                   </span>
                 </div>
@@ -186,7 +201,7 @@ const JobPreviewModal: FC<JobPreviewModalProps> = ({
                             key={skill}
                             className={`${
                               index % 2 === 0 ? "bg-[#184E77]" : "bg-[#168AAD]"
-                            } text-white px-2 text-sm md:text-[17px]  rounded font-medium`}
+                            } text-white px-2 text-sm md:text-[17px] rounded font-medium`}
                           >
                             {skill}
                           </span>

@@ -1,7 +1,33 @@
-import { FC, useState, useEffect } from "react";
+import React, { FC, useState, useEffect } from "react";
 import { MapPin } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
 import { BaseModalProps } from "mockData/employer-interviews-data";
+import linkedin_icon from "assets/linkedin.svg?url";
+
+// LinkedIn Link component
+const LinkedInLink: FC<{ linkedInUrl: string }> = ({ linkedInUrl }) => {
+  const handleLinkedInClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent propagation
+
+    // Add protocol if missing
+    let url = linkedInUrl;
+    if (!url.startsWith("http")) {
+      url = "https://" + url;
+    }
+
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
+
+  return (
+    <div
+      className="flex items-center gap-1 text-[13px] md:text-[17px] cursor-pointer text-[#263238] underline"
+      onClick={handleLinkedInClick}
+    >
+      <img src={linkedin_icon} alt="LinkedIn" className="w-4 h-4" />
+      <span>LinkedIn Profile</span>
+    </div>
+  );
+};
 
 const formatEmploymentPreference = (pref: string): string => {
   switch (pref) {
@@ -37,7 +63,7 @@ const CandidatePreviewModal: FC<BaseModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent 
+      <DialogContent
         className="w-[calc(100%-2rem)] md:w-full md:min-w-[760px] p-0 flex flex-col"
         style={{ height: maxHeight }}
       >
@@ -45,18 +71,17 @@ const CandidatePreviewModal: FC<BaseModalProps> = ({
           {/* Scrollable Content Area */}
           <div className="flex-1 overflow-y-auto">
             <DialogHeader className="p-4 md:p-6 md:pt-10">
-              
               <div className="space-y-4">
                 {/* Name and Position - Fixed alignment */}
                 <DialogTitle>
-                <div className="flex flex-col items-start">
-                  <h2 className="text-lg md:text-xl font-semibold text-[#263238] mb-1">
-                    {interview.candidate}
-                  </h2>
-                  <p className="text-[15px] md:text-lg text-[#263238] font-normal underline">
-                    {interview.position}
-                  </p>
-                </div>
+                  <div className="flex flex-col items-start">
+                    <h2 className="text-lg md:text-xl font-semibold text-[#263238] mb-1">
+                      {interview.candidate}
+                    </h2>
+                    <p className="text-[15px] md:text-lg text-[#263238] font-normal underline">
+                      {interview.position}
+                    </p>
+                  </div>
                 </DialogTitle>
 
                 {/* Location */}
@@ -66,6 +91,13 @@ const CandidatePreviewModal: FC<BaseModalProps> = ({
                     Based in {interview.country}
                   </span>
                 </div>
+
+                {/* LinkedIn - Only if not on free trial */}
+                {interview.linkedIn && (
+                  <div className="flex items-center gap-2">
+                    <LinkedInLink linkedInUrl={interview.linkedIn} />
+                  </div>
+                )}
 
                 {/* Core Skills */}
                 <div className="flex flex-col gap-2">
@@ -165,16 +197,18 @@ const CandidatePreviewModal: FC<BaseModalProps> = ({
                   <h4 className="text-sm md:text-[17px] flex justify-start font-normal text-[#263238]">
                     Certifications:
                   </h4>
-                  {(!interview.certificate || !Array.isArray(interview.certificate) || interview.certificate.length === 0) ? (
+                  {!interview.certificate ||
+                  !Array.isArray(interview.certificate) ||
+                  interview.certificate.length === 0 ? (
                     <span className="bg-[#F5722E] text-sm md:text-[17px] text-white px-2 py-0.5 rounded-sm w-fit">
                       N/A
                     </span>
                   ) : (
-                    <div className="flex flex-col gap-2 w-full">
+                    <div className="flex flex-col gap-2 w-full text-left">
                       {interview.certificate.map((cert) => (
                         <span
                           key={cert}
-                          className="bg-[#F5722E] text-sm md:text-[17px] text-white px-2 py-1.5 rounded-sm w-full md:w-fit text-center md:text-left"
+                          className="bg-[#F5722E] text-sm md:text-[17px] text-white px-2 py-1.5 rounded-sm w-full md:w-fit"
                         >
                           {cert}
                         </span>
@@ -203,6 +237,58 @@ const CandidatePreviewModal: FC<BaseModalProps> = ({
                     </div>
                   </div>
                 )}
+
+                {/* Former Employers - Updated with proper spacing and empty check */}
+                {interview.formerEmployers &&
+                  interview.formerEmployers.length > 0 && (
+                    <div className="pt-3">
+                      {interview.formerEmployers.map((employer, index) => {
+                        // Skip empty entries
+                        if (
+                          !employer.name &&
+                          !employer.jobTitle &&
+                          !employer.duration
+                        ) {
+                          return null;
+                        }
+                        return (
+                          <React.Fragment key={index}>
+                            <div className="space-y-[10px] mb-4">
+                              <p className="flex text-sm md:text-[17px] text-[#263238] flex-wrap text-left">
+                                <span className="font-medium whitespace-nowrap">
+                                  Former Employer Name:&nbsp;
+                                </span>
+                                <span className="break-words">
+                                  {employer.name}
+                                </span>
+                              </p>
+                              <p className="flex text-sm md:text-[17px] text-[#263238] flex-wrap text-left">
+                                <span className="font-medium whitespace-nowrap">
+                                  Former Job Title:&nbsp;
+                                </span>
+                                <span className="break-words">
+                                  {employer.jobTitle}
+                                </span>
+                              </p>
+                              <p className="flex text-sm md:text-[17px] text-[#263238] flex-wrap text-left">
+                                <span className="font-medium whitespace-nowrap">
+                                  Duration:&nbsp;
+                                </span>
+                                <span className="break-words">
+                                  {employer.duration || "Not specified"}
+                                </span>
+                              </p>
+                            </div>
+                            {/* Add extra space if not the last employer */}
+                            {index <
+                              (interview.formerEmployers?.length ?? 0) - 1 && (
+                              <div className="h-2"></div>
+                            )}
+                          </React.Fragment>
+                        );
+                      })}
+                    </div>
+                  )}
               </div>
             </DialogHeader>
           </div>

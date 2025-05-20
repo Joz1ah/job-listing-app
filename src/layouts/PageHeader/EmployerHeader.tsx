@@ -7,21 +7,6 @@ import { Info } from "lucide-react";
 import { useEmployerContext } from "components";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 
-const DesktopTooltip = ({
-  content,
-  children,
-}: {
-  content: string;
-  children: React.ReactNode;
-}) => (
-  <>
-    <div className="md:hidden">{children}</div>
-    <div className="hidden md:block">
-      <Tooltip content={content}>{children}</Tooltip>
-    </div>
-  </>
-);
-
 const EmployerHeader: FC = () => {
   const { subscriptionPlan } = useEmployerContext();
   const location = useLocation();
@@ -95,14 +80,14 @@ const EmployerHeader: FC = () => {
             </div>
 
             {subscriptionPlan !== "freeTrial" && (
-              <DesktopTooltip content="This is how job hunters rated your interview">
-                <div className="hidden md:flex items-center space-x-2">
-                  <div className="border-2 border-dotted border-[#F5722E] text-white text-[15px] px-2 py-1 border-opacity-70 whitespace-nowrap">
-                    Your interview ratings from Job Hunters
-                  </div>
-                  <Info className="fill-[#D6D6D6] text-[#263238]" size={14} />
+              <div className="hidden md:flex items-center space-x-2">
+                <div className="border-2 border-dotted border-[#F5722E] text-white text-[15px] px-2 py-1 border-opacity-70 whitespace-nowrap">
+                  Your interview ratings from Job Hunters
                 </div>
-              </DesktopTooltip>
+                <Tooltip content="This is how job hunters rated your interview">
+                  <Info className="fill-[#D6D6D6] text-[#263238]" size={14} />
+                </Tooltip>
+              </div>
             )}
           </div>
         </div>

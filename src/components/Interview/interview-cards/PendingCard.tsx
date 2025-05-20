@@ -26,6 +26,7 @@ import * as Yup from "yup";
 import { CandidatePreviewModal } from "../modals/CandidatePreviewModal";
 import { JobInterviewPreviewModal } from "../modals/JobInterviewPreviewModal";
 import { Interview } from "contexts/Interviews/types";
+import linkedin_icon from "assets/linkedin.svg?url";
 
 import gmeet from "images/google-meet.svg?url";
 
@@ -51,6 +52,34 @@ interface DeclineReason {
   value: string;
   label: string;
 }
+
+interface LinkedInLinkProps {
+  linkedInUrl: string;
+}
+
+const LinkedInLink: FC<LinkedInLinkProps> = ({ linkedInUrl }) => {
+  const handleLinkedInClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click when clicking on LinkedIn link
+
+    // Add protocol if missing
+    let url = linkedInUrl;
+    if (!url.startsWith("http")) {
+      url = "https://" + url;
+    }
+
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
+
+  return (
+    <div
+      className="flex items-center gap-1 text-[13px] font-light cursor-pointer text-[#263238] underline mb-2"
+      onClick={handleLinkedInClick}
+    >
+      <img src={linkedin_icon} alt="LinkedIn" className="w-4 h-4" />
+      <span>LinkedIn Profile</span>
+    </div>
+  );
+};
 
 const employerDeclineReasons: DeclineReason[] = [
   {
@@ -196,12 +225,13 @@ const PendingCard: FC<PendingCardProps> = ({
       </>
     );
   };
+
   const renderHeaderTitle = () => {
     if (variant === "employer") {
       return (
         <>
           <h3
-            className="text-[14px] font-semibold pr-8 cursor-pointer hover:text-[#F5722E] text-[#263238]"
+            className="text-[14px] sm:text-[14px] font-semibold pr-8 cursor-pointer hover:text-[#F5722E] text-[#263238]"
             onClick={() => setIsPreviewOpen(true)}
           >
             {interview.candidate}
@@ -215,7 +245,7 @@ const PendingCard: FC<PendingCardProps> = ({
     return (
       <>
         <h3
-          className="text-[14px] font-semibold pr-8 cursor-pointer hover:text-[#F5722E] text-[#263238]"
+          className="text-[14px] sm:text-[14px] font-semibold pr-8 cursor-pointer hover:text-[#F5722E] text-[#263238]"
           onClick={() => setIsPreviewOpen(true)}
         >
           {interview.position}
@@ -256,6 +286,11 @@ const PendingCard: FC<PendingCardProps> = ({
             Based in {interview.country}
           </p>
         </div>
+
+        {/* Add LinkedIn Link - Only for employer variant and if not on free trial */}
+        {variant === "employer" && interview.linkedIn && (
+          <LinkedInLink linkedInUrl={interview.linkedIn} />
+        )}
       </div>
     </CardHeader>
   );
@@ -289,6 +324,13 @@ const PendingCard: FC<PendingCardProps> = ({
             Based in {interview.country}
           </p>
         </div>
+
+        {/* Add LinkedIn Link in accepting view too */}
+        {variant === "employer" && 
+             interview.linkedIn && 
+             !interview.freeTrial && (
+              <LinkedInLink linkedInUrl={interview.linkedIn} />
+            )}
       </div>
     </CardHeader>
   );
@@ -322,6 +364,11 @@ const PendingCard: FC<PendingCardProps> = ({
             Based in {interview.country}
           </p>
         </div>
+
+        {/* Add LinkedIn Link in declining view too */}
+        {variant === "employer" && interview.linkedIn && (
+          <LinkedInLink linkedInUrl={interview.linkedIn} />
+        )}
       </div>
     </CardHeader>
   );
@@ -364,70 +411,95 @@ const PendingCard: FC<PendingCardProps> = ({
         </span>
       </div>
       <form onSubmit={handleSubmit}>
-  <InputField
-    label="Decline Reason"
-    variant="secondary"
-    size="sm"
-    error={errors.reason}
-    touched={touched.reason}
-  >
-    <Select
-      value={values.reason}
-      onValueChange={(value) => setFieldValue("reason", value)}
-    >
-      <SelectTrigger className="w-full border-2 rounded-[10px] bg-transparent h-[40px] border-[#263238] px-3">
-        {/* Apply text-start/text-left directly to the span that contains the text */}
-        <span className="flex-1 text-left overflow-hidden text-ellipsis whitespace-nowrap">
-          <SelectValue placeholder="Select A Reason" />
-        </span>
-      </SelectTrigger>
-      <SelectContent
-        className="bg-[#F5F5F7] p-0 [&>*]:px-0 border-none rounded-none max-h-[200px] w-[var(--radix-select-trigger-width)]"
-        position="popper"
-        sideOffset={5}
-      >
-        <SelectGroup>
-          {(variant === "employer"
-            ? employerDeclineReasons
-            : jobHunterDeclineReasons
-          ).map((reason) => (
-            <SelectItem
-              key={reason.value}
-              value={reason.value}
-              className="rounded-none justify-start pl-3 py-2 pr-2 min-h-[40px] h-auto"
+        <InputField
+          label="Decline Reason"
+          variant="secondary"
+          size="sm"
+          error={errors.reason}
+          touched={touched.reason}
+        >
+          <Select
+            value={values.reason}
+            onValueChange={(value) => setFieldValue("reason", value)}
+          >
+            <SelectTrigger className="w-full border-2 rounded-[10px] bg-transparent h-[40px] border-[#263238] px-3">
+              {/* Apply text-start/text-left directly to the span that contains the text */}
+              <span className="flex-1 text-left overflow-hidden text-ellipsis whitespace-nowrap">
+                <SelectValue placeholder="Select A Reason" />
+              </span>
+            </SelectTrigger>
+            <SelectContent
+              className="bg-[#F5F5F7] p-0 [&>*]:px-0 border-none rounded-none max-h-[200px] w-[var(--radix-select-trigger-width)]"
+              position="popper"
+              sideOffset={5}
             >
-              <div className="break-words w-full whitespace-normal">
-                {reason.label}
-              </div>
-            </SelectItem>
-          ))}
-        </SelectGroup>
-      </SelectContent>
-    </Select>
-  </InputField>
-</form>
+              <SelectGroup>
+                {(variant === "employer"
+                  ? employerDeclineReasons
+                  : jobHunterDeclineReasons
+                ).map((reason) => (
+                  <SelectItem
+                    key={reason.value}
+                    value={reason.value}
+                    className="rounded-none justify-start pl-3 py-2 pr-2 min-h-[40px] h-auto"
+                  >
+                    <div className="break-words w-full whitespace-normal">
+                      {reason.label}
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </InputField>
+      </form>
     </div>
   );
 
   const StandardFooter = () => (
-    <CardFooter className="flex flex-row justify-center pt-2 space-x-2 md:space-x-6">
+    <CardFooter className="flex flex-row md:flex-row justify-center pt-2 space-x-2 md:space-x-6">
       <Button
         onClick={() => setModalView("accept")}
-        className="text-[13px] font-semibold w-[100px] h-[32px] bg-[#F5722E] hover:bg-[#F5722E]/90 text-white"
+        className="text-[13px] font-semibold w-[100px] h-[32px] md:h-[32px] text-[#F5722E] border-2 border-[#F5722E] hover:bg-[#F5722E] hover:text-white bg-transparent"
       >
         Accept
       </Button>
       <Button
         onClick={() => setActiveModal("reschedule")}
         variant="outline"
-        className="text-[13px] font-semibold w-[100px] h-[32px] text-[#F5722E] border-2 border-[#F5722E] hover:bg-[#F5722E] hover:text-white"
+        className="text-[13px] font-semibold w-[100px] h-[32px] md:h-[32px] text-[#F5722E] border-2 border-[#F5722E] hover:bg-[#F5722E] hover:text-white"
       >
         Reschedule
       </Button>
       <Button
         onClick={() => setModalView("decline")}
         variant="outline"
-        className="text-[13px] font-semibold w-[100px] h-[32px] text-[#F5722E] border-2 border-[#F5722E] hover:bg-[#F5722E] hover:text-white"
+        className="text-[13px] font-semibold w-[100px] h-[32px] md:h-[32px] text-[#F5722E] border-2 border-[#F5722E] hover:bg-[#F5722E] hover:text-white"
+      >
+        Decline
+      </Button>
+    </CardFooter>
+  );
+
+  const StandardFooterMobile = () => (
+    <CardFooter className="flex flex-col justify-center pt-6 space-y-4 px-6">
+      <Button
+        onClick={() => setModalView("accept")}
+        className="text-[15px] w-[165px] h-[35px] text-[#F5722E] border-2 border-[#F5722E] hover:bg-[#F5722E] hover:text-white rounded-[4px] bg-transparent"
+      >
+        Accept
+      </Button>
+      <Button
+        onClick={() => setActiveModal("reschedule")}
+        variant="outline"
+        className="text-[15px] w-[165px] h-[35px] text-[#F5722E] border-2 border-[#F5722E] hover:bg-[#F5722E] hover:text-white rounded-[4px] bg-transparent"
+      >
+        Reschedule
+      </Button>
+      <Button
+        onClick={() => setModalView("decline")}
+        variant="outline"
+        className="text-[15px] w-[165px] h-[35px] text-[#F5722E] border-2 border-[#F5722E] hover:bg-[#F5722E] hover:text-white rounded-[4px] bg-transparent"
       >
         Decline
       </Button>
@@ -498,7 +570,7 @@ const PendingCard: FC<PendingCardProps> = ({
       )}
       {/* Card */}
       <Card
-        className={`bg-[#FFFFFF] border-none w-full sm:min-w-[436px] max-w-[436px] h-[275px] relative ${
+        className={`bg-[#FFFFFF] border-none w-full sm:min-w-[436px] sm:max-w-[436px] max-w-[308px] h-[395px] sm:h-[275px] relative ${
           modalView ? "z-50" : ""
         }`}
       >
@@ -519,7 +591,16 @@ const PendingCard: FC<PendingCardProps> = ({
         ) : modalView === "decline" ? (
           <DecliningFooter />
         ) : !interview.isRequesterMe ? (
-          <StandardFooter />
+          <>
+            {/* Desktop Footer */}
+            <div className="hidden sm:block">
+              <StandardFooter />
+            </div>
+            {/* Mobile Footer */}
+            <div className="block sm:hidden">
+              <StandardFooterMobile />
+            </div>
+          </>
         ) : (
           <></>
         )}

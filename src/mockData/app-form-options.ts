@@ -1,9 +1,6 @@
 export interface FormData {
   firstName: string;
   lastName: string;
-  birthday: string;
-  emailAddress: string;
-  mobileNumber: string;
   employmentType: string[];
   salaryRange: string;
   yearsOfExperience: string;
@@ -13,6 +10,7 @@ export interface FormData {
   languages: string[];
   country: string;
   certifications: string[];
+  linkedIn?: string;
 }
 
 interface SelectOption {

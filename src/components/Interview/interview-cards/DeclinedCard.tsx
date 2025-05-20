@@ -4,6 +4,35 @@ import { Card, CardHeader, CardContent } from "components";
 import { CandidatePreviewModal } from "../modals/CandidatePreviewModal";
 import { JobInterviewPreviewModal } from "../modals/JobInterviewPreviewModal";
 import { Interview } from "contexts/Interviews/types";
+import linkedin_icon from "assets/linkedin.svg?url";
+
+interface LinkedInLinkProps {
+  linkedInUrl: string;
+}
+
+const LinkedInLink: FC<LinkedInLinkProps> = ({ linkedInUrl }) => {
+  const handleLinkedInClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click when clicking on LinkedIn link
+    
+    // Add protocol if missing
+    let url = linkedInUrl;
+    if (!url.startsWith("http")) {
+      url = "https://" + url;
+    }
+    
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
+
+  return (
+    <div 
+      className="flex items-center gap-1 text-[13px] font-light cursor-pointer text-[#263238] underline pb-1"
+      onClick={handleLinkedInClick}
+    >
+      <img src={linkedin_icon} alt="LinkedIn" className="w-4 h-4" />
+      <span>LinkedIn Profile</span>
+    </div>
+  );
+};
 
 interface DeclinedCardProps {
   interview: Interview;
@@ -47,7 +76,7 @@ const DeclinedCard: FC<DeclinedCardProps> = ({ interview, variant }) => {
 
   return (
     <>
-      <Card className="bg-white border-none w-full sm:min-w-[436px] max-w-[436px] h-[275px]">
+      <Card className="bg-white border-none w-full sm:min-w-[436px] sm:max-w-[436px] max-w-[308px] h-[395px] sm:h-[275px] relative">
         <CardHeader className="flex flex-col justify-between items-start pb-0">
           <div className="flex flex-row -mt-4 justify-between w-full">
             <div className="h-[20px]">
@@ -85,6 +114,13 @@ const DeclinedCard: FC<DeclinedCardProps> = ({ interview, variant }) => {
                 Based in {interview.country}
               </p>
             </div>
+            
+            {/* Add LinkedIn Link - Only for employer variant and if not on free trial */}
+            {variant === "employer" && 
+             interview.linkedIn && 
+             !interview.freeTrial && (
+              <LinkedInLink linkedInUrl={interview.linkedIn} />
+            )}
           </div>
         </CardHeader>
 
