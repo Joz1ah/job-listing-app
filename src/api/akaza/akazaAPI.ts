@@ -731,6 +731,38 @@ export const akazaApiAccount = createApiFunction({
         }
       },
     }),
+    
+    // New endpoint for updating phone number
+    updatePhoneNumber: builder.mutation({
+      query: (payload) => ({
+        url: '/settings/update-mobile',
+        method: 'POST',
+        body: {
+          phoneNumber: payload.phoneNumber
+        },
+      }),
+      invalidatesTags: ['UserInfo'],
+      // Add optimistic updates
+      async onQueryStarted(patch, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          akazaApiAccount.util.updateQueryData('getUserInfo', undefined, (draft) => {
+            // Update the cached data optimistically
+            if (draft?.data) {
+              Object.assign(draft.data, {
+                phoneNumber: patch.phoneNumber
+              });
+            }
+          })
+        );
+
+        try {
+          await queryFulfilled;
+        } catch {
+          // If the mutation fails, undo the optimistic update
+          patchResult.undo();
+        }
+      },
+    }),
   }),
 });
 
@@ -851,7 +883,8 @@ export const {
   useGetUserInfoQuery,
   useGetAccountSettingsQuery,
   useUpdateAccountSettingsMutation,
-  useUpdateEmailMutation
+  useUpdateEmailMutation,
+  useUpdatePhoneNumberMutation
 } = akazaApiAccount
 
 export const {

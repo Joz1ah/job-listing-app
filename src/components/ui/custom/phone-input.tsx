@@ -10,7 +10,7 @@ import { ScrollArea } from "components";
 const cn = (...classes: (string | undefined)[]) =>
   classes.filter(Boolean).join(" ");
 
-// Input Component
+// Input Component with vertical centering
 const InputComponent = React.forwardRef<
   HTMLInputElement,
   React.InputHTMLAttributes<HTMLInputElement>
@@ -19,6 +19,7 @@ const InputComponent = React.forwardRef<
     className={cn(
       "rounded-[4px] border-none bg-transparent text-white h-full pl-2",
       "placeholder:text-white/50 focus-visible:ring-0 focus-visible:ring-offset-0",
+      "flex items-center", // Add vertical centering
       className,
     )}
     {...props}
@@ -40,7 +41,7 @@ const FlagComponent = ({ country, countryName }: RPNInput.FlagProps) => {
 };
 FlagComponent.displayName = "FlagComponent";
 
-// Optimized Country Select Component
+// Country Select Component with proper positioning and centering
 const CountrySelect = ({
   disabled,
   value,
@@ -121,14 +122,14 @@ const CountrySelect = ({
   };
 
   return (
-    <div ref={parentRef}>
-      <Popover open={isOpen} onOpenChange={setIsOpen}>
+    <div ref={parentRef} className="h-full flex items-center">
+      <Popover>
         <PopoverTrigger asChild>
           <Button
             type="button"
             variant="ghost"
             className={cn(
-              "flex items-center gap-1 h-full px-2",
+              "flex items-center justify-center gap-1 h-full px-2",
               "bg-transparent hover:bg-transparent min-w-[80px]",
               "border-none focus-visible:ring-0 focus-visible:ring-offset-0",
             )}
@@ -200,7 +201,7 @@ type PhoneInputProps = {
   defaultCountry?: RPNInput.Country;
 } & Omit<RPNInput.Props<typeof RPNInput.default>, "onChange" | "value">;
 
-// Main PhoneInput Component with positioning context
+// Main PhoneInput Component with positioning context and centering
 const PhoneInput = React.forwardRef<
   React.ElementRef<typeof RPNInput.default>,
   PhoneInputProps
@@ -236,12 +237,12 @@ const PhoneInput = React.forwardRef<
 
     return (
       <div
-        className={cn("relative w-full", className)}
+        className={cn("relative w-full flex items-center", className)}
         data-phone-input-container
       >
         <RPNInput.default
           ref={ref}
-          className="flex bg-transparent w-full"
+          className="flex bg-transparent w-full items-center h-full"
           flagComponent={FlagComponent}
           countrySelectComponent={CountrySelect}
           inputComponent={InputComponent}
