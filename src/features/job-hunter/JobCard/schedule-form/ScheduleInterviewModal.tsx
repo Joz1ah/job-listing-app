@@ -321,8 +321,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
     <>
       <Dialog open={isOpen} onOpenChange={handleModalClose}>
         <DialogContent
-          // Only add max-height and overflow for mobile view
-          className={`w-[calc(100%-2rem)] md:w-full max-w-3xl h-auto p-0 flex flex-col mt-0 translate-y-12 top-4 sm:top-6 ${isMobileView ? "max-h-[90vh] overflow-y-auto" : ""}`}
+          className="w-[calc(100%-2rem)] md:w-full max-w-3xl h-auto p-0 flex flex-col mt-0 translate-y-12 top-4 sm:top-6 max-h-[90vh] overflow-y-auto"
           closeOnOutsideClick={false}
         >
           <div className="flex flex-col h-full">
@@ -375,7 +374,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                         <span className="text-sm flex justify-start mb-2">
                           Certificates:
                         </span>
-                        <div className="flex flex-wrap gap-1.5">
+                        <div className="flex flex-wrap gap-1.5 text-left">
                           {certificate && certificate.length > 0 ? (
                             certificate.map((cert, index) => (
                               <span
@@ -488,6 +487,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                       </Button>
                     </div>
                   </div>
+                  <div className="h-16 md:h-0"></div>
                 </form>
               </DialogHeader>
             </div>
