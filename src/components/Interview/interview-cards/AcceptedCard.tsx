@@ -6,8 +6,37 @@ import { Tooltip } from "components";
 import { Interview } from "contexts/Interviews/types";
 import { CandidatePreviewModal } from "../modals/CandidatePreviewModal";
 import { JobInterviewPreviewModal } from "../modals/JobInterviewPreviewModal";
+import linkedin_icon from "assets/linkedin.svg?url";
 
 import gmeet from "images/google-meet.svg?url";
+
+interface LinkedInLinkProps {
+  linkedInUrl: string;
+}
+
+const LinkedInLink: FC<LinkedInLinkProps> = ({ linkedInUrl }) => {
+  const handleLinkedInClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click when clicking on LinkedIn link
+    
+    // Add protocol if missing
+    let url = linkedInUrl;
+    if (!url.startsWith("http")) {
+      url = "https://" + url;
+    }
+    
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
+
+  return (
+    <div 
+      className="flex items-center gap-1 text-[13px] font-light cursor-pointer text-[#263238] underline"
+      onClick={handleLinkedInClick}
+    >
+      <img src={linkedin_icon} alt="LinkedIn" className="w-4 h-4" />
+      <span>LinkedIn Profile</span>
+    </div>
+  );
+};
 
 interface AcceptedCardProps {
   interview: Interview;
@@ -82,6 +111,11 @@ const AcceptedCard: FC<AcceptedCardProps> = ({
                 Based in {interview.country}
               </p>
             </div>
+            
+            {/* Add LinkedIn Link - Only for employer variant and if not on free trial */}
+            {variant === "employer" && interview.linkedIn && (
+              <LinkedInLink linkedInUrl={interview.linkedIn} />
+            )}
           </div>
         </CardHeader>
 

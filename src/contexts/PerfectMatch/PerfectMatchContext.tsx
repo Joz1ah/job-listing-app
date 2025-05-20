@@ -51,6 +51,13 @@ const mapPerfectMatchData = (apiResponse: any): Match[] => {
         .map((keyword: any) => keyword.keyword)
     : [], // No certificates in API response
     isNew: isNew(item?.jobDetails?.createdAt) ?? false, // Assuming all are new
+
+    linkedIn: item?.jobHunter?.linkedln ?? null,
+
+    isFreeTrial: item?.jobHunter?.isFreeTrial ?? false,
+
+    formerEmployers: item?.formerEmployers ?? [],
+
     // Add score for debugging
     score: item?.score || 0,
   }));

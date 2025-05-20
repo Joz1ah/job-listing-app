@@ -1,5 +1,5 @@
 import React, { FC, useState, useEffect } from "react";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, X } from "lucide-react";
 import { Input, Button, InputField } from "components";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -17,8 +17,6 @@ import { ROUTE_CONSTANTS } from "constants/routeConstants";
 
 import {
   LanguageTagInput,
-  BirthdayInput,
-  PhoneInput,
   CoreSkillsTagInput,
   InterpersonalSkillsTagInput,
   CertificationTagInput,
@@ -36,18 +34,22 @@ import {
 } from "components";
 
 import { cn } from "lib/utils";
-import { useFormik } from "formik";
+import { useFormik, FormikErrors } from "formik";
 import * as Yup from "yup";
 
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 
+// FormerEmployer interface
+interface FormerEmployer {
+  name: string;
+  jobTitle: string; // Changed from 'title' to 'jobTitle'
+  duration: string;
+}
+
 interface FormData {
   firstName: string;
   lastName: string;
-  birthday: string;
   location: string;
-  emailAddress: string;
-  mobileNumber: string;
   employmentType: string[];
   salaryRange: string;
   yearsOfExperience: string;
@@ -57,6 +59,8 @@ interface FormData {
   languages: string[];
   country: string;
   certifications: string[];
+  linkedln: string;
+  formerEmployers: FormerEmployer[];
 }
 
 interface JobHunterSkill {
@@ -65,69 +69,69 @@ interface JobHunterSkill {
   type: "core" | "interpersonal" | "certification";
 }
 
-const validationSchema = Yup.object().shape({
-  firstName: Yup.string().required("This field is required"),
-  lastName: Yup.string().required("This field is required"),
-  birthday: Yup.string()
-    .matches(
-      /^(January|February|March|April|May|June|July|August|September|October|November|December)\s(3[01]|[12][0-9]|[1-9])$/,
-      "Day is required",
-    )
-    .required("Birthday is required"),
-  emailAddress: Yup.string()
-    .required("This field is required")
-    .email("Invalid email address"),
-  mobileNumber: Yup.string()
-      .required("This field is required")
+// Create dynamic validation schema based on years of experience
+const createValidationSchema = (
+  yearsOfExperience: string,
+): Yup.ObjectSchema<any> => {
+  // Base validation schema
+  const schema = {
+    firstName: Yup.string().required("This field is required"),
+    lastName: Yup.string().required("This field is required"),
+    country: Yup.string().required("This field is required"),
+    employmentType: Yup.array().min(
+      1,
+      "Please select at least one employment type",
+    ),
+    salaryRange: Yup.string().required("This field is required"),
+    location: Yup.string().required("This field is required"),
+    yearsOfExperience: Yup.string().required("This field is required"),
+    coreSkills: Yup.array()
+      .min(3, "Please add at least 3 core skills")
+      .required("This field is required"),
+    interpersonalSkills: Yup.array()
+      .min(3, "Please add at least 3 interpersonal skills")
+      .required("This field is required"),
+    education: Yup.string().required("This field is required"),
+    languages: Yup.array()
+      .min(1, "This field is required")
+      .required("This field is required"),
+    linkedln: Yup.string()
+      .nullable()
       .test(
-        "phone",
-        "Please enter a valid international phone number",
-        function (value) {
-          if (!value) return false;
-  
-          // Remove all non-digit characters except plus sign at start
-          const cleaned = value.replace(/(?!^\+)\D/g, "");
-  
-          // Check if it starts with a plus sign
-          const hasPlus = value.startsWith("+");
-  
-          // Get only digits
-          const digitsOnly = cleaned.replace(/\+/g, "");
-  
-          if (!hasPlus) return false;
-          if (digitsOnly.length < 10 || digitsOnly.length > 15) return false;
-  
-          // Basic country code validation (1-4 digits after +)
-          const countryCode = digitsOnly.slice(0, 4);
-          if (!/^\d{1,4}$/.test(countryCode)) return false;
-  
-          return true;
-        }
-      )
-      .transform((value) => {
-        if (!value) return value;
-        // Standardize format: remove all spaces and non-digit chars except leading +
-        return value.replace(/\s+/g, "").replace(/(?!^\+)\D/g, "");
+        "is-linkedin-url",
+        "Please enter a valid LinkedIn profile URL",
+        (value) => {
+          if (!value) return true; // Allow null values
+          // Check for LinkedIn URL format (accepts various LinkedIn URL formats)
+          const linkedinRegex =
+            /^(https?:\/\/)?(www\.)?linkedin\.com\/in\/[\w-]+\/?$/i;
+          return linkedinRegex.test(value);
+        },
+      ),
+    formerEmployers: Yup.array().of(
+      Yup.object().shape({
+        name: Yup.string(),
+        jobTitle: Yup.string(),
+        duration: Yup.string(),
       }),
-  country: Yup.string().required("This field is required"),
-  employmentType: Yup.array().min(
-    1,
-    "Please select at least one employment type",
-  ),
-  salaryRange: Yup.string().required("This field is required"),
-  location: Yup.string().required("This field is required"),
-  yearsOfExperience: Yup.string().required("This field is required"),
-  coreSkills: Yup.array()
-    .min(3, "Please add at least 3 core skills")
-    .required("This field is required"),
-  interpersonalSkills: Yup.array()
-    .min(3, "Please add at least 3 interpersonal skills")
-    .required("This field is required"),
-  education: Yup.string().required("This field is required"),
-  languages: Yup.array()
-    .min(1, "This field is required")
-    .required("This field is required"),
-});
+    ),
+  };
+
+  // If user has experience, require at least one former employer
+  if (yearsOfExperience && yearsOfExperience !== "No experience") {
+    schema.formerEmployers = Yup.array()
+      .of(
+        Yup.object().shape({
+          name: Yup.string().required("Employer name is required"),
+          jobTitle: Yup.string().required("Job title is required"),
+          duration: Yup.string().required("Duration is required"),
+        }),
+      )
+      .min(1, "At least one former employer is required");
+  }
+
+  return Yup.object().shape(schema);
+};
 
 const LoadingOverlay: FC = () => (
   <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
@@ -141,10 +145,13 @@ const EditApplicationCard: FC = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPreview, setShowPreview] = useState<boolean>(false);
-  const { user, refreshUser } = useAuth(); // Add refreshUser
+  const { user, refreshUser } = useAuth();
   const [submitJobHunterProfile] = useJobHunterProfileMutation();
   const { keywordToIdMap, addMapping } = useContext(KeywordMappingContext);
   const { showError } = useErrorModal();
+  const [validationSchema, setValidationSchema] = useState(() =>
+    createValidationSchema(""),
+  );
 
   // Parse employment type string into array
   const employmentTypes = user?.data?.user?.relatedDetails?.employmentType
@@ -161,23 +168,43 @@ const EditApplicationCard: FC = () => {
     }
   }, [user, addMapping]);
 
-  const formik = useFormik<FormData>({
+  // Convert former employers from 'title' to 'jobTitle' if necessary
+  const defaultFormerEmployers = user?.data?.user?.relatedDetails
+    ?.FormerEmployer
+    ? user.data.user.relatedDetails.FormerEmployer.map((employer: any) => ({
+        name: employer.name || "",
+        jobTitle: employer.jobTitle || employer.title || "", // Handle both field names
+        duration: employer.duration || "",
+      }))
+    : [];
+
+  const initialFormerEmployers =
+    defaultFormerEmployers.length > 0
+      ? defaultFormerEmployers
+      : [{ name: "", jobTitle: "", duration: "" }];
+
+  const initialYearsOfExperience =
+    user?.data?.user?.relatedDetails?.yearsOfExperience || "";
+
+  const {
+    values,
+    errors,
+    touched,
+    handleChange,
+    setFieldValue,
+    handleSubmit,
+    isValid,
+    setFieldTouched,
+    validateForm,
+  } = useFormik<FormData>({
     initialValues: {
       firstName: user?.data?.user?.relatedDetails?.firstName || "",
       lastName: user?.data?.user?.relatedDetails?.lastName || "",
-      birthday: user?.data?.user?.relatedDetails?.birthday || "",
       location: user?.data?.user?.relatedDetails?.location || "",
-      emailAddress: user?.data?.user?.email || "",
-      mobileNumber: user?.data?.user?.relatedDetails?.phoneNumber
-        ? user.data.user.relatedDetails.phoneNumber.startsWith("+")
-          ? user.data.user.relatedDetails.phoneNumber
-          : `+${user.data.user.relatedDetails.phoneNumber}`
-        : "",
       employmentType: employmentTypes,
       salaryRange: user?.data?.user?.relatedDetails?.salaryRange || "",
-      yearsOfExperience:
-        user?.data?.user?.relatedDetails?.yearsOfExperience || "",
-        coreSkills:
+      yearsOfExperience: initialYearsOfExperience,
+      coreSkills:
         user?.data?.user?.relatedDetails?.JobHunterSkill?.filter(
           (skill: JobHunterSkill) => skill.type === "core",
         )?.map((skill: JobHunterSkill) => skill.keyword) || [],
@@ -191,26 +218,104 @@ const EditApplicationCard: FC = () => {
         )?.map((skill: JobHunterSkill) => skill.keyword) || [],
       education: user?.data?.user?.relatedDetails?.education || "",
       languages: user?.data?.user?.relatedDetails?.language
-      ? user.data.user.relatedDetails.language.split(',').map((lang: string) => lang.trim())
-      : [],
+        ? user.data.user.relatedDetails.language
+            .split(",")
+            .map((lang: string) => lang.trim())
+        : [],
       country: user?.data?.user?.relatedDetails?.country || "",
+      linkedln: user?.data?.user?.relatedDetails?.linkedln || "",
+      formerEmployers: initialFormerEmployers,
     },
     validationSchema,
     validateOnMount: true,
+    validateOnChange: true,
+    validateOnBlur: true,
     onSubmit: async () => {
       setShowPreview(true);
     },
   });
 
-  const {
-    values,
-    errors,
-    touched,
-    handleChange,
-    setFieldValue,
-    handleSubmit,
-    isValid,
-  } = formik;
+  // Create a modified version of the values for the preview
+  // This maps the 'linkedln' property to 'linkedinProfile' for AppCardPreview
+  const previewValues = {
+    ...values,
+    linkedinProfile: values.linkedln, // Add this line to map linkedln to linkedinProfile
+  };
+
+  // Handle LinkedIn change - similar to ApplicationCardForm
+  const handleLinkedInChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Update the field value without triggering validation on former employers
+    setFieldValue("linkedln", e.target.value, false);
+    // Only validate the linkedln field
+    validateForm({
+      ...values,
+      linkedln: e.target.value,
+    });
+  };
+
+  // Update validation schema when years of experience changes
+  useEffect(() => {
+    const newValidationSchema = createValidationSchema(
+      values.yearsOfExperience,
+    );
+    setValidationSchema(newValidationSchema);
+
+    // If user selects no experience, reset formerEmployers to empty array
+    if (values.yearsOfExperience === "No experience") {
+      setFieldValue("formerEmployers", [
+        { name: "", jobTitle: "", duration: "" },
+      ]);
+    }
+
+    // Run validation immediately after schema update to update isValid state
+    validateForm();
+  }, [values.yearsOfExperience, setFieldValue, validateForm]);
+
+  // Check if we should show former employer fields
+  const showFormerEmployer =
+    values.yearsOfExperience && values.yearsOfExperience !== "No experience";
+
+  // Type-safe error accessor function
+  const getEmployerFieldError = (
+    index: number,
+    field: keyof FormerEmployer,
+  ): string | undefined => {
+    if (
+      !errors.formerEmployers ||
+      !Array.isArray(errors.formerEmployers) ||
+      !errors.formerEmployers[index]
+    ) {
+      return undefined;
+    }
+
+    const fieldError = errors.formerEmployers[index];
+    if (typeof fieldError === "string") {
+      return fieldError;
+    }
+
+    return (fieldError as FormikErrors<FormerEmployer>)[field];
+  };
+
+  // Type-safe touched accessor function
+  const isEmployerFieldTouched = (
+    index: number,
+    field: keyof FormerEmployer,
+  ): boolean => {
+    if (
+      !touched.formerEmployers ||
+      !Array.isArray(touched.formerEmployers) ||
+      !touched.formerEmployers[index]
+    ) {
+      return false;
+    }
+
+    const fieldTouched = touched.formerEmployers[index];
+    if (typeof fieldTouched !== "object") {
+      return false;
+    }
+
+    return !!(fieldTouched as Record<string, boolean>)[field];
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && e.target instanceof HTMLElement) {
@@ -222,13 +327,26 @@ const EditApplicationCard: FC = () => {
     }
   };
 
+  const addEmployer = () => {
+    if (values.formerEmployers.length < 3) {
+      setFieldValue("formerEmployers", [
+        ...values.formerEmployers,
+        { name: "", jobTitle: "", duration: "" },
+      ]);
+    }
+  };
+
+  const removeEmployer = (index: number) => {
+    const updatedEmployers = [...values.formerEmployers];
+    updatedEmployers.splice(index, 1);
+    setFieldValue("formerEmployers", updatedEmployers);
+  };
+
   const handleFormSubmit = async () => {
     setShowPreview(false);
     setIsSubmitting(true);
 
     try {
-      const formattedPhoneNumber = values.mobileNumber.replace(/[^\d]/g, "");
-
       // Define language options
       const languages = [
         { label: "Arabic", value: "ar" },
@@ -258,25 +376,25 @@ const EditApplicationCard: FC = () => {
 
       // Transform keywords to IDs during submission
       const coreSkillIds = values.coreSkills
-      .map((keyword) => {
-        const id = keywordToIdMap[keyword];
-        return id ? String(id) : null; // Convert to string
-      })
-      .filter(Boolean);
+        .map((keyword) => {
+          const id = keywordToIdMap[keyword];
+          return id ? String(id) : null; // Convert to string
+        })
+        .filter(Boolean);
 
-    const interpersonalSkillIds = values.interpersonalSkills
-      .map((keyword) => {
-        const id = keywordToIdMap[keyword];
-        return id ? String(id) : null; // Convert to string
-      })
-      .filter(Boolean);
+      const interpersonalSkillIds = values.interpersonalSkills
+        .map((keyword) => {
+          const id = keywordToIdMap[keyword];
+          return id ? String(id) : null; // Convert to string
+        })
+        .filter(Boolean);
 
-    const certificationIds = values.certifications
-      .map((keyword) => {
-        const id = keywordToIdMap[keyword];
-        return id ? String(id) : null; // Convert to string
-      })
-      .filter(Boolean);
+      const certificationIds = values.certifications
+        .map((keyword) => {
+          const id = keywordToIdMap[keyword];
+          return id ? String(id) : null; // Convert to string
+        })
+        .filter(Boolean);
 
       const formattedLanguages = values.languages
         .map((lang) => {
@@ -287,22 +405,37 @@ const EditApplicationCard: FC = () => {
 
       const formattedEmploymentTypes = values.employmentType.join(",");
 
+      // Only include formerEmployers if user has experience
+      const filteredFormerEmployers: FormerEmployer[] = [];
+      if (showFormerEmployer) {
+        values.formerEmployers.forEach((employer) => {
+          if (employer.name || employer.jobTitle || employer.duration) {
+            // The API expects 'title' field, not 'jobTitle'
+            filteredFormerEmployers.push({
+              name: employer.name || "",
+              jobTitle: employer.jobTitle || "", // Map jobTitle to title for the API
+              duration: employer.duration || "",
+            });
+          }
+        });
+      }
+
+      // Then use in payload
       const payload = {
         firstName: values.firstName,
         lastName: values.lastName,
         location: values.location,
         language: formattedLanguages,
-        birthday: values.birthday,
-        email: values.emailAddress,
-        phoneNumber: formattedPhoneNumber,
         employmentType: formattedEmploymentTypes,
         education: values.education,
-        yearsOfExperience: values.yearsOfExperience || "less-than-1",
+        yearsOfExperience: values.yearsOfExperience || "No experience",
         core: coreSkillIds as string[],
-      interpersonal: interpersonalSkillIds as string[],
-      certification: certificationIds as string[],
+        interpersonal: interpersonalSkillIds as string[],
+        certification: certificationIds as string[],
         salaryRange: values.salaryRange,
         country: values.country,
+        linkedln: values.linkedln || "",
+        formerEmployers: showFormerEmployer ? filteredFormerEmployers : [], // Only include if user has experience
       };
 
       await submitJobHunterProfile(payload).unwrap();
@@ -335,13 +468,13 @@ const EditApplicationCard: FC = () => {
       <div className="flex flex-col xl:flex-row gap-8 pt-6">
         <div className="w-full md:w-[800px] min-h-[960px] bg-[#2D3A41] text-white">
           <div className="flex items-center w-full px-0 py-4 md:px-4 md:py-6 relative">
-            <NavLink 
+            <NavLink
               to={ROUTE_CONSTANTS.DASHBOARD}
               className="absolute left-1 md:left-4 top-1/2 -translate-y-1/2 md:top-6 md:translate-y-0"
             >
               <ChevronLeft strokeWidth={4} className="h-6 w-6 mr-2" />
             </NavLink>
-            
+
             <h1 className="flex-1 text-center text-xl md:text-[32px] font-normal text-[#F5722E]">
               <span className="inline-flex items-center gap-2 justify-center">
                 Edit Your Application Card
@@ -354,258 +487,148 @@ const EditApplicationCard: FC = () => {
             onKeyDown={handleKeyDown}
             className="p-8"
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 md:gap-x-[65px] gap-y-6">
+            {/* First section - 4 pairs in 1 column */}
+            <div className="flex flex-col gap-y-6 mb-8">
               {/* First Name / Last Name */}
-              <div>
-                <InputField
-                  label="First Name"
-                  className="bg-transparent"
-                  error={errors.firstName}
-                  touched={touched.firstName}
-                  variant="primary"
-                >
-                  <Input
-                    name="firstName"
-                    value={values.firstName}
-                    onChange={handleChange}
-                    placeholder="First Name"
-                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
-                  />
-                </InputField>
-              </div>
-
-              <div>
-                <InputField
-                  label="Last Name"
-                  className="bg-transparent"
-                  error={errors.lastName}
-                  touched={touched.lastName}
-                  variant="primary"
-                >
-                  <Input
-                    name="lastName"
-                    value={values.lastName}
-                    onChange={handleChange}
-                    placeholder="Last Name"
-                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
-                  />
-                </InputField>
-              </div>
-
-              {/* Location / Languages */}
-
-              <div>
-                <InputField
-                  label="Location"
-                  className="bg-transparent"
-                  error={errors.location}
-                  touched={touched.location}
-                  variant="primary"
-                >
-                  <Input
-                    name="location"
-                    value={values.location}
-                    onChange={handleChange}
-                    placeholder="Add location"
-                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
-                  />
-                </InputField>
-              </div>
-
-              <div>
-                <InputField
-                  label="Language"
-                  error={errors.languages}
-                  touched={touched.languages}
-                  showIcon={true}
-                  tooltipContent="Feel free to enter up to 4 languages in which you are fluent, both in speaking and writing."
-                  variant="primary"
-                >
-                  <LanguageTagInput
-                    value={values.languages || []}
-                    onChange={(value) => setFieldValue("languages", value)}
-                    className="min-h-[56px] pt-1 px-1"
-                    tagClassName="bg-[#F5722E]"
-                    placeholder="Select Language"
-                  />
-                </InputField>
-              </div>
-
-              {/* Birthday / Country */}
-              <div>
-                <InputField
-                  label="Birthday"
-                  error={errors.birthday}
-                  touched={touched.birthday}
-                  variant="primary"
-                >
-                  <BirthdayInput
-                    name="birthday"
-                    value={values.birthday}
-                    onChange={(name, value) => setFieldValue(name, value)}
-                  />
-                </InputField>
-              </div>
-
-              <div>
-                <InputField
-                  label="Country of Residence"
-                  error={errors.country}
-                  touched={touched.country}
-                  variant="primary"
-                >
-                  <CountrySelect
-                    value={values.country || ""}
-                    onChange={(value) => setFieldValue("country", value)}
-                    className="w-full bg-transparent border-[#AEADAD] h-[56px] hover:text-white border-2 focus:border-[#F5722E] rounded-[8px] text-white placeholder:text-[#AEADAD] px-3 py-2"
-                    popoverClassName="md:w-[335px]"
-                  />
-                </InputField>
-              </div>
-
-              {/* Mobile / Email */}
-              <div>
-                <InputField
-                  label="Mobile Number"
-                  error={errors.mobileNumber}
-                  touched={touched.mobileNumber}
-                  variant="primary"
-                >
-                  <PhoneInput
-                    name="mobileNumber"
-                    value={values.mobileNumber}
-                    onChange={handleChange}
-                    className="bg-transparent border-2 rounded-md border-[#AEADAD] h-[56px] focus-within:border-[#F5722E] transition-colors flex justify-between"
-                    defaultCountry="CA"
-                  />
-                </InputField>
-              </div>
-
-              <div>
-                <InputField
-                  label="Email Address"
-                  className="bg-transparent"
-                  error={errors.emailAddress}
-                  touched={touched.emailAddress}
-                  variant="primary"
-                >
-                  <Input
-                    name="emailAddress"
-                    value={values.emailAddress}
-                    onChange={handleChange}
-                    placeholder="Email Address"
-                    disabled={!!user?.data?.user?.email}
-                    className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD] disabled:opacity-50 disabled:cursor-not-allowed"
-                  />
-                </InputField>
-              </div>
-
-              {/* Employment / Education */}
-              <div>
-                <InputField
-                  label="Employment Type"
-                  error={errors.employmentType}
-                  touched={touched.employmentType}
-                  showIcon={true}
-                  tooltipContent="You may select one up to three employment types that you are looking for"
-                  variant="primary"
-                >
-                  <MultiSelect
-                    value={values.employmentType}
-                    onChange={(value) => setFieldValue("employmentType", value)}
-                    options={selectOptions.employmentType}
-                  />
-                </InputField>
-              </div>
-
-              <div>
-                <InputField
-                  label="Education"
-                  error={errors.education}
-                  touched={touched.education}
-                  variant="primary"
-                >
-                  <Select
-                    name="education"
-                    value={values.education}
-                    onValueChange={(value) => setFieldValue("education", value)}
+              <div className="flex flex-col md:flex-row md:gap-x-[65px] gap-y-6">
+                <div className="flex-1">
+                  <InputField
+                    label="First Name"
+                    className="bg-transparent"
+                    error={errors.firstName}
+                    touched={touched.firstName}
+                    variant="primary"
                   >
-                    <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
-                      <SelectValue placeholder="Select highest education level" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-[#F5F5F7] items-center p-0 [&>*]:px-0 border-none rounded-none">
-                      {selectOptions.education.map(({ value, label }) => (
-                        <SelectItem
-                          key={value}
-                          className={cn(
-                            "rounded-none justify-start pl-3 h-[55px]",
-                          )}
-                          value={value}
-                        >
-                          <div className="py-3 w-full text-center">{label}</div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </InputField>
+                    <Input
+                      name="firstName"
+                      value={values.firstName}
+                      onChange={handleChange}
+                      placeholder="First Name"
+                      className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                    />
+                  </InputField>
+                </div>
+
+                <div className="flex-1">
+                  <InputField
+                    label="Last Name"
+                    className="bg-transparent"
+                    error={errors.lastName}
+                    touched={touched.lastName}
+                    variant="primary"
+                  >
+                    <Input
+                      name="lastName"
+                      value={values.lastName}
+                      onChange={handleChange}
+                      placeholder="Last Name"
+                      className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                    />
+                  </InputField>
+                </div>
               </div>
 
-              {/* Salary / Years */}
+              {/* Location / Language */}
+              <div className="flex flex-col md:flex-row md:gap-x-[65px] gap-y-6">
+                <div className="flex-1">
+                  <InputField
+                    label="Location"
+                    className="bg-transparent"
+                    error={errors.location}
+                    touched={touched.location}
+                    variant="primary"
+                  >
+                    <Input
+                      name="location"
+                      value={values.location}
+                      onChange={handleChange}
+                      placeholder="Add location"
+                      className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                    />
+                  </InputField>
+                </div>
 
-              <div>
-                <InputField
-                  label="Salary Expectation"
-                  error={errors.salaryRange}
-                  touched={touched.salaryRange}
-                  variant="primary"
-                >
-                  <Select
-                    name="salaryRange"
-                    value={values.salaryRange}
-                    onValueChange={(value) =>
-                      setFieldValue("salaryRange", value)
-                    }
+                <div className="flex-1">
+                  <InputField
+                    label="Language"
+                    error={errors.languages}
+                    touched={touched.languages}
+                    showIcon={true}
+                    tooltipContent="Feel free to enter up to 4 languages in which you are fluent, both in speaking and writing."
+                    variant="primary"
+                    disableErrorBorder={true}
                   >
-                    <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
-                      <SelectValue placeholder="Select Salary Range" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:px-0 border-none rounded-none">
-                      {selectOptions.salaryRange.map(({ value, label }) => (
-                        <SelectItem
-                          key={value}
-                          className={cn(
-                            "rounded-none justify-start pl-3 h-[55px]",
-                          )}
-                          value={value}
-                        >
-                          <div className="py-3 w-full text-center">{label}</div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </InputField>
+                    <LanguageTagInput
+                      value={values.languages || []}
+                      onChange={(value) => setFieldValue("languages", value)}
+                      className="min-h-[56px] pt-1 px-1"
+                      tagClassName="bg-[#F5722E]"
+                      placeholder="Select Language"
+                      error={Boolean(errors.languages && touched.languages)}
+                    />
+                  </InputField>
+                </div>
               </div>
-              
-              <div>
-                <InputField
-                  label="Years of Experience"
-                  error={errors.yearsOfExperience}
-                  touched={touched.yearsOfExperience}
-                  variant="primary"
-                >
-                  <Select
-                    name="yearsOfExperience"
-                    value={values.yearsOfExperience}
-                    onValueChange={(value) =>
-                      setFieldValue("yearsOfExperience", value)
-                    }
+
+              {/* LinkedIn Profile / Country */}
+              <div className="flex flex-col md:flex-row md:gap-x-[65px] gap-y-6">
+                <div className="flex-1">
+                  <InputField
+                    label="LinkedIn Profile"
+                    className="bg-transparent"
+                    onChange={handleLinkedInChange}
+                    error={errors.linkedln}
+                    touched={touched.linkedln}
+                    variant="primary"
                   >
-                    <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
-                      <SelectValue placeholder="Select Years of Experience" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:px-0 border-none rounded-none">
-                      {selectOptions.yearsOfExperience.map(
-                        ({ value, label }) => (
+                    <Input
+                      name="linkedln"
+                      value={values.linkedln}
+                      onChange={handleChange}
+                      placeholder="https://linkedin.com/in/..."
+                      className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                    />
+                  </InputField>
+                </div>
+
+                <div className="flex-1">
+                  <InputField
+                    label="Country"
+                    error={errors.country}
+                    touched={touched.country}
+                    variant="primary"
+                  >
+                    <CountrySelect
+                      value={values.country || ""}
+                      onChange={(value) => setFieldValue("country", value)}
+                      className="w-full bg-transparent border-[#AEADAD] h-[56px] hover:text-white border-2 focus:border-[#F5722E] rounded-[8px] text-white placeholder:text-[#AEADAD] px-3 py-2"
+                      popoverClassName="md:w-[335px]"
+                    />
+                  </InputField>
+                </div>
+              </div>
+
+              {/* Education / Years of Experience */}
+              <div className="flex flex-col md:flex-row md:gap-x-[65px] gap-y-6">
+                <div className="flex-1">
+                  <InputField
+                    label="Education"
+                    error={errors.education}
+                    touched={touched.education}
+                    variant="primary"
+                  >
+                    <Select
+                      name="education"
+                      value={values.education}
+                      onValueChange={(value) =>
+                        setFieldValue("education", value)
+                      }
+                    >
+                      <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
+                        <SelectValue placeholder="Select highest education level" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-[#F5F5F7] items-center p-0 [&>*]:px-0 border-none rounded-none">
+                        {selectOptions.education.map(({ value, label }) => (
                           <SelectItem
                             key={value}
                             className={cn(
@@ -617,88 +640,448 @@ const EditApplicationCard: FC = () => {
                               {label}
                             </div>
                           </SelectItem>
-                        ),
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </InputField>
+                </div>
+
+                <div className="flex-1">
+                  <InputField
+                    label="Years of Experience"
+                    error={errors.yearsOfExperience}
+                    touched={touched.yearsOfExperience}
+                    variant="primary"
+                  >
+                    <Select
+                      name="yearsOfExperience"
+                      value={values.yearsOfExperience}
+                      onValueChange={(value) => {
+                        setFieldValue("yearsOfExperience", value, false);
+
+                        // If "No experience" selected, reset former employers without validation
+                        if (value === "No experience") {
+                          setFieldValue(
+                            "formerEmployers",
+                            [{ name: "", jobTitle: "", duration: "" }],
+                            false,
+                          );
+                        }
+
+                        // Update validation schema with new value
+                        const newValidationSchema =
+                          createValidationSchema(value);
+                        setValidationSchema(newValidationSchema);
+
+                        // Then validate the form with the new schema
+                        setTimeout(() => {
+                          validateForm();
+                        }, 0);
+                      }}
+                    >
+                      <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
+                        <SelectValue placeholder="Select Years of Experience" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:px-0 border-none rounded-none">
+                        {selectOptions.yearsOfExperience.map(
+                          ({ value, label }) => (
+                            <SelectItem
+                              key={value}
+                              className={cn(
+                                "rounded-none justify-start pl-3 h-[55px]",
+                              )}
+                              value={value}
+                            >
+                              <div className="py-3 w-full text-center">
+                                {label}
+                              </div>
+                            </SelectItem>
+                          ),
+                        )}
+                      </SelectContent>
+                    </Select>
+                  </InputField>
+                </div>
+              </div>
+            </div>
+
+            {/* Second section - 2 columns layout */}
+            <div className="grid grid-cols-1 md:grid-cols-2 md:gap-x-[65px] gap-y-6">
+              {/* Left Column - Main fields */}
+              <div className="flex flex-col gap-y-6">
+                {/* Employment Type */}
+                <div>
+                  <InputField
+                    label="Employment Type"
+                    error={errors.employmentType}
+                    touched={touched.employmentType}
+                    showIcon={true}
+                    tooltipContent="You may select one up to three employment types that you are looking for"
+                    variant="primary"
+                  >
+                    <MultiSelect
+                      value={values.employmentType}
+                      onChange={(value) =>
+                        setFieldValue("employmentType", value)
+                      }
+                      options={selectOptions.employmentType}
+                    />
+                  </InputField>
+                </div>
+
+                {/* Salary Range */}
+                <div>
+                  <InputField
+                    label="Salary Range"
+                    error={errors.salaryRange}
+                    touched={touched.salaryRange}
+                    variant="primary"
+                  >
+                    <Select
+                      name="salaryRange"
+                      value={values.salaryRange}
+                      onValueChange={(value) =>
+                        setFieldValue("salaryRange", value)
+                      }
+                    >
+                      <SelectTrigger className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E]">
+                        <SelectValue placeholder="Select a Salary Range" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-[#F5F5F7] p-0 [&>*]:px-0 border-none rounded-none">
+                        {selectOptions.salaryRange.map(({ value, label }) => (
+                          <SelectItem
+                            key={value}
+                            className={cn(
+                              "rounded-none justify-start pl-3 h-[55px]",
+                            )}
+                            value={value}
+                          >
+                            <div className="py-3 w-full text-center">
+                              {label}
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </InputField>
+                </div>
+
+                {/* Core Skills */}
+                <div>
+                  <InputField
+                    label="Core Skills"
+                    error={errors.coreSkills}
+                    touched={touched.coreSkills}
+                    showIcon={true}
+                    tooltipContent="Job-specific, measurable abilities like software proficiency, coding, or design tools."
+                    variant="primary"
+                    disableErrorBorder={true}
+                  >
+                    <CoreSkillsTagInput
+                      value={values.coreSkills || []}
+                      onChange={(value) => setFieldValue("coreSkills", value)}
+                      className="min-h-[56px] pt-1 px-1"
+                      alternateColors={{
+                        firstColor: "#184E77",
+                        secondColor: "#168AAD",
+                      }}
+                      placeholder="Type and enter to add core skill"
+                      error={Boolean(errors.coreSkills && touched.coreSkills)}
+                    />
+                  </InputField>
+                </div>
+
+                {/* Interpersonal Skills */}
+                <div>
+                  <InputField
+                    label="Interpersonal Skills"
+                    error={errors.interpersonalSkills}
+                    touched={touched.interpersonalSkills}
+                    showIcon={true}
+                    tooltipContent="Personal qualities like communication, teamwork, and problem-solving."
+                    variant="primary"
+                    disableErrorBorder={true}
+                  >
+                    <InterpersonalSkillsTagInput
+                      value={values.interpersonalSkills || []}
+                      onChange={(value) =>
+                        setFieldValue("interpersonalSkills", value)
+                      }
+                      className="min-h-[56px] pt-1 px-1"
+                      alternateColors={{
+                        firstColor: "#184E77",
+                        secondColor: "#168AAD",
+                      }}
+                      placeholder="Type and enter to add interpersonal skill"
+                      error={Boolean(errors.interpersonalSkills && touched.interpersonalSkills)}
+                    />
+                  </InputField>
+                </div>
+
+                {/* Certificates */}
+                <div>
+                  <InputField
+                    label="Certificates"
+                    error={errors.certifications}
+                    touched={touched.certifications}
+                    showIcon={true}
+                    tooltipContent="Select relevant certifications that enhance your job qualifications. If not listed, You may leave it blank."
+                    variant="primary"
+                    disableErrorBorder={true}
+                  >
+                    <CertificationTagInput
+                      value={values.certifications || []}
+                      onChange={(value) =>
+                        setFieldValue("certifications", value)
+                      }
+                      className="min-h-[56px] pt-1 px-1"
+                      tagClassName="bg-[#168AAD]"
+                      placeholder="Type and enter to add certificate"
+                      alternateColors={{
+                        firstColor: "#184E77",
+                        secondColor: "#168AAD",
+                      }}
+                      error={Boolean(errors.certifications && touched.languages)}
+                    />
+                  </InputField>
+                </div>
+              </div>
+
+              {/* Right Column - Former Employer section */}
+              <div className="flex flex-col gap-y-6">
+                {showFormerEmployer && (
+                  <>
+                    {/* Former Employer Name */}
+                    <div>
+                      <InputField
+                        label="Former Employer Name"
+                        className="bg-transparent"
+                        variant="primary"
+                        showIcon={true}
+                        tooltipContent="Add Former Employer/ Company Name"
+                        error={getEmployerFieldError(0, "name")}
+                        touched={isEmployerFieldTouched(0, "name")}
+                      >
+                        <Input
+                          name="formerEmployers[0].name"
+                          value={values.formerEmployers[0]?.name}
+                          onChange={handleChange}
+                          onBlur={() => {
+                            setFieldTouched(
+                              "formerEmployers[0].name",
+                              true,
+                              false,
+                            );
+                            validateForm();
+                          }}
+                          placeholder="Former Employer"
+                          className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                        />
+                      </InputField>
+                    </div>
+
+                    {/* Former Job Title */}
+                    <div>
+                      <InputField
+                        label="Former Job Title"
+                        className="bg-transparent"
+                        variant="primary"
+                        showIcon={true}
+                        tooltipContent="Add Former Job Title with the same Employer"
+                        error={getEmployerFieldError(0, "jobTitle")}
+                        touched={isEmployerFieldTouched(0, "jobTitle")}
+                      >
+                        <Input
+                          name="formerEmployers[0].jobTitle"
+                          value={values.formerEmployers[0]?.jobTitle}
+                          onChange={handleChange}
+                          onBlur={() => {
+                            setFieldTouched(
+                              "formerEmployers[0].jobTitle",
+                              true,
+                              false,
+                            );
+                            validateForm();
+                          }}
+                          placeholder="Former Job Title"
+                          className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                        />
+                      </InputField>
+                    </div>
+
+                    {/* Duration */}
+                    <div>
+                      <InputField
+                        label="Duration"
+                        className="bg-transparent"
+                        variant="primary"
+                        showIcon={true}
+                        tooltipContent="Type number + year, and/ or number + months"
+                        error={getEmployerFieldError(0, "duration")}
+                        touched={isEmployerFieldTouched(0, "duration")}
+                      >
+                        <Input
+                          name="formerEmployers[0].duration"
+                          value={values.formerEmployers[0]?.duration}
+                          onChange={handleChange}
+                          onBlur={() => {
+                            setFieldTouched(
+                              "formerEmployers[0].duration",
+                              true,
+                              false,
+                            );
+                            validateForm();
+                          }}
+                          placeholder="(e.g. 2 years, 10 months)"
+                          className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                        />
+                      </InputField>
+                    </div>
+
+                    {/* Add More button for first employer */}
+                    {values.formerEmployers.length === 1 && (
+                      <div>
+                        <button
+                          type="button"
+                          onClick={addEmployer}
+                          className="flex items-center justify-center bg-transparent h-[56px] border-2 border-[#F5F5F5] text-white py-2 px-4 rounded-[8px] hover:border-[#F5722E] w-full"
+                        >
+                          <span className="mr-1">+</span> Add more
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Additional employer entries */}
+                    {values.formerEmployers.slice(1).map((employer, index) => {
+                      const actualIndex = index + 1;
+                      return (
+                        <React.Fragment key={actualIndex}>
+                          {/* Former Employer Name */}
+                          <div className="relative mt-4">
+                            <InputField
+                              label="Former Employer Name"
+                              className="bg-transparent"
+                              variant="primary"
+                              showIcon={true}
+                              tooltipContent="Add Former Employer/ Company Name"
+                              error={getEmployerFieldError(actualIndex, "name")}
+                              touched={isEmployerFieldTouched(
+                                actualIndex,
+                                "name",
+                              )}
+                            >
+                              <Input
+                                name={`formerEmployers[${actualIndex}].name`}
+                                value={employer.name}
+                                onChange={handleChange}
+                                onBlur={() =>
+                                  setFieldTouched(
+                                    `formerEmployers[${actualIndex}].name`,
+                                    true,
+                                  )
+                                }
+                                placeholder="Former Employer"
+                                className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                              />
+                            </InputField>
+                            <button
+                              type="button"
+                              onClick={() => removeEmployer(actualIndex)}
+                              className="absolute right-[-24px] top-[20px] text-white hover:text-[#F5722E]"
+                            >
+                              <X size={18} />
+                            </button>
+                          </div>
+
+                          {/* Former Job Title */}
+                          <div>
+                            <InputField
+                              label="Former Job Title"
+                              className="bg-transparent"
+                              variant="primary"
+                              showIcon={true}
+                              tooltipContent="Add Former Job Title with the same Employer"
+                              error={getEmployerFieldError(
+                                actualIndex,
+                                "jobTitle",
+                              )}
+                              touched={isEmployerFieldTouched(
+                                actualIndex,
+                                "jobTitle",
+                              )}
+                            >
+                              <Input
+                                name={`formerEmployers[${actualIndex}].jobTitle`}
+                                value={employer.jobTitle}
+                                onChange={handleChange}
+                                onBlur={() =>
+                                  setFieldTouched(
+                                    `formerEmployers[${actualIndex}].jobTitle`,
+                                    true,
+                                  )
+                                }
+                                placeholder="Former Job Title"
+                                className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                              />
+                            </InputField>
+                          </div>
+
+                          {/* Duration */}
+                          <div>
+                            <InputField
+                              label="Duration"
+                              className="bg-transparent"
+                              variant="primary"
+                              showIcon={true}
+                              tooltipContent="Type number + year, and/ or number + months"
+                              error={getEmployerFieldError(
+                                actualIndex,
+                                "duration",
+                              )}
+                              touched={isEmployerFieldTouched(
+                                actualIndex,
+                                "duration",
+                              )}
+                            >
+                              <Input
+                                name={`formerEmployers[${actualIndex}].duration`}
+                                value={employer.duration}
+                                onChange={handleChange}
+                                onBlur={() =>
+                                  setFieldTouched(
+                                    `formerEmployers[${actualIndex}].duration`,
+                                    true,
+                                  )
+                                }
+                                placeholder="(e.g. 2 years, 10 months)"
+                                className="bg-transparent border-[#AEADAD] h-[56px] border-2 focus:border-[#F5722E] placeholder:text-[#AEADAD]"
+                              />
+                            </InputField>
+                          </div>
+                        </React.Fragment>
+                      );
+                    })}
+
+                    {/* Show Add more button after the last added employer */}
+                    {values.formerEmployers.length > 1 &&
+                      values.formerEmployers.length < 3 && (
+                        <div>
+                          <button
+                            type="button"
+                            onClick={addEmployer}
+                            className="flex items-center justify-center bg-transparent h-[56px] border-2 border-[#F5F5F5] text-white py-2 px-4 rounded-[8px] hover:border-[#F5722E] w-full mt-2"
+                          >
+                            <span className="mr-1">+</span> Add more
+                          </button>
+                        </div>
                       )}
-                    </SelectContent>
-                  </Select>
-                </InputField>
-              </div>
-
-              {/* Core Skills / Interpersonal Skills */}
-              <div>
-                <InputField
-                  label="Core Skills"
-                  error={errors.coreSkills}
-                  touched={touched.coreSkills}
-                  showIcon={true}
-                  tooltipContent="Job-specific, measurable abilities like software proficiency, coding, or design tools."
-                  variant="primary"
-                >
-                  <CoreSkillsTagInput
-                    value={values.coreSkills || []}
-                    onChange={(value) => setFieldValue("coreSkills", value)}
-                    className="min-h-[99px] pt-1 px-1"
-                    alternateColors={{
-                      firstColor: "#184E77",
-                      secondColor: "#168AAD",
-                    }}
-                    placeholder="Type and enter to add core skill"
-                  />
-                </InputField>
-              </div>
-
-              <div>
-                <InputField
-                  label="Interpersonal Skills"
-                  error={errors.interpersonalSkills}
-                  touched={touched.interpersonalSkills}
-                  showIcon={true}
-                  tooltipContent="Personal qualities like communication, teamwork, and problem-solving."
-                  variant="primary"
-                >
-                  <InterpersonalSkillsTagInput
-                    value={values.interpersonalSkills || []}
-                    onChange={(value) =>
-                      setFieldValue("interpersonalSkills", value)
-                    }
-                    className="min-h-[99px] pt-1 px-1"
-                    alternateColors={{
-                      firstColor: "#184E77",
-                      secondColor: "#168AAD",
-                    }}
-                    placeholder="Type and enter to add interpersonal skill"
-                  />
-                </InputField>
-              </div>
-
-              {/* Certificates */}
-              <div>
-                <InputField
-                  label="Certificates"
-                  error={errors.certifications}
-                  touched={touched.certifications}
-                  showIcon={true}
-                  tooltipContent="Select relevant certifications that enhance your job qualifications. If not listed, You may leave it blank."
-                  className="mb-14"
-                  variant="primary"
-                >
-                  <CertificationTagInput
-                    value={values.certifications || []}
-                    onChange={(value) => setFieldValue("certifications", value)}
-                    className="min-h-[56px] pt-1 px-1"
-                    tagClassName="bg-[#168AAD]"
-                    placeholder="Type and enter to add certificate"
-                    alternateColors={{
-                      firstColor: "#184E77",
-                      secondColor: "#168AAD",
-                    }}
-                  />
-                </InputField>
+                  </>
+                )}
               </div>
             </div>
 
             {/* Footer Button */}
-            <div className="flex justify-center md:justify-end md:mt-[60px] mb-0">
+            <div className="flex justify-center md:justify-end md:mt-[60px] mt-4 mb-0">
               <Button
                 type="submit"
                 className={cn(
@@ -714,7 +1097,10 @@ const EditApplicationCard: FC = () => {
           </form>
         </div>
         <div className="w-auto flex justify-center">
-          <AppCardPreview values={values} selectOptions={selectOptions} />
+          <AppCardPreview
+            values={previewValues}
+            selectOptions={selectOptions}
+          />
         </div>
       </div>
     </>
