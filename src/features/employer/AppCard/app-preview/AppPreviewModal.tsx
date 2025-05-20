@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from "react";
+import React, { FC, useState, useEffect } from "react";
 import { MapPin } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
 import { Button } from "components";
@@ -241,35 +241,53 @@ const AppPreviewModal: FC<AppPreviewModalProps> = ({
                     </div>
                   )}
 
-                {/* Former Employers - Moved below all other fields */}
+                {/* Former Employers - Updated with proper spacing and empty check */}
                 {app.formerEmployers && !app.isFreeTrial && (
-                  <div className="flex flex-col gap-2 mt-2">
-                    {app.formerEmployers.map((employer, index) => (
-                      <div key={index} className="space-y-[10px]">
-                        <p className="flex text-sm md:text-[17px] text-[#263238] flex-wrap text-left">
-                          <span className="font-medium whitespace-nowrap">
-                            Former Employer Name:&nbsp;
-                          </span>
-                          <span className="break-words">{employer.name}</span>
-                        </p>
-                        <p className="flex text-sm md:text-[17px] text-[#263238] flex-wrap text-left">
-                          <span className="font-medium whitespace-nowrap">
-                            Former Job Title:&nbsp;
-                          </span>
-                          <span className="break-words">
-                            {employer.jobTitle}
-                          </span>
-                        </p>
-                        <p className="flex text-sm md:text-[17px] text-[#263238] flex-wrap text-left">
-                          <span className="font-medium whitespace-nowrap">
-                            Duration:&nbsp;
-                          </span>
-                          <span className="break-words">
-                            {employer.duration}
-                          </span>
-                        </p>
-                      </div>
-                    ))}
+                  <div className="pt-3">
+                    {app.formerEmployers.map((employer, index) => {
+                      // Skip empty entries
+                      if (
+                        !employer.name &&
+                        !employer.jobTitle &&
+                        !employer.duration
+                      ) {
+                        return null;
+                      }
+                      return (
+                        <React.Fragment key={index}>
+                          <div className="space-y-[10px] mb-4">
+                            <p className="flex text-sm md:text-[17px] text-[#263238] flex-wrap text-left">
+                              <span className="font-medium whitespace-nowrap">
+                                Former Employer Name:&nbsp;
+                              </span>
+                              <span className="break-words">
+                                {employer.name}
+                              </span>
+                            </p>
+                            <p className="flex text-sm md:text-[17px] text-[#263238] flex-wrap text-left">
+                              <span className="font-medium whitespace-nowrap">
+                                Former Job Title:&nbsp;
+                              </span>
+                              <span className="break-words">
+                                {employer.jobTitle}
+                              </span>
+                            </p>
+                            <p className="flex text-sm md:text-[17px] text-[#263238] flex-wrap text-left">
+                              <span className="font-medium whitespace-nowrap">
+                                Duration:&nbsp;
+                              </span>
+                              <span className="break-words">
+                                {employer.duration}
+                              </span>
+                            </p>
+                          </div>
+                          {/* Add extra space if not the last employer */}
+                          {index < (app.formerEmployers?.length ?? 0) - 1 && (
+                            <div className="h-2"></div>
+                          )}
+                        </React.Fragment>
+                      );
+                    })}
                   </div>
                 )}
               </div>

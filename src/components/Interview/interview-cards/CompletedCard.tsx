@@ -16,18 +16,18 @@ interface LinkedInLinkProps {
 const LinkedInLink: FC<LinkedInLinkProps> = ({ linkedInUrl }) => {
   const handleLinkedInClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent card click when clicking on LinkedIn link
-    
+
     // Add protocol if missing
     let url = linkedInUrl;
     if (!url.startsWith("http")) {
       url = "https://" + url;
     }
-    
+
     window.open(url, "_blank", "noopener,noreferrer");
   };
 
   return (
-    <div 
+    <div
       className="flex items-center gap-1 text-[13px] font-light cursor-pointer text-[#263238] underline"
       onClick={handleLinkedInClick}
     >
@@ -59,7 +59,7 @@ const CompletedCard: FC<CompletedCardProps> = ({
   const handleRatingSubmit = async (data: RatingData) => {
     onRateInterview?.(data);
     //setIsRatingModalOpen(false);
-  }
+  };
   const renderStars = (rating: number | undefined) => {
     const starCount = 5;
     const stars = Array.from({ length: starCount }, (_, index) => (
@@ -68,7 +68,7 @@ const CompletedCard: FC<CompletedCardProps> = ({
         className={`w-5 h-5 text-[#F5722E] ${index < (rating || 0) ? "fill-[#F5722E]" : "fill-transparent"}`}
       />
     ));
-  
+
     return <>{stars}</>;
   };
 
@@ -108,7 +108,7 @@ const CompletedCard: FC<CompletedCardProps> = ({
 
   return (
     <>
-      <Card className="bg-white border-none w-full sm:min-w-[436px] max-w-[436px] h-[275px]">
+      <Card className="bg-white border-none w-full sm:min-w-[436px] sm:max-w-[436px] max-w-[308px] h-[395px] sm:h-[275px] relative">
         <CardHeader className="flex flex-col justify-between items-start pb-0">
           <div className="flex flex-row -mt-4 justify-between w-full">
             <div className="h-[20px]">
@@ -135,9 +135,11 @@ const CompletedCard: FC<CompletedCardProps> = ({
                 Based in {interview.country}
               </p>
             </div>
-            
+
             {/* Add LinkedIn Link - Only for employer variant and if not on free trial */}
-            {variant === "employer" && interview.linkedIn && (
+            {variant === "employer" && 
+             interview.linkedIn && 
+             !interview.freeTrial && (
               <LinkedInLink linkedInUrl={interview.linkedIn} />
             )}
           </div>
@@ -165,7 +167,7 @@ const CompletedCard: FC<CompletedCardProps> = ({
               </span>
             </div>
 
-            <div className="flex flex-col items-start gap-2 pt-2">
+            <div className="flex flex-col items-center md:items-start gap-2 pt-2">
               {interview.rated ? (
                 <div className="flex items-center gap-1 pt-3">
                   <div className="flex items-center">
@@ -179,14 +181,14 @@ const CompletedCard: FC<CompletedCardProps> = ({
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center relative">
                   <div className="border border-dashed border-[#F5722E] px-2">
                     <span className="text-[15px] text-[#263238]">
                       No ratings submitted yet
                     </span>
                   </div>
                   <Tooltip content="Please evaluate this interview performance to help refine the process.">
-                    <Info className="w-4 h-4 fill-[#F5722E] text-white mb-4" />
+                    <Info className="w-4 h-4 fill-[#F5722E] text-white absolute -right-5 -top-[15px]" />
                   </Tooltip>
                 </div>
               )}

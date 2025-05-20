@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from "react";
+import { FC, useState, useEffect, useRef } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components";
 import { Button } from "components";
 import { MapPin, LoaderCircle, Check } from "lucide-react";
@@ -41,16 +41,14 @@ interface RescheduleData {
 }
 
 const rescheduleReasons: RescheduleReason[] = [
-  /*{ id: "health_issues", label: "Health Issues",},
-  { id: "schedule_conflicts", label: "Schedule Conflicts",},
-  { id: "personal_family_emergency", label: "Personal/Family Emergency",},
-  { id: "preparation", label: "Unforseen Circumstances (e.g.outage/weather/traveling)",},
-  { id: "other", label: "Other",},*/
-  { id: "Health Issues", label: "Health Issues",},
-  { id: "Schedule Conflicts", label: "Schedule Conflicts",},
-  { id: "Personal/Family Emergency", label: "Personal/Family Emergency",},
-  { id: "Unforseen Circumstances (e.g.outage/weather/traveling)", label: "Unforseen Circumstances (e.g.outage/weather/traveling)",},
-  { id: "Other", label: "Other",},
+  { id: "Health Issues", label: "Health Issues" },
+  { id: "Schedule Conflicts", label: "Schedule Conflicts" },
+  { id: "Personal/Family Emergency", label: "Personal/Family Emergency" },
+  {
+    id: "Unforseen Circumstances (e.g.outage/weather/traveling)",
+    label: "Unforseen Circumstances (e.g.outage/weather/traveling)",
+  },
+  { id: "Other", label: "Other" },
 ];
 
 interface RescheduleModalProps extends BaseModalProps {
@@ -72,7 +70,7 @@ const validationSchema = Yup.object().shape({
     ),
   interviewDate: Yup.date()
     .required("Please select a date")
-    .min(new Date(), "Cannot select a past date")
+    .min(new Date(new Date().setHours(0, 0, 0, 0)), "Cannot select a past date")
     .max(
       new Date(new Date().setMonth(new Date().getMonth() + 2)),
       "Cannot select a date more than 2 months",
@@ -95,7 +93,23 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
   const [isRescheduled, setIsRescheduled] = useState(false);
   const [isCalendarModalOpen, setIsCalendarModalOpen] =
     useState<boolean>(false);
+  const [isMobileView, setIsMobileView] = useState<boolean>(false);
+  const dateInputRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+
+  // Check viewport size
+  useEffect(() => {
+    const checkViewportSize = () => {
+      setIsMobileView(window.innerWidth < 640);
+    };
+
+    checkViewportSize();
+    window.addEventListener("resize", checkViewportSize);
+
+    return () => {
+      window.removeEventListener("resize", checkViewportSize);
+    };
+  }, []);
 
   // Generate time slots for 24 hours (48 half-hour slots)
   const timeSlots: string[] = Array.from({ length: 48 }, (_, i) => {
@@ -116,7 +130,7 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
     onSubmit: async (values) => {
       setIsLoading(true);
       onReschedule({
-        reason: values.reason || '',
+        reason: values.reason || "",
         date: values.interviewDate?.toISOString() ?? "",
         time: values.interviewTime ?? "",
         interviewId: interview.id,
@@ -152,6 +166,13 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
     setIsDatePickerOpen(false);
   };
 
+  // Handle modal close with cleanup
+  const handleModalClose = () => {
+    resetForm();
+    setIsDatePickerOpen(false);
+    onClose();
+  };
+
   // Determine which fields to show based on variant
   const primaryField =
     variant === "employer" ? interview.candidate : interview.position;
@@ -163,11 +184,122 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
       ? EmployerInterviewCalendarModal
       : HunterInterviewCalendarModal;
 
+  // Completely redesigned approach using a modal-like overlay
+  const renderDatePicker = () => {
+    if (!isDatePickerOpen) return null;
+
+    // The calendar position depends on whether it's mobile or desktop
+    let calendarPosition;
+
+    if (isMobileView) {
+      // Center the calendar on mobile
+      calendarPosition = (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center pointer-events-auto">
+          <div className="pointer-events-auto">
+            <DatePicker
+              isOpen={isDatePickerOpen}
+              onClose={() => setIsDatePickerOpen(false)}
+              onDateSelect={handleDateSelect}
+              initialDate={values.interviewDate}
+              variant="secondary"
+              disablePastDates={true}
+            />
+          </div>
+        </div>
+      );
+    } else {
+      // Desktop positioning - align with input field
+      const inputRect = dateInputRef.current?.getBoundingClientRect();
+
+      if (!inputRect) {
+        // Fallback to center positioning if input field not found
+        calendarPosition = (
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center pointer-events-auto">
+            <div className="pointer-events-auto">
+              <DatePicker
+                isOpen={isDatePickerOpen}
+                onClose={() => setIsDatePickerOpen(false)}
+                onDateSelect={handleDateSelect}
+                initialDate={values.interviewDate}
+                variant="secondary"
+                disablePastDates={true}
+              />
+            </div>
+          </div>
+        );
+      } else {
+        // Position relative to the input field
+        const calendarHeight = 310;
+
+        // Calculate available space
+        const viewportBottom = window.innerHeight;
+        const spaceBelow = viewportBottom - inputRect.bottom - 16; // 16px margin
+        const spaceAbove = inputRect.top - 16;
+
+        let top: number;
+
+        // Prioritize displaying below if there's enough space
+        if (spaceBelow >= calendarHeight) {
+          // Position below
+          top = inputRect.bottom + 8;
+        } else if (spaceAbove >= calendarHeight) {
+          // Position above if not enough space below
+          top = inputRect.top - calendarHeight - 8;
+        } else {
+          // If not enough space either way, center it
+          top = Math.max(8, (viewportBottom - calendarHeight) / 2);
+        }
+
+        calendarPosition = (
+          <div
+            className="fixed pointer-events-auto"
+            style={{
+              left: `${inputRect.left}px`,
+              top: `${top}px`,
+              zIndex: 9999,
+            }}
+          >
+            <DatePicker
+              isOpen={isDatePickerOpen}
+              onClose={() => setIsDatePickerOpen(false)}
+              onDateSelect={handleDateSelect}
+              initialDate={values.interviewDate}
+              variant="secondary"
+              disablePastDates={true}
+            />
+          </div>
+        );
+      }
+    }
+
+    // Return a modal-like structure with a semi-transparent overlay
+    return (
+      <>
+        {/* Semi-transparent overlay that catches all clicks outside the calendar */}
+        <div
+          className="fixed inset-0 z-[9998] pointer-events-auto"
+          onClick={() => setIsDatePickerOpen(false)}
+          style={{ backgroundColor: "rgba(0, 0, 0, 0)" }}
+        />
+        {/* Calendar positioned according to the rules above */}
+        {calendarPosition}
+      </>
+    );
+  };
+
   return (
     <>
-      <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="w-[calc(100%-2rem)] md:w-full max-w-3xl h-auto p-0 bg-white">
-          <div className="flex flex-col h-full">
+      <Dialog open={isOpen} onOpenChange={handleModalClose}>
+        <DialogContent
+          className="w-[calc(100%-2rem)] md:w-full max-w-3xl h-auto p-0 flex flex-col mt-0 translate-y-12 top-4 sm:top-6 max-h-[90vh] overflow-visible"
+          closeOnOutsideClick={false}
+        >
+          <div
+            className="flex flex-col h-full"
+            onClick={(e: React.MouseEvent<HTMLDivElement>) =>
+              e.stopPropagation()
+            }
+          >
             <DialogHeader className="p-6 pb-4 text-left">
               <DialogTitle className="sr-only">
                 Reschedule Interview
@@ -268,7 +400,7 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
                     </InputField>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-8">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8">
                     <InputField
                       label="Date"
                       variant="secondary"
@@ -278,6 +410,7 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
                     >
                       <div className="relative">
                         <div
+                          ref={dateInputRef}
                           className="w-full border-2 rounded-[10px] bg-transparent h-[56px] px-3 flex items-center cursor-pointer border-[#263238] text-sm"
                           onClick={() => setIsDatePickerOpen(true)}
                         >
@@ -285,18 +418,6 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
                             ? values.interviewDate.toLocaleDateString()
                             : "Select a date"}
                         </div>
-                        {isDatePickerOpen && (
-                          <div className="fixed z-50 left-[40%] md:left-[26%] -translate-x-1/2">
-                            <DatePicker
-                              isOpen={isDatePickerOpen}
-                              onClose={() => setIsDatePickerOpen(false)}
-                              onDateSelect={handleDateSelect}
-                              initialDate={values.interviewDate}
-                              variant="secondary"
-                              disablePastDates={true}
-                            />
-                          </div>
-                        )}
                       </div>
                     </InputField>
 
@@ -358,14 +479,6 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
                       >
                         Reschedule
                       </Button>
-                      {/* <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => setIsCalendarModalOpen(true)}
-                        className="border-2 text-[13px] font-normal h-[32px] px-6 border-[#168AAD] text-[#168AAD] hover:bg-[#168AAD] hover:text-white"
-                      >
-                        View Calendar
-                      </Button> */}
                     </>
                   )}
                 </div>
@@ -374,6 +487,9 @@ const RescheduleModal: FC<RescheduleModalProps> = ({
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* DatePicker - rendered outside the modal structure */}
+      {renderDatePicker()}
 
       <InterviewCalendarModal
         isOpen={isCalendarModalOpen}
