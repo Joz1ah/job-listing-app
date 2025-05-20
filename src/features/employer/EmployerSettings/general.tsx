@@ -1,10 +1,11 @@
 import React, { FC, useState, useRef, useEffect } from "react";
-import { Info, X } from "lucide-react";
+import { Info, X, AlertTriangle, Check } from "lucide-react";
 import { cn } from "lib/utils";
 import { Label } from "components";
 import { Input } from "components";
 import { Tooltip } from "components";
 import { Switch } from "components";
+import { PhoneInput } from "components";
 import googleLogo from "images/google-logo-icon.svg?url";
 import { useEmployerContext } from "components";
 import { AdDialogWrapper } from "components";
@@ -17,6 +18,7 @@ import {
   useGetAccountSettingsQuery,
   useUpdateAccountSettingsMutation,
   useUpdateEmailMutation,
+  useUpdatePhoneNumberMutation,
   useGetUserInfoQuery,
 } from "api/akaza/akazaAPI";
 
@@ -24,6 +26,10 @@ interface FormFieldProps {
   label: string;
   children: React.ReactNode;
   className?: string;
+  isEditing?: boolean;
+  error?: string;
+  success?: string;
+  showValidation?: boolean;
 }
 
 const NOTIFICATION_OPTIONS = [
@@ -43,14 +49,45 @@ const DEFAULT_SETTINGS = {
   smsNotification: false,
 };
 
-const FormField: FC<FormFieldProps> = ({ label, children, className }) => {
+const FormField: FC<FormFieldProps> = ({
+  label,
+  children,
+  className,
+  isEditing = false,
+  error,
+  success,
+  showValidation = true,
+}) => {
+  const hasError = !!error && showValidation;
+  const hasSuccess = !!success && showValidation && !hasError;
+
   return (
-    <div className={cn("relative pt-4", className)}>
+    <div className={cn("relative pt-4 mb-6", className)}>
       <div className="relative">
-        <div className="absolute -top-3 left-4 bg-[#2D3A41] px-2 z-20">
+        <div
+          className={cn(
+            "absolute -top-3 left-4 px-2 z-20 rounded-[8px]",
+            isEditing ? "bg-[#2D3A41]" : "bg-[#AEADAD]",
+          )}
+        >
           <Label className="text-sm font-normal text-white">{label}</Label>
         </div>
         <div className="relative">{children}</div>
+
+        {hasError && (
+          <p className="text-[#FF5252] text-xs absolute bottom-[-20px] left-2">
+            {error}
+          </p>
+        )}
+
+        {hasSuccess && (
+          <p className="text-green-500 text-xs absolute bottom-[-20px] left-2">
+            <span className="inline-flex items-center">
+              <Check size={14} className="mr-1" />
+              {success}
+            </span>
+          </p>
+        )}
       </div>
     </div>
   );
@@ -61,9 +98,10 @@ const GeneralSettings: FC = () => {
   const { user } = useAuth();
   const adTriggerRef = useRef<HTMLDivElement>(null);
   const emailAdTriggerRef = useRef<HTMLDivElement>(null);
+  const phoneAdTriggerRef = useRef<HTMLDivElement>(null);
   const timezoneAdTriggerRef = useRef<HTMLDivElement>(null);
 
-  // Get user info for most up-to-date email
+  // Get user info for most up-to-date email and phone number
   const { data: userInfoData } = useGetUserInfoQuery(undefined, {
     skip: !user?.data?.user,
   });
@@ -71,9 +109,17 @@ const GeneralSettings: FC = () => {
   const [email, setEmail] = useState("");
   const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [tempEmail, setTempEmail] = useState("");
-  const [emailUpdateError, setEmailUpdateError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [emailSuccess, setEmailSuccess] = useState("");
 
-  // Update email state when userInfoData changes
+  // New state for phone number
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [isEditingPhone, setIsEditingPhone] = useState(false);
+  const [tempPhoneNumber, setTempPhoneNumber] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+  const [phoneSuccess, setPhoneSuccess] = useState("");
+
+  // Update email and phone state when userInfoData changes
   useEffect(() => {
     if (userInfoData?.data?.email) {
       setEmail(userInfoData.data.email);
@@ -81,6 +127,29 @@ const GeneralSettings: FC = () => {
     } else if (user?.data?.user?.email) {
       setEmail(user.data.user.email);
       setTempEmail(user.data.user.email);
+    }
+
+    // Handle phone number from the correct path: user?.data?.user?.relatedDetails?.phoneNumber
+    if (userInfoData?.data?.phoneNumber) {
+      // First check userInfoData if it contains phoneNumber
+      const phoneWithPlus = userInfoData.data.phoneNumber.startsWith("+")
+        ? userInfoData.data.phoneNumber
+        : `+${userInfoData.data.phoneNumber}`;
+      setPhoneNumber(phoneWithPlus);
+      setTempPhoneNumber(phoneWithPlus);
+    } else if (user?.data?.user?.relatedDetails?.phoneNumber) {
+      // Then check the correct path in user object
+      const phoneWithPlus =
+        user.data.user.relatedDetails.phoneNumber.startsWith("+")
+          ? user.data.user.relatedDetails.phoneNumber
+          : `+${user.data.user.relatedDetails.phoneNumber}`;
+      setPhoneNumber(phoneWithPlus);
+      setTempPhoneNumber(phoneWithPlus);
+    } else {
+      // If no phone number is set, initialize with empty string
+      // The PhoneInput component will show the default country code (CA)
+      setPhoneNumber("");
+      setTempPhoneNumber("");
     }
   }, [userInfoData, user]);
 
@@ -92,8 +161,49 @@ const GeneralSettings: FC = () => {
   const [updateSettings] = useUpdateAccountSettingsMutation();
   const [updateEmail, { isLoading: isUpdatingEmail }] =
     useUpdateEmailMutation();
+  const [updatePhoneNumber, { isLoading: isUpdatingPhone }] =
+    useUpdatePhoneNumberMutation();
 
   const settings = settingsData?.data || DEFAULT_SETTINGS;
+
+  // Email validation
+  const validateEmail = (email: string): string => {
+    if (!email) return "Email address is required";
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      return "Invalid email format";
+    }
+
+    if (email.length > 100) {
+      return "Email is too long";
+    }
+
+    return ""; // Empty string means valid
+  };
+
+  // Phone validation
+  const validatePhoneNumber = (phone: string): string => {
+    if (!phone) return "This field is required";
+
+    // Remove any non-digit characters except +
+    const digitsOnly = phone.replace(/[^\d+]/g, "");
+
+    if (digitsOnly.length < 10) {
+      return "Phone number is too short";
+    }
+
+    if (digitsOnly.length > 15) {
+      return "Phone number is too long";
+    }
+
+    // Check if it has any non-numeric characters after the potential + at the beginning
+    if (digitsOnly.substring(digitsOnly.startsWith("+") ? 1 : 0).match(/\D/)) {
+      return "Phone number can only contain numbers";
+    }
+
+    return ""; // Empty string means valid
+  };
 
   const handleTimezoneChange = async (newTimeZone: string) => {
     if (!user?.data?.user?.id) return;
@@ -105,6 +215,7 @@ const GeneralSettings: FC = () => {
       });
     } catch (error) {
       console.error("Error updating timezone:", error);
+      // Instead of showing an error modal, we could set an error state and display it in the UI
     }
   };
 
@@ -131,6 +242,7 @@ const GeneralSettings: FC = () => {
       });
     } catch (error) {
       console.error("Error updating notifications:", error);
+      // Handle error in UI instead of modal
     }
   };
 
@@ -144,8 +256,16 @@ const GeneralSettings: FC = () => {
       // Start editing
       setIsEditingEmail(true);
       setTempEmail(email);
-      setEmailUpdateError("");
+      setEmailError("");
+      setEmailSuccess("");
     } else {
+      // Validate email
+      const validationError = validateEmail(tempEmail);
+      if (validationError) {
+        setEmailError(validationError);
+        return;
+      }
+
       // Submit email update
       if (tempEmail === email) {
         // No change, just cancel edit mode
@@ -154,7 +274,6 @@ const GeneralSettings: FC = () => {
       }
 
       try {
-        setEmailUpdateError("");
         const result = await updateEmail({
           oldEmail: email,
           newEmail: tempEmail,
@@ -163,14 +282,24 @@ const GeneralSettings: FC = () => {
         if (result.success) {
           setEmail(tempEmail);
           setIsEditingEmail(false);
+          setEmailSuccess("Email updated successfully");
+
+          // Hide success message after 3 seconds
+          setTimeout(() => {
+            setEmailSuccess("");
+          }, 3000);
         } else {
-          setEmailUpdateError(result.message || "Failed to update email");
+          setEmailError(result.message || "Failed to update email");
         }
       } catch (error: any) {
         console.error("Error updating email:", error);
-        setEmailUpdateError(
-          error.data?.message || "Failed to update email. Please try again.",
-        );
+
+        let errorMessage = "Failed to update email. Please try again.";
+        if (error.data?.message) {
+          errorMessage = error.data.message;
+        }
+
+        setEmailError(errorMessage);
       }
     }
   };
@@ -178,7 +307,90 @@ const GeneralSettings: FC = () => {
   const cancelEmailEdit = () => {
     setIsEditingEmail(false);
     setTempEmail(email);
-    setEmailUpdateError("");
+    setEmailError("");
+  };
+
+  // Phone number editing handlers
+  const handlePhoneEdit = async () => {
+    if (subscriptionPlan === "freeTrial" && !isEditingPhone) {
+      phoneAdTriggerRef.current?.click();
+      return;
+    }
+
+    if (!isEditingPhone) {
+      // Start editing
+      setIsEditingPhone(true);
+      setTempPhoneNumber(phoneNumber);
+      setPhoneError("");
+      setPhoneSuccess("");
+    } else {
+      // Validate phone number
+      const validationError = validatePhoneNumber(tempPhoneNumber);
+      if (validationError) {
+        setPhoneError(validationError);
+        return;
+      }
+
+      // Submit phone update
+      if (tempPhoneNumber === phoneNumber) {
+        // No change, just cancel edit mode
+        setIsEditingPhone(false);
+        return;
+      }
+
+      try {
+        // Remove the "+" prefix before submitting
+        const phoneNumberWithoutPlus = tempPhoneNumber.startsWith("+")
+          ? tempPhoneNumber.slice(1)
+          : tempPhoneNumber;
+
+        const result = await updatePhoneNumber({
+          phoneNumber: phoneNumberWithoutPlus,
+        }).unwrap();
+
+        if (result.success) {
+          setPhoneNumber(tempPhoneNumber);
+          setIsEditingPhone(false);
+          setPhoneSuccess("Phone number updated successfully");
+
+          // Hide success message after 3 seconds
+          setTimeout(() => {
+            setPhoneSuccess("");
+          }, 3000);
+        } else {
+          setPhoneError(result.message || "Failed to update phone number");
+        }
+      } catch (error: any) {
+        console.error("Error updating phone number:", error);
+
+        // More detailed error handling
+        let errorMessage = "Failed to update phone number. Please try again.";
+
+        if (error.status === 404) {
+          errorMessage = "Cannot update phone number: endpoint not found";
+        } else if (error.status === 400) {
+          errorMessage = error.data?.message || "Invalid phone number format";
+        } else if (error.status === 401 || error.status === 403) {
+          errorMessage = "Authorization error. Please log in again";
+        } else if (error.data?.message) {
+          errorMessage = error.data.message;
+        }
+
+        setPhoneError(errorMessage);
+      }
+    }
+  };
+
+  const cancelPhoneEdit = () => {
+    setIsEditingPhone(false);
+    setTempPhoneNumber(phoneNumber);
+    setPhoneError("");
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<any>) => {
+    setTempPhoneNumber(e.target.value);
+    // Clear error when user starts typing
+    if (phoneError) setPhoneError("");
   };
 
   const renderNotificationSwitch = () => (
@@ -279,7 +491,7 @@ const GeneralSettings: FC = () => {
       </div>
 
       {/* Full Width Sections */}
-      <div className="space-y-12 pt-12">
+      <div className="space-y-6 pt-12">
         {/* Google Account Section */}
         <div className="space-y-3 opacity-50">
           <Tooltip content="This feature is coming soon.">
@@ -345,73 +557,161 @@ const GeneralSettings: FC = () => {
           </Tooltip>
         </div>
 
-        {/* Email Section */}
+        {/* Registered Account Details Section */}
         <div className="space-y-3 w-full md:w-[450px]">
           <h3 className="text-white text-[24px] font-normal">
-            Registered Email Address
+            Registered Account Details
           </h3>
-          <div>
-            <FormField label="Email address">
-              <div className="flex items-center gap-2">
-                <div className="flex-1 relative">
-                  <Input
-                    type="email"
-                    value={isEditingEmail ? tempEmail : email}
-                    onChange={(e) =>
-                      isEditingEmail && setTempEmail(e.target.value)
-                    }
-                    disabled={!isEditingEmail || isUpdatingEmail}
-                    className={cn(
-                      "w-full bg-transparent border-[#AEADAD] h-[45px] border-2 focus:border-[#F5722E] text-white",
-                      !isEditingEmail && "opacity-70",
-                      emailUpdateError && "border-red-500",
-                    )}
-                    placeholder="Enter email address"
-                  />
-                  {emailUpdateError && (
-                    <p className="text-red-500 text-xs mt-1 absolute">
-                      {emailUpdateError}
-                    </p>
-                  )}
-                </div>
+          <div className="space-y-8">
+            {/* Email field */}
+            <div>
+              <FormField
+                label="Email address"
+                isEditing={isEditingEmail}
+                error={emailError}
+                success={emailSuccess}
+              >
                 <div className="flex items-center gap-2">
-                  <button
-                    onClick={handleEmailEdit}
-                    disabled={isUpdatingEmail}
-                    className={cn(
-                      "w-[80px] h-[45px] bg-transparent border border-[#F5722E] text-[#F5722E] text-sm rounded hover:bg-[#F5722E] hover:text-white transition-colors duration-200 flex items-center justify-center",
-                      isUpdatingEmail && "opacity-70 cursor-not-allowed",
-                    )}
-                  >
-                    {isUpdatingEmail ? (
-                      <img
-                        src={button_loading_spinner}
-                        alt="Loading"
-                        className="w-5 h-5 animate-spin"
-                      />
-                    ) : isEditingEmail ? (
-                      "Update"
-                    ) : (
-                      "Change"
-                    )}
-                  </button>
-                  {isEditingEmail && (
-                    <button
-                      onClick={cancelEmailEdit}
-                      disabled={isUpdatingEmail}
-                      className="absolute -right-10 flex items-center justify-center h-[50px] w-[50px] text-gray-400 hover:text-white transition-colors"
-                    >
-                      <X size={20} />
-                    </button>
+                  <div className="flex-1 relative">
+                    <Input
+                      type="email"
+                      value={isEditingEmail ? tempEmail : email}
+                      onChange={(e) => {
+                        isEditingEmail && setTempEmail(e.target.value);
+                        if (emailError) setEmailError("");
+                      }}
+                      disabled={!isEditingEmail || isUpdatingEmail}
+                      className={cn(
+                        "w-full h-[45px] border-2 focus:border-[#F5722E] text-white rounded-[8px]",
+                        isEditingEmail
+                          ? "bg-transparent border-[#AEADAD]"
+                          : "bg-[#AEADAD] border-[#AEADAD]",
+                        emailError && "border-[#FF5252] focus:border-[#FF5252]",
+                      )}
+                      placeholder="Enter email address"
+                    />
+                  </div>
+
+                  {/* Show warning icon between field and button */}
+                  {emailError && (
+                    <div className="text-[#2D3A41]">
+                      <AlertTriangle size={20} className="fill-[#FF5252]" />
+                    </div>
                   )}
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={handleEmailEdit}
+                      disabled={isUpdatingEmail}
+                      className={cn(
+                        "w-[80px] h-[45px] bg-transparent border border-[#F5722E] text-[#F5722E] text-sm rounded hover:bg-[#F5722E] hover:text-white transition-colors duration-200 flex items-center justify-center",
+                        isUpdatingEmail && "opacity-70 cursor-not-allowed",
+                      )}
+                    >
+                      {isUpdatingEmail ? (
+                        <img
+                          src={button_loading_spinner}
+                          alt="Loading"
+                          className="w-5 h-5 animate-spin"
+                        />
+                      ) : isEditingEmail ? (
+                        "Update"
+                      ) : (
+                        "Change"
+                      )}
+                    </button>
+                    {isEditingEmail && (
+                      <button
+                        onClick={cancelEmailEdit}
+                        disabled={isUpdatingEmail}
+                        className="absolute -right-10 flex items-center justify-center h-[50px] w-[50px] text-gray-400 hover:text-white transition-colors"
+                      >
+                        <X size={20} />
+                      </button>
+                    )}
+                  </div>
                 </div>
+              </FormField>
+              <div className="hidden">
+                <AdDialogWrapper
+                  popupImage={employerPopAds}
+                  ref={emailAdTriggerRef}
+                />
               </div>
-            </FormField>
-            <div className="hidden">
-              <AdDialogWrapper
-                popupImage={employerPopAds}
-                ref={emailAdTriggerRef}
-              />
+            </div>
+
+            {/* Phone number field */}
+            <div>
+              <FormField
+                label="Mobile number"
+                isEditing={isEditingPhone}
+                error={phoneError}
+                success={phoneSuccess}
+              >
+                <div className="flex items-center gap-2">
+                  <div className="flex-1 relative">
+                    <PhoneInput
+                      name="phoneNumber"
+                      value={isEditingPhone ? tempPhoneNumber : phoneNumber}
+                      onChange={handlePhoneChange}
+                      disabled={!isEditingPhone || isUpdatingPhone}
+                      className={cn(
+                        "w-full h-[45px] border-2 focus:border-[#F5722E] text-white rounded-[8px]",
+                        isEditingPhone
+                          ? "bg-transparent border-[#AEADAD]"
+                          : "bg-[#AEADAD] border-[#AEADAD]",
+                        phoneError && "border-[#FF5252] focus:border-[#FF5252]",
+                      )}
+                      defaultCountry="CA"
+                    />
+                  </div>
+
+                  {/* Show warning icon between field and button */}
+                  {phoneError && (
+                    <div className="text-[#2D3A41]">
+                      <AlertTriangle size={20} className="fill-[#FF5252]" />
+                    </div>
+                  )}
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={handlePhoneEdit}
+                      disabled={isUpdatingPhone}
+                      className={cn(
+                        "w-[80px] h-[45px] bg-transparent border border-[#F5722E] text-[#F5722E] text-sm rounded hover:bg-[#F5722E] hover:text-white transition-colors duration-200 flex items-center justify-center",
+                        isUpdatingPhone && "opacity-70 cursor-not-allowed",
+                      )}
+                    >
+                      {isUpdatingPhone ? (
+                        <img
+                          src={button_loading_spinner}
+                          alt="Loading"
+                          className="w-5 h-5 animate-spin"
+                        />
+                      ) : isEditingPhone ? (
+                        "Update"
+                      ) : (
+                        "Change"
+                      )}
+                    </button>
+                    {isEditingPhone && (
+                      <button
+                        onClick={cancelPhoneEdit}
+                        disabled={isUpdatingPhone}
+                        className="absolute -right-10 flex items-center justify-center h-[50px] w-[50px] text-gray-400 hover:text-white transition-colors"
+                      >
+                        <X size={20} />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </FormField>
+              <div className="hidden">
+                <AdDialogWrapper
+                  popupImage={employerPopAds}
+                  ref={phoneAdTriggerRef}
+                />
+              </div>
             </div>
           </div>
         </div>
