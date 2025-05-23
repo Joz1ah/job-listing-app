@@ -392,7 +392,24 @@ export const akazaApiPayment = createApiFunction({
         },
       }),
     }),
-    
+    updatePaymentCard: builder.mutation({
+      query: (payLoad) => ({
+        url: '/payments/update-card',
+        method: 'POST',
+        body: {
+          "provider": payLoad.provider,
+          "paymentMethodId": payLoad.paymentMethodId ? payLoad.paymentMethodId : "pm_1QSiGYFCh69SpK2kcccrnWHL",
+          "daysTrial": 0,
+          "firstName": payLoad.firstName,
+          "lastName": payLoad.lastName,
+          "address": payLoad.address,
+          "city": payLoad.city,
+          "state": payLoad.state,
+          "zip": payLoad.zip,
+          "country": payLoad.country
+        },
+      }),
+    }),
   }),
 });
 
@@ -816,7 +833,8 @@ export const {
   usePaymentCreateMutation,
   usePaymentCardDetailsMutation,
   usePaymentCancelMutation,
-  useUpdateFreeTrialStatusMutation
+  useUpdateFreeTrialStatusMutation,
+  useUpdatePaymentCardMutation
 } = akazaApiPayment
 
 export const {
