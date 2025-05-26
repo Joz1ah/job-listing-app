@@ -1,6 +1,5 @@
 import React from "react";
 import { Formik, Field, FieldProps } from "formik";
-import * as Yup from "yup";
 import { Input } from "components";
 import { InputField } from "components";
 import { Button } from "components";
@@ -11,6 +10,7 @@ import discover_icon from "assets/credit-card-icons/cc_discover.svg?url";
 import { CountrySelect } from "components";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "contexts/AuthContext/AuthContext";
+import { createInterruptedPaymentValidationSchema } from "utils/cardValidationSchema";
 
 interface InterruptedPaymentFormProps {
   planType: "monthly" | "yearly";
@@ -79,71 +79,7 @@ const InterruptedPaymentForm: React.FC<InterruptedPaymentFormProps> = ({
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={Yup.object({
-        firstName: Yup.string()
-          .required("This field is required")
-          .matches(/^[a-zA-ZÀ-ÿ\s'-]+$/, "Please enter a valid name")
-          .max(50, "Name is too long"),
-        lastName: Yup.string()
-          .required("This field is required")
-          .matches(/^[a-zA-ZÀ-ÿ\s'-]+$/, "Please enter a valid name")
-          .max(50, "Name is too long"),
-        cardNumber: Yup.string()
-          .required("Required")
-          .matches(/^\d{13,19}$/, "Invalid card number"),
-        expiryDate: Yup.string()
-          .required("This field is required")
-          .matches(/^(0[1-9]|1[0-2])\/([0-9]{2})$/, "Must be in MM/YY format")
-          .test("expiry", "Invalid date", function (value) {
-            if (!value) return false;
-
-            const [month, year] = value.split("/");
-            const expiry = new Date(2000 + parseInt(year), parseInt(month));
-            const today = new Date();
-
-            // Set both dates to first of month for accurate comparison
-            today.setDate(1);
-            today.setHours(0, 0, 0, 0);
-
-            if (expiry < today) {
-              return false;
-            }
-
-            // Check if date is more than 10 years in future
-            const maxDate = new Date();
-            maxDate.setDate(1);
-            maxDate.setFullYear(maxDate.getFullYear() + 10);
-
-            if (expiry > maxDate) {
-              return false;
-            }
-
-            return true;
-          }),
-        cvv: Yup.string()
-          .matches(/^\d{3,4}$/, "CVV must be 3 or 4 digits")
-          .required("This field is required"),
-        email: Yup.string()
-          .email("Please enter a valid email address")
-          .required("This field is required"),
-        address: Yup.string()
-          .required("This field is required")
-          .max(100, "Address is too long"),
-        city: Yup.string()
-          .required("This field is required")
-          .max(50, "City name is too long"),
-        state: Yup.string().required("This field is required"),
-        country: Yup.string().required("This field is required"),
-        zipCode: Yup.string()
-          .matches(
-            /^[a-zA-Z0-9]{1,6}$/,
-            "Must be alphanumeric and up to 6 characters",
-          )
-          .required("This field is required"),
-        termsAccepted: Yup.boolean()
-          .oneOf([true], "You must accept the Terms and Privacy Policy")
-          .required("You must accept the Terms and Privacy Policy"),
-      })}
+      validationSchema={createInterruptedPaymentValidationSchema()}
       validateOnMount
       validateOnChange={true}
       validateOnBlur={true}

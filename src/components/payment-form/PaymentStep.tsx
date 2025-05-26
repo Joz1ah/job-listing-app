@@ -5,7 +5,6 @@ import { Input } from "components";
 import { InputField } from "components";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 import { Formik, Field, FieldProps } from "formik";
-import * as Yup from "yup";
 import { LockKeyhole } from "lucide-react";
 import visa_icon from "assets/credit-card-icons/cc_visa.svg?url";
 import amex_icon from "assets/credit-card-icons/cc_american-express.svg?url";
@@ -19,6 +18,10 @@ import {
   createAuthnetPaymentSecureData,
 } from "services/authnet/authnetService";
 import { NavLink } from "react-router-dom";
+import {
+  createPaymentStepValidationSchema,
+  createAddressValidationSchema,
+} from "utils/cardValidationSchema";
 
 interface PaymentStepProps {
   planType: "yearly" | "monthly";
@@ -258,83 +261,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
           <div>
             <Formik
               initialValues={paymentFormData}
-              validationSchema={Yup.object({
-                firstName: Yup.string()
-                  .required("This field is required")
-                  .matches(/^[a-zA-ZÀ-ÿ\s'-]+$/, "Please enter a valid name")
-                  .max(50, "Name is too long"),
-                lastName: Yup.string()
-                  .required("This field is required")
-                  .matches(/^[a-zA-ZÀ-ÿ\s'-]+$/, "Please enter a valid name")
-                  .max(50, "Name is too long"),
-                email: Yup.string()
-                  .email("Please enter a valid email address")
-                  .required("This field is required"),
-                cardNumber: Yup.string()
-                  .required("This field is required")
-                  .matches(/^\d{13,19}$/, "Please enter valid card number")
-                  .test("luhn", "Invalid card number", (value) => {
-                    if (!value) return false;
-                    // Luhn algorithm implementation
-                    const digits = value.split("").map(Number);
-                    let sum = 0;
-                    let isEven = false;
-
-                    for (let i = digits.length - 1; i >= 0; i--) {
-                      let digit = digits[i];
-
-                      if (isEven) {
-                        digit *= 2;
-                        if (digit > 9) {
-                          digit -= 9;
-                        }
-                      }
-
-                      sum += digit;
-                      isEven = !isEven;
-                    }
-
-                    return sum % 10 === 0;
-                  }),
-                expiryDate: Yup.string()
-                  .required("This field is required")
-                  .matches(
-                    /^(0[1-9]|1[0-2])\/([0-9]{2})$/,
-                    "MM/YY format",
-                  )
-                  .test("expiry", "Invalid date", function (value) {
-                    if (!value) return false;
-
-                    const [month, year] = value.split("/");
-                    const expiry = new Date(
-                      2000 + parseInt(year),
-                      parseInt(month),
-                    );
-                    const today = new Date();
-
-                    // Set both dates to first of month for accurate comparison
-                    today.setDate(1);
-                    today.setHours(0, 0, 0, 0);
-
-                    if (expiry < today) {
-                      return false;
-                    }
-
-                    // Check if date is more than 10 years in future
-                    const maxDate = new Date();
-                    maxDate.setDate(1);
-                    maxDate.setFullYear(maxDate.getFullYear() + 10);
-
-                    if (expiry > maxDate) {
-                      return false;
-                    }
-
-                    return true;
-                  }),
-                cvv: Yup.string()
-                  .required("CVV is required")
-                  .matches(/^\d{3,4}$/, "CVV must be 3 or 4 digits"),
-              })}
+              validationSchema={createPaymentStepValidationSchema()}
               validateOnMount
               validateOnChange={true}
               validateOnBlur={true}
@@ -349,7 +276,11 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
               }) => (
                 <form onSubmit={handleSubmit}>
                   <div className="space-y-6">
-                    <InputField label="First Name" variant="primary"  size="form">
+                    <InputField
+                      label="First Name"
+                      variant="primary"
+                      size="form"
+                    >
                       <Field name="firstName">
                         {({ field }: FieldProps) => (
                           <Input
@@ -371,7 +302,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                         </div>
                       )}
                     </InputField>
-                    <InputField label="Last Name" variant="primary"  size="form">
+                    <InputField label="Last Name" variant="primary" size="form">
                       <Field name="lastName">
                         {({ field }: FieldProps) => (
                           <Input
@@ -394,7 +325,11 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                       )}
                     </InputField>
 
-                    <InputField label="Card Number" variant="primary"  size="form">
+                    <InputField
+                      label="Card Number"
+                      variant="primary"
+                      size="form"
+                    >
                       <Field name="cardNumber">
                         {({ field }: FieldProps) => (
                           <Input
@@ -419,7 +354,11 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
 
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <InputField label="Expiry Date" variant="primary"  size="form">
+                        <InputField
+                          label="Expiry Date"
+                          variant="primary"
+                          size="form"
+                        >
                           <Field name="expiryDate">
                             {({ field, form }: FieldProps) => (
                               <Input
@@ -449,7 +388,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                         </InputField>
                       </div>
                       <div>
-                        <InputField label="CVV" variant="primary"  size="form">
+                        <InputField label="CVV" variant="primary" size="form">
                           <Field name="cvv">
                             {({ field }: FieldProps) => (
                               <Input
@@ -474,7 +413,11 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                       </div>
                     </div>
 
-                    <InputField label="Email Address" variant="primary"  size="form">
+                    <InputField
+                      label="Email Address"
+                      variant="primary"
+                      size="form"
+                    >
                       <Field name="email">
                         {({ field }: FieldProps) => (
                           <Input
@@ -526,25 +469,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
 
       <Formik
         initialValues={addressFormData}
-        validationSchema={Yup.object({
-          address: Yup.string()
-            .required("Address is required")
-            .max(100, "Address is too long"),
-          city: Yup.string()
-            .required("City is required")
-            .max(50, "City name is too long"),
-          state: Yup.string().required("State is required"),
-          country: Yup.string().required("Country is required"),
-          zipCode: Yup.string()
-            .matches(
-              /^[a-zA-Z0-9]{1,6}$/,
-              "Must be alphanumeric and up to 6 characters",
-            )
-            .required("This field is required"),
-          termsAccepted: Yup.boolean()
-            .oneOf([true], "You must accept the Terms and Privacy Policy")
-            .required("You must accept the Terms and Privacy Policy"),
-        })}
+        validationSchema={createAddressValidationSchema()}
         validateOnMount
         validateOnChange={true}
         validateOnBlur={true}
@@ -562,7 +487,11 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
             <div className="grid grid-cols-1 lg:grid-cols-2 max-w-5xl mx-2 md:mx-8 gap-8 pt-2">
               {/* Left Column - Address Form */}
               <div className="space-y-6">
-                <InputField label="Billing Address" variant="primary"  size="form">
+                <InputField
+                  label="Billing Address"
+                  variant="primary"
+                  size="form"
+                >
                   <Field name="address">
                     {({ field }: FieldProps) => (
                       <Input
@@ -583,7 +512,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                   )}
                 </InputField>
 
-                <InputField label="State" variant="primary"  size="form">
+                <InputField label="State" variant="primary" size="form">
                   <Field name="state">
                     {({ field }: FieldProps) => (
                       <Input
@@ -604,7 +533,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                   )}
                 </InputField>
 
-                <InputField label="City" variant="primary"  size="form">
+                <InputField label="City" variant="primary" size="form">
                   <Field name="city">
                     {({ field }: FieldProps) => (
                       <Input
@@ -625,7 +554,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                   )}
                 </InputField>
 
-                <InputField label="Country" variant="primary"  size="form">
+                <InputField label="Country" variant="primary" size="form">
                   <Field name="country">
                     {({ field, form }: FieldProps) => (
                       <div className="relative">
@@ -648,7 +577,11 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                   )}
                 </InputField>
 
-                <InputField label="Zip/Postal Code" variant="primary"  size="form">
+                <InputField
+                  label="Zip/Postal Code"
+                  variant="primary"
+                  size="form"
+                >
                   <Field name="zipCode">
                     {({ field, form }: FieldProps) => (
                       <Input
