@@ -21,7 +21,8 @@ const allowedOrigins = [
   "https://localhost:8080",
   "https://akaza.xyz",
   "https://akaza.io",
-  "https://app-sit.akaza.xyz",
+  "https://app-sit.akaza.xyz",,
+  "https://uat-akaza-app.akaza.io"
 ];
 
 const runServer = (hotReload?: () => RequestHandler[]): void => {
