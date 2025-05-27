@@ -153,7 +153,7 @@ const CompleteEmployerProfile: FC = () => {
       industryName: "",
       emailAddress: user?.data?.user?.email || "",
       yearFounded: "",
-      mobileNumber: "",
+      mobileNumber: "+1",
       companyWebsite: user?.data?.user?.relatedDetails?.website || "",
       unitAndBldg: "",
       streetAddress: user?.data?.user?.relatedDetails?.address || "",

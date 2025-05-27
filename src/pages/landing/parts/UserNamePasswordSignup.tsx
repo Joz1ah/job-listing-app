@@ -11,6 +11,13 @@ import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 type ErrorFields = "email" | "password" | "passwordConfirm";
 type ErrorState = Record<ErrorFields, string>;
 
+interface PasswordRequirements {
+  length: boolean;
+  lowercase: boolean;
+  uppercase: boolean;
+  special: boolean;
+}
+
 const UserNamePasswordSignup = () => {
   const {
     handleSetModalState,
@@ -19,7 +26,7 @@ const UserNamePasswordSignup = () => {
     handleSetTempCredentials,
     modalState,
   } = useLanding();
-  const { showError } = useErrorModal(); // Use the error modal context
+  const { showError } = useErrorModal();
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
@@ -46,7 +53,7 @@ const UserNamePasswordSignup = () => {
       .required("Password is required")
       .test(
         "password-requirements",
-        "Password must be at least 12 characters and include a lowercase letter, uppercase letter, and special character",
+        "Password requirements not met",
         (value) =>
           Boolean(
             value &&
@@ -62,6 +69,33 @@ const UserNamePasswordSignup = () => {
       .required("Please confirm your password")
       .nullable(),
   });
+
+  // Check password requirements
+  const checkPasswordRequirements = (password: string): PasswordRequirements => {
+    return {
+      length: password.length >= 12,
+      lowercase: /[a-z]/.test(password),
+      uppercase: /[A-Z]/.test(password),
+      special: /[^a-zA-Z0-9]/.test(password),
+    };
+  };
+
+  // Generate specific password error messages
+  const getPasswordErrorMessage = (password: string): string => {
+    if (!password) return "";
+    
+    const requirements = checkPasswordRequirements(password);
+    const missing = [];
+    
+    if (!requirements.length) missing.push("at least 12 characters");
+    if (!requirements.lowercase) missing.push("a lowercase letter");
+    if (!requirements.uppercase) missing.push("an uppercase letter");
+    if (!requirements.special) missing.push("a special character");
+    
+    if (missing.length === 0) return "";
+    
+    return `Password must include ${missing.join(", ")}`;
+  };
 
   // Only validate on input change after form has been submitted once
   useEffect(() => {
@@ -84,7 +118,11 @@ const UserNamePasswordSignup = () => {
 
         err.inner.forEach((error: Yup.ValidationError) => {
           if (error.path && isErrorField(error.path)) {
-            _organizedErrors[error.path] = error.message;
+            if (error.path === "password") {
+              _organizedErrors[error.path] = getPasswordErrorMessage(credentials.password);
+            } else {
+              _organizedErrors[error.path] = error.message;
+            }
           }
         });
         setOrganizedErrors(_organizedErrors);
@@ -142,18 +180,15 @@ const UserNamePasswordSignup = () => {
       } catch (err: any) {
         setIsSubmitting(false);
 
-        // Check for internet connection issues
+        // Check for internet connection issues first
         if (
-          err.status === "FETCH_ERROR" ||
-          err.message === "Failed to fetch" ||
-          err.error === "Failed to fetch" ||
-          (err.data &&
-            err.data.message &&
-            (err.data.message.includes("ERR_INTERNET_DISCONNECTED") ||
-              err.data.message.includes("network") ||
-              err.data.message.includes("internet")))
+          err.data &&
+          err.data.message &&
+          (err.data.message.includes("ERR_INTERNET_DISCONNECTED") ||
+            err.data.message.includes("network") ||
+            err.data.message.includes("internet"))
         ) {
-          // Show network error in the modal instead of inline
+          // Show network error in the modal
           showError(
             "Connection Error", 
             "Internet connection error. Please check your connection and try again."
@@ -161,18 +196,34 @@ const UserNamePasswordSignup = () => {
           return;
         }
 
-        // Handle email already exists error
+        // Handle FETCH_ERROR separately
         if (
-          err.status === 409 ||
-          (err?.data?.message &&
-            err.data.message.toLowerCase().includes("email already exists"))
+          err.status === "FETCH_ERROR" ||
+          err.message === "Failed to fetch" ||
+          err.error === "Failed to fetch"
+        ) {
+          // Show generic fetch error in the modal
+          showError(
+            "Request Failed", 
+            "Unable to complete the request. Please try again."
+          );
+          return;
+        }
+
+        // Handle email already exists error - check if error message contains email-related keywords
+        if (
+          err?.data?.message &&
+          (err.data.message.toLowerCase().includes("email already exists") ||
+           err.data.message.toLowerCase().includes("email is already taken") ||
+           err.data.message.toLowerCase().includes("user already exists") ||
+           err.data.message.toLowerCase().includes("account with this email already exists"))
         ) {
           setOrganizedErrors((prev) => ({
             ...prev,
             email: "Email already exists",
           }));
         } else {
-          // For other server errors, use the error modal
+          // For all other errors, use the error modal
           const errorMessage =
             err?.data?.message ||
             "An error occurred during sign up. Please try again.";
@@ -191,7 +242,11 @@ const UserNamePasswordSignup = () => {
 
         err.inner.forEach((error: Yup.ValidationError) => {
           if (error.path && isErrorField(error.path)) {
-            _organizedErrors[error.path] = error.message;
+            if (error.path === "password") {
+              _organizedErrors[error.path] = getPasswordErrorMessage(credentials.password);
+            } else {
+              _organizedErrors[error.path] = error.message;
+            }
           }
         });
         setOrganizedErrors(_organizedErrors);
@@ -199,9 +254,69 @@ const UserNamePasswordSignup = () => {
     }
   };
 
+  // Check if form is valid
+  const isFormValid = () => {
+    try {
+      schema.validateSync(credentials, { abortEarly: false });
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
   // Type guard to ensure the error path is a valid error field
   const isErrorField = (value: string): value is ErrorFields => {
     return ["email", "password", "passwordConfirm"].includes(value);
+  };
+
+  // Get password requirements display
+  const getPasswordRequirementsDisplay = () => {
+    if (organizedErrors.password) {
+      return (
+        <div className="text-[#E63946] text-[10px] mt-1">
+          {organizedErrors.password}
+        </div>
+      );
+    }
+    
+    // Check if password requirements are met
+    const requirements = checkPasswordRequirements(credentials.password);
+    const allMet = credentials.password && Object.values(requirements).every(Boolean);
+    
+    // Only show requirements text if password requirements are not met
+    if (!allMet) {
+      return (
+        <div className="text-[#4BAF66] text-[10px] mt-1">
+          Password must be at least 12 characters and include a lowercase
+          letter, uppercase letter, and special character
+        </div>
+      );
+    }
+    
+    return null;
+  };
+
+  // Get password confirm display
+  const getPasswordConfirmDisplay = () => {
+    if (organizedErrors.passwordConfirm) {
+      return (
+        <div className="text-[#E63946] text-[10px] mt-1">
+          {organizedErrors.passwordConfirm}
+        </div>
+      );
+    }
+    
+    // Show "Password Matched" if passwords match and both fields have values
+    if (credentials.password && credentials.passwordConfirm && 
+        credentials.password === credentials.passwordConfirm) {
+      return (
+        <div className="text-[#4BAF66] text-[10px] mt-1">
+          Password matched
+        </div>
+      );
+    }
+    
+    return null;
   };
 
   return modalState && modalState == MODAL_STATES.SIGNUP_STEP2 ? (
@@ -249,18 +364,7 @@ const UserNamePasswordSignup = () => {
             >
               {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
             </button>
-            {!organizedErrors.password ? (
-              <div className="text-[#4BAF66] text-[10px] mt-1">
-                Password must be at least 12 characters and include a lowercase
-                letter, uppercase letter, and special character
-              </div>
-            ) : (
-              organizedErrors.password && (
-                <div className="text-[#E63946] text-[10px] mt-1">
-                  {organizedErrors.password}
-                </div>
-              )
-            )}
+            {getPasswordRequirementsDisplay()}
           </div>
           <div className="relative">
             <input
@@ -284,11 +388,7 @@ const UserNamePasswordSignup = () => {
             >
               {showConfirmPassword ? <Eye size={20} /> : <EyeOff size={20} />}
             </button>
-            {organizedErrors.passwordConfirm && (
-              <div className="text-[#E63946] text-[10px] mt-1">
-                {organizedErrors.passwordConfirm}
-              </div>
-            )}
+            {getPasswordConfirmDisplay()}
           </div>
         </div>
 
@@ -325,7 +425,11 @@ const UserNamePasswordSignup = () => {
             </button>
             <button
               type="submit"
-              className="w-[108px] h-10 bg-orange-500 text-white rounded-md flex items-center justify-center"
+              className={`w-[108px] h-10 rounded-md flex items-center justify-center ${
+                isFormValid() 
+                  ? "bg-orange-500 text-white" 
+                  : "bg-[#AEADAD] text-white"
+              }`}
               disabled={isSubmitting}
             >
               {isSubmitting ? (
