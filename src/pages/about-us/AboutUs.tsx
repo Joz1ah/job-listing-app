@@ -16,27 +16,32 @@ const AboutUs : React.FC = () => {
                 pt-7 pb-7 px-[7vw] sm:pb-14 sm:px-[15vw] md:px-[20vw] lg:px-[22vw] xl:px-[27vw] 2xl:px-[31vw] 
                 text-[1rem]'>
                 <div className='mt-4'>
-                    <b>Akaza</b> is a job listing platform that specifically caters for work from home opportunities with modern technological solutions. That’s technically what we do, but what we want to achieve is far more deeper than that.
+                    <b>Akaza</b> is a skills-based job matching platform built to fix what’s broken in hiring. And there’s a lot.
                 </div>
                 <div className='mt-4'>
-                Consider this: the average daily commute for full-time workers is around 1.25 hours - that adds up to around 20 hours a week and a staggering 240 hours a year.
-                </div>
-                <div className='mt-4'>
-                Imagine how much more fulfilling your life could be if you could reclaim that time! It was a daily battle of either enduring traffic jams or being cramped on public transit, where you find yourself trapped next to the overly chatty commuter
+                    We focus on remote and hybrid roles, but more importantly, we focus on fit.
+                    Not just what’s on a résumé, but what someone can actually do. Because right
+                    now, most hiring still depends on outdated systems that waste everyone’s
+                    time, especially when you’re just trying to find someone solid, or land a role
+                    you’re genuinely good at.
                 </div>
                 <div className='mt-6'>
-                <b>Akaza</b> was born out of the concerns of the present and the vision of the future. 
+                    <i><b>Akaza</b> was born out of the concerns of the present and the vision of the future. </i>
+                    We’re trying to take the guesswork out of hiring, to help people show what
+                    they bring to the table, and to help companies feel more confident in who
+                    they bring on.
                 </div>
                 <div className='mt-6'>
-                The benefits of working from home are clear: increased productivity and enhanced well-being. When done right, companies can reduce operational costs and boost profitability. Our mission is to revolutionize and  normalize working from home,  helping you spend more time doing what you love.
-
+                    We’re also thinking beyond the first match. The goal isn’t just to fill a role,
+                    it’s to build something that lasts. That means making sure the right people
+                    connect, for the right reasons.
                 </div>
                 <div className='mt-4'>
-                They say the wealthiest people in the world would trade everything to be young again and to have more time in their hands - this is a statement of how truly valuable Time really is.
+                    We're still early, and we're learning as we go. But we’re building Akaza to
+                    make hiring more human, more thoughtful, and a whole lot less painful.
                 </div>
                 <div className='mt-4'>
-                At Akaza, we aim to give you that gift of time.
-                Whether you’re seeking the perfect remote career or looking for the ideal candidate to elevate your business, we’re here to provide the tools you need.
+                    If that’s something you’ve been craving, we’re building it for you.
                 </div>
             </div>
         </div>
