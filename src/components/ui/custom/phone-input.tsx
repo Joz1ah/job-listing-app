@@ -3,6 +3,14 @@ import * as RPNInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
 import { ChevronDown } from "lucide-react";
 import { Button } from "components";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "components";
 import { Input } from "components";
 import { Popover, PopoverContent, PopoverTrigger } from "components";
 import { ScrollArea } from "components";
@@ -10,7 +18,7 @@ import { ScrollArea } from "components";
 const cn = (...classes: (string | undefined)[]) =>
   classes.filter(Boolean).join(" ");
 
-// Input Component with vertical centering
+// Input Component
 const InputComponent = React.forwardRef<
   HTMLInputElement,
   React.InputHTMLAttributes<HTMLInputElement>
@@ -19,7 +27,6 @@ const InputComponent = React.forwardRef<
     className={cn(
       "rounded-[4px] border-none bg-transparent text-white h-full pl-2",
       "placeholder:text-white/50 focus-visible:ring-0 focus-visible:ring-offset-0",
-      "flex items-center", // Add vertical centering
       className,
     )}
     {...props}
@@ -41,7 +48,7 @@ const FlagComponent = ({ country, countryName }: RPNInput.FlagProps) => {
 };
 FlagComponent.displayName = "FlagComponent";
 
-// Country Select Component with proper positioning and centering
+// Country Select Component with proper positioning
 const CountrySelect = ({
   disabled,
   value,
@@ -53,27 +60,23 @@ const CountrySelect = ({
   onChange: (value: RPNInput.Country) => void;
   options: { label: string; value: RPNInput.Country }[];
 }) => {
+  const handleSelect = React.useCallback(
+    (country: RPNInput.Country) => {
+      onChange(country);
+    },
+    [onChange],
+  );
+
   // Reference to the parent container
   const parentRef = useRef<HTMLDivElement | null>(null);
-  
-  // State for dropdown open/closed
-  const [isOpen, setIsOpen] = useState(false);
-  
+
   // State for dropdown width
   const [dropdownWidth, setDropdownWidth] = useState(300);
-  
-  // Search input ref
-  const searchInputRef = useRef<HTMLInputElement>(null);
-  
-  // State for search text
-  const [searchText, setSearchText] = useState("");
-  
-  // Only calculate filtered options when dropdown is open
-  const validOptions = options.filter(x => x.value);
-  
+
   // Update width when window resizes
   useEffect(() => {
     const updateWidth = () => {
+      // Get the parent element (the entire phone input)
       const parentElement = parentRef.current?.closest(
         "[data-phone-input-container]",
       );
@@ -83,53 +86,23 @@ const CountrySelect = ({
       }
     };
 
-    if (isOpen) {
-      updateWidth();
-      window.addEventListener("resize", updateWidth);
-      
-      // Focus search input when opened
-      setTimeout(() => {
-        if (searchInputRef.current) {
-          searchInputRef.current.focus();
-        }
-      }, 10);
-      
-      return () => {
-        window.removeEventListener("resize", updateWidth);
-      };
-    }
-    
-    // Reset search when dropdown is closed
-    if (!isOpen) {
-      setSearchText("");
-    }
-  }, [isOpen]);
-  
-  // Handle country selection
-  const handleSelectCountry = (country: RPNInput.Country) => {
-    onChange(country);
-    setIsOpen(false);
-  };
-  
-  // Filter countries based on search
-  const getFilteredCountries = () => {
-    if (!searchText) return validOptions;
-    
-    const query = searchText.toLowerCase();
-    return validOptions.filter(option => 
-      option.label.toLowerCase().startsWith(query)
-    );
-  };
+    updateWidth();
+    window.addEventListener("resize", updateWidth);
+
+    return () => {
+      window.removeEventListener("resize", updateWidth);
+    };
+  }, []);
 
   return (
-    <div ref={parentRef} className="h-full flex items-center">
+    <div ref={parentRef}>
       <Popover>
         <PopoverTrigger asChild>
           <Button
             type="button"
             variant="ghost"
             className={cn(
-              "flex items-center justify-center gap-1 h-full px-2",
+              "flex items-center gap-1 h-full px-2",
               "bg-transparent hover:bg-transparent min-w-[80px]",
               "border-none focus-visible:ring-0 focus-visible:ring-offset-0",
             )}
@@ -143,50 +116,46 @@ const CountrySelect = ({
         </PopoverTrigger>
         <PopoverContent
           style={{ width: `${dropdownWidth}px` }}
-          className="p-0 bg-white border border-gray-200 rounded-md shadow-md z-50 overflow-hidden"
+          className="p-0 bg-white border-[#AEADAD] z-50"
           side="bottom"
           align="start"
           sideOffset={5}
         >
-          {isOpen && (
-            <div className="bg-white">
-              <div className="p-3 border-b border-gray-200">
-                <input
-                  ref={searchInputRef}
-                  className="w-full p-2 border border-gray-300 rounded-md text-black text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Search country..."
-                  value={searchText}
-                  onChange={(e) => setSearchText(e.target.value)}
-                />
-              </div>
+          <Command className="bg-white">
+            <CommandInput
+              placeholder="Search country..."
+              className="text-black"
+            />
+            <CommandList>
               <ScrollArea className="h-72">
-                <div className="py-1">
-                  {getFilteredCountries().length === 0 ? (
-                    <div className="px-4 py-3 text-sm text-gray-500">No country found.</div>
-                  ) : (
-                    getFilteredCountries().map((option) => (
-                      <button
+                <CommandEmpty className="text-black">
+                  No country found.
+                </CommandEmpty>
+                <CommandGroup>
+                  {options
+                    .filter((x) => x.value)
+                    .map((option) => (
+                      <CommandItem
+                        className="gap-2 text-black"
                         key={option.value}
-                        className="flex items-center gap-3 w-full px-4 py-2 text-left hover:bg-gray-100 text-black"
-                        onClick={() => handleSelectCountry(option.value)}
+                        onSelect={() => handleSelect(option.value)}
                       >
                         <FlagComponent
                           country={option.value}
                           countryName={option.label}
                         />
-                        <span className="flex-1 text-sm font-medium">{option.label}</span>
+                        <span className="flex-1 text-sm">{option.label}</span>
                         {option.value && (
                           <span className="text-sm text-gray-500">
                             {`+${RPNInput.getCountryCallingCode(option.value)}`}
                           </span>
                         )}
-                      </button>
-                    ))
-                  )}
-                </div>
+                      </CommandItem>
+                    ))}
+                </CommandGroup>
               </ScrollArea>
-            </div>
-          )}
+            </CommandList>
+          </Command>
         </PopoverContent>
       </Popover>
     </div>
@@ -201,7 +170,7 @@ type PhoneInputProps = {
   defaultCountry?: RPNInput.Country;
 } & Omit<RPNInput.Props<typeof RPNInput.default>, "onChange" | "value">;
 
-// Main PhoneInput Component with positioning context and centering
+// Main PhoneInput Component with positioning context
 const PhoneInput = React.forwardRef<
   React.ElementRef<typeof RPNInput.default>,
   PhoneInputProps
@@ -237,12 +206,12 @@ const PhoneInput = React.forwardRef<
 
     return (
       <div
-        className={cn("relative w-full flex items-center", className)}
+        className={cn("relative w-full", className)}
         data-phone-input-container
       >
         <RPNInput.default
           ref={ref}
-          className="flex bg-transparent w-full items-center h-full"
+          className="flex bg-transparent w-full"
           flagComponent={FlagComponent}
           countrySelectComponent={CountrySelect}
           inputComponent={InputComponent}
@@ -250,7 +219,6 @@ const PhoneInput = React.forwardRef<
           value={value?.toString()}
           onChange={handlePhoneChange}
           international
-          defaultCountry={defaultCountry}
           {...props}
         />
       </div>
