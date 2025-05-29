@@ -48,7 +48,7 @@ const FlagComponent = ({ country, countryName }: RPNInput.FlagProps) => {
 };
 FlagComponent.displayName = "FlagComponent";
 
-// Country Select Component with proper positioning
+// Country Select Component with proper positioning and search
 const CountrySelect = ({
   disabled,
   value,
@@ -60,9 +60,12 @@ const CountrySelect = ({
   onChange: (value: RPNInput.Country) => void;
   options: { label: string; value: RPNInput.Country }[];
 }) => {
+  const [searchValue, setSearchValue] = useState("");
+  
   const handleSelect = React.useCallback(
     (country: RPNInput.Country) => {
       onChange(country);
+      setSearchValue(""); // Clear search when country is selected
     },
     [onChange],
   );
@@ -94,6 +97,21 @@ const CountrySelect = ({
     };
   }, []);
 
+  // Custom filter function that only shows countries starting with the search term
+  const filteredOptions = React.useMemo(() => {
+    if (!searchValue) return options.filter((x) => x.value);
+    
+    const searchLower = searchValue.toLowerCase();
+    
+    // Only show countries that START with the search term
+    const filtered = options.filter((x) => 
+      x.value && x.label.toLowerCase().startsWith(searchLower)
+    );
+    
+    // Sort alphabetically
+    return filtered.sort((a, b) => a.label.localeCompare(b.label));
+  }, [options, searchValue]);
+
   return (
     <div ref={parentRef}>
       <Popover>
@@ -121,24 +139,30 @@ const CountrySelect = ({
           align="start"
           sideOffset={5}
         >
-          <Command className="bg-white">
+          <Command 
+            className="bg-white"
+            shouldFilter={false} // Disable built-in filtering since we're doing custom filtering
+          >
             <CommandInput
               placeholder="Search country..."
               className="text-black"
+              value={searchValue}
+              onValueChange={setSearchValue}
             />
             <CommandList>
               <ScrollArea className="h-72">
-                <CommandEmpty className="text-black">
-                  No country found.
-                </CommandEmpty>
-                <CommandGroup>
-                  {options
-                    .filter((x) => x.value)
-                    .map((option) => (
+                {filteredOptions.length === 0 ? (
+                  <CommandEmpty className="text-black">
+                    No country found.
+                  </CommandEmpty>
+                ) : (
+                  <CommandGroup>
+                    {filteredOptions.map((option) => (
                       <CommandItem
                         className="gap-2 text-black"
                         key={option.value}
                         onSelect={() => handleSelect(option.value)}
+                        value={option.value} // This helps with keyboard navigation
                       >
                         <FlagComponent
                           country={option.value}
@@ -152,7 +176,8 @@ const CountrySelect = ({
                         )}
                       </CommandItem>
                     ))}
-                </CommandGroup>
+                  </CommandGroup>
+                )}
               </ScrollArea>
             </CommandList>
           </Command>
@@ -219,6 +244,7 @@ const PhoneInput = React.forwardRef<
           value={value?.toString()}
           onChange={handlePhoneChange}
           international
+          defaultCountry={defaultCountry}
           {...props}
         />
       </div>
