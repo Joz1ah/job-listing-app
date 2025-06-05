@@ -1,4 +1,4 @@
-import { FC, useState, useRef } from "react";
+import { FC, useState, useRef, useEffect } from "react";
 import { SkillsWithEllipsis } from "components";
 import { Bookmark, MoreVertical, MapPin } from "lucide-react";
 import linkedin_icon from "assets/linkedin.svg?url";
@@ -18,46 +18,15 @@ import { useEmployerContext } from "components";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import { AdDialogWrapper } from "components";
 
-// Function to format the date string for display
-/*
-const formatTimeAgo = (dateString: string): string => {
-  const date = new Date(dateString);
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-
-  // Convert to minutes, hours, days
-  const diffMins = Math.floor(diffMs / (1000 * 60));
-  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-  if (diffMins < 60) {
-    return "just now";
-  } else if (diffHours < 24) {
-    return `${diffHours} hour${diffHours > 1 ? "s" : ""}`;
-  } else {
-    return `${diffDays} day${diffDays > 1 ? "s" : ""}`;
-  }
-};
-*/
-// Function to check if a post is new (less than 24 hours old)
-/*
-const isNewPost = (dateString: string): boolean => {
-  const date = new Date(dateString);
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffHours = diffMs / (1000 * 60 * 60);
-
-  return diffHours < 24;
-};
-*/
 interface AppCardProps {
   jobId: number;
   match: Match;
   bookmarked?: boolean;
   onBookmark?: () => void;
   popupImage?: string;
-  adImage?: string; // Add adImage prop
-  timerDuration?: number; // Add timer duration prop
+  adImage?: string;
+  timerDuration?: number;
+  isMobile?: boolean; // Add mobile prop
 }
 
 interface SecureNameDisplayProps {
@@ -147,9 +116,8 @@ const LanguageTag: FC<{ language: string }> = ({ language }) => (
 // Add a LinkedIn Link component
 const LinkedInLink: FC<{ linkedInUrl: string }> = ({ linkedInUrl }) => {
   const handleLinkedInClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent card click when clicking on LinkedIn link
+    e.stopPropagation();
 
-    // Add protocol if missing
     let url = linkedInUrl;
     if (!url.startsWith("http")) {
       url = "https://" + url;
@@ -169,27 +137,34 @@ const LinkedInLink: FC<{ linkedInUrl: string }> = ({ linkedInUrl }) => {
   );
 };
 
-const AppCard: FC<AppCardProps> = ({ match, popupImage, adImage }) => {
+const AppCard: FC<AppCardProps> = ({
+  match,
+  popupImage,
+  adImage,
+  isMobile = false,
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
-  //const [formattedPostDate, setFormattedPostDate] = useState("N/A");
-  //const [shouldShowNew, setShouldShowNew] = useState(false);
+  const [isMobileView, setIsMobileView] = useState(false);
   const { user, userSettings } = useAuth();
   const cardId = generateCardId(match);
   const { subscriptionPlan } = useEmployerContext();
-
-  // Ref for the AdDialogWrapper
   const adDialogRef = useRef<HTMLDivElement>(null);
-  /*
+
+  // Hook to detect mobile screen size
   useEffect(() => {
-    if (match.posted) {
-      setFormattedPostDate(formatTimeAgo(match.posted));
-      setShouldShowNew(isNewPost(match.posted));
-    }
-  }, [match.posted]);
-*/
+    const checkScreenSize = () => {
+      setIsMobileView(window.innerWidth < 768);
+    };
+
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
+
   const handlePreview = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent event propagation
+    e.stopPropagation();
     if (subscriptionPlan === "freeTrial") return;
     if (!isScheduleModalOpen) {
       setIsModalOpen(true);
@@ -200,7 +175,6 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage, adImage }) => {
     e.stopPropagation();
 
     if (subscriptionPlan === "freeTrial") {
-      // Trigger the AdDialogWrapper click instead of opening a different dialog
       if (adDialogRef.current) {
         const clickEvent = new MouseEvent("click", {
           bubbles: true,
@@ -216,6 +190,156 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage, adImage }) => {
     setIsModalOpen(false);
   };
 
+  // Mobile Layout
+  if (isMobile || isMobileView) {
+    return (
+      <>
+        <Card className="bg-[#FFFFFF] border border-gray-200 w-[310px] h-[395px] mx-auto rounded-lg shadow-sm flex flex-col relative">
+          <CardHeader className="p-4 pb-2 relative">
+            {/* Header with Posted date */}
+            <div className="flex justify-between items-start mb-2">
+              <div></div> {/* Empty div to push posted date to right */}
+              <div className="flex flex-col items-end">
+                <span className="text-xs text-[#717171]">
+                  Posted {match.posted}
+                </span>
+              </div>
+            </div>
+
+            {/* Bookmark positioned absolutely below posted date */}
+            <BookmarkButton
+              cardId={cardId}
+              className="absolute top-10 right-4"
+            />
+
+            {/* Name and Location */}
+            <div className="mb-2">
+              <SecureNameDisplay
+                realName={`${match.firstName} ${match.lastName}`}
+                onClick={handlePreview}
+                subscriptionPlan={subscriptionPlan}
+              />
+              <div className="flex items-center gap-1 text-sm text-[#263238] mt-1">
+                <MapPin size={14} className="text-[#F5722E]" />
+                <span>Based in {match.country}</span>
+              </div>
+            </div>
+
+            {/* LinkedIn Profile */}
+            {match.linkedIn &&
+              !match.isFreeTrial &&
+              subscriptionPlan !== "freeTrial" && (
+                <div className="mb-3">
+                  <LinkedInLink linkedInUrl={match.linkedIn} />
+                </div>
+              )}
+          </CardHeader>
+
+          <CardContent className="px-4 pb-2 flex-1 overflow-hidden">
+            {/* Core Skills */}
+            <div className="mb-2">
+              <SkillsWithEllipsis skills={match.coreSkills} />
+            </div>
+
+            {/* Experience */}
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-[13px] font-light text-[#263238]">
+                Experience:
+              </span>
+              <span className="text-[12px] text-[#F5722E] font-light border border-[#F5722E] items-center rounded-[2px] px-1">
+                {match.experience}
+              </span>
+            </div>
+
+            {/* Available for */}
+            <div className="flex gap-2 gap-y-1 flex-wrap mb-2">
+              <span className="text-[13px] font-light text-[#263238]">
+                Available for:
+              </span>
+              {match.lookingFor.map((type, index) => (
+                <span
+                  key={index}
+                  className={`${getAvailabilityStyle(getEmploymentTypeLabel(type))} text-white rounded-[4px] text-[12px] px-1.5 h-[18px] flex justify-center items-center`}
+                >
+                  {getEmploymentTypeLabel(type)}
+                </span>
+              ))}
+            </div>
+
+            {/* Salary */}
+            <div className="flex gap-2 mb-2">
+              <span className="text-[13px] font-light text-[#263238]">
+                Salary:
+              </span>
+              <span className="bg-[#F5722E] text-white rounded-[4px] text-[12px] px-1.5 h-[18px] flex justify-center items-center">
+                {match.salaryExpectation}
+              </span>
+            </div>
+
+            {/* Language */}
+            {match.language && match.language.length > 0 && (
+              <div className="flex gap-2 gap-y-1 flex-wrap">
+                <span className="text-[13px] font-light text-[#263238]">
+                  Language:
+                </span>
+                {match.language.map((lang, index) => (
+                  <LanguageTag key={index} language={lang} />
+                ))}
+              </div>
+            )}
+          </CardContent>
+
+          {/* Schedule Button - Always at bottom */}
+          <CardFooter className="px-4 pb-4 mt-auto flex justify-center items-center">
+            <Button
+              className="text-[15px] font-semibold w-[170px] h-[35px] p-2 bg-[#F5722E] hover:bg-[#F5722E]/90 rounded"
+              onClick={handleScheduleInterview}
+            >
+              Schedule Interview
+            </Button>
+          </CardFooter>
+        </Card>
+
+        {/* Hidden AdDialogWrapper for free trial users */}
+        {subscriptionPlan === "freeTrial" && (
+          <div className="hidden">
+            <AdDialogWrapper
+              ref={adDialogRef}
+              adImage={adImage}
+              popupImage={popupImage}
+            />
+          </div>
+        )}
+
+        {/* Only show these modals for paid users */}
+        {subscriptionPlan !== "freeTrial" && (
+          <>
+            <AppPreviewModal
+              isOpen={isModalOpen}
+              onClose={() => setIsModalOpen(false)}
+              app={match}
+              onSchedule={handleScheduleInterview}
+            />
+            <ScheduleInterviewModal
+              isOpen={isScheduleModalOpen}
+              onClose={() => setIsScheduleModalOpen(false)}
+              jobId={match.jobId}
+              jobHunterId={match.id}
+              employerId={user?.data.user.id}
+              timezone={userSettings?.data.timeZone}
+              position={match.position}
+              coreSkills={match.coreSkills}
+              certificate={match.certificates}
+              candidateName={`${match.firstName} ${match.lastName}`}
+              country={match.country}
+            />
+          </>
+        )}
+      </>
+    );
+  }
+
+  // Desktop Layout (Original)
   return (
     <>
       <Card className="bg-[#FFFFFF] border-none w-full max-w-[436px] h-[350px] sm:h-[275px] relative transition-shadow duration-200">
@@ -252,7 +376,6 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage, adImage }) => {
                 </p>
               </div>
 
-              {/* Add LinkedIn profile link if available AND job hunter is not on free trial */}
               {match.linkedIn &&
                 !match.isFreeTrial &&
                 subscriptionPlan !== "freeTrial" && (
@@ -321,7 +444,6 @@ const AppCard: FC<AppCardProps> = ({ match, popupImage, adImage }) => {
             onClick={(e) => {
               e.stopPropagation();
               if (subscriptionPlan === "freeTrial") return;
-              // Handle more options
             }}
           />
         </CardFooter>
