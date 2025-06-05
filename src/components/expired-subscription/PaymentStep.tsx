@@ -249,13 +249,15 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                 </div>
               </div>
               <div className="flex items-baseline">
-                <span className="text-[#F5722E] mr-1 text-sm font-bold">CAD</span>
+                <span className="text-[#F5722E] mr-1 text-sm font-bold">
+                  CAD
+                </span>
                 <span className="text-[#F5722E] text-sm">$</span>
                 <span className="text-[32px] font-bold text-[#F5722E]">
                   {planType === "yearly" ? yearlyPrice : monthlyPrice}
                 </span>
                 <span className="text-lg font-semibold text-[#F5722E]">
-                  /year
+                  /{planType === "yearly" ? "year" : "month"}
                 </span>
                 {planType === "yearly" && (
                   <span className="text-2xl text-gray-400 ml-2 line-through">
@@ -263,7 +265,9 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                   </span>
                 )}
               </div>
-              <span className="text-[13px] text-[#F5F5F7] -mt-1 font-extralight">
+              <span
+                className={`text-[13px] -mt-1 font-extralight ${planType === "yearly" ? "text-[#F5F5F7]" : "text-[#263238]"}`}
+              >
                 + transaction fee
               </span>
             </div>
