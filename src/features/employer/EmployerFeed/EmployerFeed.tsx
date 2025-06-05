@@ -13,7 +13,7 @@ import { usePerfectMatchContext } from "contexts/PerfectMatch/PerfectMatchContex
 import { Match } from "contexts/PerfectMatch/types";
 import { AdDialogWrapper } from "components";
 import { useEmployerContext } from "components";
-import { FramerMobileCarousel } from "components/swipeable/GSAPMobileCarousel";
+import { FramerMobileCarousel } from "components/swipeable/FramerMobileCarousel";
 
 interface selectedProps {
   setSelectedTab: (tab: string) => void;
@@ -203,6 +203,7 @@ const PerfectMatch: FC<selectedProps> = ({
         loading={loading}
         title="PERFECT MATCH"
         showTitle={false} // Title is handled by parent component
+        onNavigateToOtherTab={() => setSelectedTab("otherApplications")} // Add this line
       />
     );
   }
@@ -423,6 +424,7 @@ const OtherApplications: FC<selectedProps> = ({
         loading={loading}
         title="OTHER APPLICATION CARDS"
         showTitle={false} // Title is handled by parent component
+        onNavigateToOtherTab={() => setSelectedTab("perfectMatch")} // Add this line
       />
     );
   }
@@ -609,14 +611,17 @@ const EmployerFeed: FC = () => {
                       className="sr-only"
                       disabled={
                         isLoadingMatches ||
-                        (selectedTab === "otherApplications" && forcedOtherCardsLoading)
+                        (selectedTab === "otherApplications" &&
+                          forcedOtherCardsLoading)
                       }
                     />
-                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
-                      selectedTab === "perfectMatch" 
-                        ? "border-[#F5722E] bg-transparent" 
-                        : "border-gray-400 bg-transparent"
-                    }`}>
+                    <div
+                      className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
+                        selectedTab === "perfectMatch"
+                          ? "border-[#F5722E] bg-transparent"
+                          : "border-gray-400 bg-transparent"
+                      }`}
+                    >
                       {selectedTab === "perfectMatch" && (
                         <div className="w-2.5 h-2.5 rounded-full bg-[#F5722E]"></div>
                       )}
@@ -632,9 +637,13 @@ const EmployerFeed: FC = () => {
                           : "filter grayscale opacity-60"
                       }`}
                     />
-                    <span className={`text-[16px] font-semibold transition-colors duration-200 ${
-                      selectedTab === "perfectMatch" ? "text-[#F5722E]" : "text-gray-400"
-                    }`}>
+                    <span
+                      className={`text-[16px] font-semibold transition-colors duration-200 ${
+                        selectedTab === "perfectMatch"
+                          ? "text-[#F5722E]"
+                          : "text-gray-400"
+                      }`}
+                    >
                       PERFECT MATCH
                     </span>
                   </div>
@@ -651,23 +660,30 @@ const EmployerFeed: FC = () => {
                       className="sr-only"
                       disabled={
                         isLoadingMatches ||
-                        (selectedTab === "otherApplications" && forcedOtherCardsLoading)
+                        (selectedTab === "otherApplications" &&
+                          forcedOtherCardsLoading)
                       }
                     />
-                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
-                      selectedTab === "otherApplications" 
-                        ? "border-[#F5722E] bg-transparent" 
-                        : "border-gray-400 bg-transparent"
-                    }`}>
+                    <div
+                      className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
+                        selectedTab === "otherApplications"
+                          ? "border-[#F5722E] bg-transparent"
+                          : "border-gray-400 bg-transparent"
+                      }`}
+                    >
                       {selectedTab === "otherApplications" && (
                         <div className="w-2.5 h-2.5 rounded-full bg-[#F5722E]"></div>
                       )}
                     </div>
                   </div>
-                  <span className={`text-[16px] font-semibold transition-colors duration-200 ${
-                    selectedTab === "otherApplications" ? "text-[#F5722E]" : "text-gray-400"
-                  }`}>
-                    OTHER OPPORTUNITIES
+                  <span
+                    className={`text-[16px] font-semibold transition-colors duration-200 ${
+                      selectedTab === "otherApplications"
+                        ? "text-[#F5722E]"
+                        : "text-gray-400"
+                    }`}
+                  >
+                    OTHER APPLICATION CARDS
                   </span>
                 </label>
               </div>
@@ -680,14 +696,17 @@ const EmployerFeed: FC = () => {
                   onClick={() => handleTabChange("perfectMatch")}
                   disabled={
                     isLoadingMatches ||
-                    (selectedTab === "otherApplications" && forcedOtherCardsLoading)
+                    (selectedTab === "otherApplications" &&
+                      forcedOtherCardsLoading)
                   }
                 >
                   <div
                     className="absolute bottom-0 left-0 w-full h-0.5 bg-[#F5722E] transform origin-left transition-transform duration-200 ease-out"
                     style={{
                       transform:
-                        selectedTab === "perfectMatch" ? "scaleX(1)" : "scaleX(0)",
+                        selectedTab === "perfectMatch"
+                          ? "scaleX(1)"
+                          : "scaleX(0)",
                     }}
                   />
                   <img
@@ -708,7 +727,8 @@ const EmployerFeed: FC = () => {
                   onClick={() => handleTabChange("otherApplications")}
                   disabled={
                     isLoadingMatches ||
-                    (selectedTab === "otherApplications" && forcedOtherCardsLoading)
+                    (selectedTab === "otherApplications" &&
+                      forcedOtherCardsLoading)
                   }
                 >
                   <div
@@ -738,8 +758,17 @@ const EmployerFeed: FC = () => {
                   onLoadMore={() => {}}
                   hasMore={false}
                   loading={true}
-                  title={selectedTab === "perfectMatch" ? "PERFECT MATCH" : "OTHER APPLICATION CARDS"}
+                  title={
+                    selectedTab === "perfectMatch"
+                      ? "PERFECT MATCH"
+                      : "OTHER APPLICATION CARDS"
+                  }
                   showTitle={false}
+                  onNavigateToOtherTab={
+                    selectedTab === "perfectMatch"
+                      ? () => handleTabChange("otherApplications")
+                      : () => handleTabChange("perfectMatch")
+                  }
                 />
               ) : (
                 // Desktop skeleton - show grid skeleton

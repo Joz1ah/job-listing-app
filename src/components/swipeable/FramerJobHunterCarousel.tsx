@@ -1,6 +1,7 @@
 import { FC, useState, useEffect, useRef, useCallback } from "react";
 import { motion, useMotionValue, animate, PanInfo } from "framer-motion";
 import sparkeIcon from "images/sparkle-icon.png";
+import light_bulb from "assets/light-bulb.svg?url";
 import { JobCardSkeleton } from "components";
 import { JobCard } from "features/job-hunter";
 import jobHunterPopAds from "images/jobhunter-dashboard-popup-ads.svg?url";
@@ -22,6 +23,7 @@ interface FramerJobHunterCarouselProps {
   loading: boolean;
   title: string;
   showTitle?: boolean;
+  onNavigateToOtherTab?: () => void; // Add callback for navigation
 }
 
 const FramerJobHunterCarousel: FC<FramerJobHunterCarouselProps> = ({
@@ -30,7 +32,8 @@ const FramerJobHunterCarousel: FC<FramerJobHunterCarouselProps> = ({
   hasMore,
   loading,
   title,
-  showTitle = true
+  showTitle = true,
+  onNavigateToOtherTab
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -39,7 +42,10 @@ const FramerJobHunterCarousel: FC<FramerJobHunterCarouselProps> = ({
   
   const cardWidth = 290;
   const cardGap = 12;
-  const totalItems = items.length + (loading ? 2 : 0);
+  
+  // Calculate total items including end card if needed
+  const shouldShowEndCard = !hasMore && items.length > 0 && !loading;
+  const totalItems = items.length + (loading ? 2 : 0) + (shouldShowEndCard ? 1 : 0);
   const maxIndex = Math.max(0, totalItems - 1);
 
   // Framer Motion values
@@ -86,8 +92,8 @@ const FramerJobHunterCarousel: FC<FramerJobHunterCarouselProps> = ({
       ease: [0.25, 0.1, 0.25, 1],
       onComplete: () => {
         setIsAnimating(false);
-        // Load more when near the end
-        if (clampedIndex >= items.length - 2 && hasMore && !loading) {
+        // Load more when near the end (but not if we're at the end card)
+        if (clampedIndex >= items.length - 2 && hasMore && !loading && clampedIndex < items.length) {
           onLoadMore();
         }
       }
@@ -151,24 +157,30 @@ const FramerJobHunterCarousel: FC<FramerJobHunterCarouselProps> = ({
         setIsAnimating(false);
         setCurrentIndex(finalIndex);
         
-        // Load more if needed
-        if (finalIndex >= items.length - 2 && hasMore && !loading) {
+        // Load more if needed (but not if we're at the end card)
+        if (finalIndex >= items.length - 2 && hasMore && !loading && finalIndex < items.length) {
           onLoadMore();
         }
       }
     });
   }, [x, findClosestIndex, maxIndex, getCenterPosition, items.length, hasMore, loading, onLoadMore]);
 
-  // Handle drag during motion
+  // Handle drag during motion with throttling to prevent excessive re-renders
   const handleDrag = useCallback(() => {
     if (!isDragging) return;
     
-    const currentX = x.get();
-    const closestIndex = findClosestIndex(currentX);
+    // Throttle the index updates during drag to prevent blinking
+    const throttleUpdate = () => {
+      const currentX = x.get();
+      const closestIndex = findClosestIndex(currentX);
+      
+      if (closestIndex !== currentIndex) {
+        setCurrentIndex(closestIndex);
+      }
+    };
     
-    if (closestIndex !== currentIndex) {
-      setCurrentIndex(closestIndex);
-    }
+    // Use requestAnimationFrame for smooth updates without excessive re-renders
+    requestAnimationFrame(throttleUpdate);
   }, [x, findClosestIndex, currentIndex, isDragging]);
 
   // Initialize carousel position and constraints
@@ -202,11 +214,34 @@ const FramerJobHunterCarousel: FC<FramerJobHunterCarouselProps> = ({
     }
   }, [currentIndex, maxIndex, moveToIndex]);
 
-  // Subscribe to x changes for real-time updates during drag
+  // Subscribe to x changes for real-time updates during drag with throttling
   useEffect(() => {
-    const unsubscribe = x.on("change", handleDrag);
-    return unsubscribe;
-  }, [x, handleDrag]);
+    let rafId: number | null = null;
+    let lastUpdate = 0;
+    
+    const throttledHandler = () => {
+      const now = Date.now();
+      // Throttle to 60fps max to prevent excessive updates
+      if (now - lastUpdate >= 16) {
+        handleDrag();
+        lastUpdate = now;
+      }
+      rafId = null;
+    };
+    
+    const unsubscribe = x.on("change", () => {
+      if (!rafId && isDragging) {
+        rafId = requestAnimationFrame(throttledHandler);
+      }
+    });
+    
+    return () => {
+      unsubscribe();
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+      }
+    };
+  }, [x, handleDrag, isDragging]);
 
   // Debounce utility
   function debounce(func: Function, wait: number) {
@@ -220,6 +255,47 @@ const FramerJobHunterCarousel: FC<FramerJobHunterCarouselProps> = ({
       timeout = setTimeout(later, wait);
     };
   }
+
+  // End card component
+  const EndCard = ({ isPerfectMatch }: { isPerfectMatch: boolean }) => (
+    <div 
+      className="bg-transparent rounded-2xl shadow-lg"
+      style={{ 
+        width: `${cardWidth}px`, 
+        height: '350px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
+    >
+      <div className="p-6 text-center">
+        <p className="text-lg font-semibold text-white mb-4">
+          {isPerfectMatch 
+            ? "You've reached the end of your perfect matches for now!"
+            : "You've reached the end of your other jobs for now!"
+          }
+        </p>
+        <div className="mb-4">
+          <span className="text-white text-lg font-semibold block mb-1">
+            {isPerfectMatch ? "Explore" : "Explore your"}
+          </span>
+          <button
+            onClick={onNavigateToOtherTab}
+            className="text-lg text-[#F5722E] font-semibold underline hover:opacity-80 transition-opacity"
+          >
+            {isPerfectMatch ? "other jobs" : "perfect matches"}
+          </button>
+        </div>
+        <div className="flex justify-center">
+          <img
+            src={light_bulb}
+            alt="Light Bulb"
+            className="w-12 h-12"
+          />
+        </div>
+      </div>
+    </div>
+  );
 
   if (items.length === 0 && !loading) {
     return null;
@@ -277,7 +353,10 @@ const FramerJobHunterCarousel: FC<FramerJobHunterCarouselProps> = ({
           dragConstraints={dragConstraints.current}
           dragElastic={0.2}
           dragMomentum={false}
-          onDragStart={() => setIsDragging(true)}
+          onDragStart={() => {
+            setIsDragging(true);
+            setIsAnimating(true); // Prevent other animations during drag
+          }}
           onDragEnd={handleDragEnd}
         >
           {items.map((item, index) => {
@@ -327,7 +406,7 @@ const FramerJobHunterCarousel: FC<FramerJobHunterCarouselProps> = ({
                   y: translateY
                 }}
                 transition={{
-                  duration: 0.15,
+                  duration: isDragging ? 0 : 0.15, // Disable transitions during drag
                   ease: "easeOut"
                 }}
                 style={{ 
@@ -419,7 +498,7 @@ const FramerJobHunterCarousel: FC<FramerJobHunterCarouselProps> = ({
                       y: translateY
                     }}
                     transition={{
-                      duration: 0.1,
+                      duration: isDragging ? 0 : 0.1, // Disable transitions during drag
                       ease: "easeOut"
                     }}
                     style={{ 
@@ -446,17 +525,51 @@ const FramerJobHunterCarousel: FC<FramerJobHunterCarouselProps> = ({
               })}
             </>
           )}
+
+          {/* End card */}
+          {shouldShowEndCard && (
+            <motion.div 
+              className={`flex-shrink-0 transition-all duration-150 ease-out ${
+                currentIndex !== items.length ? 'hover:opacity-90 cursor-pointer' : 'cursor-default'
+              }`}
+              animate={{
+                scale: currentIndex === items.length ? 1 : 0.85,
+                opacity: currentIndex === items.length ? 1 : 0.7,
+                y: currentIndex === items.length ? 0 : 5
+              }}
+              transition={{
+                duration: isDragging ? 0 : 0.15,
+                ease: "easeOut"
+              }}
+              style={{ 
+                width: `${cardWidth}px`,
+                zIndex: currentIndex === items.length ? 20 : 15,
+                transformOrigin: 'top center',
+                pointerEvents: currentIndex === items.length ? 'none' : 'auto',
+                display: 'flex',
+                alignItems: 'flex-start'
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleCardClick(items.length, e);
+              }}
+            >
+              <div 
+                style={{ 
+                  pointerEvents: currentIndex === items.length ? 'auto' : 'none',
+                  position: 'relative',
+                  filter: currentIndex === items.length ? 'none' : 'brightness(0.8)',
+                  transition: 'filter 0.2s ease',
+                  width: '100%',
+                  height: '100%'
+                }}
+              >
+                <EndCard isPerfectMatch={title === "PERFECT MATCH"} />
+              </div>
+            </motion.div>
+          )}
         </motion.div>
       </div>
-      
-      {/* End message */}
-      {!hasMore && items.length > 0 && currentIndex >= items.length - 1 && (
-        <div className="text-center py-6 relative z-0">
-          <p className="text-lg font-semibold text-white mb-2">
-            You've reached the end!
-          </p>
-        </div>
-      )}
     </div>
   );
 };

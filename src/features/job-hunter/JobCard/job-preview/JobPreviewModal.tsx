@@ -216,7 +216,7 @@ const JobPreviewModal: FC<JobPreviewModalProps> = ({
                     Job Description:
                   </h4>
                   <div className="border rounded p-4 max-h-[200px] overflow-y-auto">
-                    <p className="text-[10px] text-[#263238] leading-relaxed">
+                    <p className="text-[10px] text-[#263238] text-left leading-relaxed">
                       {job.description}
                     </p>
                   </div>

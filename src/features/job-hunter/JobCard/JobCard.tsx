@@ -187,7 +187,7 @@ const JobCard: FC<JobCardProps> = ({
         <Card className="bg-[#FFFFFF] border border-gray-200 w-[310px] h-[395px] mx-auto rounded-lg shadow-sm flex flex-col relative">
           <CardHeader className="p-4 pb-2 relative">
             {/* Header with Posted date */}
-            <div className="flex justify-between items-start mb-2">
+            <div className="flex justify-between items-start mb-0 md:mb-2">
               <div>
                 {match.isNew && (
                   <span className="text-[13px] text-[#F5722E] font-bold italic">
@@ -205,7 +205,7 @@ const JobCard: FC<JobCardProps> = ({
             {/* Bookmark positioned absolutely below posted date */}
             <BookmarkButton
               cardId={cardId}
-              className="absolute top-10 right-4"
+              className="absolute top-8 md:top-10 right-4"
             />
 
             {/* Position and Company */}

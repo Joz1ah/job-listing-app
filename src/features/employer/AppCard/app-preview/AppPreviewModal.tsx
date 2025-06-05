@@ -170,8 +170,8 @@ const AppPreviewModal: FC<AppPreviewModalProps> = ({
                 </div>
 
                 {/* Languages */}
-                <div className="flex flex-col gap-2">
-                  <h4 className="text-sm md:text-[17px] font-normal text-[#263238]">
+                <div className="flex flex-col md:flex-row md:items-center gap-2">
+                  <h4 className="text-sm md:text-[17px] font-normal text-[#263238] flex justify-start">
                     Languages:
                   </h4>
                   <div className="flex flex-wrap gap-2">

@@ -14,7 +14,7 @@ import { JobCardSkeleton } from "components";
 import { BookmarkLimitHandler } from "components";
 import { JobCard } from "features/job-hunter";
 import { useJobHunterContext } from "components";
-import { FramerJobHunterCarousel } from "components/swipeable/GSAPJobHunterCarousel";
+import { FramerJobHunterCarousel } from "components/swipeable/FramerJobHunterCarousel";
 
 interface selectedProps {
   setSelectedTab: (tab: string) => void;
@@ -212,6 +212,7 @@ const PerfectMatch: FC<selectedProps> = ({ setSelectedTab }) => {
         loading={loading}
         title="PERFECT MATCH"
         showTitle={false} // Title is handled by parent component
+        onNavigateToOtherTab={() => setSelectedTab("otherApplications")}
       />
     );
   }
@@ -434,6 +435,7 @@ const OtherApplications: FC<selectedProps> = ({ setSelectedTab }) => {
         loading={loading}
         title="OTHER OPPORTUNITIES"
         showTitle={false} // Title is handled by parent component
+        onNavigateToOtherTab={() => setSelectedTab("perfectMatch")}
       />
     );
   }
@@ -575,7 +577,7 @@ const JobHunterFeed: FC = () => {
         loadingTimeoutRef.current = setTimeout(() => {
           setForcedOtherCardsLoading(false);
           setHasViewedOtherCards(true);
-        }, 1500); 
+        }, 1500);
       }
 
       // Update context for data loading
@@ -625,14 +627,17 @@ const JobHunterFeed: FC = () => {
                       className="sr-only"
                       disabled={
                         isLoadingMatches ||
-                        (selectedTab === "otherApplications" && forcedOtherCardsLoading)
+                        (selectedTab === "otherApplications" &&
+                          forcedOtherCardsLoading)
                       }
                     />
-                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
-                      selectedTab === "perfectMatch" 
-                        ? "border-[#F5722E] bg-transparent" 
-                        : "border-gray-400 bg-transparent"
-                    }`}>
+                    <div
+                      className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
+                        selectedTab === "perfectMatch"
+                          ? "border-[#F5722E] bg-transparent"
+                          : "border-gray-400 bg-transparent"
+                      }`}
+                    >
                       {selectedTab === "perfectMatch" && (
                         <div className="w-2.5 h-2.5 rounded-full bg-[#F5722E]"></div>
                       )}
@@ -648,9 +653,13 @@ const JobHunterFeed: FC = () => {
                           : "filter grayscale opacity-60"
                       }`}
                     />
-                    <span className={`text-[16px] font-semibold transition-colors duration-200 ${
-                      selectedTab === "perfectMatch" ? "text-[#F5722E]" : "text-gray-400"
-                    }`}>
+                    <span
+                      className={`text-[16px] font-semibold transition-colors duration-200 ${
+                        selectedTab === "perfectMatch"
+                          ? "text-[#F5722E]"
+                          : "text-gray-400"
+                      }`}
+                    >
                       PERFECT MATCH
                     </span>
                   </div>
@@ -667,22 +676,29 @@ const JobHunterFeed: FC = () => {
                       className="sr-only"
                       disabled={
                         isLoadingMatches ||
-                        (selectedTab === "otherApplications" && forcedOtherCardsLoading)
+                        (selectedTab === "otherApplications" &&
+                          forcedOtherCardsLoading)
                       }
                     />
-                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
-                      selectedTab === "otherApplications" 
-                        ? "border-[#F5722E] bg-transparent" 
-                        : "border-gray-400 bg-transparent"
-                    }`}>
+                    <div
+                      className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
+                        selectedTab === "otherApplications"
+                          ? "border-[#F5722E] bg-transparent"
+                          : "border-gray-400 bg-transparent"
+                      }`}
+                    >
                       {selectedTab === "otherApplications" && (
                         <div className="w-2.5 h-2.5 rounded-full bg-[#F5722E]"></div>
                       )}
                     </div>
                   </div>
-                  <span className={`text-[16px] font-semibold transition-colors duration-200 ${
-                    selectedTab === "otherApplications" ? "text-[#F5722E]" : "text-gray-400"
-                  }`}>
+                  <span
+                    className={`text-[16px] font-semibold transition-colors duration-200 ${
+                      selectedTab === "otherApplications"
+                        ? "text-[#F5722E]"
+                        : "text-gray-400"
+                    }`}
+                  >
                     OTHER OPPORTUNITIES
                   </span>
                 </label>
@@ -699,14 +715,17 @@ const JobHunterFeed: FC = () => {
                   onClick={() => handleTabChange("perfectMatch")}
                   disabled={
                     isLoadingMatches ||
-                    (selectedTab === "otherApplications" && forcedOtherCardsLoading)
+                    (selectedTab === "otherApplications" &&
+                      forcedOtherCardsLoading)
                   }
                 >
                   <div
                     className="absolute bottom-0 left-0 w-full h-0.5 bg-[#F5722E] transform origin-left transition-transform duration-200 ease-out"
                     style={{
                       transform:
-                        selectedTab === "perfectMatch" ? "scaleX(1)" : "scaleX(0)",
+                        selectedTab === "perfectMatch"
+                          ? "scaleX(1)"
+                          : "scaleX(0)",
                     }}
                   />
                   <img
@@ -730,7 +749,8 @@ const JobHunterFeed: FC = () => {
                   onClick={() => handleTabChange("otherApplications")}
                   disabled={
                     isLoadingMatches ||
-                    (selectedTab === "otherApplications" && forcedOtherCardsLoading)
+                    (selectedTab === "otherApplications" &&
+                      forcedOtherCardsLoading)
                   }
                 >
                   <div
@@ -760,8 +780,17 @@ const JobHunterFeed: FC = () => {
                   onLoadMore={() => {}}
                   hasMore={false}
                   loading={true}
-                  title={selectedTab === "perfectMatch" ? "PERFECT MATCH" : "OTHER OPPORTUNITIES"}
+                  title={
+                    selectedTab === "perfectMatch"
+                      ? "PERFECT MATCH"
+                      : "OTHER OPPORTUNITIES"
+                  }
                   showTitle={false}
+                  onNavigateToOtherTab={
+                    selectedTab === "perfectMatch"
+                      ? () => handleTabChange("otherApplications")
+                      : () => handleTabChange("perfectMatch")
+                  }
                 />
               ) : (
                 // Desktop skeleton - show grid skeleton
