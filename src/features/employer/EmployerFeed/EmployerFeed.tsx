@@ -13,6 +13,7 @@ import { usePerfectMatchContext } from "contexts/PerfectMatch/PerfectMatchContex
 import { Match } from "contexts/PerfectMatch/types";
 import { AdDialogWrapper } from "components";
 import { useEmployerContext } from "components";
+import { GSAPMobileCarousel } from "components/swipeable/GSAPMobileCarousel";
 
 interface selectedProps {
   setSelectedTab: (tab: string) => void;
@@ -46,16 +47,23 @@ const PerfectMatch: FC<selectedProps> = ({
   const [displayedItems, setDisplayedItems] = useState<CardItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(false);
-  const loaderRef = useRef<HTMLDivElement>(null);
+  const [isMobileView, setIsMobileView] = useState(false);
 
-  // We no longer need this flag with our improved loading logic
-  // const [initialDataLoaded, setInitialDataLoaded] = useState(false);
+  // Hook to detect mobile screen size
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobileView(window.innerWidth < 768);
+    };
+
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
 
   const loadMore = async () => {
     if (loading || !hasMore) return;
 
     setLoading(true);
-
     await new Promise((resolve) => setTimeout(resolve, 300));
 
     const currentItemCount =
@@ -156,45 +164,7 @@ const PerfectMatch: FC<selectedProps> = ({
     }
     setHasMore(perfectMatches.length > 6);
     setLoading(false);
-
-    // No need to mark initial data loaded with our improved loading system
   }, [subscriptionPlan, perfectMatches, employerAds, isLoadingMatches]);
-
-  // Calculate loading cards
-  const remainingItems =
-    subscriptionPlan === "freeTrial"
-      ? perfectMatches.length -
-        displayedItems.filter((item) => !("isAd" in item)).length
-      : perfectMatches.length - displayedItems.length;
-
-  const showLoadingCards = loading && remainingItems > 0;
-  const loadingCardsCount = Math.min(2, remainingItems);
-
-  // Intersection observer for infinite scroll
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const target = entries[0];
-        if (target.isIntersecting && !loading && hasMore) {
-          loadMore();
-        }
-      },
-      {
-        threshold: 0.1,
-        rootMargin: "20px",
-      },
-    );
-
-    if (loaderRef.current) {
-      observer.observe(loaderRef.current);
-    }
-
-    return () => {
-      if (loaderRef.current) {
-        observer.unobserve(loaderRef.current);
-      }
-    };
-  }, [loading, hasMore]);
 
   const handleClick = () => {
     setSelectedTab("otherApplications");
@@ -222,6 +192,22 @@ const PerfectMatch: FC<selectedProps> = ({
     );
   }
 
+  // Mobile carousel view
+  if (isMobileView) {
+    return (
+      <GSAPMobileCarousel
+        items={displayedItems}
+        subscriptionPlan={subscriptionPlan}
+        onLoadMore={loadMore}
+        hasMore={hasMore}
+        loading={loading}
+        title="PERFECT MATCH"
+        showTitle={false} // Title is handled by parent component
+      />
+    );
+  }
+
+  // Desktop grid view (original)
   return (
     <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 xl:gap-5 justify-items-center w-full md:min-w-[436px] xl:w-[900px] mx-auto px-0">
       {displayedItems.map((item, index) =>
@@ -241,10 +227,10 @@ const PerfectMatch: FC<selectedProps> = ({
         ),
       )}
 
-      {showLoadingCards && (
+      {loading && (
         <>
           <AppCardSkeleton />
-          {loadingCardsCount > 1 && <AppCardSkeleton />}
+          <AppCardSkeleton />
         </>
       )}
 
@@ -267,8 +253,6 @@ const PerfectMatch: FC<selectedProps> = ({
           </div>
         </div>
       )}
-
-      <div ref={loaderRef} className="h-px w-px" />
     </div>
   );
 };
@@ -293,14 +277,23 @@ const OtherApplications: FC<selectedProps> = ({
   const [displayedItems, setDisplayedItems] = useState<CardItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(false);
-  const loaderRef = useRef<HTMLDivElement>(null);
+  const [isMobileView, setIsMobileView] = useState(false);
 
+  // Hook to detect mobile screen size
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobileView(window.innerWidth < 768);
+    };
+
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
 
   const loadMore = async () => {
     if (loading || !hasMore) return;
 
     setLoading(true);
-
     await new Promise((resolve) => setTimeout(resolve, 300));
 
     const currentItemCount =
@@ -401,44 +394,7 @@ const OtherApplications: FC<selectedProps> = ({
     }
     setHasMore(otherApplications.length > 6);
     setLoading(false);
-
-    // No need to mark initial data loaded with our improved loading system
   }, [subscriptionPlan, otherApplications, employerAds, isLoadingMatches]);
-
-  // Calculate loading cards
-  const remainingItems =
-    subscriptionPlan === "freeTrial"
-      ? otherApplications.length -
-        displayedItems.filter((item) => !("isAd" in item)).length
-      : otherApplications.length - displayedItems.length;
-
-  const showLoadingCards = loading && remainingItems > 0;
-  const loadingCardsCount = Math.min(2, remainingItems);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const target = entries[0];
-        if (target.isIntersecting && !loading && hasMore) {
-          loadMore();
-        }
-      },
-      {
-        threshold: 0.1,
-        rootMargin: "20px",
-      },
-    );
-
-    if (loaderRef.current) {
-      observer.observe(loaderRef.current);
-    }
-
-    return () => {
-      if (loaderRef.current) {
-        observer.unobserve(loaderRef.current);
-      }
-    };
-  }, [loading, hasMore]);
 
   const handleClick = () => {
     setSelectedTab("perfectMatch");
@@ -456,6 +412,22 @@ const OtherApplications: FC<selectedProps> = ({
     return <OtherApplicationEmptyState />;
   }
 
+  // Mobile carousel view
+  if (isMobileView) {
+    return (
+      <GSAPMobileCarousel
+        items={displayedItems}
+        subscriptionPlan={subscriptionPlan}
+        onLoadMore={loadMore}
+        hasMore={hasMore}
+        loading={loading}
+        title="OTHER APPLICATION CARDS"
+        showTitle={false} // Title is handled by parent component
+      />
+    );
+  }
+
+  // Desktop grid view (original)
   return (
     <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 xl:gap-5 justify-items-center w-full md:min-w-[436px] xl:w-[900px] mx-auto px-0">
       {displayedItems.map((item, index) =>
@@ -474,11 +446,11 @@ const OtherApplications: FC<selectedProps> = ({
           />
         ),
       )}
-      {/* Dynamic Loading Cards */}
-      {showLoadingCards && (
+
+      {loading && (
         <>
           <AppCardSkeleton />
-          {loadingCardsCount > 1 && <AppCardSkeleton />}
+          <AppCardSkeleton />
         </>
       )}
 
@@ -493,7 +465,7 @@ const OtherApplications: FC<selectedProps> = ({
             </span>
             <Button
               variant="link"
-              className="text-[20px] text-[#F5722E]  font-semibold pl-2 underline pt-0"
+              className="text-[20px] text-[#F5722E] font-semibold pl-2 underline pt-0"
               onClick={handleClick}
             >
               perfect matches
@@ -501,8 +473,6 @@ const OtherApplications: FC<selectedProps> = ({
           </div>
         </div>
       )}
-
-      <div ref={loaderRef} className="h-px w-px" />
     </div>
   );
 };
@@ -527,6 +497,19 @@ const EmployerFeed: FC = () => {
   // Reference to loading timeout
   const loadingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Mobile detection
+  const [isMobileView, setIsMobileView] = useState(false);
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobileView(window.innerWidth < 768);
+    };
+
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
+
   // Set initial scoreFilter on component mount
   useEffect(() => {
     updateMatchState({ scoreFilter: "above60" });
@@ -545,15 +528,17 @@ const EmployerFeed: FC = () => {
   const handleTabChange = (tab: string) => {
     // Only proceed if we're actually changing tabs
     if (selectedTab !== tab) {
-      // Scroll to top if needed
-      const scrollViewport = document.querySelector(
-        "[data-radix-scroll-area-viewport]",
-      );
-      if (scrollViewport) {
-        scrollViewport.scrollTo({
-          top: 0,
-          behavior: "smooth",
-        });
+      // Scroll to top if needed (only for desktop)
+      if (!isMobileView) {
+        const scrollViewport = document.querySelector(
+          "[data-radix-scroll-area-viewport]",
+        );
+        if (scrollViewport) {
+          scrollViewport.scrollTo({
+            top: 0,
+            behavior: "smooth",
+          });
+        }
       }
 
       // Set the selected tab first
@@ -607,68 +592,163 @@ const EmployerFeed: FC = () => {
       limitPopupDescription="Upgrade to bookmark more matches!"
     >
       <div>
-        <div className="flex flex-col items-center my-8 pt-8 w-full">
-          {/* Tab Buttons */}
+        <div className="flex flex-col items-center my-8 pt-0 md:pt-8 w-full">
+          {/* Tab Section - Desktop Buttons / Mobile Radio Buttons */}
           <div className="flex justify-center mb-8 md:mb-12">
-            <button
-              className={`font-semibold mr-6 pb-2 text-[17px] inline-flex items-center gap-2 transition-all duration-200 relative group
-              ${selectedTab === "perfectMatch" ? "text-[#F5722E]" : "text-[#AEADAD] hover:text-[#F5722E]"}`}
-              onClick={() => handleTabChange("perfectMatch")}
-              disabled={
-                isLoadingMatches ||
-                (selectedTab === "otherApplications" && forcedOtherCardsLoading)
-              }
-            >
-              <div
-                className="absolute bottom-0 left-0 w-full h-0.5 bg-[#F5722E] transform origin-left transition-transform duration-200 ease-out"
-                style={{
-                  transform:
-                    selectedTab === "perfectMatch" ? "scaleX(1)" : "scaleX(0)",
-                }}
-              />
-              <img
-                src={sparkeIcon}
-                alt="Sparkle Icon"
-                className={`w-5 h-5 transition-all duration-200 ${
-                  selectedTab === "perfectMatch"
-                    ? "filter grayscale-0"
-                    : "filter grayscale group-hover:grayscale-0"
-                }`}
-              />
-              PERFECT MATCH
-            </button>
+            {isMobileView ? (
+              /* Mobile Radio Buttons */
+              <div className="flex flex-col space-y-4">
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <div className="relative">
+                    <input
+                      type="radio"
+                      name="tab-selection"
+                      value="perfectMatch"
+                      checked={selectedTab === "perfectMatch"}
+                      onChange={() => handleTabChange("perfectMatch")}
+                      className="sr-only"
+                      disabled={
+                        isLoadingMatches ||
+                        (selectedTab === "otherApplications" && forcedOtherCardsLoading)
+                      }
+                    />
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
+                      selectedTab === "perfectMatch" 
+                        ? "border-[#F5722E] bg-transparent" 
+                        : "border-gray-400 bg-transparent"
+                    }`}>
+                      {selectedTab === "perfectMatch" && (
+                        <div className="w-2.5 h-2.5 rounded-full bg-[#F5722E]"></div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <img
+                      src={sparkeIcon}
+                      alt="Sparkle Icon"
+                      className={`w-5 h-5 transition-all duration-200 ${
+                        selectedTab === "perfectMatch"
+                          ? "filter grayscale-0"
+                          : "filter grayscale opacity-60"
+                      }`}
+                    />
+                    <span className={`text-[16px] font-semibold transition-colors duration-200 ${
+                      selectedTab === "perfectMatch" ? "text-[#F5722E]" : "text-gray-400"
+                    }`}>
+                      PERFECT MATCH
+                    </span>
+                  </div>
+                </label>
 
-            <button
-              className={`font-semibold pb-2 text-[17px] transition-all duration-200 relative
-              ${selectedTab === "otherApplications" ? "text-[#F5722E]" : "text-[#AEADAD] hover:text-[#F5722E]"}`}
-              onClick={() => handleTabChange("otherApplications")}
-              disabled={
-                isLoadingMatches ||
-                (selectedTab === "otherApplications" && forcedOtherCardsLoading)
-              }
-            >
-              <div
-                className="absolute bottom-0 right-0 w-full h-0.5 bg-[#F5722E] transform origin-right transition-transform duration-200 ease-out"
-                style={{
-                  transform:
-                    selectedTab === "otherApplications"
-                      ? "scaleX(1)"
-                      : "scaleX(0)",
-                }}
-              />
-              OTHER APPLICATION CARDS
-            </button>
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <div className="relative">
+                    <input
+                      type="radio"
+                      name="tab-selection"
+                      value="otherApplications"
+                      checked={selectedTab === "otherApplications"}
+                      onChange={() => handleTabChange("otherApplications")}
+                      className="sr-only"
+                      disabled={
+                        isLoadingMatches ||
+                        (selectedTab === "otherApplications" && forcedOtherCardsLoading)
+                      }
+                    />
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
+                      selectedTab === "otherApplications" 
+                        ? "border-[#F5722E] bg-transparent" 
+                        : "border-gray-400 bg-transparent"
+                    }`}>
+                      {selectedTab === "otherApplications" && (
+                        <div className="w-2.5 h-2.5 rounded-full bg-[#F5722E]"></div>
+                      )}
+                    </div>
+                  </div>
+                  <span className={`text-[16px] font-semibold transition-colors duration-200 ${
+                    selectedTab === "otherApplications" ? "text-[#F5722E]" : "text-gray-400"
+                  }`}>
+                    OTHER OPPORTUNITIES
+                  </span>
+                </label>
+              </div>
+            ) : (
+              /* Desktop Tab Buttons */
+              <>
+                <button
+                  className={`font-semibold mr-6 pb-2 text-[17px] inline-flex items-center gap-2 transition-all duration-200 relative group
+                  ${selectedTab === "perfectMatch" ? "text-[#F5722E]" : "text-[#AEADAD] hover:text-[#F5722E]"}`}
+                  onClick={() => handleTabChange("perfectMatch")}
+                  disabled={
+                    isLoadingMatches ||
+                    (selectedTab === "otherApplications" && forcedOtherCardsLoading)
+                  }
+                >
+                  <div
+                    className="absolute bottom-0 left-0 w-full h-0.5 bg-[#F5722E] transform origin-left transition-transform duration-200 ease-out"
+                    style={{
+                      transform:
+                        selectedTab === "perfectMatch" ? "scaleX(1)" : "scaleX(0)",
+                    }}
+                  />
+                  <img
+                    src={sparkeIcon}
+                    alt="Sparkle Icon"
+                    className={`w-5 h-5 transition-all duration-200 ${
+                      selectedTab === "perfectMatch"
+                        ? "filter grayscale-0"
+                        : "filter grayscale group-hover:grayscale-0"
+                    }`}
+                  />
+                  PERFECT MATCH
+                </button>
+
+                <button
+                  className={`font-semibold pb-2 text-[17px] transition-all duration-200 relative
+                  ${selectedTab === "otherApplications" ? "text-[#F5722E]" : "text-[#AEADAD] hover:text-[#F5722E]"}`}
+                  onClick={() => handleTabChange("otherApplications")}
+                  disabled={
+                    isLoadingMatches ||
+                    (selectedTab === "otherApplications" && forcedOtherCardsLoading)
+                  }
+                >
+                  <div
+                    className="absolute bottom-0 right-0 w-full h-0.5 bg-[#F5722E] transform origin-right transition-transform duration-200 ease-out"
+                    style={{
+                      transform:
+                        selectedTab === "otherApplications"
+                          ? "scaleX(1)"
+                          : "scaleX(0)",
+                    }}
+                  />
+                  OTHER APPLICATION CARDS
+                </button>
+              </>
+            )}
           </div>
 
           {/* Content Section */}
           <div className="w-full">
             {showSkeleton ? (
               // Show skeleton state during loading
-              <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 xl:gap-5 justify-items-center w-full md:min-w-[436px] xl:w-[900px] mx-auto px-0">
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <AppCardSkeleton key={i} />
-                ))}
-              </div>
+              isMobileView ? (
+                // Mobile skeleton - show carousel skeleton
+                <GSAPMobileCarousel
+                  items={[]}
+                  subscriptionPlan={subscriptionPlan}
+                  onLoadMore={() => {}}
+                  hasMore={false}
+                  loading={true}
+                  title={selectedTab === "perfectMatch" ? "PERFECT MATCH" : "OTHER APPLICATION CARDS"}
+                  showTitle={false}
+                />
+              ) : (
+                // Desktop skeleton - show grid skeleton
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 xl:gap-5 justify-items-center w-full md:min-w-[436px] xl:w-[900px] mx-auto px-0">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <AppCardSkeleton key={i} />
+                  ))}
+                </div>
+              )
             ) : hasNoData ? (
               // Show empty state if we have no data
               <div className="w-full">
@@ -702,4 +782,5 @@ const EmployerFeed: FC = () => {
     </BookmarkLimitHandler>
   );
 };
+
 export { EmployerFeed };
