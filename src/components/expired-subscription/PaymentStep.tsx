@@ -259,6 +259,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
                 <span className="text-[32px] font-bold text-[#F5722E]">
                   {planType === "yearly" ? yearlyPrice : monthlyPrice}
                 </span>
+                
                 <span className="text-lg font-semibold text-[#F5722E]">
                   /{planType === "yearly" ? "year" : "month"}
                 </span>
