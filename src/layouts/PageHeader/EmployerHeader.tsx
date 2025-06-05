@@ -28,7 +28,7 @@ const EmployerHeader: FC = () => {
       } ${hideOnDesktop ? "md:hidden" : ""}`}
     >
       <div className="flex flex-col items-center md:flex-row md:justify-between md:items-start">
-        <div className="flex flex-col space-y-2 md:space-y-4 px-4 md:px-0">
+        <div className="flex flex-col space-y-2 md:space-y-4 px-8 md:px-0">
           <div className="flex items-start">
             <div className="flex-1">
               <h1 
