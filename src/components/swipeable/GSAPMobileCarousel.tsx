@@ -118,6 +118,11 @@ const GSAPMobileCarousel: FC<GSAPMobileCarouselProps> = ({
     });
   }, [maxIndex, getCenterPosition, items.length, hasMore, loading, onLoadMore, currentIndex, isAnimating]);
 
+  // Track touch events to differentiate between taps and drags
+  const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(null);
+  const dragThreshold = 10; // pixels
+  const timeThreshold = 200; // milliseconds
+
   // Initialize carousel
   useEffect(() => {
     if (!carouselRef.current || !containerRef.current || totalItems === 0) return;
@@ -154,6 +159,7 @@ const GSAPMobileCarousel: FC<GSAPMobileCarouselProps> = ({
       inertia: true,
       edgeResistance: 0.8, // Smoother edge resistance
       allowNativeTouchScrolling: false,
+      minimumMovement: 5, // Require minimum movement to start drag
       bounds: {
         minX: lastCardPosition - boundsPadding,
         maxX: firstCardPosition + boundsPadding
@@ -175,6 +181,14 @@ const GSAPMobileCarousel: FC<GSAPMobileCarouselProps> = ({
           
           return getCenterPosition(closestIndex);
         }
+      },
+      onPress: function(e) {
+        // Track initial touch/mouse position
+        touchStartRef.current = {
+          x: e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 0),
+          y: e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 0),
+          time: Date.now()
+        };
       },
       onDragStart: function() {
         setIsDragging(true);
@@ -311,6 +325,37 @@ const GSAPMobileCarousel: FC<GSAPMobileCarouselProps> = ({
     };
   }
 
+  // Handle mobile touch events for card content
+  const handleTouchStart = useCallback((e: React.TouchEvent, index: number) => {
+    if (index !== currentIndex) return;
+    
+    const touch = e.touches[0];
+    touchStartRef.current = {
+      x: touch.clientX,
+      y: touch.clientY,
+      time: Date.now()
+    };
+  }, [currentIndex]);
+
+  const handleTouchEnd = useCallback((e: React.TouchEvent, index: number) => {
+    if (index !== currentIndex || !touchStartRef.current || isDragging) return;
+    
+    const touch = e.changedTouches[0];
+    const deltaX = Math.abs(touch.clientX - touchStartRef.current.x);
+    const deltaY = Math.abs(touch.clientY - touchStartRef.current.y);
+    const deltaTime = Date.now() - touchStartRef.current.time;
+    
+    // Check if this was a tap (small movement, short time)
+    if (deltaX < dragThreshold && deltaY < dragThreshold && deltaTime < timeThreshold) {
+      // This was a tap, allow the event to propagate to buttons
+      return;
+    }
+    
+    // This was likely a drag, prevent the event
+    e.preventDefault();
+    e.stopPropagation();
+  }, [currentIndex, isDragging, dragThreshold, timeThreshold]);
+
   if (items.length === 0 && !loading) {
     return null;
   }
@@ -427,6 +472,8 @@ const GSAPMobileCarousel: FC<GSAPMobileCarouselProps> = ({
                     width: '100%',
                     height: '100%'
                   }}
+                  onTouchStart={(e) => handleTouchStart(e, index)}
+                  onTouchEnd={(e) => handleTouchEnd(e, index)}
                 >
                   {"isAd" in item ? (
                     <AdDialogWrapper
