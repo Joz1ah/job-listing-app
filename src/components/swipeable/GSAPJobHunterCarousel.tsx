@@ -1,10 +1,10 @@
 import { FC, useState, useEffect, useRef, useCallback } from "react";
 import { motion, useMotionValue, animate, PanInfo } from "framer-motion";
 import sparkeIcon from "images/sparkle-icon.png";
-import { AppCardSkeleton } from "components";
-import { AppCard } from "features/employer";
-import employerPopAds from "images/employer-dashboard-popup-ads.svg?url";
-import { Match } from "contexts/PerfectMatch/types";
+import { JobCardSkeleton } from "components";
+import { JobCard } from "features/job-hunter";
+import jobHunterPopAds from "images/jobhunter-dashboard-popup-ads.svg?url";
+import { MatchJH as Match } from "contexts/PerfectMatch/types";
 import { AdDialogWrapper } from "components";
 
 interface AdItem {
@@ -14,7 +14,7 @@ interface AdItem {
 
 type CardItem = Match | AdItem;
 
-interface FramerMobileCarouselProps {
+interface FramerJobHunterCarouselProps {
   items: CardItem[];
   subscriptionPlan: string;
   onLoadMore: () => void;
@@ -24,7 +24,7 @@ interface FramerMobileCarouselProps {
   showTitle?: boolean;
 }
 
-const FramerMobileCarousel: FC<FramerMobileCarouselProps> = ({
+const FramerJobHunterCarousel: FC<FramerJobHunterCarouselProps> = ({
   items,
   onLoadMore,
   hasMore,
@@ -83,7 +83,7 @@ const FramerMobileCarousel: FC<FramerMobileCarouselProps> = ({
     
     animate(x, targetX, {
       duration,
-      ease: [0.25, 0.1, 0.25, 1], // Custom easing similar to "power1.out"
+      ease: [0.25, 0.1, 0.25, 1],
       onComplete: () => {
         setIsAnimating(false);
         // Load more when near the end
@@ -93,6 +93,17 @@ const FramerMobileCarousel: FC<FramerMobileCarouselProps> = ({
       }
     });
   }, [maxIndex, getCenterPosition, items.length, hasMore, loading, onLoadMore, currentIndex, isAnimating, x]);
+
+  // Handle card click to focus
+  const handleCardClick = useCallback((index: number, e: React.MouseEvent) => {
+    if (isDragging || isAnimating) {
+      e.preventDefault();
+      return;
+    }
+    
+    if (index === currentIndex) return;
+    moveToIndex(index, 0.2);
+  }, [isDragging, isAnimating, currentIndex, moveToIndex]);
 
   // Find closest index based on position
   const findClosestIndex = useCallback((xPos: number) => {
@@ -118,10 +129,10 @@ const FramerMobileCarousel: FC<FramerMobileCarouselProps> = ({
     
     // Apply momentum based on velocity
     const velocity = Math.abs(info.velocity.x);
-    const momentumThreshold = 300; // Adjust threshold for responsiveness
+    const momentumThreshold = 300;
     
     if (velocity > momentumThreshold) {
-      const direction = info.velocity.x > 0 ? -1 : 1; // Opposite direction for momentum
+      const direction = info.velocity.x > 0 ? -1 : 1;
       const momentumIndex = Math.max(0, Math.min(maxIndex, finalIndex + direction));
       finalIndex = momentumIndex;
     }
@@ -307,26 +318,36 @@ const FramerMobileCarousel: FC<FramerMobileCarouselProps> = ({
             return (
               <motion.div 
                 key={index} 
-                className="flex-shrink-0"
+                className={`flex-shrink-0 transition-all duration-150 ease-out ${
+                  !isActive ? 'hover:opacity-90 cursor-pointer' : 'cursor-default'
+                }`}
                 animate={{
                   scale,
                   opacity,
                   y: translateY
                 }}
                 transition={{
-                  duration: 0.1,
+                  duration: 0.15,
                   ease: "easeOut"
                 }}
                 style={{ 
                   width: `${cardWidth}px`,
                   zIndex,
                   transformOrigin: 'top center',
+                  // Enable clicking on non-active cards to focus them
+                  pointerEvents: isActive ? 'none' : 'auto',
                   display: 'flex',
                   alignItems: 'flex-start'
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleCardClick(index, e);
                 }}
               >
                 <div 
                   style={{ 
+                    // Enable pointer events on active card content, disable on inactive cards
+                    pointerEvents: isActive ? 'auto' : 'none',
                     position: 'relative',
                     filter: isActive ? 'none' : 'brightness(0.8)',
                     transition: 'filter 0.2s ease',
@@ -337,14 +358,13 @@ const FramerMobileCarousel: FC<FramerMobileCarouselProps> = ({
                   {"isAd" in item ? (
                     <AdDialogWrapper
                       adImage={item.image}
-                      popupImage={employerPopAds}
+                      popupImage={jobHunterPopAds}
                     />
                   ) : (
-                    <AppCard
-                      jobId={123}
+                    <JobCard
+                      jobId={item.jobId}
                       match={item}
-                      popupImage={employerPopAds}
-                      isMobile={true}
+                      popupImage={jobHunterPopAds}
                     />
                   )}
                 </div>
@@ -406,6 +426,7 @@ const FramerMobileCarousel: FC<FramerMobileCarouselProps> = ({
                       width: `${cardWidth}px`,
                       zIndex,
                       transformOrigin: 'top center',
+                      pointerEvents: 'none',
                       display: 'flex',
                       alignItems: 'flex-start'
                     }}
@@ -418,7 +439,7 @@ const FramerMobileCarousel: FC<FramerMobileCarouselProps> = ({
                       height: '100%',
                       pointerEvents: 'none'
                     }}>
-                      <AppCardSkeleton />
+                      <JobCardSkeleton />
                     </div>
                   </motion.div>
                 );
@@ -440,4 +461,4 @@ const FramerMobileCarousel: FC<FramerMobileCarouselProps> = ({
   );
 };
 
-export { FramerMobileCarousel };
+export { FramerJobHunterCarousel };

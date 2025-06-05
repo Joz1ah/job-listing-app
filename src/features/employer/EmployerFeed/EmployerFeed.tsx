@@ -13,7 +13,7 @@ import { usePerfectMatchContext } from "contexts/PerfectMatch/PerfectMatchContex
 import { Match } from "contexts/PerfectMatch/types";
 import { AdDialogWrapper } from "components";
 import { useEmployerContext } from "components";
-import { GSAPMobileCarousel } from "components/swipeable/GSAPMobileCarousel";
+import { FramerMobileCarousel } from "components/swipeable/GSAPMobileCarousel";
 
 interface selectedProps {
   setSelectedTab: (tab: string) => void;
@@ -195,7 +195,7 @@ const PerfectMatch: FC<selectedProps> = ({
   // Mobile carousel view
   if (isMobileView) {
     return (
-      <GSAPMobileCarousel
+      <FramerMobileCarousel
         items={displayedItems}
         subscriptionPlan={subscriptionPlan}
         onLoadMore={loadMore}
@@ -415,7 +415,7 @@ const OtherApplications: FC<selectedProps> = ({
   // Mobile carousel view
   if (isMobileView) {
     return (
-      <GSAPMobileCarousel
+      <FramerMobileCarousel
         items={displayedItems}
         subscriptionPlan={subscriptionPlan}
         onLoadMore={loadMore}
@@ -732,7 +732,7 @@ const EmployerFeed: FC = () => {
               // Show skeleton state during loading
               isMobileView ? (
                 // Mobile skeleton - show carousel skeleton
-                <GSAPMobileCarousel
+                <FramerMobileCarousel
                   items={[]}
                   subscriptionPlan={subscriptionPlan}
                   onLoadMore={() => {}}

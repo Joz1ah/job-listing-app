@@ -170,15 +170,15 @@ const AppPreviewModal: FC<AppPreviewModalProps> = ({
                 </div>
 
                 {/* Languages */}
-                <div className="flex items-center gap-2">
+                <div className="flex flex-col gap-2">
                   <h4 className="text-sm md:text-[17px] font-normal text-[#263238]">
                     Languages:
                   </h4>
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     {app.language.map((lang) => (
                       <span
                         key={lang}
-                        className="text-[#F5722E] text-sm md:text-[17px]  border border-[#F5722E] px-2 rounded-sm"
+                        className="text-[#F5722E] text-sm md:text-[17px] border border-[#F5722E] px-2 rounded-sm"
                       >
                         {lang}
                       </span>
