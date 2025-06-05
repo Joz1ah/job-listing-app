@@ -118,11 +118,6 @@ const GSAPMobileCarousel: FC<GSAPMobileCarouselProps> = ({
     });
   }, [maxIndex, getCenterPosition, items.length, hasMore, loading, onLoadMore, currentIndex, isAnimating]);
 
-  // Track touch events to differentiate between taps and drags
-  const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(null);
-  const dragThreshold = 10; // pixels
-  const timeThreshold = 200; // milliseconds
-
   // Initialize carousel
   useEffect(() => {
     if (!carouselRef.current || !containerRef.current || totalItems === 0) return;
@@ -159,7 +154,6 @@ const GSAPMobileCarousel: FC<GSAPMobileCarouselProps> = ({
       inertia: true,
       edgeResistance: 0.8, // Smoother edge resistance
       allowNativeTouchScrolling: false,
-      minimumMovement: 5, // Require minimum movement to start drag
       bounds: {
         minX: lastCardPosition - boundsPadding,
         maxX: firstCardPosition + boundsPadding
@@ -181,14 +175,6 @@ const GSAPMobileCarousel: FC<GSAPMobileCarouselProps> = ({
           
           return getCenterPosition(closestIndex);
         }
-      },
-      onPress: function(e) {
-        // Track initial touch/mouse position
-        touchStartRef.current = {
-          x: e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 0),
-          y: e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 0),
-          time: Date.now()
-        };
       },
       onDragStart: function() {
         setIsDragging(true);
@@ -325,37 +311,6 @@ const GSAPMobileCarousel: FC<GSAPMobileCarouselProps> = ({
     };
   }
 
-  // Handle mobile touch events for card content
-  const handleTouchStart = useCallback((e: React.TouchEvent, index: number) => {
-    if (index !== currentIndex) return;
-    
-    const touch = e.touches[0];
-    touchStartRef.current = {
-      x: touch.clientX,
-      y: touch.clientY,
-      time: Date.now()
-    };
-  }, [currentIndex]);
-
-  const handleTouchEnd = useCallback((e: React.TouchEvent, index: number) => {
-    if (index !== currentIndex || !touchStartRef.current || isDragging) return;
-    
-    const touch = e.changedTouches[0];
-    const deltaX = Math.abs(touch.clientX - touchStartRef.current.x);
-    const deltaY = Math.abs(touch.clientY - touchStartRef.current.y);
-    const deltaTime = Date.now() - touchStartRef.current.time;
-    
-    // Check if this was a tap (small movement, short time)
-    if (deltaX < dragThreshold && deltaY < dragThreshold && deltaTime < timeThreshold) {
-      // This was a tap, allow the event to propagate to buttons
-      return;
-    }
-    
-    // This was likely a drag, prevent the event
-    e.preventDefault();
-    e.stopPropagation();
-  }, [currentIndex, isDragging, dragThreshold, timeThreshold]);
-
   if (items.length === 0 && !loading) {
     return null;
   }
@@ -447,6 +402,22 @@ const GSAPMobileCarousel: FC<GSAPMobileCarouselProps> = ({
               zIndex = 5;
             }
 
+            // Handle card click to center it (only if not already active)
+            const handleCardClick = (e: React.MouseEvent) => {
+              // Only prevent centering if clicking on interactive elements
+              const target = e.target as HTMLElement;
+              const isInteractiveElement = target.closest('button') || 
+                                          target.closest('[role="button"]') || 
+                                          target.closest('a') ||
+                                          target.closest('.cursor-pointer');
+              
+              if (!isInteractiveElement && !isActive && !isDragging) {
+                e.preventDefault();
+                e.stopPropagation();
+                moveToIndex(index);
+              }
+            };
+
             return (
               <div 
                 key={index} 
@@ -457,23 +428,22 @@ const GSAPMobileCarousel: FC<GSAPMobileCarouselProps> = ({
                   opacity,
                   zIndex,
                   transformOrigin: 'top center', // Scale from top to maintain top alignment
-                  // REMOVED: pointerEvents: 'none' - this was blocking clicks
                   display: 'flex',
-                  alignItems: 'flex-start' // Align to top
+                  alignItems: 'flex-start', // Align to top
+                  cursor: isActive ? 'default' : 'pointer'
                 }}
+                onClick={handleCardClick}
               >
                 <div 
                   style={{ 
-                    // CHANGED: Only disable pointer events on non-active cards to prevent accidental clicks
-                    pointerEvents: isActive ? 'auto' : 'none',
+                    // FIXED: Always allow pointer events for interactive elements
+                    pointerEvents: 'auto',
                     position: 'relative',
                     filter: isActive ? 'none' : 'brightness(0.8)',
                     transition: 'filter 0.2s ease', // Faster filter transition
                     width: '100%',
                     height: '100%'
                   }}
-                  onTouchStart={(e) => handleTouchStart(e, index)}
-                  onTouchEnd={(e) => handleTouchEnd(e, index)}
                 >
                   {"isAd" in item ? (
                     <AdDialogWrapper
@@ -540,7 +510,6 @@ const GSAPMobileCarousel: FC<GSAPMobileCarouselProps> = ({
                       opacity,
                       zIndex,
                       transformOrigin: 'top center', // Scale from top
-                      // REMOVED: pointerEvents: 'none'
                       display: 'flex',
                       alignItems: 'flex-start'
                     }}
@@ -604,7 +573,6 @@ const GSAPMobileCarousel: FC<GSAPMobileCarouselProps> = ({
                       opacity,
                       zIndex,
                       transformOrigin: 'top center',
-                      // REMOVED: pointerEvents: 'none'
                       display: 'flex',
                       alignItems: 'flex-start'
                     }}
