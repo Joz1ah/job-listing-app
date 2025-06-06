@@ -48,6 +48,7 @@ const PerfectMatch: FC<selectedProps> = ({
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(false);
   const [isMobileView, setIsMobileView] = useState(false);
+  const loaderRef = useRef<HTMLDivElement>(null);
 
   // Hook to detect mobile screen size
   useEffect(() => {
@@ -166,6 +167,42 @@ const PerfectMatch: FC<selectedProps> = ({
     setLoading(false);
   }, [subscriptionPlan, perfectMatches, employerAds, isLoadingMatches]);
 
+  // Calculate loading cards
+  const remainingItems =
+    subscriptionPlan === "freeTrial"
+      ? perfectMatches.length -
+        displayedItems.filter((item) => !("isAd" in item)).length
+      : perfectMatches.length - displayedItems.length;
+
+  const showLoadingCards = loading && remainingItems > 0;
+  const loadingCardsCount = Math.min(2, remainingItems);
+
+  // Intersection observer for infinite scroll
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const target = entries[0];
+        if (target.isIntersecting && !loading && hasMore) {
+          loadMore();
+        }
+      },
+      {
+        threshold: 0.1,
+        rootMargin: "20px",
+      },
+    );
+
+    if (loaderRef.current) {
+      observer.observe(loaderRef.current);
+    }
+
+    return () => {
+      if (loaderRef.current) {
+        observer.unobserve(loaderRef.current);
+      }
+    };
+  }, [loading, hasMore]);
+
   const handleClick = () => {
     setSelectedTab("otherApplications");
     window.scrollTo({
@@ -203,7 +240,7 @@ const PerfectMatch: FC<selectedProps> = ({
         loading={loading}
         title="PERFECT MATCH"
         showTitle={false} // Title is handled by parent component
-        onNavigateToOtherTab={() => setSelectedTab("otherApplications")} // Add this line
+        onNavigateToOtherTab={() => setSelectedTab("otherApplications")}
       />
     );
   }
@@ -228,10 +265,10 @@ const PerfectMatch: FC<selectedProps> = ({
         ),
       )}
 
-      {loading && (
+      {showLoadingCards && (
         <>
           <AppCardSkeleton />
-          <AppCardSkeleton />
+          {loadingCardsCount > 1 && <AppCardSkeleton />}
         </>
       )}
 
@@ -254,6 +291,8 @@ const PerfectMatch: FC<selectedProps> = ({
           </div>
         </div>
       )}
+
+      <div ref={loaderRef} className="h-px w-px" />
     </div>
   );
 };
@@ -279,6 +318,7 @@ const OtherApplications: FC<selectedProps> = ({
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(false);
   const [isMobileView, setIsMobileView] = useState(false);
+  const loaderRef = useRef<HTMLDivElement>(null);
 
   // Hook to detect mobile screen size
   useEffect(() => {
@@ -397,6 +437,42 @@ const OtherApplications: FC<selectedProps> = ({
     setLoading(false);
   }, [subscriptionPlan, otherApplications, employerAds, isLoadingMatches]);
 
+  // Calculate loading cards
+  const remainingItems =
+    subscriptionPlan === "freeTrial"
+      ? otherApplications.length -
+        displayedItems.filter((item) => !("isAd" in item)).length
+      : otherApplications.length - displayedItems.length;
+
+  const showLoadingCards = loading && remainingItems > 0;
+  const loadingCardsCount = Math.min(2, remainingItems);
+
+  // Intersection observer for infinite scroll
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const target = entries[0];
+        if (target.isIntersecting && !loading && hasMore) {
+          loadMore();
+        }
+      },
+      {
+        threshold: 0.1,
+        rootMargin: "20px",
+      },
+    );
+
+    if (loaderRef.current) {
+      observer.observe(loaderRef.current);
+    }
+
+    return () => {
+      if (loaderRef.current) {
+        observer.unobserve(loaderRef.current);
+      }
+    };
+  }, [loading, hasMore]);
+
   const handleClick = () => {
     setSelectedTab("perfectMatch");
     window.scrollTo({
@@ -424,7 +500,7 @@ const OtherApplications: FC<selectedProps> = ({
         loading={loading}
         title="OTHER APPLICATION CARDS"
         showTitle={false} // Title is handled by parent component
-        onNavigateToOtherTab={() => setSelectedTab("perfectMatch")} // Add this line
+        onNavigateToOtherTab={() => setSelectedTab("perfectMatch")}
       />
     );
   }
@@ -449,10 +525,10 @@ const OtherApplications: FC<selectedProps> = ({
         ),
       )}
 
-      {loading && (
+      {showLoadingCards && (
         <>
           <AppCardSkeleton />
-          <AppCardSkeleton />
+          {loadingCardsCount > 1 && <AppCardSkeleton />}
         </>
       )}
 
@@ -475,6 +551,8 @@ const OtherApplications: FC<selectedProps> = ({
           </div>
         </div>
       )}
+
+      <div ref={loaderRef} className="h-px w-px" />
     </div>
   );
 };
