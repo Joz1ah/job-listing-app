@@ -259,7 +259,7 @@ const FramerMobileCarousel: FC<FramerMobileCarouselProps> = ({
   // End card component
   const EndCard = ({ isPerfectMatch }: { isPerfectMatch: boolean }) => (
     <div 
-      className="bg-transparent rounded-2xl shadow-lg"
+      className="bg-transparent"
       style={{ 
         width: `${cardWidth}px`, 
         height: '350px',
@@ -268,7 +268,7 @@ const FramerMobileCarousel: FC<FramerMobileCarouselProps> = ({
         justifyContent: 'center'
       }}
     >
-      <div className="p-6 text-center">
+      <div className="p-2 text-center">
         <p className="text-lg font-semibold text-white mb-4">
           {isPerfectMatch 
             ? "You've reached the end of your perfect matches for now!"
@@ -276,14 +276,14 @@ const FramerMobileCarousel: FC<FramerMobileCarouselProps> = ({
           }
         </p>
         <div className="mb-4">
-          <span className="text-white text-lg font-semibold block mb-1">
-            {isPerfectMatch ? "Explore" : "Explore your"}
+          <span className="text-white text-lg font-semibold mb-1 mr-1.5">
+            Explore
           </span>
           <button
             onClick={onNavigateToOtherTab}
             className="text-lg text-[#F5722E] font-semibold underline hover:opacity-80 transition-opacity"
           >
-            {isPerfectMatch ? "other application cards" : "perfect matches"}
+            {isPerfectMatch ? "other application cards" : "perfect match"}
           </button>
         </div>
         <div className="flex justify-center">
