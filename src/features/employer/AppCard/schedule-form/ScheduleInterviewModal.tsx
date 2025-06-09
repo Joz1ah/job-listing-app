@@ -21,6 +21,7 @@ import { useCreateEmployerInterviewMutation } from "api/akaza/akazaAPI";
 import { combineDateAndTime } from "utils";
 import { ChevronRight, MapPin } from "lucide-react";
 import { getDateInTimezone } from "utils/dateTimeUtils";
+import { createPortal } from "react-dom";
 
 interface ScheduleInterviewModalProps {
   isOpen: boolean;
@@ -237,7 +238,7 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
     if (isMobileView) {
       // Center the calendar on mobile
       calendarPosition = (
-        <div className="fixed z-[1002] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-auto">
+        <div className="fixed z-[1050] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-auto">
           <DatePicker
             isOpen={isDatePickerOpen}
             onClose={() => setIsDatePickerOpen(false)}
@@ -250,6 +251,18 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
               .toDate()}
           />
         </div>
+      );
+      // Use portal to render above modal
+      return createPortal(
+        <div className="fixed inset-0 z-[1049] pointer-events-auto">
+          {/* Semi-transparent overlay that catches all clicks outside the calendar */}
+          <div
+            className="absolute inset-0 bg-black bg-opacity-0 pointer-events-auto"
+            onClick={() => setIsDatePickerOpen(false)}
+          />
+          {calendarPosition}
+        </div>,
+        document.body
       );
     } else {
       // Desktop positioning - align with input field
@@ -310,21 +323,19 @@ const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
           </div>
         );
       }
+      // Return a modal-like structure with a semi-transparent overlay
+      return (
+        <div className="fixed inset-0 z-[1001] pointer-events-auto">
+          {/* Semi-transparent overlay that catches all clicks outside the calendar */}
+          <div
+            className="absolute inset-0 bg-black bg-opacity-0 pointer-events-auto"
+            onClick={() => setIsDatePickerOpen(false)}
+          />
+          {/* Calendar positioned according to the rules above */}
+          {calendarPosition}
+        </div>
+      );
     }
-
-    // Return a modal-like structure with a semi-transparent overlay
-    return (
-      <div className="fixed inset-0 z-[1001] pointer-events-auto">
-        {/* Semi-transparent overlay that catches all clicks outside the calendar */}
-        <div
-          className="absolute inset-0 bg-black bg-opacity-0 pointer-events-auto"
-          onClick={() => setIsDatePickerOpen(false)}
-        />
-
-        {/* Calendar positioned according to the rules above */}
-        {calendarPosition}
-      </div>
-    );
   };
 
   return (
