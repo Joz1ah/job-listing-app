@@ -5,7 +5,6 @@ import { useState, useEffect, useRef } from "react";
 import { Formik, Field, FieldProps } from "formik";
 import styles from "./../landing.module.scss";
 import { useLanding } from "../useLanding";
-import * as Yup from "yup";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import { ROUTE_CONSTANTS } from "constants/routeConstants";
 import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
@@ -25,6 +24,7 @@ import {
   createAuthnetPaymentSecureData,
 } from "services/authnet/authnetService";
 import { NavLink } from "react-router-dom";
+import { createAuthnetPaymentValidationSchema } from "utils/cardValidationSchema";
 
 interface PaymentFormValues {
   cardNumber: string;
@@ -268,108 +268,7 @@ const AuthnetPaymentFullModal = () => {
                     country: "",
                     termsAccepted: false,
                   }}
-                  validationSchema={Yup.object({
-                    cardNumber: Yup.string()
-                      .required("This field is required")
-                      .matches(/^\d{13,19}$/, "Please enter valid card number")
-                      .test("luhn", "Invalid card number", (value) => {
-                        if (!value) return false;
-                        // Luhn algorithm implementation
-                        const digits = value.split("").map(Number);
-                        let sum = 0;
-                        let isEven = false;
-
-                        for (let i = digits.length - 1; i >= 0; i--) {
-                          let digit = digits[i];
-
-                          if (isEven) {
-                            digit *= 2;
-                            if (digit > 9) {
-                              digit -= 9;
-                            }
-                          }
-
-                          sum += digit;
-                          isEven = !isEven;
-                        }
-
-                        return sum % 10 === 0;
-                      }),
-                    firstName: Yup.string()
-                      .required("This field is required")
-                      .matches(
-                        /^[a-zA-ZÀ-ÿ\s'-]+$/,
-                        "Please enter a valid name",
-                      )
-                      .max(50, "Name is too long"),
-                    lastName: Yup.string()
-                      .required("This field is required")
-                      .matches(
-                        /^[a-zA-ZÀ-ÿ\s'-]+$/,
-                        "Please enter a valid name",
-                      )
-                      .max(50, "Name is too long"),
-                    expiryDate: Yup.string()
-                      .required("This field is required")
-                      .matches(/^(0[1-9]|1[0-2])\/([0-9]{2})$/, "MM/YY format")
-                      .test("expiry", "Invalid date", function (value) {
-                        if (!value) return false;
-
-                        const [month, year] = value.split("/");
-                        const expiry = new Date(
-                          2000 + parseInt(year),
-                          parseInt(month),
-                        );
-                        const today = new Date();
-
-                        // Set both dates to first of month for accurate comparison
-                        today.setDate(1);
-                        today.setHours(0, 0, 0, 0);
-
-                        if (expiry < today) {
-                          return false;
-                        }
-
-                        // Check if date is more than 10 years in future
-                        const maxDate = new Date();
-                        maxDate.setDate(1);
-                        maxDate.setFullYear(maxDate.getFullYear() + 10);
-
-                        if (expiry > maxDate) {
-                          return false;
-                        }
-
-                        return true;
-                      }),
-                    cvv: Yup.string()
-                      .matches(/^\d{3,4}$/, "CVV must be 3 or 4 digits")
-                      .required("This field is required"),
-                    email: Yup.string()
-                      .email("Please enter a valid email address")
-                      .required("This field is required"),
-                    billingAddress: Yup.string()
-                      .required("This field is required")
-                      .max(100, "Address is too long"),
-                    stateProvince: Yup.string().required(
-                      "This field is required",
-                    ),
-                    zipPostalCode: Yup.string()
-                      .matches(
-                        /^[a-zA-Z0-9]{1,6}$/,
-                        "Must be alphanumeric and up to 6 characters",
-                      )
-                      .required("This field is required"),
-                    city: Yup.string()
-                      .required("This field is required")
-                      .max(50, "City name is too long"),
-                    country: Yup.string().required("This field is required"),
-                    termsAccepted: Yup.boolean()
-                      .oneOf(
-                        [true],
-                        "You must accept the Terms and Privacy Policy",
-                      )
-                      .required("You must accept the Terms and Privacy Policy"),
-                  })}
+                  validationSchema={createAuthnetPaymentValidationSchema()}
                   onSubmit={handleSubmit}
                 >
                   {({ errors, touched, handleSubmit, values }) => (
