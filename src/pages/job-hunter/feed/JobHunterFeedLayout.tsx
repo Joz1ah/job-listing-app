@@ -11,7 +11,7 @@ const JobHunterFeedLayout: FC = () => {
         title="Jobfeed" 
         description="Akaza is a modern job marketplace with a new concept. No resume, No endless scrolling, you just choose your Perfect Match!"
     />
-    <div className="w-full px-4">
+    <div className="w-full px-0 md:px-4">
       <JobHunterHeader />
       <JobHunterFeed />
     </div>

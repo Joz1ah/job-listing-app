@@ -139,6 +139,7 @@
     "dotenv": "^16.4.7",
     "embla-carousel-react": "latest",
     "formik": "^2.4.6",
+    "framer-motion": "^12.16.0",
     "gsap": "^3.12.5",
     "helmet": "^8.0.0",
     "identity-obj-proxy": "^3.0.0",

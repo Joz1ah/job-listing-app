@@ -13,7 +13,7 @@ import { usePerfectMatchContext } from "contexts/PerfectMatch/PerfectMatchContex
 import { Match } from "contexts/PerfectMatch/types";
 import { AdDialogWrapper } from "components";
 import { useEmployerContext } from "components";
-import { GSAPMobileCarousel } from "components/swipeable/GSAPMobileCarousel";
+import { FramerMobileCarousel } from "components/swipeable/FramerMobileCarousel";
 
 interface selectedProps {
   setSelectedTab: (tab: string) => void;
@@ -48,6 +48,7 @@ const PerfectMatch: FC<selectedProps> = ({
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(false);
   const [isMobileView, setIsMobileView] = useState(false);
+  const loaderRef = useRef<HTMLDivElement>(null);
 
   // Hook to detect mobile screen size
   useEffect(() => {
@@ -166,6 +167,42 @@ const PerfectMatch: FC<selectedProps> = ({
     setLoading(false);
   }, [subscriptionPlan, perfectMatches, employerAds, isLoadingMatches]);
 
+  // Calculate loading cards
+  const remainingItems =
+    subscriptionPlan === "freeTrial"
+      ? perfectMatches.length -
+        displayedItems.filter((item) => !("isAd" in item)).length
+      : perfectMatches.length - displayedItems.length;
+
+  const showLoadingCards = loading && remainingItems > 0;
+  const loadingCardsCount = Math.min(2, remainingItems);
+
+  // Intersection observer for infinite scroll
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const target = entries[0];
+        if (target.isIntersecting && !loading && hasMore) {
+          loadMore();
+        }
+      },
+      {
+        threshold: 0.1,
+        rootMargin: "20px",
+      },
+    );
+
+    if (loaderRef.current) {
+      observer.observe(loaderRef.current);
+    }
+
+    return () => {
+      if (loaderRef.current) {
+        observer.unobserve(loaderRef.current);
+      }
+    };
+  }, [loading, hasMore]);
+
   const handleClick = () => {
     setSelectedTab("otherApplications");
     window.scrollTo({
@@ -195,7 +232,7 @@ const PerfectMatch: FC<selectedProps> = ({
   // Mobile carousel view
   if (isMobileView) {
     return (
-      <GSAPMobileCarousel
+      <FramerMobileCarousel
         items={displayedItems}
         subscriptionPlan={subscriptionPlan}
         onLoadMore={loadMore}
@@ -203,6 +240,7 @@ const PerfectMatch: FC<selectedProps> = ({
         loading={loading}
         title="PERFECT MATCH"
         showTitle={false} // Title is handled by parent component
+        onNavigateToOtherTab={() => setSelectedTab("otherApplications")}
       />
     );
   }
@@ -227,10 +265,10 @@ const PerfectMatch: FC<selectedProps> = ({
         ),
       )}
 
-      {loading && (
+      {showLoadingCards && (
         <>
           <AppCardSkeleton />
-          <AppCardSkeleton />
+          {loadingCardsCount > 1 && <AppCardSkeleton />}
         </>
       )}
 
@@ -253,6 +291,8 @@ const PerfectMatch: FC<selectedProps> = ({
           </div>
         </div>
       )}
+
+      <div ref={loaderRef} className="h-px w-px" />
     </div>
   );
 };
@@ -278,6 +318,7 @@ const OtherApplications: FC<selectedProps> = ({
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(false);
   const [isMobileView, setIsMobileView] = useState(false);
+  const loaderRef = useRef<HTMLDivElement>(null);
 
   // Hook to detect mobile screen size
   useEffect(() => {
@@ -396,6 +437,42 @@ const OtherApplications: FC<selectedProps> = ({
     setLoading(false);
   }, [subscriptionPlan, otherApplications, employerAds, isLoadingMatches]);
 
+  // Calculate loading cards
+  const remainingItems =
+    subscriptionPlan === "freeTrial"
+      ? otherApplications.length -
+        displayedItems.filter((item) => !("isAd" in item)).length
+      : otherApplications.length - displayedItems.length;
+
+  const showLoadingCards = loading && remainingItems > 0;
+  const loadingCardsCount = Math.min(2, remainingItems);
+
+  // Intersection observer for infinite scroll
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const target = entries[0];
+        if (target.isIntersecting && !loading && hasMore) {
+          loadMore();
+        }
+      },
+      {
+        threshold: 0.1,
+        rootMargin: "20px",
+      },
+    );
+
+    if (loaderRef.current) {
+      observer.observe(loaderRef.current);
+    }
+
+    return () => {
+      if (loaderRef.current) {
+        observer.unobserve(loaderRef.current);
+      }
+    };
+  }, [loading, hasMore]);
+
   const handleClick = () => {
     setSelectedTab("perfectMatch");
     window.scrollTo({
@@ -415,7 +492,7 @@ const OtherApplications: FC<selectedProps> = ({
   // Mobile carousel view
   if (isMobileView) {
     return (
-      <GSAPMobileCarousel
+      <FramerMobileCarousel
         items={displayedItems}
         subscriptionPlan={subscriptionPlan}
         onLoadMore={loadMore}
@@ -423,6 +500,7 @@ const OtherApplications: FC<selectedProps> = ({
         loading={loading}
         title="OTHER APPLICATION CARDS"
         showTitle={false} // Title is handled by parent component
+        onNavigateToOtherTab={() => setSelectedTab("perfectMatch")}
       />
     );
   }
@@ -447,10 +525,10 @@ const OtherApplications: FC<selectedProps> = ({
         ),
       )}
 
-      {loading && (
+      {showLoadingCards && (
         <>
           <AppCardSkeleton />
-          <AppCardSkeleton />
+          {loadingCardsCount > 1 && <AppCardSkeleton />}
         </>
       )}
 
@@ -473,6 +551,8 @@ const OtherApplications: FC<selectedProps> = ({
           </div>
         </div>
       )}
+
+      <div ref={loaderRef} className="h-px w-px" />
     </div>
   );
 };
@@ -609,14 +689,17 @@ const EmployerFeed: FC = () => {
                       className="sr-only"
                       disabled={
                         isLoadingMatches ||
-                        (selectedTab === "otherApplications" && forcedOtherCardsLoading)
+                        (selectedTab === "otherApplications" &&
+                          forcedOtherCardsLoading)
                       }
                     />
-                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
-                      selectedTab === "perfectMatch" 
-                        ? "border-[#F5722E] bg-transparent" 
-                        : "border-gray-400 bg-transparent"
-                    }`}>
+                    <div
+                      className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
+                        selectedTab === "perfectMatch"
+                          ? "border-[#F5722E] bg-transparent"
+                          : "border-gray-400 bg-transparent"
+                      }`}
+                    >
                       {selectedTab === "perfectMatch" && (
                         <div className="w-2.5 h-2.5 rounded-full bg-[#F5722E]"></div>
                       )}
@@ -632,9 +715,13 @@ const EmployerFeed: FC = () => {
                           : "filter grayscale opacity-60"
                       }`}
                     />
-                    <span className={`text-[16px] font-semibold transition-colors duration-200 ${
-                      selectedTab === "perfectMatch" ? "text-[#F5722E]" : "text-gray-400"
-                    }`}>
+                    <span
+                      className={`text-[16px] font-semibold transition-colors duration-200 ${
+                        selectedTab === "perfectMatch"
+                          ? "text-[#F5722E]"
+                          : "text-gray-400"
+                      }`}
+                    >
                       PERFECT MATCH
                     </span>
                   </div>
@@ -651,23 +738,30 @@ const EmployerFeed: FC = () => {
                       className="sr-only"
                       disabled={
                         isLoadingMatches ||
-                        (selectedTab === "otherApplications" && forcedOtherCardsLoading)
+                        (selectedTab === "otherApplications" &&
+                          forcedOtherCardsLoading)
                       }
                     />
-                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
-                      selectedTab === "otherApplications" 
-                        ? "border-[#F5722E] bg-transparent" 
-                        : "border-gray-400 bg-transparent"
-                    }`}>
+                    <div
+                      className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
+                        selectedTab === "otherApplications"
+                          ? "border-[#F5722E] bg-transparent"
+                          : "border-gray-400 bg-transparent"
+                      }`}
+                    >
                       {selectedTab === "otherApplications" && (
                         <div className="w-2.5 h-2.5 rounded-full bg-[#F5722E]"></div>
                       )}
                     </div>
                   </div>
-                  <span className={`text-[16px] font-semibold transition-colors duration-200 ${
-                    selectedTab === "otherApplications" ? "text-[#F5722E]" : "text-gray-400"
-                  }`}>
-                    OTHER OPPORTUNITIES
+                  <span
+                    className={`text-[16px] font-semibold transition-colors duration-200 ${
+                      selectedTab === "otherApplications"
+                        ? "text-[#F5722E]"
+                        : "text-gray-400"
+                    }`}
+                  >
+                    OTHER APPLICATION CARDS
                   </span>
                 </label>
               </div>
@@ -680,14 +774,17 @@ const EmployerFeed: FC = () => {
                   onClick={() => handleTabChange("perfectMatch")}
                   disabled={
                     isLoadingMatches ||
-                    (selectedTab === "otherApplications" && forcedOtherCardsLoading)
+                    (selectedTab === "otherApplications" &&
+                      forcedOtherCardsLoading)
                   }
                 >
                   <div
                     className="absolute bottom-0 left-0 w-full h-0.5 bg-[#F5722E] transform origin-left transition-transform duration-200 ease-out"
                     style={{
                       transform:
-                        selectedTab === "perfectMatch" ? "scaleX(1)" : "scaleX(0)",
+                        selectedTab === "perfectMatch"
+                          ? "scaleX(1)"
+                          : "scaleX(0)",
                     }}
                   />
                   <img
@@ -708,7 +805,8 @@ const EmployerFeed: FC = () => {
                   onClick={() => handleTabChange("otherApplications")}
                   disabled={
                     isLoadingMatches ||
-                    (selectedTab === "otherApplications" && forcedOtherCardsLoading)
+                    (selectedTab === "otherApplications" &&
+                      forcedOtherCardsLoading)
                   }
                 >
                   <div
@@ -732,14 +830,23 @@ const EmployerFeed: FC = () => {
               // Show skeleton state during loading
               isMobileView ? (
                 // Mobile skeleton - show carousel skeleton
-                <GSAPMobileCarousel
+                <FramerMobileCarousel
                   items={[]}
                   subscriptionPlan={subscriptionPlan}
                   onLoadMore={() => {}}
                   hasMore={false}
                   loading={true}
-                  title={selectedTab === "perfectMatch" ? "PERFECT MATCH" : "OTHER APPLICATION CARDS"}
+                  title={
+                    selectedTab === "perfectMatch"
+                      ? "PERFECT MATCH"
+                      : "OTHER APPLICATION CARDS"
+                  }
                   showTitle={false}
+                  onNavigateToOtherTab={
+                    selectedTab === "perfectMatch"
+                      ? () => handleTabChange("otherApplications")
+                      : () => handleTabChange("perfectMatch")
+                  }
                 />
               ) : (
                 // Desktop skeleton - show grid skeleton

@@ -1,4 +1,4 @@
-import { FC, useState, useRef } from "react";
+import { FC, useState, useRef, useEffect } from "react";
 import { MoreVertical, MapPin, Bookmark } from "lucide-react";
 import {
   Card,
@@ -24,10 +24,12 @@ interface JobCardProps {
   popupImage?: string;
   adImage?: string;
   timerDuration?: number;
+  isMobile?: boolean; // Add mobile prop
 }
 
 interface SecureCompanyDisplayProps {
   company: string;
+  onClick?: (e: React.MouseEvent) => void;
 }
 
 // Helper function to convert employment type values to labels
@@ -48,7 +50,7 @@ const getAvailabilityStyle = (type: string) => {
     : "bg-[#F5722E]";
 };
 
-const SecureCompanyDisplay: FC<SecureCompanyDisplayProps> = ({ company }) => {
+const SecureCompanyDisplay: FC<SecureCompanyDisplayProps> = ({ company, onClick }) => {
   const { subscriptionPlan } = useJobHunterContext();
 
   if (subscriptionPlan === "freeTrial") {
@@ -67,7 +69,10 @@ const SecureCompanyDisplay: FC<SecureCompanyDisplayProps> = ({ company }) => {
   }
 
   return (
-    <p className="text-[13px] text-[#263238] font-light mt-0 underline">
+    <p 
+      className={`text-[13px] text-[#263238] font-light mt-0 underline ${onClick ? 'cursor-pointer hover:text-[#F5722E]' : ''}`}
+      onClick={onClick}
+    >
       {company}
     </p>
   );
@@ -100,16 +105,34 @@ const BookmarkButton: FC<{
   );
 };
 
-const JobCard: FC<JobCardProps> = ({ match, popupImage, adImage }) => {
+const JobCard: FC<JobCardProps> = ({ 
+  match, 
+  popupImage, 
+  adImage, 
+  isMobile = false 
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [isMaxedLimitModalOpen, setIsMaxedLimitModalOpen] = useState(false);
+  const [isMobileView, setIsMobileView] = useState(false);
   const cardId = generateCardId(match);
   const { userSettings, user } = useAuth();
   const { subscriptionPlan } = useJobHunterContext();
 
   // Ref for the AdDialogWrapper
   const adDialogRef = useRef<HTMLDivElement>(null);
+
+  // Hook to detect mobile screen size
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobileView(window.innerWidth < 768);
+    };
+
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
 
   const checkInterviewLimit = () => {
     const interviewCounts = user?.data?.user?.interviewCounts;
@@ -157,6 +180,155 @@ const JobCard: FC<JobCardProps> = ({ match, popupImage, adImage }) => {
     setIsModalOpen(false);
   };
 
+  // Mobile Layout
+  if (isMobile || isMobileView) {
+    return (
+      <>
+        <Card className="bg-[#FFFFFF] border border-gray-200 w-[310px] h-[395px] mx-auto rounded-lg shadow-sm flex flex-col relative">
+          <CardHeader className="p-4 pb-2 relative">
+            {/* Header with Posted date */}
+            <div className="flex justify-between items-start mb-0 md:mb-2">
+              <div>
+                {match.isNew && (
+                  <span className="text-[13px] text-[#F5722E] font-bold italic">
+                    ☆ NEW
+                  </span>
+                )}
+              </div>
+              <div className="flex flex-col items-end">
+                <span className="text-xs text-[#717171]">
+                  Posted {match.posted}
+                </span>
+              </div>
+            </div>
+
+            {/* Bookmark positioned absolutely below posted date */}
+            <BookmarkButton
+              cardId={cardId}
+              className="absolute top-8 md:top-10 right-4"
+            />
+
+            {/* Position and Company */}
+            <div className="mb-2">
+              <CardTitle
+                className="text-sm font-semibold text-[#263238] hover:text-[#F5722E] cursor-pointer"
+                onClick={handlePreview}
+              >
+                {match.position}
+              </CardTitle>
+              <SecureCompanyDisplay 
+                company={match.company} 
+                onClick={subscriptionPlan !== "freeTrial" ? handlePreview : undefined}
+              />
+              <div className="flex items-center gap-1 text-sm text-[#263238] mt-1">
+                <MapPin size={14} className="text-[#F5722E]" />
+                <span>Based in {match.country}</span>
+              </div>
+            </div>
+          </CardHeader>
+
+          <CardContent className="px-4 pb-2 flex-1 overflow-hidden">
+            {/* Core Skills */}
+            <div className="mb-2">
+              <SkillsWithEllipsis skills={match.coreSkills} />
+            </div>
+
+            {/* Experience */}
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-[13px] font-light text-[#263238]">
+                Experience:
+              </span>
+              <span className="text-[12px] text-[#F5722E] font-light border border-[#F5722E] items-center rounded-[2px] px-1">
+                {match.experience}
+              </span>
+            </div>
+
+            {/* Available for */}
+            <div className="flex gap-2 gap-y-1 flex-wrap mb-2">
+              <span className="text-[13px] font-light text-[#263238]">
+                Available for:
+              </span>
+              {match.lookingFor.map((type, index) => {
+                // First get the formatted label
+                const formattedLabel = getEmploymentTypeLabel(type);
+                // Then determine style based on the formatted label
+                const styleClass = getAvailabilityStyle(formattedLabel);
+
+                return (
+                  <span
+                    key={index}
+                    className={`${styleClass} text-white rounded-[4px] text-[12px] px-1.5 h-[18px] flex justify-center items-center`}
+                  >
+                    {formattedLabel}
+                  </span>
+                );
+              })}
+            </div>
+
+            {/* Salary */}
+            <div className="flex gap-2 mb-2">
+              <span className="text-[13px] font-light text-[#263238]">
+                Salary:
+              </span>
+              <span className="bg-[#F5722E] text-white rounded-[4px] text-[12px] px-1.5 h-[18px] flex justify-center items-center">
+                {match.salaryExpectation}
+              </span>
+            </div>
+          </CardContent>
+
+          {/* Schedule Button - Always at bottom */}
+          <CardFooter className="px-4 pb-4 mt-auto flex justify-center items-center">
+            <Button
+              className="text-[15px] font-semibold w-[170px] h-[35px] p-2 bg-[#F5722E] hover:bg-[#F5722E]/90 rounded"
+              onClick={(e) => handleInterested(e)}
+            >
+              Schedule Interview
+            </Button>
+          </CardFooter>
+        </Card>
+
+        {/* Hidden AdDialogWrapper for free trial users */}
+        {subscriptionPlan === "freeTrial" && (
+          <div className="hidden">
+            <AdDialogWrapper
+              ref={adDialogRef}
+              adImage={adImage}
+              popupImage={popupImage}
+            />
+          </div>
+        )}
+
+        {/* Only show these modals for paid users */}
+        {subscriptionPlan !== "freeTrial" && (
+          <>
+            <JobPreviewModal
+              isOpen={isModalOpen}
+              onClose={() => setIsModalOpen(false)}
+              job={match}
+              onSchedule={handleInterested}
+            />
+            <ScheduleInterviewModal
+              isOpen={isScheduleModalOpen}
+              onClose={() => setIsScheduleModalOpen(false)}
+              timezone={userSettings?.data.timeZone}
+              jobTitle={match.position}
+              coreSkills={match.coreSkills}
+              company={match.company}
+              country={match.country}
+              certificate={match.certificates}
+              jobId={match.jobId}
+            />
+            <MaxedInterviewLimitModal
+              isOpen={isMaxedLimitModalOpen}
+              onClose={() => setIsMaxedLimitModalOpen(false)}
+            />
+          </>
+        )}
+      </>
+    );
+  }
+
+  // Desktop Layout (Original)
   return (
     <>
       <Card className="bg-[#FFFFFF] border-none w-full max-w-[436px] h-[350px] sm:h-[275px] relative transition-shadow duration-200">
