@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import { AuthContextProps } from './types';
 import { useDispatch } from 'react-redux';
-import { useGetUserInfoQuery, akazaApiAccount, useGetAccountSettingsQuery } from 'api/akaza/akazaAPI';
+import { useGetUserInfoQuery, akazaApiAccount, useGetAccountSettingsQuery } from 'api';
 
 // Create the AuthContext
 export const AuthContext = createContext<AuthContextProps | undefined>(undefined);

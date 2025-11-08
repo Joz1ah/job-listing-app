@@ -2,7 +2,7 @@ import { MODAL_STATES } from "store/modal/modal.types";
 import { useLanding } from "../useLanding";
 import { Form, Formik, Field, ErrorMessage } from "formik";
 import { useState } from "react";
-import { useForgotPasswordMutation } from "api/akaza/akazaAPI"
+import { useForgotPasswordMutation } from "api"
 import arrow_left_icon from "assets/Keyboard-arrow-left.svg?url";
 import button_loading_spinner from "assets/loading-spinner-orange.svg?url";
 import * as Yup from "yup";

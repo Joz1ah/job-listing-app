@@ -9,7 +9,7 @@ import { selectOptions } from "mockData/app-form-options";
 
 import { AppCardPreview } from "features/employer";
 import { useAuth } from "contexts/AuthContext/AuthContext";
-import { useJobHunterProfileMutation } from "api/akaza/akazaAPI";
+import { useJobHunterProfileMutation } from "api";
 import { useContext } from "react";
 import { KeywordMappingContext } from "contexts/KeyWordMappingContext";
 import { CountrySelect } from "components";

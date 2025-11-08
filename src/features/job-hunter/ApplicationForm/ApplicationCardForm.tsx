@@ -33,7 +33,7 @@ import { cn } from "lib/utils";
 import { useFormik, FormikErrors } from "formik";
 import * as Yup from "yup";
 
-import { useJobHunterProfileMutation } from "api/akaza/akazaAPI";
+import { useJobHunterProfileMutation } from "api";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 import { ROUTE_CONSTANTS } from "constants/routeConstants";

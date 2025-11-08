@@ -19,7 +19,7 @@ export interface Match {
 }
 
 export const perfectMatch_: Match[] = [
-   /* {
+    {
     id: 1,
     firstName: "Olivia",
     lastName: "Davis",
@@ -208,11 +208,11 @@ export const perfectMatch_: Match[] = [
     interpersonalSkills: ["Flexibility", "Empathy", "Persuasion"],
     certificates: ["Certified UI/UX Designer"],
     isNew: false
-  } */ 
+  }
 ];
 
 export const others: Match[] = [
-  /* {
+   {
     id: 11,
     firstName: "Lily",
     lastName: "Thompson",
@@ -382,5 +382,5 @@ export const others: Match[] = [
     interpersonalSkills: ["Analytical Thinking", "Decision Making", "Innovation"],
     certificates: ["Certified Machine Learning Specialist"],
     isNew: false
-  }, */
+  }, 
 ];

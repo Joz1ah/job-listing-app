@@ -1,4 +1,4 @@
-import { useLoginMutation } from "api/akaza/akazaAPI";
+import { useLoginMutation } from "api";
 import { Form, Formik, Field, ErrorMessage } from "formik";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import { useState, useRef } from "react";

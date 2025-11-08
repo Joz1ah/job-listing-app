@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { usePaymentCreateMutation } from "api/akaza/akazaAPI";
+import { usePaymentCreateMutation } from "api";
 import { Button } from "components";
 import { Input } from "components";
 import { InputField } from "components";

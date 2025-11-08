@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import {
   usePaymentCardDetailsMutation,
   useUpdatePaymentCardMutation,
-} from "api/akaza/akazaAPI";
+} from "api";
 import visa_icon from "assets/credit-card-icons/cc_visa.svg?url";
 import amex_icon from "assets/credit-card-icons/cc_american-express.svg?url";
 import mastercard_icon from "assets/credit-card-icons/cc_mastercard.svg?url";

@@ -4,7 +4,7 @@ import style from "./contactUs.module.scss";
 import { Formik, FieldProps, Field } from "formik";
 import { Textarea } from "components";
 import * as Yup from "yup";
-import { useSendContactUsEmailMutation } from "api/akaza/akazaAPI";
+import { useSendContactUsEmailMutation } from "api";
 import { PageMeta } from "components";
 import { ContactUsInputField } from "./ContactUsInputField";
 import { ContactUsInput } from "./ContactUsInput"; // Import our new custom input

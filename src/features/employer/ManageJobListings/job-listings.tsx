@@ -5,7 +5,7 @@ import { InterviewCardSkeleton } from "components";
 import { NavLink } from "react-router-dom";
 import emptyBookmark from "images/bookmark-empty.svg?url";
 
-import { useGetJobListQuery } from "api/akaza/akazaAPI";
+import { useGetJobListQuery } from "api";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 import { ROUTE_CONSTANTS } from "constants/routeConstants";
 

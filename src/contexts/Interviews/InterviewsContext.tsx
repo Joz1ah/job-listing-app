@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { debounce } from 'lodash';
 import { useAuth } from "contexts/AuthContext/AuthContext";
-import { useGetInterviewListQuery } from "api/akaza/akazaAPI";
+import { useGetInterviewListQuery } from "api";
 import {
   Interview,
   interviewsListState,

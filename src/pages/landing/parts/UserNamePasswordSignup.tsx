@@ -1,4 +1,4 @@
-import { useSignUpMutation, useOtpGenerateMutation } from "api/akaza/akazaAPI";
+import { useSignUpMutation, useOtpGenerateMutation } from "api";
 import { useState, useEffect } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import * as Yup from "yup";

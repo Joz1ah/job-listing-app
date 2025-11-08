@@ -13,7 +13,7 @@ export interface Interview {
     date: string;
     time: string;
     location: string;
-    country:string;
+    country?:string;
     meetingLink?: string;
     receivedTime: string;
     sentTime?:string;

@@ -4,7 +4,7 @@ import styles from "./../landing.module.scss";
 import Video from "./Video";
 import { useLanding } from "../useLanding";
 import * as Yup from "yup";
-import { useSearchCoreQuery } from "api/akaza/akazaAPI";
+import { useSearchCoreQuery } from "api";
 import { Tooltip } from "components";
 import { NavLink } from "react-router-dom";
 

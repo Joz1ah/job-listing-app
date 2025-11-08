@@ -13,7 +13,7 @@ import {
   useAcceptInterviewMutation,
   useRejectInterviewMutation,
   useRescheduleInterviewMutation,
-} from "api/akaza/akazaAPI";
+} from "api";
 import { combineDateAndTime } from "utils";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 

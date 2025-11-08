@@ -1,7 +1,7 @@
 import {
   useEmployerContactMutation,
   useLoginMutation,
-} from "api/akaza/akazaAPI";
+} from "api";
 import { useState } from "react";
 import * as Yup from "yup";
 import { useLanding } from "../useLanding";
