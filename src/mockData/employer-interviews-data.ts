@@ -37,7 +37,7 @@ import { Interview } from "contexts/Interviews/types";
     variant?: 'employer' | 'job-hunter';
   }
 
-export const acceptedInterviewsData: Interview[] = [/*
+export const acceptedInterviewsData: Interview[] = [
    {
     position: "Senior Frontend Engineer",
     candidate: "Michael Thompson",
@@ -119,9 +119,9 @@ export const acceptedInterviewsData: Interview[] = [/*
       "Mentoring",
     ],
   }, 
-*/];
+];
 
-export const completedInterviewsData: Interview[] = [/*
+export const completedInterviewsData: Interview[] = [
    {
     position: "Senior Frontend Engineer",
     candidate: "Daniel Roberts",
@@ -202,9 +202,9 @@ export const completedInterviewsData: Interview[] = [/*
       "Incident Response",
     ],
   }, 
-*/];
+];
 
-export const declinedInterviewsData: Interview[] = [/*
+export const declinedInterviewsData: Interview[] = [
    {
     position: "Sr Mobile and Web Developer",
     candidate: "John Smith",
@@ -289,9 +289,9 @@ export const declinedInterviewsData: Interview[] = [/*
       "Problem Solving",
     ],
   }, 
-*/];
+];
 
-export const pendingInterviewsData: Interview[] = [/*
+export const pendingInterviewsData: Interview[] = [
    {
     position: "Frontend Engineer",
     candidate: "Olivia Martinez",
@@ -442,9 +442,9 @@ export const pendingInterviewsData: Interview[] = [/*
       "Incident Response",
     ],
   }, 
-*/];
+];
 
-export const rescheduleInterviewsData: Interview[] = [/*
+export const rescheduleInterviewsData: Interview[] = [
    {
     position: "Sr. Mobile and Web Developer",
     candidate: "Mia Lee",
@@ -565,4 +565,4 @@ export const rescheduleInterviewsData: Interview[] = [/*
       "Agile Methodologies",
     ],
   }, 
-*/];
+];

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { useEmployerPaidQuery, useJobHunterPaidQuery } from "api/akaza/akazaAPI";
+import { useEmployerPaidQuery, useJobHunterPaidQuery } from "api";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import {
   Match,

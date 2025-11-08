@@ -1,6 +1,6 @@
 import React, { FC, useState, useRef, useEffect } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import { useSearchIndustryQuery } from 'api/akaza/akazaAPI';
+import { useSearchIndustryQuery } from 'api';
 import { cn } from "lib/utils";
 
 interface IndustryDropdownProps {

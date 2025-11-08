@@ -10,7 +10,7 @@ import {
   CardTitle,
   Button,
 } from "components";
-import { useSearchCoreQuery } from "api/akaza/akazaAPI";
+import { useSearchCoreQuery } from "api";
 
 interface SelectOption {
   value: string;

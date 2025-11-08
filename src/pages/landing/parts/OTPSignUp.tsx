@@ -3,7 +3,7 @@ import {
   useOtpVerifyMutation,
   useLoginMutation,
   useOtpGenerateMutation,
-} from "api/akaza/akazaAPI";
+} from "api";
 import { useLanding } from "../useLanding";
 import { MODAL_STATES } from "store/modal/modal.types";
 import { ChevronLeft } from "lucide-react";

@@ -1,4 +1,4 @@
-import { useJobHunterContactMutation } from "api/akaza/akazaAPI";
+import { useJobHunterContactMutation } from "api";
 import { PhoneInputLanding } from "components";
 import CountrySelectLanding from "components/ui/custom/country-select-landing";
 import { Formik, Form } from "formik";

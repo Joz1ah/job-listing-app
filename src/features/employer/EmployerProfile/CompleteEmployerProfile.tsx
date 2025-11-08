@@ -21,7 +21,7 @@ import { cn } from "lib/utils";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-import { useEmployerProfileMutation } from "api/akaza/akazaAPI";
+import { useEmployerProfileMutation } from "api";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 import { ROUTE_CONSTANTS } from "constants/routeConstants";

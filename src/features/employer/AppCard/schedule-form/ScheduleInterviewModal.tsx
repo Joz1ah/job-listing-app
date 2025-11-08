@@ -17,7 +17,7 @@ import { InvitationSentModal } from "features/employer";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
-import { useCreateEmployerInterviewMutation } from "api/akaza/akazaAPI";
+import { useCreateEmployerInterviewMutation } from "api";
 import { combineDateAndTime } from "utils";
 import { ChevronRight, MapPin } from "lucide-react";
 import { getDateInTimezone } from "utils/dateTimeUtils";

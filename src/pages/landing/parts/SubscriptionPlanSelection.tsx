@@ -4,7 +4,7 @@ import gift_selection from "assets/images/gift.gif";
 import {
   useLoginMutation,
   useUpdateFreeTrialStatusMutation,
-} from "api/akaza/akazaAPI";
+} from "api";
 import { Trophy } from "lucide-react";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import { useModal } from "components/modal/useModal";

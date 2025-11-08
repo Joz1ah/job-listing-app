@@ -1,4 +1,4 @@
-import { usePaymentCreateMutation } from "api/akaza/akazaAPI";
+import { usePaymentCreateMutation } from "api";
 import { useState, useRef, useEffect } from "react";
 import { Formik, Field, ErrorMessage, Form } from "formik";
 import { useNavigate } from "react-router-dom";

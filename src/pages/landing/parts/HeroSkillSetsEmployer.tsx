@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { useLanding } from "../useLanding";
 import * as Yup from "yup";
 import styles from "./../landing.module.scss";
-import { useSearchCoreQuery } from "api/akaza/akazaAPI";
+import { useSearchCoreQuery } from "api";
 import { Tooltip } from "components";
 
 import group_people_laptop from "assets/group-people-laptop.jpg";

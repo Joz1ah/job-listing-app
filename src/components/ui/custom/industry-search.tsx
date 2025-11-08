@@ -1,5 +1,5 @@
 import React, { FC, useState, useRef, useEffect } from 'react';
-import { useSearchIndustryQuery } from 'api/akaza/akazaAPI';
+import { useSearchIndustryQuery } from 'api';
 import { Input } from "components";
 import { cn } from "lib/utils";
 import { ChevronDown, ChevronUp } from 'lucide-react';

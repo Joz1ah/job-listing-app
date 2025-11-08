@@ -16,7 +16,7 @@ import { InvitationSentModal } from "features/job-hunter";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
-import { useCreateJobHunterInterviewMutation } from "api/akaza/akazaAPI";
+import { useCreateJobHunterInterviewMutation } from "api";
 import { combineDateAndTime } from "utils";
 import { ChevronRight, MapPin } from "lucide-react";
 import { getDateInTimezone } from "utils/dateTimeUtils";

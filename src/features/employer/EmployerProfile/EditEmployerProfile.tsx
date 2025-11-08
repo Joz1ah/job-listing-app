@@ -16,7 +16,7 @@ import { PhoneInput } from "components";
 
 import { EmployerProfilePreview } from "./EmployerProfilePreview";
 import { useAuth } from "contexts/AuthContext/AuthContext";
-import { useEmployerProfileMutation } from "api/akaza/akazaAPI";
+import { useEmployerProfileMutation } from "api";
 
 import { CountrySelect } from "components";
 

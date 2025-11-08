@@ -6,7 +6,7 @@ import sparkeIcon from "images/sparkle-icon.png";
 import saveChanges from "images/save-changes.svg?url";
 import employerPopAds from "images/employer-dashboard-popup-ads.svg?url";
 import { selectOptions } from "mockData/job-listing-form-options";
-import { useJobListCreateMutation } from "api/akaza/akazaAPI";
+import { useJobListCreateMutation } from "api";
 import { useAuth } from "contexts/AuthContext/AuthContext";
 import { useContext } from "react";
 import { KeywordMappingContext } from "contexts/KeyWordMappingContext";

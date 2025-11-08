@@ -13,7 +13,7 @@ import {
   useSearchCoreQuery,
   useSearchInterPersonalQuery,
   useSearchCertificationQuery,
-} from "api/akaza/akazaAPI";
+} from "api";
 import { KeywordMappingContext } from "contexts/KeyWordMappingContext";
 import { useContext } from "react";
 

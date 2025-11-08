@@ -20,7 +20,7 @@ import {
   useUpdateEmailMutation,
   useUpdatePhoneNumberMutation,
   useGetUserInfoQuery,
-} from "api/akaza/akazaAPI";
+} from "api";
 
 interface FormFieldProps {
   label: string;

@@ -1,4 +1,4 @@
-import { useGetUserInfoQuery,akazaApiAccount } from 'api/akaza/akazaAPI';
+import { useGetUserInfoQuery,akazaApiAccount } from 'api';
 import { useDispatch } from 'react-redux';
 
 export const getUserInfo = async (): Promise<any | null> => {

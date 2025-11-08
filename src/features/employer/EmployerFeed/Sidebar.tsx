@@ -10,7 +10,7 @@ import {
 } from "components";
 import { cn } from "lib/utils";
 import { useAuth } from "contexts/AuthContext/AuthContext";
-import { useGetJobListQuery } from "api/akaza/akazaAPI";
+import { useGetJobListQuery } from "api";
 import { usePerfectMatchContext } from "contexts/PerfectMatch/PerfectMatchContext";
 
 interface Keyword {

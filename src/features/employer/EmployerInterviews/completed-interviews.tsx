@@ -6,7 +6,7 @@ import emptyInterview from "images/calendar-empty.svg?url";
 import { Interview } from "contexts/Interviews/types";
 import { useEmployerContext } from "components";
 import { useInterviewsContext } from "contexts/Interviews/InterviewsContext";
-import { useRatingFeedbackMutation } from "api/akaza/akazaAPI";
+import { useRatingFeedbackMutation } from "api";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 
 interface ratingFeedbackData {

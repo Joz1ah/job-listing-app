@@ -3,7 +3,7 @@ import { ChevronLeft } from "lucide-react";
 import { Input, Textarea, Button } from "components";
 import sparkeIcon from "images/sparkle-icon.png";
 import { selectOptions } from "mockData/job-listing-form-options";
-import { useJobListUpdateMutation } from "api/akaza/akazaAPI";
+import { useJobListUpdateMutation } from "api";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 import { MultiSelect } from "components";
 import { useContext } from "react";

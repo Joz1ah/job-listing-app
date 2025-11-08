@@ -7,7 +7,7 @@ import { Eye, EyeOff, ChevronDown, ChevronUp, Check } from "lucide-react";
 import { cn } from "lib/utils";
 import { InputField } from "components";
 import { DeleteAccountAlert } from "./alerts/DeleteAccountAlert";
-import { useUpdatePasswordMutation } from "api/akaza/akazaAPI";
+import { useUpdatePasswordMutation } from "api";
 import { useJobHunterContext } from "components";
 import { AdDialogWrapper } from "components";
 import jobHunterPopAds from "images/jobhunter-dashboard-popup-ads.svg?url";

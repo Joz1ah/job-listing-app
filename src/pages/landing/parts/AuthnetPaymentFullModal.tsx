@@ -1,4 +1,4 @@
-import { usePaymentCreateMutation, useLoginMutation } from "api/akaza/akazaAPI";
+import { usePaymentCreateMutation, useLoginMutation } from "api";
 import { InputField, Input } from "components";
 import { useErrorModal } from "contexts/ErrorModalContext/ErrorModalContext";
 import { useState, useEffect, useRef } from "react";

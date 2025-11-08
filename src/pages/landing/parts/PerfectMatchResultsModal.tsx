@@ -8,7 +8,7 @@ import EmptyState from "./EmptyState";
 import {
   useGetHeroEmployerMatchMutation,
   useGetHeroJobHunterMatchMutation,
-} from "api/akaza/akazaAPI";
+} from "api";
 
 import {
   EmployerMatch,
