@@ -5,6 +5,7 @@ import userEvent from '@testing-library/user-event'
 
 // Using an utility for rendering with Redux Provider
 import { renderWithProviders } from 'utils'
+import type { RootState } from 'store/store'
 
 import { Home } from './Home'
 import defaultLangTranslations from 'i18n/translations/en.json'
@@ -31,7 +32,7 @@ describe('Home page component', () => {
     renderWithProviders(<Home />, {
       preloadedState: {
         counter: { value: 42 }
-      }
+      } as Partial<RootState>
     })
 
     /*

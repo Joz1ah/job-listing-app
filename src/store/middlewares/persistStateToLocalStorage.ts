@@ -29,7 +29,7 @@ const persistStateToLocalStorage =
             if (
               isAction(action) &&
         ignoreSliceActions &&
-        !ignoreSlices.some((el) => action.type.includes(el))
+        !ignoreSlices.some((el) => String(action.type).includes(String(el)))
             ) {
               localStorage.setItem(
                 localStorageAppKey,

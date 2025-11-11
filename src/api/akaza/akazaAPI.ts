@@ -797,6 +797,7 @@ export const localApi = createApiFunction({
       return headers;
     },
   }), 
+  tagTypes: [],
   endpoints: (builder) => ({
     sendContactUsEmail: builder.mutation({
       query: (payLoad) => ({

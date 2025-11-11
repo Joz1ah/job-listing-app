@@ -392,16 +392,10 @@ const EditEmployerProfile: FC = () => {
                 variant="primary"
               >
                 <IndustrySearch
-                  onValueChange={(id, name) => {
+                  onValueChange={(id: string, name: string) => {
                     setFieldValue("industryId", id);
                     setFieldValue("industryName", name);
                   }}
-                  initialIndustryName={
-                    user?.data?.user?.relatedDetails?.industryName
-                  }
-                  initialIndustryId={
-                    user?.data?.user?.relatedDetails?.industryId
-                  }
                 />
               </InputField>
 

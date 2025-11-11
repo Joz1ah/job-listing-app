@@ -80,7 +80,7 @@ const runServer = (hotReload?: () => RequestHandler[]): void => {
 
   app.get("/*", serverRenderer(chunkExtractor));
 
-  if (!IS_DEV) {
+  if (IS_DEV) {
     // Development server - using HTTP
     app.listen(PORT, () => {
       console.log(
