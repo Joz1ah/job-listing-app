@@ -377,7 +377,7 @@ const CompleteEmployerProfile: FC = () => {
                 variant="primary"
               >
                 <IndustrySearch
-                  onValueChange={(id, name) => {
+                  onValueChange={(id: string, name: string) => {
                     setFieldValue("industryId", id);
                     setFieldValue("industryName", name);
                   }}

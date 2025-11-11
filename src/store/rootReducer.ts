@@ -19,6 +19,12 @@ import {
   localApi,
 } from "api";
 
+import { 
+  improvedMockApiSignUp, 
+  improvedMockApiAuth, 
+  improvedMockApiAccount 
+} from 'api/mock/mockAuthImproved';
+
 import { reduxHydrationAction } from "constants/commonConstants";
 import { modalReducer } from "./modal/modal.slice";
 import { heroReducer } from "./hero/hero.slice";
@@ -51,7 +57,10 @@ export const rootReducer = {
   [akazaApiAccount.reducerPath]: akazaApiAccount.reducer,
   [akazaApiInterviewRequest.reducerPath]: akazaApiInterviewRequest.reducer,
   [akazaApiPerfectMatchHero.reducerPath]: akazaApiPerfectMatchHero.reducer,
-  [localApi.reducerPath]: akazaApiAccount.reducer,
+  [localApi.reducerPath]: localApi.reducer,
+  [improvedMockApiSignUp.reducerPath]: improvedMockApiSignUp.reducer,
+  [improvedMockApiAuth.reducerPath]: improvedMockApiAuth.reducer,
+  [improvedMockApiAccount.reducerPath]: improvedMockApiAccount.reducer,
 };
 
 export const appReducer = combineReducers(rootReducer);

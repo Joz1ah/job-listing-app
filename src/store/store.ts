@@ -9,6 +9,12 @@ import {
   createAction,
 } from "@reduxjs/toolkit";
 
+import { 
+  improvedMockApiSignUp, 
+  improvedMockApiAuth, 
+  improvedMockApiAccount 
+} from 'api/mock/mockAuthImproved';
+
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
 import { ThunkAction } from "redux-thunk";
@@ -45,6 +51,9 @@ const middlewares = [
   akazaApiAccount.middleware,
   akazaApiPerfectMatchHero.middleware,
   localApi.middleware,
+  improvedMockApiSignUp.middleware,
+  improvedMockApiAuth.middleware,
+  improvedMockApiAccount.middleware,
 ];
 
 const initStore = (preloadedState?: Partial<RootState>): EnhancedStore =>

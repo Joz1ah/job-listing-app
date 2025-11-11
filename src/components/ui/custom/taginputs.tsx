@@ -9,13 +9,6 @@ import { cn } from "lib/utils";
 import { Input } from "components";
 import { Label } from "components";
 import { ScrollArea } from "components";
-import {
-  useSearchCoreQuery,
-  useSearchInterPersonalQuery,
-  useSearchCertificationQuery,
-} from "api";
-import { KeywordMappingContext } from "contexts/KeyWordMappingContext";
-import { useContext } from "react";
 
 interface Option {
   label: string;
@@ -42,14 +35,6 @@ interface TagInputProps {
   error?: boolean;
 }
 
-interface Skill {
-  id: string;
-  keyword: string;
-  type: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
 const TagInputs: React.FC<TagInputProps> = ({
   value = [],
   onChange,
@@ -62,7 +47,6 @@ const TagInputs: React.FC<TagInputProps> = ({
   suggestionTitle = "Select Option",
   disabled,
   alternateColors,
-  //maxTagLength = 12,
   onInputChange,
   error = false,
 }) => {
@@ -142,7 +126,7 @@ const TagInputs: React.FC<TagInputProps> = ({
   };
 
   const filteredOptions = options.filter((option) => {
-    // Don't show already selected values - this was using option.value but should compare with the keyword value
+    // Don't show already selected values
     if (
       value.some(
         (selectedValue) =>
@@ -164,11 +148,6 @@ const TagInputs: React.FC<TagInputProps> = ({
     // Return false if no input to show no suggestions
     return false;
   });
-
-  // Helper function to get label from ID
-  /*   const getLabel = (keyword: string): string => {
-    return capitalizeFirstLetter(keyword);
-  }; */
 
   useEffect(() => {
     if (showSuggestions && filteredOptions.length > 0) {
@@ -283,11 +262,6 @@ const TagInputs: React.FC<TagInputProps> = ({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  /*   const truncateText = (text: string, maxLength: number) => {
-    if (text.length <= maxLength) return text;
-    return `${text.substring(0, maxLength)}...`;
-  }; */
 
   return (
     <div ref={containerRef} className="relative w-full">
@@ -411,40 +385,110 @@ const capitalizeFirstLetter = (str: string) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
-const CoreSkillsTagInput: React.FC<Omit<TagInputProps, "options">> = (
-  props,
-) => {
+// ============================================================================
+// MOCK DATA
+// ============================================================================
+
+const MOCK_CORE_SKILLS = [
+  "JavaScript", "TypeScript", "Python", "Java", "C++", "C#", "Ruby", "PHP", "Swift", "Kotlin",
+  "React", "Angular", "Vue.js", "Node.js", "Express", "Django", "Flask", "Spring Boot", "Laravel",
+  "HTML", "CSS", "SASS", "LESS", "Bootstrap", "Tailwind CSS", "Material UI", "Ant Design",
+  "SQL", "MySQL", "PostgreSQL", "MongoDB", "Redis", "Firebase", "Oracle", "SQLite",
+  "Git", "Docker", "Kubernetes", "Jenkins", "GitHub Actions", "GitLab CI", "Travis CI",
+  "AWS", "Azure", "Google Cloud", "Heroku", "DigitalOcean", "Vercel", "Netlify",
+  "REST API", "GraphQL", "WebSocket", "gRPC", "SOAP", "Microservices", "Serverless",
+  "Machine Learning", "Deep Learning", "TensorFlow", "PyTorch", "Scikit-learn", "Pandas", "NumPy",
+  "Data Analysis", "Data Visualization", "Tableau", "Power BI", "Excel", "SPSS",
+  "Agile", "Scrum", "Kanban", "JIRA", "Trello", "Asana", "Monday.com",
+  "Testing", "Jest", "Mocha", "Cypress", "Selenium", "JUnit", "PyTest",
+  "DevOps", "CI/CD", "Linux", "Bash", "Shell Scripting", "Terraform", "Ansible",
+  "Security", "OAuth", "JWT", "SSL/TLS", "Encryption", "Penetration Testing",
+  "Mobile Development", "React Native", "Flutter", "Ionic", "Xamarin",
+  "UI/UX Design", "Figma", "Sketch", "Adobe XD", "InVision", "Zeplin",
+  "Project Management", "MS Project", "Confluence", "Notion", "Slack",
+  "Blockchain", "Ethereum", "Solidity", "Smart Contracts", "Web3",
+  "Game Development", "Unity", "Unreal Engine", "C++", "3D Modeling",
+].sort();
+
+const MOCK_INTERPERSONAL_SKILLS = [
+  "Communication", "Leadership", "Teamwork", "Problem Solving", "Critical Thinking",
+  "Time Management", "Adaptability", "Creativity", "Emotional Intelligence", "Conflict Resolution",
+  "Negotiation", "Active Listening", "Empathy", "Patience", "Flexibility",
+  "Decision Making", "Collaboration", "Networking", "Mentoring", "Coaching",
+  "Presentation Skills", "Public Speaking", "Persuasion", "Influence", "Motivation",
+  "Strategic Thinking", "Analytical Thinking", "Attention to Detail", "Organization",
+  "Work Ethic", "Professionalism", "Self-Motivation", "Accountability", "Initiative",
+  "Customer Service", "Client Relations", "Interpersonal Skills", "Cultural Awareness",
+  "Stress Management", "Resilience", "Positive Attitude", "Open-Mindedness",
+  "Diplomacy", "Trustworthiness", "Reliability", "Punctuality", "Multitasking",
+].sort();
+
+const MOCK_LANGUAGES = [
+  { label: "Arabic", value: "Arabic" },
+  { label: "Bengali", value: "Bengali" },
+  { label: "Chinese (Cantonese)", value: "Chinese (Cantonese)" },
+  { label: "Chinese (Mandarin)", value: "Chinese (Mandarin)" },
+  { label: "Dutch", value: "Dutch" },
+  { label: "English", value: "English" },
+  { label: "Finnish", value: "Finnish" },
+  { label: "French", value: "French" },
+  { label: "German", value: "German" },
+  { label: "Hindi", value: "Hindi" },
+  { label: "Italian", value: "Italian" },
+  { label: "Japanese", value: "Japanese" },
+  { label: "Korean", value: "Korean" },
+  { label: "Malay", value: "Malay" },
+  { label: "Polish", value: "Polish" },
+  { label: "Portuguese", value: "Portuguese" },
+  { label: "Russian", value: "Russian" },
+  { label: "Spanish", value: "Spanish" },
+  { label: "Swedish", value: "Swedish" },
+  { label: "Tagalog", value: "Tagalog" },
+  { label: "Thai", value: "Thai" },
+  { label: "Turkish", value: "Turkish" },
+  { label: "Vietnamese", value: "Vietnamese" },
+];
+
+const MOCK_CERTIFICATIONS = [
+  "AWS Certified Solutions Architect", "AWS Certified Developer", "AWS Certified SysOps Administrator",
+  "Microsoft Certified: Azure Administrator", "Microsoft Certified: Azure Developer", "Microsoft Certified: Azure Solutions Architect",
+  "Google Cloud Professional Cloud Architect", "Google Cloud Professional Data Engineer", "Google Cloud Associate Cloud Engineer",
+  "Certified Kubernetes Administrator (CKA)", "Certified Kubernetes Application Developer (CKAD)",
+  "CompTIA A+", "CompTIA Network+", "CompTIA Security+", "CompTIA Linux+",
+  "Cisco CCNA", "Cisco CCNP", "Cisco CCIE",
+  "Certified Information Systems Security Professional (CISSP)", "Certified Ethical Hacker (CEH)", "Certified Information Security Manager (CISM)",
+  "PMP (Project Management Professional)", "PRINCE2", "Certified ScrumMaster (CSM)", "Certified Scrum Product Owner (CSPO)",
+  "ITIL Foundation", "ITIL Expert", "COBIT",
+  "Oracle Certified Professional", "Oracle Certified Associate", "MySQL Database Administrator",
+  "Red Hat Certified System Administrator (RHCSA)", "Red Hat Certified Engineer (RHCE)",
+  "Salesforce Certified Administrator", "Salesforce Certified Developer", "Salesforce Certified Architect",
+  "Adobe Certified Expert (ACE)", "Adobe Certified Professional",
+  "Google Analytics Individual Qualification", "HubSpot Inbound Certification",
+  "Six Sigma Green Belt", "Six Sigma Black Belt", "Lean Six Sigma",
+  "CFA (Chartered Financial Analyst)", "CPA (Certified Public Accountant)", "ACCA (Association of Chartered Certified Accountants)",
+  "Certified Data Scientist", "Certified Machine Learning Specialist", "TensorFlow Developer Certificate",
+  "Certified Information Systems Auditor (CISA)", "Certified in Risk and Information Systems Control (CRISC)",
+].sort();
+
+// ============================================================================
+// SPECIALIZED TAG INPUT COMPONENTS WITH MOCK DATA
+// ============================================================================
+
+const CoreSkillsTagInput: React.FC<Omit<TagInputProps, "options">> = (props) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const { addMappings } = useContext(KeywordMappingContext);
 
-  const { data: searchResults } = useSearchCoreQuery(
-    {
-      query: searchQuery,
-      limit: 5,
-    },
-    {
-      skip: !searchQuery,
-    },
-  );
-
-  useEffect(() => {
-    if (searchResults) {
-      const mappings = searchResults.map((skill: Skill) => ({
-        keyword: skill.keyword,
-        id: skill.id,
+  // Filter mock skills based on search query
+  const filteredSkills = useMemo(() => {
+    if (!searchQuery) return [];
+    
+    return MOCK_CORE_SKILLS
+      .filter(skill => skill.toLowerCase().includes(searchQuery.toLowerCase()))
+      .slice(0, 20) // Limit to 20 results
+      .map(skill => ({
+        label: skill,
+        value: skill,
       }));
-      addMappings(mappings);
-    }
-  }, [searchResults, addMappings]);
-
-  const options = useMemo(
-    () =>
-      searchResults?.map((skill: Skill) => ({
-        label: capitalizeFirstLetter(skill.keyword),
-        value: skill.keyword,
-      })) || [],
-    [searchResults],
-  );
+  }, [searchQuery]);
 
   const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -455,7 +499,7 @@ const CoreSkillsTagInput: React.FC<Omit<TagInputProps, "options">> = (
       {...props}
       value={props.value}
       onChange={props.onChange}
-      options={options}
+      options={filteredSkills}
       maxTags={5}
       suggestionTitle="Select Core Skills"
       placeholder={props.placeholder || "Type to search core skills"}
@@ -464,40 +508,21 @@ const CoreSkillsTagInput: React.FC<Omit<TagInputProps, "options">> = (
   );
 };
 
-const InterpersonalSkillsTagInput: React.FC<Omit<TagInputProps, "options">> = (
-  props,
-) => {
+const InterpersonalSkillsTagInput: React.FC<Omit<TagInputProps, "options">> = (props) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const { addMappings } = useContext(KeywordMappingContext);
 
-  const { data: searchResults } = useSearchInterPersonalQuery(
-    {
-      query: searchQuery,
-      limit: 5,
-    },
-    {
-      skip: !searchQuery,
-    },
-  );
-
-  useEffect(() => {
-    if (searchResults) {
-      const mappings = searchResults.map((skill: Skill) => ({
-        keyword: skill.keyword,
-        id: skill.id,
+  // Filter mock skills based on search query
+  const filteredSkills = useMemo(() => {
+    if (!searchQuery) return [];
+    
+    return MOCK_INTERPERSONAL_SKILLS
+      .filter(skill => skill.toLowerCase().includes(searchQuery.toLowerCase()))
+      .slice(0, 20) // Limit to 20 results
+      .map(skill => ({
+        label: skill,
+        value: skill,
       }));
-      addMappings(mappings);
-    }
-  }, [searchResults, addMappings]);
-
-  const options = useMemo(
-    () =>
-      searchResults?.map((skill: Skill) => ({
-        label: capitalizeFirstLetter(skill.keyword),
-        value: skill.keyword,
-      })) || [],
-    [searchResults],
-  );
+  }, [searchQuery]);
 
   const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -508,7 +533,7 @@ const InterpersonalSkillsTagInput: React.FC<Omit<TagInputProps, "options">> = (
       {...props}
       value={props.value}
       onChange={props.onChange}
-      options={options}
+      options={filteredSkills}
       maxTags={5}
       suggestionTitle="Select Interpersonal Skills"
       placeholder={props.placeholder || "Type to search interpersonal skills"}
@@ -520,38 +545,12 @@ const InterpersonalSkillsTagInput: React.FC<Omit<TagInputProps, "options">> = (
 const LanguageTagInput: React.FC<Omit<TagInputProps, "options">> = (props) => {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const languages = [
-    { label: "Arabic", value: "Arabic" },
-    { label: "Bengali", value: "Bengali" },
-    { label: "Chinese (Cantonese)", value: "Chinese (Cantonese)" },
-    { label: "Chinese (Mandarin)", value: "Chinese (Mandarin)" },
-    { label: "Dutch", value: "Dutch" },
-    { label: "English", value: "English" },
-    { label: "Finnish", value: "Finnish" },
-    { label: "French", value: "French" },
-    { label: "German", value: "German" },
-    { label: "Hindi", value: "Hindi" },
-    { label: "Italian", value: "Italian" },
-    { label: "Japanese", value: "Japanese" },
-    { label: "Korean", value: "Korean" },
-    { label: "Malay", value: "Malay" },
-    { label: "Polish", value: "Polish" },
-    { label: "Portuguese", value: "Portuguese" },
-    { label: "Russian", value: "Russian" },
-    { label: "Spanish", value: "Spanish" },
-    { label: "Swedish", value: "Swedish" },
-    { label: "Tagalog", value: "Tagalog" },
-    { label: "Thai", value: "Thai" },
-    { label: "Turkish", value: "Turkish" },
-    { label: "Vietnamese", value: "Vietnamese" },
-  ];
-
   // Filter languages based on search query
   const filteredLanguages = useMemo(() => {
-    if (!searchQuery) return languages;
+    if (!searchQuery) return [];
 
-    return languages.filter((lang) =>
-      lang.label.toLowerCase().startsWith(searchQuery.toLowerCase()),
+    return MOCK_LANGUAGES.filter((lang) =>
+      lang.label.toLowerCase().includes(searchQuery.toLowerCase()),
     );
   }, [searchQuery]);
 
@@ -571,40 +570,21 @@ const LanguageTagInput: React.FC<Omit<TagInputProps, "options">> = (props) => {
   );
 };
 
-const CertificationTagInput: React.FC<Omit<TagInputProps, "options">> = (
-  props,
-) => {
+const CertificationTagInput: React.FC<Omit<TagInputProps, "options">> = (props) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const { addMappings } = useContext(KeywordMappingContext);
 
-  const { data: searchResults } = useSearchCertificationQuery(
-    {
-      query: searchQuery,
-      limit: 5,
-    },
-    {
-      skip: !searchQuery,
-    },
-  );
-
-  useEffect(() => {
-    if (searchResults) {
-      const mappings = searchResults.map((skill: Skill) => ({
-        keyword: skill.keyword,
-        id: skill.id,
+  // Filter mock certifications based on search query
+  const filteredCertifications = useMemo(() => {
+    if (!searchQuery) return [];
+    
+    return MOCK_CERTIFICATIONS
+      .filter(cert => cert.toLowerCase().includes(searchQuery.toLowerCase()))
+      .slice(0, 20) // Limit to 20 results
+      .map(cert => ({
+        label: cert,
+        value: cert,
       }));
-      addMappings(mappings);
-    }
-  }, [searchResults, addMappings]);
-
-  const options = useMemo(
-    () =>
-      searchResults?.map((skill: Skill) => ({
-        label: capitalizeFirstLetter(skill.keyword),
-        value: skill.keyword,
-      })) || [],
-    [searchResults],
-  );
+  }, [searchQuery]);
 
   const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -615,7 +595,7 @@ const CertificationTagInput: React.FC<Omit<TagInputProps, "options">> = (
       {...props}
       value={props.value}
       onChange={props.onChange}
-      options={options}
+      options={filteredCertifications}
       maxTags={3}
       suggestionTitle="Select Certifications"
       placeholder={props.placeholder || "Type to search certifications"}

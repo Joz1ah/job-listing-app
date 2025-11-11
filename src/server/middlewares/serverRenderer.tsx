@@ -33,7 +33,7 @@ const serverRenderer =
       */
       const i18nState = await setTranslations(req)
 
-      let preloadedState: Partial<RootState> = {
+      let preloadedState = {
         counter: { value: 42 },
         theme: {
           theme:
@@ -42,7 +42,7 @@ const serverRenderer =
             : THEME_NAMES.LIGHT
         },
         ...i18nState
-      }
+      } as Partial<RootState>
 
       const store = initStore(preloadedState)
 
